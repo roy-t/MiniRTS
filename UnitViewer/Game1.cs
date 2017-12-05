@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using RenderEngine;
 
 namespace UnitViewer
 {
@@ -8,14 +9,17 @@ namespace UnitViewer
     /// </summary>
     public class Game1 : Game
     {
-        GraphicsDeviceManager graphics;
-        SpriteBatch spriteBatch;
-        Texture2D texture;
+        private readonly GraphicsDeviceManager Graphics;
+
+        private SpriteBatch spriteBatch;
+        private Texture2D texture;
+        private Camera camera;
+        private RenderSystem renderSystem;
 
         public Game1()
         {
-            graphics = new GraphicsDeviceManager(this);
-            Content.RootDirectory = "Content";
+            this.Graphics = new GraphicsDeviceManager(this);
+            this.Content.RootDirectory = "Content";
         }
 
         /// <summary>
@@ -38,8 +42,14 @@ namespace UnitViewer
         protected override void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
-            spriteBatch = new SpriteBatch(GraphicsDevice);
-            this.texture = Content.Load<Texture2D>("Texture");
+            this.spriteBatch = new SpriteBatch(this.GraphicsDevice);
+            this.texture = this.Content.Load<Texture2D>("Texture");
+
+            this.camera = new Camera(this.GraphicsDevice.Viewport);
+
+            var clearEffect = this.Content.Load<Effect>("ClearEffect");
+            this.renderSystem = new RenderSystem(this.GraphicsDevice, clearEffect, this.camera);
+
 
             // TODO: use this.Content to load your game content here
         }
@@ -65,32 +75,36 @@ namespace UnitViewer
             base.Update(gameTime);
         }
 
-        float x;
-        System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
         /// <summary>
         /// This is called when the game should draw itself.
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.Purple);
+            this.GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            if (!stopwatch.IsRunning)
+            this.renderSystem.Render();
+
+            this.spriteBatch.Begin();
+            
+            var gBuffer = this.renderSystem.GetGBuffer();
+            var step = this.GraphicsDevice.Viewport.Width / gBuffer.Length;
+            for (var i = 0; i < gBuffer.Length; i++)
             {
-                stopwatch.Start();
+                var target = gBuffer[i];
+                this.spriteBatch.Draw(
+                    target,
+                    new Vector2(step * i, 0),
+                    null,
+                    Color.White,
+                    0.0f,
+                    Vector2.Zero,
+                    0.33f,
+                    SpriteEffects.None,
+                    0);
             }
 
-            var el = stopwatch.Elapsed;
-            stopwatch.Restart();
-
-            var ft = el.TotalMilliseconds;
-            var fps = 1.0 / el.TotalSeconds;
-
-            this.spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, SamplerState.AnisotropicClamp, DepthStencilState.Default, RasterizerState.CullCounterClockwise);
-            this.spriteBatch.Draw(this.texture, new Vector2(x, 0), Color.White);            
             this.spriteBatch.End();
-
-            x += (float)gameTime.ElapsedGameTime.TotalSeconds * 10;
 
             base.Draw(gameTime);
         }

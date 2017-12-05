@@ -25,3 +25,9 @@
 /processorParam:TextureFormat=Color
 /build:Texture.bmp
 
+#begin ClearEffect.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:ClearEffect.fx
+
