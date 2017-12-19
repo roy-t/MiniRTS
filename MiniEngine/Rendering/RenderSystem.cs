@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
-using RenderEngine.Primitives;
+using MiniEngine.Rendering.Primitives;
 
-namespace RenderEngine
+namespace MiniEngine.Rendering
 {
     public sealed class RenderSystem
     {

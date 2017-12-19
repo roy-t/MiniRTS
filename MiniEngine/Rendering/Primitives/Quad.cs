@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace RenderEngine.Primitives
+namespace MiniEngine.Rendering.Primitives
 {
     public sealed class Quad
     {

@@ -3,7 +3,7 @@
 
 /outputDir:bin/$(Platform)
 /intermediateDir:obj/$(Platform)
-/platform:WindowsStoreApp
+/platform:Windows
 /config:
 /profile:Reach
 /compress:False
@@ -12,6 +12,12 @@
 
 
 #---------------------------------- Content ---------------------------------#
+
+#begin ClearEffect.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:ClearEffect.fx
 
 #begin Texture.bmp
 /importer:TextureImporter
@@ -24,10 +30,4 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Texture.bmp
-
-#begin ClearEffect.fx
-/importer:EffectImporter
-/processor:EffectProcessor
-/processorParam:DebugMode=Auto
-/build:ClearEffect.fx
 

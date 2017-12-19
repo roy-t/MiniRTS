@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace RenderEngine
+namespace MiniEngine.Rendering
 {
     public sealed class Camera
     {
