@@ -11,8 +11,9 @@ namespace MiniEngine
 
         private SpriteBatch spriteBatch;
         private Texture2D texture;
-        private Camera camera;
+        private Scene scene;
         private RenderSystem renderSystem;
+        
 
         public GameLoop()
         {
@@ -30,11 +31,13 @@ namespace MiniEngine
         {
             this.spriteBatch = new SpriteBatch(this.GraphicsDevice);
             this.texture = this.Content.Load<Texture2D>("Texture");
-
-            this.camera = new Camera(this.GraphicsDevice.Viewport);
+            
+            var camera = new Camera(this.GraphicsDevice.Viewport);
+            this.scene = new Scene(this.GraphicsDevice, camera);
+            this.scene.LoadContent(this.Content);
 
             var clearEffect = this.Content.Load<Effect>("ClearEffect");
-            this.renderSystem = new RenderSystem(this.GraphicsDevice, clearEffect, this.camera);
+            this.renderSystem = new RenderSystem(this.GraphicsDevice, clearEffect, this.scene);
         }
 
         protected override void UnloadContent()

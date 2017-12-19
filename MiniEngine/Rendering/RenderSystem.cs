@@ -12,11 +12,11 @@ namespace MiniEngine.Rendering
         private readonly RenderTarget2D Normal;
         private readonly RenderTarget2D Depth;
 
-        public RenderSystem(GraphicsDevice device, Effect clearEffect, Camera camera)
+        public RenderSystem(GraphicsDevice device, Effect clearEffect, Scene scene)
         {
             this.Device = device;
             this.ClearEffect = clearEffect;
-            this.Camera = camera;
+            this.Scene = scene;
 
             this.Quad = new Quad();
 
@@ -28,7 +28,7 @@ namespace MiniEngine.Rendering
             this.Depth  = new RenderTarget2D(device, width, height, false, SurfaceFormat.Single, DepthFormat.None);           
         }       
 
-        public Camera Camera { get; }
+        public Scene Scene { get; set; }        
 
         public RenderTarget2D[] GetGBuffer() => new[]
         {
@@ -43,6 +43,7 @@ namespace MiniEngine.Rendering
             ClearGBuffer();
 
             // Draw scene
+            this.Scene.Draw();
 
             ResolveGBuffer();
 

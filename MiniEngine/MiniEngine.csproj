@@ -47,6 +47,7 @@
     <Compile Include="Rendering\Camera.cs" />
     <Compile Include="Rendering\Primitives\Quad.cs" />
     <Compile Include="Rendering\RenderSystem.cs" />
+    <Compile Include="Rendering\Scene.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">
