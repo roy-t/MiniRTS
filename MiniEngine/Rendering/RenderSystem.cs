@@ -7,15 +7,17 @@ namespace MiniEngine.Rendering
     {
         private readonly GraphicsDevice Device;
         private readonly Effect ClearEffect;
+        private readonly Effect RenderEffect;
         private readonly Quad Quad;
         private readonly RenderTarget2D Color;
         private readonly RenderTarget2D Normal;
         private readonly RenderTarget2D Depth;
 
-        public RenderSystem(GraphicsDevice device, Effect clearEffect, Scene scene)
+        public RenderSystem(GraphicsDevice device, Effect clearEffect, Effect renderEffect, Scene scene)
         {
             this.Device = device;
             this.ClearEffect = clearEffect;
+            this.RenderEffect = renderEffect;
             this.Scene = scene;
 
             this.Quad = new Quad();

@@ -50,3 +50,9 @@
 /processorParam:TextureFormat=Compressed
 /build:sphere.x
 
+#begin RenderEffect.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:RenderEffect.fx
+
