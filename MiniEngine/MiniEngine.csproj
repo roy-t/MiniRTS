@@ -41,13 +41,18 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Controllers\CameraController.cs" />
     <Compile Include="GameLoop.cs" />
+    <Compile Include="Input\KeyboardInput.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rendering\Camera.cs" />
     <Compile Include="Rendering\Primitives\Quad.cs" />
     <Compile Include="Rendering\RenderSystem.cs" />
     <Compile Include="Rendering\Scene.cs" />
+    <Compile Include="Units\Derivatives.cs" />
+    <Compile Include="Units\Distance.cs" />
+    <Compile Include="Units\Time.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">

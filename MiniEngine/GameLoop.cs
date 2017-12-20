@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using MiniEngine.Controllers;
+using MiniEngine.Input;
 using MiniEngine.Rendering;
 
 namespace MiniEngine
@@ -8,16 +10,20 @@ namespace MiniEngine
     public class GameLoop : Game
     {
         private readonly GraphicsDeviceManager Graphics;
+        private readonly KeyboardInput KeyboardInput;
 
         private SpriteBatch spriteBatch;
         private Texture2D texture;
         private Scene scene;
+        private CameraController cameraController;
         private RenderSystem renderSystem;
         
 
         public GameLoop()
         {
             this.Graphics = new GraphicsDeviceManager(this);
+            this.KeyboardInput = new KeyboardInput();
+
             this.Content.RootDirectory = "Content";
             this.IsMouseVisible = true;
         }
@@ -33,6 +39,7 @@ namespace MiniEngine
             this.texture = this.Content.Load<Texture2D>("Texture");
             
             var camera = new Camera(this.GraphicsDevice.Viewport);
+            this.cameraController = new CameraController(this.KeyboardInput, camera);
             this.scene = new Scene(this.GraphicsDevice, camera);
             this.scene.LoadContent(this.Content);
 
@@ -49,6 +56,9 @@ namespace MiniEngine
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
+
+            this.KeyboardInput.Update();
+            this.cameraController.Update(gameTime.ElapsedGameTime);
 
             base.Update(gameTime);
         }
