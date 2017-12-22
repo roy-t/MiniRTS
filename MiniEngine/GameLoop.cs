@@ -47,8 +47,7 @@ namespace MiniEngine
             this.scene.LoadContent(this.Content);
 
             var clearEffect = this.Content.Load<Effect>("ClearEffect");
-            var renderEffect = this.Content.Load<Effect>("RenderEffect");
-            this.renderSystem = new RenderSystem(this.GraphicsDevice, clearEffect, renderEffect, this.scene);
+            this.renderSystem = new RenderSystem(this.GraphicsDevice, clearEffect, this.scene);
         }
 
         protected override void UnloadContent()

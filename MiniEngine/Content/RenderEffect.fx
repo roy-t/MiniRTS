@@ -10,6 +10,7 @@
 float4x4 World;
 float4x4 View;
 float4x4 Projection;
+float FarPlane;
 float specularIntensity = 0.8f;
 float specularPower = 0.5f; 
 
@@ -60,7 +61,7 @@ struct VertexShaderOutput
     float4 Position : POSITION0;
     float2 TexCoord : TEXCOORD0;
     float2 Depth : TEXCOORD1;
-    float3x3 tangentToWorld : TEXCOORD2;
+    float3x3 tangentToWorld : TEXCOORD2;    
 };
 
 VertexShaderOutput MainVS(in VertexShaderInput input)
@@ -69,12 +70,10 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
 
     float4 worldPosition = mul(float4(input.Position.xyz,1), World);
     float4 viewPosition = mul(worldPosition, View);
-    output.Position = mul(viewPosition, Projection);
-
+    output.Position = mul(viewPosition, Projection);      
     output.TexCoord = input.TexCoord;
     output.Depth.x = output.Position.z;
-    output.Depth.y = output.Position.w;
-
+    
     // calculate tangent space to world space matrix using the world space tangent,
     // binormal, and normal as basis vectors
     output.tangentToWorld[0] = mul(input.Tangent, World);
@@ -113,9 +112,10 @@ PixelShaderOutput MainPS(VertexShaderOutput input)
     output.Normal.rgb = 0.5f * (normalFromMap + 1.0f);
 
     //specular Power
-    output.Normal.a = specularAttributes.a;
+    output.Normal.a = specularAttributes.a;    
+    
+    output.Depth = input.Depth.x / FarPlane;    
 
-    output.Depth = input.Depth.x / input.Depth.y;
     return output;
 }
 

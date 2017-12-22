@@ -35,6 +35,7 @@ namespace MiniEngine.Rendering
                     effect.Parameters["World"].SetValue(Matrix.CreateRotationY(MathHelper.Pi) * Matrix.CreateScale(0.05f));
                     effect.Parameters["View"].SetValue(this.Camera.View);
                     effect.Parameters["Projection"].SetValue(this.Camera.Projection);
+                    effect.Parameters["FarPlane"].SetValue(this.Camera.FarPlane);
                 }
 
                 mesh.Draw();
