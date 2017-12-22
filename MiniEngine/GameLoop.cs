@@ -12,6 +12,9 @@ namespace MiniEngine
         private readonly GraphicsDeviceManager Graphics;
         private readonly KeyboardInput KeyboardInput;
 
+        private bool detailView = true;
+        private int viewIndex = 0;
+
         private SpriteBatch spriteBatch;
         private Texture2D texture;
         private Scene scene;
@@ -44,7 +47,8 @@ namespace MiniEngine
             this.scene.LoadContent(this.Content);
 
             var clearEffect = this.Content.Load<Effect>("ClearEffect");
-            this.renderSystem = new RenderSystem(this.GraphicsDevice, clearEffect, this.scene);
+            var renderEffect = this.Content.Load<Effect>("RenderEffect");
+            this.renderSystem = new RenderSystem(this.GraphicsDevice, clearEffect, renderEffect, this.scene);
         }
 
         protected override void UnloadContent()
@@ -58,6 +62,21 @@ namespace MiniEngine
                 Exit();
 
             this.KeyboardInput.Update();
+            if (this.KeyboardInput.Click(Keys.OemTilde))
+            {
+                this.detailView = !this.detailView;
+            }
+
+            if (this.KeyboardInput.Click(Keys.OemPlus))
+            {
+                this.viewIndex = (this.viewIndex + 1) % 3;
+            }
+            else if (this.KeyboardInput.Click(Keys.OemMinus))
+            {
+                this.viewIndex = (this.viewIndex - 1) % 3;
+            }
+
+
             this.cameraController.Update(gameTime.ElapsedGameTime);
 
             base.Update(gameTime);
@@ -72,18 +91,35 @@ namespace MiniEngine
             this.spriteBatch.Begin();
 
             var gBuffer = this.renderSystem.GetGBuffer();
-            var step = this.GraphicsDevice.Viewport.Width / gBuffer.Length;
-            for (var i = 0; i < gBuffer.Length; i++)
+
+            if (this.detailView)
             {
-                var target = gBuffer[i];
+                var step = this.GraphicsDevice.Viewport.Width / gBuffer.Length;
+                for (var i = 0; i < gBuffer.Length; i++)
+                {
+                    var target = gBuffer[i];
+                    this.spriteBatch.Draw(
+                        target,
+                        new Vector2(step * i, 0),
+                        null,
+                        Color.White,
+                        0.0f,
+                        Vector2.Zero,
+                        0.33f,
+                        SpriteEffects.None,
+                        0);
+                }
+            }
+            else
+            {
                 this.spriteBatch.Draw(
-                    target,
-                    new Vector2(step * i, 0),
+                    gBuffer[this.viewIndex],
+                    new Vector2(0, 0),
                     null,
                     Color.White,
                     0.0f,
                     Vector2.Zero,
-                    0.33f,
+                    1.0f,
                     SpriteEffects.None,
                     0);
             }

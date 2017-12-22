@@ -19,16 +19,22 @@ namespace MiniEngine.Rendering
 
         public void LoadContent(ContentManager content)
         {
-            this.sphere = content.Load<Model>("sphere");
+            this.sphere = content.Load<Model>(@"Lizard\Lizard");
         }
 
         public void Draw()
         {
+            this.Device.DepthStencilState = DepthStencilState.Default;
+            this.Device.RasterizerState = RasterizerState.CullCounterClockwise;
+            this.Device.BlendState = BlendState.Opaque;
+
             foreach (var mesh in this.sphere.Meshes)
             {
                 foreach (var effect in mesh.Effects)
                 {
-                    effect.Parameters["WorldViewProj"].SetValue(Matrix.Identity * this.Camera.View * this.Camera.Projection);                    
+                    effect.Parameters["World"].SetValue(Matrix.CreateRotationY(MathHelper.Pi) * Matrix.CreateScale(0.05f));
+                    effect.Parameters["View"].SetValue(this.Camera.View);
+                    effect.Parameters["Projection"].SetValue(this.Camera.Projection);
                 }
 
                 mesh.Draw();

@@ -5,11 +5,12 @@
 /intermediateDir:obj/$(Platform)
 /platform:Windows
 /config:
-/profile:Reach
+/profile:HiDef
 /compress:False
 
 #-------------------------------- References --------------------------------#
 
+/reference:..\..\ModelExtension\bin\Debug\ModelExtension.dll
 
 #---------------------------------- Content ---------------------------------#
 
@@ -58,12 +59,15 @@
 
 #begin Ship2/ship2.fbx
 /importer:FbxImporter
-/processor:ModelProcessor
+/processor:DeferredRendererModelProcessor
+/processorParam:NormalMapKey=NormalMap
+/processorParam:GenerateTangentFrames=True
+/processorParam:SpecularMapKey=SpecularMap
+/processorParam:EffectFile=RenderEffect.fx
 /processorParam:ColorKeyColor=0,0,0,0
 /processorParam:ColorKeyEnabled=True
 /processorParam:DefaultEffect=BasicEffect
 /processorParam:GenerateMipmaps=True
-/processorParam:GenerateTangentFrames=False
 /processorParam:PremultiplyTextureAlpha=True
 /processorParam:PremultiplyVertexColors=True
 /processorParam:ResizeTexturesToPowerOfTwo=False
@@ -113,12 +117,15 @@
 
 #begin Ship1/ship1.fbx
 /importer:FbxImporter
-/processor:ModelProcessor
+/processor:DeferredRendererModelProcessor
+/processorParam:NormalMapKey=NormalMap
+/processorParam:GenerateTangentFrames=True
+/processorParam:SpecularMapKey=SpecularMap
+/processorParam:EffectFile=RenderEffect.fx
 /processorParam:ColorKeyColor=0,0,0,0
 /processorParam:ColorKeyEnabled=True
 /processorParam:DefaultEffect=BasicEffect
 /processorParam:GenerateMipmaps=True
-/processorParam:GenerateTangentFrames=False
 /processorParam:PremultiplyTextureAlpha=True
 /processorParam:PremultiplyVertexColors=True
 /processorParam:ResizeTexturesToPowerOfTwo=False
@@ -168,12 +175,15 @@
 
 #begin Lizard/lizard.fbx
 /importer:FbxImporter
-/processor:ModelProcessor
+/processor:DeferredRendererModelProcessor
+/processorParam:NormalMapKey=NormalMap
+/processorParam:GenerateTangentFrames=True
+/processorParam:SpecularMapKey=SpecularMap
+/processorParam:EffectFile=RenderEffect.fx
 /processorParam:ColorKeyColor=0,0,0,0
 /processorParam:ColorKeyEnabled=True
 /processorParam:DefaultEffect=BasicEffect
 /processorParam:GenerateMipmaps=True
-/processorParam:GenerateTangentFrames=False
 /processorParam:PremultiplyTextureAlpha=True
 /processorParam:PremultiplyVertexColors=True
 /processorParam:ResizeTexturesToPowerOfTwo=False
@@ -280,4 +290,28 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Lizard/rock_norm.tga
+
+#begin null_specular.tga
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:null_specular.tga
+
+#begin null_normal.tga
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:null_normal.tga
 
