@@ -77,9 +77,9 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
     
     // calculate tangent space to world space matrix using the world space tangent,
     // binormal, and normal as basis vectors
-    output.tangentToWorld[0] = mul(float4(input.Tangent, 1), World).xyz;
-    output.tangentToWorld[1] = mul(float4(input.Binormal, 1), World).xyz;
-    output.tangentToWorld[2] = mul(float4(input.Normal, 1), World).xyz;
+    output.tangentToWorld[0] = mul(float4(input.Tangent, 0), World).xyz;
+    output.tangentToWorld[1] = mul(float4(input.Binormal, 0), World).xyz;
+    output.tangentToWorld[2] = mul(float4(input.Normal, 0), World).xyz;
 
     return output;
 }
@@ -104,13 +104,13 @@ PixelShaderOutput MainPS(VertexShaderOutput input)
     // read the normal from the normal map
     float3 normalFromMap = tex2D(normalSampler, input.TexCoord).rgb;
     //tranform to [-1,1]
-    normalFromMap = 2.0f * normalFromMap - 1.0f;
+    normalFromMap = (2.0f * normalFromMap) - 1.0f;
     //transform into world space
     normalFromMap = mul(normalFromMap, input.tangentToWorld);
     //normalize the result
     normalFromMap = normalize(normalFromMap);
     //output the normal, in [0,1] space
-    output.Normal.rgb = 0.5f * (normalFromMap + 1.0f);
+    output.Normal.rgb = 0.5f * (normalFromMap + 1.0f);    
 
     //specular Power
     output.Normal.a = specularAttributes.a;    

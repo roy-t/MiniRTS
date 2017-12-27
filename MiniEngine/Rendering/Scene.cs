@@ -46,9 +46,11 @@ namespace MiniEngine.Rendering
         {
             using (this.Device.GeometryState())
             {
-                DrawModel(this.lizard, Matrix.CreateRotationY(MathHelper.Pi) * Matrix.CreateScale(0.05f));
-                DrawModel(this.ship1, Matrix.CreateRotationY(MathHelper.Pi) * Matrix.CreateTranslation(Vector3.Left * 100) * Matrix.CreateScale(0.5f));
-                DrawModel(this.ship2, Matrix.CreateRotationX(-MathHelper.PiOver2) * Matrix.CreateRotationY(MathHelper.Pi) * Matrix.CreateTranslation(Vector3.Right* 100) * Matrix.CreateScale(0.5f));
+                //DrawModel(this.ship1, Matrix.CreateTranslation(Vector3.Left * 10.0f));
+
+                DrawModel(this.ship1, Matrix.CreateRotationY(MathHelper.Pi) * Matrix.CreateScale(0.5f));
+                DrawModel(this.lizard, Matrix.CreateRotationY(MathHelper.Pi) * Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Vector3.Left * 50));
+                DrawModel(this.ship2, Matrix.CreateRotationX(-MathHelper.PiOver2) * Matrix.CreateRotationY(MathHelper.Pi) * Matrix.CreateScale(0.5f) * Matrix.CreateTranslation(Vector3.Right * 50));
             }
         }
 

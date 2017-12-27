@@ -72,6 +72,7 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
     // Process geometry coordinates
     float4 worldPosition = mul(float4(input.Position,1), World);
     float4 viewPosition = mul(worldPosition, View);
+    
     output.Position = mul(viewPosition, Projection);
     output.ScreenPosition = output.Position;
     return output;
