@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using MiniEngine.Rendering.Lighting;
 using MiniEngine.Rendering.Primitives;
 
 namespace MiniEngine.Rendering
@@ -8,11 +10,15 @@ namespace MiniEngine.Rendering
         private readonly GraphicsDevice Device;
         private readonly Effect ClearEffect;
         private readonly Quad Quad;
-        private readonly RenderTarget2D Color;
-        private readonly RenderTarget2D Normal;
-        private readonly RenderTarget2D Depth;
+        private readonly Vector2 HalfPixel;
+        private readonly RenderTarget2D ColorTarget;
+        private readonly RenderTarget2D NormalTarget;
+        private readonly RenderTarget2D DepthTarget;
+        private readonly RenderTarget2D LightTarget;
 
-        public RenderSystem(GraphicsDevice device, Effect clearEffect, Scene scene)
+        private readonly DirectionalLightSystem DirectionalLightSystem;
+
+        public RenderSystem(GraphicsDevice device, Effect clearEffect, Effect directionalLightEffect, Scene scene)
         {
             this.Device = device;
             this.ClearEffect = clearEffect;
@@ -23,51 +29,53 @@ namespace MiniEngine.Rendering
             var width = device.PresentationParameters.BackBufferWidth;
             var height = device.PresentationParameters.BackBufferHeight;
 
-            this.Color  = new RenderTarget2D(device, width, height, false, SurfaceFormat.Color, DepthFormat.Depth24);
-            this.Normal = new RenderTarget2D(device, width, height, false, SurfaceFormat.Color, DepthFormat.None);
-            this.Depth  = new RenderTarget2D(device, width, height, false, SurfaceFormat.Single, DepthFormat.None);           
+            this.HalfPixel = new Vector2(0.5f / width, 0.5f / height);
+
+            this.ColorTarget  = new RenderTarget2D(device, width, height, false, SurfaceFormat.Color, DepthFormat.Depth24);
+            this.NormalTarget = new RenderTarget2D(device, width, height, false, SurfaceFormat.Color, DepthFormat.None);
+            this.DepthTarget  = new RenderTarget2D(device, width, height, false, SurfaceFormat.Single, DepthFormat.None);
+            this.LightTarget  = new RenderTarget2D(device, width, height, false, SurfaceFormat.Color, DepthFormat.None);
+
+            this.DirectionalLightSystem = new DirectionalLightSystem(device, directionalLightEffect);
         }       
 
         public Scene Scene { get; set; }        
 
-        public RenderTarget2D[] GetGBuffer() => new[]
+        public RenderTarget2D[] GetIntermediateRenderTargets() => new[]
         {
-            this.Color,
-            this.Normal,
-            this.Depth
+            this.ColorTarget,
+            this.NormalTarget,
+            this.DepthTarget,
+            this.LightTarget
         };
 
         public void Render()
         {
-            SetGBuffer();
-            ClearGBuffer();
-
-            // Draw scene
-            this.Scene.Draw();
-
-            ResolveGBuffer();
-
-            // Draw lights
-            // Combine everything
-        }
-
-        private void SetGBuffer()
-        {            
-            this.Device.SetRenderTargets(this.Color, this.Normal, this.Depth);
-        }
-
-        private void ResolveGBuffer()
-        {
-            this.Device.SetRenderTargets(null);
-        }
-
-        private void ClearGBuffer()
-        {
+            // Set and clear the G-Buffer
+            this.Device.SetRenderTargets(this.ColorTarget, this.NormalTarget, this.DepthTarget);
             foreach (var pass in this.ClearEffect.CurrentTechnique.Passes)
             {
                 pass.Apply();
                 this.Quad.Render(this.Device);
             }
-        }
+
+            // Draw scene
+            this.Scene.Draw();
+
+            // Resolve the G-Buffer
+            this.Device.SetRenderTargets(null);
+
+            // Set and clear the light buffer
+            this.Device.SetRenderTarget(this.LightTarget);
+            this.Device.Clear(Color.Transparent);
+
+            // Draw the lights
+            this.DirectionalLightSystem.Render(this.Scene.DirectionalLights, this.Scene.Camera, this.ColorTarget, this.NormalTarget, this.DepthTarget, this.HalfPixel);
+
+            // Resolve the light buffer
+            this.Device.SetRenderTarget(null);
+
+            // Combine everything
+        }      
     }
 }

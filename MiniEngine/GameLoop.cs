@@ -14,6 +14,7 @@ namespace MiniEngine
 
         private bool detailView = true;
         private int viewIndex = 0;
+        private int viewOptions = 4;
 
         private SpriteBatch spriteBatch;
         private Texture2D texture;
@@ -47,7 +48,8 @@ namespace MiniEngine
             this.scene.LoadContent(this.Content);
 
             var clearEffect = this.Content.Load<Effect>("ClearEffect");
-            this.renderSystem = new RenderSystem(this.GraphicsDevice, clearEffect, this.scene);
+            var directionalLightEffect = this.Content.Load<Effect>("DirectionalLight");
+            this.renderSystem = new RenderSystem(this.GraphicsDevice, clearEffect, directionalLightEffect, this.scene);
         }
 
         protected override void UnloadContent()
@@ -68,13 +70,12 @@ namespace MiniEngine
 
             if (this.KeyboardInput.Click(Keys.OemPlus))
             {
-                this.viewIndex = (this.viewIndex + 1) % 3;
+                this.viewIndex = (this.viewIndex + 1) % this.viewOptions;
             }
             else if (this.KeyboardInput.Click(Keys.OemMinus))
             {
-                this.viewIndex = (this.viewIndex - 1) % 3;
+                this.viewIndex = (this.viewIndex + this.viewOptions - 1) % this.viewOptions;
             }
-
 
             this.cameraController.Update(gameTime.ElapsedGameTime);
 
@@ -89,7 +90,8 @@ namespace MiniEngine
 
             this.spriteBatch.Begin();
 
-            var gBuffer = this.renderSystem.GetGBuffer();
+            var gBuffer = this.renderSystem.GetIntermediateRenderTargets();
+            this.viewOptions = gBuffer.Length;
 
             if (this.detailView)
             {
@@ -104,7 +106,7 @@ namespace MiniEngine
                         Color.White,
                         0.0f,
                         Vector2.Zero,
-                        0.33f,
+                        1.0f / gBuffer.Length,
                         SpriteEffects.None,
                         0);
                 }

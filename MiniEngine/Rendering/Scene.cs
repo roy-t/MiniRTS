@@ -1,6 +1,9 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+
+using DirectionalLight = MiniEngine.Rendering.Lighting.DirectionalLight;
 
 namespace MiniEngine.Rendering
 {
@@ -13,9 +16,16 @@ namespace MiniEngine.Rendering
         {
             this.Device = device;
             this.Camera = camera;
+
+            this.DirectionalLights = new List<DirectionalLight>
+            {
+                new DirectionalLight(Vector3.Forward, Color.Yellow)
+            };
         }
 
         public Camera Camera { get; }
+
+        public List<DirectionalLight> DirectionalLights { get; }
 
         public void LoadContent(ContentManager content)
         {
@@ -24,21 +34,21 @@ namespace MiniEngine.Rendering
 
         public void Draw()
         {
-            this.Device.DepthStencilState = DepthStencilState.Default;
-            this.Device.RasterizerState = RasterizerState.CullCounterClockwise;
-            this.Device.BlendState = BlendState.Opaque;
-
-            foreach (var mesh in this.sphere.Meshes)
-            {
-                foreach (var effect in mesh.Effects)
+            using (this.Device.GeometryState())
+            {                
+                foreach (var mesh in this.sphere.Meshes)
                 {
-                    effect.Parameters["World"].SetValue(Matrix.CreateRotationY(MathHelper.Pi) * Matrix.CreateScale(0.05f));
-                    effect.Parameters["View"].SetValue(this.Camera.View);
-                    effect.Parameters["Projection"].SetValue(this.Camera.Projection);
-                    effect.Parameters["FarPlane"].SetValue(this.Camera.FarPlane);
-                }
+                    foreach (var effect in mesh.Effects)
+                    {
+                        effect.Parameters["World"].SetValue(
+                            Matrix.CreateRotationY(MathHelper.Pi) * Matrix.CreateScale(0.05f));
+                        effect.Parameters["View"].SetValue(this.Camera.View);
+                        effect.Parameters["Projection"].SetValue(this.Camera.Projection);
+                        effect.Parameters["FarPlane"].SetValue(this.Camera.FarPlane);
+                    }
 
-                mesh.Draw();
+                    mesh.Draw();
+                }
             }
         }
     }

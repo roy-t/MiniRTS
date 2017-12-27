@@ -11,6 +11,7 @@ float4x4 World;
 float4x4 View;
 float4x4 Projection;
 float FarPlane;
+
 float specularIntensity = 0.8f;
 float specularPower = 0.5f; 
 
@@ -76,9 +77,9 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
     
     // calculate tangent space to world space matrix using the world space tangent,
     // binormal, and normal as basis vectors
-    output.tangentToWorld[0] = mul(input.Tangent, World);
-    output.tangentToWorld[1] = mul(input.Binormal, World);
-    output.tangentToWorld[2] = mul(input.Normal, World);
+    output.tangentToWorld[0] = mul(float4(input.Tangent, 1), World).xyz;
+    output.tangentToWorld[1] = mul(float4(input.Binormal, 1), World).xyz;
+    output.tangentToWorld[2] = mul(float4(input.Normal, 1), World).xyz;
 
     return output;
 }
