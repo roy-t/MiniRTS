@@ -327,3 +327,9 @@
 /processorParam:DebugMode=Auto
 /build:DirectionalLight.fx
 
+#begin PointLight.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:PointLight.fx
+

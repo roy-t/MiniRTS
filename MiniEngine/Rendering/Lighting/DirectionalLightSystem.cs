@@ -18,30 +18,43 @@ namespace MiniEngine.Rendering.Lighting
             this.Quad = new Quad();
         }
 
-        public void Render(IEnumerable<DirectionalLight> lights, Camera camera, RenderTarget2D color, RenderTarget2D normal, RenderTarget2D depth, Vector2 halfPixel)
+        public void Render(
+            IEnumerable<DirectionalLight> lights,
+            Camera camera,
+            RenderTarget2D color,
+            RenderTarget2D normal,
+            RenderTarget2D depth,
+            Vector2 halfPixel)
         {
             var invertViewProjection = Matrix.Invert(camera.View * camera.Projection);
 
-            using (this.Device.GeometryState())
+            using (this.Device.LightState())
             {
                 foreach (var light in lights)
                 {
                     foreach (var pass in this.Effect.Techniques[0].Passes)
                     {
+                        // G-Buffer input
                         this.Effect.Parameters["ColorMap"].SetValue(color);
                         this.Effect.Parameters["NormalMap"].SetValue(normal);
                         this.Effect.Parameters["DepthMap"].SetValue(depth);
+
+                        // Light properties
                         this.Effect.Parameters["LightDirection"].SetValue(light.Direction);
                         this.Effect.Parameters["Color"].SetValue(light.ColorVector);
+
+                        // Camera properties for specular reflections
                         this.Effect.Parameters["CameraPosition"].SetValue(camera.Position);
                         this.Effect.Parameters["InvertViewProjection"].SetValue(invertViewProjection);
+
+                        // Alignment
                         this.Effect.Parameters["HalfPixel"].SetValue(halfPixel);
 
                         pass.Apply();
                         this.Quad.Render(this.Device);
-                    }                    
+                    }
                 }
             }
-        }        
+        }
     }
 }

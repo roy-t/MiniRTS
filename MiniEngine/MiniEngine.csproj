@@ -51,6 +51,8 @@
     <Compile Include="Rendering\Lighting\DirectionalLight.cs" />
     <Compile Include="Rendering\Lighting\DirectionalLightSystem.cs" />
     <Compile Include="Rendering\GraphicsDeviceExtensions.cs" />
+    <Compile Include="Rendering\Lighting\PointLight.cs" />
+    <Compile Include="Rendering\Lighting\PointLightSystem.cs" />
     <Compile Include="Rendering\Primitives\Quad.cs" />
     <Compile Include="Rendering\RenderSystem.cs" />
     <Compile Include="Rendering\Scene.cs" />

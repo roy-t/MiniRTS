@@ -17,8 +17,9 @@ namespace MiniEngine.Rendering
         private readonly RenderTarget2D LightTarget;
 
         private readonly DirectionalLightSystem DirectionalLightSystem;
+        private readonly PointLightSystem PointLightSystem;
 
-        public RenderSystem(GraphicsDevice device, Effect clearEffect, Effect directionalLightEffect, Scene scene)
+        public RenderSystem(GraphicsDevice device, Effect clearEffect, Effect directionalLightEffect, Effect pointLightEffect, Model sphere, Scene scene)
         {
             this.Device = device;
             this.ClearEffect = clearEffect;
@@ -37,6 +38,7 @@ namespace MiniEngine.Rendering
             this.LightTarget  = new RenderTarget2D(device, width, height, false, SurfaceFormat.Color, DepthFormat.None);
 
             this.DirectionalLightSystem = new DirectionalLightSystem(device, directionalLightEffect);
+            this.PointLightSystem = new PointLightSystem(device, pointLightEffect, sphere);
         }       
 
         public Scene Scene { get; set; }        
@@ -70,7 +72,9 @@ namespace MiniEngine.Rendering
             this.Device.Clear(Color.Transparent);
 
             // Draw the lights
+            this.PointLightSystem.Render(this.Scene.PointLights, this.Scene.Camera, this.ColorTarget, this.NormalTarget, this.DepthTarget, this.HalfPixel);
             this.DirectionalLightSystem.Render(this.Scene.DirectionalLights, this.Scene.Camera, this.ColorTarget, this.NormalTarget, this.DepthTarget, this.HalfPixel);
+            
 
             // Resolve the light buffer
             this.Device.SetRenderTarget(null);

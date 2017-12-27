@@ -8,7 +8,7 @@ namespace MiniEngine.Controllers
 {
     public sealed class CameraController
     {
-        private static readonly MetersPerSecond TranslateSpeed = 10.0f;
+        private static readonly MetersPerSecond TranslateSpeed = 50.0f;
 
         private readonly KeyboardInput Keyboard;
         private readonly Camera Camera;

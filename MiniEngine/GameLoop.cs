@@ -49,7 +49,9 @@ namespace MiniEngine
 
             var clearEffect = this.Content.Load<Effect>("ClearEffect");
             var directionalLightEffect = this.Content.Load<Effect>("DirectionalLight");
-            this.renderSystem = new RenderSystem(this.GraphicsDevice, clearEffect, directionalLightEffect, this.scene);
+            var pointLightEffect = this.Content.Load<Effect>("PointLight");
+            var sphere = this.Content.Load<Model>("Sphere");
+            this.renderSystem = new RenderSystem(this.GraphicsDevice, clearEffect, directionalLightEffect, pointLightEffect, sphere, this.scene);
         }
 
         protected override void UnloadContent()
