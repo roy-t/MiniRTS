@@ -20,6 +20,16 @@ namespace MiniEngine.Units
         {
             return new Seconds((float)value.TotalSeconds);
         }
+
+        public static Seconds operator +(Seconds a, Seconds b)
+        {
+            return new Seconds(a.Value + b.Value);
+        }
+
+        public static Seconds operator -(Seconds a, Seconds b)
+        {
+            return new Seconds(a.Value - b.Value);
+        }
     }
 
     public struct Minutes

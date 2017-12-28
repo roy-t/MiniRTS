@@ -2,7 +2,7 @@
 
 namespace MiniEngine.Rendering.Lighting
 {
-    public struct DirectionalLight
+    public class DirectionalLight
     {        
         public DirectionalLight(Vector3 direction, Color color)
         {

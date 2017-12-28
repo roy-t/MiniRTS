@@ -28,8 +28,10 @@ namespace MiniEngine
             this.Graphics = new GraphicsDeviceManager(this)
             {
                 PreferredBackBufferWidth = 1080,
-                PreferredBackBufferHeight = 768
-            };
+                PreferredBackBufferHeight = 768,
+                SynchronizeWithVerticalRetrace = false                         
+            };            
+
             this.KeyboardInput = new KeyboardInput();
 
             this.Content.RootDirectory = "Content";
@@ -75,6 +77,11 @@ namespace MiniEngine
                 this.detailView = !this.detailView;
             }
 
+            if (this.KeyboardInput.Click(Keys.F))
+            {
+                this.IsFixedTimeStep = !this.IsFixedTimeStep;
+            }
+
             if (this.KeyboardInput.Click(Keys.OemPlus))
             {
                 this.viewIndex = (this.viewIndex + 1) % this.viewOptions;
@@ -85,6 +92,7 @@ namespace MiniEngine
             }
 
             this.cameraController.Update(gameTime.ElapsedGameTime);
+            this.scene.Update(gameTime.ElapsedGameTime);
 
             base.Update(gameTime);
         }
@@ -94,8 +102,14 @@ namespace MiniEngine
             this.GraphicsDevice.Clear(Color.CornflowerBlue);
 
             this.renderSystem.Render();
+            this.Window.Title = $"{gameTime.ElapsedGameTime.TotalMilliseconds:F2}ms, {(1.0f / gameTime.ElapsedGameTime.TotalSeconds):F2} fps, Fixed Time Step: {this.IsFixedTimeStep} (press 'F' so switch)";
 
-            this.spriteBatch.Begin();
+            this.spriteBatch.Begin(
+                SpriteSortMode.Deferred,
+                BlendState.Opaque,
+                SamplerState.LinearClamp,
+                DepthStencilState.None,
+                RasterizerState.CullCounterClockwise);
 
             var gBuffer = this.renderSystem.GetIntermediateRenderTargets();
             this.viewOptions = gBuffer.Length;

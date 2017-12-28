@@ -2,7 +2,7 @@
 
 namespace MiniEngine.Rendering.Lighting
 {
-    public struct PointLight
+    public class PointLight
     {        
         public PointLight(Vector3 position, Color color, float radius, float intensity)
         {

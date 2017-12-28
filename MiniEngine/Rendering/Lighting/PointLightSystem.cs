@@ -62,9 +62,7 @@ namespace MiniEngine.Rendering.Lighting
                         this.Device.RasterizerState = inside
                             ? RasterizerState.CullClockwise
                             : RasterizerState.CullCounterClockwise;
-
-                        //this.Device.RasterizerState = RasterizerState.CullNone;
-                     
+                   
                         pass.Apply();
 
                         foreach (var mesh in this.Sphere.Meshes)
@@ -73,13 +71,12 @@ namespace MiniEngine.Rendering.Lighting
                             {
                                 this.Device.Indices = meshPart.IndexBuffer;
                                 this.Device.SetVertexBuffer(meshPart.VertexBuffer);
-
-                                this.Device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, meshPart.NumVertices, meshPart.StartIndex, meshPart.PrimitiveCount);
-                                //this.Device.DrawIndexedPrimitives(
-                                //    PrimitiveType.TriangleList,
-                                //    0,
-                                //    meshPart.StartIndex,
-                                //    meshPart.NumVertices);
+                                
+                                this.Device.DrawIndexedPrimitives(
+                                    PrimitiveType.TriangleList,
+                                    0,
+                                    meshPart.StartIndex,
+                                    meshPart.PrimitiveCount);
                             }
                         }
                     }
