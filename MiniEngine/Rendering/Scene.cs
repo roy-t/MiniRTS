@@ -11,8 +11,7 @@ namespace MiniEngine.Rendering
 {
     public sealed class Scene
     {
-        private readonly Color[] ColorWheel = new[]
-        {
+        private readonly Color[] ColorWheel = {
             new Color(255, 0, 0),
             new Color(255, 128, 0),
             new Color(255, 255, 0),

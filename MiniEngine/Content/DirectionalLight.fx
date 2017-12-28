@@ -12,8 +12,7 @@ float4x4 InvertViewProjection;
 float3 LightDirection;
 float3 Color; 
 
-float3 CameraPosition; 
-float2 HalfPixel;
+float3 CameraPosition;
 
 texture ColorMap; 
 sampler colorSampler = sampler_state
@@ -67,7 +66,7 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
     output.Position = float4(input.Position,1);
     
     //align texture coordinates
-    output.TexCoord = input.TexCoord - HalfPixel;
+    output.TexCoord = input.TexCoord;
     return output;
 }
 

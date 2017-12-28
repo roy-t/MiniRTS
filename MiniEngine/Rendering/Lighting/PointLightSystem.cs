@@ -22,8 +22,7 @@ namespace MiniEngine.Rendering.Lighting
             Camera camera,
             RenderTarget2D color,
             RenderTarget2D normal,
-            RenderTarget2D depth,
-            Vector2 halfPixel)
+            RenderTarget2D depth)
         {
             var invertViewProjection = Matrix.Invert(camera.View * camera.Projection);
 
@@ -51,10 +50,7 @@ namespace MiniEngine.Rendering.Lighting
                         this.Effect.Parameters["View"].SetValue(camera.View);
                         this.Effect.Parameters["Projection"].SetValue(camera.Projection);
                         this.Effect.Parameters["InvertViewProjection"].SetValue(invertViewProjection);
-                        this.Effect.Parameters["CameraPosition"].SetValue(camera.Position);
-
-                        // Alignment
-                        this.Effect.Parameters["HalfPixel"].SetValue(halfPixel);
+                        this.Effect.Parameters["CameraPosition"].SetValue(camera.Position);                        
 
                         // If the camera is inside the light's radius we invert the cull direction
                         // otherwise the camera's sphere model is clipped

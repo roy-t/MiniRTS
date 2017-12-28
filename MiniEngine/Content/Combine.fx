@@ -7,8 +7,6 @@
     #define PS_SHADERMODEL ps_4_0_level_9_1
 #endif
 
-float2 HalfPixel;
-
 texture ColorMap;
 sampler colorSampler = sampler_state
 {
@@ -49,7 +47,7 @@ VertexShaderOutput MainVS(VertexShaderInput input)
     VertexShaderOutput output = (VertexShaderOutput)0;
 
     output.Position = float4(input.Position,1);
-    output.TexCoord = input.TexCoord - HalfPixel;
+    output.TexCoord = input.TexCoord;
 
     return output;
 }

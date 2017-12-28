@@ -18,7 +18,6 @@ float Radius;
 float Intensity = 1.0f;
 
 float3 CameraPosition; 
-float2 HalfPixel;
 
 texture ColorMap; 
 sampler colorSampler = sampler_state
@@ -86,10 +85,8 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
     //obtain textureCoordinates corresponding to the current pixel
     //the screen coordinates are in [-1,1]*[1,-1]
     //the texture coordinates need to be in [0,1]*[0,1]
-    float2 texCoord = 0.5f * (float2(input.ScreenPosition.x,-input.ScreenPosition.y) + 1);
-    //allign texels to pixels
-    texCoord -=HalfPixel;
-
+    float2 texCoord = 0.5f * (float2(input.ScreenPosition.x,-input.ScreenPosition.y) + 1);    
+    
     //get normal data from the normalMap
     float4 normalData = tex2D(normalSampler,texCoord);
     //tranform normal back into [-1,1] range

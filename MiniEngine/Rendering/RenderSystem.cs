@@ -11,7 +11,6 @@ namespace MiniEngine.Rendering
         private readonly Effect ClearEffect;
         private readonly Effect CombineEffect;
         private readonly Quad Quad;
-        private readonly Vector2 HalfPixel;
         private readonly RenderTarget2D ColorTarget;
         private readonly RenderTarget2D NormalTarget;
         private readonly RenderTarget2D DepthTarget;
@@ -32,8 +31,6 @@ namespace MiniEngine.Rendering
 
             var width = device.PresentationParameters.BackBufferWidth;
             var height = device.PresentationParameters.BackBufferHeight;
-
-            this.HalfPixel = new Vector2(0.5f / width, 0.5f / height);
 
             this.ColorTarget  = new RenderTarget2D(device, width, height, false, SurfaceFormat.Color, DepthFormat.Depth24);
             this.NormalTarget = new RenderTarget2D(device, width, height, false, SurfaceFormat.Color, DepthFormat.None);
@@ -75,8 +72,8 @@ namespace MiniEngine.Rendering
             this.Device.Clear(Color.Transparent);
 
             // Draw the lights
-            this.PointLightSystem.Render(this.Scene.PointLights, this.Scene.Camera, this.ColorTarget, this.NormalTarget, this.DepthTarget, this.HalfPixel);
-            this.DirectionalLightSystem.Render(this.Scene.DirectionalLights, this.Scene.Camera, this.ColorTarget, this.NormalTarget, this.DepthTarget, this.HalfPixel);
+            this.PointLightSystem.Render(this.Scene.PointLights, this.Scene.Camera, this.ColorTarget, this.NormalTarget, this.DepthTarget);
+            this.DirectionalLightSystem.Render(this.Scene.DirectionalLights, this.Scene.Camera, this.ColorTarget, this.NormalTarget, this.DepthTarget);
             
             // Resolve the light buffer
             this.Device.SetRenderTarget(null);
@@ -87,8 +84,7 @@ namespace MiniEngine.Rendering
                 foreach (var pass in this.CombineEffect.Techniques[0].Passes)
                 {
                     this.CombineEffect.Parameters["ColorMap"].SetValue(this.ColorTarget);
-                    this.CombineEffect.Parameters["LightMap"].SetValue(this.LightTarget);
-                    this.CombineEffect.Parameters["HalfPixel"].SetValue(this.HalfPixel);
+                    this.CombineEffect.Parameters["LightMap"].SetValue(this.LightTarget);                    
 
                     pass.Apply();
                     this.Quad.Render(this.Device);

@@ -23,8 +23,7 @@ namespace MiniEngine.Rendering.Lighting
             Camera camera,
             RenderTarget2D color,
             RenderTarget2D normal,
-            RenderTarget2D depth,
-            Vector2 halfPixel)
+            RenderTarget2D depth)
         {
             var invertViewProjection = Matrix.Invert(camera.View * camera.Projection);
 
@@ -46,9 +45,6 @@ namespace MiniEngine.Rendering.Lighting
                         // Camera properties for specular reflections
                         this.Effect.Parameters["CameraPosition"].SetValue(camera.Position);
                         this.Effect.Parameters["InvertViewProjection"].SetValue(invertViewProjection);
-
-                        // Alignment
-                        this.Effect.Parameters["HalfPixel"].SetValue(halfPixel);
 
                         pass.Apply();
                         this.Quad.Render(this.Device);
