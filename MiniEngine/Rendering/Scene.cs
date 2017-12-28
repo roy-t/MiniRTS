@@ -26,7 +26,7 @@ namespace MiniEngine.Rendering
 
             this.PointLights = new List<PointLight>
             {
-                new PointLight(Vector3.Backward * 7, Color.Purple, 10.0f, 1.0f)
+                new PointLight(Vector3.Up * 5, Color.Purple, 10.0f, 1.0f)
             };
         }
 
@@ -45,9 +45,7 @@ namespace MiniEngine.Rendering
         public void Draw()
         {
             using (this.Device.GeometryState())
-            {
-                //DrawModel(this.ship1, Matrix.CreateTranslation(Vector3.Left * 10.0f));
-
+            {                
                 DrawModel(this.ship1, Matrix.CreateRotationY(MathHelper.Pi) * Matrix.CreateScale(0.5f));
                 DrawModel(this.lizard, Matrix.CreateRotationY(MathHelper.Pi) * Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Vector3.Left * 50));
                 DrawModel(this.ship2, Matrix.CreateRotationX(-MathHelper.PiOver2) * Matrix.CreateRotationY(MathHelper.Pi) * Matrix.CreateScale(0.5f) * Matrix.CreateTranslation(Vector3.Right * 50));
@@ -62,8 +60,7 @@ namespace MiniEngine.Rendering
                 {
                     effect.Parameters["World"].SetValue(world);
                     effect.Parameters["View"].SetValue(this.Camera.View);
-                    effect.Parameters["Projection"].SetValue(this.Camera.Projection);
-                    effect.Parameters["FarPlane"].SetValue(this.Camera.FarPlane);
+                    effect.Parameters["Projection"].SetValue(this.Camera.Projection);                    
                 }
 
                 mesh.Draw();

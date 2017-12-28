@@ -59,9 +59,11 @@ namespace MiniEngine.Rendering.Lighting
                         // If the camera is inside the light's radius we invert the cull direction
                         // otherwise the camera's sphere model is clipped
                         var inside = Vector3.Distance(camera.Position, light.Position) < light.Radius;
-                        this.Device.RasterizerState = inside 
-                            ? RasterizerState.CullClockwise 
+                        this.Device.RasterizerState = inside
+                            ? RasterizerState.CullClockwise
                             : RasterizerState.CullCounterClockwise;
+
+                        //this.Device.RasterizerState = RasterizerState.CullNone;
                      
                         pass.Apply();
 
@@ -72,11 +74,12 @@ namespace MiniEngine.Rendering.Lighting
                                 this.Device.Indices = meshPart.IndexBuffer;
                                 this.Device.SetVertexBuffer(meshPart.VertexBuffer);
 
-                                this.Device.DrawIndexedPrimitives(
-                                    PrimitiveType.TriangleList,
-                                    0,
-                                    meshPart.StartIndex,
-                                    meshPart.NumVertices);
+                                this.Device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, meshPart.NumVertices, meshPart.StartIndex, meshPart.PrimitiveCount);
+                                //this.Device.DrawIndexedPrimitives(
+                                //    PrimitiveType.TriangleList,
+                                //    0,
+                                //    meshPart.StartIndex,
+                                //    meshPart.NumVertices);
                             }
                         }
                     }

@@ -25,7 +25,11 @@ namespace MiniEngine
 
         public GameLoop()
         {
-            this.Graphics = new GraphicsDeviceManager(this);
+            this.Graphics = new GraphicsDeviceManager(this)
+            {
+                PreferredBackBufferWidth = 1080,
+                PreferredBackBufferHeight = 768
+            };
             this.KeyboardInput = new KeyboardInput();
 
             this.Content.RootDirectory = "Content";

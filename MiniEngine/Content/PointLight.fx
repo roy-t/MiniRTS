@@ -130,7 +130,7 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
     float3 directionToCamera = normalize(CameraPosition - position.xyz);
     //compute specular light
     float specularLight = specularIntensity * pow( saturate(dot(reflectionVector, directionToCamera)), specularPower);
-
+    
     //take into account attenuation and intensity.
     return attenuation * Intensity * float4(diffuseLight.rgb,specularLight);
 }

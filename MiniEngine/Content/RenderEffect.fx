@@ -10,7 +10,6 @@
 float4x4 World;
 float4x4 View;
 float4x4 Projection;
-float FarPlane;
 
 float specularIntensity = 0.8f;
 float specularPower = 0.5f; 
@@ -74,6 +73,7 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
     output.Position = mul(viewPosition, Projection);      
     output.TexCoord = input.TexCoord;
     output.Depth.x = output.Position.z;
+    output.Depth.y = output.Position.w;
     
     // calculate tangent space to world space matrix using the world space tangent,
     // binormal, and normal as basis vectors
@@ -115,7 +115,7 @@ PixelShaderOutput MainPS(VertexShaderOutput input)
     //specular Power
     output.Normal.a = specularAttributes.a;    
     
-    output.Depth = input.Depth.x / FarPlane;    
+    output.Depth = input.Depth.x / input.Depth.y;
 
     return output;
 }
