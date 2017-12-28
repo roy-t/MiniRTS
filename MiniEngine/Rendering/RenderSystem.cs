@@ -9,6 +9,7 @@ namespace MiniEngine.Rendering
     {
         private readonly GraphicsDevice Device;
         private readonly Effect ClearEffect;
+        private readonly Effect CombineEffect;
         private readonly Quad Quad;
         private readonly Vector2 HalfPixel;
         private readonly RenderTarget2D ColorTarget;
@@ -19,10 +20,12 @@ namespace MiniEngine.Rendering
         private readonly DirectionalLightSystem DirectionalLightSystem;
         private readonly PointLightSystem PointLightSystem;
 
-        public RenderSystem(GraphicsDevice device, Effect clearEffect, Effect directionalLightEffect, Effect pointLightEffect, Model sphere, Scene scene)
+        public RenderSystem(GraphicsDevice device, Effect clearEffect, Effect directionalLightEffect, Effect pointLightEffect, Model sphere, Effect combineEffect, Scene scene)
         {
             this.Device = device;
             this.ClearEffect = clearEffect;
+            this.CombineEffect = combineEffect;
+
             this.Scene = scene;
 
             this.Quad = new Quad();
@@ -55,7 +58,7 @@ namespace MiniEngine.Rendering
         {
             // Set and clear the G-Buffer
             this.Device.SetRenderTargets(this.ColorTarget, this.NormalTarget, this.DepthTarget);
-            foreach (var pass in this.ClearEffect.CurrentTechnique.Passes)
+            foreach (var pass in this.ClearEffect.Techniques[0].Passes)
             {
                 pass.Apply();
                 this.Quad.Render(this.Device);
@@ -75,11 +78,22 @@ namespace MiniEngine.Rendering
             this.PointLightSystem.Render(this.Scene.PointLights, this.Scene.Camera, this.ColorTarget, this.NormalTarget, this.DepthTarget, this.HalfPixel);
             this.DirectionalLightSystem.Render(this.Scene.DirectionalLights, this.Scene.Camera, this.ColorTarget, this.NormalTarget, this.DepthTarget, this.HalfPixel);
             
-
             // Resolve the light buffer
             this.Device.SetRenderTarget(null);
 
             // Combine everything
+            using (this.Device.PostProcessState())
+            {
+                foreach (var pass in this.CombineEffect.Techniques[0].Passes)
+                {
+                    this.CombineEffect.Parameters["ColorMap"].SetValue(this.ColorTarget);
+                    this.CombineEffect.Parameters["LightMap"].SetValue(this.LightTarget);
+                    this.CombineEffect.Parameters["HalfPixel"].SetValue(this.HalfPixel);
+
+                    pass.Apply();
+                    this.Quad.Render(this.Device);
+                }
+            }
         }      
     }
 }

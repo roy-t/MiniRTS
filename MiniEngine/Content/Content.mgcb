@@ -14,12 +14,6 @@
 
 #---------------------------------- Content ---------------------------------#
 
-#begin ClearEffect.fx
-/importer:EffectImporter
-/processor:EffectProcessor
-/processorParam:DebugMode=Auto
-/build:ClearEffect.fx
-
 #begin Texture.bmp
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -332,4 +326,16 @@
 /processor:EffectProcessor
 /processorParam:DebugMode=Auto
 /build:PointLight.fx
+
+#begin Combine.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Combine.fx
+
+#begin Clear.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Clear.fx
 

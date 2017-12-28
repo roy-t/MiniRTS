@@ -40,6 +40,16 @@ namespace MiniEngine.Rendering
                 SamplerState.LinearClamp);
         }
 
+        public static DeviceState PostProcessState(this GraphicsDevice device)
+        {
+            return new DeviceState(
+                device,
+                BlendState.Opaque,
+                DepthStencilState.None,
+                RasterizerState.CullCounterClockwise,
+                SamplerState.LinearClamp);
+        }
+
         public static DeviceState WireFrameState(this GraphicsDevice device)
         {
             var rasterState = new RasterizerState()
