@@ -11,15 +11,15 @@ namespace MiniEngine
     public class GameLoop : Game
     {
         private readonly GraphicsDeviceManager Graphics;
-        private readonly Input.KeyboardInput KeyboardInput;
+        private readonly KeyboardInput KeyboardInput;
 
         private bool detailView = true;
         private int viewIndex = 0;
         private int viewOptions = 4;
 
         private SpriteBatch spriteBatch;
-        private Texture2D texture;
-        private ZimaScene scene;
+        private IScene[] scenes;
+        private int currentScene = 0;
         private CameraController cameraController;
         private RenderSystem renderSystem;
         
@@ -47,19 +47,27 @@ namespace MiniEngine
         protected override void LoadContent()
         {
             this.spriteBatch = new SpriteBatch(this.GraphicsDevice);
-            this.texture = this.Content.Load<Texture2D>("Texture");
             
             var camera = new Camera(this.GraphicsDevice.Viewport);
             this.cameraController = new CameraController(this.KeyboardInput, camera);
-            this.scene = new ZimaScene(this.GraphicsDevice, camera);
-            this.scene.LoadContent(this.Content);
+
+            this.scenes = new IScene[]
+            {
+                new ZimaScene(this.GraphicsDevice, camera),
+                new SponzaScene(this.GraphicsDevice, camera)
+            };
+
+            foreach (var scene in this.scenes)
+            {
+                scene.LoadContent(this.Content);
+            }
 
             var clearEffect = this.Content.Load<Effect>("Clear");
             var combineEffect = this.Content.Load<Effect>("Combine");
             var directionalLightEffect = this.Content.Load<Effect>("DirectionalLight");
             var pointLightEffect = this.Content.Load<Effect>("PointLight");
             var sphere = this.Content.Load<Model>("Sphere");
-            this.renderSystem = new RenderSystem(this.GraphicsDevice, clearEffect, directionalLightEffect, pointLightEffect, sphere, combineEffect, this.scene);
+            this.renderSystem = new RenderSystem(this.GraphicsDevice, clearEffect, directionalLightEffect, pointLightEffect, sphere, combineEffect, this.scenes[0]);
         }
 
         protected override void UnloadContent()
@@ -78,6 +86,12 @@ namespace MiniEngine
                 this.detailView = !this.detailView;
             }
 
+            if (this.KeyboardInput.Click(Keys.Tab))
+            {
+                this.currentScene = (this.currentScene + 1) % this.scenes.Length;
+                this.renderSystem.Scene = this.scenes[this.currentScene];
+            }
+
             if (this.KeyboardInput.Click(Keys.F))
             {
                 this.IsFixedTimeStep = !this.IsFixedTimeStep;
@@ -93,7 +107,8 @@ namespace MiniEngine
             }
 
             this.cameraController.Update(gameTime.ElapsedGameTime);
-            this.scene.Update(gameTime.ElapsedGameTime);
+
+            this.renderSystem.Scene.Update(gameTime.ElapsedGameTime);
 
             base.Update(gameTime);
         }
