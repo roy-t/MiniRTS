@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Input;
 using MiniEngine.Controllers;
 using MiniEngine.Input;
 using MiniEngine.Rendering;
+using MiniEngine.Scenes;
 
 namespace MiniEngine
 {    
@@ -18,7 +19,7 @@ namespace MiniEngine
 
         private SpriteBatch spriteBatch;
         private Texture2D texture;
-        private Scene scene;
+        private ZimaScene scene;
         private CameraController cameraController;
         private RenderSystem renderSystem;
         
@@ -50,7 +51,7 @@ namespace MiniEngine
             
             var camera = new Camera(this.GraphicsDevice.Viewport);
             this.cameraController = new CameraController(this.KeyboardInput, camera);
-            this.scene = new Scene(this.GraphicsDevice, camera);
+            this.scene = new ZimaScene(this.GraphicsDevice, camera);
             this.scene.LoadContent(this.Content);
 
             var clearEffect = this.Content.Load<Effect>("Clear");

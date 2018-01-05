@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Rendering.Lighting;
 using MiniEngine.Rendering.Primitives;
+using MiniEngine.Scenes;
 
 namespace MiniEngine.Rendering
 {
@@ -19,7 +20,7 @@ namespace MiniEngine.Rendering
         private readonly DirectionalLightSystem DirectionalLightSystem;
         private readonly PointLightSystem PointLightSystem;
 
-        public RenderSystem(GraphicsDevice device, Effect clearEffect, Effect directionalLightEffect, Effect pointLightEffect, Model sphere, Effect combineEffect, Scene scene)
+        public RenderSystem(GraphicsDevice device, Effect clearEffect, Effect directionalLightEffect, Effect pointLightEffect, Model sphere, Effect combineEffect, IScene scene)
         {
             this.Device = device;
             this.ClearEffect = clearEffect;
@@ -41,7 +42,7 @@ namespace MiniEngine.Rendering
             this.PointLightSystem = new PointLightSystem(device, pointLightEffect, sphere);
         }       
 
-        public Scene Scene { get; set; }        
+        public IScene Scene { get; set; }        
 
         public RenderTarget2D[] GetIntermediateRenderTargets() => new[]
         {

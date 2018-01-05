@@ -55,7 +55,10 @@
     <Compile Include="Rendering\Lighting\PointLightSystem.cs" />
     <Compile Include="Rendering\Primitives\Quad.cs" />
     <Compile Include="Rendering\RenderSystem.cs" />
-    <Compile Include="Rendering\Scene.cs" />
+    <Compile Include="Scenes\AScene.cs" />
+    <Compile Include="Scenes\IScene.cs" />
+    <Compile Include="Scenes\SponzaScene.cs" />
+    <Compile Include="Scenes\ZimaScene.cs" />
     <Compile Include="Units\Derivatives.cs" />
     <Compile Include="Units\Distance.cs" />
     <Compile Include="Units\Time.cs" />
