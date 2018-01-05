@@ -10,10 +10,10 @@ namespace MiniEngine.Controllers
     {
         private static readonly MetersPerSecond TranslateSpeed = 50.0f;
 
-        private readonly KeyboardInput Keyboard;
+        private readonly Input.KeyboardInput Keyboard;
         private readonly Camera Camera;
 
-        public CameraController(KeyboardInput keyboard, Camera camera)
+        public CameraController(Input.KeyboardInput keyboard, Camera camera)
         {
             this.Keyboard = keyboard;
             this.Camera = camera;            

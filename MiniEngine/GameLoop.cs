@@ -10,7 +10,7 @@ namespace MiniEngine
     public class GameLoop : Game
     {
         private readonly GraphicsDeviceManager Graphics;
-        private readonly KeyboardInput KeyboardInput;
+        private readonly Input.KeyboardInput KeyboardInput;
 
         private bool detailView = true;
         private int viewIndex = 0;
@@ -32,7 +32,7 @@ namespace MiniEngine
                 SynchronizeWithVerticalRetrace = false                         
             };            
 
-            this.KeyboardInput = new KeyboardInput();
+            this.KeyboardInput = new Input.KeyboardInput();
 
             this.Content.RootDirectory = "Content";
             this.IsMouseVisible = true;
