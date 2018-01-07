@@ -18,9 +18,10 @@ texture Texture;
 sampler diffuseSampler = sampler_state
 {
     Texture = (Texture);
-    MAGFILTER = LINEAR;
-    MINFILTER = LINEAR;
-    MIPFILTER = LINEAR;
+    MinFilter = ANISOTROPIC;
+    MagFilter = ANISOTROPIC;
+    MipFilter = LINEAR;
+    MaxAnisotropy = 16;
     AddressU = Wrap;
     AddressV = Wrap;
 };

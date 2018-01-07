@@ -10,8 +10,7 @@ namespace MiniEngine.Rendering
                 device,
                 BlendState.AlphaBlend,
                 DepthStencilState.Default,
-                RasterizerState.CullCounterClockwise,
-                SamplerState.LinearClamp);
+                RasterizerState.CullCounterClockwise);
         }
 
         /// <summary>
@@ -23,8 +22,7 @@ namespace MiniEngine.Rendering
                 device,
                 BlendState.Opaque,
                 DepthStencilState.Default,
-                RasterizerState.CullCounterClockwise,
-                SamplerState.LinearClamp);
+                RasterizerState.CullCounterClockwise);
         }
 
         /// <summary>
@@ -36,8 +34,7 @@ namespace MiniEngine.Rendering
                 device,
                 BlendState.AlphaBlend,
                 DepthStencilState.None,
-                RasterizerState.CullCounterClockwise,
-                SamplerState.LinearClamp);
+                RasterizerState.CullCounterClockwise);
         }
 
         public static DeviceState PostProcessState(this GraphicsDevice device)
@@ -46,8 +43,7 @@ namespace MiniEngine.Rendering
                 device,
                 BlendState.Opaque,
                 DepthStencilState.None,
-                RasterizerState.CullCounterClockwise,
-                SamplerState.LinearClamp);
+                RasterizerState.CullCounterClockwise);
         }
 
         public static DeviceState WireFrameState(this GraphicsDevice device)
@@ -62,8 +58,7 @@ namespace MiniEngine.Rendering
                 device,
                 BlendState.AlphaBlend,
                 DepthStencilState.Default,
-                rasterState,
-                SamplerState.LinearClamp);
+                rasterState);
         }
     }
 }
