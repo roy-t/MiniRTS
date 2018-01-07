@@ -20,13 +20,16 @@ namespace MiniEngine.Scenes
 
             this.DirectionalLights = new List<DirectionalLight>();
             this.PointLights = new List<PointLight>();
+            this.AmbientLight = Color.Black;
         }
 
         public Camera Camera { get; }
 
-        public List<DirectionalLight> DirectionalLights { get; private set; }        
+        public List<DirectionalLight> DirectionalLights { get; }        
 
-        public List<PointLight> PointLights { get; private set; }
+        public List<PointLight> PointLights { get; }
+
+        public Color AmbientLight { get; protected set; }
 
         public abstract void LoadContent(ContentManager content);
 

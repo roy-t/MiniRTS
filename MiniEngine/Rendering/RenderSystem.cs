@@ -70,7 +70,7 @@ namespace MiniEngine.Rendering
 
             // Set and clear the light buffer
             this.Device.SetRenderTarget(this.LightTarget);
-            this.Device.Clear(Color.Transparent);
+            this.Device.Clear(new Color(this.Scene.AmbientLight.R, this.Scene.AmbientLight.G, this.Scene.AmbientLight.B, (byte)0));
 
             // Draw the lights
             this.PointLightSystem.Render(this.Scene.PointLights, this.Scene.Camera, this.ColorTarget, this.NormalTarget, this.DepthTarget);
