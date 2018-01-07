@@ -43,8 +43,8 @@
   <ItemGroup>
     <Compile Include="Controllers\CameraController.cs" />
     <Compile Include="GameLoop.cs" />
+    <Compile Include="Input\InputState.cs" />
     <Compile Include="Input\KeyboardInput.cs" />
-    <Compile Include="Input\KeyState.cs" />
     <Compile Include="Input\MouseButtons.cs" />
     <Compile Include="Input\MouseInput.cs" />
     <Compile Include="Program.cs" />
