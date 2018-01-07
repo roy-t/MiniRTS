@@ -5,19 +5,19 @@ using Microsoft.Xna.Framework.Input;
 
 namespace MiniEngine.Input
 {
-    public class KeyboardInput
+    public sealed class KeyboardInput
     {
         private readonly Keys[] Keys;
-        private readonly Dictionary<Keys, KeyState> KeyStates;
+        private readonly Dictionary<Keys, InputState> KeyStates;
 
         public KeyboardInput()
         {
             this.Keys = Enum.GetValues(typeof (Keys)).OfType<Keys>().ToArray();
-            this.KeyStates = new Dictionary<Keys, KeyState>();
+            this.KeyStates = new Dictionary<Keys, InputState>();
 
             foreach (var key in this.Keys)
             {
-                this.KeyStates.Add(key, KeyState.Released);
+                this.KeyStates.Add(key, InputState.Released);
             }
         }
 
@@ -28,39 +28,40 @@ namespace MiniEngine.Input
             foreach (var key in this.Keys)
             {
                 var oldState = this.KeyStates[key];
+                var isDown = current.IsKeyDown(key);
 
                 switch (oldState)
                 {
-                    case KeyState.JustPressed:
-                        if (current.IsKeyDown(key))
+                    case InputState.JustPressed:
+                        if (isDown)
                         {
-                            this.KeyStates[key] = KeyState.Pressed;
+                            this.KeyStates[key] = InputState.Pressed;
                         }
-                        else if (current.IsKeyUp(key))
+                        else
                         {
-                            this.KeyStates[key] = KeyState.JustReleased;
-                        }
-                        break;
-                    case KeyState.Pressed:
-                        if (current.IsKeyUp(key))
-                        {
-                            this.KeyStates[key] = KeyState.JustReleased;
+                            this.KeyStates[key] = InputState.JustReleased;
                         }
                         break;
-                    case KeyState.JustReleased:
-                        if (current.IsKeyDown(key))
+                    case InputState.Pressed:
+                        if (!isDown)
                         {
-                            this.KeyStates[key] = KeyState.JustPressed;
-                        }
-                        else if (current.IsKeyUp(key))
-                        {
-                            this.KeyStates[key] = KeyState.Released;
+                            this.KeyStates[key] = InputState.JustReleased;
                         }
                         break;
-                    case KeyState.Released:
-                        if (current.IsKeyDown(key))
+                    case InputState.JustReleased:
+                        if (isDown)
                         {
-                            this.KeyStates[key] = KeyState.JustPressed;
+                            this.KeyStates[key] = InputState.JustPressed;
+                        }
+                        else
+                        {
+                            this.KeyStates[key] = InputState.Released;
+                        }
+                        break;
+                    case InputState.Released:
+                        if (isDown)
+                        {
+                            this.KeyStates[key] = InputState.JustPressed;
                         }                        
                         break;
                     default:
@@ -71,22 +72,13 @@ namespace MiniEngine.Input
 
         public bool Click(Keys key)
         {
-            return this.KeyStates[key] == KeyState.JustPressed;
+            return this.KeyStates[key] == InputState.JustPressed;
         }
 
         public bool Hold(Keys key)
         {
             var state = this.KeyStates[key];
-            return state == KeyState.JustPressed || state == KeyState.Pressed;
-        }
-
-
-        private enum KeyState
-        {                        
-            JustPressed,
-            Pressed,
-            JustReleased,
-            Released
+            return state == InputState.JustPressed || state == InputState.Pressed;
         }
     }
 }

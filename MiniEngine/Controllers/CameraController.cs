@@ -10,62 +10,80 @@ namespace MiniEngine.Controllers
     {
         private static readonly MetersPerSecond TranslateSpeed = 50.0f;
 
-        private readonly Input.KeyboardInput Keyboard;
+        // percentage to rotate the camera per pixel the mouse moved
+        private const float RotateFactor = MathHelper.TwoPi * 0.001f;
+
+        private readonly KeyboardInput Keyboard;
+        private readonly MouseInput Mouse;
         private readonly Camera Camera;
 
-        public CameraController(Input.KeyboardInput keyboard, Camera camera)
+        private Vector3 forward;
+        private Vector3 left;
+        private Vector3 up;
+
+        public CameraController(KeyboardInput keyboard, MouseInput mouse, Camera camera)
         {
             this.Keyboard = keyboard;
-            this.Camera = camera;            
+            this.Camera = camera;
+            this.Mouse = mouse;
+
+            this.forward = Vector3.Forward;
+            this.left = Vector3.Left;
+            this.up = Vector3.Up;
         }
 
         public void Update(Seconds elapsed)
         {
-            var position = this.Camera.Position;
-            var lookAt = this.Camera.LookAt;
+            var position = this.Camera.Position;            
 
             var translate = TranslateSpeed * elapsed;
 
+            if (this.Mouse.Hold(MouseButtons.Right))
+            {
+                var rotation = new Vector2(this.Mouse.Movement.X, this.Mouse.Movement.Y) * RotateFactor;
+                var matrix = Matrix.CreateFromAxisAngle(this.up, rotation.X) * Matrix.CreateFromAxisAngle(this.left, -rotation.Y);
+
+                this.forward = Vector3.Transform(this.forward, matrix);
+                this.left = Vector3.Cross(this.up, this.forward);
+            }
+
             if (this.Keyboard.Hold(Keys.A))
             {
-                position.X -= translate;
-                lookAt.X -= translate;
+                position += this.left * translate;
             }
             else if (this.Keyboard.Hold(Keys.D))
             {
-                position.X += translate;
-                lookAt.X += translate;
+                position -= this.left * translate;
             }
 
             if (this.Keyboard.Hold(Keys.W))
             {
-                position.Z -= translate;
-                lookAt.Z -= translate;
+                position += this.forward * translate;
             }
             else if (this.Keyboard.Hold(Keys.S))
             {
-                position.Z += translate;
-                lookAt.Z += translate;
+                position -= this.forward * translate;
             }
 
             if (this.Keyboard.Hold(Keys.C))
             {
-                position.Y -= translate;
-                lookAt.Y -= translate;
+                position -= this.up * translate;
             }
             else if (this.Keyboard.Hold(Keys.Space))
             {
-                position.Y += translate;
-                lookAt.Y += translate;
+                position += this.up * translate;
             }
 
             if (this.Keyboard.Click(Keys.R))
             {
                 position = Vector3.Backward * 10;
-                lookAt = Vector3.Zero;
-            }
 
-            this.Camera.Move(position, lookAt);
+                this.forward = Vector3.Forward;
+                this.left = Vector3.Left;
+                this.up = Vector3.Up;
+            }            
+
+            this.Camera.Move(position, position + this.forward);
         }
     }
 }

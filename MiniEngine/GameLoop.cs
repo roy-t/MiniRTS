@@ -12,6 +12,7 @@ namespace MiniEngine
     {
         private readonly GraphicsDeviceManager Graphics;
         private readonly KeyboardInput KeyboardInput;
+        private readonly MouseInput MouseInput;
 
         private bool detailView = true;
         private int viewIndex = 0;
@@ -33,7 +34,8 @@ namespace MiniEngine
                 SynchronizeWithVerticalRetrace = false                         
             };            
 
-            this.KeyboardInput = new Input.KeyboardInput();
+            this.KeyboardInput = new KeyboardInput();
+            this.MouseInput = new MouseInput();
 
             this.Content.RootDirectory = "Content";
             this.IsMouseVisible = true;
@@ -49,7 +51,7 @@ namespace MiniEngine
             this.spriteBatch = new SpriteBatch(this.GraphicsDevice);
             
             var camera = new Camera(this.GraphicsDevice.Viewport);
-            this.cameraController = new CameraController(this.KeyboardInput, camera);
+            this.cameraController = new CameraController(this.KeyboardInput, this.MouseInput, camera);
 
             this.scenes = new IScene[]
             {
@@ -81,6 +83,8 @@ namespace MiniEngine
                 Exit();
 
             this.KeyboardInput.Update();
+            this.MouseInput.Update();
+
             if (this.KeyboardInput.Click(Keys.OemTilde))
             {
                 this.detailView = !this.detailView;
