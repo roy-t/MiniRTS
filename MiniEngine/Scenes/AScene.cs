@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using MiniEngine.Content;
 using MiniEngine.Rendering;
 using MiniEngine.Rendering.Lighting;
 using MiniEngine.Units;
@@ -31,7 +32,7 @@ namespace MiniEngine.Scenes
 
         public Color AmbientLight { get; protected set; }
 
-        public abstract void LoadContent(ContentManager content);
+        public abstract void LoadContent(ContentManager content, TexturePatcher patcher);
 
         public abstract void Update(Seconds elapsed);
 

@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using MiniEngine.Content;
 using MiniEngine.Rendering;
-using MiniEngine.Rendering.Lighting;
 using MiniEngine.Units;
 using DirectionalLight = MiniEngine.Rendering.Lighting.DirectionalLight;
 
@@ -13,7 +11,7 @@ namespace MiniEngine.Scenes
     public sealed class SponzaScene : AScene
     {
         private Model sponza;
-
+        
         public SponzaScene(GraphicsDevice device, Camera camera)
             : base(device, camera)
         {
@@ -22,9 +20,10 @@ namespace MiniEngine.Scenes
             this.AmbientLight = Color.White * 0.1f;
         }
 
-        public override void LoadContent(ContentManager content)
+        public override void LoadContent(ContentManager content, TexturePatcher patcher)
         {
             this.sponza = content.Load<Model>(@"Sponza\Sponza");
+            patcher.Patch(this.sponza);           
         }
 
         public override void Update(Seconds elapsed)
@@ -38,6 +37,6 @@ namespace MiniEngine.Scenes
             {
                 DrawModel(this.sponza, Matrix.CreateScale(0.05f));
             }
-        }
+        }       
     }
 }
