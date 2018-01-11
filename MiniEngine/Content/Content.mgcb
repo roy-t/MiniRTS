@@ -53,74 +53,71 @@
 
 #begin Ship2/ship2.fbx
 /importer:FbxImporter
-/processor:DeferredRendererModelProcessor
-/processorParam:NormalMapKey=NormalMap
-/processorParam:GenerateTangentFrames=True
+/processor:MultiMaterialModelProcessor
+/processorParam:ProcessTextures=True
 /processorParam:SpecularMapFallback=null_specular.tga
 /processorParam:NormalMapFallback=null_normal.tga
-/processorParam:SpecularMapKey=SpecularMap
 /processorParam:EffectFile=RenderEffect.fx
-/processorParam:ColorKeyColor=0,0,0,0
-/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateTangentFrames=True
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=False
 /processorParam:DefaultEffect=BasicEffect
 /processorParam:GenerateMipmaps=True
 /processorParam:PremultiplyTextureAlpha=True
 /processorParam:PremultiplyVertexColors=True
 /processorParam:ResizeTexturesToPowerOfTwo=False
+/processorParam:TextureFormat=Compressed
 /processorParam:RotationX=0
 /processorParam:RotationY=0
 /processorParam:RotationZ=0
 /processorParam:Scale=1
 /processorParam:SwapWindingOrder=False
-/processorParam:TextureFormat=Compressed
 /build:Ship2/ship2.fbx
 
 #begin Ship1/ship1.fbx
 /importer:FbxImporter
-/processor:DeferredRendererModelProcessor
-/processorParam:NormalMapKey=NormalMap
-/processorParam:GenerateTangentFrames=True
+/processor:MultiMaterialModelProcessor
+/processorParam:ProcessTextures=True
 /processorParam:SpecularMapFallback=null_specular.tga
 /processorParam:NormalMapFallback=null_normal.tga
-/processorParam:SpecularMapKey=SpecularMap
 /processorParam:EffectFile=RenderEffect.fx
-/processorParam:ColorKeyColor=0,0,0,0
-/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateTangentFrames=True
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=False
 /processorParam:DefaultEffect=BasicEffect
 /processorParam:GenerateMipmaps=True
 /processorParam:PremultiplyTextureAlpha=True
 /processorParam:PremultiplyVertexColors=True
 /processorParam:ResizeTexturesToPowerOfTwo=False
+/processorParam:TextureFormat=Compressed
 /processorParam:RotationX=0
 /processorParam:RotationY=0
 /processorParam:RotationZ=0
 /processorParam:Scale=1
 /processorParam:SwapWindingOrder=False
-/processorParam:TextureFormat=Compressed
 /build:Ship1/ship1.fbx
 
 #begin Lizard/lizard.fbx
 /importer:FbxImporter
-/processor:DeferredRendererModelProcessor
-/processorParam:NormalMapKey=NormalMap
-/processorParam:GenerateTangentFrames=True
+/processor:MultiMaterialModelProcessor
+/processorParam:ProcessTextures=True
 /processorParam:SpecularMapFallback=null_specular.tga
 /processorParam:NormalMapFallback=null_normal.tga
-/processorParam:SpecularMapKey=SpecularMap
 /processorParam:EffectFile=RenderEffect.fx
-/processorParam:ColorKeyColor=0,0,0,0
-/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateTangentFrames=True
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=False
 /processorParam:DefaultEffect=BasicEffect
 /processorParam:GenerateMipmaps=True
 /processorParam:PremultiplyTextureAlpha=True
 /processorParam:PremultiplyVertexColors=True
 /processorParam:ResizeTexturesToPowerOfTwo=False
+/processorParam:TextureFormat=Compressed
 /processorParam:RotationX=0
 /processorParam:RotationY=0
 /processorParam:RotationZ=0
 /processorParam:Scale=1
 /processorParam:SwapWindingOrder=False
-/processorParam:TextureFormat=Compressed
 /build:Lizard/lizard.fbx
 
 #begin null_specular.tga
@@ -180,7 +177,7 @@
 /processorParam:NormalMapFallback=null_normal.tga
 /processorParam:SpecularMapKey=SpecularMap
 /processorParam:EffectFile=RenderEffect.fx
-/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyColor=0,0,0,0
 /processorParam:ColorKeyEnabled=True
 /processorParam:DefaultEffect=BasicEffect
 /processorParam:GenerateMipmaps=True

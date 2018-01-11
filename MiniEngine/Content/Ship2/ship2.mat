@@ -1,0 +1,4 @@
+# Material descritpion for ship2.fbx
+# links the normal map and specular map to the diffuse texture
+
+ship2_c.tga;	ship2_n.tga;	ship2_s.tga
