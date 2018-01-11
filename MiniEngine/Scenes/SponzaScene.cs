@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using MiniEngine.Content;
 using MiniEngine.Rendering;
 using MiniEngine.Units;
 using DirectionalLight = MiniEngine.Rendering.Lighting.DirectionalLight;
@@ -20,10 +19,9 @@ namespace MiniEngine.Scenes
             this.AmbientLight = Color.White * 0.1f;
         }
 
-        public override void LoadContent(ContentManager content, TexturePatcher patcher)
+        public override void LoadContent(ContentManager content)
         {
             this.sponza = content.Load<Model>(@"Sponza\Sponza");
-            patcher.Patch(this.sponza);           
         }
 
         public override void Update(Seconds elapsed)

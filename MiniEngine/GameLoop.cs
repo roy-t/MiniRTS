@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using MiniEngine.Content;
 using MiniEngine.Controllers;
 using MiniEngine.Input;
 using MiniEngine.Rendering;
@@ -60,11 +59,9 @@ namespace MiniEngine
                 new SponzaScene(this.GraphicsDevice, camera)
             };
 
-            var patcher = new TexturePatcher(this.GraphicsDevice, this.Content);
-
             foreach (var scene in this.scenes)
             {
-                scene.LoadContent(this.Content, patcher);
+                scene.LoadContent(this.Content);
             }
 
             var clearEffect = this.Content.Load<Effect>("Clear");

@@ -41,7 +41,6 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Content\TexturePatcher.cs" />
     <Compile Include="Controllers\CameraController.cs" />
     <Compile Include="GameLoop.cs" />
     <Compile Include="Input\InputState.cs" />

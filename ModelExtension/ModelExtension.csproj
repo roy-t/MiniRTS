@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DeferredRendererModelProcessor.cs" />
+    <Compile Include="MultiMaterialModelProcessor.cs" />
     <Compile Include="OpaqueDataExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

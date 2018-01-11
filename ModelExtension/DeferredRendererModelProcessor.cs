@@ -36,7 +36,7 @@ namespace ModelExtension
             this.directory = Path.GetDirectoryName(input.Identity.SourceFilename);
             LookUpTextures(input);
             return base.Process(input, context);
-        }
+        }       
 
 
         [Browsable(false)]
@@ -209,6 +209,17 @@ namespace ModelExtension
             MaterialContent material,
             ContentProcessorContext context)
         {
+            var parameters = new OpaqueDataDictionary
+            {
+                {"ColorKeyColor", this.ColorKeyColor},
+                {"ColorKeyEnabled", this.ColorKeyEnabled},
+                {"GenerateMipmaps", this.GenerateMipmaps},
+                {"PremultiplyTextureAlpha", this.PremultiplyTextureAlpha},
+                {"ResizeTexturesToPowerOfTwo", this.ResizeTexturesToPowerOfTwo},
+                {"TextureFormat", this.TextureFormat},
+                {"DefaultEffect", this.DefaultEffect}
+            };
+
             var deferredShadingMaterial =
                 new EffectMaterialContent {Effect = new ExternalReference<EffectContent>(this.EffectFile)};
 
@@ -227,7 +238,7 @@ namespace ModelExtension
 
             return context.Convert<MaterialContent, MaterialContent>(
                 deferredShadingMaterial,
-                typeof (MaterialProcessor).Name);
+                typeof (MaterialProcessor).Name, parameters);
         }
     }
 }

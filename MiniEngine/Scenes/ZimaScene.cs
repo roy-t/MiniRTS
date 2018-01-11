@@ -2,7 +2,6 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using MiniEngine.Content;
 using MiniEngine.Rendering;
 using MiniEngine.Rendering.Lighting;
 using MiniEngine.Units;
@@ -45,14 +44,11 @@ namespace MiniEngine.Scenes
             this.totalElapsed = 0;            
         }
 
-        public override void LoadContent(ContentManager content, TexturePatcher patcher)
+        public override void LoadContent(ContentManager content)
         {
             this.lizard = content.Load<Model>(@"Lizard\Lizard");
-            patcher.Patch(this.lizard);
             this.ship1 = content.Load<Model>(@"Ship1\Ship1");
-            patcher.Patch(this.ship1);
             this.ship2 = content.Load<Model>(@"Ship2\Ship2");
-            patcher.Patch(this.ship2);
         }
 
         public override void Update(Seconds elapsed)
