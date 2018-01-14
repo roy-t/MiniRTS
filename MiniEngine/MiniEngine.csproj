@@ -68,8 +68,8 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework, Version=3.6.0.1625, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\MiniRTS\packages\MonoGame.Framework.WindowsDX.3.6.0.1625\lib\net40\MonoGame.Framework.dll</HintPath>
-      <Private>True</Private>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\MonoGame\MonoGame.Framework\bin\Windows\AnyCPU\Release\MonoGame.Framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Xml" />
@@ -80,7 +80,6 @@
   <ItemGroup>
     <MonoGameContentReference Include="Content\Content.mgcb" />
     <None Include="app.manifest" />
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
