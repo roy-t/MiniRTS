@@ -9,7 +9,6 @@ namespace ModelExtension
         {
             if (node is MeshContent mesh)
             {
-
                 var modelPath = mesh.Identity.SourceFilename;
                 var lookup = new MaterialDescriptionFile(modelPath);
 

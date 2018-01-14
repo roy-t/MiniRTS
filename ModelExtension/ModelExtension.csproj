@@ -31,6 +31,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="INIFileParser, Version=2.5.2.0, Culture=neutral, PublicKeyToken=79af7b307b65cf3c, processorArchitecture=MSIL">
+      <HintPath>..\MiniRTS\packages\ini-parser.2.5.2\lib\net20\INIFileParser.dll</HintPath>
+    </Reference>
     <Reference Include="MonoGame.Framework, Version=3.6.0.1625, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MonoGame.Framework.Portable.3.6.0.1625\lib\portable-net45+win8+wpa81\MonoGame.Framework.dll</HintPath>
       <Private>True</Private>
@@ -41,12 +44,11 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DeferredRendererModelProcessor.cs" />
+    <Compile Include="MaterialDescriptionParser.cs" />
     <Compile Include="MaterialLinker.cs" />
     <Compile Include="MaterialDescription.cs" />
     <Compile Include="MaterialDescriptionFile.cs" />
     <Compile Include="MultiMaterialModelProcessor.cs" />
-    <Compile Include="OpaqueDataExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

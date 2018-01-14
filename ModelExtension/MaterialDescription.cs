@@ -1,6 +1,6 @@
 ﻿namespace ModelExtension
 {
-    internal class MaterialDescription
+    public class MaterialDescription
     {
         public MaterialDescription(string diffuse, string normal, string specular)
         {
