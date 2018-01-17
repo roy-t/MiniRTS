@@ -93,29 +93,24 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
     //transform to world space
     position = mul(position, InvertViewProjection);
     position /= position.w;
-
-    //surface-to-light vector
-    float3 surfaceToLight = -normalize(LightDirection);
-
-    float3 color = float3(0.0f, 0.0f, 0.0f);    
-    float specular = 0.0f;
-    float lightIntensity = saturate(dot(normal, surfaceToLight));
     
-    if(lightIntensity > 0.0f)
-    {
-        //compute diffuse light
-        color += (Color * lightIntensity);
-        
-        // Calculate the reflection vector based on the light intensity, normal vector, and light direction
-        float3 reflection = normalize(2 * lightIntensity * normal - surfaceToLight);
-        float3 viewDirection = normalize(CameraPosition - position.xyz);
+    //surface-to-light vector
+    float3 lightVector = -normalize(LightDirection);
 
-        // Determine the amount of specular light based on the reflection vector, viewing direction, and specular power   
-        float rdot = clamp(dot(reflection, viewDirection), 0, abs(specularIntensity));
-        specular = pow(rdot, specularPower);
-    }    
+    //compute diffuse light
+    float NdL = max(0,dot(normal,lightVector));
+    float3 diffuseLight = NdL * Color.rgb;
 
-    return float4(color, specular);
+    //reflexion vector
+    float3 reflectionVector = normalize(reflect(-lightVector, normal));
+    //camera-to-surface vector
+    float3 directionToCamera = normalize(CameraPosition - position.xyz);
+    //compute specular light
+    float rdot = clamp(dot(reflectionVector, directionToCamera), 0, abs(specularIntensity));
+    float specularLight = pow(rdot, specularPower);
+
+    //output the two lights
+    return float4(diffuseLight.rgb, specularLight) ;
 }
 
 technique DirectionalLightTechnique
