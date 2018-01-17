@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content.Pipeline;
 using Microsoft.Xna.Framework.Content.Pipeline.Graphics;
@@ -45,7 +46,7 @@ namespace ModelExtension
             if (this.ProcessTextures)
             {
                 // Look up all materials and link them to the model
-                MaterialLinker.Bind(input, this.NormalMapFallback, this.SpecularMapFallback);
+                MaterialLinker.Bind(input, Path.GetFullPath(this.NormalMapFallback), Path.GetFullPath(this.SpecularMapFallback));
             }
 
             return base.Process(input, context);

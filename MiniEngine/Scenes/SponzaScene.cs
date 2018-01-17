@@ -14,8 +14,7 @@ namespace MiniEngine.Scenes
         public SponzaScene(GraphicsDevice device, Camera camera)
             : base(device, camera)
         {
-            this.DirectionalLights.Add(new DirectionalLight(Vector3.Normalize(Vector3.Forward + Vector3.Down), Color.White * 0.75f));
-            this.DirectionalLights.Add(new DirectionalLight(Vector3.Normalize(Vector3.Forward + Vector3.Up + Vector3.Left), Color.BlueViolet * 0.25f));
+            this.DirectionalLights.Add(new DirectionalLight(Vector3.Normalize(Vector3.Forward), Color.White * 0.5f));
             this.AmbientLight = Color.White * 0.1f;
         }
 
