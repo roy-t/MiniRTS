@@ -20,9 +20,9 @@ sampler colorSampler = sampler_state
     Texture = (ColorMap);
     AddressU = CLAMP;
     AddressV = CLAMP;
-    MagFilter = POINT;
-    MinFilter = POINT;
-    Mipfilter = POINT;
+    MagFilter = LINEAR;
+    MinFilter = LINEAR;
+    Mipfilter = LINEAR;
 };
 
 texture NormalMap;
@@ -31,9 +31,9 @@ sampler normalSampler = sampler_state
     Texture = (NormalMap);
     AddressU = CLAMP;
     AddressV = CLAMP;
-    MagFilter = POINT;
-    MinFilter = POINT;
-    Mipfilter = POINT;
+    MinFilter = LINEAR;
+    MagFilter = LINEAR;
+    MipFilter = LINEAR;
 };
 
 texture DepthMap;
@@ -42,9 +42,9 @@ sampler depthSampler = sampler_state
     Texture = (DepthMap);
     AddressU = CLAMP;
     AddressV = CLAMP;
-    MagFilter = POINT;
-    MinFilter = POINT;
-    Mipfilter = POINT;
+    MinFilter = LINEAR;
+    MagFilter = LINEAR;
+    MipFilter = LINEAR;
 };
 
 struct VertexShaderInput
@@ -106,8 +106,8 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
     //camera-to-surface vector
     float3 directionToCamera = normalize(CameraPosition - position.xyz);
     //compute specular light
-    float rdot = clamp(dot(reflectionVector, directionToCamera), 0, abs(specularIntensity));
-    float specularLight = pow(rdot, specularPower);
+    float rdot = clamp(dot(reflectionVector, directionToCamera), 0, abs(specularIntensity));    
+    float specularLight = pow(abs(rdot), specularPower);
 
     //output the two lights
     return float4(diffuseLight.rgb, specularLight) ;

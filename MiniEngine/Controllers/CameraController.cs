@@ -81,7 +81,7 @@ namespace MiniEngine.Controllers
                 this.forward = Vector3.Forward;
                 this.left = Vector3.Left;
                 this.up = Vector3.Up;
-            }            
+            }           
 
             this.Camera.Move(position, position + this.forward);
         }

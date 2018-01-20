@@ -65,6 +65,7 @@
     <Compile Include="Units\Derivatives.cs" />
     <Compile Include="Units\Distance.cs" />
     <Compile Include="Units\Time.cs" />
+    <Compile Include="Utilities\ColorUtilities.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework, Version=3.6.0.1625, Culture=neutral, processorArchitecture=MSIL">

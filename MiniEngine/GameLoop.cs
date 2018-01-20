@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Input;
 using MiniEngine.Controllers;
 using MiniEngine.Input;
 using MiniEngine.Rendering;
+using MiniEngine.Rendering.Lighting;
 using MiniEngine.Scenes;
 
 namespace MiniEngine
@@ -18,6 +19,7 @@ namespace MiniEngine
         private int viewIndex = 0;
         private int viewOptions = 4;
 
+        private Camera camera;
         private SpriteBatch spriteBatch;
         private IScene[] scenes;
         private int currentScene = 0;
@@ -50,13 +52,13 @@ namespace MiniEngine
         {
             this.spriteBatch = new SpriteBatch(this.GraphicsDevice);
             
-            var camera = new Camera(this.GraphicsDevice.Viewport);
+            this.camera = new Camera(this.GraphicsDevice.Viewport);
             this.cameraController = new CameraController(this.KeyboardInput, this.MouseInput, camera);
 
             this.scenes = new IScene[]
             {
-                new ZimaScene(this.GraphicsDevice, camera),
-                new SponzaScene(this.GraphicsDevice, camera)
+                new ZimaScene(this.GraphicsDevice, this.camera),
+                new SponzaScene(this.GraphicsDevice, this.camera)
             };
 
             foreach (var scene in this.scenes)
@@ -79,7 +81,8 @@ namespace MiniEngine
 
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed
+                || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
             this.KeyboardInput.Update();
@@ -108,6 +111,15 @@ namespace MiniEngine
             else if (this.KeyboardInput.Click(Keys.OemMinus))
             {
                 this.viewIndex = (this.viewIndex + this.viewOptions - 1) % this.viewOptions;
+            }
+
+            // HACK: dropping some lights
+            if (this.scenes[1] is SponzaScene sponza)
+            {
+                if (this.KeyboardInput.Click(Keys.Q))
+                {
+                    sponza.NewLight(this.camera.Position);
+                }               
             }
 
             this.cameraController.Update(gameTime.ElapsedGameTime);
