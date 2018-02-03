@@ -25,9 +25,9 @@ sampler colorSampler = sampler_state
     Texture = (ColorMap);
     AddressU = CLAMP;
     AddressV = CLAMP;
-    MagFilter = LINEAR;
-    MinFilter = LINEAR;
-    Mipfilter = LINEAR;
+    MagFilter = POINT;
+    MinFilter = POINT;
+    Mipfilter = POINT;
 };
 
 texture NormalMap;

@@ -20,9 +20,9 @@ sampler colorSampler = sampler_state
     Texture = (ColorMap);
     AddressU = CLAMP;
     AddressV = CLAMP;
-    MagFilter = LINEAR;
-    MinFilter = LINEAR;
-    Mipfilter = LINEAR;
+    MagFilter = POINT;
+    MinFilter = POINT;
+    Mipfilter = POINT;
 };
 
 texture NormalMap;
@@ -31,9 +31,9 @@ sampler normalSampler = sampler_state
     Texture = (NormalMap);
     AddressU = CLAMP;
     AddressV = CLAMP;
-    MinFilter = LINEAR;
-    MagFilter = LINEAR;
-    MipFilter = LINEAR;
+    MinFilter = POINT;
+    MagFilter = POINT;
+    MipFilter = POINT;
 };
 
 texture DepthMap;
@@ -42,9 +42,9 @@ sampler depthSampler = sampler_state
     Texture = (DepthMap);
     AddressU = CLAMP;
     AddressV = CLAMP;
-    MinFilter = LINEAR;
-    MagFilter = LINEAR;
-    MipFilter = LINEAR;
+    MinFilter = POINT;
+    MagFilter = POINT;
+    MipFilter = POINT;
 };
 
 struct VertexShaderInput
@@ -101,7 +101,7 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
     float NdL = max(0,dot(normal,lightVector));
     float3 diffuseLight = NdL * Color.rgb;
 
-    //reflexion vector
+    //reflection vector
     float3 reflectionVector = normalize(reflect(-lightVector, normal));
     //camera-to-surface vector
     float3 directionToCamera = normalize(CameraPosition - position.xyz);
