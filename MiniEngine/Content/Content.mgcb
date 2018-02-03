@@ -191,3 +191,9 @@
 /processorParam:SwapWindingOrder=False
 /build:Sponza/sponza.obj
 
+#begin PostProcess.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:PostProcess.fx
+

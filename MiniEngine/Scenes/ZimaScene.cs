@@ -53,26 +53,23 @@ namespace MiniEngine.Scenes
 
         public override void Update(Seconds elapsed)
         {
-            var step = MathHelper.TwoPi / this.PointLights.Count;
-            for (var i = 0; i < this.PointLights.Count; i++)
-            {
-                var x = Math.Sin(step * i + this.totalElapsed.Value) * 100;
-                var y = Math.Cos(step * i + this.totalElapsed.Value) * 100;
+            //var step = MathHelper.TwoPi / this.PointLights.Count;
+            //for (var i = 0; i < this.PointLights.Count; i++)
+            //{
+            //    var x = Math.Sin(step * i + this.totalElapsed.Value) * 100;
+            //    var y = Math.Cos(step * i + this.totalElapsed.Value) * 100;
 
-                this.PointLights[i].Position = new Vector3((float)x, (float)y, 0);
-            }
+            //    this.PointLights[i].Position = new Vector3((float)x, (float)y, 0);
+            //}
 
-            this.totalElapsed += elapsed;
+            //this.totalElapsed += elapsed;
         }
 
         public override void Draw()
         {
-            using (this.Device.GeometryState())
-            {                
-                DrawModel(this.ship1, Matrix.CreateRotationY(MathHelper.Pi) * Matrix.CreateScale(0.5f));
-                DrawModel(this.lizard, Matrix.CreateRotationY(MathHelper.Pi) * Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Vector3.Left * 50));
-                DrawModel(this.ship2, Matrix.CreateRotationX(-MathHelper.PiOver2) * Matrix.CreateRotationY(MathHelper.Pi) * Matrix.CreateScale(0.5f) * Matrix.CreateTranslation(Vector3.Right * 50));
-            }
-        }        
+            DrawModel(this.ship1, Matrix.CreateRotationY(MathHelper.Pi) * Matrix.CreateScale(0.5f));
+            DrawModel(this.lizard, Matrix.CreateRotationY(MathHelper.Pi) * Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Vector3.Left * 50));
+            DrawModel(this.ship2, Matrix.CreateRotationX(-MathHelper.PiOver2) * Matrix.CreateRotationY(MathHelper.Pi) * Matrix.CreateScale(0.5f) * Matrix.CreateTranslation(Vector3.Right * 50));
+        }
     }
 }

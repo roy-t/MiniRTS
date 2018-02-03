@@ -68,10 +68,11 @@ namespace MiniEngine
 
             var clearEffect = this.Content.Load<Effect>("Clear");
             var combineEffect = this.Content.Load<Effect>("Combine");
+            var postProcessEffect = this.Content.Load<Effect>("PostProcess");
             var directionalLightEffect = this.Content.Load<Effect>("DirectionalLight");
             var pointLightEffect = this.Content.Load<Effect>("PointLight");
             var sphere = this.Content.Load<Model>("Sphere");
-            this.renderSystem = new RenderSystem(this.GraphicsDevice, clearEffect, directionalLightEffect, pointLightEffect, sphere, combineEffect, this.scenes[0]);
+            this.renderSystem = new RenderSystem(this.GraphicsDevice, clearEffect, directionalLightEffect, pointLightEffect, sphere, combineEffect, postProcessEffect, this.scenes[0]);
         }
 
         protected override void UnloadContent()
@@ -134,7 +135,7 @@ namespace MiniEngine
             this.GraphicsDevice.Clear(Color.CornflowerBlue);
 
             this.renderSystem.Render();
-            this.Window.Title = $"{gameTime.ElapsedGameTime.TotalMilliseconds:F2}ms, {(1.0f / gameTime.ElapsedGameTime.TotalSeconds):F2} fps, Fixed Time Step: {this.IsFixedTimeStep} (press 'F' so switch)";
+            this.Window.Title = $"{gameTime.ElapsedGameTime.TotalMilliseconds:F2}ms, {(1.0f / gameTime.ElapsedGameTime.TotalSeconds):F2} fps, Fixed Time Step: {this.IsFixedTimeStep} (press 'F' so switch), Camera Position {this.camera.Position}";
 
             this.spriteBatch.Begin(
                 SpriteSortMode.Deferred,
