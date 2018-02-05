@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Rendering.Lighting;
 using MiniEngine.Rendering.Primitives;
@@ -70,6 +71,10 @@ namespace MiniEngine.Rendering
             PostProcess();
         }
 
+        public float FXAA_SPAN_MAX { get; set; } = 8.0f;
+        public float FXAA_REDUCE_MUL { get; set; } = 8.0f;
+        public float FXAA_REDUCE_MIN { get; set; } = 8.0f;
+
         private void PostProcess()
         {            
             using (this.Device.PostProcessState())
@@ -80,12 +85,15 @@ namespace MiniEngine.Rendering
                     this.PostProcessEffect.Parameters["ScaleX"].SetValue(1.0f / this.CombineTarget.Width);
                     this.PostProcessEffect.Parameters["ScaleY"].SetValue(1.0f / this.CombineTarget.Height);
                     this.PostProcessEffect.Parameters["ColorMap"].SetValue(this.CombineTarget);
+                    this.PostProcessEffect.Parameters["FXAA_SPAN_MAX"].SetValue(this.FXAA_SPAN_MAX);
+                    this.PostProcessEffect.Parameters["FXAA_REDUCE_MUL"].SetValue(1.0f / this.FXAA_REDUCE_MUL);
+                    this.PostProcessEffect.Parameters["FXAA_REDUCE_MIN"].SetValue(1.0f / (float)Math.Pow(2,this.FXAA_REDUCE_MIN));
                     pass.Apply();
 
                     this.Quad.Render(this.Device);
                 }
             }            
-        }
+        }        
 
         private void Combine()
         {
@@ -97,7 +105,7 @@ namespace MiniEngine.Rendering
                 foreach (var pass in this.CombineEffect.Techniques[0].Passes)
                 {
                     this.CombineEffect.Parameters["ColorMap"].SetValue(this.ColorTarget);
-                    this.CombineEffect.Parameters["LightMap"].SetValue(this.LightTarget);
+                    this.CombineEffect.Parameters["LightMap"].SetValue(this.LightTarget);                    
 
                     pass.Apply();
                     this.Quad.Render(this.Device);

@@ -7,6 +7,20 @@ namespace MiniEngine.Input
 {
     public sealed class KeyboardInput
     {
+        private readonly Dictionary<Keys, int> Digits = new Dictionary<Keys, int>
+        {
+            {Microsoft.Xna.Framework.Input.Keys.D1, 1},
+            {Microsoft.Xna.Framework.Input.Keys.D2, 2},
+            {Microsoft.Xna.Framework.Input.Keys.D3, 3},
+            {Microsoft.Xna.Framework.Input.Keys.D4, 4},
+            {Microsoft.Xna.Framework.Input.Keys.D5, 5},
+            {Microsoft.Xna.Framework.Input.Keys.D6, 6},
+            {Microsoft.Xna.Framework.Input.Keys.D7, 7},
+            {Microsoft.Xna.Framework.Input.Keys.D8, 8},
+            {Microsoft.Xna.Framework.Input.Keys.D9, 9},
+            {Microsoft.Xna.Framework.Input.Keys.D0, 0},
+        };
+
         private readonly Keys[] Keys;
         private readonly Dictionary<Keys, InputState> KeyStates;
 
@@ -79,6 +93,21 @@ namespace MiniEngine.Input
         {
             var state = this.KeyStates[key];
             return state == InputState.JustPressed || state == InputState.Pressed;
+        }
+
+        public bool ClickDigit(out int value)
+        {
+            foreach (var key in this.Digits)
+            {
+                if (Click(key.Key))
+                {
+                    value = key.Value;
+                    return true;
+                }
+            }
+
+            value = 0;
+            return false;
         }
     }
 }
