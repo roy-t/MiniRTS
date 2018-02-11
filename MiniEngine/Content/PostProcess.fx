@@ -38,9 +38,9 @@ sampler colorSampler = sampler_state
     Texture = (ColorMap);
     AddressU = CLAMP;
     AddressV = CLAMP;
-    MagFilter = POINT;
-    MinFilter = POINT;
-    Mipfilter = POINT;
+    MagFilter = LINEAR;
+    MinFilter = LINEAR;
+    Mipfilter = LINEAR;
 };
 
 struct VertexShaderInput
