@@ -32,6 +32,9 @@ namespace ModelExtension
         [DisplayName("Normal Map Fallback")]
         public string NormalMapFallback { get; set; } = "null_normal.tga";
 
+        [DisplayName("Mask Fallback")]
+        public string MaskFallback { get; set; } = "null_mask.tga";
+
         [DisplayName("Effect File")]
         [Description("The effect file which shaders to apply to the model")]
         public string EffectFile { get; set; } = "RenderEffect.fx";
@@ -46,7 +49,11 @@ namespace ModelExtension
             if (this.ProcessTextures)
             {
                 // Look up all materials and link them to the model
-                MaterialLinker.Bind(input, Path.GetFullPath(this.NormalMapFallback), Path.GetFullPath(this.SpecularMapFallback));
+                MaterialLinker.Bind(
+                    input,
+                    Path.GetFullPath(this.NormalMapFallback),
+                    Path.GetFullPath(this.SpecularMapFallback),
+                    Path.GetFullPath(this.MaskFallback));
             }
 
             return base.Process(input, context);
@@ -91,16 +98,15 @@ namespace ModelExtension
             var deferredShadingMaterial =
                 new EffectMaterialContent { Effect = new ExternalReference<EffectContent>(this.EffectFile) };
 
-            // copy the textures in the original material to the new normal mapping
-            // material, if they are relevant to our renderer. The
-            // LookUpTextures function has added the normal map and specular map
-            // textures to the Textures collection, so that will be copied as well.
+            // Copy the textures in the original material to the new normal mapping
+            // material, if they are relevant to our renderer. 
             foreach (var texture
                 in material.Textures)
             {
-                if ((texture.Key == "Texture") ||
-                    (texture.Key == "NormalMap") ||
-                    (texture.Key == "SpecularMap"))
+                if (texture.Key == "Texture" ||
+                    texture.Key == "NormalMap" ||
+                    texture.Key == "SpecularMap" ||
+                    texture.Key == "Mask")
                     deferredShadingMaterial.Textures.Add(texture.Key, texture.Value);
             }
 

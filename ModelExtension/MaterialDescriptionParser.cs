@@ -52,7 +52,13 @@ namespace ModelExtension
                     specular = Path.GetFullPath(Path.Combine(this.BasePath, config.RelativePath, specularLookUp));
                 }
 
-                dictionary.Add(diffuse, new MaterialDescription(diffuse, normal, specular));
+                string mask = null;
+                if (lookup.TryGet(MaterialType.Mask, tuple.Value, out var maskLookuUp))
+                {
+                    mask = Path.GetFullPath(Path.Combine(this.BasePath, config.RelativePath, maskLookuUp));
+                }
+
+                dictionary.Add(diffuse, new MaterialDescription(diffuse, normal, specular, mask));
             }
 
             return dictionary;
@@ -110,7 +116,8 @@ namespace ModelExtension
                     var values = new[]
                     {
                         MaterialType.Normal,
-                        MaterialType.Specular
+                        MaterialType.Specular,
+                        MaterialType.Mask, 
                     };
 
                     return new ParserConfiguration(relativePath, values);
@@ -157,7 +164,8 @@ namespace ModelExtension
         {
             Diffuse,
             Normal,
-            Specular
+            Specular,
+            Mask
         }
     }
 }

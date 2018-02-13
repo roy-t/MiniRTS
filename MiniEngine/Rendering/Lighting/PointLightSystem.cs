@@ -32,8 +32,7 @@ namespace MiniEngine.Rendering.Lighting
                 {
                     foreach (var pass in this.Effect.Techniques[0].Passes)
                     {
-                        // G-Buffer input
-                        this.Effect.Parameters["ColorMap"].SetValue(color);
+                        // G-Buffer input                        
                         this.Effect.Parameters["NormalMap"].SetValue(normal);
                         this.Effect.Parameters["DepthMap"].SetValue(depth);
 

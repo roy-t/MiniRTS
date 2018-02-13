@@ -49,6 +49,18 @@ sampler normalSampler = sampler_state
     AddressV = Wrap;
 };
 
+texture Mask;
+sampler maskSampler = sampler_state
+{
+    Texture = (Mask);
+    MinFilter = ANISOTROPIC;
+    MagFilter = ANISOTROPIC;
+    MipFilter = LINEAR;
+    MaxAnisotropy = 16;
+    AddressU = Wrap;
+    AddressV = Wrap;
+};
+
 struct VertexShaderInput
 {
     float4 Position : POSITION0;
@@ -96,6 +108,13 @@ struct PixelShaderOutput
 PixelShaderOutput MainPS(VertexShaderOutput input)
 {
     PixelShaderOutput output = (PixelShaderOutput)0;
+    
+    float mask = tex2D(maskSampler, input.TexCoord).r;
+    if(mask < 0.5f)
+    {   
+        clip(-1);       
+        return output;
+    }
 
     output.Color = tex2D(diffuseSampler, input.TexCoord);
     
