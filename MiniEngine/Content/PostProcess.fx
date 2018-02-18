@@ -28,7 +28,7 @@ static const float2 samples[] =
 float ScaleX;  // 1.0f / renderTarget.Width
 float ScaleY;  // 1.0f / renderTarget.Height
 
-bool EnableFXAA = true;
+float Strength = 2.0f;
 
 texture ColorMap;
 sampler colorSampler = sampler_state
@@ -105,35 +105,32 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
 
     float3 rgbCE = getRGB(CE, texCoord);
 
-    if(EnableFXAA)
-    {    
-        // Sample color
-        float3 rgbNW = getRGB(NW, texCoord);
-        float3 rgbNE = getRGB(NE, texCoord);
-        float3 rgbSW = getRGB(SW, texCoord);
-        float3 rgbSE = getRGB(SE, texCoord);
-        
-        // sample normals
-        float3 normalCE = getNormal(CE, texCoord);
-        float diffNW = dot(getNormal(NW, texCoord), normalCE);    
-        float diffNE = dot(getNormal(NE, texCoord), normalCE);
-        float diffSW = dot(getNormal(SW, texCoord), normalCE);
-        float diffSE = dot(getNormal(SE, texCoord), normalCE);
+    // Sample color
+    float3 rgbNW = getRGB(NW, texCoord);
+    float3 rgbNE = getRGB(NE, texCoord);
+    float3 rgbSW = getRGB(SW, texCoord);
+    float3 rgbSE = getRGB(SE, texCoord);
+    
+    // sample normals
+    float3 normalCE = getNormal(CE, texCoord);
+    float dotNW = dot(getNormal(NW, texCoord), normalCE);    
+    float dotNE = dot(getNormal(NE, texCoord), normalCE);
+    float dotSW = dot(getNormal(SW, texCoord), normalCE);
+    float dotSE = dot(getNormal(SE, texCoord), normalCE);
 
-        // Get the min and max values and transform them to the [0..1] range
-        float minDiff = (min(diffNW, min(diffNE, min(diffSW, diffSE))) + 1.0f) * 0.5f;
-        float maxDiff = (max(diffNW, max(diffNE, max(diffSW, diffSE))) + 1.0f) * 0.5f;
-        
-        float range = (maxDiff - minDiff);
-        
-        float borderWeight = clamp((range + 1.0f) / 2.0f, 0, 1) * 0.2f;
-        float centerWeight = 1.0f - (borderWeight * 4);
+    // dot(v1, v2) == 1 if the vectors point in the same direction
+    // dot(v1, v2) == -1 if the vectors point in opposite directions
+    float mindot = min(dotNW, min(dotNE, min(dotSW, dotSE)));
+    float maxdot = max(dotNW, max(dotNE, max(dotSW, dotSE)));
+    
+    // from [0..2] to [0..1]
+    float range = (maxdot - mindot) * 0.5f;
+    
+    float borderWeight = clamp(range * Strength, 0, 1) * 0.2f;
+    float centerWeight = 1.0f - (borderWeight * 4);
 
-        float3 color = rgbCE * centerWeight + (rgbNW + rgbNE + rgbSW + rgbSE) * borderWeight;
-        return float4(color.rgb, 1.0f);        
-    }
-
-    return float4(rgbCE.rgb, 1.0f);
+    float3 color = rgbCE * centerWeight + (rgbNW + rgbNE + rgbSW + rgbSE) * borderWeight;
+    return float4(color.rgb, 1.0f);        
 }
 
 technique Technique1

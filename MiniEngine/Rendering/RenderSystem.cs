@@ -84,7 +84,7 @@ namespace MiniEngine.Rendering
                     this.PostProcessEffect.Parameters["ScaleY"].SetValue(1.0f / this.CombineTarget.Height);
                     this.PostProcessEffect.Parameters["ColorMap"].SetValue(this.CombineTarget);
                     this.PostProcessEffect.Parameters["NormalMap"].SetValue(this.NormalTarget);                                        
-                    this.PostProcessEffect.Parameters["EnableFXAA"].SetValue(this.EnableFXAA);                    
+                    this.PostProcessEffect.Parameters["Strength"].SetValue(this.EnableFXAA? 2.0f : 0.0f);                    
                     pass.Apply();
 
                     this.Quad.Render(this.Device);
