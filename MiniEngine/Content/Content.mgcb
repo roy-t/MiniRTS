@@ -57,6 +57,7 @@
 /processorParam:ProcessTextures=True
 /processorParam:SpecularMapFallback=null_specular.tga
 /processorParam:NormalMapFallback=null_normal.tga
+/processorParam:MaskFallback=null_mask.tga
 /processorParam:EffectFile=RenderEffect.fx
 /processorParam:GenerateTangentFrames=True
 /processorParam:ColorKeyColor=255,0,255,255
@@ -80,6 +81,7 @@
 /processorParam:ProcessTextures=True
 /processorParam:SpecularMapFallback=null_specular.tga
 /processorParam:NormalMapFallback=null_normal.tga
+/processorParam:MaskFallback=null_mask.tga
 /processorParam:EffectFile=RenderEffect.fx
 /processorParam:GenerateTangentFrames=True
 /processorParam:ColorKeyColor=255,0,255,255
@@ -103,6 +105,7 @@
 /processorParam:ProcessTextures=True
 /processorParam:SpecularMapFallback=null_specular.tga
 /processorParam:NormalMapFallback=null_normal.tga
+/processorParam:MaskFallback=null_mask.tga
 /processorParam:EffectFile=RenderEffect.fx
 /processorParam:GenerateTangentFrames=True
 /processorParam:ColorKeyColor=255,0,255,255
@@ -174,6 +177,7 @@
 /processorParam:ProcessTextures=True
 /processorParam:SpecularMapFallback=null_specular.tga
 /processorParam:NormalMapFallback=null_normal.tga
+/processorParam:MaskFallback=null_mask.tga
 /processorParam:EffectFile=RenderEffect.fx
 /processorParam:GenerateTangentFrames=True
 /processorParam:ColorKeyColor=255,0,255,255

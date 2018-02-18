@@ -28,9 +28,7 @@ static const float2 samples[] =
 float ScaleX;  // 1.0f / renderTarget.Width
 float ScaleY;  // 1.0f / renderTarget.Height
 
-float FXAA_REDUCE_MIN = 1.0f/128.0f;
-float FXAA_REDUCE_MUL = 1.0f/8.0f;
-float FXAA_SPAN_MAX = 8.0f;
+bool EnableFXAA = true;
 
 texture ColorMap;
 sampler colorSampler = sampler_state
@@ -41,6 +39,28 @@ sampler colorSampler = sampler_state
     MagFilter = LINEAR;
     MinFilter = LINEAR;
     Mipfilter = LINEAR;
+};
+
+texture NormalMap;
+sampler normalSampler = sampler_state
+{
+    texture = (NormalMap);
+    AddressU = CLAMP;
+    AddressV = CLAMP;
+    MagFilter = LINEAR;
+    MinFilter = LINEAR;
+    Mipfilter = LINEAR;
+};
+
+texture DepthMap;
+sampler depthSampler = sampler_state
+{
+    Texture = (DepthMap);
+    AddressU = CLAMP;
+    AddressV = CLAMP;
+    MinFilter = LINEAR;
+    MagFilter = LINEAR;
+    MipFilter = LINEAR;
 };
 
 struct VertexShaderInput
@@ -55,17 +75,6 @@ struct VertexShaderOutput
     float2 TexCoord : TEXCOORD0;
 };
 
-static float toLuma(float3 diffuseColor) 
-{
-    return dot(diffuseColor, luma);    
-}
-
-static float3 getRGB(int direction, float2 texCoord)
-{
-    float2 offset = float2(samples[direction].x * ScaleX, samples[direction].y * ScaleY);
-    return tex2D(colorSampler, texCoord + offset).rgb;  
-}
-
 VertexShaderOutput MainVS(VertexShaderInput input)
 {
     VertexShaderOutput output = (VertexShaderOutput)0;    
@@ -75,63 +84,56 @@ VertexShaderOutput MainVS(VertexShaderInput input)
     return output;
 }
 
+static float3 getNormal(int direction, float2 texCoord)
+{
+    float2 offset = float2(samples[direction].x * ScaleX, samples[direction].y * ScaleY);
+    float3 normalData = tex2D(normalSampler, texCoord + offset).xyz;
+    //tranform normal back into [-1,1] range
+    return 2.0f * normalData.xyz - 1.0f;
+}
+
+static float3 getRGB(int direction, float2 texCoord)
+{
+    float2 offset = float2(samples[direction].x * ScaleX, samples[direction].y * ScaleY);
+    return tex2D(colorSampler, texCoord + offset).rgb;  
+}
+
 float4 MainPS(VertexShaderOutput input) : COLOR0
 {   
     const float2 frame = float2(ScaleX, ScaleY);
     const float2 texCoord = input.TexCoord;
-    
-    // Sample color values
-    float3 rgbNW = getRGB(NW, texCoord);
-    float3 rgbNE = getRGB(NE, texCoord);
-    float3 rgbSW = getRGB(SW, texCoord);
-    float3 rgbSE = getRGB(SE, texCoord);
+
     float3 rgbCE = getRGB(CE, texCoord);
 
-    // Compute luma values
-    float lumaNW = toLuma(rgbNW);
-    float lumaNE = toLuma(rgbNE);
-    float lumaSW = toLuma(rgbSW);
-    float lumaSE = toLuma(rgbSE);
-    float lumaCE = toLuma(rgbCE);  
+    if(EnableFXAA)
+    {    
+        // Sample color
+        float3 rgbNW = getRGB(NW, texCoord);
+        float3 rgbNE = getRGB(NE, texCoord);
+        float3 rgbSW = getRGB(SW, texCoord);
+        float3 rgbSE = getRGB(SE, texCoord);
+        
+        // sample normals
+        float3 normalCE = getNormal(CE, texCoord);
+        float diffNW = dot(getNormal(NW, texCoord), normalCE);    
+        float diffNE = dot(getNormal(NE, texCoord), normalCE);
+        float diffSW = dot(getNormal(SW, texCoord), normalCE);
+        float diffSE = dot(getNormal(SE, texCoord), normalCE);
 
-    float lumaMin = min(lumaCE, min(min(lumaNW, lumaNE), min(lumaSW, lumaSE)));
-    float lumaMax = max(lumaCE, max(max(lumaNW, lumaNE), max(lumaSW, lumaSE)));
+        // Get the min and max values and transform them to the [0..1] range
+        float minDiff = (min(diffNW, min(diffNE, min(diffSW, diffSE))) + 1.0f) * 0.5f;
+        float maxDiff = (max(diffNW, max(diffNE, max(diffSW, diffSE))) + 1.0f) * 0.5f;
+        
+        float range = (maxDiff - minDiff);
+        
+        float borderWeight = clamp((range + 1.0f) / 2.0f, 0, 1) * 0.2f;
+        float centerWeight = 1.0f - (borderWeight * 4);
 
-    // Compute sampling direction based on luma slope
-    float2 dir = float2
-    (
-        -((lumaNW + lumaNE) - (lumaSW + lumaSE)),
-        ((lumaNW + lumaSW) - (lumaNE + lumaSE))
-    );
-    
-    float dirReduce = max
-    (
-        (lumaNW + lumaNE + lumaSW + lumaSE) * (0.25f * FXAA_REDUCE_MUL),
-        FXAA_REDUCE_MIN
-    );
+        float3 color = rgbCE * centerWeight + (rgbNW + rgbNE + rgbSW + rgbSE) * borderWeight;
+        return float4(color.rgb, 1.0f);        
+    }
 
-    float dirMin = 1.0f / (min(abs(dir.x), abs(dir.y)) + dirReduce);
-
-    dir = min(float2(FXAA_SPAN_MAX,  FXAA_SPAN_MAX),
-          max(float2(-FXAA_SPAN_MAX, -FXAA_SPAN_MAX), 
-          dir * dirMin)) * frame.xy;
-
-    float3 rgbA = (1.0f/2.0f) * (
-        tex2D(colorSampler, texCoord.xy + dir * (1.0f/3.0f - 0.5f)).xyz +
-        tex2D(colorSampler, texCoord.xy + dir * (2.0f/3.0f - 0.5f)).xyz);
-
-    float3 rgbB = rgbA * (1.0f/2.0f) + (1.0f/4.0f) * (
-        tex2D(colorSampler, texCoord.xy + dir * (0.0f/3.0f - 0.5f)).xyz +
-        tex2D(colorSampler, texCoord.xy + dir * (3.0f/3.0f - 0.5f)).xyz);
-
-    float lumaB = toLuma(rgbB);
-
-    if((lumaB < lumaMin) || (lumaB > lumaMax))
-    {
-        return float4(rgbA, 1.0f);
-    } 
-
-    return float4(rgbB, 1.0f);
+    return float4(rgbCE.rgb, 1.0f);
 }
 
 technique Technique1

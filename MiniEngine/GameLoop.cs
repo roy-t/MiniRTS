@@ -114,29 +114,10 @@ namespace MiniEngine
                 this.viewIndex = (this.viewIndex + this.viewOptions - 1) % this.viewOptions;
             }
 
-            if (this.KeyboardInput.Hold(Keys.LeftControl))
+            if (this.KeyboardInput.Click(Keys.LeftControl))
             {
-                if (this.KeyboardInput.ClickDigit(out var value))
-                {
-                    this.renderSystem.FXAA_SPAN_MAX = value;
-                }
-            }
-
-            if (this.KeyboardInput.Hold(Keys.LeftAlt))
-            {
-                if (this.KeyboardInput.ClickDigit(out var value))
-                {
-                    this.renderSystem.FXAA_REDUCE_MIN = value;
-                }
-            }
-
-            if (this.KeyboardInput.Hold(Keys.LeftShift))
-            {
-                if (this.KeyboardInput.ClickDigit(out var value))
-                {
-                    this.renderSystem.FXAA_REDUCE_MUL = value;
-                }
-            }
+                this.renderSystem.EnableFXAA = !this.renderSystem.EnableFXAA;                
+            }            
 
             // HACK: dropping some lights
             if (this.scenes[1] is SponzaScene sponza)

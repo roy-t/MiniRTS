@@ -47,7 +47,9 @@ namespace MiniEngine.Rendering
 
             this.DirectionalLightSystem = new DirectionalLightSystem(device, directionalLightEffect);
             this.PointLightSystem = new PointLightSystem(device, pointLightEffect, sphere);
-        }       
+        }
+
+        public bool EnableFXAA { get; set; } = true;
 
         public IScene Scene { get; set; }        
 
@@ -69,11 +71,7 @@ namespace MiniEngine.Rendering
             Combine();
 
             PostProcess();
-        }
-
-        public float FXAA_SPAN_MAX { get; set; } = 8.0f;
-        public float FXAA_REDUCE_MUL { get; set; } = 8.0f;
-        public float FXAA_REDUCE_MIN { get; set; } = 8.0f;
+        }        
 
         private void PostProcess()
         {            
@@ -85,9 +83,8 @@ namespace MiniEngine.Rendering
                     this.PostProcessEffect.Parameters["ScaleX"].SetValue(1.0f / this.CombineTarget.Width);
                     this.PostProcessEffect.Parameters["ScaleY"].SetValue(1.0f / this.CombineTarget.Height);
                     this.PostProcessEffect.Parameters["ColorMap"].SetValue(this.CombineTarget);
-                    this.PostProcessEffect.Parameters["FXAA_SPAN_MAX"].SetValue(this.FXAA_SPAN_MAX);
-                    this.PostProcessEffect.Parameters["FXAA_REDUCE_MUL"].SetValue(1.0f / this.FXAA_REDUCE_MUL);
-                    this.PostProcessEffect.Parameters["FXAA_REDUCE_MIN"].SetValue(1.0f / (float)Math.Pow(2,this.FXAA_REDUCE_MIN));
+                    this.PostProcessEffect.Parameters["NormalMap"].SetValue(this.NormalTarget);                                        
+                    this.PostProcessEffect.Parameters["EnableFXAA"].SetValue(this.EnableFXAA);                    
                     pass.Apply();
 
                     this.Quad.Render(this.Device);
