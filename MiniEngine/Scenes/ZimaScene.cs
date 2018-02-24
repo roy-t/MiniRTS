@@ -29,8 +29,8 @@ namespace MiniEngine.Scenes
 
         private Seconds totalElapsed;
 
-        public ZimaScene(GraphicsDevice device, Camera camera)
-            : base(device, camera)
+        public ZimaScene(GraphicsDevice device)
+            : base(device)
         {
 
             this.DirectionalLights.Add(new DirectionalLight(Vector3.Normalize(Vector3.Forward + Vector3.Down), Color.White * 0.75f));
@@ -65,11 +65,18 @@ namespace MiniEngine.Scenes
             //this.totalElapsed += elapsed;
         }
 
-        public override void Draw()
+        public override void Draw(IViewPoint viewPoint)
         {
-            DrawModel(this.ship1, Matrix.CreateRotationY(MathHelper.Pi) * Matrix.CreateScale(0.5f));
-            DrawModel(this.lizard, Matrix.CreateRotationY(MathHelper.Pi) * Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Vector3.Left * 50));
-            DrawModel(this.ship2, Matrix.CreateRotationX(-MathHelper.PiOver2) * Matrix.CreateRotationY(MathHelper.Pi) * Matrix.CreateScale(0.5f) * Matrix.CreateTranslation(Vector3.Right * 50));
+            DrawModel(this.ship1, Matrix.CreateRotationY(MathHelper.Pi) * Matrix.CreateScale(0.5f), viewPoint);
+            DrawModel(this.lizard, Matrix.CreateRotationY(MathHelper.Pi) * Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Vector3.Left * 50), viewPoint);
+            DrawModel(this.ship2, Matrix.CreateRotationX(-MathHelper.PiOver2) * Matrix.CreateRotationY(MathHelper.Pi) * Matrix.CreateScale(0.5f) * Matrix.CreateTranslation(Vector3.Right * 50), viewPoint);
+        }
+
+        public override void Draw(Effect effectOverride, IViewPoint viewPoint)
+        {
+            DrawModel(effectOverride, this.ship1, Matrix.CreateRotationY(MathHelper.Pi) * Matrix.CreateScale(0.5f), viewPoint);
+            DrawModel(effectOverride, this.lizard, Matrix.CreateRotationY(MathHelper.Pi) * Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Vector3.Left * 50), viewPoint);
+            DrawModel(effectOverride, this.ship2, Matrix.CreateRotationX(-MathHelper.PiOver2) * Matrix.CreateRotationY(MathHelper.Pi) * Matrix.CreateScale(0.5f) * Matrix.CreateTranslation(Vector3.Right * 50), viewPoint);
         }
     }
 }

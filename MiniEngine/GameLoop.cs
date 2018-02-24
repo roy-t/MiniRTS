@@ -57,8 +57,8 @@ namespace MiniEngine
 
             this.scenes = new IScene[]
             {
-                new ZimaScene(this.GraphicsDevice, this.camera),
-                new SponzaScene(this.GraphicsDevice, this.camera)
+                new ZimaScene(this.GraphicsDevice),
+                new SponzaScene(this.GraphicsDevice)
             };
 
             foreach (var scene in this.scenes)
@@ -71,8 +71,11 @@ namespace MiniEngine
             var postProcessEffect = this.Content.Load<Effect>("PostProcess");
             var directionalLightEffect = this.Content.Load<Effect>("DirectionalLight");
             var pointLightEffect = this.Content.Load<Effect>("PointLight");
+            var shadowMapEffect = this.Content.Load<Effect>("ShadowMap");
+            var shadowCastingLightEffect = this.Content.Load<Effect>("ShadowCastingLight");
             var sphere = this.Content.Load<Model>("Sphere");
-            this.renderSystem = new RenderSystem(this.GraphicsDevice, clearEffect, directionalLightEffect, pointLightEffect, sphere, combineEffect, postProcessEffect, this.scenes[0]);
+            this.renderSystem = new RenderSystem(this.GraphicsDevice, clearEffect, directionalLightEffect, pointLightEffect, shadowMapEffect, shadowCastingLightEffect,
+                sphere, combineEffect, postProcessEffect, this.scenes[0]);
         }
 
         protected override void UnloadContent()
@@ -139,7 +142,7 @@ namespace MiniEngine
         {
             this.GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            this.renderSystem.Render();
+            this.renderSystem.Render(this.camera);
             this.Window.Title = $"{gameTime.ElapsedGameTime.TotalMilliseconds:F2}ms, {(1.0f / gameTime.ElapsedGameTime.TotalSeconds):F2} fps, Fixed Time Step: {this.IsFixedTimeStep} (press 'F' so switch), Camera Position {this.camera.Position}";
 
             this.spriteBatch.Begin(

@@ -13,16 +13,13 @@ namespace MiniEngine.Scenes
     {
         private Model sponza;
         
-        public SponzaScene(GraphicsDevice device, Camera camera)
-            : base(device, camera)
+        public SponzaScene(GraphicsDevice device)
+            : base(device)
         {
             this.AmbientLight = Color.White * 0.25f;
 
             this.DirectionalLights.Add(new DirectionalLight(Vector3.Normalize(new Vector3(0.25f, -1.0f, 0.65f)), Color.White * 0.2f));
-            this.PointLights.Add(new PointLight(new Vector3(55, 10, 22), Color.White, 10, 1));
-            
-
-            
+            this.PointLights.Add(new PointLight(new Vector3(55, 10, 22), Color.White, 10, 1));                       
         }
 
         public PointLight PointLight { get; private set; }
@@ -37,9 +34,14 @@ namespace MiniEngine.Scenes
             
         }
 
-        public override void Draw()
+        public override void Draw(IViewPoint viewPoint)
         {
-            DrawModel(this.sponza, Matrix.CreateScale(0.05f));
+            DrawModel(this.sponza, Matrix.CreateScale(0.05f), viewPoint);
+        }
+
+        public override void Draw(Effect effectOverride, IViewPoint viewPoint)
+        {
+            DrawModel(effectOverride, this.sponza, Matrix.CreateScale(0.05f), viewPoint);
         }
 
         public void NewLight(Vector3 position)

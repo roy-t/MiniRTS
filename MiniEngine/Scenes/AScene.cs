@@ -13,17 +13,14 @@ namespace MiniEngine.Scenes
     {
         protected readonly GraphicsDevice Device;
 
-        protected AScene(GraphicsDevice device, Camera camera)
+        protected AScene(GraphicsDevice device)
         {
-            this.Device = device;
-            this.Camera = camera;
+            this.Device = device;            
 
             this.DirectionalLights = new List<DirectionalLight>();
             this.PointLights = new List<PointLight>();
             this.AmbientLight = Color.Black;
-        }
-
-        public Camera Camera { get; }
+        }        
 
         public List<DirectionalLight> DirectionalLights { get; }        
 
@@ -35,21 +32,50 @@ namespace MiniEngine.Scenes
 
         public abstract void Update(Seconds elapsed);
 
-        public abstract void Draw();
+        public abstract void Draw(IViewPoint viewPoint);
+        public abstract void Draw(Effect effectOverride, IViewPoint viewPoint);
 
-        protected void DrawModel(Model model, Matrix world)
+        protected void DrawModel(Model model, Matrix world, IViewPoint viewPoint)
         {
             foreach (var mesh in model.Meshes)
             {
                 foreach (var effect in mesh.Effects)
                 {
                     effect.Parameters["World"].SetValue(world);
-                    effect.Parameters["View"].SetValue(this.Camera.View);
-                    effect.Parameters["Projection"].SetValue(this.Camera.Projection);
+                    effect.Parameters["View"].SetValue(viewPoint.View);
+                    effect.Parameters["Projection"].SetValue(viewPoint.Projection);
                 }
 
                 mesh.Draw();
             }
         }
+
+        protected void DrawModel(Effect effectOverride, Model model, Matrix world, IViewPoint viewpoint)
+        {
+            effectOverride.Parameters["World"].SetValue(world);
+            effectOverride.Parameters["View"].SetValue(viewpoint.View);
+            effectOverride.Parameters["Projection"].SetValue(viewpoint.Projection);
+
+            foreach (var mesh in model.Meshes)
+            {
+                var effects = new Effect[mesh.MeshParts.Count];
+
+                for (var i = 0; i < mesh.MeshParts.Count; i++)
+                {
+                    var part = mesh.MeshParts[i];
+                    effects[i] = part.Effect;
+                    part.Effect = effectOverride;
+
+                }
+
+                mesh.Draw();
+
+                for (var i = 0; i < mesh.MeshParts.Count; i++)
+                {
+                    var part = mesh.MeshParts[i];
+                    part.Effect = effects[i];
+                }
+            }
+        }    
     }
 }

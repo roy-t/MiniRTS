@@ -201,3 +201,15 @@
 /processorParam:DebugMode=Auto
 /build:PostProcess.fx
 
+#begin ShadowMap.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:ShadowMap.fx
+
+#begin ShadowCastingLight.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:ShadowCastingLight.fx
+

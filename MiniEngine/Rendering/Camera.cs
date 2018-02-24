@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace MiniEngine.Rendering
 {
-    public sealed class Camera
+    public sealed class Camera : IViewPoint
     {
         public Camera(Viewport viewport)
         {

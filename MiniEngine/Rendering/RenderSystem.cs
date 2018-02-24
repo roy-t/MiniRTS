@@ -10,7 +10,9 @@ namespace MiniEngine.Rendering
     public sealed class RenderSystem
     {
         private readonly GraphicsDevice Device;
-        private readonly Effect ClearEffect;
+        private readonly Effect ClearEffect;        
+        private readonly Effect ShadowMapEffect;
+        private readonly Effect ShadowCastingLightEffect;
         private readonly Effect CombineEffect;
         private readonly Effect PostProcessEffect;
         private readonly Quad Quad;
@@ -20,13 +22,18 @@ namespace MiniEngine.Rendering
         private readonly RenderTarget2D LightTarget;
         private readonly RenderTarget2D CombineTarget;
 
+        private readonly RenderTarget2D ShadowMap;
+
         private readonly DirectionalLightSystem DirectionalLightSystem;
         private readonly PointLightSystem PointLightSystem;
 
-        public RenderSystem(GraphicsDevice device, Effect clearEffect, Effect directionalLightEffect, Effect pointLightEffect, Model sphere, Effect combineEffect, Effect postProcessEffect, IScene scene)
+        public RenderSystem(GraphicsDevice device, Effect clearEffect, Effect directionalLightEffect, Effect pointLightEffect, Effect shadowMapEffect, Effect shadowCastingLightEffect,
+            Model sphere, Effect combineEffect, Effect postProcessEffect, IScene scene)
         {
             this.Device = device;
             this.ClearEffect = clearEffect;
+            this.ShadowMapEffect = shadowMapEffect;
+            this.ShadowCastingLightEffect = shadowCastingLightEffect;
             this.CombineEffect = combineEffect;
             this.PostProcessEffect = postProcessEffect;
 
@@ -37,6 +44,7 @@ namespace MiniEngine.Rendering
             var width = device.PresentationParameters.BackBufferWidth;
             var height = device.PresentationParameters.BackBufferHeight;
 
+            // Do not enable AA as we use FXAA during post processing
             const int aaSamples = 0;
 
             this.ColorTarget = new RenderTarget2D(device, width, height, false, SurfaceFormat.Color, DepthFormat.Depth24, aaSamples, RenderTargetUsage.DiscardContents);
@@ -44,6 +52,8 @@ namespace MiniEngine.Rendering
             this.DepthTarget  = new RenderTarget2D(device, width, height, false, SurfaceFormat.Single, DepthFormat.None, aaSamples, RenderTargetUsage.DiscardContents);
             this.LightTarget  = new RenderTarget2D(device, width, height, false, SurfaceFormat.Color, DepthFormat.None, aaSamples, RenderTargetUsage.DiscardContents);
             this.CombineTarget = new RenderTarget2D(device, width, height, false, SurfaceFormat.Color, DepthFormat.None, aaSamples, RenderTargetUsage.DiscardContents);
+
+            this.ShadowMap = new RenderTarget2D(device, 1024, 1024, false, SurfaceFormat.Single, DepthFormat.None, aaSamples, RenderTargetUsage.DiscardContents);
 
             this.DirectionalLightSystem = new DirectionalLightSystem(device, directionalLightEffect);
             this.PointLightSystem = new PointLightSystem(device, pointLightEffect, sphere);
@@ -56,22 +66,74 @@ namespace MiniEngine.Rendering
         public RenderTarget2D[] GetIntermediateRenderTargets() => new[]
         {
             this.ColorTarget,
-            this.NormalTarget,
-            this.DepthTarget,
+            //this.NormalTarget,
+            //this.DepthTarget,
             this.LightTarget,
-            this.CombineTarget
+            //this.CombineTarget,
+            this.ShadowMap
         };
 
-        public void Render()
+        public void Render(Camera camera)
         {
-            RenderGBuffer();
+            RenderGBuffer(camera);
 
-            RenderLights();
+            //RenderLights(camera);
+
+            Shadows(camera);
 
             Combine();
 
             PostProcess();
-        }        
+        }
+
+        private void Shadows(Camera camera)
+        {
+            var shadowCastingLight = new Camera(new Viewport(0, 0, this.ShadowMap.Width, this.ShadowMap.Height));
+            shadowCastingLight.Move(Vector3.Zero, Vector3.Forward);
+
+            //shadowCastingLight = camera;
+
+            this.Device.SetRenderTarget(this.ShadowMap);
+            this.Device.Clear(Color.Black);
+
+            using (this.Device.GeometryState())
+            {
+                this.Scene.Draw(this.ShadowMapEffect, shadowCastingLight);
+
+                this.Device.SetRenderTarget(null);
+
+
+                this.Device.SetRenderTarget(this.LightTarget);
+                this.Device.Clear(Color.Black);
+
+                var invertViewProjection = Matrix.Invert(camera.View * camera.Projection);
+
+                foreach (var pass in this.ShadowCastingLightEffect.Techniques[0].Passes)
+                {
+                    // G-Buffer input                        
+                    this.ShadowCastingLightEffect.Parameters["NormalMap"].SetValue(this.NormalTarget);
+                    this.ShadowCastingLightEffect.Parameters["DepthMap"].SetValue(this.DepthTarget);
+
+                    // Light properties
+                    this.ShadowCastingLightEffect.Parameters["LightDirection"].SetValue(Vector3.Normalize(shadowCastingLight.LookAt - shadowCastingLight.Position));
+                    this.ShadowCastingLightEffect.Parameters["Color"].SetValue(Color.White.ToVector3());
+
+                    // Camera properties for specular reflections
+                    this.ShadowCastingLightEffect.Parameters["CameraPosition"].SetValue(camera.Position);
+                    this.ShadowCastingLightEffect.Parameters["InvertViewProjection"].SetValue(invertViewProjection);
+
+                    // Shadow properties
+                    this.ShadowCastingLightEffect.Parameters["ShadowMap"].SetValue(this.ShadowMap);
+                    this.ShadowCastingLightEffect.Parameters["LightView"].SetValue(shadowCastingLight.View);
+                    this.ShadowCastingLightEffect.Parameters["LightProjection"].SetValue(shadowCastingLight.Projection);                    
+
+                    pass.Apply();
+                    this.Quad.Render(this.Device);
+                }
+
+                this.Device.SetRenderTarget(null);
+            }
+        }
 
         private void PostProcess()
         {            
@@ -112,19 +174,19 @@ namespace MiniEngine.Rendering
             this.Device.SetRenderTarget(null);
         }
 
-        private void RenderLights()
+        private void RenderLights(Camera camera)
         {
             this.Device.SetRenderTarget(this.LightTarget);
 
             this.Device.Clear(new Color(this.Scene.AmbientLight.R, this.Scene.AmbientLight.G, this.Scene.AmbientLight.B, (byte)0));
 
-            this.PointLightSystem.Render(this.Scene.PointLights, this.Scene.Camera, this.ColorTarget, this.NormalTarget, this.DepthTarget);
-            this.DirectionalLightSystem.Render(this.Scene.DirectionalLights, this.Scene.Camera, this.ColorTarget, this.NormalTarget, this.DepthTarget);
+            this.PointLightSystem.Render(this.Scene.PointLights, camera, this.ColorTarget, this.NormalTarget, this.DepthTarget);
+            this.DirectionalLightSystem.Render(this.Scene.DirectionalLights, camera, this.ColorTarget, this.NormalTarget, this.DepthTarget);
 
             this.Device.SetRenderTarget(null);
         }
 
-        private void RenderGBuffer()
+        private void RenderGBuffer(IViewPoint viewPoint)
         {
             this.Device.SetRenderTargets(this.ColorTarget, this.NormalTarget, this.DepthTarget);
 
@@ -140,7 +202,7 @@ namespace MiniEngine.Rendering
 
             using (this.Device.GeometryState())
             {
-                this.Scene.Draw();
+                this.Scene.Draw(viewPoint);
             }
 
             this.Device.SetRenderTargets(null);
