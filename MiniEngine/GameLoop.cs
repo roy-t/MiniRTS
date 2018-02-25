@@ -120,7 +120,12 @@ namespace MiniEngine
             if (this.KeyboardInput.Click(Keys.LeftControl))
             {
                 this.renderSystem.EnableFXAA = !this.renderSystem.EnableFXAA;                
-            }            
+            }
+
+            if (this.KeyboardInput.Click(Keys.LeftAlt))
+            {
+                this.renderSystem.ShadowCastingLight.Move(this.camera.Position, this.camera.LookAt);                
+            }
 
             // HACK: dropping some lights
             if (this.scenes[1] is SponzaScene sponza)

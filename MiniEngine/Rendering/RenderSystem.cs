@@ -66,10 +66,10 @@ namespace MiniEngine.Rendering
         public RenderTarget2D[] GetIntermediateRenderTargets() => new[]
         {
             this.ColorTarget,
-            //this.NormalTarget,
-            //this.DepthTarget,
+            this.NormalTarget,
+            this.DepthTarget,
             this.LightTarget,
-            //this.CombineTarget,
+            this.CombineTarget,
             this.ShadowMap
         };
 
@@ -86,25 +86,29 @@ namespace MiniEngine.Rendering
             PostProcess();
         }
 
+        public Camera ShadowCastingLight { get;  } = new Camera(new Viewport(0, 0, 1024, 1024));
+
         private void Shadows(Camera camera)
         {
-            var shadowCastingLight = new Camera(new Viewport(0, 0, this.ShadowMap.Width, this.ShadowMap.Height));
-            shadowCastingLight.Move(Vector3.Zero, Vector3.Forward);
+            
+            //shadowCastingLight.Move(new Vector3(0, 0, 10), Vector3.Forward);
 
             //shadowCastingLight = camera;
 
-            this.Device.SetRenderTarget(this.ShadowMap);
-            this.Device.Clear(Color.Black);
-
             using (this.Device.GeometryState())
             {
-                this.Scene.Draw(this.ShadowMapEffect, shadowCastingLight);
+                this.Device.SetRenderTarget(this.ShadowMap);
+                this.Device.Clear(Color.Black);
+                this.Scene.Draw(this.ShadowMapEffect, this.ShadowCastingLight);
 
                 this.Device.SetRenderTarget(null);
+            }
 
-
+            using (this.Device.LightState())
+            { 
                 this.Device.SetRenderTarget(this.LightTarget);
-                this.Device.Clear(Color.Black);
+                //this.Device.Clear(new Color(this.Scene.AmbientLight.R, this.Scene.AmbientLight.G, this.Scene.AmbientLight.B, (byte)0));
+                this.Device.Clear(new Color((byte)0, (byte)0, (byte)0, (byte)0));
 
                 var invertViewProjection = Matrix.Invert(camera.View * camera.Projection);
 
@@ -115,8 +119,8 @@ namespace MiniEngine.Rendering
                     this.ShadowCastingLightEffect.Parameters["DepthMap"].SetValue(this.DepthTarget);
 
                     // Light properties
-                    this.ShadowCastingLightEffect.Parameters["LightDirection"].SetValue(Vector3.Normalize(shadowCastingLight.LookAt - shadowCastingLight.Position));
-                    this.ShadowCastingLightEffect.Parameters["Color"].SetValue(Color.White.ToVector3());
+                    this.ShadowCastingLightEffect.Parameters["LightDirection"].SetValue(Vector3.Normalize(this.ShadowCastingLight.LookAt - this.ShadowCastingLight.Position));
+                    this.ShadowCastingLightEffect.Parameters["Color"].SetValue(Color.White.ToVector3() * 0.1f);
 
                     // Camera properties for specular reflections
                     this.ShadowCastingLightEffect.Parameters["CameraPosition"].SetValue(camera.Position);
@@ -124,8 +128,8 @@ namespace MiniEngine.Rendering
 
                     // Shadow properties
                     this.ShadowCastingLightEffect.Parameters["ShadowMap"].SetValue(this.ShadowMap);
-                    this.ShadowCastingLightEffect.Parameters["LightView"].SetValue(shadowCastingLight.View);
-                    this.ShadowCastingLightEffect.Parameters["LightProjection"].SetValue(shadowCastingLight.Projection);                    
+                    this.ShadowCastingLightEffect.Parameters["LightView"].SetValue(this.ShadowCastingLight.View);
+                    this.ShadowCastingLightEffect.Parameters["LightProjection"].SetValue(this.ShadowCastingLight.Projection);                    
 
                     pass.Apply();
                     this.Quad.Render(this.Device);

@@ -131,31 +131,50 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
     float2 positionLightMap;
     positionLightMap.x = (positionLightProjection.x / positionLightProjection.w) / 2.0f + 0.5f;
     positionLightMap.y = -(positionLightProjection.y / positionLightProjection.w) / 2.0f + 0.5f;
-    float shadowMapSample = tex2D(shadowSampler, positionLightMap).r;
-    // 4. Unpack the shadow depth
-    // 5. Do not shade this area if the measured depth is less than the real world distance dist(light, position)    
+        
+    if(positionLightMap.x >= 0.0f && positionLightMap.x <= 1.0f &&
+       positionLightMap.y >= 0.0f && positionLightMap.y <= 1.0f)
+    {
+        // 4.0 Compare the depth in the shadowmap with the distance from the light
+        float shadowMapSample = tex2D(shadowSampler, positionLightMap).r;
+        float distanceToLightSource = (positionLightProjection.z / positionLightProjection.w) / 2.0f + 0.5f;
+        //float distanceToLightSource = positionLightProjection.z;
+
+        static const float bias = 0.01f;
+        if((distanceToLightSource - bias) <= (shadowMapSample + 100000))
+        {
+            return float4(diffuseLight.rgb, specularLight);
+        }        
+    }
+
+    return float4(0.0f, 0.0f, 0.0f, 0.0f);
+
+
+    // //input.Position2D.z / input.Position2D.w;
+
+    // // 5. Do not shade this area if the measured depth is less than the real world distance dist(light, position)    
     
-    if(positionLightMap.x > 1.0 || positionLightMap.y > 1.0)
-    {
-        return float4(0, 1.0, 0, 1.0f);
-    }
-    else  if(positionLightMap.x < 0.0 || positionLightMap.y < 0.0)
-    {
-        return float4(0, 0.0, 1.0, 1.0f);
-    }
-    else if(shadowMapSample >= -100000)
-    {
-        // world position: position
-        // that same position on the shadow map = position * 
+    // if(positionLightMap.x > 1.0 || positionLightMap.y > 1.0)
+    // {
+    //     return float4(0, 1.0, 0, 1.0f);
+    // }
+    // else  if(positionLightMap.x < 0.0 || positionLightMap.y < 0.0)
+    // {
+    //     return float4(0, 0.0, 1.0, 1.0f);
+    // }
+    // else if(shadowMapSample >= -100000)
+    // {
+    //     // world position: position
+    //     // that same position on the shadow map = position * 
        
-        //return float4(positionLightMap.x, positionLightMap.y, 0, 1.0);
-        return float4(shadowMapSample, 0, 0, 1.0f);
-    }
-    else
-    {
-        //output the two lights
-        return float4(diffuseLight.rgb, specularLight);
-    }
+    //     //return float4(positionLightMap.x, positionLightMap.y, 0, 1.0);
+    //     return float4(shadowMapSample, 0, 0, 1.0f);
+    // }
+    // else
+    // {
+    //     //output the two lights
+    //     return float4(diffuseLight.rgb, specularLight);
+    // }
 }
 
 technique DirectionalLightTechnique
