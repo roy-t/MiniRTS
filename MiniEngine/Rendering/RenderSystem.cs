@@ -53,7 +53,7 @@ namespace MiniEngine.Rendering
             this.LightTarget  = new RenderTarget2D(device, width, height, false, SurfaceFormat.Color, DepthFormat.None, aaSamples, RenderTargetUsage.DiscardContents);
             this.CombineTarget = new RenderTarget2D(device, width, height, false, SurfaceFormat.Color, DepthFormat.None, aaSamples, RenderTargetUsage.DiscardContents);
 
-            this.ShadowMap = new RenderTarget2D(device, 1024, 1024, false, SurfaceFormat.Single, DepthFormat.None, aaSamples, RenderTargetUsage.DiscardContents);
+            this.ShadowMap = new RenderTarget2D(device, 1024, 1024, false, SurfaceFormat.Single, DepthFormat.Depth24, aaSamples, RenderTargetUsage.DiscardContents);
 
             this.DirectionalLightSystem = new DirectionalLightSystem(device, directionalLightEffect);
             this.PointLightSystem = new PointLightSystem(device, pointLightEffect, sphere);
@@ -120,6 +120,7 @@ namespace MiniEngine.Rendering
 
                     // Light properties
                     this.ShadowCastingLightEffect.Parameters["LightDirection"].SetValue(Vector3.Normalize(this.ShadowCastingLight.LookAt - this.ShadowCastingLight.Position));
+                    this.ShadowCastingLightEffect.Parameters["LightPosition"].SetValue(this.ShadowCastingLight.Position);
                     this.ShadowCastingLightEffect.Parameters["Color"].SetValue(Color.White.ToVector3() * 0.1f);
 
                     // Camera properties for specular reflections
