@@ -7,7 +7,10 @@
     #define PS_SHADERMODEL ps_4_0_level_9_1
 #endif
 
-float4x4 InvertViewProjection; 
+// Bias to prevent shadow acne
+static const float bias = 0.0001f;
+
+float4x4 InverseViewProjection; 
 float4x4 LightView;
 float4x4 LightProjection;
 
@@ -103,32 +106,19 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
     position.y = -(input.TexCoord.y * 2.0f - 1.0f);
     position.z = depthVal;
     position.w = 1.0f;
+
     //transform to world space
-    position = mul(position, InvertViewProjection);
+    position = mul(position, InverseViewProjection);
     position /= position.w;
+
+    // 1. Compute if the part that we are shading was visible from the light
     
-    //surface-to-light vector
-    float3 lightVector = -normalize(LightDirection);
-
-    //compute diffuse light
-    float NdL = max(0,dot(normal,lightVector));
-    float3 diffuseLight = NdL * Color.rgb;
-
-    //reflection vector
-    float3 reflectionVector = normalize(reflect(-lightVector, normal));
-    //camera-to-surface vector
-    float3 directionToCamera = normalize(CameraPosition - position.xyz);
-    //compute specular light
-    float rdot = clamp(dot(reflectionVector, directionToCamera), 0, abs(specularIntensity));    
-    float specularLight = pow(abs(rdot), specularPower);
-
-    // Shadows
-    // 1. Get the world position
-    float4 positionInWorld = float4(position.xyz, 1.0f);
-    // 2. Get the position on the shadow map texture
-    float4 positionLightView = mul(positionInWorld, LightView);
+    // 2. Convert from world coordinates to coordinates on the shadow map
+    float4 positionLightView = mul(position, LightView);
     float4 positionLightProjection = mul(positionLightView, LightProjection);
-    // 3. Sample the depth value on the shadow map
+
+    // 3. Check that the position is on the shadow map 
+    // (e.g. we're shading something the light could've fallen on)
     float2 positionLightMap;
     positionLightMap.x = (positionLightProjection.x / positionLightProjection.w) / 2.0f + 0.5f;
     positionLightMap.y = -(positionLightProjection.y / positionLightProjection.w) / 2.0f + 0.5f;
@@ -139,10 +129,26 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
         // 4.0 Compare the depth in the shadowmap with the distance from the light
         float shadowMapSample = tex2D(shadowSampler, positionLightMap).r;
         float distanceToLightSource = (positionLightProjection.z / positionLightProjection.w);
-        
-        static const float bias = 0.0001f;
+                
         if((distanceToLightSource - bias) <= shadowMapSample)
-        {            
+        {   
+            // 5.0 Do the lighting calculations
+
+            //surface-to-light vector
+            float3 lightVector = -normalize(LightDirection);
+
+            //compute diffuse light
+            float NdL = max(0,dot(normal,lightVector));
+            float3 diffuseLight = NdL * Color.rgb;
+
+            //reflection vector
+            float3 reflectionVector = normalize(reflect(-lightVector, normal));
+            //camera-to-surface vector
+            float3 directionToCamera = normalize(CameraPosition - position.xyz);
+            //compute specular light
+            float rdot = clamp(dot(reflectionVector, directionToCamera), 0, abs(specularIntensity));    
+            float specularLight = pow(abs(rdot), specularPower);
+
             return float4(diffuseLight.rgb, specularLight);        
         }                
     }

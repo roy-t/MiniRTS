@@ -4,7 +4,6 @@ using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Rendering;
 using MiniEngine.Rendering.Lighting;
 using MiniEngine.Units;
-using MiniEngine.Utilities;
 using DirectionalLight = MiniEngine.Rendering.Lighting.DirectionalLight;
 
 namespace MiniEngine.Scenes
@@ -19,7 +18,8 @@ namespace MiniEngine.Scenes
             this.AmbientLight = Color.White * 0.25f;
 
             this.DirectionalLights.Add(new DirectionalLight(Vector3.Normalize(new Vector3(0.25f, -1.0f, 0.65f)), Color.White * 0.2f));
-            this.PointLights.Add(new PointLight(new Vector3(55, 10, 22), Color.White, 10, 1));                       
+            this.PointLights.Add(new PointLight(new Vector3(55, 10, 22), Color.White, 10, 1));
+            this.ShadowCastingLights.Add(new ShadowCastingLight(device, new Vector3(29.5f, 35.7f, 0.3f), new Vector3(35, 35, 0), Color.White));
         }
 
         public PointLight PointLight { get; private set; }
@@ -44,11 +44,6 @@ namespace MiniEngine.Scenes
             DrawModel(effectOverride, this.sponza, Matrix.CreateScale(0.05f), viewPoint);
         }
 
-        public void NewLight(Vector3 position)
-        {
-            var color = ColorUtilities.PickRandomColor();
-            this.PointLight = new PointLight(position, color, 10, 1.0f);
-            this.PointLights.Add(this.PointLight);
-        }
+        
     }
 }

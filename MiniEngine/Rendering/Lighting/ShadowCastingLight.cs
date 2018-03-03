@@ -7,13 +7,12 @@ namespace MiniEngine.Rendering.Lighting
     {
         private const int ShadowMapResolution = 1024;                       
 
-        public ShadowCastingLight(GraphicsDevice device, Vector3 position, Vector3 lookAt, Color color, float intensity)
+        public ShadowCastingLight(GraphicsDevice device, Vector3 position, Vector3 lookAt, Color color)
             : base(new Viewport(0, 0, ShadowMapResolution, ShadowMapResolution))
         {        
             this.ShadowMap = new RenderTarget2D(device, ShadowMapResolution, ShadowMapResolution, false, SurfaceFormat.Single, DepthFormat.Depth24, 0, RenderTargetUsage.DiscardContents);
-                        
+
             this.ColorVector = color.ToVector3();
-            this.Intensity = intensity;
 
             Move(position, lookAt);
         }
@@ -26,8 +25,6 @@ namespace MiniEngine.Rendering.Lighting
         {
             get => new Color(this.ColorVector);
             set => this.ColorVector = value.ToVector3();
-        }
-
-        public float Intensity { get; }        
+        }        
     }
 }

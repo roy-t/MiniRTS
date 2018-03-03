@@ -13,6 +13,8 @@ namespace MiniEngine.Scenes
     {        
         List<DirectionalLight> DirectionalLights { get; }
         List<PointLight> PointLights { get; }
+        List<ShadowCastingLight> ShadowCastingLights { get; }
+
         Color AmbientLight { get; }
 
         void Draw(IViewPoint viewPoint);

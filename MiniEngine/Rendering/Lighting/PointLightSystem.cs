@@ -23,9 +23,7 @@ namespace MiniEngine.Rendering.Lighting
             RenderTarget2D color,
             RenderTarget2D normal,
             RenderTarget2D depth)
-        {
-            var invertViewProjection = Matrix.Invert(camera.View * camera.Projection);
-
+        {            
             using (this.Device.LightState())
             {
                 foreach (var light in lights)
@@ -48,7 +46,7 @@ namespace MiniEngine.Rendering.Lighting
                         // Camera properties for specular reflections
                         this.Effect.Parameters["View"].SetValue(camera.View);
                         this.Effect.Parameters["Projection"].SetValue(camera.Projection);
-                        this.Effect.Parameters["InvertViewProjection"].SetValue(invertViewProjection);
+                        this.Effect.Parameters["InverseViewProjection"].SetValue(camera.InverseViewProjection);
                         this.Effect.Parameters["CameraPosition"].SetValue(camera.Position);                        
 
                         // If the camera is inside the light's radius we invert the cull direction

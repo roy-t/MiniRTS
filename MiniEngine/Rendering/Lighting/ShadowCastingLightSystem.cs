@@ -57,11 +57,10 @@ namespace MiniEngine.Rendering.Lighting
                         this.ShadowCastingLightEffect.Parameters["LightDirection"].SetValue(Vector3.Normalize(light.LookAt - light.Position));
                         this.ShadowCastingLightEffect.Parameters["LightPosition"].SetValue(light.Position);
                         this.ShadowCastingLightEffect.Parameters["Color"].SetValue(light.ColorVector);
-                        //this.ShadowCastingLightEffect.Parameters["Intensity"].SetValue(light.Intensity);                        
 
                         // Camera properties for specular reflections
                         this.ShadowCastingLightEffect.Parameters["CameraPosition"].SetValue(camera.Position);
-                        this.ShadowCastingLightEffect.Parameters["InvertViewProjection"].SetValue(camera.InverseViewProjection);
+                        this.ShadowCastingLightEffect.Parameters["InverseViewProjection"].SetValue(camera.InverseViewProjection);
 
                         // Shadow properties
                         this.ShadowCastingLightEffect.Parameters["ShadowMap"].SetValue(light.ShadowMap);

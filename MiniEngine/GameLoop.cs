@@ -6,6 +6,7 @@ using MiniEngine.Input;
 using MiniEngine.Rendering;
 using MiniEngine.Rendering.Lighting;
 using MiniEngine.Scenes;
+using MiniEngine.Utilities;
 
 namespace MiniEngine
 {    
@@ -22,7 +23,7 @@ namespace MiniEngine
         private Camera camera;
         private SpriteBatch spriteBatch;
         private IScene[] scenes;
-        private int currentScene = 0;
+        private int currentSceneIndex = 0;
         private CameraController cameraController;
         private RenderSystem renderSystem;
         
@@ -56,9 +57,9 @@ namespace MiniEngine
             this.cameraController = new CameraController(this.KeyboardInput, this.MouseInput, camera);
 
             this.scenes = new IScene[]
-            {
-                new ZimaScene(this.GraphicsDevice),
-                new SponzaScene(this.GraphicsDevice)
+            {                
+                new SponzaScene(this.GraphicsDevice),
+                new ZimaScene(this.GraphicsDevice)
             };
 
             foreach (var scene in this.scenes)
@@ -99,8 +100,8 @@ namespace MiniEngine
 
             if (this.KeyboardInput.Click(Keys.Tab))
             {
-                this.currentScene = (this.currentScene + 1) % this.scenes.Length;
-                this.renderSystem.Scene = this.scenes[this.currentScene];
+                this.currentSceneIndex = (this.currentSceneIndex + 1) % this.scenes.Length;
+                this.renderSystem.Scene = this.scenes[this.currentSceneIndex];
             }
 
             if (this.KeyboardInput.Click(Keys.F))
@@ -122,18 +123,19 @@ namespace MiniEngine
                 this.renderSystem.EnableFXAA = !this.renderSystem.EnableFXAA;                
             }
 
-            if (this.KeyboardInput.Click(Keys.LeftAlt))
+            // HACK: dropping some lights
+            var selectedScene = this.scenes[this.currentSceneIndex];
+            if (this.KeyboardInput.Click(Keys.Q))
             {
-                this.renderSystem.ShadowCastingLight.Move(this.camera.Position, this.camera.LookAt);                
+                var color = ColorUtilities.PickRandomColor();
+                var light = new PointLight(this.camera.Position, color, 10, 1.0f);
+                selectedScene.PointLights.Add(light);
             }
 
-            // HACK: dropping some lights
-            if (this.scenes[1] is SponzaScene sponza)
+            if (this.KeyboardInput.Click(Keys.LeftAlt))
             {
-                if (this.KeyboardInput.Click(Keys.Q))
-                {
-                    sponza.NewLight(this.camera.Position);
-                }               
+                var light = new ShadowCastingLight(this.GraphicsDevice, this.camera.Position, this.camera.LookAt, Color.White);
+                selectedScene.ShadowCastingLights.Add(light);
             }
 
             this.cameraController.Update(gameTime.ElapsedGameTime);
@@ -141,7 +143,7 @@ namespace MiniEngine
             this.renderSystem.Scene.Update(gameTime.ElapsedGameTime);
 
             base.Update(gameTime);
-        }
+        }        
 
         protected override void Draw(GameTime gameTime)
         {

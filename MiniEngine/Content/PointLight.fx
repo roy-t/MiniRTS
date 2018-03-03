@@ -10,7 +10,7 @@
 float4x4 World;
 float4x4 View;
 float4x4 Projection;
-float4x4 InvertViewProjection; 
+float4x4 InverseViewProjection; 
 
 float3 Color; 
 float3 LightPosition;
@@ -105,7 +105,7 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
     position.z = depthVal;
     position.w = 1.0f;
     //transform to world space
-    position = mul(position, InvertViewProjection);
+    position = mul(position, InverseViewProjection);
     position /= position.w;
 
     //surface-to-light vector

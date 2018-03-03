@@ -1,6 +1,4 @@
-﻿using System;
-using System.Runtime.CompilerServices;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Rendering.Lighting;
 using MiniEngine.Rendering.Primitives;
@@ -51,10 +49,7 @@ namespace MiniEngine.Rendering
 
             this.DirectionalLightSystem = new DirectionalLightSystem(device, directionalLightEffect);
             this.PointLightSystem = new PointLightSystem(device, pointLightEffect, sphere);
-            this.ShadowCastingLightSystem =
-                new ShadowCastingLightSystem(device, shadowMapEffect, shadowCastingLightEffect);
-
-            this.ShadowCastingLight = new ShadowCastingLight(device, Vector3.Zero, Vector3.Forward, Color.Yellow, 1.0f);
+            this.ShadowCastingLightSystem = new ShadowCastingLightSystem(device, shadowMapEffect, shadowCastingLightEffect);            
         }
 
         public bool EnableFXAA { get; set; } = true;
@@ -67,8 +62,7 @@ namespace MiniEngine.Rendering
             this.NormalTarget,
             this.DepthTarget,
             this.LightTarget,
-            this.CombineTarget,
-            this.ShadowCastingLight.ShadowMap
+            this.CombineTarget            
         };
 
         public void Render(Camera camera)
@@ -80,9 +74,7 @@ namespace MiniEngine.Rendering
             Combine();
 
             PostProcess();
-        }
-        
-        public ShadowCastingLight ShadowCastingLight;       
+        }   
 
         private void PostProcess()
         {            
@@ -124,13 +116,8 @@ namespace MiniEngine.Rendering
         }
 
         private void RenderLights(Camera camera)
-        {
-            var lights = new[]
-            {
-                this.ShadowCastingLight
-            };
-
-            this.ShadowCastingLightSystem.RenderShadowMaps(lights, this.Scene);
+        {            
+            this.ShadowCastingLightSystem.RenderShadowMaps(this.Scene.ShadowCastingLights, this.Scene);
 
             this.Device.SetRenderTarget(this.LightTarget);
 
@@ -138,13 +125,7 @@ namespace MiniEngine.Rendering
 
             this.PointLightSystem.Render(this.Scene.PointLights, camera, this.ColorTarget, this.NormalTarget, this.DepthTarget);
             this.DirectionalLightSystem.Render(this.Scene.DirectionalLights, camera, this.ColorTarget, this.NormalTarget, this.DepthTarget);
-
-            this.ShadowCastingLightSystem.RenderLights(
-                lights,
-                camera,
-                this.ColorTarget,
-                this.NormalTarget,
-                this.DepthTarget);
+            this.ShadowCastingLightSystem.RenderLights(this.Scene.ShadowCastingLights, camera, this.ColorTarget, this.NormalTarget, this.DepthTarget);
 
             this.Device.SetRenderTarget(null);
         }
