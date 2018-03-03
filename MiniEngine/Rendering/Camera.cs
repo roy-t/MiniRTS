@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace MiniEngine.Rendering
 {
-    public sealed class Camera : IViewPoint
+    public class Camera : IViewPoint
     {
         public Camera(Viewport viewport)
         {
@@ -24,6 +24,7 @@ namespace MiniEngine.Rendering
         public Vector3 LookAt { get; private set; }
         public Matrix View { get; private set; }
         public Matrix Projection { get; private set; }
+        public Matrix InverseViewProjection { get; private set; }
 
         public void Move(Vector3 position, Vector3 lookAt)
         {
@@ -36,6 +37,7 @@ namespace MiniEngine.Rendering
                 this.AspectRatio,
                 this.NearPlane,
                 this.FarPlane);
+            this.InverseViewProjection = Matrix.Invert(this.View * this.Projection);
         }
     }
 }

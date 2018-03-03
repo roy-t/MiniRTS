@@ -58,6 +58,8 @@
     <Compile Include="Rendering\GraphicsDeviceExtensions.cs" />
     <Compile Include="Rendering\Lighting\PointLight.cs" />
     <Compile Include="Rendering\Lighting\PointLightSystem.cs" />
+    <Compile Include="Rendering\Lighting\ShadowCastingLight.cs" />
+    <Compile Include="Rendering\Lighting\ShadowCastingLightSystem.cs" />
     <Compile Include="Rendering\Primitives\Quad.cs" />
     <Compile Include="Rendering\RenderSystem.cs" />
     <Compile Include="Scenes\AScene.cs" />
