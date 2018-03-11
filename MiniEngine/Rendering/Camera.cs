@@ -22,8 +22,13 @@ namespace MiniEngine.Rendering
 
         public Vector3 Position { get; private set; }
         public Vector3 LookAt { get; private set; }
+
         public Matrix View { get; private set; }
         public Matrix Projection { get; private set; }
+        public Matrix ViewProjection { get; private set; }
+        
+        public Matrix InverseView { get; private set; }
+        public Matrix InverseProjection { get; private set; }
         public Matrix InverseViewProjection { get; private set; }
 
         public void Move(Vector3 position, Vector3 lookAt)
@@ -37,7 +42,11 @@ namespace MiniEngine.Rendering
                 this.AspectRatio,
                 this.NearPlane,
                 this.FarPlane);
-            this.InverseViewProjection = Matrix.Invert(this.View * this.Projection);
+            this.ViewProjection = this.View * this.Projection;
+
+            this.InverseView = Matrix.Invert(this.View);
+            this.InverseProjection = Matrix.Invert(this.Projection);
+            this.InverseViewProjection = Matrix.Invert(this.ViewProjection);
         }
     }
 }

@@ -48,6 +48,9 @@
     <Compile Include="Input\KeyboardInput.cs" />
     <Compile Include="Input\MouseButtons.cs" />
     <Compile Include="Input\MouseInput.cs" />
+    <Compile Include="Mathematics\BoundingBoxExtensions.cs" />
+    <Compile Include="Mathematics\Frustum.cs" />
+    <Compile Include="Mathematics\FrustumSplitProjection.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rendering\Camera.cs" />
@@ -60,6 +63,7 @@
     <Compile Include="Rendering\Lighting\PointLightSystem.cs" />
     <Compile Include="Rendering\Lighting\ShadowCastingLight.cs" />
     <Compile Include="Rendering\Lighting\ShadowCastingLightSystem.cs" />
+    <Compile Include="Rendering\Lighting\Sunlight.cs" />
     <Compile Include="Rendering\Primitives\Quad.cs" />
     <Compile Include="Rendering\RenderSystem.cs" />
     <Compile Include="Scenes\AScene.cs" />
