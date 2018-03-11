@@ -44,7 +44,7 @@ namespace MiniEngine.Scenes
             this.totalElapsed = 0;            
         }
 
-        public override void LoadContent(ContentManager content)
+        public override void LoadContent(ContentManager content, GraphicsDevice device)
         {
             this.lizard = content.Load<Model>(@"Lizard\Lizard");
             this.ship1 = content.Load<Model>(@"Ship1\Ship1");

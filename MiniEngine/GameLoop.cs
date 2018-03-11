@@ -58,25 +58,16 @@ namespace MiniEngine
 
             this.scenes = new IScene[]
             {                
-                new SponzaScene(this.GraphicsDevice),
+                new SponzaScene(this.GraphicsDevice, this.camera),
                 new ZimaScene(this.GraphicsDevice)
             };
 
             foreach (var scene in this.scenes)
             {
-                scene.LoadContent(this.Content);
+                scene.LoadContent(this.Content, this.GraphicsDevice);
             }
-
-            var clearEffect = this.Content.Load<Effect>("Clear");
-            var combineEffect = this.Content.Load<Effect>("Combine");
-            var postProcessEffect = this.Content.Load<Effect>("PostProcess");
-            var directionalLightEffect = this.Content.Load<Effect>("DirectionalLight");
-            var pointLightEffect = this.Content.Load<Effect>("PointLight");
-            var shadowMapEffect = this.Content.Load<Effect>("ShadowMap");
-            var shadowCastingLightEffect = this.Content.Load<Effect>("ShadowCastingLight");
-            var sphere = this.Content.Load<Model>("Sphere");
-            this.renderSystem = new RenderSystem(this.GraphicsDevice, clearEffect, directionalLightEffect, pointLightEffect, shadowMapEffect, shadowCastingLightEffect,
-                sphere, combineEffect, postProcessEffect, this.scenes[0]);
+            
+            this.renderSystem = new RenderSystem(this.GraphicsDevice, this.Content, this.scenes[0]);
         }
 
         protected override void UnloadContent()
@@ -136,6 +127,11 @@ namespace MiniEngine
             {
                 var light = new ShadowCastingLight(this.GraphicsDevice, this.camera.Position, this.camera.LookAt, Color.White);
                 selectedScene.ShadowCastingLights.Add(light);
+            }
+
+            if (this.KeyboardInput.Click(Keys.H))
+            {
+                selectedScene.Sunlights.ForEach(x => x.Move(this.camera.Position, this.camera.LookAt));
             }
 
             this.cameraController.Update(gameTime.ElapsedGameTime);

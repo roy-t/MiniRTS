@@ -213,3 +213,15 @@
 /processorParam:DebugMode=Auto
 /build:ShadowCastingLight.fx
 
+#begin Sunlight.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Sunlight.fx
+
+#begin CascadingShadowMap.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:CascadingShadowMap.fx
+

@@ -11,7 +11,7 @@ namespace MiniEngine.Mathematics
     {
         // From: http://dev.theomader.com/cascaded-shadow-mapping-1/
 
-        public static FrustumSplitProjection[] SplitFrustum(Sunlight sunlight, Camera camera, BoundingBox sceneBoundingBox, float[] viewSpaceSplitDistances)
+        public static FrustumSplitProjection[] SplitFrustum(Matrix shadowView, Camera camera, BoundingBox sceneBoundingBox, float[] viewSpaceSplitDistances)
         {
             // determine clip space split distances
             var clipSpaceSplitDistances = viewSpaceSplitDistances
@@ -30,14 +30,14 @@ namespace MiniEngine.Mathematics
 
                 // get frustum split corners and transform into shadow space
                 var frustumCorners = SplitFrustum(n, f, camera.InverseViewProjection)
-                    .Select(v => Vector3.Transform(v, sunlight.View))
+                    .Select(v => Vector3.Transform(v, shadowView))
                     .ToArray();
 
                 var min = frustumCorners.Aggregate(Vector3.Min);
                 var max = frustumCorners.Aggregate(Vector3.Max);
                               
                 // determine the min/max z values based on arena bounding box
-                var bounds = sceneBoundingBox.Transform(sunlight.View);
+                var bounds = sceneBoundingBox.Transform(shadowView);
                 var minZ = -bounds.Max.Z;
                 var maxZ = -bounds.Min.Z;
 

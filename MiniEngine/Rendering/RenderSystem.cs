@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Rendering.Lighting;
 using MiniEngine.Rendering.Primitives;
@@ -22,14 +23,14 @@ namespace MiniEngine.Rendering
         private readonly DirectionalLightSystem DirectionalLightSystem;
         private readonly PointLightSystem PointLightSystem;
         private readonly ShadowCastingLightSystem ShadowCastingLightSystem;
+        private readonly SunlightSystem SunlightSystem;
 
-        public RenderSystem(GraphicsDevice device, Effect clearEffect, Effect directionalLightEffect, Effect pointLightEffect, Effect shadowMapEffect, Effect shadowCastingLightEffect,
-            Model sphere, Effect combineEffect, Effect postProcessEffect, IScene scene)
-        {
+        public RenderSystem(GraphicsDevice device, ContentManager content, IScene scene)
+        {            
             this.Device = device;
-            this.ClearEffect = clearEffect;            
-            this.CombineEffect = combineEffect;
-            this.PostProcessEffect = postProcessEffect;
+            this.ClearEffect = content.Load<Effect>("Clear");            
+            this.CombineEffect = content.Load<Effect>("Combine");
+            this.PostProcessEffect = content.Load<Effect>("PostProcess"); ;
 
             this.Scene = scene;
 
@@ -47,9 +48,10 @@ namespace MiniEngine.Rendering
             this.LightTarget  = new RenderTarget2D(device, width, height, false, SurfaceFormat.Color, DepthFormat.None, aaSamples, RenderTargetUsage.DiscardContents);
             this.CombineTarget = new RenderTarget2D(device, width, height, false, SurfaceFormat.Color, DepthFormat.None, aaSamples, RenderTargetUsage.DiscardContents);            
 
-            this.DirectionalLightSystem = new DirectionalLightSystem(device, directionalLightEffect);
-            this.PointLightSystem = new PointLightSystem(device, pointLightEffect, sphere);
-            this.ShadowCastingLightSystem = new ShadowCastingLightSystem(device, shadowMapEffect, shadowCastingLightEffect);            
+            this.DirectionalLightSystem = new DirectionalLightSystem(device, content.Load<Effect>("DirectionalLight"));
+            this.PointLightSystem = new PointLightSystem(device, content.Load<Effect>("PointLight"), content.Load<Model>("Sphere"));
+            this.ShadowCastingLightSystem = new ShadowCastingLightSystem(device, content.Load<Effect>("ShadowMap"), content.Load<Effect>("ShadowCastingLight"));
+            this.SunlightSystem = new SunlightSystem(device, content.Load<Effect>("CascadingShadowMap"), content.Load<Effect>("Sunlight"));
         }
 
         public bool EnableFXAA { get; set; } = true;
@@ -58,11 +60,12 @@ namespace MiniEngine.Rendering
 
         public RenderTarget2D[] GetIntermediateRenderTargets() => new[]
         {
+            this.Scene.Sunlights[0].ShadowMap,
             this.ColorTarget,
             this.NormalTarget,
             this.DepthTarget,
             this.LightTarget,
-            this.CombineTarget            
+            this.CombineTarget
         };
 
         public void Render(Camera camera)
@@ -118,6 +121,8 @@ namespace MiniEngine.Rendering
         private void RenderLights(Camera camera)
         {            
             this.ShadowCastingLightSystem.RenderShadowMaps(this.Scene.ShadowCastingLights, this.Scene);
+            this.SunlightSystem.RenderShadowMaps(this.Scene.Sunlights, this.Scene);
+
 
             this.Device.SetRenderTarget(this.LightTarget);
 
@@ -126,6 +131,8 @@ namespace MiniEngine.Rendering
             this.PointLightSystem.Render(this.Scene.PointLights, camera, this.ColorTarget, this.NormalTarget, this.DepthTarget);
             this.DirectionalLightSystem.Render(this.Scene.DirectionalLights, camera, this.ColorTarget, this.NormalTarget, this.DepthTarget);
             this.ShadowCastingLightSystem.RenderLights(this.Scene.ShadowCastingLights, camera, this.ColorTarget, this.NormalTarget, this.DepthTarget);
+            this.SunlightSystem.RenderLights(this.Scene.Sunlights, camera, this.ColorTarget, this.NormalTarget, this.DepthTarget);
+
 
             this.Device.SetRenderTarget(null);
         }

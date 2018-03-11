@@ -14,12 +14,13 @@ namespace MiniEngine.Scenes
         List<DirectionalLight> DirectionalLights { get; }
         List<PointLight> PointLights { get; }
         List<ShadowCastingLight> ShadowCastingLights { get; }
+        List<Sunlight> Sunlights { get; }
 
         Color AmbientLight { get; }
 
         void Draw(IViewPoint viewPoint);
         void Draw(Effect effectOverride, IViewPoint viewPoint);
-        void LoadContent(ContentManager content);
+        void LoadContent(ContentManager content, GraphicsDevice device);
         void Update(Seconds elapsed);
     }
 }

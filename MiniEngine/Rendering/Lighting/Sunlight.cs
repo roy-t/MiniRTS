@@ -21,16 +21,28 @@ namespace MiniEngine.Rendering.Lighting
         private readonly BoundingBox SceneBoundingBox;
         private readonly BoundingSphere SceneBoundingSphere;
 
-        public Sunlight(GraphicsDevice device, BoundingBox sceneBoundingBox, BoundingSphere sceneBoundingSphere, Camera camera)
+        public Sunlight(GraphicsDevice device, BoundingBox sceneBoundingBox, BoundingSphere sceneBoundingSphere, Camera camera, Color color)
         {
+            this.Camera = camera;
             this.ShadowMap = new RenderTarget2D(device, ShadowMapResolution, ShadowMapResolution, false, SurfaceFormat.Single, DepthFormat.Depth24, 0, RenderTargetUsage.DiscardContents);
 
             this.SceneBoundingBox = sceneBoundingBox;
-            this.SceneBoundingSphere = sceneBoundingSphere;                     
+            this.SceneBoundingSphere = sceneBoundingSphere;
 
-            Move(Vector3.Backward * 10, Vector3.Zero, camera);
+            this.ColorVector = color.ToVector3();
+
+            Move(Vector3.Backward * 10, Vector3.Zero);
         }
 
+        public Vector3 ColorVector { get; set; }
+
+        public Color Color
+        {
+            get => new Color(this.ColorVector);
+            set => this.ColorVector = value.ToVector3();
+        }
+
+        public Camera Camera { get; }
         public RenderTarget2D ShadowMap { get; }
 
         public FrustumSplitProjection[] FrustumSplitProjections { get; private set; }
@@ -41,7 +53,7 @@ namespace MiniEngine.Rendering.Lighting
         public Matrix Projection { get; private set; }
         public Matrix Transform { get; private set; }
 
-        public void Move(Vector3 position, Vector3 lookAt, Camera camera)
+        public void Move(Vector3 position, Vector3 lookAt)
         {
             this.Position = position;
             this.LookAt = lookAt;
@@ -51,11 +63,16 @@ namespace MiniEngine.Rendering.Lighting
             var center = Vector3.Transform(this.SceneBoundingSphere.Center, this.View);
             var min = center - new Vector3(this.SceneBoundingSphere.Radius);
             var max = center + new Vector3(this.SceneBoundingSphere.Radius);
-            
+
             this.Projection = Matrix.CreateOrthographicOffCenter(min.X, max.X, min.Y, max.Y, -max.Z, -min.Z);
             this.Transform = this.View * this.Projection;
 
-            this.FrustumSplitProjections = Frustum.SplitFrustum(this, camera, this.SceneBoundingBox, this.ViewSpaceSplitDistances);
-        }        
+            Recompute();
+        }
+
+        public void Recompute()
+        {
+            this.FrustumSplitProjections = Frustum.SplitFrustum(this.View, this.Camera, this.SceneBoundingBox, this.ViewSpaceSplitDistances);
+        }
     }
 }
