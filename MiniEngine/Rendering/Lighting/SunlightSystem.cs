@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Rendering.Primitives;
@@ -23,17 +24,30 @@ namespace MiniEngine.Rendering.Lighting
 
         public void RenderShadowMaps(IEnumerable<Sunlight> lights, IScene geometry)
         {
+            var originalViewport = this.Device.Viewport;
             using (this.Device.GeometryState())
-            {
+            {                
                 foreach (var light in lights)
                 {
                     this.Device.SetRenderTarget(light.ShadowMap);
-                    this.Device.Clear(Color.Black);
-                    geometry.Draw(this.CascadingShadowMapEffect, light);
+                    this.Device.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.Black, 1.0f, 0);
+                    
+                    var w = light.ShadowMap.Width / 2;
+                    var h = light.ShadowMap.Height / 2;
+                    for (var i = 0; i < light.FrustumSplitProjections.Length; i++)
+                    {
+                        var tileX = i % 2;
+                        var tileY = i / 2;
+                        this.Device.Viewport = new Viewport(tileX * w, tileY * h, w, h);
+
+                        geometry.Draw(this.CascadingShadowMapEffect, light.FrustumSplitProjections[i]);
+                    }                    
 
                     this.Device.SetRenderTarget(null);
                 }
             }
+
+            this.Device.Viewport = originalViewport;
         }
 
         public void RenderLights(
@@ -66,6 +80,10 @@ namespace MiniEngine.Rendering.Lighting
                         this.SunlightEffect.Parameters["ShadowMap"].SetValue(light.ShadowMap);
                         this.SunlightEffect.Parameters["LightView"].SetValue(light.View);
                         this.SunlightEffect.Parameters["LightProjection"].SetValue(light.Projection);
+
+
+                        this.SunlightEffect.Parameters["ShadowTransform"].SetValue(light.ShadowTransform);
+                        this.SunlightEffect.Parameters["TileBounds"].SetValue(light.ShadowSplitTileBounds);
 
                         pass.Apply();
                         this.Quad.Render(this.Device);

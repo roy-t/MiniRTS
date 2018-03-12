@@ -4,7 +4,7 @@ using MiniEngine.Mathematics;
 
 namespace MiniEngine.Rendering.Lighting
 {
-    public sealed class Sunlight : IViewPoint
+    public sealed class Sunlight
     {
         private const int ShadowMapResolution = 1024;
 
@@ -53,6 +53,9 @@ namespace MiniEngine.Rendering.Lighting
         public Matrix Projection { get; private set; }
         public Matrix Transform { get; private set; }
 
+        public Matrix[] ShadowTransform { get; private set; }
+        public Vector4[] ShadowSplitTileBounds { get; private set; }
+
         public void Move(Vector3 position, Vector3 lookAt)
         {
             this.Position = position;
@@ -73,6 +76,38 @@ namespace MiniEngine.Rendering.Lighting
         public void Recompute()
         {
             this.FrustumSplitProjections = Frustum.SplitFrustum(this.View, this.Camera, this.SceneBoundingBox, this.ViewSpaceSplitDistances);
+            this.ShadowTransform = new Matrix[4];
+            this.ShadowSplitTileBounds = new Vector4[4];
+            
+            // Note: only works for orthographic projections
+            for (var i = 0; i < this.FrustumSplitProjections.Length; i++)
+            {
+                // compute block index into shadow atlas
+                var tileX = i % 2;
+                var tileY = i / 2;
+
+                // tile matrix: maps from clip space to shadow atlas block
+                var tileMatrix = Matrix.Identity;
+                tileMatrix.M11 = 0.25f;
+                tileMatrix.M22 = -0.25f;
+                tileMatrix.Translation = new Vector3(0.25f + tileX * 0.5f, 0.25f + tileY * 0.5f, 0);                
+
+                // now combine with shadow view and projection
+                
+                this.ShadowTransform[i] = this.FrustumSplitProjections[i].View * this.FrustumSplitProjections[i].Projection * tileMatrix;
+
+
+                // [x min, x max, y min, y max]
+                var tileBorder = 3.0f / (float)ShadowMapResolution;
+                var tileBounds = new Vector4(
+                    0.5f * tileX + tileBorder,
+                    0.5f * tileX + 0.5f - tileBorder,
+                    0.5f * tileY + tileBorder,
+                    0.5f * tileY + 0.5f - tileBorder
+                );
+
+                this.ShadowSplitTileBounds[i] = tileBounds;
+            }
         }
     }
 }

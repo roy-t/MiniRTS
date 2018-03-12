@@ -1,10 +1,12 @@
+#include "ShadowFunctions.hlsl"
+
 #if OPENGL
     #define SV_POSITION POSITION
     #define VS_SHADERMODEL vs_3_0
     #define PS_SHADERMODEL ps_3_0
 #else
-    #define VS_SHADERMODEL vs_4_0_level_9_1
-    #define PS_SHADERMODEL ps_4_0_level_9_1
+    #define VS_SHADERMODEL vs_4_0
+    #define PS_SHADERMODEL ps_4_0
 #endif
 
 // Bias to prevent shadow acne
@@ -46,17 +48,6 @@ texture DepthMap;
 sampler depthSampler = sampler_state
 {
     Texture = (DepthMap);
-    AddressU = CLAMP;
-    AddressV = CLAMP;
-    MinFilter = POINT;
-    MagFilter = POINT;
-    MipFilter = POINT;
-};
-
-texture ShadowMap;
-sampler shadowSampler = sampler_state
-{
-    Texture = (ShadowMap);
     AddressU = CLAMP;
     AddressV = CLAMP;
     MinFilter = POINT;
@@ -111,49 +102,27 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
     position = mul(position, InverseViewProjection);
     position /= position.w;
 
-    // 1. Compute if the part that we are shading was visible from the light
-    
-    // 2. Convert from world coordinates to coordinates on the shadow map
-    float4 positionLightView = mul(position, LightView);
-    float4 positionLightProjection = mul(positionLightView, LightProjection);
+    ShadowData shadowData = GetShadowData(position);
+    float shadowFactor = GetShadowFactor(shadowData);
 
-    // 3. Check that the position is on the shadow map 
-    // (e.g. we're shading something the light could've fallen on)
-    float2 positionLightMap;
-    positionLightMap.x = (positionLightProjection.x / positionLightProjection.w) / 2.0f + 0.5f;
-    positionLightMap.y = -(positionLightProjection.y / positionLightProjection.w) / 2.0f + 0.5f;
-        
-    if(positionLightMap.x >= 0.0f && positionLightMap.x <= 1.0f &&
-       positionLightMap.y >= 0.0f && positionLightMap.y <= 1.0f)
-    {        
-        // 4.0 Compare the depth in the shadowmap with the distance from the light
-        float shadowMapSample = tex2D(shadowSampler, positionLightMap).r;
-        float distanceToLightSource = (positionLightProjection.z / positionLightProjection.w);
-                
-        if((distanceToLightSource - bias) <= shadowMapSample)
-        {   
-            // 5.0 Do the lighting calculations
+    //Do the lighting calculations
 
-            //surface-to-light vector
-            float3 lightVector = -normalize(LightDirection);
+    //surface-to-light vector
+    float3 lightVector = -normalize(LightDirection);
 
-            //compute diffuse light
-            float NdL = max(0,dot(normal,lightVector));
-            float3 diffuseLight = NdL * Color.rgb;
+    //compute diffuse light
+    float NdL = max(0,dot(normal,lightVector));
+    float3 diffuseLight = NdL * Color.rgb;
 
-            //reflection vector
-            float3 reflectionVector = normalize(reflect(-lightVector, normal));
-            //camera-to-surface vector
-            float3 directionToCamera = normalize(CameraPosition - position.xyz);
-            //compute specular light
-            float rdot = clamp(dot(reflectionVector, directionToCamera), 0, abs(specularIntensity));    
-            float specularLight = pow(abs(rdot), specularPower);
+    //reflection vector
+    float3 reflectionVector = normalize(reflect(-lightVector, normal));
+    //camera-to-surface vector
+    float3 directionToCamera = normalize(CameraPosition - position.xyz);
+    //compute specular light
+    float rdot = clamp(dot(reflectionVector, directionToCamera), 0, abs(specularIntensity));    
+    float specularLight = pow(abs(rdot), specularPower);
 
-            return float4(diffuseLight.rgb, specularLight);        
-        }                
-    }
-
-    return float4(0.0f, 0.0f, 0.0f, 0.0f);
+    return float4(diffuseLight.rgb * 0.000001f + float3(shadowFactor, shadowFactor, shadowFactor), specularLight * shadowFactor);        
 }
 
 technique DirectionalLightTechnique

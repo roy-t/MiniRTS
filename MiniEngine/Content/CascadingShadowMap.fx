@@ -19,7 +19,7 @@ struct VertexShaderInput
 struct VertexShaderOutput
 {
     float4 Position : POSITION0;
-    float4 Position2D : TEXCOORD0;
+    float Depth : COLOR0;
 }; 
 
 VertexShaderOutput MainVS(in VertexShaderInput input)
@@ -29,23 +29,14 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
     float4 worldPosition = mul(float4(input.Position.xyz,1), World);
     float4 viewPosition = mul(worldPosition, View);
     output.Position = mul(viewPosition, Projection);      
-    output.Position2D = output.Position;
+    output.Depth = output.Position.z / output.Position.w;
 
     return output;
 }
 
-struct PixelShaderOutput
+float4 MainPS(VertexShaderOutput input) : COLOR0
 {
-    float4 Color : COLOR0;   
-};
-
-PixelShaderOutput MainPS(VertexShaderOutput input)
-{
-     PixelShaderOutput output = (PixelShaderOutput)0;
-
-     output.Color = input.Position2D.z / input.Position2D.w;
-
-     return output;
+     return float4( input.Depth, 0, 0, 0 );
 }
 
 technique Technique1

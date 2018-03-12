@@ -34,7 +34,8 @@ namespace MiniEngine
             {
                 PreferredBackBufferWidth = 1080,
                 PreferredBackBufferHeight = 768,
-                SynchronizeWithVerticalRetrace = false                         
+                SynchronizeWithVerticalRetrace = false,
+                GraphicsProfile = GraphicsProfile.HiDef
             };            
 
             this.KeyboardInput = new KeyboardInput();

@@ -42,7 +42,7 @@ namespace MiniEngine.Mathematics
                 var maxZ = -bounds.Min.Z;
 
                 // return orthographic projection
-                return new FrustumSplitProjection(f, Matrix.CreateOrthographicOffCenter(min.X, max.X, min.Y, max.Y, minZ, maxZ));
+                return new FrustumSplitProjection(f, Matrix.CreateOrthographicOffCenter(min.X, max.X, min.Y, max.Y, minZ, maxZ), shadowView);
             }).ToArray();
         }
 
