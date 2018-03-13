@@ -9,9 +9,6 @@
     #define PS_SHADERMODEL ps_4_0
 #endif
 
-// Bias to prevent shadow acne
-static const float bias = 0.0001f;
-
 float4x4 InverseViewProjection; 
 float4x4 LightView;
 float4x4 LightProjection;
@@ -102,7 +99,7 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
     position = mul(position, InverseViewProjection);
     position /= position.w;
 
-    ShadowData shadowData = GetShadowData(position);
+    ShadowData shadowData = GetShadowData(position);    
     float shadowFactor = GetShadowFactor(shadowData);
 
     //Do the lighting calculations
@@ -122,7 +119,22 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
     float rdot = clamp(dot(reflectionVector, directionToCamera), 0, abs(specularIntensity));    
     float specularLight = pow(abs(rdot), specularPower);
 
-    return float4(diffuseLight.rgb * 0.000001f + float3(shadowFactor, shadowFactor, shadowFactor), specularLight * shadowFactor);        
+    // ShadowSplitInfo splitInfo = GetSplitInfo(shadowData);
+    // float3 a = float3(0, 0, 0);    
+    // if(splitInfo.SplitIndex == 0)
+    // {
+    //     a = float3(0.5f, 0, 0);
+    // }
+    // if(splitInfo.SplitIndex == 1)
+    // {
+    //     a = float3(0, 0.5f, 0);
+    // }
+    // if(splitInfo.SplitIndex == 2)
+    // {
+    //     a = float3(0, 0, 0.5f);
+    // }    
+    // return float4(diffuseLight.rgb * shadowFactor + a, specularLight * shadowFactor);        
+    return float4(diffuseLight.rgb * shadowFactor, specularLight * shadowFactor);        
 }
 
 technique DirectionalLightTechnique

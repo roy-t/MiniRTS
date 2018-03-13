@@ -13,9 +13,9 @@ namespace MiniEngine.Rendering.Lighting
 
         private readonly float[] ViewSpaceSplitDistances = {
             -1,
-            -100.0f,
-            -300.0f,
-            -600.0f
+            -15.0f,
+            -50.0f,
+            -300.0f
         };
 
         private readonly BoundingBox SceneBoundingBox;

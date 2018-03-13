@@ -1,5 +1,9 @@
 // From: http://dev.theomader.com/cascaded-shadow-mapping-3/
+
 #define NumSplits 4
+
+// Bias to prevent shadow acne
+static const float bias = 0.01f;
 
 float4x4 ShadowTransform[NumSplits];
 float4 TileBounds[NumSplits];
@@ -99,5 +103,5 @@ float GetShadowFactor(ShadowData shadowData)
     ShadowSplitInfo splitInfo = GetSplitInfo( shadowData );
     float storedDepth = tex2Dlod( shadowSampler, float4( splitInfo.TexCoords, 0, 0)).r;
  
-    return (splitInfo.LightSpaceDepth <  storedDepth);
+    return ((splitInfo.LightSpaceDepth - bias) <  storedDepth);
 }
