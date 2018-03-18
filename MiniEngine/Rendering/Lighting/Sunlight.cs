@@ -50,8 +50,7 @@ namespace MiniEngine.Rendering.Lighting
         public Vector3 Position { get; private set; }
         public Vector3 LookAt { get; private set; }
         public Matrix View { get; private set; }
-        public Matrix Projection { get; private set; }
-        public Matrix Transform { get; private set; }
+        public Matrix Projection { get; private set; }        
 
         public Matrix[] ShadowTransform { get; private set; }
         public Vector4[] ShadowSplitTileBounds { get; private set; }
@@ -60,22 +59,28 @@ namespace MiniEngine.Rendering.Lighting
         {
             this.Position = position;
             this.LookAt = lookAt;
+            
+            // Align shadowmaps to world X-Z plane            
+            var look = Vector3.Normalize(this.LookAt - this.Position);
+            this.View = Matrix.Invert(
+                new Matrix(
+                    1, 0, 0, 0,
+                    0, 0, -1, 0,
+                    -look.X, -look.Y, -look.Z, 0,
+                    this.Position.X, this.Position.Y, this.Position.Z, 1
+                ));
+            //this.View = Matrix.CreateLookAt(this.Position, this.LookAt, Vector3.Up);
 
-            this.View = Matrix.CreateLookAt(position, lookAt, Vector3.Up);
-
-            var center = Vector3.Transform(this.SceneBoundingSphere.Center, this.View);
-            var min = center - new Vector3(this.SceneBoundingSphere.Radius);
-            var max = center + new Vector3(this.SceneBoundingSphere.Radius);
-
-            this.Projection = Matrix.CreateOrthographicOffCenter(min.X, max.X, min.Y, max.Y, -max.Z, -min.Z);
-            this.Transform = this.View * this.Projection;
+            var bb = this.SceneBoundingBox.Transform(this.View);
+            this.Projection =
+                Matrix.CreateOrthographicOffCenter(bb.Min.X, bb.Max.X, bb.Min.Y, bb.Max.Y, -bb.Max.Z, -bb.Min.Z);            
 
             Recompute();
         }
 
         public void Recompute()
         {
-            this.FrustumSplitProjections = Frustum.SplitFrustum(this.View, this.Camera, this.SceneBoundingBox, this.ViewSpaceSplitDistances);
+            this.FrustumSplitProjections = Frustum.SplitFrustum(this.View, this.Camera, this.SceneBoundingBox, ShadowMapResolution, this.ViewSpaceSplitDistances);
             this.ShadowTransform = new Matrix[4];
             this.ShadowSplitTileBounds = new Vector4[4];
             
@@ -98,7 +103,7 @@ namespace MiniEngine.Rendering.Lighting
 
 
                 // [x min, x max, y min, y max]
-                var tileBorder = 3.0f / (float)ShadowMapResolution;
+                var tileBorder = 3.0f / ShadowMapResolution;
                 var tileBounds = new Vector4(
                     0.5f * tileX + tileBorder,
                     0.5f * tileX + 0.5f - tileBorder,
