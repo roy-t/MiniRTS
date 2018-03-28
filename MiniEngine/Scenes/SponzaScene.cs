@@ -33,13 +33,12 @@ namespace MiniEngine.Scenes
             var boundingBox = this.sponza.ComputeBoundingBox(this.World);
             var boundingSphere = this.sponza.ComputeBoundingSphere(this.World);
                         
-            this.Sunlights.Add(new Sunlight(device, boundingBox, boundingSphere, this.Camera, Color.White));
+            this.Sunlights.Add(new Sunlight(device));
         }
 
         public override void Update(Seconds elapsed)
         {
-            // Recompute the sunlights everytime the camera could've moved
-            this.Sunlights.ForEach(s => s.Recompute());
+            
         }
 
         public override void Draw(IViewPoint viewPoint)

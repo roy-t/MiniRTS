@@ -29,19 +29,11 @@ namespace MiniEngine.Rendering.Lighting
             {                
                 foreach (var light in lights)
                 {
-                    this.Device.SetRenderTarget(light.ShadowMap);
+                    //this.Device.SetRenderTarget(light.ShadowMap);
                     this.Device.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.Black, 1.0f, 0);
                     
-                    var w = light.ShadowMap.Width / 2;
-                    var h = light.ShadowMap.Height / 2;
-                    for (var i = 0; i < light.FrustumSplitProjections.Length; i++)
-                    {
-                        var tileX = i % 2;
-                        var tileY = i / 2;
-                        this.Device.Viewport = new Viewport(tileX * w, tileY * h, w, h);
 
-                        geometry.Draw(this.CascadingShadowMapEffect, light.FrustumSplitProjections[i]);
-                    }                    
+
 
                     this.Device.SetRenderTarget(null);
                 }
@@ -56,7 +48,7 @@ namespace MiniEngine.Rendering.Lighting
             RenderTarget2D color,
             RenderTarget2D normal,
             RenderTarget2D depth)
-        {
+        {            
             using (this.Device.LightState())
             {
                 foreach (var light in lights)
@@ -77,20 +69,18 @@ namespace MiniEngine.Rendering.Lighting
                         this.SunlightEffect.Parameters["InverseViewProjection"].SetValue(camera.InverseViewProjection);
 
                         // Shadow properties
-                        this.SunlightEffect.Parameters["ShadowMap"].SetValue(light.ShadowMap);
-                        this.SunlightEffect.Parameters["LightView"].SetValue(light.View);
-                        this.SunlightEffect.Parameters["LightProjection"].SetValue(light.Projection);
+                        //this.SunlightEffect.Parameters["ShadowMap"].SetValue(light.ShadowMap);
+                        //this.SunlightEffect.Parameters["LightView"].SetValue(light.View);
+                        //this.SunlightEffect.Parameters["LightProjection"].SetValue(light.Projection);
 
 
-                        this.SunlightEffect.Parameters["ShadowTransform"].SetValue(light.ShadowTransform);
-                        this.SunlightEffect.Parameters["TileBounds"].SetValue(light.ShadowSplitTileBounds);
+                        //this.SunlightEffect.Parameters["ShadowTransform"].SetValue(light.ShadowTransform);
+                        //this.SunlightEffect.Parameters["TileBounds"].SetValue(light.ShadowSplitTileBounds);
 
                         pass.Apply();
                         this.Quad.Render(this.Device);
                     }
-                }
-
-                this.Device.SetRenderTarget(null);
+                }                
             }
         }
     }

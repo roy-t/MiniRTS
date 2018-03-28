@@ -59,8 +59,7 @@ namespace MiniEngine.Rendering
         public IScene Scene { get; set; }        
 
         public RenderTarget2D[] GetIntermediateRenderTargets() => new[]
-        {
-            this.Scene.Sunlights[0].ShadowMap,
+        {            
             this.ColorTarget,
             this.NormalTarget,
             this.DepthTarget,
@@ -131,12 +130,8 @@ namespace MiniEngine.Rendering
 
             this.PointLightSystem.Render(this.Scene.PointLights, camera, this.ColorTarget, this.NormalTarget, this.DepthTarget);
             this.DirectionalLightSystem.Render(this.Scene.DirectionalLights, camera, this.ColorTarget, this.NormalTarget, this.DepthTarget);            
-            this.SunlightSystem.RenderLights(this.Scene.Sunlights, camera, this.ColorTarget, this.NormalTarget, this.DepthTarget);
-
-
-            // TODO: somehow you can't have both systems, the first one breaks the second one :/
-            //this.ShadowCastingLightSystem.RenderLights(this.Scene.ShadowCastingLights, camera, this.ColorTarget, this.NormalTarget, this.DepthTarget);
-
+            this.SunlightSystem.RenderLights(this.Scene.Sunlights, camera, this.ColorTarget, this.NormalTarget, this.DepthTarget);            
+            this.ShadowCastingLightSystem.RenderLights(this.Scene.ShadowCastingLights, camera, this.ColorTarget, this.NormalTarget, this.DepthTarget);
 
             this.Device.SetRenderTarget(null);
         }

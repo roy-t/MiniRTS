@@ -49,8 +49,6 @@
     <Compile Include="Input\MouseButtons.cs" />
     <Compile Include="Input\MouseInput.cs" />
     <Compile Include="Mathematics\BoundingBoxExtensions.cs" />
-    <Compile Include="Mathematics\Frustum.cs" />
-    <Compile Include="Mathematics\FrustumSplitProjection.cs" />
     <Compile Include="Mathematics\ModelExtensions.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

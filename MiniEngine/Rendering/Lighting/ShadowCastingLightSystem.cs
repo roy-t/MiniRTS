@@ -70,9 +70,7 @@ namespace MiniEngine.Rendering.Lighting
                         pass.Apply();
                         this.Quad.Render(this.Device);
                     }
-                }
-
-                this.Device.SetRenderTarget(null);
+                }                
             }
         }
     }
