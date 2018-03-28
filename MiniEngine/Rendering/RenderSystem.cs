@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Linq;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Rendering.Lighting;
@@ -60,6 +61,7 @@ namespace MiniEngine.Rendering
 
         public RenderTarget2D[] GetIntermediateRenderTargets() => new[]
         {            
+            this.Scene.Sunlights.First().ShadowMap,
             this.ColorTarget,
             this.NormalTarget,
             this.DepthTarget,
@@ -120,8 +122,7 @@ namespace MiniEngine.Rendering
         private void RenderLights(Camera camera)
         {            
             this.ShadowCastingLightSystem.RenderShadowMaps(this.Scene.ShadowCastingLights, this.Scene);
-            this.SunlightSystem.RenderShadowMaps(this.Scene.Sunlights, this.Scene);
-
+            this.SunlightSystem.RenderShadowMaps(this.Scene.Sunlights, this.Scene, camera);
 
             this.Device.SetRenderTarget(this.LightTarget);
 
