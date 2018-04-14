@@ -7,9 +7,6 @@
     #define PS_SHADERMODEL ps_4_0
 #endif
 
-// Bias to prevent shadow acne
-static const float bias = 0.0001f;
-
 float4x4 InverseViewProjection;
 float4x4 LightView;
 float4x4 LightProjection;
@@ -19,6 +16,17 @@ float3 LightColor;
 float3 LightPosition;
 
 float3 CameraPosition;
+
+// Shadow stuff
+static const float Bias = 0.0001f;
+static const float OffsetScale = 0.0f;
+static const uint NumCascades = 4;
+
+float4x4 ShadowMatrix;
+float4 CascadeSplits;
+float4 CascadeOffsets[NumCascades];
+float4 CascadeScales[NumCascades];
+
 
 texture ColorMap;
 sampler colorSampler = sampler_state
@@ -53,16 +61,8 @@ sampler depthSampler = sampler_state
     MipFilter = POINT;
 };
 
-texture ShadowMap;
-sampler shadowSampler = sampler_state
-{
-    Texture = (ShadowMap);
-    AddressU = CLAMP;
-    AddressV = CLAMP;
-    MinFilter = POINT;
-    MagFilter = POINT;
-    MipFilter = POINT;
-};
+Texture2DArray ShadowMap : register(t0);
+SamplerComparisonState ShadowSampler : register(s0);
 
 struct VertexShaderInput
 {
@@ -86,9 +86,48 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
     return output;
 }
 
-float GetLightFactor(float4 position, float2 texCoord)
+float3 SampleShadowCascade(float3 shadowPosition, float3 shadowPosDX, float3 shadowPosDY, uint cascadeIndex)
 {
-    return 1.0f;
+    shadowPosition += CascadeOffsets[cascadeIndex].xyz;
+    shadowPosition *= CascadeScales[cascadeIndex].xyz;
+
+
+    shadowPosDX *= CascadeScales[cascadeIndex].xyz;
+    shadowPosDY *= CascadeScales[cascadeIndex].xyz;
+
+    const float3 CascadeColors[NumCascades] =
+    {
+        float3(1.0f, 0.0f, 0.0f),
+        float3(0.0f, 1.0f, 0.0f),
+        float3(0.0f, 0.0f, 1.0f),
+        float3(1.0f, 1.0f, 0.0f)
+    };
+
+    return CascadeColors[cascadeIndex];
+}
+
+float3 GetLightFactor(float3 positionWS, float depthVS, float2 texCoord)
+{
+    float3 shadowVisibility = float3(1.0f, 1.0f, 1.0f);
+    uint cascadeIndex = 0;
+
+    [unroll]
+    for (uint i = 0; i < NumCascades - 1; ++i)
+    {
+        [flatten]
+        if (depthVS > CascadeSplits[i])
+            cascadeIndex = i + 1;
+    }
+
+    // Project into shadow space
+    float3 samplePos = positionWS;
+    float3 shadowPosition = mul(float4(samplePos, 1.0f), ShadowMatrix).xyz;
+    float3 shadowPosDX = ddx_fine(shadowPosition);
+    float3 shadowPosDY = ddy_fine(shadowPosition);
+
+    shadowVisibility = SampleShadowCascade(shadowPosition, shadowPosDX, shadowPosDY, cascadeIndex);
+
+    return shadowVisibility;
 }
 
 float4 MainPS(VertexShaderOutput input) : COLOR0
@@ -112,11 +151,12 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
     position.z = depthVal;
     position.w = 1.0f;
 
-    //transform to world space
+    //transform to world space, store view space distance
     position = mul(position, InverseViewProjection);
+    float distance = depthVal / position.w;
     position /= position.w;
-
-    float lightFactor = GetLightFactor(position, input.TexCoord);
+    
+    float3 lightFactor = GetLightFactor(position.xyz, distance, input.TexCoord);
     
     //surface-to-light vector
     float3 lightVector = -normalize(LightDirection);
@@ -133,7 +173,18 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
     float rdot = clamp(dot(reflectionVector, directionToCamera), 0, abs(specularIntensity));
     float specularLight = pow(abs(rdot), specularPower);
 
-    return float4(diffuseLight.rgb * lightFactor, specularLight * lightFactor);
+    //return float4(diffuseLight.rgb * lightFactor, specularLight * lightFactor.r);
+    float4 special = float4(diffuseLight.rgb * lightFactor, specularLight * lightFactor.r);
+
+    return special;
+
+    //return float4(depthVal, depthVal, depthVal, 1.0f) + special;
+    if (depthVal > 0.5f)
+        return float4(1.0f, 0.0f, 0.0f, 1.0f) + special;
+
+    
+    return float4(0.0f, 0.0f, 1.0f, 1.0f) + special;
+
 }
 
 technique DirectionalLightTechnique

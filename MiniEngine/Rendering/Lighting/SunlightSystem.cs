@@ -111,7 +111,7 @@ namespace MiniEngine.Rendering.Lighting
 
                         // Store the split distance in terms of view space depth
                         var clipDist = camera.FarPlane - camera.NearPlane;
-                        light.CascadeSplitsUV[cascadeIndex] = clipDist;
+                        light.CascadeSplitsUV[cascadeIndex] = camera.NearPlane + splitDist * clipDist;
 
                         // Calculate the position of the lower corner of the cascade partition in the UV space of the 
                         // first cascade partition
@@ -180,7 +180,7 @@ namespace MiniEngine.Rendering.Lighting
             RenderTarget2D normal,
             RenderTarget2D depth)
         {            
-            using (this.Device.LightState())
+            using (this.Device.SunlightState())
             {                
                 foreach (var light in lights)
                 {
@@ -196,14 +196,19 @@ namespace MiniEngine.Rendering.Lighting
 
                     // Camera properties for specular reflections
                     this.SunlightEffect.Parameters["CameraPosition"].SetValue(camera.Position);
-                    this.SunlightEffect.Parameters["InverseViewProjection"].SetValue(camera.InverseViewProjection);
+                    this.SunlightEffect.Parameters["InverseViewProjection"].SetValue(camera.InverseViewProjection);                    
                     
                     // Shadow properties
                     //this.SunlightEffect.Parameters["ShadowMap"].SetValue(light.ShadowMap);
-                    //this.SunlightEffect.Parameters["ShadowMatrix"].SetValue(light.GlobalShadowMatrix);
-                    //this.SunlightEffect.Parameters["CascadeSplits"].SetValue(light.CascadeSplitsUV);
-                    //this.SunlightEffect.Parameters["CascadeOffsets"].SetValue(light.CascadeOffsets);
-                    //this.SunlightEffect.Parameters["CascadeScales"].SetValue(light.CascadeScales);
+                    this.SunlightEffect.Parameters["ShadowMatrix"].SetValue(light.GlobalShadowMatrix);
+                    this.SunlightEffect.Parameters["CascadeSplits"].SetValue(
+                        new Vector4(
+                            light.CascadeSplitsUV[0],
+                            light.CascadeSplitsUV[1],
+                            light.CascadeSplitsUV[2],
+                            light.CascadeSplitsUV[3]));                    
+                    this.SunlightEffect.Parameters["CascadeOffsets"].SetValue(light.CascadeOffsets);
+                    this.SunlightEffect.Parameters["CascadeScales"].SetValue(light.CascadeScales);
 
                     foreach (var pass in this.SunlightEffect.Techniques[0].Passes)
                     {                        
