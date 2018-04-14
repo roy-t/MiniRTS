@@ -29,20 +29,20 @@ namespace MiniEngine.Rendering.Lighting
             {
                 foreach (var light in lights)
                 {
+                    // G-Buffer input                        
+                    this.Effect.Parameters["NormalMap"].SetValue(normal);
+                    this.Effect.Parameters["DepthMap"].SetValue(depth);
+
+                    // Light properties
+                    this.Effect.Parameters["LightDirection"].SetValue(light.Direction);
+                    this.Effect.Parameters["Color"].SetValue(light.ColorVector);
+
+                    // Camera properties for specular reflections
+                    this.Effect.Parameters["CameraPosition"].SetValue(camera.Position);
+                    this.Effect.Parameters["InverseViewProjection"].SetValue(camera.InverseViewProjection);
+
                     foreach (var pass in this.Effect.Techniques[0].Passes)
-                    {
-                        // G-Buffer input                        
-                        this.Effect.Parameters["NormalMap"].SetValue(normal);
-                        this.Effect.Parameters["DepthMap"].SetValue(depth);
-
-                        // Light properties
-                        this.Effect.Parameters["LightDirection"].SetValue(light.Direction);
-                        this.Effect.Parameters["Color"].SetValue(light.ColorVector);
-
-                        // Camera properties for specular reflections
-                        this.Effect.Parameters["CameraPosition"].SetValue(camera.Position);
-                        this.Effect.Parameters["InverseViewProjection"].SetValue(camera.InverseViewProjection);
-
+                    {                       
                         pass.Apply();
                         this.Quad.Render(this.Device);
                     }

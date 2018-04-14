@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using System;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace MiniEngine.Rendering
 {
@@ -35,6 +36,29 @@ namespace MiniEngine.Rendering
                 BlendState.AlphaBlend,
                 DepthStencilState.None,
                 RasterizerState.CullCounterClockwise);
+        }
+
+        /// <summary>
+        /// Graphics device state for drawing sunlights to the Light Target
+        /// </summary>        
+        public static DeviceState SunlightState(this GraphicsDevice device)
+        {
+            var samplerState = new SamplerState
+            {
+                AddressU = TextureAddressMode.Clamp,
+                AddressV = TextureAddressMode.Clamp,
+                AddressW = TextureAddressMode.Clamp,
+                Filter = TextureFilter.Linear,
+                ComparisonFunction = CompareFunction.LessEqual,
+                FilterMode = TextureFilterMode.Comparison
+            };
+
+            return new DeviceState(
+                device,
+                BlendState.Opaque,
+                DepthStencilState.Default,
+                RasterizerState.CullCounterClockwise,
+                samplerState);
         }
 
         public static DeviceState PostProcessState(this GraphicsDevice device)

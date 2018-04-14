@@ -33,7 +33,10 @@ namespace MiniEngine.Rendering.Lighting
             using (this.Device.GeometryState())
             {                
                 foreach (var light in lights)
-                {                    
+                {
+
+                    light.GlobalShadowMatrix = MakeGlobalShadowMatrix(camera, light.Direction);
+
                     for (var cascadeIndex = 0; cascadeIndex < Sunlight.Cascades; cascadeIndex++)
                     {
                         this.Device.SetRenderTarget(light.ShadowMap, cascadeIndex);
@@ -95,10 +98,36 @@ namespace MiniEngine.Rendering.Lighting
                         shadowCamera.Move(shadowCameraPos, frustumCenter);
                         shadowCamera.Stabilize(Sunlight.Resolution);
 
-                        geometry.Draw(this.CascadingShadowMapEffect, shadowCamera);
-
+                        geometry.Draw(this.CascadingShadowMapEffect, shadowCamera);                        
                         this.Device.SetRenderTarget(null);
-                    }                                       
+
+                        // Calculate the matrix which transforms from [-1, 1] to
+                        // [0, 1] space.
+                        var texScaleBias = Matrix.CreateScale(0.5f, -0.5f, 1.0f) *
+                                           Matrix.CreateTranslation(0.5f, 0.5f, 0.0f);
+
+                        var shadowMatrix = shadowCamera.ViewProjection;
+                        shadowMatrix = shadowMatrix * texScaleBias;
+
+                        // Store the split distance in terms of view space depth
+                        var clipDist = camera.FarPlane - camera.NearPlane;
+                        light.CascadeSplitsUV[cascadeIndex] = clipDist;
+
+                        // Calculate the position of the lower corner of the cascade partition in the UV space of the 
+                        // first cascade partition
+                        var invCascadeMat = Matrix.Invert(shadowMatrix);
+                        var cascadeCorner = Vector4.Transform(Vector3.One, invCascadeMat).ToVector3();
+                        cascadeCorner = Vector4.Transform(cascadeCorner, light.GlobalShadowMatrix).ToVector3();
+
+                        // Do the same for the upper corner
+                        var otherCorner = Vector4.Transform(Vector3.One, invCascadeMat).ToVector3();
+                        otherCorner = Vector4.Transform(otherCorner, light.GlobalShadowMatrix).ToVector3();
+
+                        // Calculate the scale and offset
+                        var cascadeScale = Vector3.One / (otherCorner - cascadeCorner);
+                        light.CascadeOffsets[cascadeIndex] = new Vector4(-cascadeCorner, 0.0f);
+                        light.CascadeScales[cascadeIndex] = new Vector4(cascadeScale, 1.0f);
+                    }
                 }
             }
 
@@ -152,36 +181,32 @@ namespace MiniEngine.Rendering.Lighting
             RenderTarget2D depth)
         {            
             using (this.Device.LightState())
-            {
+            {                
                 foreach (var light in lights)
-                {                    
-                    var globalShadowMatrix = MakeGlobalShadowMatrix(camera, light.Direction);
-                    //this.SunlightEffect.Parameters["ShadowMatrix"].SetValue(globalShadowMatrix);
+                {
+                    // G-Buffer input                        
+                    this.SunlightEffect.Parameters["ColorMap"].SetValue(color);
+                    this.SunlightEffect.Parameters["NormalMap"].SetValue(normal);
+                    this.SunlightEffect.Parameters["DepthMap"].SetValue(depth);
+
+                    // Light properties
+                    this.SunlightEffect.Parameters["LightDirection"].SetValue(light.Direction);
+                    this.SunlightEffect.Parameters["LightColor"].SetValue(light.ColorVector);
+                    //this.SunlightEffect.Parameters["ViewProjection"].SetValue(camera.ViewProjection);
+
+                    // Camera properties for specular reflections
+                    this.SunlightEffect.Parameters["CameraPosition"].SetValue(camera.Position);
+                    this.SunlightEffect.Parameters["InverseViewProjection"].SetValue(camera.InverseViewProjection);
+                    
+                    // Shadow properties
+                    //this.SunlightEffect.Parameters["ShadowMap"].SetValue(light.ShadowMap);
+                    //this.SunlightEffect.Parameters["ShadowMatrix"].SetValue(light.GlobalShadowMatrix);
+                    //this.SunlightEffect.Parameters["CascadeSplits"].SetValue(light.CascadeSplitsUV);
+                    //this.SunlightEffect.Parameters["CascadeOffsets"].SetValue(light.CascadeOffsets);
+                    //this.SunlightEffect.Parameters["CascadeScales"].SetValue(light.CascadeScales);
 
                     foreach (var pass in this.SunlightEffect.Techniques[0].Passes)
-                    {
-                        // G-Buffer input                        
-                        this.SunlightEffect.Parameters["NormalMap"].SetValue(normal);
-                        this.SunlightEffect.Parameters["DepthMap"].SetValue(depth);
-
-                        // Light properties
-                        this.SunlightEffect.Parameters["LightDirection"].SetValue(Vector3.Normalize(light.LookAt - light.Position));
-                        this.SunlightEffect.Parameters["LightPosition"].SetValue(light.Position);
-                        this.SunlightEffect.Parameters["Color"].SetValue(light.ColorVector);
-
-                        // Camera properties for specular reflections
-                        this.SunlightEffect.Parameters["CameraPosition"].SetValue(camera.Position);
-                        this.SunlightEffect.Parameters["InverseViewProjection"].SetValue(camera.InverseViewProjection);
-
-                        // Shadow properties
-                        //this.SunlightEffect.Parameters["ShadowMap"].SetValue(light.ShadowMap);
-                        //this.SunlightEffect.Parameters["LightView"].SetValue(light.View);
-                        //this.SunlightEffect.Parameters["LightProjection"].SetValue(light.Projection);
-
-
-                        //this.SunlightEffect.Parameters["ShadowTransform"].SetValue(light.ShadowTransform);
-                        //this.SunlightEffect.Parameters["TileBounds"].SetValue(light.ShadowSplitTileBounds);
-
+                    {                        
                         pass.Apply();
                         this.Quad.Render(this.Device);
                     }

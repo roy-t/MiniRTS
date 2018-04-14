@@ -28,34 +28,34 @@ namespace MiniEngine.Rendering.Lighting
             {
                 foreach (var light in lights)
                 {
+                    // G-Buffer input                        
+                    this.Effect.Parameters["NormalMap"].SetValue(normal);
+                    this.Effect.Parameters["DepthMap"].SetValue(depth);
+
+                    // Light properties
+                    var sphereWorldMatrix = Matrix.CreateScale(light.Radius) * Matrix.CreateTranslation(light.Position);
+
+                    this.Effect.Parameters["World"].SetValue(sphereWorldMatrix);
+                    this.Effect.Parameters["LightPosition"].SetValue(light.Position);
+                    this.Effect.Parameters["Color"].SetValue(light.ColorVector);
+                    this.Effect.Parameters["Radius"].SetValue(light.Radius);
+                    this.Effect.Parameters["Intensity"].SetValue(light.Intensity);
+
+                    // Camera properties for specular reflections
+                    this.Effect.Parameters["View"].SetValue(camera.View);
+                    this.Effect.Parameters["Projection"].SetValue(camera.Projection);
+                    this.Effect.Parameters["InverseViewProjection"].SetValue(camera.InverseViewProjection);
+                    this.Effect.Parameters["CameraPosition"].SetValue(camera.Position);
+
+                    // If the camera is inside the light's radius we invert the cull direction
+                    // otherwise the camera's sphere model is clipped
+                    var inside = Vector3.Distance(camera.Position, light.Position) < light.Radius;
+                    this.Device.RasterizerState = inside
+                        ? RasterizerState.CullClockwise
+                        : RasterizerState.CullCounterClockwise;
+
                     foreach (var pass in this.Effect.Techniques[0].Passes)
-                    {
-                        // G-Buffer input                        
-                        this.Effect.Parameters["NormalMap"].SetValue(normal);
-                        this.Effect.Parameters["DepthMap"].SetValue(depth);
-
-                        // Light properties
-                        var sphereWorldMatrix = Matrix.CreateScale(light.Radius) * Matrix.CreateTranslation(light.Position);
-
-                        this.Effect.Parameters["World"].SetValue(sphereWorldMatrix);
-                        this.Effect.Parameters["LightPosition"].SetValue(light.Position);
-                        this.Effect.Parameters["Color"].SetValue(light.ColorVector);                        
-                        this.Effect.Parameters["Radius"].SetValue(light.Radius);
-                        this.Effect.Parameters["Intensity"].SetValue(light.Intensity);
-
-                        // Camera properties for specular reflections
-                        this.Effect.Parameters["View"].SetValue(camera.View);
-                        this.Effect.Parameters["Projection"].SetValue(camera.Projection);
-                        this.Effect.Parameters["InverseViewProjection"].SetValue(camera.InverseViewProjection);
-                        this.Effect.Parameters["CameraPosition"].SetValue(camera.Position);                        
-
-                        // If the camera is inside the light's radius we invert the cull direction
-                        // otherwise the camera's sphere model is clipped
-                        var inside = Vector3.Distance(camera.Position, light.Position) < light.Radius;
-                        this.Device.RasterizerState = inside
-                            ? RasterizerState.CullClockwise
-                            : RasterizerState.CullCounterClockwise;
-                   
+                    {                                          
                         pass.Apply();
 
                         foreach (var mesh in this.Sphere.Meshes)

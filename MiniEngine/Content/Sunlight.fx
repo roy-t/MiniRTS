@@ -1,5 +1,3 @@
-#include "ShadowFunctions.hlsl"
-
 #if OPENGL
     #define SV_POSITION POSITION
     #define VS_SHADERMODEL vs_3_0
@@ -9,17 +7,20 @@
     #define PS_SHADERMODEL ps_4_0
 #endif
 
-float4x4 InverseViewProjection; 
+// Bias to prevent shadow acne
+static const float bias = 0.0001f;
+
+float4x4 InverseViewProjection;
 float4x4 LightView;
 float4x4 LightProjection;
 
 float3 LightDirection;
-float3 Color; 
+float3 LightColor;
 float3 LightPosition;
 
 float3 CameraPosition;
 
-texture ColorMap; 
+texture ColorMap;
 sampler colorSampler = sampler_state
 {
     Texture = (ColorMap);
@@ -52,6 +53,17 @@ sampler depthSampler = sampler_state
     MipFilter = POINT;
 };
 
+texture ShadowMap;
+sampler shadowSampler = sampler_state
+{
+    Texture = (ShadowMap);
+    AddressU = CLAMP;
+    AddressV = CLAMP;
+    MinFilter = POINT;
+    MagFilter = POINT;
+    MipFilter = POINT;
+};
+
 struct VertexShaderInput
 {
     float3 Position : POSITION0;
@@ -68,10 +80,15 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
 {
     VertexShaderOutput output = (VertexShaderOutput)0;
 
-    output.Position = float4(input.Position,1);
+    output.Position = float4(input.Position, 1);
     //align texture coordinates
     output.TexCoord = input.TexCoord;
     return output;
+}
+
+float GetLightFactor(float4 position, float2 texCoord)
+{
+    return 1.0f;
 }
 
 float4 MainPS(VertexShaderOutput input) : COLOR0
@@ -84,7 +101,7 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
     float specularPower = normalData.a * 255;
     //get specular intensity from the colorMap
     float specularIntensity = tex2D(colorSampler, input.TexCoord).a;
-    
+
     //read depth
     float depthVal = tex2D(depthSampler,input.TexCoord).r;
 
@@ -99,42 +116,24 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
     position = mul(position, InverseViewProjection);
     position /= position.w;
 
-    ShadowData shadowData = GetShadowData(position);    
-    float shadowFactor = GetShadowFactor(shadowData);
-
-    //Do the lighting calculations
-
+    float lightFactor = GetLightFactor(position, input.TexCoord);
+    
     //surface-to-light vector
     float3 lightVector = -normalize(LightDirection);
 
     //compute diffuse light
-    float NdL = max(0,dot(normal,lightVector));
-    float3 diffuseLight = NdL * Color.rgb;
+    float NdL = max(0, dot(normal, lightVector));
+    float3 diffuseLight = NdL * LightColor.rgb;
 
     //reflection vector
     float3 reflectionVector = normalize(reflect(-lightVector, normal));
     //camera-to-surface vector
     float3 directionToCamera = normalize(CameraPosition - position.xyz);
     //compute specular light
-    float rdot = clamp(dot(reflectionVector, directionToCamera), 0, abs(specularIntensity));    
+    float rdot = clamp(dot(reflectionVector, directionToCamera), 0, abs(specularIntensity));
     float specularLight = pow(abs(rdot), specularPower);
 
-    // ShadowSplitInfo splitInfo = GetSplitInfo(shadowData);
-    // float3 a = float3(0, 0, 0);    
-    // if(splitInfo.SplitIndex == 0)
-    // {
-    //     a = float3(0.5f, 0, 0);
-    // }
-    // if(splitInfo.SplitIndex == 1)
-    // {
-    //     a = float3(0, 0.5f, 0);
-    // }
-    // if(splitInfo.SplitIndex == 2)
-    // {
-    //     a = float3(0, 0, 0.5f);
-    // }    
-    // return float4(diffuseLight.rgb * shadowFactor + a, specularLight * shadowFactor);        
-    return float4(diffuseLight.rgb * shadowFactor, specularLight * shadowFactor);        
+    return float4(diffuseLight.rgb * lightFactor, specularLight * lightFactor);
 }
 
 technique DirectionalLightTechnique

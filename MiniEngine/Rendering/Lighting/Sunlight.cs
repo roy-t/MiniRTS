@@ -31,6 +31,12 @@ namespace MiniEngine.Rendering.Lighting
                 1.0f
             };
 
+            this.CascadeSplitsUV = new float[4];
+            this.CascadeOffsets  = new Vector4[4];
+            this.CascadeScales   = new Vector4[4];
+            this.GlobalShadowMatrix = Matrix.Identity;            
+
+            this.Color = Color.White;
 
             Move(Vector3.Backward * 10, Vector3.Zero);
         }
@@ -38,8 +44,13 @@ namespace MiniEngine.Rendering.Lighting
         public RenderTarget2D ShadowMap { get; }
         public float[] CascadeSplits { get; }
 
+        // Variables set when calculating the shadows
+        public float[] CascadeSplitsUV { get; }
+        public Vector4[] CascadeOffsets { get; }
+        public Vector4[] CascadeScales { get; }
+        public Matrix  GlobalShadowMatrix { get; set; }
 
-        public Vector3 ColorVector { get; set; }
+        public Vector3 ColorVector { get; private set; }
 
         public Color Color
         {
