@@ -55,7 +55,7 @@ namespace MiniEngine.Rendering
 
             return new DeviceState(
                 device,
-                BlendState.Opaque,
+                BlendState.AlphaBlend,
                 DepthStencilState.Default,
                 RasterizerState.CullCounterClockwise,
                 samplerState);

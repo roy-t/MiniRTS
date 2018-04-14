@@ -34,7 +34,6 @@ namespace MiniEngine.Rendering.Lighting
             {                
                 foreach (var light in lights)
                 {
-
                     light.GlobalShadowMatrix = MakeGlobalShadowMatrix(camera, light.Direction);
 
                     for (var cascadeIndex = 0; cascadeIndex < Sunlight.Cascades; cascadeIndex++)
@@ -116,7 +115,7 @@ namespace MiniEngine.Rendering.Lighting
                         // Calculate the position of the lower corner of the cascade partition in the UV space of the 
                         // first cascade partition
                         var invCascadeMat = Matrix.Invert(shadowMatrix);
-                        var cascadeCorner = Vector4.Transform(Vector3.One, invCascadeMat).ToVector3();
+                        var cascadeCorner = Vector4.Transform(Vector3.Zero, invCascadeMat).ToVector3();
                         cascadeCorner = Vector4.Transform(cascadeCorner, light.GlobalShadowMatrix).ToVector3();
 
                         // Do the same for the upper corner
@@ -199,7 +198,7 @@ namespace MiniEngine.Rendering.Lighting
                     this.SunlightEffect.Parameters["InverseViewProjection"].SetValue(camera.InverseViewProjection);                    
                     
                     // Shadow properties
-                    //this.SunlightEffect.Parameters["ShadowMap"].SetValue(light.ShadowMap);
+                    this.SunlightEffect.Parameters["ShadowMap"].SetValue(light.ShadowMap);
                     this.SunlightEffect.Parameters["ShadowMatrix"].SetValue(light.GlobalShadowMatrix);
                     this.SunlightEffect.Parameters["CascadeSplits"].SetValue(
                         new Vector4(
