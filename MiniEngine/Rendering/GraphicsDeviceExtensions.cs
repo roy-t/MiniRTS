@@ -61,6 +61,19 @@ namespace MiniEngine.Rendering
                 samplerState);
         }
 
+        public static DeviceState ShadowMapState(this GraphicsDevice device)
+        {
+            var rasterizerState = new RasterizerState();
+            rasterizerState.CullMode = CullMode.None;
+            rasterizerState.DepthClipEnable = false;
+
+            return new DeviceState(
+                device,
+                BlendState.Opaque,
+                DepthStencilState.Default,
+                rasterizerState);
+        }
+
         public static DeviceState PostProcessState(this GraphicsDevice device)
         {
             return new DeviceState(

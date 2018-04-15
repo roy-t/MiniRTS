@@ -30,7 +30,7 @@ namespace MiniEngine.Rendering.Lighting
         public void RenderShadowMaps(IEnumerable<Sunlight> lights, IScene geometry, Camera camera)
         {            
             var originalViewport = this.Device.Viewport;
-            using (this.Device.GeometryState())
+            using (this.Device.ShadowMapState())
             {                
                 foreach (var light in lights)
                 {
