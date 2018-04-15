@@ -18,7 +18,8 @@ float3 LightPosition;
 float3 CameraPosition;
 
 // Shadow stuff
-static const float Bias = 0.01f;
+static const float BlendThreshold = 0.1f;
+static const float Bias = 0.005f;
 static const float OffsetScale = 0.0f;
 static const uint NumCascades = 4;
 
@@ -28,7 +29,7 @@ float4 CascadeOffsets[NumCascades];
 float4 CascadeScales[NumCascades];
 
 // debug stuff
-bool visualizeCascades = false;
+static const bool visualizeCascades = false;
 
 Texture2DArray ShadowMap : register(t0);
 SamplerComparisonState ShadowSampler : register(s0);
@@ -83,16 +84,70 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
     VertexShaderOutput output = (VertexShaderOutput)0;
 
     output.Position = float4(input.Position, 1);
-    //align texture coordinates
     output.TexCoord = input.TexCoord;
     return output;
 }
 
-float SampleShadowMap(float3 shadowPosition, float3 shadowPosDX, float3 shadowPosDY, uint cascadeIndex)
+float SampleShadowMap(float2 baseUv, float u, float v, float2 shadowMapSizeInv, uint cascadeIndex, float depth)
 {
+	float2 uv = baseUv + float2(u, v) * shadowMapSizeInv;
+	float z = depth;
 
-    float lightDepth = shadowPosition.z -Bias;	    
-    return ShadowMap.SampleCmpLevelZero(ShadowSampler, float3(shadowPosition.xy, cascadeIndex), lightDepth);
+	return ShadowMap.SampleCmpLevelZero(ShadowSampler, float3(uv, cascadeIndex), z);
+}
+
+float SampleShadowMapPCF(float3 shadowPosition, float3 shadowPosDX, float3 shadowPosDY, uint cascadeIndex)
+{
+    float2 shadowMapSize;
+    float numSlices;
+    ShadowMap.GetDimensions(shadowMapSize.x, shadowMapSize.y, numSlices);
+
+    float lightDepth = shadowPosition.z -Bias;	        
+
+    float2 uv = shadowPosition.xy * shadowMapSize;
+    float2 shadowMapSizeInv = 1.0f / shadowMapSize;
+    
+    float2 baseUv;
+    baseUv.x = floor(uv.x + 0.5f);
+    baseUv.y = floor(uv.y + 0.5f);
+
+    float s = (uv.x + 0.5f - baseUv.x);
+    float t = (uv.y + 0.5f - baseUv.y);
+
+    baseUv -= float2(0.5f, 0.5f);
+    baseUv *= shadowMapSizeInv;
+
+    float sum = 0.0f;
+
+    float uw0 = (4 - 3 * s);
+    float uw1 = 7;
+    float uw2 = (1 + 3 * s);
+
+    float u0 = (3 - 2 * s) / uw0 - 2;
+    float u1 = (3 + s) / uw1;
+    float u2 = s / uw2 + 2;
+
+    float vw0 = (4 - 3 * t);
+    float vw1 = 7;
+    float vw2 = (1 + 3 * t);
+
+    float v0 = (3 - 2 * t) / vw0 - 2;
+    float v1 = (3 + t) / vw1;
+    float v2 = t / vw2 + 2;
+
+    sum += uw0 * vw0 * SampleShadowMap(baseUv, u0, v0, shadowMapSizeInv, cascadeIndex, lightDepth);
+    sum += uw1 * vw0 * SampleShadowMap(baseUv, u1, v0, shadowMapSizeInv, cascadeIndex, lightDepth);
+    sum += uw2 * vw0 * SampleShadowMap(baseUv, u2, v0, shadowMapSizeInv, cascadeIndex, lightDepth);
+
+    sum += uw0 * vw1 * SampleShadowMap(baseUv, u0, v1, shadowMapSizeInv, cascadeIndex, lightDepth);
+    sum += uw1 * vw1 * SampleShadowMap(baseUv, u1, v1, shadowMapSizeInv, cascadeIndex, lightDepth);
+    sum += uw2 * vw1 * SampleShadowMap(baseUv, u2, v1, shadowMapSizeInv, cascadeIndex, lightDepth);
+
+    sum += uw0 * vw2 * SampleShadowMap(baseUv, u0, v2, shadowMapSizeInv, cascadeIndex, lightDepth);
+    sum += uw1 * vw2 * SampleShadowMap(baseUv, u1, v2, shadowMapSizeInv, cascadeIndex, lightDepth);
+    sum += uw2 * vw2 * SampleShadowMap(baseUv, u2, v2, shadowMapSizeInv, cascadeIndex, lightDepth);
+
+    return sum * 1.0f / 144;
 }
 
 
@@ -116,8 +171,8 @@ float3 SampleShadowCascade(float3 shadowPosition, float3 shadowPosDX, float3 sha
 
         return CascadeColors[cascadeIndex];
     }
-
-    float shadow = SampleShadowMap(shadowPosition, shadowPosDX, shadowPosDY, cascadeIndex);
+	
+    float shadow = SampleShadowMapPCF(shadowPosition, shadowPosDX, shadowPosDY, cascadeIndex);	
     return float3(shadow, shadow, shadow);
 }
 
@@ -141,6 +196,22 @@ float3 GetLightFactor(float3 positionWS, float depthVS, float2 texCoord)
     float3 shadowPosDY = ddy_fine(shadowPosition);
 
     shadowVisibility = SampleShadowCascade(shadowPosition, shadowPosDX, shadowPosDY, cascadeIndex);
+	
+	// Sample the next cascade, and blend between the two results to
+	// smooth the transition
+	const float BlendThreshold = 0.1f;
+	float nextSplit = CascadeSplits[cascadeIndex];
+	float splitSize = cascadeIndex == 0 ? nextSplit : nextSplit - CascadeSplits[cascadeIndex - 1];
+	float splitDist = (nextSplit - depthVS) / splitSize;
+
+	[branch]
+	if (splitDist <= BlendThreshold && cascadeIndex != NumCascades - 1)
+	{
+		float3 nextSplitVisibility = SampleShadowCascade(shadowPosition,
+			shadowPosDX, shadowPosDY, cascadeIndex + 1);
+		float lerpAmt = smoothstep(0.0f, BlendThreshold, splitDist);
+		shadowVisibility = lerp(nextSplitVisibility, shadowVisibility, lerpAmt);
+	}
 
     return shadowVisibility;
 }
@@ -188,11 +259,7 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
     float rdot = clamp(dot(reflectionVector, directionToCamera), 0, abs(specularIntensity));
     float specularLight = pow(abs(rdot), specularPower);
 
-    return float4(diffuseLight.rgb * lightFactor, specularLight * lightFactor.r);
-
-    float4 special = float4(diffuseLight.rgb * lightFactor, specularLight * lightFactor.r);
-    //return float4(diffuseLight.rgb, specularLight) +special * 0.000001f;    
-    return float4(lightFactor.x, lightFactor.y, lightFactor.z, 1.0f) + (special * 0.0001f);
+    return float4(diffuseLight.rgb * lightFactor, specularLight * lightFactor.r);    
 }
 
 technique DirectionalLightTechnique
