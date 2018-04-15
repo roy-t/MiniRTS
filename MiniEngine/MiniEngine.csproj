@@ -55,6 +55,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rendering\Camera.cs" />
     <Compile Include="Rendering\DeviceState.cs" />
+    <Compile Include="Rendering\Foo\OrthographicShadowCamera.cs" />
+    <Compile Include="Rendering\Foo\ShadowCamera.cs" />
     <Compile Include="Rendering\IViewPoint.cs" />
     <Compile Include="Rendering\Lighting\DirectionalLight.cs" />
     <Compile Include="Rendering\Lighting\DirectionalLightSystem.cs" />

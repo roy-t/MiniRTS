@@ -8,7 +8,7 @@ namespace MiniEngine.Rendering
         public Camera(Viewport viewport)
         {
             this.NearPlane = 0.1f;
-            this.FarPlane = 1000.0f;
+            this.FarPlane = 250.0f;
             this.AspectRatio = viewport.AspectRatio;
             this.FieldOfView = MathHelper.PiOver2;
 

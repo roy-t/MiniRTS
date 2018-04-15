@@ -6,7 +6,7 @@ namespace MiniEngine.Rendering.Lighting
 {
     public sealed class Sunlight
     {
-        public const int Resolution = 1024;
+        public const int Resolution = 2048;
         public const int Cascades = 4;
        
         public Sunlight(GraphicsDevice device)

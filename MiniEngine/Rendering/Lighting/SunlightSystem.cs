@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Mathematics;
+using MiniEngine.Rendering.Foo;
 using MiniEngine.Rendering.Primitives;
 using MiniEngine.Scenes;
 
@@ -52,7 +53,7 @@ namespace MiniEngine.Rendering.Lighting
                         var invViewProj = camera.InverseViewProjection;
                         for (var i = 0; i < 8; i++)
                         {
-                            this.FrustumCorners[i] = Vector4.Transform(this.FrustumCorners[i], invViewProj).ToVector3();
+                            this.FrustumCorners[i] = Vector4.Transform(this.FrustumCorners[i], invViewProj).ScaleToVector3();
                         }
 
                         // Compute the corners of this slice of the frustum by taking a slice
@@ -93,7 +94,7 @@ namespace MiniEngine.Rendering.Lighting
 
                         // Compute the position of the shadow camera (the position where we're going to capture our shadow maps from)
                         var shadowCameraPos = frustumCenter + light.SurfaceToLightDirection * -minExtents.Z;
-                        var shadowCamera = new OrthographicCamera(
+                        var shadowCamera = new OrthographicShadowCamera(
                             minExtents.X,
                             minExtents.Y,
                             maxExtents.X,
@@ -101,8 +102,31 @@ namespace MiniEngine.Rendering.Lighting
                             0.0f,
                             cascadeExtents.Z);
 
-                        shadowCamera.Move(shadowCameraPos, frustumCenter);
-                        shadowCamera.Stabilize(Sunlight.Resolution);
+                        shadowCamera.SetLookAt(shadowCameraPos, frustumCenter, Vector3.Up);
+                        // STABILIZE
+                        // Create the rounding matrix, by projecting the world-space origin and determining
+                        // the fractional offset in texel space
+                        var shadowMatrixTemp = shadowCamera.ViewProjection;
+                        var shadowOrigin = new Vector4(0.0f, 0.0f, 0.0f, 1.0f);
+                        shadowOrigin = Vector4.Transform(shadowOrigin, shadowMatrixTemp);
+                        shadowOrigin = shadowOrigin * (Sunlight.Resolution / 2.0f);
+
+                        var roundedOrigin = shadowOrigin.Round();
+                        var roundOffset = roundedOrigin - shadowOrigin;
+                        roundOffset = roundOffset * (2.0f / Sunlight.Resolution);
+                        roundOffset.Z = 0.0f;
+                        roundOffset.W = 0.0f;
+
+                        var shadowProj = shadowCamera.Projection;
+                        //shadowProj.r[3] = shadowProj.r[3] + roundOffset;
+                        shadowProj.M41 += roundOffset.X;
+                        shadowProj.M42 += roundOffset.Y;
+                        shadowProj.M43 += roundOffset.Z;
+                        shadowProj.M44 += roundOffset.W;
+                        shadowCamera.Projection = shadowProj;
+                        // STABILIZE
+
+
 
                         geometry.Draw(this.CascadingShadowMapEffect, shadowCamera);                        
                         this.Device.SetRenderTarget(null);
@@ -122,12 +146,12 @@ namespace MiniEngine.Rendering.Lighting
                         // Calculate the position of the lower corner of the cascade partition in the UV space of the 
                         // first cascade partition
                         var invCascadeMat = Matrix.Invert(shadowMatrix);
-                        var cascadeCorner = Vector4.Transform(Vector3.Zero, invCascadeMat).ToVector3();
-                        cascadeCorner = Vector4.Transform(cascadeCorner, light.GlobalShadowMatrix).ToVector3();
+                        var cascadeCorner = Vector4.Transform(Vector3.Zero, invCascadeMat).ScaleToVector3();
+                        cascadeCorner = Vector4.Transform(cascadeCorner, light.GlobalShadowMatrix).ScaleToVector3();
 
                         // Do the same for the upper corner
-                        var otherCorner = Vector4.Transform(Vector3.One, invCascadeMat).ToVector3();
-                        otherCorner = Vector4.Transform(otherCorner, light.GlobalShadowMatrix).ToVector3();
+                        var otherCorner = Vector4.Transform(Vector3.One, invCascadeMat).ScaleToVector3();
+                        otherCorner = Vector4.Transform(otherCorner, light.GlobalShadowMatrix).ScaleToVector3();
 
                         // Calculate the scale and offset
                         var cascadeScale = Vector3.One / (otherCorner - cascadeCorner);
@@ -162,17 +186,17 @@ namespace MiniEngine.Rendering.Lighting
             var invViewProj = camera.InverseViewProjection;
 
             var frustumCenter = Vector3.Zero;
-            for (var i = 0; i < this.FrustumCorners.Length; i++)
+            for (var i = 0; i < 8; i++)
             {
-                this.FrustumCorners[i] = Vector4.Transform(this.FrustumCorners[i], invViewProj).ToVector3();
+                this.FrustumCorners[i] = Vector4.Transform(this.FrustumCorners[i], invViewProj).ScaleToVector3();
                 frustumCenter += this.FrustumCorners[i];
             }
 
             frustumCenter /= 8.0f;
 
             var shadowCameraPos = frustumCenter + surfaceToLightDirection * -0.5f;
-            var shadowCamera = new OrthographicCamera(-0.5f, -0.5f, 0.5f, 0.5f, 0.0f, 1.0f);
-            shadowCamera.Move(shadowCameraPos, frustumCenter);
+            var shadowCamera = new OrthographicShadowCamera(-0.5f, -0.5f, 0.5f, 0.5f, 0.0f, 1.0f);
+            shadowCamera.SetLookAt(shadowCameraPos, frustumCenter, Vector3.Up);
 
             var texScaleBias = Matrix.CreateScale(0.5f, -0.5f, 1.0f);
             texScaleBias.Translation = new Vector3(0.5f, 0.5f, 0.0f);
@@ -198,9 +222,8 @@ namespace MiniEngine.Rendering.Lighting
                     // Light properties
                     this.SunlightEffect.Parameters["LightDirection"].SetValue(light.LightToSurfaceDirection);
                     this.SunlightEffect.Parameters["LightColor"].SetValue(light.ColorVector);
-                    //this.SunlightEffect.Parameters["ViewProjection"].SetValue(camera.ViewProjection);
 
-                    // Camera properties for specular reflections
+                    // Camera properties for specular reflections, and rebuilding world positions
                     this.SunlightEffect.Parameters["CameraPosition"].SetValue(camera.Position);
                     this.SunlightEffect.Parameters["InverseViewProjection"].SetValue(camera.InverseViewProjection);                    
                     
