@@ -34,26 +34,29 @@ namespace MiniEngine.Rendering.Lighting
             {                
                 foreach (var light in lights)
                 {
-                    light.GlobalShadowMatrix = MakeGlobalShadowMatrix(camera, light.Direction);
+                    light.GlobalShadowMatrix = MakeGlobalShadowMatrix(camera, light.SurfaceToLightDirection);
 
                     for (var cascadeIndex = 0; cascadeIndex < Sunlight.Cascades; cascadeIndex++)
                     {
+                        // Set the rendertarget and clear it to white (max distance)
                         this.Device.SetRenderTarget(light.ShadowMap, cascadeIndex);
                         this.Device.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.White, 1.0f, 0);
 
                         // Get the 8 points of the view frustum in world space
                         ResetViewFrustumCorners();
 
+                        // Get the range this cascade covers
                         var prevSplitDist = cascadeIndex == 0 ? 0.0f : light.CascadeSplits[cascadeIndex - 1];
                         var splitDist = light.CascadeSplits[cascadeIndex];
 
                         var invViewProj = camera.InverseViewProjection;
-                        for (var i = 0; i < this.FrustumCorners.Length; i++)
+                        for (var i = 0; i < 8; i++)
                         {
                             this.FrustumCorners[i] = Vector4.Transform(this.FrustumCorners[i], invViewProj).ToVector3();
                         }
 
-                        // Get the corners of the current cascade slice of the view frustum
+                        // Compute the corners of this slice of the frustum by taking a slice
+                        // of the identity frustum
                         for (var i = 0; i < 4; i++)
                         {
                             var cornerRay = this.FrustumCorners[i + 4] - this.FrustumCorners[i];
@@ -65,27 +68,31 @@ namespace MiniEngine.Rendering.Lighting
 
                         // Calculate the centroid of the view frustum slice
                         var frustumCenter = Vector3.Zero;
-                        for (var i = 0; i < this.FrustumCorners.Length; i++)
+                        for (var i = 0; i < 8; i++)
                         {
                             frustumCenter = frustumCenter + this.FrustumCorners[i];
                         }
 
                         frustumCenter /= 8.0f;
 
+                        // Calculate the bounding sphere of the view frustum so we can stabilize it later
+                        // TODO: can we replace this logic with XNA's bounding sphere?
                         var sphereRadius = 0.0f;
-                        for (var i = 0; i < this.FrustumCorners.Length; i++)
+                        for (var i = 0; i < 8; i++)
                         {
                             var dist = (this.FrustumCorners[i] - frustumCenter).Length();
                             sphereRadius = Math.Max(sphereRadius, dist);
                         }
 
+                        // Slightly 'round' it
                         sphereRadius = (float) Math.Ceiling(sphereRadius * 16.0f) / 16.0f;
 
                         var maxExtents = new Vector3(sphereRadius);
                         var minExtents = -maxExtents;
                         var cascadeExtents = maxExtents - minExtents;
 
-                        var shadowCameraPos = frustumCenter + light.Direction * -minExtents.Z;
+                        // Compute the position of the shadow camera (the position where we're going to capture our shadow maps from)
+                        var shadowCameraPos = frustumCenter + light.SurfaceToLightDirection * -minExtents.Z;
                         var shadowCamera = new OrthographicCamera(
                             minExtents.X,
                             minExtents.Y,
@@ -148,7 +155,7 @@ namespace MiniEngine.Rendering.Lighting
         /// <summary>
         /// Makes the "global" shadow matrix used as the reference point for the cascades.
         /// </summary>
-        private Matrix MakeGlobalShadowMatrix(Camera camera, Vector3 lightDirection)
+        private Matrix MakeGlobalShadowMatrix(Camera camera, Vector3 surfaceToLightDirection)
         {
             ResetViewFrustumCorners();
 
@@ -163,7 +170,7 @@ namespace MiniEngine.Rendering.Lighting
 
             frustumCenter /= 8.0f;
 
-            var shadowCameraPos = frustumCenter + lightDirection * -0.5f;
+            var shadowCameraPos = frustumCenter + surfaceToLightDirection * -0.5f;
             var shadowCamera = new OrthographicCamera(-0.5f, -0.5f, 0.5f, 0.5f, 0.0f, 1.0f);
             shadowCamera.Move(shadowCameraPos, frustumCenter);
 
@@ -189,7 +196,7 @@ namespace MiniEngine.Rendering.Lighting
                     this.SunlightEffect.Parameters["DepthMap"].SetValue(depth);
 
                     // Light properties
-                    this.SunlightEffect.Parameters["LightDirection"].SetValue(light.Direction);
+                    this.SunlightEffect.Parameters["LightDirection"].SetValue(light.LightToSurfaceDirection);
                     this.SunlightEffect.Parameters["LightColor"].SetValue(light.ColorVector);
                     //this.SunlightEffect.Parameters["ViewProjection"].SetValue(camera.ViewProjection);
 

@@ -18,7 +18,7 @@ float3 LightPosition;
 float3 CameraPosition;
 
 // Shadow stuff
-static const float Bias = 0.0001f;
+static const float Bias = 0.01f;
 static const float OffsetScale = 0.0f;
 static const uint NumCascades = 4;
 
@@ -177,7 +177,7 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
     float3 lightVector = -normalize(LightDirection);
 
     //compute diffuse light
-    float NdL = max(0, dot(normal, lightVector));
+    float NdL = saturate(dot(normal, lightVector));
     float3 diffuseLight = NdL * LightColor.rgb;
 
     //reflection vector
@@ -188,7 +188,7 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
     float rdot = clamp(dot(reflectionVector, directionToCamera), 0, abs(specularIntensity));
     float specularLight = pow(abs(rdot), specularPower);
 
-    //return float4(diffuseLight.rgb * lightFactor, specularLight * lightFactor.r);
+    return float4(diffuseLight.rgb * lightFactor, specularLight * lightFactor.r);
 
     float4 special = float4(diffuseLight.rgb * lightFactor, specularLight * lightFactor.r);
     //return float4(diffuseLight.rgb, specularLight) +special * 0.000001f;    

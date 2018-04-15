@@ -60,13 +60,15 @@ namespace MiniEngine.Rendering.Lighting
         
         public Vector3 Position { get; private set; }
         public Vector3 LookAt { get; private set; }        
-        public Vector3 Direction { get; private set; }
+        public Vector3 LightToSurfaceDirection { get; private set; }
+        public Vector3 SurfaceToLightDirection { get; private set; }
 
         public void Move(Vector3 position, Vector3 lookAt)
         {
             this.Position = position;
-            this.LookAt = lookAt;
-            this.Direction = Vector3.Normalize(lookAt - position);
+            this.LookAt = lookAt;            
+            this.LightToSurfaceDirection = Vector3.Normalize(lookAt - position);
+            this.SurfaceToLightDirection = -this.LightToSurfaceDirection;
         }        
     }
 }
