@@ -121,7 +121,7 @@ namespace MiniEngine.Rendering
 
         private void RenderLights(Camera camera)
         {            
-            //this.ShadowCastingLightSystem.RenderShadowMaps(this.Scene.ShadowCastingLights, this.Scene);
+            this.ShadowCastingLightSystem.RenderShadowMaps(this.Scene.ShadowCastingLights, this.Scene);
             this.SunlightSystem.RenderShadowMaps(this.Scene.Sunlights, this.Scene, camera);
 
             this.Device.SetRenderTarget(this.LightTarget);
@@ -129,9 +129,9 @@ namespace MiniEngine.Rendering
             this.Device.Clear(new Color(this.Scene.AmbientLight.R, this.Scene.AmbientLight.G, this.Scene.AmbientLight.B, (byte)0));
             //this.Device.Clear(new Color((byte)0, (byte)0, (byte)0, (byte)0));
 
-            //this.PointLightSystem.Render(this.Scene.PointLights, camera, this.ColorTarget, this.NormalTarget, this.DepthTarget);
-            //this.DirectionalLightSystem.Render(this.Scene.DirectionalLights, camera, this.ColorTarget, this.NormalTarget, this.DepthTarget);
-            //this.ShadowCastingLightSystem.RenderLights(this.Scene.ShadowCastingLights, camera, this.ColorTarget, this.NormalTarget, this.DepthTarget);
+            this.PointLightSystem.Render(this.Scene.PointLights, camera, this.ColorTarget, this.NormalTarget, this.DepthTarget);
+            this.DirectionalLightSystem.Render(this.Scene.DirectionalLights, camera, this.ColorTarget, this.NormalTarget, this.DepthTarget);
+            this.ShadowCastingLightSystem.RenderLights(this.Scene.ShadowCastingLights, camera, this.ColorTarget, this.NormalTarget, this.DepthTarget);
 
             this.SunlightSystem.RenderLights(this.Scene.Sunlights, camera, this.ColorTarget, this.NormalTarget, this.DepthTarget);            
             
