@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 
-namespace MiniEngine.Rendering
+namespace MiniEngine.Rendering.Cameras
 {
     public interface IViewPoint
     {

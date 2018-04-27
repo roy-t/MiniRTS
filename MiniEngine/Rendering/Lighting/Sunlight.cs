@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MiniEngine.Rendering.Cameras;
 
 namespace MiniEngine.Rendering.Lighting
 {
@@ -30,6 +31,7 @@ namespace MiniEngine.Rendering.Lighting
                 1.0f
             };
 
+            this.ShadowCameras = new ViewPoint[4];
             this.CascadeSplitsUV = new float[4];
             this.CascadeOffsets  = new Vector4[4];
             this.CascadeScales   = new Vector4[4];
@@ -44,7 +46,8 @@ namespace MiniEngine.Rendering.Lighting
         public float[] CascadeSplits { get; }
 
         // Variables set when calculating the shadows
-        public float[] CascadeSplitsUV { get; }
+        public ViewPoint[] ShadowCameras { get; }
+        public float[] CascadeSplitsUV { get; }    
         public Vector4[] CascadeOffsets { get; }
         public Vector4[] CascadeScales { get; }
         public Matrix  GlobalShadowMatrix { get; set; }
@@ -60,14 +63,14 @@ namespace MiniEngine.Rendering.Lighting
         public Vector3 Position { get; private set; }
         public Vector3 LookAt { get; private set; }        
         public Vector3 LightToSurfaceDirection { get; private set; }
-        public Vector3 SurfaceToLightDirection { get; private set; }
+        public Vector3 SurfaceToLightVector { get; private set; }
 
         public void Move(Vector3 position, Vector3 lookAt)
         {
             this.Position = position;
             this.LookAt = lookAt;            
             this.LightToSurfaceDirection = Vector3.Normalize(lookAt - position);
-            this.SurfaceToLightDirection = -this.LightToSurfaceDirection;
-        }        
+            this.SurfaceToLightVector = -this.LightToSurfaceDirection;
+        }       
     }
 }

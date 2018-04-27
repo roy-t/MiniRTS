@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Mathematics;
 using MiniEngine.Rendering;
+using MiniEngine.Rendering.Cameras;
 using MiniEngine.Rendering.Lighting;
 using MiniEngine.Units;
 using DirectionalLight = MiniEngine.Rendering.Lighting.DirectionalLight;
@@ -11,14 +12,14 @@ namespace MiniEngine.Scenes
 {
     public sealed class SponzaScene : AScene
     {
-        private readonly Camera Camera;
+        private readonly PerspectiveCamera PerspectiveCamera;
         private readonly Matrix World = Matrix.CreateScale(0.05f);
         private Model sponza;
         
-        public SponzaScene(GraphicsDevice device, Camera camera)
+        public SponzaScene(GraphicsDevice device, PerspectiveCamera perspectiveCamera)
             : base(device)
         {
-            this.Camera = camera;
+            this.PerspectiveCamera = perspectiveCamera;
             this.AmbientLight = Color.White * 0.25f;
 
             //this.DirectionalLights.Add(new DirectionalLight(Vector3.Normalize(new Vector3(0.25f, -1.0f, 0.65f)), Color.White * 0.2f));

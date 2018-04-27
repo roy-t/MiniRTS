@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Rendering;
+using MiniEngine.Rendering.Cameras;
 using MiniEngine.Rendering.Lighting;
 using MiniEngine.Units;
 using DirectionalLight = MiniEngine.Rendering.Lighting.DirectionalLight;

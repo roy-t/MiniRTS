@@ -1,9 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MiniEngine.Rendering.Cameras;
 
 namespace MiniEngine.Rendering.Lighting
 {
-    public sealed class ShadowCastingLight : Camera
+    public sealed class ShadowCastingLight : PerspectiveCamera
     {
         private const int ShadowMapResolution = 1024;                       
 

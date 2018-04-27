@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MiniEngine.Rendering.Cameras;
 using MiniEngine.Rendering.Primitives;
 
 namespace MiniEngine.Rendering.Lighting
@@ -20,7 +21,7 @@ namespace MiniEngine.Rendering.Lighting
 
         public void Render(
             IEnumerable<DirectionalLight> lights,
-            Camera camera,
+            PerspectiveCamera perspectiveCamera,
             RenderTarget2D color,
             RenderTarget2D normal,
             RenderTarget2D depth)
@@ -38,8 +39,8 @@ namespace MiniEngine.Rendering.Lighting
                     this.Effect.Parameters["Color"].SetValue(light.ColorVector);
 
                     // Camera properties for specular reflections
-                    this.Effect.Parameters["CameraPosition"].SetValue(camera.Position);
-                    this.Effect.Parameters["InverseViewProjection"].SetValue(camera.InverseViewProjection);
+                    this.Effect.Parameters["CameraPosition"].SetValue(perspectiveCamera.Position);
+                    this.Effect.Parameters["InverseViewProjection"].SetValue(perspectiveCamera.InverseViewProjection);
 
                     foreach (var pass in this.Effect.Techniques[0].Passes)
                     {                       

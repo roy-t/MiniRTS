@@ -1,11 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace MiniEngine.Rendering
+namespace MiniEngine.Rendering.Cameras
 {
-    public class Camera : IViewPoint
+    public class PerspectiveCamera : IViewPoint
     {
-        public Camera(Viewport viewport)
+        public PerspectiveCamera(Viewport viewport)
         {
             this.NearPlane = 0.1f;
             this.FarPlane = 250.0f;

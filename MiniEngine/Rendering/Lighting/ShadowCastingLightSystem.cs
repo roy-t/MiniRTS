@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MiniEngine.Rendering.Cameras;
 using MiniEngine.Rendering.Primitives;
 using MiniEngine.Scenes;
 
@@ -38,7 +39,7 @@ namespace MiniEngine.Rendering.Lighting
 
         public void RenderLights(
             IEnumerable<ShadowCastingLight> lights,
-            Camera camera,
+            PerspectiveCamera perspectiveCamera,
             RenderTarget2D color,
             RenderTarget2D normal,
             RenderTarget2D depth)
@@ -57,8 +58,8 @@ namespace MiniEngine.Rendering.Lighting
                     this.ShadowCastingLightEffect.Parameters["Color"].SetValue(light.ColorVector);
 
                     // Camera properties for specular reflections
-                    this.ShadowCastingLightEffect.Parameters["CameraPosition"].SetValue(camera.Position);
-                    this.ShadowCastingLightEffect.Parameters["InverseViewProjection"].SetValue(camera.InverseViewProjection);
+                    this.ShadowCastingLightEffect.Parameters["CameraPosition"].SetValue(perspectiveCamera.Position);
+                    this.ShadowCastingLightEffect.Parameters["InverseViewProjection"].SetValue(perspectiveCamera.InverseViewProjection);
 
                     // Shadow properties
                     this.ShadowCastingLightEffect.Parameters["ShadowMap"].SetValue(light.ShadowMap);

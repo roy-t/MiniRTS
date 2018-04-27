@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Input;
 using MiniEngine.Controllers;
 using MiniEngine.Input;
 using MiniEngine.Rendering;
+using MiniEngine.Rendering.Cameras;
 using MiniEngine.Rendering.Lighting;
 using MiniEngine.Scenes;
 using MiniEngine.Utilities;
@@ -20,7 +21,7 @@ namespace MiniEngine
         private int viewIndex = 0;
         private int viewOptions = 4;
 
-        private Camera camera;
+        private PerspectiveCamera perspectiveCamera;
         private SpriteBatch spriteBatch;
         private IScene[] scenes;
         private int currentSceneIndex = 0;
@@ -54,12 +55,12 @@ namespace MiniEngine
         {
             this.spriteBatch = new SpriteBatch(this.GraphicsDevice);
             
-            this.camera = new Camera(this.GraphicsDevice.Viewport);
-            this.cameraController = new CameraController(this.KeyboardInput, this.MouseInput, camera);
+            this.perspectiveCamera = new PerspectiveCamera(this.GraphicsDevice.Viewport);
+            this.cameraController = new CameraController(this.KeyboardInput, this.MouseInput, this.perspectiveCamera);
 
             this.scenes = new IScene[]
             {                
-                new SponzaScene(this.GraphicsDevice, this.camera),
+                new SponzaScene(this.GraphicsDevice, this.perspectiveCamera),
                 new ZimaScene(this.GraphicsDevice)
             };
 
@@ -120,19 +121,19 @@ namespace MiniEngine
             if (this.KeyboardInput.Click(Keys.Q))
             {
                 var color = ColorUtilities.PickRandomColor();
-                var light = new PointLight(this.camera.Position, color, 10, 1.0f);
+                var light = new PointLight(this.perspectiveCamera.Position, color, 10, 1.0f);
                 selectedScene.PointLights.Add(light);
             }
 
             if (this.KeyboardInput.Click(Keys.LeftAlt))
             {
-                var light = new ShadowCastingLight(this.GraphicsDevice, this.camera.Position, this.camera.LookAt, Color.White);
+                var light = new ShadowCastingLight(this.GraphicsDevice, this.perspectiveCamera.Position, this.perspectiveCamera.LookAt, Color.White);
                 selectedScene.ShadowCastingLights.Add(light);
             }
 
             if (this.KeyboardInput.Click(Keys.H))
             {
-                selectedScene.Sunlights.ForEach(x => x.Move(this.camera.Position, this.camera.LookAt));
+                selectedScene.Sunlights.ForEach(x => x.Move(this.perspectiveCamera.Position, this.perspectiveCamera.LookAt));
             }
 
             this.cameraController.Update(gameTime.ElapsedGameTime);
@@ -146,8 +147,8 @@ namespace MiniEngine
         {
             this.GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            this.renderSystem.Render(this.camera);
-            this.Window.Title = $"{gameTime.ElapsedGameTime.TotalMilliseconds:F2}ms, {(1.0f / gameTime.ElapsedGameTime.TotalSeconds):F2} fps, Fixed Time Step: {this.IsFixedTimeStep} (press 'F' so switch), Camera Position {this.camera.Position}";
+            this.renderSystem.Render(this.perspectiveCamera);
+            this.Window.Title = $"{gameTime.ElapsedGameTime.TotalMilliseconds:F2}ms, {(1.0f / gameTime.ElapsedGameTime.TotalSeconds):F2} fps, Fixed Time Step: {this.IsFixedTimeStep} (press 'F' so switch), Camera Position {this.perspectiveCamera.Position}";
 
             this.spriteBatch.Begin(
                 SpriteSortMode.Deferred,

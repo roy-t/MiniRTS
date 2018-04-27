@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Input;
 using MiniEngine.Input;
 using MiniEngine.Rendering;
+using MiniEngine.Rendering.Cameras;
 using MiniEngine.Units;
 
 namespace MiniEngine.Controllers
@@ -15,16 +16,16 @@ namespace MiniEngine.Controllers
 
         private readonly KeyboardInput Keyboard;
         private readonly MouseInput Mouse;
-        private readonly Camera Camera;
+        private readonly PerspectiveCamera PerspectiveCamera;
 
         private Vector3 forward;
         private Vector3 left;
         private Vector3 up;
 
-        public CameraController(KeyboardInput keyboard, MouseInput mouse, Camera camera)
+        public CameraController(KeyboardInput keyboard, MouseInput mouse, PerspectiveCamera perspectiveCamera)
         {
             this.Keyboard = keyboard;
-            this.Camera = camera;
+            this.PerspectiveCamera = perspectiveCamera;
             this.Mouse = mouse;
 
             this.forward = Vector3.Forward;
@@ -34,7 +35,7 @@ namespace MiniEngine.Controllers
 
         public void Update(Seconds elapsed)
         {
-            var position = this.Camera.Position;            
+            var position = this.PerspectiveCamera.Position;            
 
             var translate = TranslateSpeed * elapsed;
 
@@ -83,7 +84,7 @@ namespace MiniEngine.Controllers
                 this.up = Vector3.Up;
             }           
 
-            this.Camera.Move(position, position + this.forward);
+            this.PerspectiveCamera.Move(position, position + this.forward);
         }
     }
 }

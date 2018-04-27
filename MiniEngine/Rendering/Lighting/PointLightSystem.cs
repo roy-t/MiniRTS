@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MiniEngine.Rendering.Cameras;
 
 namespace MiniEngine.Rendering.Lighting
 {
@@ -19,7 +20,7 @@ namespace MiniEngine.Rendering.Lighting
 
         public void Render(
             IEnumerable<PointLight> lights,
-            Camera camera,
+            PerspectiveCamera perspectiveCamera,
             RenderTarget2D color,
             RenderTarget2D normal,
             RenderTarget2D depth)
@@ -42,14 +43,14 @@ namespace MiniEngine.Rendering.Lighting
                     this.Effect.Parameters["Intensity"].SetValue(light.Intensity);
 
                     // Camera properties for specular reflections
-                    this.Effect.Parameters["View"].SetValue(camera.View);
-                    this.Effect.Parameters["Projection"].SetValue(camera.Projection);
-                    this.Effect.Parameters["InverseViewProjection"].SetValue(camera.InverseViewProjection);
-                    this.Effect.Parameters["CameraPosition"].SetValue(camera.Position);
+                    this.Effect.Parameters["View"].SetValue(perspectiveCamera.View);
+                    this.Effect.Parameters["Projection"].SetValue(perspectiveCamera.Projection);
+                    this.Effect.Parameters["InverseViewProjection"].SetValue(perspectiveCamera.InverseViewProjection);
+                    this.Effect.Parameters["CameraPosition"].SetValue(perspectiveCamera.Position);
 
                     // If the camera is inside the light's radius we invert the cull direction
                     // otherwise the camera's sphere model is clipped
-                    var inside = Vector3.Distance(camera.Position, light.Position) < light.Radius;
+                    var inside = Vector3.Distance(perspectiveCamera.Position, light.Position) < light.Radius;
                     this.Device.RasterizerState = inside
                         ? RasterizerState.CullClockwise
                         : RasterizerState.CullCounterClockwise;

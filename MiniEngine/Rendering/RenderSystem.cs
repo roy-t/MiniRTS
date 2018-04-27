@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using MiniEngine.Rendering.Cameras;
 using MiniEngine.Rendering.Lighting;
 using MiniEngine.Rendering.Primitives;
 using MiniEngine.Scenes;
@@ -69,11 +70,11 @@ namespace MiniEngine.Rendering
             this.CombineTarget
         };
 
-        public void Render(Camera camera)
+        public void Render(PerspectiveCamera perspectiveCamera)
         {
-            RenderGBuffer(camera);
+            RenderGBuffer(perspectiveCamera);
 
-            RenderLights(camera);            
+            RenderLights(perspectiveCamera);            
 
             Combine();
 
@@ -119,21 +120,20 @@ namespace MiniEngine.Rendering
             this.Device.SetRenderTarget(null);
         }
 
-        private void RenderLights(Camera camera)
+        private void RenderLights(PerspectiveCamera perspectiveCamera)
         {            
             this.ShadowCastingLightSystem.RenderShadowMaps(this.Scene.ShadowCastingLights, this.Scene);
-            this.SunlightSystem.RenderShadowMaps(this.Scene.Sunlights, this.Scene, camera);
+            this.SunlightSystem.RenderShadowMaps(this.Scene.Sunlights, this.Scene, perspectiveCamera);
 
             this.Device.SetRenderTarget(this.LightTarget);
 
             this.Device.Clear(new Color(this.Scene.AmbientLight.R, this.Scene.AmbientLight.G, this.Scene.AmbientLight.B, (byte)0));
-            //this.Device.Clear(new Color((byte)0, (byte)0, (byte)0, (byte)0));
 
-            this.PointLightSystem.Render(this.Scene.PointLights, camera, this.ColorTarget, this.NormalTarget, this.DepthTarget);
-            this.DirectionalLightSystem.Render(this.Scene.DirectionalLights, camera, this.ColorTarget, this.NormalTarget, this.DepthTarget);
-            this.ShadowCastingLightSystem.RenderLights(this.Scene.ShadowCastingLights, camera, this.ColorTarget, this.NormalTarget, this.DepthTarget);
+            this.PointLightSystem.Render(this.Scene.PointLights, perspectiveCamera, this.ColorTarget, this.NormalTarget, this.DepthTarget);
+            this.DirectionalLightSystem.Render(this.Scene.DirectionalLights, perspectiveCamera, this.ColorTarget, this.NormalTarget, this.DepthTarget);
+            this.ShadowCastingLightSystem.RenderLights(this.Scene.ShadowCastingLights, perspectiveCamera, this.ColorTarget, this.NormalTarget, this.DepthTarget);
 
-            this.SunlightSystem.RenderLights(this.Scene.Sunlights, camera, this.ColorTarget, this.NormalTarget, this.DepthTarget);            
+            this.SunlightSystem.RenderLights(this.Scene.Sunlights, perspectiveCamera, this.ColorTarget, this.NormalTarget, this.DepthTarget);            
             
 
             this.Device.SetRenderTarget(null);
