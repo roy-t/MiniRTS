@@ -26,10 +26,13 @@ namespace MiniEngine.Scenes
             //this.ShadowCastingLights.Add(new ShadowCastingLight(device, new Vector3(29.5f, 35.7f, 0.3f), new Vector3(35, 35, 0), Color.White));
         }
 
-        public override void LoadContent(ContentManager content, SystemCollection systems)
+        public override void LoadContent(ContentManager content)
         {
-            this.sponza = content.Load<Model>(@"Sponza\Sponza");
+            this.sponza = content.Load<Model>(@"Sponza\Sponza");            
+        }
 
+        public override void Set(SystemCollection systems)
+        {
             this.worldEntity = systems.CreateEntity();
             systems.SunlightSystem.Add(this.worldEntity, Color.White, Vector3.Up, Vector3.Right * 0.75f + Vector3.Forward * 0.1f);
         }

@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Rendering.Cameras;
 using MiniEngine.Rendering.Lighting;
+using MiniEngine.Rendering.Lighting.Components;
 using MiniEngine.Units;
 using DirectionalLight = MiniEngine.Rendering.Lighting.DirectionalLight;
 
@@ -28,7 +29,8 @@ namespace MiniEngine.Scenes
 
         public Color AmbientLight { get; protected set; }
 
-        public abstract void LoadContent(ContentManager content, SystemCollection systems);
+        public abstract void LoadContent(ContentManager content);
+        public abstract void Set(SystemCollection systems);
 
         public abstract void Update(Seconds elapsed);
 

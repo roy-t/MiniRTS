@@ -2,8 +2,9 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Rendering.Cameras;
+using MiniEngine.Rendering.Lighting.Components;
 
-namespace MiniEngine.Rendering.Lighting
+namespace MiniEngine.Rendering.Lighting.Systems
 {
     public sealed class PointLightSystem
     {
@@ -11,23 +12,32 @@ namespace MiniEngine.Rendering.Lighting
         private readonly Effect Effect;
         private readonly Model Sphere;
 
+        private readonly Dictionary<int, PointLight> Lights;
+
         public PointLightSystem(GraphicsDevice device, Effect effect, Model sphere)
         {
             this.Device = device;
             this.Effect = effect;
             this.Sphere = sphere;
+
+            this.Lights = new Dictionary<int, PointLight>();
         }
 
-        public void Render(
-            IEnumerable<PointLight> lights,
-            PerspectiveCamera perspectiveCamera,
-            RenderTarget2D color,
-            RenderTarget2D normal,
-            RenderTarget2D depth)
+        public void Add(int entity, Vector3 position, Color color, float radius, float intensity)
+        {
+            this.Lights.Add(entity, new PointLight(position, color, radius, intensity));
+        }
+
+        public void Remove(int entity)
+        {
+            this.Lights.Remove(entity);
+        }
+
+        public void Render(PerspectiveCamera perspectiveCamera, RenderTarget2D color, RenderTarget2D normal, RenderTarget2D depth)
         {            
             using (this.Device.LightState())
             {
-                foreach (var light in lights)
+                foreach (var light in this.Lights.Values)
                 {
                     // G-Buffer input                        
                     this.Effect.Parameters["NormalMap"].SetValue(normal);

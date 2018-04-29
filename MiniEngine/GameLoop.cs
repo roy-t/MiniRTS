@@ -68,12 +68,14 @@ namespace MiniEngine
 
             this.renderSystem = new RenderSystem(this.GraphicsDevice, this.Content, this.scenes[0]);
 
-            this.systemCollection = new SystemCollection(this.renderSystem.SunlightSystem);
+            this.systemCollection = new SystemCollection(this.renderSystem.SunlightSystem, this.renderSystem.PointLightSystem);
 
             foreach (var scene in this.scenes)
             {
-                scene.LoadContent(this.Content, this.systemCollection);
+                scene.LoadContent(this.Content);
             }
+
+            this.scenes[0].Set(this.systemCollection);
         }
 
         protected override void UnloadContent()
@@ -98,6 +100,9 @@ namespace MiniEngine
             if (this.KeyboardInput.Click(Keys.Tab))
             {
                 this.currentSceneIndex = (this.currentSceneIndex + 1) % this.scenes.Length;
+                this.systemCollection.DestroyAllEntities();
+
+                this.scenes[this.currentSceneIndex].Set(this.systemCollection);
                 this.renderSystem.Scene = this.scenes[this.currentSceneIndex];
             }
 
@@ -124,9 +129,14 @@ namespace MiniEngine
             var selectedScene = this.scenes[this.currentSceneIndex];
             if (this.KeyboardInput.Click(Keys.Q))
             {
-                var color = ColorUtilities.PickRandomColor();
-                var light = new PointLight(this.perspectiveCamera.Position, color, 10, 1.0f);
-                selectedScene.PointLights.Add(light);
+                var color = ColorUtilities.PickRandomColor();                
+                var lightEntity = this.systemCollection.CreateEntity();
+                this.systemCollection.PointLightSystem.Add(
+                    lightEntity,
+                    this.perspectiveCamera.Position,
+                    color,
+                    10,
+                    1.0f);
             }
 
             if (this.KeyboardInput.Click(Keys.LeftAlt))

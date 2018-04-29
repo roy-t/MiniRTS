@@ -1,8 +1,8 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Rendering.Cameras;
-using MiniEngine.Rendering.Lighting;
 using MiniEngine.Units;
 using DirectionalLight = MiniEngine.Rendering.Lighting.DirectionalLight;
 
@@ -26,41 +26,46 @@ namespace MiniEngine.Scenes
         private Model ship1;
         private Model ship2;
 
-        private Seconds totalElapsed;
+        private int[] lightEntities;
 
         public ZimaScene()
         {
 
             this.DirectionalLights.Add(new DirectionalLight(Vector3.Normalize(Vector3.Forward + Vector3.Down), Color.White * 0.75f));
-            this.DirectionalLights.Add(new DirectionalLight(Vector3.Normalize(Vector3.Forward + Vector3.Up + Vector3.Left), Color.BlueViolet * 0.25f));
-            
-            foreach (var color in this.ColorWheel)
-            {
-                this.PointLights.Add(new PointLight(Vector3.Zero, color, 120, 1.0f));
-            }
-
-            this.totalElapsed = 0;            
+            this.DirectionalLights.Add(new DirectionalLight(Vector3.Normalize(Vector3.Forward + Vector3.Up + Vector3.Left), Color.BlueViolet * 0.25f));                       
         }
 
-        public override void LoadContent(ContentManager content, SystemCollection systems)
+        public override void LoadContent(ContentManager content)
         {
             this.lizard = content.Load<Model>(@"Lizard\Lizard");
             this.ship1 = content.Load<Model>(@"Ship1\Ship1");
             this.ship2 = content.Load<Model>(@"Ship2\Ship2");
         }
 
+        public override void Set(SystemCollection systems)
+        {
+            this.lightEntities = new int[this.ColorWheel.Length];
+
+            var step = MathHelper.TwoPi / this.ColorWheel.Length;
+
+            for (var i = 0; i < this.lightEntities.Length; i++)
+            {
+                this.lightEntities[i] = systems.CreateEntity();
+
+                var x = Math.Sin(step * i) * 100;
+                var y = Math.Cos(step * i) * 100;
+                systems.PointLightSystem.Add(
+                    this.lightEntities[i],
+                    new Vector3((float) x, (float) y, 0),
+                    this.ColorWheel[i],
+                    120,
+                    1.0f);
+            }
+        }
+
         public override void Update(Seconds elapsed)
         {
-            //var step = MathHelper.TwoPi / this.PointLights.Count;
-            //for (var i = 0; i < this.PointLights.Count; i++)
-            //{
-            //    var x = Math.Sin(step * i + this.totalElapsed.Value) * 100;
-            //    var y = Math.Cos(step * i + this.totalElapsed.Value) * 100;
-
-            //    this.PointLights[i].Position = new Vector3((float)x, (float)y, 0);
-            //}
-
-            //this.totalElapsed += elapsed;
+          
         }
 
         public override void Draw(IViewPoint viewPoint)

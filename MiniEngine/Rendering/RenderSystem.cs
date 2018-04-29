@@ -22,9 +22,10 @@ namespace MiniEngine.Rendering
         private readonly RenderTarget2D LightTarget;
         private readonly RenderTarget2D CombineTarget;        
 
-        private readonly DirectionalLightSystem DirectionalLightSystem;
-        private readonly PointLightSystem PointLightSystem;
+        private readonly DirectionalLightSystem DirectionalLightSystem;        
         private readonly ShadowCastingLightSystem ShadowCastingLightSystem;
+
+        public readonly PointLightSystem PointLightSystem;
         public readonly SunlightSystem SunlightSystem;
 
         public RenderSystem(GraphicsDevice device, ContentManager content, IScene scene)
@@ -61,7 +62,7 @@ namespace MiniEngine.Rendering
         public IScene Scene { get; set; }        
 
         public RenderTarget2D[] GetIntermediateRenderTargets() => new[]
-        {           
+        {            
             this.ColorTarget,
             this.NormalTarget,
             this.DepthTarget,
@@ -127,11 +128,11 @@ namespace MiniEngine.Rendering
             this.Device.SetRenderTarget(this.LightTarget);
 
             this.Device.Clear(new Color(this.Scene.AmbientLight.R, this.Scene.AmbientLight.G, this.Scene.AmbientLight.B, (byte)0));
-
-            this.PointLightSystem.Render(this.Scene.PointLights, perspectiveCamera, this.ColorTarget, this.NormalTarget, this.DepthTarget);
+            
             this.DirectionalLightSystem.Render(this.Scene.DirectionalLights, perspectiveCamera, this.ColorTarget, this.NormalTarget, this.DepthTarget);
             this.ShadowCastingLightSystem.RenderLights(this.Scene.ShadowCastingLights, perspectiveCamera, this.ColorTarget, this.NormalTarget, this.DepthTarget);
 
+            this.PointLightSystem.Render(perspectiveCamera, this.ColorTarget, this.NormalTarget, this.DepthTarget);
             this.SunlightSystem.RenderLights(perspectiveCamera, this.ColorTarget, this.NormalTarget, this.DepthTarget);            
             
 
