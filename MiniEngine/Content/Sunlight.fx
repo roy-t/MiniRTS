@@ -1,17 +1,15 @@
 #if OPENGL
     #define SV_POSITION POSITION
-    #define VS_SHADERMODEL vs_3_0
-    #define PS_SHADERMODEL ps_3_0
+    #define VS_SHADERMODEL vs_5_0
+    #define PS_SHADERMODEL ps_5_0
 #else
     #define VS_SHADERMODEL vs_5_0
     #define PS_SHADERMODEL ps_5_0
 #endif
 
 float4x4 InverseViewProjection;
-float4x4 LightView;
-float4x4 LightProjection;
 
-float3 LightDirection;
+float3 SurfaceToLightVector;
 float3 LightColor;
 float3 LightPosition;
 
@@ -20,7 +18,6 @@ float3 CameraPosition;
 // Shadow stuff
 static const float BlendThreshold = 0.1f;
 static const float Bias = 0.005f;
-static const float OffsetScale = 0.0f;
 static const uint NumCascades = 4;
 
 float4x4 ShadowMatrix;
@@ -90,13 +87,13 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
 
 float SampleShadowMap(float2 baseUv, float u, float v, float2 shadowMapSizeInv, uint cascadeIndex, float depth)
 {
-	float2 uv = baseUv + float2(u, v) * shadowMapSizeInv;
-	float z = depth;
+    float2 uv = baseUv + float2(u, v) * shadowMapSizeInv;
+    float z = depth;
 
-	return ShadowMap.SampleCmpLevelZero(ShadowSampler, float3(uv, cascadeIndex), z);
+    return ShadowMap.SampleCmpLevelZero(ShadowSampler, float3(uv, cascadeIndex), z);
 }
 
-float SampleShadowMapPCF(float3 shadowPosition, float3 shadowPosDX, float3 shadowPosDY, uint cascadeIndex)
+float SampleShadowMapPCF(float3 shadowPosition, uint cascadeIndex)
 {
     float2 shadowMapSize;
     float numSlices;
@@ -151,14 +148,11 @@ float SampleShadowMapPCF(float3 shadowPosition, float3 shadowPosDX, float3 shado
 }
 
 
-float3 SampleShadowCascade(float3 shadowPosition, float3 shadowPosDX, float3 shadowPosDY, uint cascadeIndex)
+float3 SampleShadowCascade(float3 shadowPosition, uint cascadeIndex)
 {
     shadowPosition += CascadeOffsets[cascadeIndex].xyz;
     shadowPosition *= CascadeScales[cascadeIndex].xyz;
-
-    shadowPosDX *= CascadeScales[cascadeIndex].xyz;
-    shadowPosDY *= CascadeScales[cascadeIndex].xyz;
-
+    
     if (visualizeCascades) {
 
         const float3 CascadeColors[NumCascades] =
@@ -171,8 +165,8 @@ float3 SampleShadowCascade(float3 shadowPosition, float3 shadowPosDX, float3 sha
 
         return CascadeColors[cascadeIndex];
     }
-	
-    float shadow = SampleShadowMapPCF(shadowPosition, shadowPosDX, shadowPosDY, cascadeIndex);	
+    
+    float shadow = SampleShadowMapPCF(shadowPosition, cascadeIndex);	
     return float3(shadow, shadow, shadow);
 }
 
@@ -191,27 +185,24 @@ float3 GetLightFactor(float3 positionWS, float depthVS, float2 texCoord)
 
     // Project into shadow space
     float3 samplePos = positionWS;
-    float3 shadowPosition = mul(float4(samplePos, 1.0f), ShadowMatrix).xyz;
-    float3 shadowPosDX = ddx_fine(shadowPosition);
-    float3 shadowPosDY = ddy_fine(shadowPosition);
+    float3 shadowPosition = mul(float4(samplePos, 1.0f), ShadowMatrix).xyz;    
 
-    shadowVisibility = SampleShadowCascade(shadowPosition, shadowPosDX, shadowPosDY, cascadeIndex);
-	
-	// Sample the next cascade, and blend between the two results to
-	// smooth the transition
-	const float BlendThreshold = 0.1f;
-	float nextSplit = CascadeSplits[cascadeIndex];
-	float splitSize = cascadeIndex == 0 ? nextSplit : nextSplit - CascadeSplits[cascadeIndex - 1];
-	float splitDist = (nextSplit - depthVS) / splitSize;
+    shadowVisibility = SampleShadowCascade(shadowPosition, cascadeIndex);
+    
+    // Sample the next cascade, and blend between the two results to
+    // smooth the transition
+    const float BlendThreshold = 0.1f;
+    float nextSplit = CascadeSplits[cascadeIndex];
+    float splitSize = cascadeIndex == 0 ? nextSplit : nextSplit - CascadeSplits[cascadeIndex - 1];
+    float splitDist = (nextSplit - depthVS) / splitSize;
 
-	[branch]
-	if (splitDist <= BlendThreshold && cascadeIndex != NumCascades - 1)
-	{
-		float3 nextSplitVisibility = SampleShadowCascade(shadowPosition,
-			shadowPosDX, shadowPosDY, cascadeIndex + 1);
-		float lerpAmt = smoothstep(0.0f, BlendThreshold, splitDist);
-		shadowVisibility = lerp(nextSplitVisibility, shadowVisibility, lerpAmt);
-	}
+    [branch]
+    if (splitDist <= BlendThreshold && cascadeIndex != NumCascades - 1)
+    {
+        float3 nextSplitVisibility = SampleShadowCascade(shadowPosition, cascadeIndex + 1);
+        float lerpAmt = smoothstep(0.0f, BlendThreshold, splitDist);
+        shadowVisibility = lerp(nextSplitVisibility, shadowVisibility, lerpAmt);
+    }
 
     return shadowVisibility;
 }
@@ -243,16 +234,13 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
     position /= position.w;
     
     float3 lightFactor = GetLightFactor(position.xyz, distance, input.TexCoord);
-    
-    //surface-to-light vector
-    float3 lightVector = -normalize(LightDirection);
-
+            
     //compute diffuse light
-    float NdL = saturate(dot(normal, lightVector));
+    float NdL = saturate(dot(normal, SurfaceToLightVector));
     float3 diffuseLight = NdL * LightColor.rgb;
 
     //reflection vector
-    float3 reflectionVector = normalize(reflect(-lightVector, normal));
+    float3 reflectionVector = normalize(reflect(SurfaceToLightVector, normal));
     //camera-to-surface vector
     float3 directionToCamera = normalize(CameraPosition - position.xyz);
     //compute specular light

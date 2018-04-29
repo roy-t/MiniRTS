@@ -64,12 +64,14 @@ namespace MiniEngine
                 new ZimaScene(this.GraphicsDevice)
             };
 
+            this.renderSystem = new RenderSystem(this.GraphicsDevice, this.Content, this.scenes[0]);
+
             foreach (var scene in this.scenes)
             {
-                scene.LoadContent(this.Content, this.GraphicsDevice);
+                scene.LoadContent(this.Content, this.GraphicsDevice, this.renderSystem);
             }
             
-            this.renderSystem = new RenderSystem(this.GraphicsDevice, this.Content, this.scenes[0]);
+            
         }
 
         protected override void UnloadContent()
@@ -133,7 +135,7 @@ namespace MiniEngine
 
             if (this.KeyboardInput.Click(Keys.H))
             {
-                selectedScene.Sunlights.ForEach(x => x.Move(this.perspectiveCamera.Position, this.perspectiveCamera.LookAt));
+                //selectedScene.Sunlights.ForEach(x => x.Move(this.perspectiveCamera.Position, this.perspectiveCamera.LookAt));
             }
 
             this.cameraController.Update(gameTime.ElapsedGameTime);

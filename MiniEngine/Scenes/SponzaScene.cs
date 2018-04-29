@@ -27,14 +27,16 @@ namespace MiniEngine.Scenes
             //this.ShadowCastingLights.Add(new ShadowCastingLight(device, new Vector3(29.5f, 35.7f, 0.3f), new Vector3(35, 35, 0), Color.White));
         }              
 
-        public override void LoadContent(ContentManager content, GraphicsDevice device)
+        public override void LoadContent(ContentManager content, GraphicsDevice device, RenderSystem renderSystem)
         {
             this.sponza = content.Load<Model>(@"Sponza\Sponza");
 
             var boundingBox = this.sponza.ComputeBoundingBox(this.World);
             var boundingSphere = this.sponza.ComputeBoundingSphere(this.World);
                         
-            this.Sunlights.Add(new Sunlight(device));
+            //this.Sunlights.Add(new Sunlight(device));
+
+            renderSystem.SunlightSystem.Compose(0, Color.White, Vector3.Up, Vector3.Right * 0.75f + Vector3.Forward * 0.1f);
         }
 
         public override void Update(Seconds elapsed)

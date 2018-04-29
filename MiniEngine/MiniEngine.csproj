@@ -79,6 +79,7 @@
     <Compile Include="Rendering\Cameras\ViewPoint.cs" />
     <Compile Include="Rendering\DeviceState.cs" />
     <Compile Include="Rendering\Cameras\IViewPoint.cs" />
+    <Compile Include="Rendering\Lighting\Components\ShadowMap.cs" />
     <Compile Include="Rendering\Lighting\DirectionalLight.cs" />
     <Compile Include="Rendering\Lighting\DirectionalLightSystem.cs" />
     <Compile Include="Rendering\GraphicsDeviceExtensions.cs" />
@@ -86,7 +87,8 @@
     <Compile Include="Rendering\Lighting\PointLightSystem.cs" />
     <Compile Include="Rendering\Lighting\ShadowCastingLight.cs" />
     <Compile Include="Rendering\Lighting\ShadowCastingLightSystem.cs" />
-    <Compile Include="Rendering\Lighting\Sunlight.cs" />
+    <Compile Include="Rendering\Lighting\ShadowMath.cs" />
+    <Compile Include="Rendering\Lighting\Components\Sunlight.cs" />
     <Compile Include="Rendering\Lighting\SunlightSystem.cs" />
     <Compile Include="Rendering\Primitives\Frustum.cs" />
     <Compile Include="Rendering\Primitives\Quad.cs" />

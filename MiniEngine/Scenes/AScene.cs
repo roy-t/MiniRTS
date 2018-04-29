@@ -21,7 +21,6 @@ namespace MiniEngine.Scenes
             this.DirectionalLights = new List<DirectionalLight>();
             this.PointLights = new List<PointLight>();
             this.ShadowCastingLights = new List<ShadowCastingLight>();
-            this.Sunlights = new List<Sunlight>();
             this.AmbientLight = Color.Black;
         }        
 
@@ -31,11 +30,10 @@ namespace MiniEngine.Scenes
 
         public List<ShadowCastingLight> ShadowCastingLights { get; }
 
-        public List<Sunlight> Sunlights { get; }
 
         public Color AmbientLight { get; protected set; }
 
-        public abstract void LoadContent(ContentManager content, GraphicsDevice device);
+        public abstract void LoadContent(ContentManager content, GraphicsDevice device, RenderSystem renderSystem);
 
         public abstract void Update(Seconds elapsed);
 
