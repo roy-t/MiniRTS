@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using MiniEngine.Mathematics;
 using MiniEngine.Rendering.Cameras;
 using MiniEngine.Rendering.Lighting.Components;
 using MiniEngine.Rendering.Primitives;
 using MiniEngine.Scenes;
+using MiniEngine.Utilities.Extensions;
 
-namespace MiniEngine.Rendering.Lighting
+namespace MiniEngine.Rendering.Lighting.Systems
 {
     public sealed class SunlightSystem
     {
@@ -36,13 +36,13 @@ namespace MiniEngine.Rendering.Lighting
             this.Lights = new Dictionary<int, Sunlight>(1);
         }
 
-        public void Compose(int entity, Color color, Vector3 position, Vector3 lookAt)
+        public void Add(int entity, Color color, Vector3 position, Vector3 lookAt)
         {
             this.ShadowMaps.Add(entity, new ShadowMap(this.Device, Resolution, Cascades));
             this.Lights.Add(entity, new Sunlight(color, position, lookAt));
         }
 
-        public void Decompose(int entity)
+        public void Remove(int entity)
         {
             this.ShadowMaps.Remove(entity);
             this.Lights.Remove(entity);

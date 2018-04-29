@@ -27,6 +27,8 @@ namespace MiniEngine
         private int currentSceneIndex = 0;
         private CameraController cameraController;
         private RenderSystem renderSystem;
+
+        private SystemCollection systemCollection;
         
 
         public GameLoop()
@@ -60,18 +62,18 @@ namespace MiniEngine
 
             this.scenes = new IScene[]
             {                
-                new SponzaScene(this.GraphicsDevice, this.perspectiveCamera),
-                new ZimaScene(this.GraphicsDevice)
+                new SponzaScene(),
+                new ZimaScene()
             };
 
             this.renderSystem = new RenderSystem(this.GraphicsDevice, this.Content, this.scenes[0]);
 
+            this.systemCollection = new SystemCollection(this.renderSystem.SunlightSystem);
+
             foreach (var scene in this.scenes)
             {
-                scene.LoadContent(this.Content, this.GraphicsDevice, this.renderSystem);
+                scene.LoadContent(this.Content, this.systemCollection);
             }
-            
-            
         }
 
         protected override void UnloadContent()

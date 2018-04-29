@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 
-namespace MiniEngine.Mathematics
+namespace MiniEngine.Utilities.Extensions
 {
     public static class MatrixExtensions
     {

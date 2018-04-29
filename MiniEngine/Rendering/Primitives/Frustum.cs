@@ -1,6 +1,6 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
-using MiniEngine.Mathematics;
+using MiniEngine.Utilities.Extensions;
 
 namespace MiniEngine.Rendering.Primitives
 {

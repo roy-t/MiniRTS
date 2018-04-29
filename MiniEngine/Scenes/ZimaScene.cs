@@ -1,8 +1,6 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using MiniEngine.Rendering;
 using MiniEngine.Rendering.Cameras;
 using MiniEngine.Rendering.Lighting;
 using MiniEngine.Units;
@@ -30,8 +28,7 @@ namespace MiniEngine.Scenes
 
         private Seconds totalElapsed;
 
-        public ZimaScene(GraphicsDevice device)
-            : base(device)
+        public ZimaScene()
         {
 
             this.DirectionalLights.Add(new DirectionalLight(Vector3.Normalize(Vector3.Forward + Vector3.Down), Color.White * 0.75f));
@@ -45,7 +42,7 @@ namespace MiniEngine.Scenes
             this.totalElapsed = 0;            
         }
 
-        public override void LoadContent(ContentManager content, GraphicsDevice device, RenderSystem renderSystem)
+        public override void LoadContent(ContentManager content, SystemCollection systems)
         {
             this.lizard = content.Load<Model>(@"Lizard\Lizard");
             this.ship1 = content.Load<Model>(@"Ship1\Ship1");

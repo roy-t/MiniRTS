@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using MiniEngine.Input;
-using MiniEngine.Rendering;
 using MiniEngine.Rendering.Cameras;
 using MiniEngine.Units;
 

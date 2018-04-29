@@ -68,10 +68,11 @@
     <Compile Include="Input\KeyboardInput.cs" />
     <Compile Include="Input\MouseButtons.cs" />
     <Compile Include="Input\MouseInput.cs" />
-    <Compile Include="Mathematics\BoundingBoxExtensions.cs" />
-    <Compile Include="Mathematics\MatrixExtensions.cs" />
-    <Compile Include="Mathematics\ModelExtensions.cs" />
-    <Compile Include="Mathematics\VectorExtensions.cs" />
+    <Compile Include="SystemCollection.cs" />
+    <Compile Include="Utilities\Extensions\BoundingBoxExtensions.cs" />
+    <Compile Include="Utilities\Extensions\MatrixExtensions.cs" />
+    <Compile Include="Utilities\Extensions\ModelExtensions.cs" />
+    <Compile Include="Utilities\Extensions\VectorExtensions.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rendering\Cameras\OrthographicCamera.cs" />
@@ -89,7 +90,7 @@
     <Compile Include="Rendering\Lighting\ShadowCastingLightSystem.cs" />
     <Compile Include="Rendering\Lighting\ShadowMath.cs" />
     <Compile Include="Rendering\Lighting\Components\Sunlight.cs" />
-    <Compile Include="Rendering\Lighting\SunlightSystem.cs" />
+    <Compile Include="Rendering\Lighting\Systems\SunlightSystem.cs" />
     <Compile Include="Rendering\Primitives\Frustum.cs" />
     <Compile Include="Rendering\Primitives\Quad.cs" />
     <Compile Include="Rendering\RenderSystem.cs" />

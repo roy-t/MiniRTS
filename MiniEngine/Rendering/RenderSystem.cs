@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Rendering.Cameras;
 using MiniEngine.Rendering.Lighting;
+using MiniEngine.Rendering.Lighting.Systems;
 using MiniEngine.Rendering.Primitives;
 using MiniEngine.Scenes;
 

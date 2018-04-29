@@ -2,7 +2,6 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using MiniEngine.Rendering;
 using MiniEngine.Rendering.Cameras;
 using MiniEngine.Rendering.Lighting;
 using MiniEngine.Units;
@@ -12,12 +11,8 @@ namespace MiniEngine.Scenes
 {
     public abstract class AScene : IScene
     {
-        protected readonly GraphicsDevice Device;
-
-        protected AScene(GraphicsDevice device)
+        protected AScene()
         {
-            this.Device = device;            
-
             this.DirectionalLights = new List<DirectionalLight>();
             this.PointLights = new List<PointLight>();
             this.ShadowCastingLights = new List<ShadowCastingLight>();
@@ -33,7 +28,7 @@ namespace MiniEngine.Scenes
 
         public Color AmbientLight { get; protected set; }
 
-        public abstract void LoadContent(ContentManager content, GraphicsDevice device, RenderSystem renderSystem);
+        public abstract void LoadContent(ContentManager content, SystemCollection systems);
 
         public abstract void Update(Seconds elapsed);
 

@@ -2,7 +2,6 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using MiniEngine.Rendering;
 using MiniEngine.Rendering.Cameras;
 using MiniEngine.Rendering.Lighting;
 using MiniEngine.Units;
@@ -20,7 +19,7 @@ namespace MiniEngine.Scenes
 
         void Draw(IViewPoint viewPoint);
         void Draw(Effect effectOverride, IViewPoint viewPoint);
-        void LoadContent(ContentManager content, GraphicsDevice device, RenderSystem renderSystem);
+        void LoadContent(ContentManager content, SystemCollection systems);
         void Update(Seconds elapsed);
     }
 }

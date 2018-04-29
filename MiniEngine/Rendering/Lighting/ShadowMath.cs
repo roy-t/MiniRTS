@@ -1,8 +1,8 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
-using MiniEngine.Mathematics;
 using MiniEngine.Rendering.Cameras;
 using MiniEngine.Rendering.Primitives;
+using MiniEngine.Utilities.Extensions;
 
 namespace MiniEngine.Rendering.Lighting
 {
