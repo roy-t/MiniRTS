@@ -12,15 +12,28 @@ namespace MiniEngine.Rendering.Lighting
         private readonly Effect Effect;        
         private readonly Quad Quad;
 
+        private readonly Dictionary<Entity, DirectionalLight> Lights;
+
         public DirectionalLightSystem(GraphicsDevice device, Effect effect)
         {
             this.Device = device;
             this.Effect = effect;            
             this.Quad = new Quad();
+
+            this.Lights = new Dictionary<Entity, DirectionalLight>();
+        }
+
+        public void Add(Entity entity, Vector3 direction, Color color)
+        {
+            this.Lights.Add(entity, new DirectionalLight(direction, color));
+        }
+
+        public void Remove(Entity entity)
+        {
+            this.Lights.Remove(entity);
         }
 
         public void Render(
-            IEnumerable<DirectionalLight> lights,
             PerspectiveCamera perspectiveCamera,
             RenderTarget2D color,
             RenderTarget2D normal,
@@ -28,7 +41,7 @@ namespace MiniEngine.Rendering.Lighting
         {            
             using (this.Device.LightState())
             {
-                foreach (var light in lights)
+                foreach (var light in this.Lights.Values)
                 {
                     // G-Buffer input                        
                     this.Effect.Parameters["NormalMap"].SetValue(normal);
@@ -49,6 +62,6 @@ namespace MiniEngine.Rendering.Lighting
                     }
                 }
             }
-        }
+        }        
     }
 }

@@ -5,9 +5,7 @@ using MiniEngine.Controllers;
 using MiniEngine.Input;
 using MiniEngine.Rendering;
 using MiniEngine.Rendering.Cameras;
-using MiniEngine.Rendering.Lighting;
 using MiniEngine.Scenes;
-using MiniEngine.Utilities;
 
 namespace MiniEngine
 {    
@@ -18,14 +16,15 @@ namespace MiniEngine
         private readonly MouseInput MouseInput;
 
         private bool detailView = true;
-        private int viewIndex = 0;
+        private int viewIndex;
         private int viewOptions = 4;
 
         private PerspectiveCamera perspectiveCamera;
         private SpriteBatch spriteBatch;
         private IScene[] scenes;
-        private int currentSceneIndex = 0;
+        private int currentSceneIndex;
         private CameraController cameraController;
+        private LightSystemsController lightSystemsController;
         private RenderSystem renderSystem;
 
         private SystemCollection systemCollection;
@@ -58,7 +57,7 @@ namespace MiniEngine
             this.spriteBatch = new SpriteBatch(this.GraphicsDevice);
             
             this.perspectiveCamera = new PerspectiveCamera(this.GraphicsDevice.Viewport);
-            this.cameraController = new CameraController(this.KeyboardInput, this.MouseInput, this.perspectiveCamera);
+            
 
             this.scenes = new IScene[]
             {                
@@ -68,7 +67,7 @@ namespace MiniEngine
 
             this.renderSystem = new RenderSystem(this.GraphicsDevice, this.Content, this.scenes[0]);
 
-            this.systemCollection = new SystemCollection(this.renderSystem.SunlightSystem, this.renderSystem.PointLightSystem);
+            this.systemCollection = new SystemCollection(this.renderSystem.SunlightSystem, this.renderSystem.PointLightSystem, this.renderSystem.DirectionalLightSystem, this.renderSystem.ShadowCastingLightSystem);
 
             foreach (var scene in this.scenes)
             {
@@ -76,6 +75,13 @@ namespace MiniEngine
             }
 
             this.scenes[0].Set(this.systemCollection);
+
+
+            this.cameraController = new CameraController(this.KeyboardInput, this.MouseInput, this.perspectiveCamera);
+            this.lightSystemsController = new LightSystemsController(
+                this.KeyboardInput,
+                this.perspectiveCamera,
+                this.systemCollection);
         }
 
         protected override void UnloadContent()
@@ -122,40 +128,19 @@ namespace MiniEngine
 
             if (this.KeyboardInput.Click(Keys.LeftControl))
             {
-                this.renderSystem.EnableFXAA = !this.renderSystem.EnableFXAA;                
+                this.renderSystem.EnableFXAA = !this.renderSystem.EnableFXAA;
             }
-
-            // HACK: dropping some lights
-            var selectedScene = this.scenes[this.currentSceneIndex];
-            if (this.KeyboardInput.Click(Keys.Q))
+            
+            var activated = this.lightSystemsController.Update(gameTime.ElapsedGameTime);
+            if (!activated)
             {
-                var color = ColorUtilities.PickRandomColor();                
-                var lightEntity = this.systemCollection.CreateEntity();
-                this.systemCollection.PointLightSystem.Add(
-                    lightEntity,
-                    this.perspectiveCamera.Position,
-                    color,
-                    10,
-                    1.0f);
+                this.cameraController.Update(gameTime.ElapsedGameTime);
             }
-
-            if (this.KeyboardInput.Click(Keys.LeftAlt))
-            {
-                var light = new ShadowCastingLight(this.GraphicsDevice, this.perspectiveCamera.Position, this.perspectiveCamera.LookAt, Color.White);
-                selectedScene.ShadowCastingLights.Add(light);
-            }
-
-            if (this.KeyboardInput.Click(Keys.H))
-            {
-                //selectedScene.Sunlights.ForEach(x => x.Move(this.perspectiveCamera.Position, this.perspectiveCamera.LookAt));
-            }
-
-            this.cameraController.Update(gameTime.ElapsedGameTime);
 
             this.renderSystem.Scene.Update(gameTime.ElapsedGameTime);
 
             base.Update(gameTime);
-        }        
+        }
 
         protected override void Draw(GameTime gameTime)
         {

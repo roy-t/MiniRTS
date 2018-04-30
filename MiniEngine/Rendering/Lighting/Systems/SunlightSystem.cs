@@ -21,8 +21,8 @@ namespace MiniEngine.Rendering.Lighting.Systems
         private readonly Quad Quad;
         private readonly Frustum Frustum;
 
-        private readonly Dictionary<int, ShadowMap> ShadowMaps;
-        private readonly Dictionary<int, Sunlight> Lights;
+        private readonly Dictionary<Entity, ShadowMap> ShadowMaps;
+        private readonly Dictionary<Entity, Sunlight> Lights;
 
         public SunlightSystem(GraphicsDevice device, Effect cascadingShadowMapEffect, Effect sunlightEffect)
         {
@@ -32,21 +32,21 @@ namespace MiniEngine.Rendering.Lighting.Systems
             this.Quad = new Quad();
             this.Frustum = new Frustum();
 
-            this.ShadowMaps = new Dictionary<int, ShadowMap>(1);
-            this.Lights = new Dictionary<int, Sunlight>(1);
+            this.ShadowMaps = new Dictionary<Entity, ShadowMap>(1);
+            this.Lights = new Dictionary<Entity, Sunlight>(1);
         }
 
-        public void Add(int entity, Color color, Vector3 position, Vector3 lookAt)
+        public void Add(Entity entity, Color color, Vector3 position, Vector3 lookAt)
         {
             this.ShadowMaps.Add(entity, new ShadowMap(this.Device, Resolution, Cascades));
             this.Lights.Add(entity, new Sunlight(color, position, lookAt));
         }
 
-        public void Remove(int entity)
+        public void Remove(Entity entity)
         {
             this.ShadowMaps.Remove(entity);
             this.Lights.Remove(entity);
-        }
+        }        
 
         public void RenderShadowMaps(IScene geometry, PerspectiveCamera perspectiveCamera)
         {
@@ -176,6 +176,6 @@ namespace MiniEngine.Rendering.Lighting.Systems
                 pass.Apply();
                 this.Quad.Render(this.Device);
             }
-        }             
+        }      
     }    
 }

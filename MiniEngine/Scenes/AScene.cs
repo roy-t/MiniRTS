@@ -1,12 +1,8 @@
-﻿using System.Collections.Generic;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Rendering.Cameras;
-using MiniEngine.Rendering.Lighting;
-using MiniEngine.Rendering.Lighting.Components;
 using MiniEngine.Units;
-using DirectionalLight = MiniEngine.Rendering.Lighting.DirectionalLight;
 
 namespace MiniEngine.Scenes
 {
@@ -14,18 +10,8 @@ namespace MiniEngine.Scenes
     {
         protected AScene()
         {
-            this.DirectionalLights = new List<DirectionalLight>();
-            this.PointLights = new List<PointLight>();
-            this.ShadowCastingLights = new List<ShadowCastingLight>();
             this.AmbientLight = Color.Black;
         }        
-
-        public List<DirectionalLight> DirectionalLights { get; }        
-
-        public List<PointLight> PointLights { get; }
-
-        public List<ShadowCastingLight> ShadowCastingLights { get; }
-
 
         public Color AmbientLight { get; protected set; }
 

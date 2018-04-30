@@ -4,7 +4,6 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Rendering.Cameras;
 using MiniEngine.Units;
-using DirectionalLight = MiniEngine.Rendering.Lighting.DirectionalLight;
 
 namespace MiniEngine.Scenes
 {
@@ -26,14 +25,8 @@ namespace MiniEngine.Scenes
         private Model ship1;
         private Model ship2;
 
-        private int[] lightEntities;
-
-        public ZimaScene()
-        {
-
-            this.DirectionalLights.Add(new DirectionalLight(Vector3.Normalize(Vector3.Forward + Vector3.Down), Color.White * 0.75f));
-            this.DirectionalLights.Add(new DirectionalLight(Vector3.Normalize(Vector3.Forward + Vector3.Up + Vector3.Left), Color.BlueViolet * 0.25f));                       
-        }
+        private Entity[] pointLightEntities;
+        private Entity[] directionalLightEntities;
 
         public override void LoadContent(ContentManager content)
         {
@@ -44,23 +37,30 @@ namespace MiniEngine.Scenes
 
         public override void Set(SystemCollection systems)
         {
-            this.lightEntities = new int[this.ColorWheel.Length];
+            this.pointLightEntities = new Entity[this.ColorWheel.Length];
 
             var step = MathHelper.TwoPi / this.ColorWheel.Length;
 
-            for (var i = 0; i < this.lightEntities.Length; i++)
+            for (var i = 0; i < this.pointLightEntities.Length; i++)
             {
-                this.lightEntities[i] = systems.CreateEntity();
+                this.pointLightEntities[i] = systems.CreateEntity();
 
                 var x = Math.Sin(step * i) * 100;
                 var y = Math.Cos(step * i) * 100;
                 systems.PointLightSystem.Add(
-                    this.lightEntities[i],
+                    this.pointLightEntities[i],
                     new Vector3((float) x, (float) y, 0),
                     this.ColorWheel[i],
                     120,
                     1.0f);
             }
+
+            this.directionalLightEntities = new Entity[2];
+            this.directionalLightEntities[0] = systems.CreateEntity();
+            this.directionalLightEntities[1] = systems.CreateEntity();
+
+            systems.DirectionalLightSystem.Add(this.directionalLightEntities[0], Vector3.Normalize(Vector3.Forward + Vector3.Down), Color.White * 0.75f);
+            systems.DirectionalLightSystem.Add(this.directionalLightEntities[1], Vector3.Normalize(Vector3.Forward + Vector3.Up + Vector3.Left), Color.BlueViolet * 0.25f);            
         }
 
         public override void Update(Seconds elapsed)

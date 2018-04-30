@@ -12,7 +12,7 @@ namespace MiniEngine.Rendering.Lighting.Systems
         private readonly Effect Effect;
         private readonly Model Sphere;
 
-        private readonly Dictionary<int, PointLight> Lights;
+        private readonly Dictionary<Entity, PointLight> Lights;
 
         public PointLightSystem(GraphicsDevice device, Effect effect, Model sphere)
         {
@@ -20,15 +20,15 @@ namespace MiniEngine.Rendering.Lighting.Systems
             this.Effect = effect;
             this.Sphere = sphere;
 
-            this.Lights = new Dictionary<int, PointLight>();
+            this.Lights = new Dictionary<Entity, PointLight>();
         }
 
-        public void Add(int entity, Vector3 position, Color color, float radius, float intensity)
+        public void Add(Entity entity, Vector3 position, Color color, float radius, float intensity)
         {
             this.Lights.Add(entity, new PointLight(position, color, radius, intensity));
         }
 
-        public void Remove(int entity)
+        public void Remove(Entity entity)
         {
             this.Lights.Remove(entity);
         }

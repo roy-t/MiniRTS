@@ -14,19 +14,33 @@ namespace MiniEngine.Rendering.Lighting
         private readonly Effect ShadowCastingLightEffect;
         private readonly Quad Quad;
 
+        private readonly Dictionary<Entity, ShadowCastingLight> Lights;
+
         public ShadowCastingLightSystem(GraphicsDevice device, Effect shadowMapEffect, Effect shadowCastingLightEffect)
         {
             this.Device = device;
             this.ShadowMapEffect = shadowMapEffect;
             this.ShadowCastingLightEffect = shadowCastingLightEffect;
             this.Quad = new Quad();
+
+            this.Lights = new Dictionary<Entity, ShadowCastingLight>();
         }
 
-        public void RenderShadowMaps(IEnumerable<ShadowCastingLight> lights, IScene geometry)
+        public void Add(Entity entity, Vector3 position, Vector3 lookAt, Color color)
+        {
+            this.Lights.Add(entity, new ShadowCastingLight(this.Device, position, lookAt, color));
+        }
+
+        public void Remove(Entity entity)
+        {
+            this.Lights.Remove(entity);
+        }
+
+        public void RenderShadowMaps(IScene geometry)
         {
             using (this.Device.GeometryState())
             {
-                foreach (var light in lights)
+                foreach (var light in this.Lights.Values)
                 {
                     this.Device.SetRenderTarget(light.ShadowMap);
                     this.Device.Clear(Color.Black);
@@ -37,8 +51,7 @@ namespace MiniEngine.Rendering.Lighting
             }
         }
 
-        public void RenderLights(
-            IEnumerable<ShadowCastingLight> lights,
+        public void RenderLights(            
             PerspectiveCamera perspectiveCamera,
             RenderTarget2D color,
             RenderTarget2D normal,
@@ -46,7 +59,7 @@ namespace MiniEngine.Rendering.Lighting
         {
             using (this.Device.LightState())
             {
-                foreach (var light in lights)
+                foreach (var light in this.Lights.Values)
                 {
                     // G-Buffer input                        
                     this.ShadowCastingLightEffect.Parameters["NormalMap"].SetValue(normal);

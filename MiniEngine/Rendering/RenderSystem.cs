@@ -22,10 +22,10 @@ namespace MiniEngine.Rendering
         private readonly RenderTarget2D LightTarget;
         private readonly RenderTarget2D CombineTarget;        
 
-        private readonly DirectionalLightSystem DirectionalLightSystem;        
-        private readonly ShadowCastingLightSystem ShadowCastingLightSystem;
-
+                
+        public readonly DirectionalLightSystem DirectionalLightSystem;        
         public readonly PointLightSystem PointLightSystem;
+        public readonly ShadowCastingLightSystem ShadowCastingLightSystem;
         public readonly SunlightSystem SunlightSystem;
 
         public RenderSystem(GraphicsDevice device, ContentManager content, IScene scene)
@@ -33,7 +33,7 @@ namespace MiniEngine.Rendering
             this.Device = device;
             this.ClearEffect = content.Load<Effect>("Clear");            
             this.CombineEffect = content.Load<Effect>("Combine");
-            this.PostProcessEffect = content.Load<Effect>("PostProcess"); ;
+            this.PostProcessEffect = content.Load<Effect>("PostProcess");
 
             this.Scene = scene;
 
@@ -121,18 +121,18 @@ namespace MiniEngine.Rendering
         }
 
         private void RenderLights(PerspectiveCamera perspectiveCamera)
-        {            
-            this.ShadowCastingLightSystem.RenderShadowMaps(this.Scene.ShadowCastingLights, this.Scene);
+        {                                    
+            this.ShadowCastingLightSystem.RenderShadowMaps(this.Scene);
             this.SunlightSystem.RenderShadowMaps(this.Scene, perspectiveCamera);
 
             this.Device.SetRenderTarget(this.LightTarget);
 
             this.Device.Clear(new Color(this.Scene.AmbientLight.R, this.Scene.AmbientLight.G, this.Scene.AmbientLight.B, (byte)0));
-            
-            this.DirectionalLightSystem.Render(this.Scene.DirectionalLights, perspectiveCamera, this.ColorTarget, this.NormalTarget, this.DepthTarget);
-            this.ShadowCastingLightSystem.RenderLights(this.Scene.ShadowCastingLights, perspectiveCamera, this.ColorTarget, this.NormalTarget, this.DepthTarget);
-
+                                   
+            this.DirectionalLightSystem.Render(perspectiveCamera, this.ColorTarget, this.NormalTarget, this.DepthTarget);
             this.PointLightSystem.Render(perspectiveCamera, this.ColorTarget, this.NormalTarget, this.DepthTarget);
+
+            this.ShadowCastingLightSystem.RenderLights(perspectiveCamera, this.ColorTarget, this.NormalTarget, this.DepthTarget);
             this.SunlightSystem.RenderLights(perspectiveCamera, this.ColorTarget, this.NormalTarget, this.DepthTarget);            
             
 
