@@ -1,31 +1,33 @@
 ﻿using System.Collections.Generic;
-using MiniEngine.Rendering.Lighting;
-using MiniEngine.Rendering.Lighting.Systems;
+using MiniEngine.Rendering.Systems;
 
 namespace MiniEngine
 {
     public sealed class SystemCollection
     {
-        // TODO: do not directly use the scene in the RenderSystem but let the scene insert an entity 
-        // that contains all the info needed to draw the meshes! 
-        // This will make the render system just like any other ordinary system
-
         private int next = 1;
         private readonly List<Entity> Entities;
 
         public SystemCollection(
+            ModelSystem modelSystem,
+            AmbientLightSystem ambientLightSystem,
             SunlightSystem sunlightSystem,
             PointLightSystem pointLightSystem,
             DirectionalLightSystem directionalLightSystem,
             ShadowCastingLightSystem shadowCastingLightSystem)
         {
             this.Entities = new List<Entity>();
+
+            this.ModelSystem = modelSystem;
+            this.AmbientLightSystem = ambientLightSystem;
             this.SunlightSystem = sunlightSystem;
             this.PointLightSystem = pointLightSystem;
             this.DirectionalLightSystem = directionalLightSystem;
             this.ShadowCastingLightSystem = shadowCastingLightSystem;
         }
 
+        public ModelSystem ModelSystem { get; }
+        public AmbientLightSystem AmbientLightSystem { get; }
         public SunlightSystem SunlightSystem { get; }
         public PointLightSystem PointLightSystem { get; }
         public DirectionalLightSystem DirectionalLightSystem { get; }        
@@ -37,6 +39,17 @@ namespace MiniEngine
             this.Entities.Add(entity);
 
             return entity;
+        }
+
+        public Entity[] CreateEntities(int count)
+        {
+            var entities = new Entity[count];
+            for (var i = 0; i < count; i++)
+            {
+                entities[i] = CreateEntity();
+            }
+
+            return entities;
         }
 
         public void DestroyEntity(Entity entity)
@@ -57,6 +70,7 @@ namespace MiniEngine
 
         private void RemoveEntityFromSystems(Entity entity)
         {
+            this.ModelSystem.Remove(entity);
             this.SunlightSystem.Remove(entity);
             this.PointLightSystem.Remove(entity);
             this.DirectionalLightSystem.Remove(entity);

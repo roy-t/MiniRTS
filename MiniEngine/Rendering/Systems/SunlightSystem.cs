@@ -2,18 +2,21 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Rendering.Cameras;
-using MiniEngine.Rendering.Lighting.Components;
+using MiniEngine.Rendering.Components;
+using MiniEngine.Rendering.Lighting;
 using MiniEngine.Rendering.Primitives;
 using MiniEngine.Scenes;
 using MiniEngine.Utilities.Extensions;
 
-namespace MiniEngine.Rendering.Lighting.Systems
+namespace MiniEngine.Rendering.Systems
 {
     public sealed class SunlightSystem
     {
         public const int Resolution = 2048;
         public const int Cascades = 4;
         private static readonly float[] CascadeDistances = { 0.05f, 0.15f, 0.5f, 1.0f };
+
+        private readonly ModelSystem ModelSystem;
 
         private readonly GraphicsDevice Device;
         private readonly Effect CascadingShadowMapEffect;
@@ -24,11 +27,13 @@ namespace MiniEngine.Rendering.Lighting.Systems
         private readonly Dictionary<Entity, ShadowMap> ShadowMaps;
         private readonly Dictionary<Entity, Sunlight> Lights;
 
-        public SunlightSystem(GraphicsDevice device, Effect cascadingShadowMapEffect, Effect sunlightEffect)
+        public SunlightSystem(GraphicsDevice device, Effect cascadingShadowMapEffect, Effect sunlightEffect, ModelSystem modelSystem)
         {
             this.Device = device;
             this.CascadingShadowMapEffect = cascadingShadowMapEffect;
             this.SunlightEffect = sunlightEffect;
+            this.ModelSystem = modelSystem;
+
             this.Quad = new Quad();
             this.Frustum = new Frustum();
 
@@ -134,7 +139,7 @@ namespace MiniEngine.Rendering.Lighting.Systems
                 this.Device.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.White, 1.0f, 0);
 
                 // Draw the geometry, as seen from the shadow camera
-                geometry.Draw(this.CascadingShadowMapEffect, work.ShadowCameras[cascadeIndex]);
+                this.ModelSystem.DrawModels(work.ShadowCameras[cascadeIndex], this.CascadingShadowMapEffect);                
             }
         }        
 

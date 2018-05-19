@@ -3,8 +3,9 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Rendering.Cameras;
 using MiniEngine.Rendering.Primitives;
+using DirectionalLight = MiniEngine.Rendering.Components.DirectionalLight;
 
-namespace MiniEngine.Rendering.Lighting
+namespace MiniEngine.Rendering.Systems
 {
     public sealed class DirectionalLightSystem
     {

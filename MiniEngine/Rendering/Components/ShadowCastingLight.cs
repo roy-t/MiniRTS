@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Rendering.Cameras;
 
-namespace MiniEngine.Rendering.Lighting
+namespace MiniEngine.Rendering.Components
 {
     public sealed class ShadowCastingLight : PerspectiveCamera
     {

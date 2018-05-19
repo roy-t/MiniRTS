@@ -1,16 +1,21 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
+﻿using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Rendering.Cameras;
-using MiniEngine.Rendering.Lighting;
-using MiniEngine.Rendering.Lighting.Systems;
 using MiniEngine.Rendering.Primitives;
+using MiniEngine.Rendering.Systems;
 using MiniEngine.Scenes;
 
 namespace MiniEngine.Rendering
 {
-    public sealed class RenderSystem
+    public sealed class DeferredRenderer
     {
+        public readonly AmbientLightSystem AmbientLightSystem;
+        public readonly ModelSystem ModelSystem;
+        public readonly DirectionalLightSystem DirectionalLightSystem;
+        public readonly PointLightSystem PointLightSystem;
+        public readonly ShadowCastingLightSystem ShadowCastingLightSystem;
+        public readonly SunlightSystem SunlightSystem;
+
         private readonly GraphicsDevice Device;
         private readonly Effect ClearEffect;                
         private readonly Effect CombineEffect;
@@ -20,15 +25,9 @@ namespace MiniEngine.Rendering
         private readonly RenderTarget2D NormalTarget;
         private readonly RenderTarget2D DepthTarget;
         private readonly RenderTarget2D LightTarget;
-        private readonly RenderTarget2D CombineTarget;        
-
-                
-        public readonly DirectionalLightSystem DirectionalLightSystem;        
-        public readonly PointLightSystem PointLightSystem;
-        public readonly ShadowCastingLightSystem ShadowCastingLightSystem;
-        public readonly SunlightSystem SunlightSystem;
-
-        public RenderSystem(GraphicsDevice device, ContentManager content, IScene scene)
+        private readonly RenderTarget2D CombineTarget;
+       
+        public DeferredRenderer(GraphicsDevice device, ContentManager content, IScene scene)
         {            
             this.Device = device;
             this.ClearEffect = content.Load<Effect>("Clear");            
@@ -49,12 +48,14 @@ namespace MiniEngine.Rendering
             this.NormalTarget = new RenderTarget2D(device, width, height, false, SurfaceFormat.Color, DepthFormat.None, aaSamples, RenderTargetUsage.DiscardContents);
             this.DepthTarget  = new RenderTarget2D(device, width, height, false, SurfaceFormat.Single, DepthFormat.None, aaSamples, RenderTargetUsage.DiscardContents);
             this.LightTarget  = new RenderTarget2D(device, width, height, false, SurfaceFormat.Color, DepthFormat.None, aaSamples, RenderTargetUsage.DiscardContents);
-            this.CombineTarget = new RenderTarget2D(device, width, height, false, SurfaceFormat.Color, DepthFormat.None, aaSamples, RenderTargetUsage.DiscardContents);            
+            this.CombineTarget = new RenderTarget2D(device, width, height, false, SurfaceFormat.Color, DepthFormat.None, aaSamples, RenderTargetUsage.DiscardContents);
 
+            this.AmbientLightSystem = new AmbientLightSystem();
+            this.ModelSystem = new ModelSystem(device);
             this.DirectionalLightSystem = new DirectionalLightSystem(device, content.Load<Effect>("DirectionalLight"));
             this.PointLightSystem = new PointLightSystem(device, content.Load<Effect>("PointLight"), content.Load<Model>("Sphere"));
-            this.ShadowCastingLightSystem = new ShadowCastingLightSystem(device, content.Load<Effect>("ShadowMap"), content.Load<Effect>("ShadowCastingLight"));
-            this.SunlightSystem = new SunlightSystem(device, content.Load<Effect>("ShadowMap"), content.Load<Effect>("Sunlight"));
+            this.ShadowCastingLightSystem = new ShadowCastingLightSystem(device, content.Load<Effect>("ShadowMap"), content.Load<Effect>("ShadowCastingLight"), this.ModelSystem);
+            this.SunlightSystem = new SunlightSystem(device, content.Load<Effect>("ShadowMap"), content.Load<Effect>("Sunlight"), this.ModelSystem);
         }
 
         public bool EnableFXAA { get; set; } = true;
@@ -126,8 +127,8 @@ namespace MiniEngine.Rendering
             this.SunlightSystem.RenderShadowMaps(this.Scene, perspectiveCamera);
 
             this.Device.SetRenderTarget(this.LightTarget);
-
-            this.Device.Clear(new Color(this.Scene.AmbientLight.R, this.Scene.AmbientLight.G, this.Scene.AmbientLight.B, (byte)0));
+            
+            this.Device.Clear(this.AmbientLightSystem.ComputeAmbientLightZeroAlpha());            
                                    
             this.DirectionalLightSystem.Render(perspectiveCamera, this.ColorTarget, this.NormalTarget, this.DepthTarget);
             this.PointLightSystem.Render(perspectiveCamera, this.ColorTarget, this.NormalTarget, this.DepthTarget);
@@ -152,10 +153,11 @@ namespace MiniEngine.Rendering
                     this.Quad.Render(this.Device);
                 }
             }
-
+            
             using (this.Device.GeometryState())
             {
-                this.Scene.Draw(viewPoint);
+                this.ModelSystem.DrawModels(viewPoint);
+                //this.Scene.Draw(viewPoint);
             }
 
             this.Device.SetRenderTargets(null);

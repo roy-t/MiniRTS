@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 
-namespace MiniEngine.Rendering.Lighting
+namespace MiniEngine.Rendering.Components
 {
     public class DirectionalLight
     {        

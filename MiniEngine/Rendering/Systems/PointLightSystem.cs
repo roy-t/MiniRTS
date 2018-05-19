@@ -2,9 +2,9 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Rendering.Cameras;
-using MiniEngine.Rendering.Lighting.Components;
+using MiniEngine.Rendering.Components;
 
-namespace MiniEngine.Rendering.Lighting.Systems
+namespace MiniEngine.Rendering.Systems
 {
     public sealed class PointLightSystem
     {

@@ -2,13 +2,16 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Rendering.Cameras;
+using MiniEngine.Rendering.Components;
 using MiniEngine.Rendering.Primitives;
 using MiniEngine.Scenes;
 
-namespace MiniEngine.Rendering.Lighting
+namespace MiniEngine.Rendering.Systems
 {
     public sealed class ShadowCastingLightSystem
     {
+        private readonly ModelSystem ModelSystem;
+
         private readonly GraphicsDevice Device;
         private readonly Effect ShadowMapEffect;
         private readonly Effect ShadowCastingLightEffect;
@@ -16,11 +19,13 @@ namespace MiniEngine.Rendering.Lighting
 
         private readonly Dictionary<Entity, ShadowCastingLight> Lights;
 
-        public ShadowCastingLightSystem(GraphicsDevice device, Effect shadowMapEffect, Effect shadowCastingLightEffect)
+        public ShadowCastingLightSystem(GraphicsDevice device, Effect shadowMapEffect, Effect shadowCastingLightEffect, ModelSystem modelSystem)
         {
             this.Device = device;
             this.ShadowMapEffect = shadowMapEffect;
             this.ShadowCastingLightEffect = shadowCastingLightEffect;
+            this.ModelSystem = modelSystem;
+
             this.Quad = new Quad();
 
             this.Lights = new Dictionary<Entity, ShadowCastingLight>();
@@ -44,7 +49,7 @@ namespace MiniEngine.Rendering.Lighting
                 {
                     this.Device.SetRenderTarget(light.ShadowMap);
                     this.Device.Clear(Color.Black);
-                    geometry.Draw(this.ShadowMapEffect, light);
+                    this.ModelSystem.DrawModels(light, this.ShadowMapEffect);
 
                     this.Device.SetRenderTarget(null);
                 }

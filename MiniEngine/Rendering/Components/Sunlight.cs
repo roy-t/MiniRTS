@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 
-namespace MiniEngine.Rendering.Lighting.Components
+namespace MiniEngine.Rendering.Components
 {
     public sealed class Sunlight
     {

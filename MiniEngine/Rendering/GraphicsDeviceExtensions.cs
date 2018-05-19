@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 
 namespace MiniEngine.Rendering
 {
@@ -63,9 +62,11 @@ namespace MiniEngine.Rendering
 
         public static DeviceState ShadowMapState(this GraphicsDevice device)
         {
-            var rasterizerState = new RasterizerState();
-            rasterizerState.CullMode = CullMode.None;
-            rasterizerState.DepthClipEnable = false;
+            var rasterizerState = new RasterizerState
+            {
+                CullMode = CullMode.None,
+                DepthClipEnable = false
+            };
 
             return new DeviceState(
                 device,
@@ -85,7 +86,7 @@ namespace MiniEngine.Rendering
 
         public static DeviceState WireFrameState(this GraphicsDevice device)
         {
-            var rasterState = new RasterizerState()
+            var rasterState = new RasterizerState
             {
                 CullMode = CullMode.CullCounterClockwiseFace,
                 FillMode = FillMode.WireFrame

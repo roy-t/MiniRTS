@@ -25,7 +25,7 @@ namespace MiniEngine
         private int currentSceneIndex;
         private CameraController cameraController;
         private LightSystemsController lightSystemsController;
-        private RenderSystem renderSystem;
+        private DeferredRenderer renderSystem;
 
         private SystemCollection systemCollection;
         
@@ -65,9 +65,9 @@ namespace MiniEngine
                 new ZimaScene()
             };
 
-            this.renderSystem = new RenderSystem(this.GraphicsDevice, this.Content, this.scenes[0]);
+            this.renderSystem = new DeferredRenderer(this.GraphicsDevice, this.Content, this.scenes[0]);
 
-            this.systemCollection = new SystemCollection(this.renderSystem.SunlightSystem, this.renderSystem.PointLightSystem, this.renderSystem.DirectionalLightSystem, this.renderSystem.ShadowCastingLightSystem);
+            this.systemCollection = new SystemCollection(this.renderSystem.ModelSystem, this.renderSystem.AmbientLightSystem, this.renderSystem.SunlightSystem, this.renderSystem.PointLightSystem, this.renderSystem.DirectionalLightSystem, this.renderSystem.ShadowCastingLightSystem);
 
             foreach (var scene in this.scenes)
             {
@@ -126,7 +126,7 @@ namespace MiniEngine
                 this.viewIndex = (this.viewIndex + this.viewOptions - 1) % this.viewOptions;
             }
 
-            if (this.KeyboardInput.Click(Keys.LeftControl))
+            if (this.KeyboardInput.Click(Keys.X))
             {
                 this.renderSystem.EnableFXAA = !this.renderSystem.EnableFXAA;
             }
