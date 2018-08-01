@@ -147,30 +147,6 @@
 /processorParam:TextureFormat=Color
 /build:null_normal.tga
 
-#begin DirectionalLight.fx
-/importer:EffectImporter
-/processor:EffectProcessor
-/processorParam:DebugMode=Auto
-/build:DirectionalLight.fx
-
-#begin PointLight.fx
-/importer:EffectImporter
-/processor:EffectProcessor
-/processorParam:DebugMode=Auto
-/build:PointLight.fx
-
-#begin Combine.fx
-/importer:EffectImporter
-/processor:EffectProcessor
-/processorParam:DebugMode=Auto
-/build:Combine.fx
-
-#begin Clear.fx
-/importer:EffectImporter
-/processor:EffectProcessor
-/processorParam:DebugMode=Auto
-/build:Clear.fx
-
 #begin Sponza/sponza.obj
 /importer:OpenAssetImporter
 /processor:MultiMaterialModelProcessor
@@ -195,33 +171,57 @@
 /processorParam:SwapWindingOrder=False
 /build:Sponza/sponza.obj
 
-#begin PostProcess.fx
+#begin PointLightEffect.fx
 /importer:EffectImporter
 /processor:EffectProcessor
 /processorParam:DebugMode=Auto
-/build:PostProcess.fx
+/build:PointLightEffect.fx
 
-#begin ShadowMap.fx
+#begin ShadowCastingLightEffect.fx
 /importer:EffectImporter
 /processor:EffectProcessor
 /processorParam:DebugMode=Auto
-/build:ShadowMap.fx
+/build:ShadowCastingLightEffect.fx
 
-#begin ShadowCastingLight.fx
+#begin DirectionalLightEffect.fx
 /importer:EffectImporter
 /processor:EffectProcessor
 /processorParam:DebugMode=Auto
-/build:ShadowCastingLight.fx
+/build:DirectionalLightEffect.fx
 
-#begin Sunlight.fx
+#begin ShadowMapEffect.fx
 /importer:EffectImporter
 /processor:EffectProcessor
 /processorParam:DebugMode=Auto
-/build:Sunlight.fx
+/build:ShadowMapEffect.fx
 
-#begin CascadingShadowMap.fx
+#begin CascadingShadowMapEffect.fx
 /importer:EffectImporter
 /processor:EffectProcessor
 /processorParam:DebugMode=Auto
-/build:CascadingShadowMap.fx
+/build:CascadingShadowMapEffect.fx
+
+#begin SunlightEffect.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:SunlightEffect.fx
+
+#begin ClearEffect.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:ClearEffect.fx
+
+#begin CombineEffect.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:CombineEffect.fx
+
+#begin PostProcessEffect.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:PostProcessEffect.fx
 

@@ -1,9 +1,7 @@
-﻿using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Rendering.Cameras;
 using MiniEngine.Rendering.Primitives;
 using MiniEngine.Rendering.Systems;
-using MiniEngine.Scenes;
 
 namespace MiniEngine.Rendering
 {
@@ -27,33 +25,35 @@ namespace MiniEngine.Rendering
         private readonly RenderTarget2D LightTarget;
         private readonly RenderTarget2D CombineTarget;
        
-        public DeferredRenderer(GraphicsDevice device, ContentManager content)
+        public DeferredRenderer(GraphicsDevice device, Effect clearEffect, Effect combineEffect, Effect postProcessEffect, AmbientLightSystem ambientLightSystem, ModelSystem modelSystem, DirectionalLightSystem directionalLightSystem, PointLightSystem pointLightSystem, ShadowCastingLightSystem shadowCastingLightSystem, SunlightSystem sunlightSystem)
         {            
             this.Device = device;
-            this.ClearEffect = content.Load<Effect>("Clear");            
-            this.CombineEffect = content.Load<Effect>("Combine");
-            this.PostProcessEffect = content.Load<Effect>("PostProcess");            
+
+            this.ClearEffect       = clearEffect;
+            this.CombineEffect     = combineEffect;
+            this.PostProcessEffect = postProcessEffect;
+
+            this.AmbientLightSystem       = ambientLightSystem;
+            this.ModelSystem              = modelSystem;
+            this.DirectionalLightSystem   = directionalLightSystem;
+            this.PointLightSystem         = pointLightSystem;
+            this.ShadowCastingLightSystem = shadowCastingLightSystem;
+            this.SunlightSystem           = sunlightSystem;
 
             this.Quad = new Quad();
 
-            var width = device.PresentationParameters.BackBufferWidth;
-            var height = device.PresentationParameters.BackBufferHeight;
 
             // Do not enable AA as we use FXAA during post processing
             const int aaSamples = 0;
 
-            this.ColorTarget = new RenderTarget2D(device, width, height, false, SurfaceFormat.Color, DepthFormat.Depth24, aaSamples, RenderTargetUsage.DiscardContents);
-            this.NormalTarget = new RenderTarget2D(device, width, height, false, SurfaceFormat.Color, DepthFormat.None, aaSamples, RenderTargetUsage.DiscardContents);
-            this.DepthTarget  = new RenderTarget2D(device, width, height, false, SurfaceFormat.Single, DepthFormat.None, aaSamples, RenderTargetUsage.DiscardContents);
-            this.LightTarget  = new RenderTarget2D(device, width, height, false, SurfaceFormat.Color, DepthFormat.None, aaSamples, RenderTargetUsage.DiscardContents);
-            this.CombineTarget = new RenderTarget2D(device, width, height, false, SurfaceFormat.Color, DepthFormat.None, aaSamples, RenderTargetUsage.DiscardContents);
+            var width  = device.PresentationParameters.BackBufferWidth;
+            var height = device.PresentationParameters.BackBufferHeight;            
 
-            this.AmbientLightSystem = new AmbientLightSystem();
-            this.ModelSystem = new ModelSystem();
-            this.DirectionalLightSystem = new DirectionalLightSystem(device, content.Load<Effect>("DirectionalLight"));
-            this.PointLightSystem = new PointLightSystem(device, content.Load<Effect>("PointLight"), content.Load<Model>("Sphere"));
-            this.ShadowCastingLightSystem = new ShadowCastingLightSystem(device, content.Load<Effect>("ShadowMap"), content.Load<Effect>("ShadowCastingLight"), this.ModelSystem);
-            this.SunlightSystem = new SunlightSystem(device, content.Load<Effect>("ShadowMap"), content.Load<Effect>("Sunlight"), this.ModelSystem);
+            this.ColorTarget   = new RenderTarget2D(device, width, height, false, SurfaceFormat.Color, DepthFormat.Depth24, aaSamples, RenderTargetUsage.DiscardContents);
+            this.NormalTarget  = new RenderTarget2D(device, width, height, false, SurfaceFormat.Color, DepthFormat.None, aaSamples, RenderTargetUsage.DiscardContents);
+            this.DepthTarget   = new RenderTarget2D(device, width, height, false, SurfaceFormat.Single, DepthFormat.None, aaSamples, RenderTargetUsage.DiscardContents);
+            this.LightTarget   = new RenderTarget2D(device, width, height, false, SurfaceFormat.Color, DepthFormat.None, aaSamples, RenderTargetUsage.DiscardContents);
+            this.CombineTarget = new RenderTarget2D(device, width, height, false, SurfaceFormat.Color, DepthFormat.None, aaSamples, RenderTargetUsage.DiscardContents);           
         }
 
         public bool EnableFXAA { get; set; } = true;        

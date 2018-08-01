@@ -1,12 +1,11 @@
-﻿using System.Collections.Generic;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Rendering.Cameras;
 using MiniEngine.Rendering.Components;
 using MiniEngine.Rendering.Primitives;
-using MiniEngine.Scenes;
 using MiniEngine.Systems;
 using MiniEngine.Utilities.Extensions;
+using System.Collections.Generic;
 
 namespace MiniEngine.Rendering.Systems
 {

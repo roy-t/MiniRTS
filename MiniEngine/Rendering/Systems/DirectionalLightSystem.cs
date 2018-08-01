@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Rendering.Cameras;
 using MiniEngine.Rendering.Primitives;
 using MiniEngine.Systems;
+using System.Collections.Generic;
 using DirectionalLight = MiniEngine.Rendering.Components.DirectionalLight;
 
 namespace MiniEngine.Rendering.Systems
@@ -16,10 +16,10 @@ namespace MiniEngine.Rendering.Systems
 
         private readonly Dictionary<Entity, DirectionalLight> Lights;
 
-        public DirectionalLightSystem(GraphicsDevice device, Effect effect)
+        public DirectionalLightSystem(GraphicsDevice device, Effect directionalLightEffect)
         {
             this.Device = device;
-            this.Effect = effect;            
+            this.Effect = directionalLightEffect;            
             this.Quad = new Quad();
 
             this.Lights = new Dictionary<Entity, DirectionalLight>();

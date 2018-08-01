@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using MiniEngine.Systems;
+using System.Collections.Generic;
 
 namespace MiniEngine.Rendering.Systems
 {

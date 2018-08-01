@@ -1,8 +1,8 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
+using System;
 
 namespace MiniEngine.Utilities
-{   
+{
     public static class ColorUtilities
     {
         private static readonly Random Random = new Random();

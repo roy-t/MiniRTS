@@ -6,7 +6,7 @@ namespace MiniEngine.Scenes
     public interface IScene
     {        
         void LoadContent(ContentManager content);
-        void Set(SystemCollection systems);
+        void Set();
         void Update(Seconds elapsed);
     }
 }

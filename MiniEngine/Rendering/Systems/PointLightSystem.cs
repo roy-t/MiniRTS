@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Rendering.Cameras;
 using MiniEngine.Rendering.Components;
 using MiniEngine.Systems;
+using System.Collections.Generic;
 
 namespace MiniEngine.Rendering.Systems
 {
@@ -15,10 +15,10 @@ namespace MiniEngine.Rendering.Systems
 
         private readonly Dictionary<Entity, PointLight> Lights;
 
-        public PointLightSystem(GraphicsDevice device, Effect effect, Model sphere)
+        public PointLightSystem(GraphicsDevice device, Effect pointLightEffect, Model sphere)
         {
             this.Device = device;
-            this.Effect = effect;
+            this.Effect = pointLightEffect;
             this.Sphere = sphere;
 
             this.Lights = new Dictionary<Entity, PointLight>();

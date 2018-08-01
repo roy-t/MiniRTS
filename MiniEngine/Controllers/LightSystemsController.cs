@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using MiniEngine.Input;
 using MiniEngine.Rendering.Cameras;
+using MiniEngine.Rendering.Systems;
 using MiniEngine.Units;
+using System.Collections.Generic;
 
 namespace MiniEngine.Controllers
 {
@@ -14,23 +14,40 @@ namespace MiniEngine.Controllers
 
         private readonly KeyboardInput KeyboardInput;
         private readonly PerspectiveCamera Camera;
-        private readonly SystemCollection Systems;
+        private readonly EntityController EntityController;
+
+        private readonly PointLightSystem PointLightSystem;
+        private readonly SunlightSystem SunlightSystem;
+        private readonly DirectionalLightSystem DirectionalLightSystem;
+        private readonly ShadowCastingLightSystem ShadowCastingLightSystem;        
+
 
         private readonly List<Entity> TemporaryEntities;
 
         private Seconds lastInputTimer;
         private bool isActive;
-      
-        public LightSystemsController(KeyboardInput keyboardInput, PerspectiveCamera camera, SystemCollection systems)
+
+        public LightSystemsController(
+            KeyboardInput keyboardInput,
+            PerspectiveCamera camera,
+            EntityController entityController,
+            PointLightSystem pointLightSystem,
+            SunlightSystem sunlightSystem,
+            DirectionalLightSystem directionalLightSystem,
+            ShadowCastingLightSystem shadowCastingLightSystem)
         {
             this.KeyboardInput = keyboardInput;
             this.Camera = camera;
-            this.Systems = systems;
+            this.EntityController = entityController;
+            this.PointLightSystem = pointLightSystem;
+            this.SunlightSystem = sunlightSystem;
+            this.DirectionalLightSystem = directionalLightSystem;
+            this.ShadowCastingLightSystem = shadowCastingLightSystem;
 
             this.lastInputTimer = 0.0f;
             this.isActive = false;
 
-            this.TemporaryEntities = new List<Entity>();            
+            this.TemporaryEntities = new List<Entity>();
         }
 
         public bool Update(Seconds elapsed)
@@ -72,7 +89,7 @@ namespace MiniEngine.Controllers
         {
             if (this.KeyboardInput.Click(Keys.P))
             {
-                this.Systems.PointLightSystem.Add(CreateTempEntity(), this.Camera.Position, Color.White, 10.0f, 1.0f);
+                this.PointLightSystem.Add(CreateTempEntity(), this.Camera.Position, Color.White, 10.0f, 1.0f);
                 return true;
             }
 
@@ -81,18 +98,18 @@ namespace MiniEngine.Controllers
                 var exists = false;
                 foreach (var entity in this.TemporaryEntities)
                 {
-                    if (this.Systems.SunlightSystem.Contains(entity))
+                    if (this.SunlightSystem.Contains(entity))
                     {
-                        this.Systems.SunlightSystem.Remove(entity);
-                        this.Systems.SunlightSystem.Add(entity, Color.White, this.Camera.Position, this.Camera.LookAt);
+                        this.SunlightSystem.Remove(entity);
+                        this.SunlightSystem.Add(entity, Color.White, this.Camera.Position, this.Camera.LookAt);
                         exists = true;
                     }
                 }
 
                 if (!exists)
                 {
-                    this.Systems.SunlightSystem.RemoveAll();
-                    this.Systems.SunlightSystem.Add(CreateTempEntity(), Color.White, this.Camera.Position, this.Camera.LookAt);
+                    this.SunlightSystem.RemoveAll();
+                    this.SunlightSystem.Add(CreateTempEntity(), Color.White, this.Camera.Position, this.Camera.LookAt);
                 }
                                                 
                 return true;
@@ -100,13 +117,13 @@ namespace MiniEngine.Controllers
 
             if (this.KeyboardInput.Click(Keys.D))
             {
-                this.Systems.DirectionalLightSystem.Add(CreateTempEntity(), Vector3.Normalize(this.Camera.LookAt - this.Camera.Position), Color.White);
+                this.DirectionalLightSystem.Add(CreateTempEntity(), Vector3.Normalize(this.Camera.LookAt - this.Camera.Position), Color.White);
                 return true;
             }
 
             if (this.KeyboardInput.Click(Keys.C))
             {
-                this.Systems.ShadowCastingLightSystem.Add(CreateTempEntity(), this.Camera.Position, this.Camera.LookAt, Color.White);
+                this.ShadowCastingLightSystem.Add(CreateTempEntity(), this.Camera.Position, this.Camera.LookAt, Color.White);
                 return true;
             }
 
@@ -114,10 +131,7 @@ namespace MiniEngine.Controllers
             {
                 foreach (var entity in this.TemporaryEntities)
                 {
-                    this.Systems.PointLightSystem.Remove(entity);
-                    this.Systems.SunlightSystem.Remove(entity);
-                    this.Systems.DirectionalLightSystem.Remove(entity);
-                    this.Systems.ShadowCastingLightSystem.Remove(entity);
+                    this.EntityController.DestroyEntity(entity);
                 }
 
                 this.TemporaryEntities.Clear();
@@ -129,7 +143,7 @@ namespace MiniEngine.Controllers
 
         private Entity CreateTempEntity()
         {
-            var entity = this.Systems.CreateEntity();
+            var entity = this.EntityController.CreateEntity();
             this.TemporaryEntities.Add(entity);
 
             return entity;

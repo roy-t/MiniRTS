@@ -1,54 +1,21 @@
-﻿using System;
+﻿using MiniEngine.Systems;
+using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using System.Text;
-using MiniEngine.Rendering.Systems;
-using MiniEngine.Systems;
 
 namespace MiniEngine
 {
-    public sealed class SystemCollection
+    public sealed class EntityController
     {
         private int next = 1;
         private readonly List<Entity> Entities;
-        private readonly List<ISystem> Systems;
+        private readonly IReadOnlyList<ISystem> Systems;
 
-        // TODO: look up the systems by the ISystem interface and use dependency injection
-        // to hook-up their dependencies
-
-        public SystemCollection(
-            ModelSystem modelSystem,
-            AmbientLightSystem ambientLightSystem,
-            SunlightSystem sunlightSystem,
-            PointLightSystem pointLightSystem,
-            DirectionalLightSystem directionalLightSystem,
-            ShadowCastingLightSystem shadowCastingLightSystem)
+        public EntityController(IEnumerable<ISystem> systems)
         {
             this.Entities = new List<Entity>();
-            this.Systems = new List<ISystem>
-            {
-                modelSystem,
-                ambientLightSystem,
-                sunlightSystem,
-                pointLightSystem,
-                directionalLightSystem,
-                shadowCastingLightSystem
-            };
-
-            this.ModelSystem = modelSystem;
-            this.AmbientLightSystem = ambientLightSystem;
-            this.SunlightSystem = sunlightSystem;
-            this.PointLightSystem = pointLightSystem;
-            this.DirectionalLightSystem = directionalLightSystem;
-            this.ShadowCastingLightSystem = shadowCastingLightSystem;
-        }
-
-        public ModelSystem ModelSystem { get; }
-        public AmbientLightSystem AmbientLightSystem { get; }
-        public SunlightSystem SunlightSystem { get; }
-        public PointLightSystem PointLightSystem { get; }
-        public DirectionalLightSystem DirectionalLightSystem { get; }        
-        public ShadowCastingLightSystem ShadowCastingLightSystem { get; }
+            this.Systems = new List<ISystem>(systems).AsReadOnly();                  
+        }     
 
         public Entity CreateEntity()
         {
