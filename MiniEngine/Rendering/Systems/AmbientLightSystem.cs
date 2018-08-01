@@ -24,15 +24,15 @@ namespace MiniEngine.Rendering.Systems
 
         public Color ComputeAmbientLightZeroAlpha()
         {
-            var accumlate = Color.TransparentBlack;
+            var accumulate = Color.TransparentBlack;
             foreach (var color in this.Lights.Values)
             {
-                accumlate.R += color.R;
-                accumlate.G += color.G;
-                accumlate.B += color.B;
+                accumulate.R += color.R;
+                accumulate.G += color.G;
+                accumulate.B += color.B;
             }
 
-            return accumlate;
+            return accumulate;
         }
     }
 }

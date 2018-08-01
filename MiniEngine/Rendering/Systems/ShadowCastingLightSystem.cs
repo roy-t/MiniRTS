@@ -41,7 +41,7 @@ namespace MiniEngine.Rendering.Systems
             this.Lights.Remove(entity);
         }
 
-        public void RenderShadowMaps(IScene geometry)
+        public void RenderShadowMaps()
         {
             using (this.Device.GeometryState())
             {

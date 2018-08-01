@@ -27,14 +27,12 @@ namespace MiniEngine.Rendering
         private readonly RenderTarget2D LightTarget;
         private readonly RenderTarget2D CombineTarget;
        
-        public DeferredRenderer(GraphicsDevice device, ContentManager content, IScene scene)
+        public DeferredRenderer(GraphicsDevice device, ContentManager content)
         {            
             this.Device = device;
             this.ClearEffect = content.Load<Effect>("Clear");            
             this.CombineEffect = content.Load<Effect>("Combine");
-            this.PostProcessEffect = content.Load<Effect>("PostProcess");
-
-            this.Scene = scene;
+            this.PostProcessEffect = content.Load<Effect>("PostProcess");            
 
             this.Quad = new Quad();
 
@@ -58,9 +56,7 @@ namespace MiniEngine.Rendering
             this.SunlightSystem = new SunlightSystem(device, content.Load<Effect>("ShadowMap"), content.Load<Effect>("Sunlight"), this.ModelSystem);
         }
 
-        public bool EnableFXAA { get; set; } = true;
-
-        public IScene Scene { get; set; }        
+        public bool EnableFXAA { get; set; } = true;        
 
         public RenderTarget2D[] GetIntermediateRenderTargets() => new[]
         {            
@@ -123,8 +119,8 @@ namespace MiniEngine.Rendering
 
         private void RenderLights(PerspectiveCamera perspectiveCamera)
         {                                    
-            this.ShadowCastingLightSystem.RenderShadowMaps(this.Scene);
-            this.SunlightSystem.RenderShadowMaps(this.Scene, perspectiveCamera);
+            this.ShadowCastingLightSystem.RenderShadowMaps();
+            this.SunlightSystem.RenderShadowMaps(perspectiveCamera);
 
             this.Device.SetRenderTarget(this.LightTarget);
             
@@ -156,8 +152,7 @@ namespace MiniEngine.Rendering
             
             using (this.Device.GeometryState())
             {
-                this.ModelSystem.DrawModels(viewPoint);
-                //this.Scene.Draw(viewPoint);
+                this.ModelSystem.DrawModels(viewPoint);                
             }
 
             this.Device.SetRenderTargets(null);

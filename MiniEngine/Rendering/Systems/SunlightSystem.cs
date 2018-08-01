@@ -53,7 +53,7 @@ namespace MiniEngine.Rendering.Systems
             this.Lights.Remove(entity);
         }        
 
-        public void RenderShadowMaps(IScene geometry, PerspectiveCamera perspectiveCamera)
+        public void RenderShadowMaps(PerspectiveCamera perspectiveCamera)
         {
             foreach (var pair in this.Lights)
             {
@@ -67,7 +67,7 @@ namespace MiniEngine.Rendering.Systems
             {
                 foreach (var shadowMap in this.ShadowMaps.Values)
                 {
-                    RenderShadowMap(shadowMap, geometry);
+                    RenderShadowMap(shadowMap);
                 }               
             }                   
         }
@@ -130,7 +130,7 @@ namespace MiniEngine.Rendering.Systems
             }
         }
 
-        private void RenderShadowMap(ShadowMap work, IScene geometry)
+        private void RenderShadowMap(ShadowMap work)
         {
             for (var cascadeIndex = 0; cascadeIndex < Cascades; cascadeIndex++)
             {

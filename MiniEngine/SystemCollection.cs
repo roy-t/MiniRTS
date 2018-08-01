@@ -74,7 +74,8 @@ namespace MiniEngine
             this.SunlightSystem.Remove(entity);
             this.PointLightSystem.Remove(entity);
             this.DirectionalLightSystem.Remove(entity);
-            this.ShadowCastingLightSystem.Remove(entity);            
+            this.ShadowCastingLightSystem.Remove(entity);
+            this.AmbientLightSystem.Remove(entity);
         }
     }
 }

@@ -65,7 +65,7 @@ namespace MiniEngine
                 new ZimaScene()
             };
 
-            this.renderSystem = new DeferredRenderer(this.GraphicsDevice, this.Content, this.scenes[0]);
+            this.renderSystem = new DeferredRenderer(this.GraphicsDevice, this.Content);
 
             this.systemCollection = new SystemCollection(this.renderSystem.ModelSystem, this.renderSystem.AmbientLightSystem, this.renderSystem.SunlightSystem, this.renderSystem.PointLightSystem, this.renderSystem.DirectionalLightSystem, this.renderSystem.ShadowCastingLightSystem);
 
@@ -109,7 +109,7 @@ namespace MiniEngine
                 this.systemCollection.DestroyAllEntities();
 
                 this.scenes[this.currentSceneIndex].Set(this.systemCollection);
-                this.renderSystem.Scene = this.scenes[this.currentSceneIndex];
+
             }
 
             if (this.KeyboardInput.Click(Keys.F))
@@ -137,7 +137,7 @@ namespace MiniEngine
                 this.cameraController.Update(gameTime.ElapsedGameTime);
             }
 
-            this.renderSystem.Scene.Update(gameTime.ElapsedGameTime);
+            this.scenes[this.currentSceneIndex].Update(gameTime.ElapsedGameTime);
 
             base.Update(gameTime);
         }
