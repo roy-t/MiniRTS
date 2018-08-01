@@ -74,6 +74,7 @@
     <Compile Include="Rendering\Components\ModelPose.cs" />
     <Compile Include="Rendering\Systems\ModelSystem.cs" />
     <Compile Include="SystemCollection.cs" />
+    <Compile Include="Systems\ISystem.cs" />
     <Compile Include="Utilities\Extensions\BoundingBoxExtensions.cs" />
     <Compile Include="Utilities\Extensions\MatrixExtensions.cs" />
     <Compile Include="Utilities\Extensions\ModelExtensions.cs" />

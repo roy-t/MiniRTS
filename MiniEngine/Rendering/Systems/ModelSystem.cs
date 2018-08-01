@@ -3,17 +3,16 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Rendering.Cameras;
 using MiniEngine.Rendering.Components;
+using MiniEngine.Systems;
 
 namespace MiniEngine.Rendering.Systems
 {
-    public sealed class ModelSystem
+    public sealed class ModelSystem : ISystem
     {
-        private readonly GraphicsDevice Device;
         private readonly Dictionary<Entity, ModelPose> Models;
 
-        public ModelSystem(GraphicsDevice device)
+        public ModelSystem()
         {
-            this.Device = device;
             this.Models = new Dictionary<Entity, ModelPose>();
         }
 
@@ -22,10 +21,22 @@ namespace MiniEngine.Rendering.Systems
             this.Models.Add(entity, new ModelPose(model, pose));
         }
 
+        public bool Contains(Entity entity) => this.Models.ContainsKey(entity);        
+
+        public string Describe(Entity entity)
+        {
+            var model = this.Models[entity];
+            var translation = model.Pose.Translation;
+            var rotation = model.Pose.Rotation;
+            var scale = model.Pose.Scale;
+
+            return $"model, translation: {translation}, rotation: {rotation}, scale: {scale}";
+        }
+
         public void Remove(Entity entity)
         {
             this.Models.Remove(entity);
-        }
+        }       
 
         public void DrawModels(IViewPoint viewPoint)
         {

@@ -5,10 +5,11 @@ using MiniEngine.Rendering.Cameras;
 using MiniEngine.Rendering.Components;
 using MiniEngine.Rendering.Primitives;
 using MiniEngine.Scenes;
+using MiniEngine.Systems;
 
 namespace MiniEngine.Rendering.Systems
 {
-    public sealed class ShadowCastingLightSystem
+    public sealed class ShadowCastingLightSystem : ISystem
     {
         private readonly ModelSystem ModelSystem;
 
@@ -34,6 +35,14 @@ namespace MiniEngine.Rendering.Systems
         public void Add(Entity entity, Vector3 position, Vector3 lookAt, Color color)
         {
             this.Lights.Add(entity, new ShadowCastingLight(this.Device, position, lookAt, color));
+        }
+
+        public bool Contains(Entity entity) => this.Lights.ContainsKey(entity);
+
+        public string Describe(Entity entity)
+        {
+            var light = this.Lights[entity];            
+            return $"shadow casting light, direction: {light.LookAt - light.Position}, color: {light.Color}";
         }
 
         public void Remove(Entity entity)

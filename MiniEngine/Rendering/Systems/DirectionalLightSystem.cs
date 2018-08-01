@@ -3,11 +3,12 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Rendering.Cameras;
 using MiniEngine.Rendering.Primitives;
+using MiniEngine.Systems;
 using DirectionalLight = MiniEngine.Rendering.Components.DirectionalLight;
 
 namespace MiniEngine.Rendering.Systems
 {
-    public sealed class DirectionalLightSystem
+    public sealed class DirectionalLightSystem : ISystem
     {
         private readonly GraphicsDevice Device;
         private readonly Effect Effect;        
@@ -27,6 +28,14 @@ namespace MiniEngine.Rendering.Systems
         public void Add(Entity entity, Vector3 direction, Color color)
         {
             this.Lights.Add(entity, new DirectionalLight(direction, color));
+        }
+
+        public bool Contains(Entity entity) => this.Lights.ContainsKey(entity);
+
+        public string Describe(Entity entity)
+        {
+            var light = this.Lights[entity];
+            return $"directional light, direction: {light.Direction}, color: {light.Color}";
         }
 
         public void Remove(Entity entity)

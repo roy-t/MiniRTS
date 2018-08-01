@@ -3,14 +3,14 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Rendering.Cameras;
 using MiniEngine.Rendering.Components;
-using MiniEngine.Rendering.Lighting;
 using MiniEngine.Rendering.Primitives;
 using MiniEngine.Scenes;
+using MiniEngine.Systems;
 using MiniEngine.Utilities.Extensions;
 
 namespace MiniEngine.Rendering.Systems
 {
-    public sealed class SunlightSystem
+    public sealed class SunlightSystem : ISystem
     {
         public const int Resolution = 2048;
         public const int Cascades = 4;
@@ -45,6 +45,20 @@ namespace MiniEngine.Rendering.Systems
         {
             this.ShadowMaps.Add(entity, new ShadowMap(this.Device, Resolution, Cascades));
             this.Lights.Add(entity, new Sunlight(color, position, lookAt));
+        }
+
+        public bool Contains(Entity entity) => this.Lights.ContainsKey(entity);
+
+        public string Describe(Entity entity)
+        {
+            var light = this.Lights[entity];
+            return $"sun light, direction: {light.LookAt - light.LookAt}, color {light.Color}";
+        }
+
+        public void RemoveAll()
+        {
+            this.ShadowMaps.Clear();
+            this.Lights.Clear();
         }
 
         public void Remove(Entity entity)

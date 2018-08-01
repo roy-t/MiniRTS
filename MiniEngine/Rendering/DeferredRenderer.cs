@@ -49,7 +49,7 @@ namespace MiniEngine.Rendering
             this.CombineTarget = new RenderTarget2D(device, width, height, false, SurfaceFormat.Color, DepthFormat.None, aaSamples, RenderTargetUsage.DiscardContents);
 
             this.AmbientLightSystem = new AmbientLightSystem();
-            this.ModelSystem = new ModelSystem(device);
+            this.ModelSystem = new ModelSystem();
             this.DirectionalLightSystem = new DirectionalLightSystem(device, content.Load<Effect>("DirectionalLight"));
             this.PointLightSystem = new PointLightSystem(device, content.Load<Effect>("PointLight"), content.Load<Model>("Sphere"));
             this.ShadowCastingLightSystem = new ShadowCastingLightSystem(device, content.Load<Effect>("ShadowMap"), content.Load<Effect>("ShadowCastingLight"), this.ModelSystem);

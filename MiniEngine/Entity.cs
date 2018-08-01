@@ -30,5 +30,7 @@ namespace MiniEngine
         {
             return this.Id;
         }
+
+        public override string ToString() => $"Entity {this.Id}";        
     }
 }

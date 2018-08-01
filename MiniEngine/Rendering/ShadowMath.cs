@@ -4,7 +4,7 @@ using MiniEngine.Rendering.Cameras;
 using MiniEngine.Rendering.Primitives;
 using MiniEngine.Utilities.Extensions;
 
-namespace MiniEngine.Rendering.Lighting
+namespace MiniEngine.Rendering
 {
     public static class ShadowMath
     {

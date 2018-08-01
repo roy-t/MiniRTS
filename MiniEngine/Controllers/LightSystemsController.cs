@@ -17,7 +17,6 @@ namespace MiniEngine.Controllers
         private readonly SystemCollection Systems;
 
         private readonly List<Entity> TemporaryEntities;
-        private readonly Entity RootEntity;
 
         private Seconds lastInputTimer;
         private bool isActive;
@@ -31,8 +30,7 @@ namespace MiniEngine.Controllers
             this.lastInputTimer = 0.0f;
             this.isActive = false;
 
-            this.TemporaryEntities = new List<Entity>();
-            this.RootEntity = systems.CreateEntity();            
+            this.TemporaryEntities = new List<Entity>();            
         }
 
         public bool Update(Seconds elapsed)
@@ -80,8 +78,23 @@ namespace MiniEngine.Controllers
 
             if (this.KeyboardInput.Click(Keys.S))
             {
-                this.Systems.SunlightSystem.Remove(this.RootEntity);
-                this.Systems.SunlightSystem.Add(this.RootEntity, Color.White, this.Camera.Position, this.Camera.LookAt);
+                var exists = false;
+                foreach (var entity in this.TemporaryEntities)
+                {
+                    if (this.Systems.SunlightSystem.Contains(entity))
+                    {
+                        this.Systems.SunlightSystem.Remove(entity);
+                        this.Systems.SunlightSystem.Add(entity, Color.White, this.Camera.Position, this.Camera.LookAt);
+                        exists = true;
+                    }
+                }
+
+                if (!exists)
+                {
+                    this.Systems.SunlightSystem.RemoveAll();
+                    this.Systems.SunlightSystem.Add(CreateTempEntity(), Color.White, this.Camera.Position, this.Camera.LookAt);
+                }
+                                                
                 return true;
             }
 
@@ -99,11 +112,7 @@ namespace MiniEngine.Controllers
 
             if (this.KeyboardInput.Click(Keys.R))
             {
-                foreach (var entity in this.TemporaryEntities.Union(
-                    new[]
-                    {
-                        this.RootEntity
-                    }))
+                foreach (var entity in this.TemporaryEntities)
                 {
                     this.Systems.PointLightSystem.Remove(entity);
                     this.Systems.SunlightSystem.Remove(entity);

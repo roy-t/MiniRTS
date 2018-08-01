@@ -130,6 +130,11 @@ namespace MiniEngine
             {
                 this.renderSystem.EnableFXAA = !this.renderSystem.EnableFXAA;
             }
+
+            if (this.KeyboardInput.Click(Keys.Scroll))
+            {
+                this.systemCollection.DescribeAllEntities();
+            }
             
             var activated = this.lightSystemsController.Update(gameTime.ElapsedGameTime);
             if (!activated)

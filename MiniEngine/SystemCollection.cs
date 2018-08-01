@@ -1,5 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using System.Text;
 using MiniEngine.Rendering.Systems;
+using MiniEngine.Systems;
 
 namespace MiniEngine
 {
@@ -7,6 +11,10 @@ namespace MiniEngine
     {
         private int next = 1;
         private readonly List<Entity> Entities;
+        private readonly List<ISystem> Systems;
+
+        // TODO: look up the systems by the ISystem interface and use dependency injection
+        // to hook-up their dependencies
 
         public SystemCollection(
             ModelSystem modelSystem,
@@ -17,6 +25,15 @@ namespace MiniEngine
             ShadowCastingLightSystem shadowCastingLightSystem)
         {
             this.Entities = new List<Entity>();
+            this.Systems = new List<ISystem>
+            {
+                modelSystem,
+                ambientLightSystem,
+                sunlightSystem,
+                pointLightSystem,
+                directionalLightSystem,
+                shadowCastingLightSystem
+            };
 
             this.ModelSystem = modelSystem;
             this.AmbientLightSystem = ambientLightSystem;
@@ -68,14 +85,36 @@ namespace MiniEngine
             this.Entities.Clear();
         }
 
+        public void DescribeAllEntities()
+        {
+            foreach (var entity in this.Entities)
+            {
+                Console.WriteLine(DescribeEntity(entity));
+            }
+        }
+
+        public string DescribeEntity(Entity entity)
+        {
+            var builder = new StringBuilder(entity.ToString());
+            builder.AppendLine();
+            foreach (var system in this.Systems)
+            {
+                if (system.Contains(entity))
+                {
+                    builder.Append("\t - ");
+                    builder.AppendLine(system.Describe(entity));
+                }
+            }
+
+            return builder.ToString();
+        }
+
         private void RemoveEntityFromSystems(Entity entity)
         {
-            this.ModelSystem.Remove(entity);
-            this.SunlightSystem.Remove(entity);
-            this.PointLightSystem.Remove(entity);
-            this.DirectionalLightSystem.Remove(entity);
-            this.ShadowCastingLightSystem.Remove(entity);
-            this.AmbientLightSystem.Remove(entity);
+            foreach (var system in this.Systems)
+            {
+                system.Remove(entity);
+            }            
         }
     }
 }

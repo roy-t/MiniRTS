@@ -3,10 +3,11 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Rendering.Cameras;
 using MiniEngine.Rendering.Components;
+using MiniEngine.Systems;
 
 namespace MiniEngine.Rendering.Systems
 {
-    public sealed class PointLightSystem
+    public sealed class PointLightSystem : ISystem
     {
         private readonly GraphicsDevice Device;
         private readonly Effect Effect;
@@ -26,6 +27,14 @@ namespace MiniEngine.Rendering.Systems
         public void Add(Entity entity, Vector3 position, Color color, float radius, float intensity)
         {
             this.Lights.Add(entity, new PointLight(position, color, radius, intensity));
+        }
+
+        public bool Contains(Entity entity) => this.Lights.ContainsKey(entity);
+
+        public string Describe(Entity entity)
+        {
+            var light = this.Lights[entity];
+            return $"point light, position: {light.Position}, color: {light.Color}";
         }
 
         public void Remove(Entity entity)
