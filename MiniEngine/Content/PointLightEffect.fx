@@ -40,7 +40,7 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
 { 
     input.ScreenPosition.xy /= input.ScreenPosition.w;    
 
-    float2 texCoord = ToTextureCoordinates(input.ScreenPosition.xy);
+    float2 texCoord = ToTextureCoordinates(input.ScreenPosition.xy, 1.0f);
         
     float3 normal = ReadNormals(texCoord);
     float specularPower = ReadSpecularPower(texCoord);    

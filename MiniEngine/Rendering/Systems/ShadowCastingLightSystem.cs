@@ -89,8 +89,7 @@ namespace MiniEngine.Rendering.Systems
 
                     // Shadow properties
                     this.ShadowCastingLightEffect.Parameters["ShadowMap"].SetValue(light.ShadowMap);
-                    this.ShadowCastingLightEffect.Parameters["LightView"].SetValue(light.View);
-                    this.ShadowCastingLightEffect.Parameters["LightProjection"].SetValue(light.Projection);
+                    this.ShadowCastingLightEffect.Parameters["LightViewProjection"].SetValue(light.ViewProjection);                    
 
                     foreach (var pass in this.ShadowCastingLightEffect.Techniques[0].Passes)
                     {                      
