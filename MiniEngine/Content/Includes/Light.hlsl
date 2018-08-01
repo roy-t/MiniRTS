@@ -6,7 +6,7 @@ float3 ComputeDiffuseLightFactor(float3 lightVector, float3 normal, float3 color
 	return NdL * color.rgb;
 }
 
-float ComputeSpecularLightFactor(float3 lightVector, float3 normal, float3 position, float3 cameraPosition, float specularPower, float specularIntensity)
+float ComputeSpecularLightFactor(float3 lightVector, float3 normal, float4 position, float3 cameraPosition, float specularPower, float specularIntensity)
 {	
 	float3 reflectionVector = normalize(reflect(-lightVector, normal));		
 	float3 directionToCamera = normalize(cameraPosition - position.xyz);

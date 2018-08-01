@@ -1,22 +1,19 @@
-#if OPENGL
-    #define SV_POSITION POSITION
-    #define VS_SHADERMODEL vs_5_0
-    #define PS_SHADERMODEL ps_5_0
-#else
-    #define VS_SHADERMODEL vs_5_0
-    #define PS_SHADERMODEL ps_5_0
-#endif
+#include "Includes/Defines.hlsl"
+#include "Includes/Matrices.hlsl"
+#include "Includes/Samplers.hlsl"
+#include "Includes/Helpers.hlsl"
+#include "Includes/Light.hlsl"
 
-float4x4 InverseViewProjection;
+// For debugging: turn on to give each cascade a different color
+static const bool visualizeCascades = false;
 
 float3 SurfaceToLightVector;
 float3 LightColor;
 float3 LightPosition;
-
 float3 CameraPosition;
 
 // Shadow stuff
-static const float BlendThreshold = 0.1f;
+static const float BlendThreshold = 0.3f;
 static const float Bias = 0.005f;
 static const uint NumCascades = 4;
 
@@ -25,44 +22,8 @@ float4 CascadeSplits;
 float4 CascadeOffsets[NumCascades];
 float4 CascadeScales[NumCascades];
 
-// debug stuff
-static const bool visualizeCascades = false;
-
 Texture2DArray ShadowMap : register(t0);
 SamplerComparisonState ShadowSampler : register(s0);
-
-texture ColorMap;
-sampler colorSampler = sampler_state
-{
-    Texture = (ColorMap);
-    AddressU = CLAMP;
-    AddressV = CLAMP;
-    MagFilter = POINT;
-    MinFilter = POINT;
-    Mipfilter = POINT;
-};
-
-texture NormalMap;
-sampler normalSampler = sampler_state
-{
-    Texture = (NormalMap);
-    AddressU = CLAMP;
-    AddressV = CLAMP;
-    MinFilter = POINT;
-    MagFilter = POINT;
-    MipFilter = POINT;
-};
-
-texture DepthMap;
-sampler depthSampler = sampler_state
-{
-    Texture = (DepthMap);
-    AddressU = CLAMP;
-    AddressV = CLAMP;
-    MinFilter = POINT;
-    MagFilter = POINT;
-    MipFilter = POINT;
-};
 
 struct VertexShaderInput
 {
@@ -189,9 +150,7 @@ float3 GetLightFactor(float3 positionWS, float depthVS, float2 texCoord)
 
     shadowVisibility = SampleShadowCascade(shadowPosition, cascadeIndex);
     
-    // Sample the next cascade, and blend between the two results to
-    // smooth the transition
-    const float BlendThreshold = 0.1f;
+    // Sample the next cascade, and blend between the two results to smooth the transition    
     float nextSplit = CascadeSplits[cascadeIndex];
     float splitSize = cascadeIndex == 0 ? nextSplit : nextSplit - CascadeSplits[cascadeIndex - 1];
     float splitDist = (nextSplit - depthVS) / splitSize;
@@ -209,43 +168,31 @@ float3 GetLightFactor(float3 positionWS, float depthVS, float2 texCoord)
 
 float4 MainPS(VertexShaderOutput input) : COLOR0
 {
-    //get normal data from the normalMap
-    float4 normalData = tex2D(normalSampler,input.TexCoord);
-    //tranform normal back into [-1,1] range
-    float3 normal = 2.0f * normalData.xyz - 1.0f;
-    //get specular power, and get it into [0,255] range]
-    float specularPower = normalData.a * 255;
-    //get specular intensity from the colorMap
-    float specularIntensity = tex2D(colorSampler, input.TexCoord).a;
+    float2 texCoord = input.TexCoord;
 
-    //read depth
+    float3 normal = ReadNormals(texCoord);
+    float specularPower = ReadSpecularPower(texCoord);
+    float specularIntensity = ReadSpecularIntensity(texCoord);
+    
     float depthVal = tex2D(depthSampler,input.TexCoord).r;
 
-    //compute screen-space position
+    // Compute the world position without using the helper function
+    // because we need also need the scaled distance stored in the depth sampler
     float4 position;
     position.x = input.TexCoord.x * 2.0f - 1.0f;
     position.y = -(input.TexCoord.y * 2.0f - 1.0f);
     position.z = depthVal;
     position.w = 1.0f;
 
-    //transform to world space, store view space distance
     position = mul(position, InverseViewProjection);
     float distance = depthVal / position.w;
     position /= position.w;
-    
+        
     float3 lightFactor = GetLightFactor(position.xyz, distance, input.TexCoord);
-            
+          
     //compute diffuse light
-    float NdL = saturate(dot(normal, SurfaceToLightVector));
-    float3 diffuseLight = NdL * LightColor.rgb;
-
-    //reflection vector
-    float3 reflectionVector = normalize(reflect(SurfaceToLightVector, normal));
-    //camera-to-surface vector
-    float3 directionToCamera = normalize(CameraPosition - position.xyz);
-    //compute specular light
-    float rdot = clamp(dot(reflectionVector, directionToCamera), 0, abs(specularIntensity));
-    float specularLight = pow(abs(rdot), specularPower);
+    float3 diffuseLight = ComputeDiffuseLightFactor(SurfaceToLightVector, normal, LightColor);
+    float specularLight = ComputeSpecularLightFactor(SurfaceToLightVector, normal, position, CameraPosition, specularPower, specularIntensity);
 
     return float4(diffuseLight.rgb * lightFactor, specularLight * lightFactor.r);    
 }
