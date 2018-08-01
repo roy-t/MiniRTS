@@ -55,14 +55,15 @@ float ReadSpecularIntensity(float2 texCoord)
 }
 
 
-float4 ReadWorldPosition(float2 texCoord, float2 screenPosition, float4x4 inverseViewProjection)
+float4 ReadWorldPosition(float2 texCoord, float4x4 inverseViewProjection)
 {
 	// Read depth
 	float depthVal = tex2D(depthSampler, texCoord).r;
 
 	// Compute screen-space position
 	float4 position;
-	position.xy = screenPosition;
+	position.x = texCoord.x * 2.0f - 1.0f;
+	position.y = -(texCoord.y * 2.0f - 1.0f);
 	position.z = depthVal;
 	position.w = 1.0f;
 	

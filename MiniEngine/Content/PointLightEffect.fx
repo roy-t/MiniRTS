@@ -32,6 +32,7 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
     
     output.Position = mul(viewPosition, Projection);
     output.ScreenPosition = output.Position;
+
     return output;
 }
 
@@ -45,7 +46,7 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
     float specularPower = ReadSpecularPower(texCoord);    
     float specularIntensity = ReadSpecularIntensity(texCoord);
      
-    float4 position = ReadWorldPosition(texCoord, input.ScreenPosition.xy, InverseViewProjection);    
+    float4 position = ReadWorldPosition(texCoord, InverseViewProjection);    
     float3 lightVector = LightPosition - position.xyz;
     
     float attenuation = saturate(1.0f - length(lightVector)/Radius); 
