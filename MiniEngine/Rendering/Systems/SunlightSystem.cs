@@ -164,8 +164,7 @@ namespace MiniEngine.Rendering.Systems
             RenderTarget2D normal,
             RenderTarget2D depth)
         {            
-            // G-Buffer input                        
-            this.SunlightEffect.Parameters["ColorMap"].SetValue(color);
+            // G-Buffer input                                    
             this.SunlightEffect.Parameters["NormalMap"].SetValue(normal);
             this.SunlightEffect.Parameters["DepthMap"].SetValue(depth);
 

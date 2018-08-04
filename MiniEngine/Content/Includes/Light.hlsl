@@ -6,11 +6,11 @@ float3 ComputeDiffuseLightFactor(float3 lightVector, float3 normal, float3 color
 	return NdL * color.rgb;
 }
 
-float ComputeSpecularLightFactor(float3 lightVector, float3 normal, float4 position, float3 cameraPosition, float specularPower, float specularIntensity)
-{	
-	float3 reflectionVector = normalize(reflect(-lightVector, normal));		
-	float3 directionToCamera = normalize(cameraPosition - position.xyz);
-	
-	float rdot = clamp(dot(reflectionVector, directionToCamera), 0, abs(specularIntensity));
-	return pow(abs(rdot), specularPower);
+float ComputeSpecularLightFactor(float3 lightVector, float3 normal, float4 position, float3 cameraPosition, float shininess, float specularPower)
+{		
+	float3 reflectionVector = normalize(reflect(-lightVector, normal));
+	float3 surfaceToCamera = normalize(cameraPosition - position.xyz);
+	float cosAngle = saturate(dot(reflectionVector, surfaceToCamera));	
+
+	return pow(cosAngle, specularPower) * shininess;
 }

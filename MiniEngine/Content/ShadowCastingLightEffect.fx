@@ -9,6 +9,8 @@ static const float bias = 0.0001f;
 
 float4x4 LightViewProjection;
 
+float SpecularPower = 20;
+
 float3 LightPosition;
 float3 LightDirection;
 float3 CameraPosition;
@@ -52,8 +54,7 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
     float2 texCoord = input.TexCoord;
 
     float3 normal = ReadNormals(texCoord);
-    float specularPower = ReadSpecularPower(texCoord);
-    float specularIntensity = ReadSpecularIntensity(texCoord);
+    float shininess = ReadShininess(texCoord);    
 
     float4 position = ReadWorldPosition(texCoord, InverseViewProjection);
 
@@ -75,7 +76,7 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
             float3 lightVector = normalize(-LightDirection);
 
             float3 diffuseLight = ComputeDiffuseLightFactor(lightVector, normal, Color);
-            float specularLight = ComputeSpecularLightFactor(lightVector, normal, position, CameraPosition, specularPower, specularIntensity);
+            float specularLight = ComputeSpecularLightFactor(lightVector, normal, position, CameraPosition, shininess, SpecularPower);
 
             return float4(diffuseLight.rgb, specularLight);        
         }                

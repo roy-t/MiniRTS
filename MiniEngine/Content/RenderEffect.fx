@@ -11,8 +11,6 @@ float4x4 World;
 float4x4 View;
 float4x4 Projection;
 
-float SpecularIntensity = 0.985f;
-
 texture Texture;
 sampler diffuseSampler = sampler_state
 {
@@ -129,12 +127,12 @@ PixelShaderOutput MainPS(VertexShaderOutput input)
     //output the normal, in [0,1] space
     output.Normal.rgb = 0.5f * (normalFromMap + 1.0f);    
 
-    float4 specularAttributes = tex2D(specularSampler, input.TexCoord);
-    
-    //specular Intensity
-    output.Color.a = SpecularIntensity;    
     //specular Power
-    output.Normal.a = specularAttributes.r;    
+    float specularPower = tex2D(specularSampler, input.TexCoord).r;           
+    
+    // Shininess is stored in textures with black is most shiney, and white is non-shiney
+    // make 1.0f most shiney here
+    output.Normal.a = 1.0f - specularPower;    
     
     output.Depth = input.Depth.x / input.Depth.y;
 

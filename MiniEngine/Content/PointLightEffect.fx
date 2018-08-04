@@ -4,6 +4,8 @@
 #include "Includes/Helpers.hlsl"
 #include "Includes/Light.hlsl"
 
+float SpecularPower = 20;
+
 float3 Color; 
 float3 LightPosition;
 float3 CameraPosition;
@@ -43,8 +45,7 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
     float2 texCoord = ToTextureCoordinates(input.ScreenPosition.xy, 1.0f);
         
     float3 normal = ReadNormals(texCoord);
-    float specularPower = ReadSpecularPower(texCoord);    
-    float specularIntensity = ReadSpecularIntensity(texCoord);
+    float shininess = ReadShininess(texCoord);        
      
     float4 position = ReadWorldPosition(texCoord, InverseViewProjection);    
     float3 lightVector = LightPosition - position.xyz;
@@ -53,7 +54,7 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
 
     lightVector = normalize(lightVector); 
     float3 diffuseLight = ComputeDiffuseLightFactor(lightVector, normal, Color);    
-    float specularLight = ComputeSpecularLightFactor(lightVector, normal, position, CameraPosition, specularPower, specularIntensity);
+    float specularLight = ComputeSpecularLightFactor(lightVector, normal, position, CameraPosition, shininess, SpecularPower);
             
     return attenuation * Intensity * float4(diffuseLight.rgb,specularLight);
 }

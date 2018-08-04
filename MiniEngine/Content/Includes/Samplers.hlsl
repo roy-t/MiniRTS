@@ -43,17 +43,10 @@ float3 ReadNormals(float2 texCoord)
 	return 2.0f * data.xyz - 1.0f;
 }
 
-float ReadSpecularPower(float2 texCoord)
+float ReadShininess(float2 texCoord)
 {
-	float4 data = tex2D(normalSampler, texCoord);
-	return data.a * 255;
+	return tex2D(normalSampler, texCoord).a;	
 }
-
-float ReadSpecularIntensity(float2 texCoord)
-{
-	return tex2D(colorSampler, texCoord).a;
-}
-
 
 float4 ReadWorldPosition(float2 texCoord, float4x4 inverseViewProjection)
 {

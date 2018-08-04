@@ -7,6 +7,8 @@
 // For debugging: turn on to give each cascade a different color
 static const bool visualizeCascades = false;
 
+float SpecularPower = 20;
+
 float3 SurfaceToLightVector;
 float3 LightColor;
 float3 LightPosition;
@@ -171,9 +173,7 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
     float2 texCoord = input.TexCoord;
 
     float3 normal = ReadNormals(texCoord);
-    float specularPower = ReadSpecularPower(texCoord);
-    float specularIntensity = ReadSpecularIntensity(texCoord);
-    
+    float shininess = ReadShininess(texCoord);     
     float depthVal = tex2D(depthSampler,input.TexCoord).r;
 
     // Compute the world position without using the helper function
@@ -192,7 +192,7 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
           
     //compute diffuse light
     float3 diffuseLight = ComputeDiffuseLightFactor(SurfaceToLightVector, normal, LightColor);
-    float specularLight = ComputeSpecularLightFactor(SurfaceToLightVector, normal, position, CameraPosition, specularPower, specularIntensity);
+    float specularLight = ComputeSpecularLightFactor(SurfaceToLightVector, normal, position, CameraPosition, shininess, SpecularPower);
 
     return float4(diffuseLight.rgb * lightFactor, specularLight * lightFactor.r);    
 }
