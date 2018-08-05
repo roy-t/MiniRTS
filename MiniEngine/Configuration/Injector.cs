@@ -7,6 +7,7 @@ using MiniEngine.Scenes;
 using MiniEngine.Systems;
 using System.Collections.Generic;
 using System.Reflection;
+using MiniEngine.Utilities;
 
 namespace MiniEngine.Configuration
 {
@@ -53,6 +54,7 @@ namespace MiniEngine.Configuration
 
             // Controllers
             this.Container.Register<EntityController>();
+            this.Container.Register<DebugController>();
             
             // Scenes
             RegisterAllOf<IScene>();

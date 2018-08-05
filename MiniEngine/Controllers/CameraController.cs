@@ -1,4 +1,8 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using System.Globalization;
+using System.IO;
+using System.Text;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using MiniEngine.Input;
 using MiniEngine.Rendering.Cameras;
@@ -30,11 +34,27 @@ namespace MiniEngine.Controllers
             this.forward = Vector3.Forward;
             this.left = Vector3.Left;
             this.up = Vector3.Up;
+
+            if (File.Exists("last_camera_position.ini"))
+            {
+                var text = File.ReadAllText("last_camera_position.ini");
+                var lines = text.Split(new[] {Environment.NewLine}, StringSplitOptions.RemoveEmptyEntries);
+                var x = float.Parse(lines[0]);
+                var y = float.Parse(lines[1]);
+                var z = float.Parse(lines[2]);
+
+                var lx = float.Parse(lines[3]);
+                var ly = float.Parse(lines[4]);
+                var lz = float.Parse(lines[5]);
+                
+                this.PerspectiveCamera.Move(new Vector3(x, y, z), new Vector3(lx, ly, lz));
+            }
         }
 
         public void Update(Seconds elapsed)
         {
-            var position = this.PerspectiveCamera.Position;            
+            var position = this.PerspectiveCamera.Position;
+            this.forward = Vector3.Normalize(this.PerspectiveCamera.LookAt - this.PerspectiveCamera.Position);
 
             var translate = TranslateSpeed * elapsed;
 
@@ -81,7 +101,24 @@ namespace MiniEngine.Controllers
                 this.forward = Vector3.Forward;
                 this.left = Vector3.Left;
                 this.up = Vector3.Up;
-            }           
+            }
+
+
+            if (this.Keyboard.Click(Keys.B))
+            {
+                var text = new StringBuilder();
+                text.AppendLine(this.PerspectiveCamera.Position.X.ToString(CultureInfo.InvariantCulture));
+                text.AppendLine(this.PerspectiveCamera.Position.Y.ToString(CultureInfo.InvariantCulture));
+                text.AppendLine(this.PerspectiveCamera.Position.Z.ToString(CultureInfo.InvariantCulture));
+
+                text.AppendLine(this.PerspectiveCamera.LookAt.X.ToString(CultureInfo.InvariantCulture));
+                text.AppendLine(this.PerspectiveCamera.LookAt.Y.ToString(CultureInfo.InvariantCulture));
+                text.AppendLine(this.PerspectiveCamera.LookAt.Z.ToString(CultureInfo.InvariantCulture));
+
+                File.WriteAllText("last_camera_position.ini", text.ToString());
+            }
+
+            
 
             this.PerspectiveCamera.Move(position, position + this.forward);
         }

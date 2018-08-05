@@ -2,13 +2,13 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MiniEngine.Configuration;
-using MiniEngine.Controllers;
 using MiniEngine.Input;
 using MiniEngine.Rendering;
 using MiniEngine.Rendering.Cameras;
 using MiniEngine.Scenes;
 using System.Collections.Generic;
 using System.Linq;
+using MiniEngine.Utilities;
 
 namespace MiniEngine
 {
@@ -29,8 +29,7 @@ namespace MiniEngine
         private SpriteBatch spriteBatch;
         private IReadOnlyList<IScene> scenes;
         private int currentSceneIndex;
-        private CameraController cameraController;
-        private LightSystemsController lightSystemsController;
+        private DebugController debugController;
         private DeferredRenderer renderer;
         private EntityController entityController;
 
@@ -39,8 +38,8 @@ namespace MiniEngine
         {
             this.Graphics = new GraphicsDeviceManager(this)
             {
-                PreferredBackBufferWidth = 1080,
-                PreferredBackBufferHeight = 768,
+                PreferredBackBufferWidth = 2560,
+                PreferredBackBufferHeight = 1440,
                 SynchronizeWithVerticalRetrace = false,
                 GraphicsProfile = GraphicsProfile.HiDef
             };          
@@ -60,8 +59,7 @@ namespace MiniEngine
             this.mouseInput = this.injector.Resolve<MouseInput>();                        
                         
             this.entityController = this.injector.Resolve<EntityController>();
-            this.cameraController = this.injector.Resolve<CameraControllerFactory>().Build(this.perspectiveCamera);
-            this.lightSystemsController = this.injector.Resolve<LightSystemsControllerFactory>().Build(this.perspectiveCamera);
+            this.debugController = this.injector.Resolve<DebugControllerFactory>().Build(this.perspectiveCamera);            
 
             this.renderer = this.injector.Resolve<DeferredRenderer>();
 
@@ -85,12 +83,26 @@ namespace MiniEngine
 
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed
-                || Keyboard.GetState().IsKeyDown(Keys.Escape))
-                Exit();
+            this.debugController.Update(gameTime.ElapsedGameTime);
+
+            this.scenes[this.currentSceneIndex].Update(gameTime.ElapsedGameTime);
 
             this.keyboardInput.Update();
             this.mouseInput.Update();
+
+            // Do not handle input if game window is not activated
+            if (!this.IsActive)
+                return;
+            
+            var inputHandled = this.debugController.Update(gameTime.ElapsedGameTime);
+            if (inputHandled)
+                return;
+
+
+            if (this.keyboardInput.Click(Keys.Escape))
+            {
+                Exit();
+            }            
 
             if (this.keyboardInput.Click(Keys.OemTilde))
             {
@@ -128,25 +140,17 @@ namespace MiniEngine
             if (this.keyboardInput.Click(Keys.Scroll))
             {
                 this.entityController.DescribeAllEntities();
-            }
-            
-            var activated = this.lightSystemsController.Update(gameTime.ElapsedGameTime);
-            if (!activated)
-            {
-                this.cameraController.Update(gameTime.ElapsedGameTime);
-            }
-
-            this.scenes[this.currentSceneIndex].Update(gameTime.ElapsedGameTime);
+            }                       
 
             base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
         {
-            this.GraphicsDevice.Clear(Color.CornflowerBlue);
+            this.Window.Title = $"{gameTime.ElapsedGameTime.TotalMilliseconds:F2}ms, {(1.0f / gameTime.ElapsedGameTime.TotalSeconds):F2} fps, Fixed Time Step: {this.IsFixedTimeStep} (press 'F' so switch). Input State: {this.debugController.DescribeState()}";
 
+            this.GraphicsDevice.Clear(Color.CornflowerBlue);
             this.renderer.Render(this.perspectiveCamera);
-            this.Window.Title = $"{gameTime.ElapsedGameTime.TotalMilliseconds:F2}ms, {(1.0f / gameTime.ElapsedGameTime.TotalSeconds):F2} fps, Fixed Time Step: {this.IsFixedTimeStep} (press 'F' so switch), Camera Position {this.perspectiveCamera.Position}";
 
             this.spriteBatch.Begin(
                 SpriteSortMode.Deferred,

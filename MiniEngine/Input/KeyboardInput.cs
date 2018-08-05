@@ -95,6 +95,23 @@ namespace MiniEngine.Input
             return state == InputState.JustPressed || state == InputState.Pressed;
         }
 
+        public bool JustReleased(Keys key)
+        {
+            var state = this.KeyStates[key];
+            return state == InputState.JustReleased;
+        }
+
+        public bool AnyKeyPressedExcept(Keys key)
+        {
+            if (this.KeyStates[key] == InputState.JustPressed ||
+                this.KeyStates[key] == InputState.Pressed)
+            {
+                return false;
+            }
+
+            return this.KeyStates.Any(kv => kv.Value != InputState.Released);
+        }
+
         public bool ClickDigit(out int value)
         {
             foreach (var key in this.Digits)

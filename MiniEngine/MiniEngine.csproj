@@ -64,6 +64,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Configuration\CameraControllerFactory.cs" />
+    <Compile Include="Configuration\DebugControllerFactory.cs" />
     <Compile Include="Configuration\IInstanceFactory.cs" />
     <Compile Include="Configuration\Injector.cs" />
     <Compile Include="Configuration\LightSystemsControllerFactory.cs" />
@@ -80,6 +81,7 @@
     <Compile Include="Rendering\Systems\ModelSystem.cs" />
     <Compile Include="EntityController.cs" />
     <Compile Include="Systems\ISystem.cs" />
+    <Compile Include="Utilities\DebugController.cs" />
     <Compile Include="Utilities\Extensions\BoundingBoxExtensions.cs" />
     <Compile Include="Utilities\Extensions\MatrixExtensions.cs" />
     <Compile Include="Utilities\Extensions\ModelExtensions.cs" />
@@ -112,6 +114,8 @@
     <Compile Include="Units\Distance.cs" />
     <Compile Include="Units\Time.cs" />
     <Compile Include="Utilities\ColorUtilities.cs" />
+    <Compile Include="Utilities\StateChangeTrigger.cs" />
+    <Compile Include="Utilities\StateMachine.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="LightInject, Version=5.1.5.0, Culture=neutral, processorArchitecture=MSIL">
