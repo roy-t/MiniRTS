@@ -85,6 +85,19 @@ namespace MiniEngine.Rendering.Systems
             }                   
         }
 
+        private void RenderShadowMap(ShadowMap work)
+        {
+            for (var cascadeIndex = 0; cascadeIndex < Cascades; cascadeIndex++)
+            {
+                // Set the rendertarget and clear it to white (max distance)
+                this.Device.SetRenderTarget(work.RenderTarget, cascadeIndex);
+                this.Device.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.White, 1.0f, 0);
+
+                // Draw the geometry, as seen from the shadow camera
+                this.ModelSystem.DrawModels(work.ShadowCameras[cascadeIndex], this.ShadowMapEffect);
+            }
+        }
+
         public void RenderLights(PerspectiveCamera perspectiveCamera, RenderTarget2D color, RenderTarget2D normal, RenderTarget2D depth)
         {
             using (this.Device.SunlightState())
@@ -141,20 +154,7 @@ namespace MiniEngine.Rendering.Systems
                 shadowMap.CascadeOffsets[cascadeIndex] = new Vector4(-cascadeCorner, 0.0f);
                 shadowMap.CascadeScales[cascadeIndex] = new Vector4(cascadeScale, 1.0f);
             }
-        }
-
-        private void RenderShadowMap(ShadowMap work)
-        {
-            for (var cascadeIndex = 0; cascadeIndex < Cascades; cascadeIndex++)
-            {
-                // Set the rendertarget and clear it to white (max distance)
-                this.Device.SetRenderTarget(work.RenderTarget, cascadeIndex);
-                this.Device.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.White, 1.0f, 0);
-
-                // Draw the geometry, as seen from the shadow camera
-                this.ModelSystem.DrawModels(work.ShadowCameras[cascadeIndex], this.ShadowMapEffect);                
-            }
-        }        
+        }          
 
         private void RenderLight(
             Sunlight light,

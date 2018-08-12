@@ -55,8 +55,8 @@ namespace MiniEngine.Rendering.Systems
             {
                 foreach (var light in this.Lights.Values)
                 {
-                    this.Device.SetRenderTarget(light.ShadowMap);
-                    this.Device.Clear(Color.Black);
+                    this.Device.SetRenderTarget(light.ShadowMap);                    
+                    this.Device.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.White, 1.0f, 0);
                     this.ModelSystem.DrawModels(light, this.ShadowMapEffect);
 
                     this.Device.SetRenderTarget(null);

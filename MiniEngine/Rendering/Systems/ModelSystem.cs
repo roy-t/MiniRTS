@@ -40,7 +40,6 @@ namespace MiniEngine.Rendering.Systems
 
         public void DrawModels(IViewPoint viewPoint)
         {
-
             foreach (var modelPose in this.Models.Values)
             {
                 DrawModel(modelPose.Model, modelPose.Pose, viewPoint);
@@ -49,7 +48,6 @@ namespace MiniEngine.Rendering.Systems
 
         public void DrawModels(IViewPoint viewPoint, Effect effectOverride)
         {
-
             foreach (var modelPose in this.Models.Values)
             {
                 DrawModel(effectOverride, modelPose.Model, modelPose.Pose, viewPoint);
