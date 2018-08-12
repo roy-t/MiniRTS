@@ -37,7 +37,7 @@ namespace ModelExtension
 
         [DisplayName("Effect File")]
         [Description("The effect file which shaders to apply to the model")]
-        public string EffectFile { get; set; } = "RenderEffect.fx";
+        public string EffectFile { get; set; } = "Effects/RenderEffect.fx";
 
         public override ModelContent Process(NodeContent input, ContentProcessorContext context)
         {

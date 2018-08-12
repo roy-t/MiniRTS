@@ -6,6 +6,7 @@ using MiniEngine.Rendering;
 using MiniEngine.Scenes;
 using MiniEngine.Systems;
 using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 using MiniEngine.Utilities;
 
@@ -27,16 +28,15 @@ namespace MiniEngine.Configuration
             // Services
             this.Container.RegisterInstance(device);
 
-            // Effects
-            RegisterContent<Effect>("clearEffect");
-            RegisterContent<Effect>("combineEffect");
-            RegisterContent<Effect>("postProcessEffect");
-
-            RegisterContent<Effect>("directionalLightEffect");
-            RegisterContent<Effect>("pointLightEffect");
-            RegisterContent<Effect>("shadowMapEffect");
-            RegisterContent<Effect>("shadowCastingLightEffect");            
-            RegisterContent<Effect>("sunlightEffect");
+            // Effects            
+            RegisterContent<Effect>("clearEffect", "Effects");
+            RegisterContent<Effect>("combineEffect", "Effects");
+            RegisterContent<Effect>("postProcessEffect", "Effects");
+            RegisterContent<Effect>("directionalLightEffect", "Effects");
+            RegisterContent<Effect>("pointLightEffect", "Effects");
+            RegisterContent<Effect>("shadowMapEffect", "Effects");
+            RegisterContent<Effect>("shadowCastingLightEffect", "Effects");
+            RegisterContent<Effect>("sunlightEffect", "Effects");
 
             // Primitives
             RegisterContent<Model>("sphere");
@@ -73,11 +73,11 @@ namespace MiniEngine.Configuration
         public IEnumerable<T> ResolveAll<T>()
         {
             return this.Container.GetAllInstances<T>();
-        }
+        }      
 
-        private void RegisterContent<T>(string name)
+        private void RegisterContent<T>(string name, string folder = "")
         {
-            var content = this.Content.Load<T>(name);
+            var content = this.Content.Load<T>(Path.Combine(folder, name));
             this.Container.RegisterInstance(typeof (T), content, name);
         }
 

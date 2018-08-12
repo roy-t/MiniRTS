@@ -110,7 +110,7 @@ PixelShaderOutput MainPS(VertexShaderOutput input)
     output.Color = tex2D(diffuseSampler, texCoord);
 
     // Normal   
-    float3 normal = UnpackNormal(tex2D(normalSampler, texCoord));
+    float3 normal = UnpackNormal(tex2D(normalSampler, texCoord).xyz);
     normal = normalize(mul(normal, input.tangentToWorld));
     output.Normal.rgb = PackNormal(normal);
 

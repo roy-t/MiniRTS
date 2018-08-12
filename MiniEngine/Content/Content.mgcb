@@ -10,21 +10,9 @@
 
 #-------------------------------- References --------------------------------#
 
-/reference:..\..\ModelExtension\bin\Debug\ModelExtension.dll
+/reference:../../ModelExtension/bin/Debug/ModelExtension.dll
 
 #---------------------------------- Content ---------------------------------#
-
-#begin Texture.bmp
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Texture.bmp
 
 #begin sphere.x
 /importer:XImporter
@@ -45,12 +33,6 @@
 /processorParam:TextureFormat=Compressed
 /build:sphere.x
 
-#begin RenderEffect.fx
-/importer:EffectImporter
-/processor:EffectProcessor
-/processorParam:DebugMode=Auto
-/build:RenderEffect.fx
-
 #begin Ship2/ship2.fbx
 /importer:FbxImporter
 /processor:MultiMaterialModelProcessor
@@ -58,7 +40,7 @@
 /processorParam:SpecularMapFallback=null_specular.tga
 /processorParam:NormalMapFallback=null_normal.tga
 /processorParam:MaskFallback=null_mask.tga
-/processorParam:EffectFile=RenderEffect.fx
+/processorParam:EffectFile=Effects/RenderEffect.fx
 /processorParam:GenerateTangentFrames=True
 /processorParam:ColorKeyColor=255,0,255,255
 /processorParam:ColorKeyEnabled=False
@@ -82,7 +64,7 @@
 /processorParam:SpecularMapFallback=null_specular.tga
 /processorParam:NormalMapFallback=null_normal.tga
 /processorParam:MaskFallback=null_mask.tga
-/processorParam:EffectFile=RenderEffect.fx
+/processorParam:EffectFile=Effects/RenderEffect.fx
 /processorParam:GenerateTangentFrames=True
 /processorParam:ColorKeyColor=255,0,255,255
 /processorParam:ColorKeyEnabled=False
@@ -106,7 +88,7 @@
 /processorParam:SpecularMapFallback=null_specular.tga
 /processorParam:NormalMapFallback=null_normal.tga
 /processorParam:MaskFallback=null_mask.tga
-/processorParam:EffectFile=RenderEffect.fx
+/processorParam:EffectFile=Effects/RenderEffect.fx
 /processorParam:GenerateTangentFrames=True
 /processorParam:ColorKeyColor=255,0,255,255
 /processorParam:ColorKeyEnabled=False
@@ -154,7 +136,7 @@
 /processorParam:SpecularMapFallback=null_specular.tga
 /processorParam:NormalMapFallback=null_normal.tga
 /processorParam:MaskFallback=null_mask.tga
-/processorParam:EffectFile=RenderEffect.fx
+/processorParam:EffectFile=Effects/RenderEffect.fx
 /processorParam:GenerateTangentFrames=True
 /processorParam:ColorKeyColor=255,0,255,255
 /processorParam:ColorKeyEnabled=False
@@ -171,54 +153,6 @@
 /processorParam:SwapWindingOrder=False
 /build:Sponza/sponza.obj
 
-#begin PointLightEffect.fx
-/importer:EffectImporter
-/processor:EffectProcessor
-/processorParam:DebugMode=Auto
-/build:PointLightEffect.fx
-
-#begin ShadowCastingLightEffect.fx
-/importer:EffectImporter
-/processor:EffectProcessor
-/processorParam:DebugMode=Auto
-/build:ShadowCastingLightEffect.fx
-
-#begin DirectionalLightEffect.fx
-/importer:EffectImporter
-/processor:EffectProcessor
-/processorParam:DebugMode=Auto
-/build:DirectionalLightEffect.fx
-
-#begin ShadowMapEffect.fx
-/importer:EffectImporter
-/processor:EffectProcessor
-/processorParam:DebugMode=Auto
-/build:ShadowMapEffect.fx
-
-#begin SunlightEffect.fx
-/importer:EffectImporter
-/processor:EffectProcessor
-/processorParam:DebugMode=Auto
-/build:SunlightEffect.fx
-
-#begin ClearEffect.fx
-/importer:EffectImporter
-/processor:EffectProcessor
-/processorParam:DebugMode=Auto
-/build:ClearEffect.fx
-
-#begin CombineEffect.fx
-/importer:EffectImporter
-/processor:EffectProcessor
-/processorParam:DebugMode=Auto
-/build:CombineEffect.fx
-
-#begin PostProcessEffect.fx
-/importer:EffectImporter
-/processor:EffectProcessor
-/processorParam:DebugMode=Auto
-/build:PostProcessEffect.fx
-
 #begin Scene3/sphere.fbx
 /importer:FbxImporter
 /processor:MultiMaterialModelProcessor
@@ -226,7 +160,7 @@
 /processorParam:SpecularMapFallback=null_specular.tga
 /processorParam:NormalMapFallback=null_normal.tga
 /processorParam:MaskFallback=null_mask.tga
-/processorParam:EffectFile=RenderEffect.fx
+/processorParam:EffectFile=Effects/RenderEffect.fx
 /processorParam:GenerateTangentFrames=True
 /processorParam:ColorKeyColor=255,0,255,255
 /processorParam:ColorKeyEnabled=False
@@ -242,4 +176,58 @@
 /processorParam:Scale=1
 /processorParam:SwapWindingOrder=False
 /build:Scene3/sphere.fbx
+
+#begin Effects/ClearEffect.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Effects/ClearEffect.fx
+
+#begin Effects/CombineEffect.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Effects/CombineEffect.fx
+
+#begin Effects/DirectionalLightEffect.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Effects/DirectionalLightEffect.fx
+
+#begin Effects/PointLightEffect.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Effects/PointLightEffect.fx
+
+#begin Effects/PostProcessEffect.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Effects/PostProcessEffect.fx
+
+#begin Effects/RenderEffect.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Effects/RenderEffect.fx
+
+#begin Effects/ShadowCastingLightEffect.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Effects/ShadowCastingLightEffect.fx
+
+#begin Effects/ShadowMapEffect.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Effects/ShadowMapEffect.fx
+
+#begin Effects/SunlightEffect.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Effects/SunlightEffect.fx
 
