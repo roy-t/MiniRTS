@@ -39,7 +39,7 @@ namespace MiniEngine.Configuration
             RegisterContent<Effect>("sunlightEffect", "Effects");
 
             // Primitives
-            RegisterContent<Model>("sphere");
+            RegisterContent<Model>("sphere", "Effects");
             
             // Systems
             RegisterAllOf<ISystem>();         

@@ -48,9 +48,9 @@ namespace MiniEngine.Scenes
 
         public void LoadContent(ContentManager content)
         {
-            this.lizard = content.Load<Model>(@"Lizard\Lizard");
-            this.ship1 = content.Load<Model>(@"Ship1\Ship1");
-            this.ship2 = content.Load<Model>(@"Scene3\Sphere");
+            this.lizard = content.Load<Model>(@"Scenes\Zima\Lizard\Lizard");
+            this.ship1 = content.Load<Model>(@"Scenes\Zima\Ship1\Ship1");
+            this.ship2 = content.Load<Model>(@"Scenes\Zima\Sphere\Sphere");
         }
 
         public void Set()

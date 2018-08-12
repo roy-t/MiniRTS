@@ -30,7 +30,7 @@ namespace MiniEngine.Scenes
 
         public void LoadContent(ContentManager content)
         {
-            this.sponza = content.Load<Model>(@"Sponza\Sponza");            
+            this.sponza = content.Load<Model>(@"Scenes\Sponza\Sponza");            
         }
 
         public void Set()
