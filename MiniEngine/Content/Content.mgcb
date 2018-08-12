@@ -195,12 +195,6 @@
 /processorParam:DebugMode=Auto
 /build:ShadowMapEffect.fx
 
-#begin CascadingShadowMapEffect.fx
-/importer:EffectImporter
-/processor:EffectProcessor
-/processorParam:DebugMode=Auto
-/build:CascadingShadowMapEffect.fx
-
 #begin SunlightEffect.fx
 /importer:EffectImporter
 /processor:EffectProcessor

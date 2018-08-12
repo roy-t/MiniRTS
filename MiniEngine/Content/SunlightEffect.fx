@@ -1,6 +1,6 @@
 #include "Includes/Defines.hlsl"
 #include "Includes/Matrices.hlsl"
-#include "Includes/Samplers.hlsl"
+#include "Includes/GBuffer.hlsl"
 #include "Includes/Helpers.hlsl"
 #include "Includes/Light.hlsl"
 

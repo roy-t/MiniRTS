@@ -18,7 +18,7 @@ namespace MiniEngine.Rendering.Systems
         private readonly ModelSystem ModelSystem;
 
         private readonly GraphicsDevice Device;
-        private readonly Effect CascadingShadowMapEffect;
+        private readonly Effect ShadowMapEffect;
         private readonly Effect SunlightEffect;
         private readonly Quad Quad;
         private readonly Frustum Frustum;
@@ -26,10 +26,10 @@ namespace MiniEngine.Rendering.Systems
         private readonly Dictionary<Entity, ShadowMap> ShadowMaps;
         private readonly Dictionary<Entity, Sunlight> Lights;
 
-        public SunlightSystem(GraphicsDevice device, Effect cascadingShadowMapEffect, Effect sunlightEffect, ModelSystem modelSystem)
+        public SunlightSystem(GraphicsDevice device, Effect shadowMapEffect, Effect sunlightEffect, ModelSystem modelSystem)
         {
             this.Device = device;
-            this.CascadingShadowMapEffect = cascadingShadowMapEffect;
+            this.ShadowMapEffect = shadowMapEffect;
             this.SunlightEffect = sunlightEffect;
             this.ModelSystem = modelSystem;
 
@@ -152,7 +152,7 @@ namespace MiniEngine.Rendering.Systems
                 this.Device.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.White, 1.0f, 0);
 
                 // Draw the geometry, as seen from the shadow camera
-                this.ModelSystem.DrawModels(work.ShadowCameras[cascadeIndex], this.CascadingShadowMapEffect);                
+                this.ModelSystem.DrawModels(work.ShadowCameras[cascadeIndex], this.ShadowMapEffect);                
             }
         }        
 

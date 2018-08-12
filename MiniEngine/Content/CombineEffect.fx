@@ -1,33 +1,8 @@
-#if OPENGL
-    #define SV_POSITION POSITION
-    #define VS_SHADERMODEL vs_3_0
-    #define PS_SHADERMODEL ps_3_0
-#else
-    #define VS_SHADERMODEL vs_4_0_level_9_1
-    #define PS_SHADERMODEL ps_4_0_level_9_1
-#endif
-
-texture ColorMap;
-sampler colorSampler = sampler_state
-{
-    Texture = (ColorMap);
-    AddressU = CLAMP;
-    AddressV = CLAMP;
-    MagFilter = POINT;
-    MinFilter = POINT;
-    Mipfilter = POINT;
-};
-
-texture LightMap;
-sampler lightSampler = sampler_state
-{
-    Texture = (LightMap);
-    AddressU = CLAMP;
-    AddressV = CLAMP;
-    MagFilter = POINT;
-    MinFilter = POINT;
-    Mipfilter = POINT;
-};
+#include "Includes/Defines.hlsl"
+#include "Includes/Matrices.hlsl"
+#include "Includes/GBuffer.hlsl"
+#include "Includes/Helpers.hlsl"
+#include "Includes/Light.hlsl"
 
 struct VertexShaderInput
 {
@@ -41,7 +16,6 @@ struct VertexShaderOutput
     float2 TexCoord : TEXCOORD0;
 };
 
-
 VertexShaderOutput MainVS(VertexShaderInput input)
 {
     VertexShaderOutput output = (VertexShaderOutput)0;
@@ -54,10 +28,13 @@ VertexShaderOutput MainVS(VertexShaderInput input)
 
 float4 MainPS(VertexShaderOutput input) : COLOR0
 {
-    float3 diffuseColor = tex2D(colorSampler,input.TexCoord).rgb;
-    float4 light = tex2D(lightSampler,input.TexCoord);
+    float2 texCoord = input.TexCoord;
+
+    float3 diffuseColor = ReadDiffuse(texCoord);
+    float4 light = ReadLight(texCoord);    
     float3 diffuseLight = light.rgb;
     float specularLight = light.a;
+
     return saturate(float4(diffuseColor * diffuseLight + specularLight, 1));    
 }
 

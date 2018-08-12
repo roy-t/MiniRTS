@@ -1,15 +1,6 @@
-#if OPENGL
-    #define SV_POSITION POSITION
-    #define VS_SHADERMODEL vs_3_0
-    #define PS_SHADERMODEL ps_3_0
-#else
-    #define VS_SHADERMODEL vs_4_0_level_9_1
-    #define PS_SHADERMODEL ps_4_0_level_9_1
-#endif
-
-float4x4 World;
-float4x4 View;
-float4x4 Projection;
+#include "Includes/Defines.hlsl"
+#include "Includes/Matrices.hlsl"
+#include "Includes/Pack.hlsl"
 
 texture Texture;
 sampler diffuseSampler = sampler_state
@@ -106,34 +97,30 @@ struct PixelShaderOutput
 PixelShaderOutput MainPS(VertexShaderOutput input)
 {
     PixelShaderOutput output = (PixelShaderOutput)0;
-    
-    float mask = tex2D(maskSampler, input.TexCoord).r;
-    if(mask < 0.5f)
-    {   
-        clip(-1);       
+    float2 texCoord = input.TexCoord;
+
+    float mask = tex2D(maskSampler, texCoord).r;
+    if (mask < 0.5f)
+    {
+        clip(-1);
         return output;
     }
 
-    output.Color = tex2D(diffuseSampler, input.TexCoord);
-    
-    // read the normal from the normal map
-    float3 normalFromMap = tex2D(normalSampler, input.TexCoord).rgb;
-    //tranform to [-1,1]
-    normalFromMap = (2.0f * normalFromMap) - 1.0f;
-    //transform into world space
-    normalFromMap = mul(normalFromMap, input.tangentToWorld);
-    //normalize the result
-    normalFromMap = normalize(normalFromMap);
-    //output the normal, in [0,1] space
-    output.Normal.rgb = 0.5f * (normalFromMap + 1.0f);    
+    // Diffuse
+    output.Color = tex2D(diffuseSampler, texCoord);
 
-    //specular Power
-    float specularPower = tex2D(specularSampler, input.TexCoord).r;           
-    
+    // Normal   
+    float3 normal = UnpackNormal(tex2D(normalSampler, texCoord));
+    normal = normalize(mul(normal, input.tangentToWorld));
+    output.Normal.rgb = PackNormal(normal);
+
+    // Specular
+    float specularPower = tex2D(specularSampler, texCoord).r;
+
     // Shininess is stored in textures with black is most shiney, and white is non-shiney
     // make 1.0f most shiney here
-    output.Normal.a = 1.0f - specularPower;    
-    
+    output.Normal.a = 1.0f - specularPower;
+
     output.Depth = input.Depth.x / input.Depth.y;
 
     return output;

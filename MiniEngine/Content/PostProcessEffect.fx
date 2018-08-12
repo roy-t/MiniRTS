@@ -1,19 +1,11 @@
-#if OPENGL
-    #define SV_POSITION POSITION
-    #define VS_SHADERMODEL vs_3_0
-    #define PS_SHADERMODEL ps_3_0
-#else
-    #define VS_SHADERMODEL vs_4_0_level_9_1
-    #define PS_SHADERMODEL ps_4_0_level_9_1
-#endif
+#include "Includes/Defines.hlsl"
+#include "Includes/GBuffer.hlsl"
 
 static const int NW = 0;
 static const int NE = 1;
 static const int SW = 2;
 static const int SE = 3;
 static const int CE = 4;
-
-static const float3 luma = float3(0.299f, 0.587f, 0.114f);
 
 static const float2 samples[] =
 {
@@ -29,39 +21,6 @@ float ScaleX;  // 1.0f / renderTarget.Width
 float ScaleY;  // 1.0f / renderTarget.Height
 
 float Strength = 2.0f;
-
-texture ColorMap;
-sampler colorSampler = sampler_state
-{
-    Texture = (ColorMap);
-    AddressU = CLAMP;
-    AddressV = CLAMP;
-    MagFilter = LINEAR;
-    MinFilter = LINEAR;
-    Mipfilter = LINEAR;
-};
-
-texture NormalMap;
-sampler normalSampler = sampler_state
-{
-    texture = (NormalMap);
-    AddressU = CLAMP;
-    AddressV = CLAMP;
-    MagFilter = LINEAR;
-    MinFilter = LINEAR;
-    Mipfilter = LINEAR;
-};
-
-texture DepthMap;
-sampler depthSampler = sampler_state
-{
-    Texture = (DepthMap);
-    AddressU = CLAMP;
-    AddressV = CLAMP;
-    MinFilter = LINEAR;
-    MagFilter = LINEAR;
-    MipFilter = LINEAR;
-};
 
 struct VertexShaderInput
 {
@@ -87,29 +46,26 @@ VertexShaderOutput MainVS(VertexShaderInput input)
 static float3 getNormal(int direction, float2 texCoord)
 {
     float2 offset = float2(samples[direction].x * ScaleX, samples[direction].y * ScaleY);
-    float3 normalData = tex2D(normalSampler, texCoord + offset).xyz;
-    //tranform normal back into [-1,1] range
-    return 2.0f * normalData.xyz - 1.0f;
+    return ReadNormals(texCoord + offset);       
 }
 
-static float3 getRGB(int direction, float2 texCoord)
+static float3 getDiffuse(int direction, float2 texCoord)
 {
     float2 offset = float2(samples[direction].x * ScaleX, samples[direction].y * ScaleY);
-    return tex2D(colorSampler, texCoord + offset).rgb;  
+    return ReadDiffuse(texCoord + offset);    
 }
 
 float4 MainPS(VertexShaderOutput input) : COLOR0
 {   
     const float2 frame = float2(ScaleX, ScaleY);
     const float2 texCoord = input.TexCoord;
-
-    float3 rgbCE = getRGB(CE, texCoord);
-
+    
     // Sample color
-    float3 rgbNW = getRGB(NW, texCoord);
-    float3 rgbNE = getRGB(NE, texCoord);
-    float3 rgbSW = getRGB(SW, texCoord);
-    float3 rgbSE = getRGB(SE, texCoord);
+    float3 rgbCE = getDiffuse(CE, texCoord);
+    float3 rgbNW = getDiffuse(NW, texCoord);
+    float3 rgbNE = getDiffuse(NE, texCoord);
+    float3 rgbSW = getDiffuse(SW, texCoord);
+    float3 rgbSE = getDiffuse(SE, texCoord);
     
     // sample normals
     float3 normalCE = getNormal(CE, texCoord);
