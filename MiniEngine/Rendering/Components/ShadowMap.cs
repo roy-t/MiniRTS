@@ -8,7 +8,7 @@ namespace MiniEngine.Rendering.Components
     {
         public ShadowMap(GraphicsDevice device, int resolution, int cascades)
         {
-            this.ShadowCameras = new ViewPoint[4];
+            this.ShadowCameras = new IViewPoint[4];
             this.CascadeSplits = new float[4];
             this.CascadeOffsets = new Vector4[4];
             this.CascadeScales = new Vector4[4];
@@ -28,7 +28,7 @@ namespace MiniEngine.Rendering.Components
         }
 
         public RenderTarget2D RenderTarget { get; }
-        public ViewPoint[] ShadowCameras { get; }
+        public IViewPoint[] ShadowCameras { get; }
         public float[] CascadeSplits { get; }
         public Vector4[] CascadeOffsets { get; }
         public Vector4[] CascadeScales { get; }

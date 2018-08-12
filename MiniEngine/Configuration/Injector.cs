@@ -16,17 +16,25 @@ namespace MiniEngine.Configuration
     {
         private readonly ServiceContainer Container;
         private readonly ContentManager Content;
+        private readonly GraphicsDevice Device;
 
         public Injector(GraphicsDevice device, ContentManager content)
         {
             this.Content = content;
+            this.Device = device;
 
             this.Container = new ServiceContainer(ContainerOptions.Default);
             this.Container.SetDefaultLifetime<PerContainerLifetime>();
+
+            Compose();
+        }
+
+        public void Compose()
+        {
             RegisterAllOf<IInstanceFactory>();
 
             // Services
-            this.Container.RegisterInstance(device);
+            this.Container.RegisterInstance(this.Device);
 
             // Effects            
             RegisterContent<Effect>("clearEffect", "Effects");
@@ -40,10 +48,10 @@ namespace MiniEngine.Configuration
 
             // Primitives
             RegisterContent<Model>("sphere", "Effects");
-            
+
             // Systems
-            RegisterAllOf<ISystem>();         
-            
+            RegisterAllOf<ISystem>();
+
             // Renderer
             this.Container.Register<DeferredRenderer>();
 
@@ -54,10 +62,9 @@ namespace MiniEngine.Configuration
             // Controllers
             this.Container.Register<EntityController>();
             this.Container.Register<DebugController>();
-            
+
             // Scenes
             RegisterAllOf<IScene>();
-
         }
 
         public T Resolve<T>()
@@ -87,6 +94,8 @@ namespace MiniEngine.Configuration
             this.Container.RegisterAssembly(
                 Assembly.GetExecutingAssembly(),
                 (s, _) => typeof(T).IsAssignableFrom(s) && s != typeof(T));
-        }        
+        }
+
+      
     }
 }

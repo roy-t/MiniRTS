@@ -23,7 +23,7 @@ namespace MiniEngine.Rendering
         }
 
 
-        public static ViewPoint CreateShadowCamera(Vector3 surfaceToLightVector, Frustum frustum, int shadowMapResolution)
+        public static IViewPoint CreateShadowCamera(Vector3 surfaceToLightVector, Frustum frustum, int shadowMapResolution)
         {
             // Compute the bounding sphere of the frustum slice, round the center a little bit
             // so our shadows are more stable when moving the camera around
@@ -45,7 +45,7 @@ namespace MiniEngine.Rendering
             return Stabilize(shadowCamera, shadowMapResolution);
         }
 
-        private static ViewPoint Stabilize(IViewPoint viewPoint, int shadowMapResolution)
+        private static IViewPoint Stabilize(IViewPoint viewPoint, int shadowMapResolution)
         {
             // Create the rounding matrix, by projecting the world-space origin and determining
             // the fractional offset in texel space

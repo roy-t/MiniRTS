@@ -2,7 +2,7 @@
 
 namespace MiniEngine
 {
-    public struct Entity : IEquatable<Entity>
+    public readonly struct Entity : IEquatable<Entity>
     {
         private readonly int Id;
 
@@ -13,9 +13,9 @@ namespace MiniEngine
 
         public override bool Equals(object obj)
         {
-            if (obj is Entity)
+            if (obj is Entity entity)
             {
-                return Equals((Entity) obj);
+                return Equals(entity);
             }
 
             return false;
