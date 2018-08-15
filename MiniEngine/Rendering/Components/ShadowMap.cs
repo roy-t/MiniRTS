@@ -20,10 +20,23 @@ namespace MiniEngine.Rendering.Components
                 RenderTargetUsage.DiscardContents,
                 false,
                 cascades);
+
+            this.ColorMap = new RenderTarget2D(
+                device,
+                depthMapResolution,
+                depthMapResolution,
+                false,
+                SurfaceFormat.Color,
+                DepthFormat.Depth24, // TODO: can be None?
+                0,
+                RenderTargetUsage.DiscardContents,
+                false,
+                cascades);
         }
 
         public int Cascades { get; }
         public RenderTarget2D DepthMap { get; }
+        public RenderTarget2D ColorMap { get; }
         public IViewPoint[] ViewPoints { get; }
     }
 }

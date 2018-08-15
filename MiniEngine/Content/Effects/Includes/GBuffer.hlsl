@@ -3,10 +3,10 @@
 
 #include "Pack.hlsl"
 
-texture ColorMap;
-sampler colorSampler = sampler_state
+texture DiffuseMap;
+sampler diffuseSampler = sampler_state
 {
-    Texture = (ColorMap);
+    Texture = (DiffuseMap);
     AddressU = CLAMP;
     AddressV = CLAMP;
     MagFilter = POINT;
@@ -49,7 +49,7 @@ sampler lightSampler = sampler_state
 
 float3 ReadDiffuse(float2 texCoord)
 {
-    return tex2D(colorSampler, texCoord).rgb;
+    return tex2D(diffuseSampler, texCoord).rgb;
 }
 
 float3 ReadNormals(float2 texCoord)

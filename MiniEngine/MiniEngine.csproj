@@ -79,6 +79,7 @@
     <Compile Include="Input\MouseButtons.cs" />
     <Compile Include="Input\MouseInput.cs" />
     <Compile Include="Rendering\Cameras\IMovableViewPoint.cs" />
+    <Compile Include="Rendering\Components\ModelType.cs" />
     <Compile Include="Rendering\Components\ShadowMap.cs" />
     <Compile Include="Rendering\Primitives\GBuffer.cs" />
     <Compile Include="Rendering\Systems\AmbientLightSystem.cs" />

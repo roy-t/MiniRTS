@@ -9,7 +9,7 @@ namespace MiniEngine.Rendering.Primitives
             // Do not enable AA as we use FXAA during post processing
             const int aaSamples = 0;
 
-            this.ColorTarget = new RenderTarget2D(
+            this.DiffuseTarget = new RenderTarget2D(
                 device,
                 width,
                 height,
@@ -47,12 +47,10 @@ namespace MiniEngine.Rendering.Primitives
                 SurfaceFormat.Color,
                 DepthFormat.None,
                 aaSamples,
-                RenderTargetUsage.DiscardContents);
-
-         
+                RenderTargetUsage.DiscardContents);         
         }
 
-        public RenderTarget2D ColorTarget { get; }
+        public RenderTarget2D DiffuseTarget { get; }
         public RenderTarget2D NormalTarget { get; }
         public RenderTarget2D DepthTarget { get; }
         public RenderTarget2D LightTarget { get; }        

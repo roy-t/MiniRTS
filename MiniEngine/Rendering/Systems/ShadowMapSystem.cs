@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Rendering.Cameras;
@@ -13,13 +15,19 @@ namespace MiniEngine.Rendering.Systems
 
         private readonly GraphicsDevice Device;
         private readonly Effect ShadowMapEffect;
+        private readonly Effect ColorMapEffect;
         private readonly ModelSystem ModelSystem;
         private readonly Dictionary<Entity, ShadowMap> ShadowMaps;
 
-        public ShadowMapSystem(GraphicsDevice device, Effect shadowMapEffect, ModelSystem modelSystem)
+        public ShadowMapSystem(
+            GraphicsDevice device,
+            Effect shadowMapEffect,
+            Effect colorMapEffect,
+            ModelSystem modelSystem)
         {
             this.Device = device;
             this.ShadowMapEffect = shadowMapEffect;
+            this.ColorMapEffect = colorMapEffect;
             this.ModelSystem = modelSystem;
 
             this.ShadowMaps = new Dictionary<Entity, ShadowMap>();
@@ -37,11 +45,13 @@ namespace MiniEngine.Rendering.Systems
 
         public ShadowMap Get(Entity entity) => this.ShadowMaps[entity];
 
+        public ShadowMap DebugFoo() => this.ShadowMaps.Values.First();
+
         public bool Contains(Entity entity) => this.ShadowMaps.ContainsKey(entity);
 
         public string Describe(Entity entity)
         {
-            var shadowMap = this.ShadowMaps[entity];            
+            var shadowMap = this.ShadowMaps[entity];
             return $"shadow map, dimensions: {shadowMap.DepthMap.Width}x{shadowMap.DepthMap.Height}";
         }
 
@@ -49,16 +59,26 @@ namespace MiniEngine.Rendering.Systems
 
         public void RenderShadowMaps()
         {
-            using (this.Device.ShadowMapState())
+            foreach (var shadowMap in this.ShadowMaps.Values)
             {
-                foreach (var shadowMap in this.ShadowMaps.Values)
+                for (var i = 0; i < shadowMap.Cascades; i++)
                 {
-                    for (var i = 0; i < shadowMap.Cascades; i++)
+                    this.Device.SetRenderTarget(shadowMap.DepthMap, i);
+                    this.Device.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.White, 1.0f, 0);
+
+                    using (this.Device.ShadowMapState())
                     {
-                        this.Device.SetRenderTarget(shadowMap.DepthMap, i);
-                        this.Device.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.White, 1.0f, 0);
-                        this.ModelSystem.DrawModels(shadowMap.ViewPoints[i], this.ShadowMapEffect);
-                    }                    
+                        this.ModelSystem.DrawOpaqueModels(shadowMap.ViewPoints[i], this.ShadowMapEffect);
+                    }
+
+                    // Use the same depth buffer to generate the color buffer
+                    this.Device.SetRenderTarget(shadowMap.ColorMap, i);
+                    this.Device.Clear(ClearOptions.Target, Color.White, 1.0f, 0);
+
+                    using (this.Device.ColorMapState())
+                    {
+                        this.ModelSystem.DrawTransparentModels(shadowMap.ViewPoints[i], this.ColorMapEffect);                        
+                    }
                 }
             }
         }

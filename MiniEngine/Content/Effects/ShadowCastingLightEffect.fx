@@ -27,6 +27,17 @@ sampler shadowSampler = sampler_state
     MipFilter = POINT;
 };
 
+texture ColorMap;
+sampler colorSampler = sampler_state
+{
+    Texture = (ColorMap);
+    AddressU = CLAMP;
+    AddressV = CLAMP;
+    MinFilter = POINT;
+    MagFilter = POINT;
+    MipFilter = POINT;
+};
+
 struct VertexShaderInput
 {
     float3 Position : POSITION0;
@@ -70,16 +81,17 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
     {        		                
         float distanceToLightSource = (positionInLightReferenceFrame.z / positionInLightReferenceFrame.w);
         float shadowMapSample = tex2D(shadowSampler, shadowMapCoordinates).r;
-                
+        
         if((distanceToLightSource - bias) <= shadowMapSample)
         {               
+            float3 colorMapSample = tex2D(colorSampler, shadowMapCoordinates).rgb;
             float3 lightVector = normalize(-LightDirection);
 
-            float3 diffuseLight = ComputeDiffuseLightFactor(lightVector, normal, Color);
+            float3 diffuseLight = ComputeDiffuseLightFactor(lightVector, normal, Color) * colorMapSample;
             float specularLight = ComputeSpecularLightFactor(lightVector, normal, position, CameraPosition, shininess, SpecularPower);
 
             return float4(diffuseLight.rgb, specularLight);        
-        }                
+        }       
     }
 
     return float4(0.0f, 0.0f, 0.0f, 0.0f);

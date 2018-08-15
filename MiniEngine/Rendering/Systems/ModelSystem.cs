@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Rendering.Cameras;
 using MiniEngine.Rendering.Components;
@@ -9,23 +10,36 @@ namespace MiniEngine.Rendering.Systems
 {
     public sealed class ModelSystem : ISystem
     {
-        private readonly Dictionary<Entity, ModelPose> Models;
+        private readonly Dictionary<Entity, ModelPose> OpaqueModels;
+        private readonly Dictionary<Entity, ModelPose> TransparentModels;
 
         public ModelSystem()
         {
-            this.Models = new Dictionary<Entity, ModelPose>();
+            this.OpaqueModels = new Dictionary<Entity, ModelPose>();
+            this.TransparentModels = new Dictionary<Entity, ModelPose>();
         }
 
-        public void Add(Entity entity, Model model, Matrix pose)
+        public void Add(Entity entity, Model model, Matrix pose, ModelType modelType = ModelType.Opaque)
         {
-            this.Models.Add(entity, new ModelPose(model, pose));
+            switch (modelType)
+            {
+                case ModelType.Opaque:
+                    this.OpaqueModels.Add(entity, new ModelPose(model, pose));
+                    break;
+                case ModelType.Transparent:
+                    this.TransparentModels.Add(entity, new ModelPose(model, pose));
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(modelType), modelType, null);
+            }
+            
         }
 
-        public bool Contains(Entity entity) => this.Models.ContainsKey(entity);        
+        public bool Contains(Entity entity) => this.OpaqueModels.ContainsKey(entity);        
 
         public string Describe(Entity entity)
         {
-            var model = this.Models[entity];
+            var model = this.OpaqueModels[entity];
             var translation = model.Pose.Translation;
             var rotation = model.Pose.Rotation;
             var scale = model.Pose.Scale;
@@ -35,20 +49,28 @@ namespace MiniEngine.Rendering.Systems
 
         public void Remove(Entity entity)
         {
-            this.Models.Remove(entity);
+            this.OpaqueModels.Remove(entity);
         }       
 
-        public void DrawModels(IViewPoint viewPoint)
+        public void DrawOpaqueModels(IViewPoint viewPoint)
         {
-            foreach (var modelPose in this.Models.Values)
+            foreach (var modelPose in this.OpaqueModels.Values)
             {
                 DrawModel(modelPose.Model, modelPose.Pose, viewPoint);
             }            
+        }        
+
+        public void DrawOpaqueModels(IViewPoint viewPoint, Effect effectOverride)
+        {
+            foreach (var modelPose in this.OpaqueModels.Values)
+            {
+                DrawModel(effectOverride, modelPose.Model, modelPose.Pose, viewPoint);
+            }
         }
 
-        public void DrawModels(IViewPoint viewPoint, Effect effectOverride)
+        public void DrawTransparentModels(IViewPoint viewPoint, Effect effectOverride)
         {
-            foreach (var modelPose in this.Models.Values)
+            foreach (var modelPose in this.TransparentModels.Values)
             {
                 DrawModel(effectOverride, modelPose.Model, modelPose.Pose, viewPoint);
             }
@@ -73,7 +95,7 @@ namespace MiniEngine.Rendering.Systems
         {
             effectOverride.Parameters["World"].SetValue(world);
             effectOverride.Parameters["View"].SetValue(viewpoint.View);
-            effectOverride.Parameters["Projection"].SetValue(viewpoint.Projection);
+            effectOverride.Parameters["Projection"].SetValue(viewpoint.Projection);            
 
             foreach (var mesh in model.Meshes)
             {
@@ -82,6 +104,8 @@ namespace MiniEngine.Rendering.Systems
                 for (var i = 0; i < mesh.MeshParts.Count; i++)
                 {
                     var part = mesh.MeshParts[i];
+
+                    CopyTextures(part.Effect, effectOverride);
                     effects[i] = part.Effect;
                     part.Effect = effectOverride;
 
@@ -93,6 +117,22 @@ namespace MiniEngine.Rendering.Systems
                 {
                     var part = mesh.MeshParts[i];
                     part.Effect = effects[i];
+                }
+            }
+        }
+
+        // TODO: instead of copying all texture parameters we should extend the model type
+        // and give it a bundle of textures per mesh part. So we can effectively set those on each shader
+        // that needs them (and change the textures if need be).
+        // or we could define multiple techniques for the same shader and do without overriding the texture!
+        // (Making the shadowmap and colormap effects includes!)
+        private static void CopyTextures(Effect source, Effect destination)
+        {
+            foreach (var parameter in source.Parameters)
+            {
+                if (parameter.ParameterType == EffectParameterType.Texture2D)
+                {
+                    destination.Parameters[parameter.Name]?.SetValue(parameter.GetValueTexture2D());
                 }
             }
         }

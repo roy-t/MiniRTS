@@ -43,6 +43,7 @@ namespace MiniEngine.Configuration
             RegisterContent<Effect>("directionalLightEffect", "Effects");
             RegisterContent<Effect>("pointLightEffect", "Effects");
             RegisterContent<Effect>("shadowMapEffect", "Effects");
+            RegisterContent<Effect>("colorMapEffect", "Effects");
             RegisterContent<Effect>("shadowCastingLightEffect", "Effects");
             RegisterContent<Effect>("sunlightEffect", "Effects");
 

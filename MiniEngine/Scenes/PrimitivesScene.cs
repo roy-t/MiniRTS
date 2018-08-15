@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using MiniEngine.Rendering.Components;
 using MiniEngine.Rendering.Systems;
 using MiniEngine.Units;
 
@@ -56,14 +57,14 @@ namespace MiniEngine.Scenes
 
             this.sphereEntity = CreateModelEntity(this.sphereModel, Matrix.CreateScale(10) * Matrix.CreateTranslation(Vector3.Up * 10));
             this.floorEntity = CreateModelEntity(this.floorModel, Matrix.CreateScale(100, 1, 100));
-            this.shrineEntity = CreateModelEntity(this.shrineModel, Matrix.CreateScale(20, 20, 1) * Matrix.CreateRotationX(MathHelper.PiOver4) * Matrix.CreateTranslation(new Vector3(0, 50, -50)));
+
+            this.shrineEntity = CreateModelEntity(this.shrineModel, Matrix.CreateScale(20, 20, 1) * Matrix.CreateRotationX(MathHelper.PiOver4) * Matrix.CreateTranslation(new Vector3(0, 50, -50)), ModelType.Transparent);
         }
 
-        private Entity CreateModelEntity(Model model, Matrix worldMatrix)
+        private Entity CreateModelEntity(Model model, Matrix worldMatrix, ModelType modelType = ModelType.Opaque)
         {
             var entity = this.EntityController.CreateEntity();
-            this.ModelSystem.Add(entity, model, worldMatrix);
-
+            this.ModelSystem.Add(entity, model, worldMatrix, modelType);
             return entity;
         }
 

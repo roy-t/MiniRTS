@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Rendering.Cameras;
 using MiniEngine.Rendering.Primitives;
 using MiniEngine.Rendering.Systems;
@@ -73,15 +74,17 @@ namespace MiniEngine.Rendering
         public RenderTarget2D[] GetIntermediateRenderTargets() => new[]
         {            
 
-            this.GBuffer.ColorTarget,
-            this.GBuffer.NormalTarget,
-            this.GBuffer.DepthTarget,
+            this.GBuffer.DiffuseTarget,
+            //this.GBuffer.NormalTarget,
+            //this.GBuffer.DepthTarget,
             this.GBuffer.LightTarget,
-            this.CombineTarget
+            //this.CombineTarget,
+            this.ShadowMapSystem.DebugFoo().DepthMap,
+            this.ShadowMapSystem.DebugFoo().ColorMap,
         };
 
         public void Render(PerspectiveCamera perspectiveCamera)
-        {
+        {            
             RenderGBuffer(perspectiveCamera);
 
             RenderLights(perspectiveCamera);            
@@ -100,7 +103,7 @@ namespace MiniEngine.Rendering
                 {
                     this.PostProcessEffect.Parameters["ScaleX"].SetValue(1.0f / this.CombineTarget.Width);
                     this.PostProcessEffect.Parameters["ScaleY"].SetValue(1.0f / this.CombineTarget.Height);
-                    this.PostProcessEffect.Parameters["ColorMap"].SetValue(this.CombineTarget);
+                    this.PostProcessEffect.Parameters["DiffuseMap"].SetValue(this.CombineTarget);
                     this.PostProcessEffect.Parameters["NormalMap"].SetValue(this.GBuffer.NormalTarget);                                        
                     this.PostProcessEffect.Parameters["Strength"].SetValue(this.EnableFXAA? 2.0f : 0.0f);                    
                     pass.Apply();
@@ -119,7 +122,7 @@ namespace MiniEngine.Rendering
                 // Combine everything
                 foreach (var pass in this.CombineEffect.Techniques[0].Passes)
                 {
-                    this.CombineEffect.Parameters["ColorMap"].SetValue(this.GBuffer.ColorTarget);
+                    this.CombineEffect.Parameters["DiffuseMap"].SetValue(this.GBuffer.DiffuseTarget);
                     this.CombineEffect.Parameters["LightMap"].SetValue(this.GBuffer.LightTarget);                    
 
                     pass.Apply();
@@ -154,11 +157,10 @@ namespace MiniEngine.Rendering
 
         private void RenderGBuffer(IViewPoint viewPoint)
         {
-            this.Device.SetRenderTargets(this.GBuffer.ColorTarget, this.GBuffer.NormalTarget, this.GBuffer.DepthTarget);
+            this.Device.SetRenderTargets(this.GBuffer.DiffuseTarget, this.GBuffer.NormalTarget, this.GBuffer.DepthTarget);
 
             using (this.Device.PostProcessState())
             {
-
                 foreach (var pass in this.ClearEffect.Techniques[0].Passes)
                 {
                     pass.Apply();
@@ -168,7 +170,7 @@ namespace MiniEngine.Rendering
             
             using (this.Device.GeometryState())
             {
-                this.ModelSystem.DrawModels(viewPoint);                
+                this.ModelSystem.DrawOpaqueModels(viewPoint);                
             }
 
             this.Device.SetRenderTargets(null);

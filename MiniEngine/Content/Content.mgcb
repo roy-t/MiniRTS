@@ -303,3 +303,9 @@
 /processorParam:SwapWindingOrder=False
 /build:Scenes/Primitives/shrine.fbx
 
+#begin Effects/ColorMapEffect.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Effects/ColorMapEffect.fx
+

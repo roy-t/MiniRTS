@@ -75,6 +75,22 @@ namespace MiniEngine.Rendering
                 rasterizerState);
         }
 
+        public static DeviceState ColorMapState(this GraphicsDevice device)
+        {
+            var multiplyBlend = new BlendState
+            {
+                ColorSourceBlend = Blend.DestinationColor,
+                ColorDestinationBlend = Blend.Zero,
+                ColorBlendFunction = BlendFunction.Add
+            };
+
+            return new DeviceState(
+                device,
+                multiplyBlend,
+                DepthStencilState.DepthRead,
+                RasterizerState.CullCounterClockwise);
+        }
+
         public static DeviceState PostProcessState(this GraphicsDevice device)
         {
             return new DeviceState(
