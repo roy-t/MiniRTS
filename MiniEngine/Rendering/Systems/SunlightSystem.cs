@@ -15,35 +15,33 @@ namespace MiniEngine.Rendering.Systems
         public const int Cascades = 4;
         private static readonly float[] CascadeDistances = { 0.05f, 0.15f, 0.5f, 1.0f };
 
-        private readonly ModelSystem ModelSystem;
+        private readonly ShadowMapSystem ShadowMapSystem;
 
-        private readonly GraphicsDevice Device;
-        private readonly Effect ShadowMapEffect;
+        private readonly GraphicsDevice Device;        
         private readonly Effect SunlightEffect;
         private readonly Quad Quad;
         private readonly Frustum Frustum;
 
-        private readonly Dictionary<Entity, CascadedShadowMap> ShadowMaps;
         private readonly Dictionary<Entity, Sunlight> Lights;
 
-        public SunlightSystem(GraphicsDevice device, Effect shadowMapEffect, Effect sunlightEffect, ModelSystem modelSystem)
+        public SunlightSystem(GraphicsDevice device, Effect sunlightEffect, ShadowMapSystem shadowMapSystem)
         {
-            this.Device = device;
-            this.ShadowMapEffect = shadowMapEffect;
+            this.Device = device;            
             this.SunlightEffect = sunlightEffect;
-            this.ModelSystem = modelSystem;
+            this.ShadowMapSystem = shadowMapSystem;
 
             this.Quad = new Quad();
             this.Frustum = new Frustum();
 
-            this.ShadowMaps = new Dictionary<Entity, CascadedShadowMap>(1);
             this.Lights = new Dictionary<Entity, Sunlight>(1);
         }
 
         public void Add(Entity entity, Color color, Vector3 position, Vector3 lookAt)
         {
-            this.ShadowMaps.Add(entity, new CascadedShadowMap(this.Device, Resolution, Cascades));
-            this.Lights.Add(entity, new Sunlight(color, position, lookAt));
+            var sunlight = new Sunlight(color, position, lookAt, Cascades);
+
+            this.ShadowMapSystem.Add(entity, Cascades, Resolution, sunlight.ShadowCameras);            
+            this.Lights.Add(entity, sunlight);
         }
 
         public bool Contains(Entity entity) => this.Lights.ContainsKey(entity);
@@ -56,47 +54,28 @@ namespace MiniEngine.Rendering.Systems
 
         public void RemoveAll()
         {
-            this.ShadowMaps.Clear();
-            this.Lights.Clear();
+            var keys = new Entity[this.Lights.Keys.Count];
+            this.Lights.Keys.CopyTo(keys, 0);
+
+            foreach (var key in keys)
+            {
+                Remove(key);
+            }
         }
 
         public void Remove(Entity entity)
         {
-            this.ShadowMaps.Remove(entity);
             this.Lights.Remove(entity);
+            this.ShadowMapSystem.Remove(entity);
+        }
+
+        public void Update(PerspectiveCamera perspectiveCamera)
+        {
+            foreach (var sunLight in this.Lights.Values)
+            {
+                ComputeCascades(sunLight, perspectiveCamera);
+            }
         }        
-
-        public void RenderShadowMaps(PerspectiveCamera perspectiveCamera)
-        {
-            foreach (var pair in this.Lights)
-            {
-                var light = pair.Value;
-                var shadowMap = this.ShadowMaps[pair.Key];
-
-                ComputeCascades(light, shadowMap, perspectiveCamera);                
-            }
-
-            using (this.Device.ShadowMapState())
-            {
-                foreach (var shadowMap in this.ShadowMaps.Values)
-                {
-                    RenderShadowMap(shadowMap);
-                }               
-            }                   
-        }
-
-        private void RenderShadowMap(CascadedShadowMap work)
-        {
-            for (var cascadeIndex = 0; cascadeIndex < Cascades; cascadeIndex++)
-            {
-                // Set the rendertarget and clear it to white (max distance)
-                this.Device.SetRenderTarget(work.RenderTarget, cascadeIndex);
-                this.Device.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.White, 1.0f, 0);
-
-                // Draw the geometry, as seen from the shadow camera
-                this.ModelSystem.DrawModels(work.ShadowCameras[cascadeIndex], this.ShadowMapEffect);
-            }
-        }
 
         public void RenderLights(PerspectiveCamera perspectiveCamera, GBuffer gBuffer)
         {
@@ -105,17 +84,17 @@ namespace MiniEngine.Rendering.Systems
                 foreach (var pair in this.Lights)
                 {
                     var light = pair.Value;
-                    var shadowMap = this.ShadowMaps[pair.Key];
+                    var shadowMap = this.ShadowMapSystem.Get(pair.Key).DepthMap;
                     RenderLight(light, shadowMap, perspectiveCamera, gBuffer);
                 }
             }
         }
 
-        private void ComputeCascades(Sunlight light, CascadedShadowMap shadowMap, PerspectiveCamera perspectiveCamera)
+        private void ComputeCascades(Sunlight sunLight, PerspectiveCamera perspectiveCamera)
         {
             this.Frustum.ResetToViewVolume();
             this.Frustum.Transform(perspectiveCamera.InverseViewProjection);
-            shadowMap.GlobalShadowMatrix = ShadowMath.CreateGlobalShadowMatrix(light.SurfaceToLightVector, this.Frustum);
+            sunLight.GlobalShadowMatrix = ShadowMath.CreateGlobalShadowMatrix(sunLight.SurfaceToLightVector, this.Frustum);
 
             for (var cascadeIndex = 0; cascadeIndex < Cascades; cascadeIndex++)
             {
@@ -130,57 +109,57 @@ namespace MiniEngine.Rendering.Systems
 
                 // Compute the shadow camera, a camera that sits on the surface of the bounding sphere
                 // looking in the direction of the light
-                var shadowCamera = ShadowMath.CreateShadowCamera(light.SurfaceToLightVector, this.Frustum, Resolution);
-                shadowMap.ShadowCameras[cascadeIndex] = shadowCamera;
+                var shadowCamera = ShadowMath.CreateShadowCamera(sunLight.SurfaceToLightVector, this.Frustum, Resolution);
+                sunLight.ShadowCameras[cascadeIndex] = shadowCamera;
 
                 // ViewProjection matrix of the shadow camera that transforms to texture space [0, 1] instead of [-1, 1]
                 var shadowMatrix = (shadowCamera.View * shadowCamera.Projection).TextureScaleTransform();
 
                 // Store the split distance in terms of view space depth
                 var clipDistance = perspectiveCamera.FarPlane - perspectiveCamera.NearPlane;
-                shadowMap.CascadeSplits[cascadeIndex] = perspectiveCamera.NearPlane + farZ * clipDistance;
+                sunLight.CascadeSplits[cascadeIndex] = perspectiveCamera.NearPlane + farZ * clipDistance;
 
                 // Find scale and offset of this cascade in world space                    
                 var invCascadeMat = Matrix.Invert(shadowMatrix);
                 var cascadeCorner = Vector4.Transform(Vector3.Zero, invCascadeMat).ScaleToVector3();
-                cascadeCorner = Vector4.Transform(cascadeCorner, shadowMap.GlobalShadowMatrix).ScaleToVector3();
+                cascadeCorner = Vector4.Transform(cascadeCorner, sunLight.GlobalShadowMatrix).ScaleToVector3();
 
                 // Do the same for the upper corner
                 var otherCorner = Vector4.Transform(Vector3.One, invCascadeMat).ScaleToVector3();
-                otherCorner = Vector4.Transform(otherCorner, shadowMap.GlobalShadowMatrix).ScaleToVector3();
+                otherCorner = Vector4.Transform(otherCorner, sunLight.GlobalShadowMatrix).ScaleToVector3();
 
                 // Calculate the scale and offset
                 var cascadeScale = Vector3.One / (otherCorner - cascadeCorner);
-                shadowMap.CascadeOffsets[cascadeIndex] = new Vector4(-cascadeCorner, 0.0f);
-                shadowMap.CascadeScales[cascadeIndex] = new Vector4(cascadeScale, 1.0f);
+                sunLight.CascadeOffsets[cascadeIndex] = new Vector4(-cascadeCorner, 0.0f);
+                sunLight.CascadeScales[cascadeIndex] = new Vector4(cascadeScale, 1.0f);
             }
         }          
 
-        private void RenderLight(Sunlight light, CascadedShadowMap data, PerspectiveCamera perspectiveCamera, GBuffer gBuffer)
+        private void RenderLight(Sunlight sunlight, RenderTarget2D shadowMap, PerspectiveCamera perspectiveCamera, GBuffer gBuffer)
         {            
             // G-Buffer input                                    
             this.SunlightEffect.Parameters["NormalMap"].SetValue(gBuffer.NormalTarget);
             this.SunlightEffect.Parameters["DepthMap"].SetValue(gBuffer.DepthTarget);
 
             // Light properties
-            this.SunlightEffect.Parameters["SurfaceToLightVector"].SetValue(light.SurfaceToLightVector);
-            this.SunlightEffect.Parameters["LightColor"].SetValue(light.ColorVector);
+            this.SunlightEffect.Parameters["SurfaceToLightVector"].SetValue(sunlight.SurfaceToLightVector);
+            this.SunlightEffect.Parameters["LightColor"].SetValue(sunlight.ColorVector);
 
             // Camera properties for specular reflections, and rebuilding world positions
             this.SunlightEffect.Parameters["CameraPosition"].SetValue(perspectiveCamera.Position);
             this.SunlightEffect.Parameters["InverseViewProjection"].SetValue(perspectiveCamera.InverseViewProjection);
 
             // Shadow properties
-            this.SunlightEffect.Parameters["ShadowMap"].SetValue(data.RenderTarget);
-            this.SunlightEffect.Parameters["ShadowMatrix"].SetValue(data.GlobalShadowMatrix);
+            this.SunlightEffect.Parameters["ShadowMap"].SetValue(shadowMap);
+            this.SunlightEffect.Parameters["ShadowMatrix"].SetValue(sunlight.GlobalShadowMatrix);
             this.SunlightEffect.Parameters["CascadeSplits"].SetValue(
                 new Vector4(
-                    data.CascadeSplits[0],
-                    data.CascadeSplits[1],
-                    data.CascadeSplits[2],
-                    data.CascadeSplits[3]));
-            this.SunlightEffect.Parameters["CascadeOffsets"].SetValue(data.CascadeOffsets);
-            this.SunlightEffect.Parameters["CascadeScales"].SetValue(data.CascadeScales);
+                    sunlight.CascadeSplits[0],
+                    sunlight.CascadeSplits[1],
+                    sunlight.CascadeSplits[2],
+                    sunlight.CascadeSplits[3]));
+            this.SunlightEffect.Parameters["CascadeOffsets"].SetValue(sunlight.CascadeOffsets);
+            this.SunlightEffect.Parameters["CascadeScales"].SetValue(sunlight.CascadeScales);
 
             foreach (var pass in this.SunlightEffect.Techniques[0].Passes)
             {

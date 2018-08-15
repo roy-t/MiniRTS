@@ -131,10 +131,11 @@ namespace MiniEngine.Rendering
         }
 
         private void RenderLights(PerspectiveCamera perspectiveCamera)
-        {
-            this.ShadowMapSystem.RenderShadowMaps();
-            //this.ShadowCastingLightSystem.RenderShadowMaps();
-            this.SunlightSystem.RenderShadowMaps(perspectiveCamera);
+        {            
+            this.SunlightSystem.Update(perspectiveCamera);
+
+            this.ShadowMapSystem.RenderShadowMaps();            
+            
 
             this.Device.SetRenderTarget(this.GBuffer.LightTarget);
             

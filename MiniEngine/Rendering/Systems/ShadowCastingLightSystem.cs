@@ -49,6 +49,7 @@ namespace MiniEngine.Rendering.Systems
         public void Remove(Entity entity)
         {
             this.Lights.Remove(entity);
+            this.ShadowMapSystem.Remove(entity);
         }        
 
         public void RenderLights(PerspectiveCamera perspectiveCamera, GBuffer gBuffer)

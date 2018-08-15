@@ -98,7 +98,6 @@
     <Compile Include="Rendering\Cameras\ViewPoint.cs" />
     <Compile Include="Rendering\DeviceState.cs" />
     <Compile Include="Rendering\Cameras\IViewPoint.cs" />
-    <Compile Include="Rendering\Components\CascadedShadowMap.cs" />
     <Compile Include="Rendering\Components\DirectionalLight.cs" />
     <Compile Include="Rendering\Systems\DirectionalLightSystem.cs" />
     <Compile Include="Rendering\GraphicsDeviceExtensions.cs" />

@@ -9,7 +9,7 @@ namespace MiniEngine.Rendering.Systems
 {
     public sealed class ShadowMapSystem : ISystem
     {
-        private const int DepthMapResolution = 1024;
+        private const int DefaultResolution = 1024;
 
         private readonly GraphicsDevice Device;
         private readonly Effect ShadowMapEffect;
@@ -27,7 +27,12 @@ namespace MiniEngine.Rendering.Systems
 
         public void Add(Entity entity, IViewPoint viewPoint)
         {
-            this.ShadowMaps.Add(entity, new ShadowMap(this.Device, DepthMapResolution, viewPoint));
+            this.ShadowMaps.Add(entity, new ShadowMap(this.Device, DefaultResolution, 1, viewPoint));
+        }
+
+        public void Add(Entity entity, int cascades, int resolution, IViewPoint[] viewPoints)
+        {
+            this.ShadowMaps.Add(entity, new ShadowMap(this.Device, resolution, cascades, viewPoints));
         }
 
         public ShadowMap Get(Entity entity) => this.ShadowMaps[entity];
@@ -44,15 +49,16 @@ namespace MiniEngine.Rendering.Systems
 
         public void RenderShadowMaps()
         {
-            using (this.Device.GeometryState())
+            using (this.Device.ShadowMapState())
             {
                 foreach (var shadowMap in this.ShadowMaps.Values)
                 {
-                    this.Device.SetRenderTarget(shadowMap.DepthMap);
-                    this.Device.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.White, 1.0f, 0);
-                    this.ModelSystem.DrawModels(shadowMap.ViewPoint, this.ShadowMapEffect);
-
-                    this.Device.SetRenderTarget(null);
+                    for (var i = 0; i < shadowMap.Cascades; i++)
+                    {
+                        this.Device.SetRenderTarget(shadowMap.DepthMap, i);
+                        this.Device.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.White, 1.0f, 0);
+                        this.ModelSystem.DrawModels(shadowMap.ViewPoints[i], this.ShadowMapEffect);
+                    }                    
                 }
             }
         }
