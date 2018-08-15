@@ -23,7 +23,7 @@ namespace MiniEngine.Rendering.Systems
         private readonly Quad Quad;
         private readonly Frustum Frustum;
 
-        private readonly Dictionary<Entity, ShadowMap> ShadowMaps;
+        private readonly Dictionary<Entity, CascadedShadowMap> ShadowMaps;
         private readonly Dictionary<Entity, Sunlight> Lights;
 
         public SunlightSystem(GraphicsDevice device, Effect shadowMapEffect, Effect sunlightEffect, ModelSystem modelSystem)
@@ -36,13 +36,13 @@ namespace MiniEngine.Rendering.Systems
             this.Quad = new Quad();
             this.Frustum = new Frustum();
 
-            this.ShadowMaps = new Dictionary<Entity, ShadowMap>(1);
+            this.ShadowMaps = new Dictionary<Entity, CascadedShadowMap>(1);
             this.Lights = new Dictionary<Entity, Sunlight>(1);
         }
 
         public void Add(Entity entity, Color color, Vector3 position, Vector3 lookAt)
         {
-            this.ShadowMaps.Add(entity, new ShadowMap(this.Device, Resolution, Cascades));
+            this.ShadowMaps.Add(entity, new CascadedShadowMap(this.Device, Resolution, Cascades));
             this.Lights.Add(entity, new Sunlight(color, position, lookAt));
         }
 
@@ -85,7 +85,7 @@ namespace MiniEngine.Rendering.Systems
             }                   
         }
 
-        private void RenderShadowMap(ShadowMap work)
+        private void RenderShadowMap(CascadedShadowMap work)
         {
             for (var cascadeIndex = 0; cascadeIndex < Cascades; cascadeIndex++)
             {
@@ -98,7 +98,7 @@ namespace MiniEngine.Rendering.Systems
             }
         }
 
-        public void RenderLights(PerspectiveCamera perspectiveCamera, RenderTarget2D color, RenderTarget2D normal, RenderTarget2D depth)
+        public void RenderLights(PerspectiveCamera perspectiveCamera, GBuffer gBuffer)
         {
             using (this.Device.SunlightState())
             {
@@ -106,12 +106,12 @@ namespace MiniEngine.Rendering.Systems
                 {
                     var light = pair.Value;
                     var shadowMap = this.ShadowMaps[pair.Key];
-                    RenderLight(light, shadowMap, perspectiveCamera, color, normal, depth);
+                    RenderLight(light, shadowMap, perspectiveCamera, gBuffer);
                 }
             }
         }
 
-        private void ComputeCascades(Sunlight light, ShadowMap shadowMap, PerspectiveCamera perspectiveCamera)
+        private void ComputeCascades(Sunlight light, CascadedShadowMap shadowMap, PerspectiveCamera perspectiveCamera)
         {
             this.Frustum.ResetToViewVolume();
             this.Frustum.Transform(perspectiveCamera.InverseViewProjection);
@@ -156,17 +156,11 @@ namespace MiniEngine.Rendering.Systems
             }
         }          
 
-        private void RenderLight(
-            Sunlight light,
-            ShadowMap data,
-            PerspectiveCamera perspectiveCamera,
-            RenderTarget2D color,
-            RenderTarget2D normal,
-            RenderTarget2D depth)
+        private void RenderLight(Sunlight light, CascadedShadowMap data, PerspectiveCamera perspectiveCamera, GBuffer gBuffer)
         {            
             // G-Buffer input                                    
-            this.SunlightEffect.Parameters["NormalMap"].SetValue(normal);
-            this.SunlightEffect.Parameters["DepthMap"].SetValue(depth);
+            this.SunlightEffect.Parameters["NormalMap"].SetValue(gBuffer.NormalTarget);
+            this.SunlightEffect.Parameters["DepthMap"].SetValue(gBuffer.DepthTarget);
 
             // Light properties
             this.SunlightEffect.Parameters["SurfaceToLightVector"].SetValue(light.SurfaceToLightVector);

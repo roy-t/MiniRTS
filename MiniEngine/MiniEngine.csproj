@@ -78,10 +78,13 @@
     <Compile Include="Input\KeyboardInput.cs" />
     <Compile Include="Input\MouseButtons.cs" />
     <Compile Include="Input\MouseInput.cs" />
+    <Compile Include="Rendering\Components\ShadowMap.cs" />
+    <Compile Include="Rendering\Primitives\GBuffer.cs" />
     <Compile Include="Rendering\Systems\AmbientLightSystem.cs" />
     <Compile Include="Rendering\Components\ModelPose.cs" />
     <Compile Include="Rendering\Systems\ModelSystem.cs" />
     <Compile Include="EntityController.cs" />
+    <Compile Include="Rendering\Systems\ShadowMapSystem.cs" />
     <Compile Include="Systems\ISystem.cs" />
     <Compile Include="Utilities\DebugController.cs" />
     <Compile Include="Utilities\Extensions\BoundingBoxExtensions.cs" />
@@ -95,7 +98,7 @@
     <Compile Include="Rendering\Cameras\ViewPoint.cs" />
     <Compile Include="Rendering\DeviceState.cs" />
     <Compile Include="Rendering\Cameras\IViewPoint.cs" />
-    <Compile Include="Rendering\Components\ShadowMap.cs" />
+    <Compile Include="Rendering\Components\CascadedShadowMap.cs" />
     <Compile Include="Rendering\Components\DirectionalLight.cs" />
     <Compile Include="Rendering\Systems\DirectionalLightSystem.cs" />
     <Compile Include="Rendering\GraphicsDeviceExtensions.cs" />

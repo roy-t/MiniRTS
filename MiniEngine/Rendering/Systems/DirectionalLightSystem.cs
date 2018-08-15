@@ -43,19 +43,15 @@ namespace MiniEngine.Rendering.Systems
             this.Lights.Remove(entity);
         }
 
-        public void Render(
-            PerspectiveCamera perspectiveCamera,
-            RenderTarget2D color,
-            RenderTarget2D normal,
-            RenderTarget2D depth)
+        public void Render(PerspectiveCamera perspectiveCamera, GBuffer gBuffer)
         {            
             using (this.Device.LightState())
             {
                 foreach (var light in this.Lights.Values)
                 {
                     // G-Buffer input                        
-                    this.Effect.Parameters["NormalMap"].SetValue(normal);
-                    this.Effect.Parameters["DepthMap"].SetValue(depth);
+                    this.Effect.Parameters["NormalMap"].SetValue(gBuffer.NormalTarget);
+                    this.Effect.Parameters["DepthMap"].SetValue(gBuffer.DepthTarget);
 
                     // Light properties
                     this.Effect.Parameters["LightDirection"].SetValue(light.Direction);

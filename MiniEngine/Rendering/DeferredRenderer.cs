@@ -11,6 +11,7 @@ namespace MiniEngine.Rendering
         public readonly ModelSystem ModelSystem;
         public readonly DirectionalLightSystem DirectionalLightSystem;
         public readonly PointLightSystem PointLightSystem;
+        private readonly ShadowMapSystem ShadowMapSystem;
         public readonly ShadowCastingLightSystem ShadowCastingLightSystem;
         public readonly SunlightSystem SunlightSystem;
 
@@ -19,14 +20,22 @@ namespace MiniEngine.Rendering
         private readonly Effect CombineEffect;
         private readonly Effect PostProcessEffect;
         private readonly Quad Quad;
-        private readonly RenderTarget2D ColorTarget;
-        private readonly RenderTarget2D NormalTarget;
-        private readonly RenderTarget2D DepthTarget;
-        private readonly RenderTarget2D LightTarget;
-        private readonly RenderTarget2D CombineTarget;
-       
-        public DeferredRenderer(GraphicsDevice device, Effect clearEffect, Effect combineEffect, Effect postProcessEffect, AmbientLightSystem ambientLightSystem, ModelSystem modelSystem, DirectionalLightSystem directionalLightSystem, PointLightSystem pointLightSystem, ShadowCastingLightSystem shadowCastingLightSystem, SunlightSystem sunlightSystem)
-        {            
+        private readonly GBuffer GBuffer;
+        public RenderTarget2D CombineTarget { get; }
+
+        public DeferredRenderer(
+            GraphicsDevice device,
+            Effect clearEffect,
+            Effect combineEffect,
+            Effect postProcessEffect,
+            AmbientLightSystem ambientLightSystem,
+            ModelSystem modelSystem,
+            DirectionalLightSystem directionalLightSystem,
+            PointLightSystem pointLightSystem,
+            ShadowMapSystem shadowMapSystem,
+            ShadowCastingLightSystem shadowCastingLightSystem,
+            SunlightSystem sunlightSystem)
+        {
             this.Device = device;
 
             this.ClearEffect       = clearEffect;
@@ -37,33 +46,37 @@ namespace MiniEngine.Rendering
             this.ModelSystem              = modelSystem;
             this.DirectionalLightSystem   = directionalLightSystem;
             this.PointLightSystem         = pointLightSystem;
+            this.ShadowMapSystem          = shadowMapSystem;
             this.ShadowCastingLightSystem = shadowCastingLightSystem;
             this.SunlightSystem           = sunlightSystem;
 
-            this.Quad = new Quad();
-
-
-            // Do not enable AA as we use FXAA during post processing
-            const int aaSamples = 0;
+            this.Quad = new Quad();         
 
             var width  = device.PresentationParameters.BackBufferWidth;
-            var height = device.PresentationParameters.BackBufferHeight;            
+            var height = device.PresentationParameters.BackBufferHeight;
 
-            this.ColorTarget   = new RenderTarget2D(device, width, height, false, SurfaceFormat.Color, DepthFormat.Depth24, aaSamples, RenderTargetUsage.DiscardContents);
-            this.NormalTarget  = new RenderTarget2D(device, width, height, false, SurfaceFormat.Color, DepthFormat.None, aaSamples, RenderTargetUsage.DiscardContents);
-            this.DepthTarget   = new RenderTarget2D(device, width, height, false, SurfaceFormat.Single, DepthFormat.None, aaSamples, RenderTargetUsage.DiscardContents);
-            this.LightTarget   = new RenderTarget2D(device, width, height, false, SurfaceFormat.Color, DepthFormat.None, aaSamples, RenderTargetUsage.DiscardContents);
-            this.CombineTarget = new RenderTarget2D(device, width, height, false, SurfaceFormat.Color, DepthFormat.None, aaSamples, RenderTargetUsage.DiscardContents);           
+            this.GBuffer = new GBuffer(device, width, height);
+
+            this.CombineTarget = new RenderTarget2D(
+                device,
+                width,
+                height,
+                false,
+                SurfaceFormat.Color,
+                DepthFormat.None,
+                0,
+                RenderTargetUsage.DiscardContents);
         }
 
-        public bool EnableFXAA { get; set; } = true;        
+        public bool EnableFXAA { get; set; } = true;
 
         public RenderTarget2D[] GetIntermediateRenderTargets() => new[]
         {            
-            this.ColorTarget,
-            this.NormalTarget,
-            this.DepthTarget,
-            this.LightTarget,
+
+            this.GBuffer.ColorTarget,
+            this.GBuffer.NormalTarget,
+            this.GBuffer.DepthTarget,
+            this.GBuffer.LightTarget,
             this.CombineTarget
         };
 
@@ -88,7 +101,7 @@ namespace MiniEngine.Rendering
                     this.PostProcessEffect.Parameters["ScaleX"].SetValue(1.0f / this.CombineTarget.Width);
                     this.PostProcessEffect.Parameters["ScaleY"].SetValue(1.0f / this.CombineTarget.Height);
                     this.PostProcessEffect.Parameters["ColorMap"].SetValue(this.CombineTarget);
-                    this.PostProcessEffect.Parameters["NormalMap"].SetValue(this.NormalTarget);                                        
+                    this.PostProcessEffect.Parameters["NormalMap"].SetValue(this.GBuffer.NormalTarget);                                        
                     this.PostProcessEffect.Parameters["Strength"].SetValue(this.EnableFXAA? 2.0f : 0.0f);                    
                     pass.Apply();
 
@@ -106,8 +119,8 @@ namespace MiniEngine.Rendering
                 // Combine everything
                 foreach (var pass in this.CombineEffect.Techniques[0].Passes)
                 {
-                    this.CombineEffect.Parameters["ColorMap"].SetValue(this.ColorTarget);
-                    this.CombineEffect.Parameters["LightMap"].SetValue(this.LightTarget);                    
+                    this.CombineEffect.Parameters["ColorMap"].SetValue(this.GBuffer.ColorTarget);
+                    this.CombineEffect.Parameters["LightMap"].SetValue(this.GBuffer.LightTarget);                    
 
                     pass.Apply();
                     this.Quad.Render(this.Device);
@@ -118,19 +131,21 @@ namespace MiniEngine.Rendering
         }
 
         private void RenderLights(PerspectiveCamera perspectiveCamera)
-        {                                    
-            this.ShadowCastingLightSystem.RenderShadowMaps();
+        {
+            this.ShadowMapSystem.RenderShadowMaps();
+            //this.ShadowCastingLightSystem.RenderShadowMaps();
             this.SunlightSystem.RenderShadowMaps(perspectiveCamera);
 
-            this.Device.SetRenderTarget(this.LightTarget);
+            this.Device.SetRenderTarget(this.GBuffer.LightTarget);
             
             this.Device.Clear(this.AmbientLightSystem.ComputeAmbientLightZeroAlpha());            
                                    
-            this.DirectionalLightSystem.Render(perspectiveCamera, this.ColorTarget, this.NormalTarget, this.DepthTarget);
-            this.PointLightSystem.Render(perspectiveCamera, this.ColorTarget, this.NormalTarget, this.DepthTarget);
+            this.DirectionalLightSystem.Render(perspectiveCamera, this.GBuffer);
+            this.PointLightSystem.Render(perspectiveCamera, this.GBuffer);
 
-            this.ShadowCastingLightSystem.RenderLights(perspectiveCamera, this.ColorTarget, this.NormalTarget, this.DepthTarget);
-            this.SunlightSystem.RenderLights(perspectiveCamera, this.ColorTarget, this.NormalTarget, this.DepthTarget);            
+
+            this.ShadowCastingLightSystem.RenderLights(perspectiveCamera, this.GBuffer);
+            this.SunlightSystem.RenderLights(perspectiveCamera, this.GBuffer);            
             
 
             this.Device.SetRenderTarget(null);
@@ -138,7 +153,7 @@ namespace MiniEngine.Rendering
 
         private void RenderGBuffer(IViewPoint viewPoint)
         {
-            this.Device.SetRenderTargets(this.ColorTarget, this.NormalTarget, this.DepthTarget);
+            this.Device.SetRenderTargets(this.GBuffer.ColorTarget, this.GBuffer.NormalTarget, this.GBuffer.DepthTarget);
 
             using (this.Device.PostProcessState())
             {

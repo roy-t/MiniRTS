@@ -10,21 +10,20 @@ namespace MiniEngine.Rendering.Systems
 {
     public sealed class ShadowCastingLightSystem : ISystem
     {
-        private readonly ModelSystem ModelSystem;
-
-        private readonly GraphicsDevice Device;
-        private readonly Effect ShadowMapEffect;
+        private readonly GraphicsDevice Device;        
         private readonly Effect ShadowCastingLightEffect;
+
+        private readonly ShadowMapSystem ShadowMapSystem;
+
         private readonly Quad Quad;
 
         private readonly Dictionary<Entity, ShadowCastingLight> Lights;
 
-        public ShadowCastingLightSystem(GraphicsDevice device, Effect shadowMapEffect, Effect shadowCastingLightEffect, ModelSystem modelSystem)
+        public ShadowCastingLightSystem(GraphicsDevice device, Effect shadowCastingLightEffect, ShadowMapSystem shadowMapSystem)
         {
             this.Device = device;
-            this.ShadowMapEffect = shadowMapEffect;
             this.ShadowCastingLightEffect = shadowCastingLightEffect;
-            this.ModelSystem = modelSystem;
+            this.ShadowMapSystem = shadowMapSystem;
 
             this.Quad = new Quad();
 
@@ -33,7 +32,10 @@ namespace MiniEngine.Rendering.Systems
 
         public void Add(Entity entity, Vector3 position, Vector3 lookAt, Color color)
         {
-            this.Lights.Add(entity, new ShadowCastingLight(this.Device, position, lookAt, color));
+            var shadowCastingLight = new ShadowCastingLight(position, lookAt, color);
+
+            this.Lights.Add(entity, shadowCastingLight);
+            this.ShadowMapSystem.Add(entity, shadowCastingLight);
         }
 
         public bool Contains(Entity entity) => this.Lights.ContainsKey(entity);
@@ -47,36 +49,20 @@ namespace MiniEngine.Rendering.Systems
         public void Remove(Entity entity)
         {
             this.Lights.Remove(entity);
-        }
+        }        
 
-        public void RenderShadowMaps()
-        {
-            using (this.Device.GeometryState())
-            {
-                foreach (var light in this.Lights.Values)
-                {
-                    this.Device.SetRenderTarget(light.ShadowMap);                    
-                    this.Device.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.White, 1.0f, 0);
-                    this.ModelSystem.DrawModels(light, this.ShadowMapEffect);
-
-                    this.Device.SetRenderTarget(null);
-                }
-            }
-        }
-
-        public void RenderLights(            
-            PerspectiveCamera perspectiveCamera,
-            RenderTarget2D color,
-            RenderTarget2D normal,
-            RenderTarget2D depth)
+        public void RenderLights(PerspectiveCamera perspectiveCamera, GBuffer gBuffer)
         {
             using (this.Device.LightState())
             {
-                foreach (var light in this.Lights.Values)
+                foreach (var lightEntity in this.Lights)
                 {
+                    var light = lightEntity.Value;
+                    var shadowMap = this.ShadowMapSystem.Get(lightEntity.Key);
+
                     // G-Buffer input                        
-                    this.ShadowCastingLightEffect.Parameters["NormalMap"].SetValue(normal);
-                    this.ShadowCastingLightEffect.Parameters["DepthMap"].SetValue(depth);
+                    this.ShadowCastingLightEffect.Parameters["NormalMap"].SetValue(gBuffer.NormalTarget);
+                    this.ShadowCastingLightEffect.Parameters["DepthMap"].SetValue(gBuffer.DepthTarget);
 
                     // Light properties
                     this.ShadowCastingLightEffect.Parameters["LightDirection"].SetValue(Vector3.Normalize(light.LookAt - light.Position));
@@ -88,7 +74,7 @@ namespace MiniEngine.Rendering.Systems
                     this.ShadowCastingLightEffect.Parameters["InverseViewProjection"].SetValue(perspectiveCamera.InverseViewProjection);
 
                     // Shadow properties
-                    this.ShadowCastingLightEffect.Parameters["ShadowMap"].SetValue(light.ShadowMap);
+                    this.ShadowCastingLightEffect.Parameters["ShadowMap"].SetValue(shadowMap.DepthMap);
                     this.ShadowCastingLightEffect.Parameters["LightViewProjection"].SetValue(light.ViewProjection);                    
 
                     foreach (var pass in this.ShadowCastingLightEffect.Techniques[0].Passes)
