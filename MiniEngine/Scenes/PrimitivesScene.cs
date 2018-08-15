@@ -18,6 +18,7 @@ namespace MiniEngine.Scenes
         private Entity sphereEntity;
         private Entity floorEntity;
         private Entity shrineEntity;
+        private Entity shrine2Entity;
         private Entity shadowCastingLightEntity;
 
         private Model sphereModel;
@@ -59,6 +60,7 @@ namespace MiniEngine.Scenes
             this.floorEntity = CreateModelEntity(this.floorModel, Matrix.CreateScale(100, 1, 100));
 
             this.shrineEntity = CreateModelEntity(this.shrineModel, Matrix.CreateScale(20, 20, 1) * Matrix.CreateRotationX(MathHelper.PiOver4) * Matrix.CreateTranslation(new Vector3(0, 50, -50)), ModelType.Transparent);
+            this.shrine2Entity = CreateModelEntity(this.shrineModel, Matrix.CreateScale(20, 20, 1) * Matrix.CreateRotationX(MathHelper.PiOver4) * Matrix.CreateTranslation(new Vector3(10, 60, -60)), ModelType.Transparent);
         }
 
         private Entity CreateModelEntity(Model model, Matrix worldMatrix, ModelType modelType = ModelType.Opaque)

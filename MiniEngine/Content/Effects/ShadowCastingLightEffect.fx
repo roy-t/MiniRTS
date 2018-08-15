@@ -83,14 +83,18 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
         float shadowMapSample = tex2D(shadowSampler, shadowMapCoordinates).r;
         
         if((distanceToLightSource - bias) <= shadowMapSample)
-        {               
-            float3 colorMapSample = tex2D(colorSampler, shadowMapCoordinates).rgb;
+        {                           
             float3 lightVector = normalize(-LightDirection);
 
-            float3 diffuseLight = ComputeDiffuseLightFactor(lightVector, normal, Color) * colorMapSample;
+            float3 diffuseLight = ComputeDiffuseLightFactor(lightVector, normal, Color);
             float specularLight = ComputeSpecularLightFactor(lightVector, normal, position, CameraPosition, shininess, SpecularPower);
+            
+            // If the pixel is closer to the camera than the occluder it might have gone through a
+            // semi-transparent object, this factor stored in the colorMap.            
+            float3 colorMapSample = tex2D(colorSampler, shadowMapCoordinates).rgb;
+            float colorMapGrayScale = (colorMapSample.r + colorMapSample.g + colorMapSample.b) / 3.0f;
 
-            return float4(diffuseLight.rgb, specularLight);        
+            return float4(diffuseLight.rgb * colorMapSample, specularLight * colorMapGrayScale);
         }       
     }
 

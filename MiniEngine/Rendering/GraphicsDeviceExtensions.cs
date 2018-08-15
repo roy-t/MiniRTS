@@ -77,16 +77,21 @@ namespace MiniEngine.Rendering
 
         public static DeviceState ColorMapState(this GraphicsDevice device)
         {
-            var multiplyBlend = new BlendState
+            // Similar to the alpha blending state but first divides
+            // the source components by the inverse alpha, thus making
+            // objects that are very opaque darker (as if they let less light through)
+            var blendState = new BlendState
             {
-                ColorSourceBlend = Blend.DestinationColor,
-                ColorDestinationBlend = Blend.Zero,
-                ColorBlendFunction = BlendFunction.Add
-            };
+                ColorSourceBlend = Blend.InverseSourceAlpha,
+                AlphaSourceBlend = Blend.InverseSourceAlpha,
+
+                ColorDestinationBlend = Blend.InverseSourceAlpha,
+                AlphaDestinationBlend = Blend.InverseSourceAlpha
+            };            
 
             return new DeviceState(
                 device,
-                multiplyBlend,
+                blendState, 
                 DepthStencilState.DepthRead,
                 RasterizerState.CullCounterClockwise);
         }

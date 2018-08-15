@@ -47,11 +47,8 @@ PixelShaderOutput MainPS(VertexShaderOutput input)
 {
     PixelShaderOutput output = (PixelShaderOutput)0;
     float2 texCoord = input.TexCoord;    
-    
-    float4 color = tex2D(diffuseSampler, texCoord);
-    output.Color = color;
-    //output.Color.rgb = color.rgb * (1.0f - color.a);    
-    //output.Color.a = color.a;
+
+    output.Color = tex2D(diffuseSampler, texCoord);
     return output;
 }
 

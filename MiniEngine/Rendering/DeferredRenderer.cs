@@ -74,10 +74,10 @@ namespace MiniEngine.Rendering
         public RenderTarget2D[] GetIntermediateRenderTargets() => new[]
         {            
 
-            this.GBuffer.DiffuseTarget,
+            //this.GBuffer.DiffuseTarget,
             //this.GBuffer.NormalTarget,
             //this.GBuffer.DepthTarget,
-            this.GBuffer.LightTarget,
+            //this.GBuffer.LightTarget,
             //this.CombineTarget,
             this.ShadowMapSystem.DebugFoo().DepthMap,
             this.ShadowMapSystem.DebugFoo().ColorMap,
