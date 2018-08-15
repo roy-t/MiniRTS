@@ -86,6 +86,7 @@
     <Compile Include="Rendering\Systems\ModelSystem.cs" />
     <Compile Include="EntityController.cs" />
     <Compile Include="Rendering\Systems\ShadowMapSystem.cs" />
+    <Compile Include="Scenes\PrimitivesScene.cs" />
     <Compile Include="Systems\ISystem.cs" />
     <Compile Include="Utilities\DebugController.cs" />
     <Compile Include="Utilities\Extensions\BoundingBoxExtensions.cs" />

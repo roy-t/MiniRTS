@@ -62,7 +62,7 @@ namespace MiniEngine.Rendering.Systems
                 {
                     effect.Parameters["World"].SetValue(world);
                     effect.Parameters["View"].SetValue(viewPoint.View);
-                    effect.Parameters["Projection"].SetValue(viewPoint.Projection);
+                    effect.Parameters["Projection"].SetValue(viewPoint.Projection);                    
                 }
 
                 mesh.Draw();
