@@ -2,7 +2,7 @@
 
 namespace MiniEngine.Rendering.Cameras
 {
-    public sealed class OrthographicCamera : IViewPoint
+    public sealed class OrthographicCamera : IMovableViewPoint
     {
         private readonly float MinX;
         private readonly float MaxX;

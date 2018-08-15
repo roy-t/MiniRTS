@@ -25,12 +25,12 @@ namespace MiniEngine.Rendering.Systems
             this.ShadowMaps = new Dictionary<Entity, ShadowMap>();
         }
 
-        public void Add(Entity entity, IViewPoint viewPoint)
+        public void Add(Entity entity, IViewPoint viewPoint, int resolution = DefaultResolution)
         {
-            this.ShadowMaps.Add(entity, new ShadowMap(this.Device, DefaultResolution, 1, viewPoint));
+            this.ShadowMaps.Add(entity, new ShadowMap(this.Device, resolution, 1, viewPoint));
         }
 
-        public void Add(Entity entity, int cascades, int resolution, IViewPoint[] viewPoints)
+        public void Add(Entity entity, IViewPoint[] viewPoints, int cascades, int resolution = DefaultResolution)
         {
             this.ShadowMaps.Add(entity, new ShadowMap(this.Device, resolution, cascades, viewPoints));
         }

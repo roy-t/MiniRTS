@@ -4,19 +4,19 @@ using MiniEngine.Rendering.Cameras;
 
 namespace MiniEngine.Rendering.Components
 {
-    public sealed class ShadowCastingLight : PerspectiveCamera
+    public sealed class ShadowCastingLight
     {
         private const int ShadowMapResolution = 1024;                       
 
-        public ShadowCastingLight(Vector3 position, Vector3 lookAt, Color color)
-            : base(new Viewport(0, 0, ShadowMapResolution, ShadowMapResolution))
+        public ShadowCastingLight(Vector3 position, Vector3 lookAt, Color color)            
         {        
-
             this.ColorVector = color.ToVector3();
-
-            Move(position, lookAt);
+            this.ViewPoint = new PerspectiveCamera(new Viewport(0, 0, ShadowMapResolution, ShadowMapResolution));
+            this.ViewPoint.Move(position, lookAt);
         }
        
+        public PerspectiveCamera ViewPoint { get; }
+
         public Vector3 ColorVector { get; set; }
 
         public Color Color

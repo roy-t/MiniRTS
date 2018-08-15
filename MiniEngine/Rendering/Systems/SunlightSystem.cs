@@ -22,7 +22,7 @@ namespace MiniEngine.Rendering.Systems
         private readonly Quad Quad;
         private readonly Frustum Frustum;
 
-        private readonly Dictionary<Entity, Sunlight> Lights;
+        private readonly Dictionary<Entity, Sunlight> Sunlights;
 
         public SunlightSystem(GraphicsDevice device, Effect sunlightEffect, ShadowMapSystem shadowMapSystem)
         {
@@ -33,29 +33,29 @@ namespace MiniEngine.Rendering.Systems
             this.Quad = new Quad();
             this.Frustum = new Frustum();
 
-            this.Lights = new Dictionary<Entity, Sunlight>(1);
+            this.Sunlights = new Dictionary<Entity, Sunlight>(1);
         }
 
         public void Add(Entity entity, Color color, Vector3 position, Vector3 lookAt)
         {
             var sunlight = new Sunlight(color, position, lookAt, Cascades);
 
-            this.ShadowMapSystem.Add(entity, Cascades, Resolution, sunlight.ShadowCameras);            
-            this.Lights.Add(entity, sunlight);
+            this.ShadowMapSystem.Add(entity, sunlight.ShadowCameras, Cascades, Resolution);
+            this.Sunlights.Add(entity, sunlight);
         }
 
-        public bool Contains(Entity entity) => this.Lights.ContainsKey(entity);
+        public bool Contains(Entity entity) => this.Sunlights.ContainsKey(entity);
 
         public string Describe(Entity entity)
         {
-            var light = this.Lights[entity];
+            var light = this.Sunlights[entity];
             return $"sun light, direction: {light.LookAt - light.LookAt}, color {light.Color}";
         }
 
         public void RemoveAll()
         {
-            var keys = new Entity[this.Lights.Keys.Count];
-            this.Lights.Keys.CopyTo(keys, 0);
+            var keys = new Entity[this.Sunlights.Keys.Count];
+            this.Sunlights.Keys.CopyTo(keys, 0);
 
             foreach (var key in keys)
             {
@@ -65,13 +65,13 @@ namespace MiniEngine.Rendering.Systems
 
         public void Remove(Entity entity)
         {
-            this.Lights.Remove(entity);
+            this.Sunlights.Remove(entity);
             this.ShadowMapSystem.Remove(entity);
         }
 
         public void Update(PerspectiveCamera perspectiveCamera)
         {
-            foreach (var sunLight in this.Lights.Values)
+            foreach (var sunLight in this.Sunlights.Values)
             {
                 ComputeCascades(sunLight, perspectiveCamera);
             }
@@ -81,7 +81,7 @@ namespace MiniEngine.Rendering.Systems
         {
             using (this.Device.SunlightState())
             {
-                foreach (var pair in this.Lights)
+                foreach (var pair in this.Sunlights)
                 {
                     var light = pair.Value;
                     var shadowMap = this.ShadowMapSystem.Get(pair.Key).DepthMap;

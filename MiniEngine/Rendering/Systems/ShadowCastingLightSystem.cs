@@ -35,7 +35,7 @@ namespace MiniEngine.Rendering.Systems
             var shadowCastingLight = new ShadowCastingLight(position, lookAt, color);
 
             this.Lights.Add(entity, shadowCastingLight);
-            this.ShadowMapSystem.Add(entity, shadowCastingLight);
+            this.ShadowMapSystem.Add(entity, shadowCastingLight.ViewPoint);
         }
 
         public bool Contains(Entity entity) => this.Lights.ContainsKey(entity);
@@ -43,7 +43,7 @@ namespace MiniEngine.Rendering.Systems
         public string Describe(Entity entity)
         {
             var light = this.Lights[entity];            
-            return $"shadow casting light, direction: {light.LookAt - light.Position}, color: {light.Color}";
+            return $"shadow casting light, direction: {light.ViewPoint.LookAt - light.ViewPoint.Position}, color: {light.Color}";
         }
 
         public void Remove(Entity entity)
@@ -66,8 +66,8 @@ namespace MiniEngine.Rendering.Systems
                     this.ShadowCastingLightEffect.Parameters["DepthMap"].SetValue(gBuffer.DepthTarget);
 
                     // Light properties
-                    this.ShadowCastingLightEffect.Parameters["LightDirection"].SetValue(Vector3.Normalize(light.LookAt - light.Position));
-                    this.ShadowCastingLightEffect.Parameters["LightPosition"].SetValue(light.Position);
+                    this.ShadowCastingLightEffect.Parameters["LightDirection"].SetValue(Vector3.Normalize(light.ViewPoint.LookAt - light.ViewPoint.Position));
+                    this.ShadowCastingLightEffect.Parameters["LightPosition"].SetValue(light.ViewPoint.Position);
                     this.ShadowCastingLightEffect.Parameters["Color"].SetValue(light.ColorVector);
 
                     // Camera properties for specular reflections
@@ -76,7 +76,7 @@ namespace MiniEngine.Rendering.Systems
 
                     // Shadow properties
                     this.ShadowCastingLightEffect.Parameters["ShadowMap"].SetValue(shadowMap.DepthMap);
-                    this.ShadowCastingLightEffect.Parameters["LightViewProjection"].SetValue(light.ViewProjection);                    
+                    this.ShadowCastingLightEffect.Parameters["LightViewProjection"].SetValue(light.ViewPoint.ViewProjection);                    
 
                     foreach (var pass in this.ShadowCastingLightEffect.Techniques[0].Passes)
                     {                      

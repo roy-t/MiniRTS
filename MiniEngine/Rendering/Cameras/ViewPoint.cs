@@ -2,7 +2,7 @@
 
 namespace MiniEngine.Rendering.Cameras
 {
-    public class ViewPoint : IViewPoint
+    public sealed class ViewPoint : IViewPoint
     {
         public ViewPoint(Matrix view, Matrix projection)
         {
