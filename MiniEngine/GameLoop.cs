@@ -23,12 +23,12 @@ namespace MiniEngine
 
         private bool detailView = true;
         private int viewIndex;
-        private int viewOptions = 4;
+        private int viewOptions;
 
         private PerspectiveCamera perspectiveCamera;
         private SpriteBatch spriteBatch;
         private IReadOnlyList<IScene> scenes;
-        private int currentSceneIndex;
+        private int currentSceneIndex = 1;
         private DebugController debugController;
         private DeferredRenderer renderer;
         private EntityController entityController;
@@ -73,7 +73,7 @@ namespace MiniEngine
                 scene.LoadContent(this.Content);
             }
 
-            this.scenes[0].Set();            
+            this.scenes[this.currentSceneIndex].Set();            
         }
 
         protected override void UnloadContent()

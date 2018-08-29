@@ -86,15 +86,11 @@ namespace MiniEngine.Rendering
         public bool EnableFXAA { get; set; } = true;
 
         public RenderTarget2D[] GetIntermediateRenderTargets() => new[]
-        {
-            this.PostProcessTarget,
+        {            
             this.GBuffer.DiffuseTarget,
             this.GBuffer.NormalTarget,
             this.GBuffer.DepthTarget,
-            this.GBuffer.LightTarget,
-            this.CombineTarget,
-            //this.ShadowMapSystem.DebugFoo().DepthMap,
-            //this.ShadowMapSystem.DebugFoo().ColorMap,
+            this.GBuffer.LightTarget,            
         };
 
         public RenderTarget2D Render(PerspectiveCamera perspectiveCamera)
@@ -106,7 +102,10 @@ namespace MiniEngine.Rendering
             this.Device.Clear(Color.Black);
 
             var batches = this.ModelSystem.ComputeBatches(perspectiveCamera);
-            
+
+            this.Device.SetRenderTarget(this.GBuffer.DiffuseTarget);
+            this.Device.Clear(Color.TransparentBlack);
+
             RenderGBuffer(batches.OpaqueBatch);
             RenderLights(perspectiveCamera);
             Combine();
@@ -131,11 +130,11 @@ namespace MiniEngine.Rendering
                 // Post process the image
                 foreach (var pass in this.PostProcessEffect.Techniques[0].Passes)
                 {
-                    //this.PostProcessEffect.Parameters["ScaleX"].SetValue(1.0f / this.CombineTarget.Width);
-                    //this.PostProcessEffect.Parameters["ScaleY"].SetValue(1.0f / this.CombineTarget.Height);
+                    this.PostProcessEffect.Parameters["ScaleX"].SetValue(1.0f / this.CombineTarget.Width);
+                    this.PostProcessEffect.Parameters["ScaleY"].SetValue(1.0f / this.CombineTarget.Height);
                     this.PostProcessEffect.Parameters["DiffuseMap"].SetValue(this.CombineTarget);
-                    //this.PostProcessEffect.Parameters["NormalMap"].SetValue(this.GBuffer.NormalTarget);                                        
-                    //this.PostProcessEffect.Parameters["Strength"].SetValue(this.EnableFXAA? 2.0f : 0.0f);                    
+                    this.PostProcessEffect.Parameters["NormalMap"].SetValue(this.GBuffer.NormalTarget);
+                    this.PostProcessEffect.Parameters["Strength"].SetValue(this.EnableFXAA ? 2.0f : 0.0f);
                     pass.Apply();
 
                     this.Quad.Render(this.Device);
@@ -184,7 +183,7 @@ namespace MiniEngine.Rendering
         private void RenderGBuffer(ModelRenderBatch batch)
         {
             this.Device.SetRenderTarget(this.GBuffer.DiffuseTarget);
-            this.Device.Clear(Color.TransparentBlack);
+            this.Device.Clear(ClearOptions.Target, Color.TransparentBlack, 0.0f, 0);
 
             this.Device.SetRenderTarget(this.GBuffer.NormalTarget);
             this.Device.Clear(new Color(0.5f, 0.5f, 0.5f, 0.0f));

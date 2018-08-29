@@ -14,30 +14,6 @@
 
 #---------------------------------- Content ---------------------------------#
 
-#begin null_specular.tga
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:null_specular.tga
-
-#begin null_normal.tga
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:null_normal.tga
-
 #begin Effects/ClearEffect.fx
 /importer:EffectImporter
 /processor:EffectProcessor
@@ -308,4 +284,28 @@
 /processor:EffectProcessor
 /processorParam:DebugMode=Auto
 /build:Effects/ColorMapEffect.fx
+
+#begin Scenes/Sponza/plane.fbx
+/importer:FbxImporter
+/processor:MultiMaterialModelProcessor
+/processorParam:ProcessTextures=True
+/processorParam:SpecularMapFallback=null_specular.tga
+/processorParam:NormalMapFallback=null_normal.tga
+/processorParam:MaskFallback=null_mask.tga
+/processorParam:EffectFile=Effects/RenderEffect.fx
+/processorParam:GenerateTangentFrames=True
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=False
+/processorParam:DefaultEffect=BasicEffect
+/processorParam:GenerateMipmaps=True
+/processorParam:PremultiplyTextureAlpha=True
+/processorParam:PremultiplyVertexColors=True
+/processorParam:ResizeTexturesToPowerOfTwo=False
+/processorParam:TextureFormat=Compressed
+/processorParam:RotationX=0
+/processorParam:RotationY=0
+/processorParam:RotationZ=0
+/processorParam:Scale=1
+/processorParam:SwapWindingOrder=False
+/build:Scenes/Sponza/plane.fbx
 

@@ -38,18 +38,13 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
     return output;
 }
 
-struct PixelShaderOutput
-{
-    float4 Color : COLOR0;  
-};
-
-PixelShaderOutput MainPS(VertexShaderOutput input)
-{
-    PixelShaderOutput output = (PixelShaderOutput)0;
+float4  MainPS(VertexShaderOutput input) : COLOR0
+{    
     float2 texCoord = input.TexCoord;    
 
-    output.Color = tex2D(diffuseSampler, texCoord);
-    return output;
+    float4 color = tex2D(diffuseSampler, texCoord);
+    color.rgb *= (1.0f - color.a);   
+    return color;
 }
 
 technique RenderTechnique
