@@ -29,7 +29,7 @@ PixelShaderOutput MainPS(VertexShaderOutput input)
     PixelShaderOutput output = (PixelShaderOutput)0;
 
     // Clear the Color buffer, which stores the diffuse color in .rgb and nothing in .a	
-    output.Color.rgb = 0.0f;    
+    output.Color.rgb = float3(0, 0, 0);
     output.Color.a = 0.0f;
 
     // Clear the Normal buffer, which stores the normal in .rgb and the specular power in .a	

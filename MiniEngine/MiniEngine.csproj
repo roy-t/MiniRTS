@@ -52,6 +52,7 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>true</Prefer32Bit>
     <LangVersion>latest</LangVersion>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>bin\x64\Release\</OutputPath>
@@ -78,10 +79,12 @@
     <Compile Include="Input\KeyboardInput.cs" />
     <Compile Include="Input\MouseButtons.cs" />
     <Compile Include="Input\MouseInput.cs" />
+    <Compile Include="Rendering\Batches\RenderBatch.cs" />
     <Compile Include="Rendering\Cameras\IMovableViewPoint.cs" />
     <Compile Include="Rendering\Components\ModelType.cs" />
     <Compile Include="Rendering\Components\ShadowMap.cs" />
     <Compile Include="Rendering\Primitives\GBuffer.cs" />
+    <Compile Include="Rendering\Batches\ModelRenderBatch.cs" />
     <Compile Include="Rendering\Systems\AmbientLightSystem.cs" />
     <Compile Include="Rendering\Components\ModelPose.cs" />
     <Compile Include="Rendering\Systems\ModelSystem.cs" />

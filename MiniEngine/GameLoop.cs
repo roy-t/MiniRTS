@@ -150,7 +150,8 @@ namespace MiniEngine
             this.Window.Title = $"{gameTime.ElapsedGameTime.TotalMilliseconds:F2}ms, {(1.0f / gameTime.ElapsedGameTime.TotalSeconds):F2} fps, Fixed Time Step: {this.IsFixedTimeStep} (press 'F' so switch). Input State: {this.debugController.DescribeState()}";
 
             this.GraphicsDevice.Clear(Color.CornflowerBlue);
-            this.renderer.Render(this.perspectiveCamera);
+            var result = this.renderer.Render(this.perspectiveCamera);
+            this.GraphicsDevice.SetRenderTarget(null);
 
             this.spriteBatch.Begin(
                 SpriteSortMode.Deferred,
@@ -158,6 +159,14 @@ namespace MiniEngine
                 SamplerState.LinearClamp,
                 DepthStencilState.None,
                 RasterizerState.CullCounterClockwise);
+
+
+            this.spriteBatch.Draw(
+                result,
+                new Rectangle(0, 0, this.GraphicsDevice.Viewport.Width, this.GraphicsDevice.Viewport.Height),
+                null,
+                Color.White);
+
 
             var gBuffer = this.renderer.GetIntermediateRenderTargets();
             this.viewOptions = gBuffer.Length;

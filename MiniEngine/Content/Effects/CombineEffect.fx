@@ -30,12 +30,12 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
 {
     float2 texCoord = input.TexCoord;
 
-    float3 diffuseColor = ReadDiffuse(texCoord);
+    float4 diffuseColor = ReadDiffuse(texCoord);
     float4 light = ReadLight(texCoord);    
-    float3 diffuseLight = light.rgb;
-    float specularLight = light.a;
-
-    return saturate(float4(diffuseColor * diffuseLight + specularLight, 1));    
+    float4 diffuseLight = float4(light.rgb, 1.0f);
+    float4 specularLight = float4(light.a, light.a, light.a, 0.0f);
+   
+    return saturate(float4(diffuseColor * diffuseLight + specularLight));    
 }
 
 technique Technique1

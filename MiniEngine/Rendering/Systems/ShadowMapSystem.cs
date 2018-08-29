@@ -63,12 +63,15 @@ namespace MiniEngine.Rendering.Systems
             {
                 for (var i = 0; i < shadowMap.Cascades; i++)
                 {
+
+                    var batches = this.ModelSystem.ComputeBatches(shadowMap.ViewPoints[i]);
+
                     this.Device.SetRenderTarget(shadowMap.DepthMap, i);
                     this.Device.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.White, 1.0f, 0);
 
                     using (this.Device.ShadowMapState())
                     {
-                        this.ModelSystem.DrawOpaqueModels(shadowMap.ViewPoints[i], this.ShadowMapEffect);
+                        batches.DrawOpaque(this.ShadowMapEffect);                        
                     }
 
                     // Use the same depth buffer to generate the color buffer
@@ -77,7 +80,7 @@ namespace MiniEngine.Rendering.Systems
 
                     using (this.Device.ColorMapState())
                     {
-                        this.ModelSystem.DrawTransparentModels(shadowMap.ViewPoints[i], this.ColorMapEffect);                        
+                        batches.DrawTransparent(this.ColorMapEffect);
                     }
                 }
             }

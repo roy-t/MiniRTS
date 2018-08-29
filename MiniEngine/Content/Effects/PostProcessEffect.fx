@@ -49,7 +49,7 @@ static float3 getNormal(int direction, float2 texCoord)
     return ReadNormals(texCoord + offset);       
 }
 
-static float3 getDiffuse(int direction, float2 texCoord)
+static float4 getDiffuse(int direction, float2 texCoord)
 {
     float2 offset = float2(samples[direction].x * ScaleX, samples[direction].y * ScaleY);
     return ReadDiffuse(texCoord + offset);    
@@ -61,11 +61,11 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
     const float2 texCoord = input.TexCoord;
     
     // Sample color
-    float3 rgbCE = getDiffuse(CE, texCoord);
-    float3 rgbNW = getDiffuse(NW, texCoord);
-    float3 rgbNE = getDiffuse(NE, texCoord);
-    float3 rgbSW = getDiffuse(SW, texCoord);
-    float3 rgbSE = getDiffuse(SE, texCoord);
+    float4 rgbCE = getDiffuse(CE, texCoord);   
+    float4 rgbNW = getDiffuse(NW, texCoord);
+    float4 rgbNE = getDiffuse(NE, texCoord);
+    float4 rgbSW = getDiffuse(SW, texCoord);
+    float4 rgbSE = getDiffuse(SE, texCoord);
     
     // sample normals
     float3 normalCE = getNormal(CE, texCoord);
@@ -84,9 +84,8 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
     
     float borderWeight = clamp(range * Strength, 0, 1) * 0.2f;
     float centerWeight = 1.0f - (borderWeight * 4);
-
-    float3 color = rgbCE * centerWeight + (rgbNW + rgbNE + rgbSW + rgbSE) * borderWeight;
-    return float4(color.rgb, 1.0f);        
+       
+    return rgbCE * centerWeight + (rgbNW + rgbNE + rgbSW + rgbSE) * borderWeight;    
 }
 
 technique Technique1

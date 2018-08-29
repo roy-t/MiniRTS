@@ -47,9 +47,9 @@ sampler lightSampler = sampler_state
     Mipfilter = POINT;
 };
 
-float3 ReadDiffuse(float2 texCoord)
+float4 ReadDiffuse(float2 texCoord)
 {
-    return tex2D(diffuseSampler, texCoord).rgb;
+    return tex2D(diffuseSampler, texCoord);
 }
 
 float3 ReadNormals(float2 texCoord)

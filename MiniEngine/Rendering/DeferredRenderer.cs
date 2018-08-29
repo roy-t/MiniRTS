@@ -1,5 +1,7 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Linq;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MiniEngine.Rendering.Batches;
 using MiniEngine.Rendering.Cameras;
 using MiniEngine.Rendering.Primitives;
 using MiniEngine.Rendering.Systems;
@@ -23,6 +25,7 @@ namespace MiniEngine.Rendering
         private readonly Quad Quad;
         private readonly GBuffer GBuffer;
         public RenderTarget2D CombineTarget { get; }
+        public RenderTarget2D PostProcessTarget { get; }
 
         public DeferredRenderer(
             GraphicsDevice device,
@@ -67,45 +70,72 @@ namespace MiniEngine.Rendering
                 DepthFormat.None,
                 0,
                 RenderTargetUsage.DiscardContents);
+
+
+            this.PostProcessTarget = new RenderTarget2D(
+                device,
+                width,
+                height,
+                false,
+                SurfaceFormat.Color,
+                DepthFormat.None,
+                0,
+                RenderTargetUsage.PreserveContents);
         }
 
         public bool EnableFXAA { get; set; } = true;
 
         public RenderTarget2D[] GetIntermediateRenderTargets() => new[]
-        {            
-
-            //this.GBuffer.DiffuseTarget,
-            //this.GBuffer.NormalTarget,
-            //this.GBuffer.DepthTarget,
-            //this.GBuffer.LightTarget,
-            //this.CombineTarget,
-            this.ShadowMapSystem.DebugFoo().DepthMap,
-            this.ShadowMapSystem.DebugFoo().ColorMap,
+        {
+            this.PostProcessTarget,
+            this.GBuffer.DiffuseTarget,
+            this.GBuffer.NormalTarget,
+            this.GBuffer.DepthTarget,
+            this.GBuffer.LightTarget,
+            this.CombineTarget,
+            //this.ShadowMapSystem.DebugFoo().DepthMap,
+            //this.ShadowMapSystem.DebugFoo().ColorMap,
         };
 
-        public void Render(PerspectiveCamera perspectiveCamera)
-        {            
-            RenderGBuffer(perspectiveCamera);
+        public RenderTarget2D Render(PerspectiveCamera perspectiveCamera)
+        {
+            this.SunlightSystem.Update(perspectiveCamera);
+            this.ShadowMapSystem.RenderShadowMaps();
 
-            RenderLights(perspectiveCamera);            
+            this.Device.SetRenderTarget(this.PostProcessTarget);
+            this.Device.Clear(Color.Black);
 
+            var batches = this.ModelSystem.ComputeBatches(perspectiveCamera);
+            
+            RenderGBuffer(batches.OpaqueBatch);
+            RenderLights(perspectiveCamera);
             Combine();
-
             PostProcess();
+
+            foreach (var batch in batches.TransparentBatches)
+            {
+                RenderGBuffer(batch);
+                RenderLights(perspectiveCamera);
+                Combine();
+                PostProcess();
+            }
+
+            return this.PostProcessTarget;
         }   
 
         private void PostProcess()
-        {            
+        {           
+            this.Device.SetRenderTarget(this.PostProcessTarget);            
             using (this.Device.PostProcessState())
             {
                 // Post process the image
                 foreach (var pass in this.PostProcessEffect.Techniques[0].Passes)
                 {
-                    this.PostProcessEffect.Parameters["ScaleX"].SetValue(1.0f / this.CombineTarget.Width);
-                    this.PostProcessEffect.Parameters["ScaleY"].SetValue(1.0f / this.CombineTarget.Height);
+                    //this.PostProcessEffect.Parameters["ScaleX"].SetValue(1.0f / this.CombineTarget.Width);
+                    //this.PostProcessEffect.Parameters["ScaleY"].SetValue(1.0f / this.CombineTarget.Height);
                     this.PostProcessEffect.Parameters["DiffuseMap"].SetValue(this.CombineTarget);
-                    this.PostProcessEffect.Parameters["NormalMap"].SetValue(this.GBuffer.NormalTarget);                                        
-                    this.PostProcessEffect.Parameters["Strength"].SetValue(this.EnableFXAA? 2.0f : 0.0f);                    
+                    //this.PostProcessEffect.Parameters["NormalMap"].SetValue(this.GBuffer.NormalTarget);                                        
+                    //this.PostProcessEffect.Parameters["Strength"].SetValue(this.EnableFXAA? 2.0f : 0.0f);                    
                     pass.Apply();
 
                     this.Quad.Render(this.Device);
@@ -114,8 +144,9 @@ namespace MiniEngine.Rendering
         }        
 
         private void Combine()
-        {
+        {                        
             this.Device.SetRenderTarget(this.CombineTarget);
+            this.Device.Clear(Color.TransparentBlack);
 
             using (this.Device.PostProcessState())
             {
@@ -134,12 +165,7 @@ namespace MiniEngine.Rendering
         }
 
         private void RenderLights(PerspectiveCamera perspectiveCamera)
-        {            
-            this.SunlightSystem.Update(perspectiveCamera);
-
-            this.ShadowMapSystem.RenderShadowMaps();            
-            
-
+        {                        
             this.Device.SetRenderTarget(this.GBuffer.LightTarget);
             
             this.Device.Clear(this.AmbientLightSystem.ComputeAmbientLightZeroAlpha());            
@@ -155,25 +181,33 @@ namespace MiniEngine.Rendering
             this.Device.SetRenderTarget(null);
         }
 
-        private void RenderGBuffer(IViewPoint viewPoint)
+        private void RenderGBuffer(ModelRenderBatch batch)
         {
-            this.Device.SetRenderTargets(this.GBuffer.DiffuseTarget, this.GBuffer.NormalTarget, this.GBuffer.DepthTarget);
+            this.Device.SetRenderTarget(this.GBuffer.DiffuseTarget);
+            this.Device.Clear(Color.TransparentBlack);
 
-            using (this.Device.PostProcessState())
-            {
-                foreach (var pass in this.ClearEffect.Techniques[0].Passes)
-                {
-                    pass.Apply();
-                    this.Quad.Render(this.Device);
-                }
-            }
-            
+            this.Device.SetRenderTarget(this.GBuffer.NormalTarget);
+            this.Device.Clear(new Color(0.5f, 0.5f, 0.5f, 0.0f));
+
+            this.Device.SetRenderTarget(this.GBuffer.DepthTarget);
+            this.Device.Clear(Color.TransparentBlack);
+
+            // TODO: why doesn't clearing using the effect work for the alpha channel of the DiffuseTarget? WTF
+            //this.Device.SetRenderTargets(this.GBuffer.DiffuseTarget, this.GBuffer.NormalTarget, this.GBuffer.DepthTarget);
+            //using (this.Device.GeometryState())
+            //{
+            //    foreach (var pass in this.ClearEffect.Techniques[0].Passes)
+            //    {
+            //        pass.Apply();
+            //        this.Quad.Render(this.Device);
+            //    }
+            //}
+
+            this.Device.SetRenderTargets(this.GBuffer.DiffuseTarget, this.GBuffer.NormalTarget, this.GBuffer.DepthTarget);
             using (this.Device.GeometryState())
             {
-                this.ModelSystem.DrawOpaqueModels(viewPoint);                
+                batch.Draw();
             }
-
-            this.Device.SetRenderTargets(null);
-        }
+        }        
     }
 }

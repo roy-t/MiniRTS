@@ -17,7 +17,7 @@ namespace MiniEngine.Rendering.Primitives
                 SurfaceFormat.Color,
                 DepthFormat.Depth24,
                 aaSamples,
-                RenderTargetUsage.DiscardContents);
+                RenderTargetUsage.PreserveContents);
 
             this.NormalTarget = new RenderTarget2D(
                 device,

@@ -100,7 +100,7 @@ namespace MiniEngine.Rendering
         {
             return new DeviceState(
                 device,
-                BlendState.Opaque,
+                BlendState.AlphaBlend,
                 DepthStencilState.None,
                 RasterizerState.CullCounterClockwise);
         }
