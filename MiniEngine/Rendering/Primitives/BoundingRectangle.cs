@@ -42,6 +42,17 @@ namespace MiniEngine.Rendering.Primitives
             return false;
         }
 
+        public Vector2[] GetCorners()
+        {
+            return new[]
+            {
+                new Vector2(this.MinX, this.MaxY),
+                new Vector2(this.MaxX, this.MaxY),
+                new Vector2(this.MaxX, this.MinY),
+                new Vector2(this.MinX, this.MinY),
+            };
+        }
+
         public static BoundingRectangle CreateMerged(BoundingRectangle rectA, BoundingRectangle rectB)
         {
             var minX = Math.Min(rectA.MinX, rectB.MinX);

@@ -106,10 +106,10 @@ namespace MiniEngine.Rendering
         }
 
         public static DeviceState WireFrameState(this GraphicsDevice device)
-        {
+        {            
             var rasterState = new RasterizerState
             {
-                CullMode = CullMode.CullCounterClockwiseFace,
+                CullMode = CullMode.None,                
                 FillMode = FillMode.WireFrame
             };
 

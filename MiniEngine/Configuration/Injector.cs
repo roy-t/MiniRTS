@@ -37,9 +37,11 @@ namespace MiniEngine.Configuration
             this.Container.RegisterInstance(this.Device);
 
             // Effects            
-            RegisterContent<Effect>("clearEffect", "Effects");
+            RegisterContent<Effect>("clearEffect", "Effects");            
+            RegisterContent<Effect>("renderEffect", "Effects");
             RegisterContent<Effect>("combineEffect", "Effects");
             RegisterContent<Effect>("postProcessEffect", "Effects");
+            RegisterContent<Effect>("postProcessOutlineEffect", "Effects");
             RegisterContent<Effect>("directionalLightEffect", "Effects");
             RegisterContent<Effect>("pointLightEffect", "Effects");
             RegisterContent<Effect>("shadowMapEffect", "Effects");

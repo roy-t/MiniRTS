@@ -6,7 +6,6 @@ using MiniEngine.Rendering.Components;
 using MiniEngine.Systems;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using MiniEngine.Rendering.Batches;
 using MiniEngine.Rendering.Primitives;
 using MiniEngine.Utilities.Extensions;

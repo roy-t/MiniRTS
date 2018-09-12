@@ -9,13 +9,14 @@ namespace MiniEngine.Rendering
 {
     public sealed class DeferredRenderer
     {
-        public readonly AmbientLightSystem AmbientLightSystem;
-        public readonly ModelSystem ModelSystem;
-        public readonly DirectionalLightSystem DirectionalLightSystem;
-        public readonly PointLightSystem PointLightSystem;
+        private readonly AmbientLightSystem AmbientLightSystem;
+        private readonly ModelSystem ModelSystem;
+        private readonly DirectionalLightSystem DirectionalLightSystem;
+        private readonly PointLightSystem PointLightSystem;
         private readonly ShadowMapSystem ShadowMapSystem;
-        public readonly ShadowCastingLightSystem ShadowCastingLightSystem;
-        public readonly SunlightSystem SunlightSystem;
+        private readonly ShadowCastingLightSystem ShadowCastingLightSystem;
+        private readonly SunlightSystem SunlightSystem;
+        private readonly DebugRenderSystem DebugRenderSystem;
 
         private readonly GraphicsDevice Device;
         private readonly Effect ClearEffect;                
@@ -37,7 +38,8 @@ namespace MiniEngine.Rendering
             PointLightSystem pointLightSystem,
             ShadowMapSystem shadowMapSystem,
             ShadowCastingLightSystem shadowCastingLightSystem,
-            SunlightSystem sunlightSystem)
+            SunlightSystem sunlightSystem,
+            DebugRenderSystem debugRenderSystem)
         {
             this.Device = device;
 
@@ -52,6 +54,7 @@ namespace MiniEngine.Rendering
             this.ShadowMapSystem          = shadowMapSystem;
             this.ShadowCastingLightSystem = shadowCastingLightSystem;
             this.SunlightSystem           = sunlightSystem;
+            this.DebugRenderSystem        = debugRenderSystem;
 
             this.Quad = new Quad();         
 
@@ -69,7 +72,6 @@ namespace MiniEngine.Rendering
                 DepthFormat.None,
                 0,
                 RenderTargetUsage.DiscardContents);
-
 
             this.PostProcessTarget = new RenderTarget2D(
                 device,
@@ -117,9 +119,12 @@ namespace MiniEngine.Rendering
         private void RenderBatch(PerspectiveCamera camera, ModelRenderBatch batch)
         {
             RenderGBuffer(batch);
+            this.DebugRenderSystem.RenderGBuffer(camera);
             RenderLights(camera);
             Combine();
             PostProcess();
+            this.DebugRenderSystem.RenderPostProcess(camera);
+
         }
 
         private void PostProcess()
@@ -206,7 +211,7 @@ namespace MiniEngine.Rendering
             using (this.Device.GeometryState())
             {
                 batch.Draw();
-            }
+            }            
         }        
     }
 }

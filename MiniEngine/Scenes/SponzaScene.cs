@@ -14,6 +14,7 @@ namespace MiniEngine.Scenes
         private readonly SunlightSystem SunlightSystem;
         private readonly ShadowCastingLightSystem ShadowCastingLightSystem;
         private readonly ModelSystem ModelSystem;
+        private readonly DebugRenderSystem DebugRenderSystem;
 
         private Entity worldEntity;
         private Entity planeEntity;
@@ -26,13 +27,15 @@ namespace MiniEngine.Scenes
             AmbientLightSystem ambientLightSystem,
             SunlightSystem sunlightSystem,
             ShadowCastingLightSystem shadowCastingLightSystem,
-            ModelSystem modelSystem)
+            ModelSystem modelSystem,
+            DebugRenderSystem debugRenderSystem)
         {
             this.EntityController = entityController;
             this.AmbientLightSystem = ambientLightSystem;
             this.SunlightSystem = sunlightSystem;
             this.ShadowCastingLightSystem = shadowCastingLightSystem;
             this.ModelSystem = modelSystem;
+            this.DebugRenderSystem = debugRenderSystem;
         }
 
         public void LoadContent(ContentManager content)
@@ -63,6 +66,7 @@ namespace MiniEngine.Scenes
                 * Matrix.CreateTranslation(position)
                 ;
             this.ModelSystem.Add(this.planeEntity, this.plane, world, ModelType.Transparent);
+            this.DebugRenderSystem.Add(this.planeEntity, this.plane, world);
 
             this.planeEntity2 = this.EntityController.CreateEntity();
 
@@ -73,6 +77,7 @@ namespace MiniEngine.Scenes
                         * Matrix.CreateTranslation(position)
                 ;
             this.ModelSystem.Add(this.planeEntity2, this.plane, world, ModelType.Transparent);
+            this.DebugRenderSystem.Add(this.planeEntity2, this.plane, world);
         }
 
         public void Update(Seconds elapsed)

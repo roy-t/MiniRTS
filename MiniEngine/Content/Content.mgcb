@@ -309,3 +309,9 @@
 /processorParam:SwapWindingOrder=False
 /build:Scenes/Sponza/plane.fbx
 
+#begin Effects/PostProcessOutlineEffect.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Effects/PostProcessOutlineEffect.fx
+
