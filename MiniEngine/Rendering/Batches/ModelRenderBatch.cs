@@ -8,8 +8,12 @@ namespace MiniEngine.Rendering.Batches
 {
     public sealed class ModelRenderBatch
     {
+        private static Matrix[] sharedBoneMatrix;
+
         private readonly IReadOnlyList<ModelPose> Models;
         private readonly IViewPoint ViewPoint;
+
+        
 
         public ModelRenderBatch(ModelPose model, IViewPoint viewPoint)
                     : this(new[]{model}, viewPoint) { }
@@ -40,11 +44,19 @@ namespace MiniEngine.Rendering.Batches
 
         private static void DrawModel(Model model, Matrix world, IViewPoint viewPoint)
         {
+            var bones = model.Bones.Count;
+            if (sharedBoneMatrix == null || sharedBoneMatrix.Length < bones)
+            {
+                sharedBoneMatrix = new Matrix[bones];
+            }
+
+            model.CopyAbsoluteBoneTransformsTo(sharedBoneMatrix);
+
             foreach (var mesh in model.Meshes)
             {
                 foreach (var effect in mesh.Effects)
                 {
-                    effect.Parameters["World"].SetValue(world);
+                    effect.Parameters["World"].SetValue(sharedBoneMatrix[mesh.ParentBone.Index] * world);
                     effect.Parameters["View"].SetValue(viewPoint.View);
                     effect.Parameters["Projection"].SetValue(viewPoint.Projection);
                 }
@@ -54,10 +66,18 @@ namespace MiniEngine.Rendering.Batches
         }
 
         private static void DrawModel(Effect effectOverride, Model model, Matrix world, IViewPoint viewpoint)
-        {
-            effectOverride.Parameters["World"].SetValue(world);
+        {            
             effectOverride.Parameters["View"].SetValue(viewpoint.View);
             effectOverride.Parameters["Projection"].SetValue(viewpoint.Projection);
+
+
+            var bones = model.Bones.Count;
+            if (sharedBoneMatrix == null || sharedBoneMatrix.Length < bones)
+            {
+                sharedBoneMatrix = new Matrix[bones];
+            }
+
+            model.CopyAbsoluteBoneTransformsTo(sharedBoneMatrix);
 
             foreach (var mesh in model.Meshes)
             {
@@ -73,6 +93,7 @@ namespace MiniEngine.Rendering.Batches
 
                 }
 
+                effectOverride.Parameters["World"].SetValue(sharedBoneMatrix[mesh.ParentBone.Index] * world);
                 mesh.Draw();
 
                 for (var i = 0; i < mesh.MeshParts.Count; i++)

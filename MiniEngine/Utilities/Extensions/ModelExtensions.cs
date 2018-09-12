@@ -30,7 +30,7 @@ namespace MiniEngine.Utilities.Extensions
             // For each mesh of the model
             foreach (var mesh in model.Meshes)
             {
-                var localWorldTransform = worldTransform * absoluteBoneTransforms[mesh.ParentBone.Index];
+                var localWorldTransform = absoluteBoneTransforms[mesh.ParentBone.Index] * worldTransform;
 
                 foreach (var meshPart in mesh.MeshParts)
                 {

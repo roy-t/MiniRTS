@@ -27,10 +27,13 @@ namespace MiniEngine.Rendering.Cameras
 
             this.NearZ = nearZ;
             this.FarZ  = farZ;
+
+            Move(Vector3.Backward * 10, Vector3.Zero);
         }
 
         public Matrix View { get; private set; }
         public Matrix Projection { get; private set; }
+        public BoundingFrustum Frustum { get; private set; }
 
         public void Move(Vector3 position, Vector3 lookAt)
         {
@@ -42,6 +45,8 @@ namespace MiniEngine.Rendering.Cameras
                 this.MaxY,
                 this.NearZ,
                 this.FarZ);
+
+            this.Frustum = new BoundingFrustum(this.View * this.Projection);
         }       
     }
 }

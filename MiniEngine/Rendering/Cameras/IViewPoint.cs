@@ -6,5 +6,6 @@ namespace MiniEngine.Rendering.Cameras
     {
         Matrix View { get; }
         Matrix Projection { get; }
+        BoundingFrustum Frustum { get; }
     }
 }

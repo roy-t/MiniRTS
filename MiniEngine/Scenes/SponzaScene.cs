@@ -58,7 +58,7 @@ namespace MiniEngine.Scenes
             this.ShadowCastingLightSystem.Add(this.planeEntity, position + offset, position - offset, Color.White);
             
             var world = Matrix.Identity
-                * Matrix.CreateScale(4.4f)
+                * Matrix.CreateScale(4.4f * 0.01f)
                 * Matrix.CreateRotationY(MathHelper.PiOver2)                
                 * Matrix.CreateTranslation(position)
                 ;

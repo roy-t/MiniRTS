@@ -56,11 +56,11 @@ namespace MiniEngine.Scenes
                 Vector3.Zero * 0.5f,
                 Color.White);
 
-            this.sphereEntity = CreateModelEntity(this.sphereModel, Matrix.CreateScale(10) * Matrix.CreateTranslation(Vector3.Up * 10));
-            this.floorEntity = CreateModelEntity(this.floorModel, Matrix.CreateScale(100, 1, 100));
+            this.sphereEntity = CreateModelEntity(this.sphereModel, Matrix.CreateScale(0.1f) * Matrix.CreateTranslation(Vector3.Up * 10));
+            this.floorEntity = CreateModelEntity(this.floorModel, Matrix.CreateScale(1, 0.01f, 1));
 
-            this.shrineEntity = CreateModelEntity(this.shrineModel, Matrix.CreateScale(20, 20, 0.0001f) * Matrix.CreateRotationX(MathHelper.PiOver4) * Matrix.CreateTranslation(new Vector3(0, 50, -50)), ModelType.Transparent);
-            this.shrine2Entity = CreateModelEntity(this.shrineModel, Matrix.CreateScale(20, 20, 0.0001f) * Matrix.CreateRotationX(MathHelper.PiOver4) * Matrix.CreateTranslation(new Vector3(10, 60, -60)), ModelType.Transparent);
+            this.shrineEntity = CreateModelEntity(this.shrineModel, Matrix.CreateScale(20 * 0.01f, 20 * 0.01f, 0.0001f) * Matrix.CreateRotationX(MathHelper.PiOver4) * Matrix.CreateTranslation(new Vector3(0, 50, -50)), ModelType.Transparent);
+            this.shrine2Entity = CreateModelEntity(this.shrineModel, Matrix.CreateScale(20 * 0.01f, 20 * 0.01f, 0.0001f) * Matrix.CreateRotationX(MathHelper.PiOver4) * Matrix.CreateTranslation(new Vector3(10, 60, -60)), ModelType.Transparent);
         }
 
         private Entity CreateModelEntity(Model model, Matrix worldMatrix, ModelType modelType = ModelType.Opaque)

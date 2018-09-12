@@ -27,9 +27,9 @@ namespace MiniEngine.Rendering.Cameras
         public Matrix Projection { get; private set; }
         public Matrix ViewProjection { get; private set; }
         
-        public Matrix InverseView { get; private set; }
-        public Matrix InverseProjection { get; private set; }
         public Matrix InverseViewProjection { get; private set; }
+
+        public BoundingFrustum Frustum { get; private set; }
 
         public void Move(Vector3 position, Vector3 lookAt)
         {
@@ -44,8 +44,8 @@ namespace MiniEngine.Rendering.Cameras
                 this.FarPlane);
             this.ViewProjection = this.View * this.Projection;
 
-            this.InverseView = Matrix.Invert(this.View);
-            this.InverseProjection = Matrix.Invert(this.Projection);
+            this.Frustum = new BoundingFrustum(this.ViewProjection);
+
             this.InverseViewProjection = Matrix.Invert(this.ViewProjection);
         }
     }

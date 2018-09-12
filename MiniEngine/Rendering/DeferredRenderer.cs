@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Rendering.Batches;
 using MiniEngine.Rendering.Cameras;
@@ -106,21 +105,22 @@ namespace MiniEngine.Rendering
             this.Device.SetRenderTarget(this.GBuffer.DiffuseTarget);
             this.Device.Clear(Color.TransparentBlack);
 
-            RenderGBuffer(batches.OpaqueBatch);
-            RenderLights(perspectiveCamera);
-            Combine();
-            PostProcess();
-
+            RenderBatch(perspectiveCamera, batches.OpaqueBatch);            
             foreach (var batch in batches.TransparentBatches)
             {
-                RenderGBuffer(batch);
-                RenderLights(perspectiveCamera);
-                Combine();
-                PostProcess();
+                RenderBatch(perspectiveCamera, batch);
             }
 
             return this.PostProcessTarget;
-        }   
+        }
+
+        private void RenderBatch(PerspectiveCamera camera, ModelRenderBatch batch)
+        {
+            RenderGBuffer(batch);
+            RenderLights(camera);
+            Combine();
+            PostProcess();
+        }
 
         private void PostProcess()
         {           

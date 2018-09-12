@@ -38,8 +38,8 @@ namespace MiniEngine
         {
             this.Graphics = new GraphicsDeviceManager(this)
             {
-                PreferredBackBufferWidth = 2560,
-                PreferredBackBufferHeight = 1440,
+                PreferredBackBufferWidth = 1920,
+                PreferredBackBufferHeight = 1080,
                 SynchronizeWithVerticalRetrace = false,
                 GraphicsProfile = GraphicsProfile.HiDef
             };          
@@ -148,6 +148,8 @@ namespace MiniEngine
         protected override void Draw(GameTime gameTime)
         {
             this.Window.Title = $"{gameTime.ElapsedGameTime.TotalMilliseconds:F2}ms, {(1.0f / gameTime.ElapsedGameTime.TotalSeconds):F2} fps, Fixed Time Step: {this.IsFixedTimeStep} (press 'F' so switch). Input State: {this.debugController.DescribeState()}";
+            this.Window.Title +=
+                $" camera ({this.perspectiveCamera.Position.X:F2}, {this.perspectiveCamera.Position.Y:F2}, {this.perspectiveCamera.Position.Z:F2})";
 
             this.GraphicsDevice.Clear(Color.CornflowerBlue);
             var result = this.renderer.Render(this.perspectiveCamera);

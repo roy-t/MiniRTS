@@ -7,6 +7,7 @@ using MiniEngine.Systems;
 using System.Collections.Generic;
 using System.Linq;
 using MiniEngine.Rendering.Batches;
+using MiniEngine.Utilities.Extensions;
 
 namespace MiniEngine.Rendering.Systems
 {
@@ -23,13 +24,15 @@ namespace MiniEngine.Rendering.Systems
 
         public void Add(Entity entity, Model model, Matrix pose, ModelType modelType = ModelType.Opaque)
         {
+            var bounds = model.ComputeBoundingSphere(pose);
+
             switch (modelType)
             {
                 case ModelType.Opaque:
-                    this.OpaqueModels.Add(entity, new ModelPose(model, pose));
+                    this.OpaqueModels.Add(entity, new ModelPose(model, pose, bounds));
                     break;
                 case ModelType.Transparent:
-                    this.TransparentModels.Add(entity, new ModelPose(model, pose));
+                    this.TransparentModels.Add(entity, new ModelPose(model, pose, bounds));
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(modelType), modelType, null);
@@ -72,8 +75,40 @@ namespace MiniEngine.Rendering.Systems
 
         private static IEnumerable<ModelPose> SortBackToFront(IEnumerable<ModelPose> models, IViewPoint viewPoint)
         {
-            // TODO: sort models back to front in relation to the camera
-            return models;
+            // TODO: we can optimize this by adding multiple non-overlapping (from the camera's perspective) models to the same batch
+            var modeList = new List<ModelPose>();
+            var distanceList = new List<float>();
+            
+            foreach (var model in models)
+            {             
+                if (viewPoint.Frustum.Intersects(model.Bounds))
+                {
+                    var viewPosition = Vector4.Transform(model.Bounds.Center, viewPoint.Frustum.Matrix);                    
+                    // Apply the perspective division
+                    var distance = viewPosition.Z / viewPosition.W;
+                    InsertBackToFront(modeList, distanceList, model, distance);
+                }
+            }
+
+            return modeList;
+        }
+
+        private static void InsertBackToFront(IList<ModelPose> models, IList<float> distances, ModelPose model, float distance)
+        {
+            for (var i = 0; i < models.Count; i++)
+            {
+                var distanceToCompare = distances[i];
+                if (distance > distanceToCompare)
+                {
+                    models.Insert(i, model);
+                    distances.Insert(i, distance);
+
+                    return;
+                }
+            }
+
+            models.Add(model);
+            distances.Add(distance);
         }
     }
 }

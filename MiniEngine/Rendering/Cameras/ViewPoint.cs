@@ -8,9 +8,11 @@ namespace MiniEngine.Rendering.Cameras
         {
             this.View = view;
             this.Projection = projection;
+            this.Frustum = new BoundingFrustum(this.View * this.Projection);
         }
 
         public Matrix View { get; }        
         public Matrix Projection { get; }
+        public BoundingFrustum Frustum { get; }
     }
 }
