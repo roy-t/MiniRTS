@@ -5,15 +5,17 @@ namespace MiniEngine.Rendering.Components
 {
     public sealed class ModelPose
     {
-        public ModelPose(Model model, Matrix pose, BoundingSphere bounds)
+        public ModelPose(Model model, Matrix pose, BoundingSphere boundingSphere, BoundingBox boundingBox)
         {
             this.Model = model;
             this.Pose = pose;
-            this.Bounds = bounds;
+            this.BoundingSphere = boundingSphere;
+            this.BoundingBox = boundingBox;
         }
 
         public Model Model { get; }
         public Matrix Pose { get; set; }
-        public BoundingSphere Bounds { get; set; }
+        public BoundingSphere BoundingSphere { get; set; }
+        public BoundingBox BoundingBox { get; set; }
     }
 }

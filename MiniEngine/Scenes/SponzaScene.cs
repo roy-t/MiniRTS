@@ -4,7 +4,6 @@ using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Rendering.Components;
 using MiniEngine.Rendering.Systems;
 using MiniEngine.Units;
-using Matrix = Microsoft.Xna.Framework.Matrix;
 
 namespace MiniEngine.Scenes
 {
@@ -18,6 +17,7 @@ namespace MiniEngine.Scenes
 
         private Entity worldEntity;
         private Entity planeEntity;
+        private Entity planeEntity2;
         private Model sponza;
         private Model plane;
 
@@ -52,7 +52,7 @@ namespace MiniEngine.Scenes
 
             this.planeEntity = this.EntityController.CreateEntity();
 
-            var position = new Vector3(-50.5f, 30.0f, 3.2f);
+            var position = new Vector3(-40.5f, 30.0f, 3.2f);
             var offset = new Vector3(1.0f, 0.25f, 0.0f) * 8;
 
             this.ShadowCastingLightSystem.Add(this.planeEntity, position + offset, position - offset, Color.White);
@@ -62,7 +62,17 @@ namespace MiniEngine.Scenes
                 * Matrix.CreateRotationY(MathHelper.PiOver2)                
                 * Matrix.CreateTranslation(position)
                 ;
-            this.ModelSystem.Add(this.planeEntity, this.plane, world, ModelType.Transparent);            
+            this.ModelSystem.Add(this.planeEntity, this.plane, world, ModelType.Transparent);
+
+            this.planeEntity2 = this.EntityController.CreateEntity();
+
+            position = new Vector3(-40.5f, 30.0f, -7.2f);                        
+            world = Matrix.Identity
+                        * Matrix.CreateScale(4.4f * 0.01f)
+                        * Matrix.CreateRotationY(MathHelper.PiOver4)
+                        * Matrix.CreateTranslation(position)
+                ;
+            this.ModelSystem.Add(this.planeEntity2, this.plane, world, ModelType.Transparent);
         }
 
         public void Update(Seconds elapsed)

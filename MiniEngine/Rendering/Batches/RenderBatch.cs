@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace MiniEngine.Rendering.Batches
 {
+    // TODO: rename this class
     public sealed class RenderBatch
     {        
         public RenderBatch(ModelRenderBatch opaqueBatch, IReadOnlyList<ModelRenderBatch> transparentBatches)

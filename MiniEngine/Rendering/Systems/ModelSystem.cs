@@ -6,7 +6,9 @@ using MiniEngine.Rendering.Components;
 using MiniEngine.Systems;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using MiniEngine.Rendering.Batches;
+using MiniEngine.Rendering.Primitives;
 using MiniEngine.Utilities.Extensions;
 
 namespace MiniEngine.Rendering.Systems
@@ -24,15 +26,16 @@ namespace MiniEngine.Rendering.Systems
 
         public void Add(Entity entity, Model model, Matrix pose, ModelType modelType = ModelType.Opaque)
         {
-            var bounds = model.ComputeBoundingSphere(pose);
+            var boundingSphere = model.ComputeBoundingSphere(pose);
+            var boundingBox = model.ComputeBoundingBox(pose);
 
             switch (modelType)
             {
                 case ModelType.Opaque:
-                    this.OpaqueModels.Add(entity, new ModelPose(model, pose, bounds));
+                    this.OpaqueModels.Add(entity, new ModelPose(model, pose, boundingSphere, boundingBox));
                     break;
                 case ModelType.Transparent:
-                    this.TransparentModels.Add(entity, new ModelPose(model, pose, bounds));
+                    this.TransparentModels.Add(entity, new ModelPose(model, pose, boundingSphere, boundingBox));
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(modelType), modelType, null);
@@ -65,9 +68,10 @@ namespace MiniEngine.Rendering.Systems
             var transparentBatches = new List<ModelRenderBatch>(this.TransparentModels.Count);            
 
             var transparentModels = SortBackToFront(this.TransparentModels.Values, viewPoint);
-            foreach (var modelPose in transparentModels)
+            var batches = ComputeBatches(transparentModels, viewPoint);
+            foreach (var batch in batches)
             {
-                transparentBatches.Add(new ModelRenderBatch(modelPose, viewPoint));
+                transparentBatches.Add(new ModelRenderBatch(batch, viewPoint));
             }
 
             return new RenderBatch(new ModelRenderBatch(this.OpaqueModels.Values.ToList(), viewPoint), transparentBatches);
@@ -75,23 +79,59 @@ namespace MiniEngine.Rendering.Systems
 
         private static IEnumerable<ModelPose> SortBackToFront(IEnumerable<ModelPose> models, IViewPoint viewPoint)
         {
-            // TODO: we can optimize this by adding multiple non-overlapping (from the camera's perspective) models to the same batch
             var modeList = new List<ModelPose>();
             var distanceList = new List<float>();
             
             foreach (var model in models)
             {             
-                if (viewPoint.Frustum.Intersects(model.Bounds))
+                if (viewPoint.Frustum.Intersects(model.BoundingSphere))
                 {
-                    var viewPosition = Vector4.Transform(model.Bounds.Center, viewPoint.Frustum.Matrix);                    
+                    var viewPosition = Vector4.Transform(model.BoundingSphere.Center, viewPoint.Frustum.Matrix);                    
                     // Apply the perspective division
                     var distance = viewPosition.Z / viewPosition.W;
+
                     InsertBackToFront(modeList, distanceList, model, distance);
                 }
             }
 
             return modeList;
         }
+
+        private static IReadOnlyList<List<ModelPose>> ComputeBatches(IEnumerable<ModelPose> models, IViewPoint viewPoint)
+        {
+            var batches = new List<List<ModelPose>>();
+
+            var currentBatch = new List<ModelPose>();
+            var currentBounds = new BoundingRectangle();
+            foreach (var model in models)
+            {
+                var bounds = BoundingRectangle.CreateFromProjectedBoundingBox(model.BoundingBox, viewPoint.Frustum.Matrix);
+
+                if (currentBatch.Count == 0)
+                {
+                    currentBounds = bounds;
+                    currentBatch.Add(model);
+                }
+                else if (bounds.Intersects(currentBounds))
+                {
+                    batches.Add(currentBatch);
+                    currentBatch = new List<ModelPose> {model};
+                    currentBounds = bounds;
+                }
+                else
+                {
+                    currentBatch.Add(model);
+                    currentBounds = BoundingRectangle.CreateMerged(currentBounds, bounds);
+                }
+            }
+
+            if (currentBatch.Count > 0)
+            {
+                batches.Add(currentBatch);
+            }
+
+            return batches;
+        }           
 
         private static void InsertBackToFront(IList<ModelPose> models, IList<float> distances, ModelPose model, float distance)
         {

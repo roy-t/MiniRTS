@@ -106,8 +106,13 @@ PixelShaderOutput MainPS(VertexShaderOutput input)
         return output;
     }
 
-    // Diffuse
-    output.Color = tex2D(diffuseSampler, texCoord);    
+    // Diffuse    
+    output.Color = tex2D(diffuseSampler, texCoord);
+    if (output.Color.a <= 0.0f)
+    {
+        clip(-1);
+        return output;
+    }
 
     // Normal   
     float3 normal = UnpackNormal(tex2D(normalSampler, texCoord).xyz);
