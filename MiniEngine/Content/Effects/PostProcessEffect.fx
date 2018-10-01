@@ -88,7 +88,7 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
     return rgbCE * centerWeight + (rgbNW + rgbNE + rgbSW + rgbSE) * borderWeight;    
 }
 
-technique Technique1
+technique FXAA
 {
     pass P0
     {

@@ -21,8 +21,8 @@ namespace MiniEngine.Rendering
 
         private readonly GraphicsDevice Device;
         private readonly Effect ClearEffect;                
-        private readonly Effect CombineEffect;
-        private readonly Effect PostProcessEffect;
+        private readonly CombineEffect CombineEffect;
+        private readonly PostProcessEffect PostProcessEffect;
         private readonly FullScreenTriangle FullScreenTriangle;
         private readonly GBuffer GBuffer;
         public RenderTarget2D CombineTarget { get; }
@@ -31,8 +31,8 @@ namespace MiniEngine.Rendering
         public DeferredRenderer(
             GraphicsDevice device,
             Effect clearEffect,
-            Effect combineEffect,
-            Effect postProcessEffect,
+            CombineEffect combineEffect,
+            PostProcessEffect postProcessEffect,
             AmbientLightSystem ambientLightSystem,
             ModelSystem modelSystem,
             DirectionalLightSystem directionalLightSystem,
@@ -133,18 +133,15 @@ namespace MiniEngine.Rendering
             this.Device.SetRenderTarget(this.PostProcessTarget);            
             using (this.Device.PostProcessState())
             {
-                // Post process the image
-                foreach (var pass in this.PostProcessEffect.Techniques[0].Passes)
-                {
-                    this.PostProcessEffect.Parameters["ScaleX"].SetValue(1.0f / this.CombineTarget.Width);
-                    this.PostProcessEffect.Parameters["ScaleY"].SetValue(1.0f / this.CombineTarget.Height);
-                    this.PostProcessEffect.Parameters["DiffuseMap"].SetValue(this.CombineTarget);
-                    this.PostProcessEffect.Parameters["NormalMap"].SetValue(this.GBuffer.NormalTarget);
-                    this.PostProcessEffect.Parameters["Strength"].SetValue(this.EnableFXAA ? 2.0f : 0.0f);
-                    pass.Apply();
+                this.PostProcessEffect.ScaleX = 1.0f / this.CombineTarget.Width;
+                this.PostProcessEffect.ScaleY = 1.0f / this.CombineTarget.Height;
+                this.PostProcessEffect.DiffuseMap = this.CombineTarget;
+                this.PostProcessEffect.NormalMap = this.GBuffer.NormalTarget;
+                this.PostProcessEffect.Strength = this.EnableFXAA ? 2.0f : 0.0f;
 
-                    this.FullScreenTriangle.Render(this.Device);
-                }
+                this.PostProcessEffect.Apply();
+
+                this.FullScreenTriangle.Render(this.Device);
             }            
         }        
 
@@ -154,16 +151,13 @@ namespace MiniEngine.Rendering
             this.Device.Clear(Color.TransparentBlack);
 
             using (this.Device.PostProcessState())
-            {
-                // Combine everything
-                foreach (var pass in this.CombineEffect.Techniques[0].Passes)
-                {
-                    this.CombineEffect.Parameters["DiffuseMap"].SetValue(this.GBuffer.DiffuseTarget);
-                    this.CombineEffect.Parameters["LightMap"].SetValue(this.GBuffer.LightTarget);                    
+            {                
+                this.CombineEffect.DiffuseMap = this.GBuffer.DiffuseTarget;
+                this.CombineEffect.LightMap = this.GBuffer.LightTarget;
 
-                    pass.Apply();
-                    this.FullScreenTriangle.Render(this.Device);
-                }
+                this.CombineEffect.Apply();
+
+                this.FullScreenTriangle.Render(this.Device);
             }
 
             this.Device.SetRenderTarget(null);

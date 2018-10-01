@@ -65,7 +65,7 @@ namespace MiniEngine.Rendering.Systems
 
                     using (this.Device.ShadowMapState())
                     {
-                        batches.DrawOpaque(Techniques.ShadowMap);                        
+                        batches.OpaqueBatch.Draw(Techniques.ShadowMap);                                          
                     }
 
                     // Use the same depth buffer to generate the color buffer
@@ -74,7 +74,10 @@ namespace MiniEngine.Rendering.Systems
 
                     using (this.Device.ColorMapState())
                     {
-                        batches.DrawTransparent(Techniques.ColorMap);
+                        foreach (var batch in batches.TransparentBatches)
+                        {
+                            batch.Draw(Techniques.ColorMap);
+                        }                        
                     }
                 }
             }

@@ -1,5 +1,4 @@
 #include "Includes/Defines.hlsl"
-#include "Includes/Matrices.hlsl"
 #include "Includes/GBuffer.hlsl"
 #include "Includes/Helpers.hlsl"
 #include "Includes/Light.hlsl"
@@ -38,7 +37,7 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
     return saturate(float4(diffuseColor * diffuseLight + specularLight));    
 }
 
-technique Technique1
+technique Combine
 {
     pass P0
     {

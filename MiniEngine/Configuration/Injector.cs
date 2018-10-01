@@ -38,18 +38,18 @@ namespace MiniEngine.Configuration
             this.Container.RegisterInstance(this.Device);
 
             // Effects            
-            RegisterContent<Effect>("clearEffect", "Effects");            
-            RegisterContent<Effect>("renderEffect", "Effects");
-            RegisterContent<Effect>("combineEffect", "Effects");
-            RegisterContent<Effect>("postProcessEffect", "Effects");
+            RegisterEffect<RenderEffect>("RenderEffect");
+            RegisterEffect<CombineEffect>("CombineEffect");
+            RegisterEffect<PostProcessEffect>("PostProcessEffect");
+
+            RegisterContent<Effect>("clearEffect", "Effects");                        
             RegisterContent<Effect>("postProcessOutlineEffect", "Effects");
             RegisterContent<Effect>("directionalLightEffect", "Effects");
             RegisterContent<Effect>("pointLightEffect", "Effects");            
             RegisterContent<Effect>("shadowCastingLightEffect", "Effects");
             RegisterContent<Effect>("sunlightEffect", "Effects");
 
-            this.Container.Register<RenderEffect>(new PerRequestLifeTime());
-
+            
             // Primitives
             RegisterContent<Model>("sphere", "Effects");
 
@@ -90,6 +90,18 @@ namespace MiniEngine.Configuration
         {
             var content = this.Content.Load<T>(Path.Combine(folder, name));
             this.Container.RegisterInstance(typeof (T), content, name);
+        }
+
+        private void RegisterEffect<T>(string name, string folder = "Effects")
+            where T : EffectWrapper, new()
+        {            
+            this.Container.Register<T>(i =>
+            {
+                var wrapper = new T();
+                wrapper.Wrap(this.Content.Load<Effect>(Path.Combine(folder, name)));
+                return wrapper;
+            },
+            new PerRequestLifeTime());
         }
 
         private void RegisterAllOf<T>()

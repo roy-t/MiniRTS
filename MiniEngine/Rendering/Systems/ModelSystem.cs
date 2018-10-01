@@ -61,7 +61,7 @@ namespace MiniEngine.Rendering.Systems
         }
 
 
-        public RenderBatch ComputeBatches(IViewPoint viewPoint)
+        public RenderBatchList ComputeBatches(IViewPoint viewPoint)
         {
             var transparentBatches = new List<ModelRenderBatch>(this.TransparentModels.Count);            
 
@@ -72,7 +72,7 @@ namespace MiniEngine.Rendering.Systems
                 transparentBatches.Add(new ModelRenderBatch(batch, viewPoint));
             }
 
-            return new RenderBatch(new ModelRenderBatch(this.OpaqueModels.Values.ToList(), viewPoint), transparentBatches);
+            return new RenderBatchList(new ModelRenderBatch(this.OpaqueModels.Values.ToList(), viewPoint), transparentBatches);
         }
 
         private static IEnumerable<ModelPose> SortBackToFront(IEnumerable<ModelPose> models, IViewPoint viewPoint)

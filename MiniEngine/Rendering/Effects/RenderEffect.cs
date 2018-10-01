@@ -4,10 +4,8 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace MiniEngine.Rendering.Effects
 {
-    public sealed class RenderEffect
+    public sealed class RenderEffect : EffectWrapper
     {
-        private Effect effect;
-
         public RenderEffect()
         {
 
@@ -15,12 +13,7 @@ namespace MiniEngine.Rendering.Effects
 
         public RenderEffect(Effect renderEffect)
         {
-            this.effect = renderEffect;
-        }
-
-        public void Wrap(Effect effect)
-        {
-            this.effect = effect;
+            Wrap(renderEffect);
         }
 
         public Matrix World
@@ -75,7 +68,7 @@ namespace MiniEngine.Rendering.Effects
                     throw new ArgumentOutOfRangeException(nameof(technique), technique, null);
             }
 
-            this.effect.CurrentTechnique.Passes[0].Apply();
+            ApplyPass();
         }        
     }
 }

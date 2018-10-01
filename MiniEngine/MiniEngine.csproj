@@ -79,10 +79,13 @@
     <Compile Include="Input\KeyboardInput.cs" />
     <Compile Include="Input\MouseButtons.cs" />
     <Compile Include="Input\MouseInput.cs" />
-    <Compile Include="Rendering\Batches\RenderBatch.cs" />
+    <Compile Include="Rendering\Batches\RenderBatchList.cs" />
     <Compile Include="Rendering\Cameras\IMovableViewPoint.cs" />
     <Compile Include="Rendering\Components\ModelType.cs" />
     <Compile Include="Rendering\Components\ShadowMap.cs" />
+    <Compile Include="Rendering\Effects\CombineEffect.cs" />
+    <Compile Include="Rendering\Effects\EffectWrapper.cs" />
+    <Compile Include="Rendering\Effects\PostProcessEffect.cs" />
     <Compile Include="Rendering\Effects\RenderEffect.cs" />
     <Compile Include="Rendering\Effects\Techniques.cs" />
     <Compile Include="Rendering\Primitives\BoundingRectangle.cs" />
