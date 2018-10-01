@@ -1,3 +1,6 @@
+// Combines all techniques for rendering to the geometry buffer, and rendering shadow maps
+// into one shader
+
 #include "Includes/Defines.hlsl"
 #include "Includes/Matrices.hlsl"
 #include "Includes/Pack.hlsl"

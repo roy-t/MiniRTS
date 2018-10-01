@@ -1,3 +1,7 @@
+// Combines a directional light with cascading shadow maps.
+// The shadows are filtered using percentage closer filtering
+// There is also some light filtering on the cross-over between cascades.
+
 #include "Includes/Defines.hlsl"
 #include "Includes/Matrices.hlsl"
 #include "Includes/GBuffer.hlsl"

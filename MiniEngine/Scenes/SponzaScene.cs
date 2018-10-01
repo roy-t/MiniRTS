@@ -53,6 +53,7 @@ namespace MiniEngine.Scenes
             this.SunlightSystem.Add(this.worldEntity, Color.White, Vector3.Up, Vector3.Left * 0.75f + Vector3.Backward * 0.1f);
 
             this.ModelSystem.Add(this.worldEntity, this.sponza, Matrix.CreateScale(0.05f));
+            
 
             this.planeEntity = this.EntityController.CreateEntity();
 
@@ -67,7 +68,7 @@ namespace MiniEngine.Scenes
                 * Matrix.CreateTranslation(position)
                 ;
             this.ModelSystem.Add(this.planeEntity, this.plane, world, ModelType.Transparent);
-            this.DebugRenderSystem.Add(this.planeEntity, this.plane, world);
+            
 
             this.planeEntity2 = this.EntityController.CreateEntity();
 
@@ -78,7 +79,12 @@ namespace MiniEngine.Scenes
                         * Matrix.CreateTranslation(position)
                 ;
             this.ModelSystem.Add(this.planeEntity2, this.plane, world, ModelType.Transparent);
-            this.DebugRenderSystem.Add(this.planeEntity2, this.plane, world);
+            
+
+
+            //this.DebugRenderSystem.Add(this.worldEntity, this.sponza, Matrix.CreateScale(0.05f));
+            //this.DebugRenderSystem.Add(this.planeEntity, this.plane, world);
+            //this.DebugRenderSystem.Add(this.planeEntity2, this.plane, world);
         }
 
         public void Update(Seconds elapsed)
