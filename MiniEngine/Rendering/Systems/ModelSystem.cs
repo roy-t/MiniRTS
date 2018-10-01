@@ -48,10 +48,9 @@ namespace MiniEngine.Rendering.Systems
         {
             var model = this.OpaqueModels[entity] ?? this.TransparentModels[entity];
             var modelType = this.OpaqueModels.ContainsKey(entity) ? ModelType.Opaque : ModelType.Transparent;
-            var translation = model.Pose.Translation;
-            var rotation = model.Pose.Rotation;
-            var scale = model.Pose.Scale;
 
+            model.Pose.Decompose(out var scale, out var rotation, out var translation);
+        
             return $"model, translation: {translation}, rotation: {rotation}, scale: {scale}, type: {modelType}";
         }
 

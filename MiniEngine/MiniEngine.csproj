@@ -129,6 +129,7 @@
     <Compile Include="Utilities\ColorUtilities.cs" />
     <Compile Include="Utilities\StateChangeTrigger.cs" />
     <Compile Include="Utilities\StateMachine.cs" />
+    <Compile Include="Utilities\Transformations.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="LightInject, Version=5.1.5.0, Culture=neutral, processorArchitecture=MSIL">

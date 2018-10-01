@@ -2,9 +2,9 @@
 using Microsoft.Xna.Framework.Input;
 using MiniEngine.Configuration;
 using MiniEngine.Controllers;
-using MiniEngine.Input;
 using MiniEngine.Rendering.Cameras;
 using MiniEngine.Units;
+using KeyboardInput = MiniEngine.Input.KeyboardInput;
 
 namespace MiniEngine.Utilities
 {

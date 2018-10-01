@@ -9,6 +9,7 @@ using MiniEngine.Scenes;
 using System.Collections.Generic;
 using System.Linq;
 using MiniEngine.Utilities;
+using KeyboardInput = MiniEngine.Input.KeyboardInput;
 
 namespace MiniEngine
 {

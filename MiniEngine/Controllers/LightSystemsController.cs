@@ -1,10 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using MiniEngine.Input;
 using MiniEngine.Rendering.Cameras;
 using MiniEngine.Rendering.Systems;
 using MiniEngine.Units;
 using System.Collections.Generic;
+using KeyboardInput = MiniEngine.Input.KeyboardInput;
 
 namespace MiniEngine.Controllers
 {
