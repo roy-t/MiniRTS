@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Rendering.Cameras;
+using MiniEngine.Rendering.Effects;
 using MiniEngine.Rendering.Primitives;
 using MiniEngine.Systems;
 using MiniEngine.Utilities.Extensions;
@@ -11,24 +12,24 @@ namespace MiniEngine.Rendering.Systems
     public sealed class DebugRenderSystem : ISystem
     {
         private readonly GraphicsDevice Device;
-        private readonly Effect RenderEffect;
+        private readonly RenderEffect RenderEffect;
         private readonly Effect PostProcessOutlineEffect;
         private readonly Dictionary<Entity, BoundingBox> Models;
 
         private readonly short[] Indices;
         private readonly GBufferVertex[] Vertices;
 
-        public DebugRenderSystem(GraphicsDevice device, Effect renderEffect, Effect postProcessOutlineEffect)
+        public DebugRenderSystem(GraphicsDevice device, RenderEffect effect, Effect postProcessOutlineEffect)
         {
             this.Device = device;
-            this.RenderEffect = renderEffect;
+            this.RenderEffect =  effect;
             this.PostProcessOutlineEffect = postProcessOutlineEffect;
             this.Models = new Dictionary<Entity, BoundingBox>();
 
-            this.RenderEffect.Parameters["Texture"].SetValue(CreateTexture(Color.CornflowerBlue));
-            this.RenderEffect.Parameters["SpecularMap"].SetValue(CreateTexture(Color.FromNonPremultiplied(255, 255, 255, 128)));
-            this.RenderEffect.Parameters["NormalMap"].SetValue(CreateTexture(Color.FromNonPremultiplied(128, 128, 255, 255)));
-            this.RenderEffect.Parameters["Mask"].SetValue(CreateTexture(Color.FromNonPremultiplied(255, 255, 255, 255)));
+            this.RenderEffect.DiffuseMap = CreateTexture(Color.CornflowerBlue);
+            this.RenderEffect.SpecularMap = CreateTexture(Color.FromNonPremultiplied(255, 255, 255, 128));
+            this.RenderEffect.NormalMap = CreateTexture(Color.FromNonPremultiplied(128, 128, 255, 255));
+            this.RenderEffect.Mask = CreateTexture(Color.FromNonPremultiplied(255, 255, 255, 255));
 
             this.PostProcessOutlineEffect.Parameters["Texture"].SetValue(CreateTexture(Color.Red));
 
@@ -69,33 +70,30 @@ namespace MiniEngine.Rendering.Systems
 
         public void RenderGBuffer(IViewPoint viewPoint)
         {
-            this.RenderEffect.Parameters["World"].SetValue(Matrix.Identity);
-            this.RenderEffect.Parameters["View"].SetValue(viewPoint.View);
-            this.RenderEffect.Parameters["Projection"].SetValue(viewPoint.Projection);
+            this.RenderEffect.World = Matrix.Identity;
+            this.RenderEffect.View = viewPoint.View;
+            this.RenderEffect.Projection = viewPoint.Projection;
 
             using (this.Device.WireFrameState())
             {
-                foreach (var pass in this.RenderEffect.Techniques[0].Passes)
+                this.RenderEffect.Apply(Techniques.MRT);
+
+                foreach (var bounds in this.Models.Values)
                 {
-                    pass.Apply();
-
-                    foreach (var bounds in this.Models.Values)
+                    var corners = bounds.GetCorners();
+                    for (var i = 0; i < corners.Length; i++)
                     {
-                        var corners = bounds.GetCorners();
-                        for (var i = 0; i < corners.Length; i++)
-                        {
-                            this.Vertices[i].Position = new Vector4(corners[i], 1);
-                        }
-
-                        this.Device.DrawUserIndexedPrimitives(
-                            PrimitiveType.LineList,
-                            this.Vertices,
-                            0,
-                            this.Vertices.Length,
-                            this.Indices,
-                            0,
-                            12);
+                        this.Vertices[i].Position = new Vector4(corners[i], 1);
                     }
+
+                    this.Device.DrawUserIndexedPrimitives(
+                        PrimitiveType.LineList,
+                        this.Vertices,
+                        0,
+                        this.Vertices.Length,
+                        this.Indices,
+                        0,
+                        12);
                 }
             }
         }

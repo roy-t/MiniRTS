@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Rendering.Batches;
 using MiniEngine.Rendering.Cameras;
+using MiniEngine.Rendering.Effects;
 using MiniEngine.Rendering.Primitives;
 using MiniEngine.Rendering.Systems;
 
@@ -22,7 +23,7 @@ namespace MiniEngine.Rendering
         private readonly Effect ClearEffect;                
         private readonly Effect CombineEffect;
         private readonly Effect PostProcessEffect;
-        private readonly Quad Quad;
+        private readonly FullScreenTriangle FullScreenTriangle;
         private readonly GBuffer GBuffer;
         public RenderTarget2D CombineTarget { get; }
         public RenderTarget2D PostProcessTarget { get; }
@@ -56,7 +57,7 @@ namespace MiniEngine.Rendering
             this.SunlightSystem           = sunlightSystem;
             this.DebugRenderSystem        = debugRenderSystem;
 
-            this.Quad = new Quad();         
+            this.FullScreenTriangle = new FullScreenTriangle();
 
             var width  = device.PresentationParameters.BackBufferWidth;
             var height = device.PresentationParameters.BackBufferHeight;
@@ -142,7 +143,7 @@ namespace MiniEngine.Rendering
                     this.PostProcessEffect.Parameters["Strength"].SetValue(this.EnableFXAA ? 2.0f : 0.0f);
                     pass.Apply();
 
-                    this.Quad.Render(this.Device);
+                    this.FullScreenTriangle.Render(this.Device);
                 }
             }            
         }        
@@ -161,7 +162,7 @@ namespace MiniEngine.Rendering
                     this.CombineEffect.Parameters["LightMap"].SetValue(this.GBuffer.LightTarget);                    
 
                     pass.Apply();
-                    this.Quad.Render(this.Device);
+                    this.FullScreenTriangle.Render(this.Device);
                 }
             }
 
@@ -210,7 +211,7 @@ namespace MiniEngine.Rendering
             this.Device.SetRenderTargets(this.GBuffer.DiffuseTarget, this.GBuffer.NormalTarget, this.GBuffer.DepthTarget);
             using (this.Device.GeometryState())
             {
-                batch.Draw();
+                batch.Draw(Techniques.MRT);
             }            
         }        
     }

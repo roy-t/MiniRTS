@@ -44,6 +44,12 @@
 /processorParam:DebugMode=Auto
 /build:Effects/PostProcessEffect.fx
 
+#begin Effects/PostProcessOutlineEffect.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Effects/PostProcessOutlineEffect.fx
+
 #begin Effects/RenderEffect.fx
 /importer:EffectImporter
 /processor:EffectProcessor
@@ -55,18 +61,6 @@
 /processor:EffectProcessor
 /processorParam:DebugMode=Auto
 /build:Effects/ShadowCastingLightEffect.fx
-
-#begin Effects/ShadowMapEffect.fx
-/importer:EffectImporter
-/processor:EffectProcessor
-/processorParam:DebugMode=Auto
-/build:Effects/ShadowMapEffect.fx
-
-#begin Effects/SunlightEffect.fx
-/importer:EffectImporter
-/processor:EffectProcessor
-/processorParam:DebugMode=Auto
-/build:Effects/SunlightEffect.fx
 
 #begin Effects/sphere.x
 /importer:XImporter
@@ -86,6 +80,108 @@
 /processorParam:SwapWindingOrder=False
 /processorParam:TextureFormat=Compressed
 /build:Effects/sphere.x
+
+#begin Effects/SunlightEffect.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Effects/SunlightEffect.fx
+
+#begin Scenes/Primitives/cube.fbx
+/importer:FbxImporter
+/processor:MultiMaterialModelProcessor
+/processorParam:ProcessTextures=True
+/processorParam:SpecularMapFallback=null_specular.tga
+/processorParam:NormalMapFallback=null_normal.tga
+/processorParam:MaskFallback=null_mask.tga
+/processorParam:EffectFile=Effects/RenderEffect.fx
+/processorParam:GenerateTangentFrames=True
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=False
+/processorParam:DefaultEffect=BasicEffect
+/processorParam:GenerateMipmaps=True
+/processorParam:PremultiplyTextureAlpha=True
+/processorParam:PremultiplyVertexColors=True
+/processorParam:ResizeTexturesToPowerOfTwo=False
+/processorParam:TextureFormat=Compressed
+/processorParam:RotationX=0
+/processorParam:RotationY=0
+/processorParam:RotationZ=0
+/processorParam:Scale=1
+/processorParam:SwapWindingOrder=False
+/build:Scenes/Primitives/cube.fbx
+
+#begin Scenes/Primitives/shrine.fbx
+/importer:FbxImporter
+/processor:MultiMaterialModelProcessor
+/processorParam:ProcessTextures=True
+/processorParam:SpecularMapFallback=null_specular.tga
+/processorParam:NormalMapFallback=null_normal.tga
+/processorParam:MaskFallback=null_mask.tga
+/processorParam:EffectFile=Effects/RenderEffect.fx
+/processorParam:GenerateTangentFrames=True
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=False
+/processorParam:DefaultEffect=BasicEffect
+/processorParam:GenerateMipmaps=True
+/processorParam:PremultiplyTextureAlpha=True
+/processorParam:PremultiplyVertexColors=True
+/processorParam:ResizeTexturesToPowerOfTwo=False
+/processorParam:TextureFormat=Compressed
+/processorParam:RotationX=0
+/processorParam:RotationY=0
+/processorParam:RotationZ=0
+/processorParam:Scale=1
+/processorParam:SwapWindingOrder=False
+/build:Scenes/Primitives/shrine.fbx
+
+#begin Scenes/Primitives/sphere.fbx
+/importer:FbxImporter
+/processor:MultiMaterialModelProcessor
+/processorParam:ProcessTextures=True
+/processorParam:SpecularMapFallback=null_specular.tga
+/processorParam:NormalMapFallback=null_normal.tga
+/processorParam:MaskFallback=null_mask.tga
+/processorParam:EffectFile=Effects/RenderEffect.fx
+/processorParam:GenerateTangentFrames=True
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=False
+/processorParam:DefaultEffect=BasicEffect
+/processorParam:GenerateMipmaps=True
+/processorParam:PremultiplyTextureAlpha=True
+/processorParam:PremultiplyVertexColors=True
+/processorParam:ResizeTexturesToPowerOfTwo=False
+/processorParam:TextureFormat=Compressed
+/processorParam:RotationX=0
+/processorParam:RotationY=0
+/processorParam:RotationZ=0
+/processorParam:Scale=1
+/processorParam:SwapWindingOrder=False
+/build:Scenes/Primitives/sphere.fbx
+
+#begin Scenes/Sponza/plane.fbx
+/importer:FbxImporter
+/processor:MultiMaterialModelProcessor
+/processorParam:ProcessTextures=True
+/processorParam:SpecularMapFallback=null_specular.tga
+/processorParam:NormalMapFallback=null_normal.tga
+/processorParam:MaskFallback=null_mask.tga
+/processorParam:EffectFile=Effects/RenderEffect.fx
+/processorParam:GenerateTangentFrames=True
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=False
+/processorParam:DefaultEffect=BasicEffect
+/processorParam:GenerateMipmaps=True
+/processorParam:PremultiplyTextureAlpha=True
+/processorParam:PremultiplyVertexColors=True
+/processorParam:ResizeTexturesToPowerOfTwo=False
+/processorParam:TextureFormat=Compressed
+/processorParam:RotationX=0
+/processorParam:RotationY=0
+/processorParam:RotationZ=0
+/processorParam:Scale=1
+/processorParam:SwapWindingOrder=False
+/build:Scenes/Sponza/plane.fbx
 
 #begin Scenes/Sponza/sponza.obj
 /importer:OpenAssetImporter
@@ -206,112 +302,4 @@
 /processorParam:Scale=1
 /processorParam:SwapWindingOrder=False
 /build:Scenes/Zima/Sphere/sphere.fbx
-
-#begin Scenes/Primitives/cube.fbx
-/importer:FbxImporter
-/processor:MultiMaterialModelProcessor
-/processorParam:ProcessTextures=True
-/processorParam:SpecularMapFallback=null_specular.tga
-/processorParam:NormalMapFallback=null_normal.tga
-/processorParam:MaskFallback=null_mask.tga
-/processorParam:EffectFile=Effects/RenderEffect.fx
-/processorParam:GenerateTangentFrames=True
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=False
-/processorParam:DefaultEffect=BasicEffect
-/processorParam:GenerateMipmaps=True
-/processorParam:PremultiplyTextureAlpha=True
-/processorParam:PremultiplyVertexColors=True
-/processorParam:ResizeTexturesToPowerOfTwo=False
-/processorParam:TextureFormat=Compressed
-/processorParam:RotationX=0
-/processorParam:RotationY=0
-/processorParam:RotationZ=0
-/processorParam:Scale=1
-/processorParam:SwapWindingOrder=False
-/build:Scenes/Primitives/cube.fbx
-
-#begin Scenes/Primitives/sphere.fbx
-/importer:FbxImporter
-/processor:MultiMaterialModelProcessor
-/processorParam:ProcessTextures=True
-/processorParam:SpecularMapFallback=null_specular.tga
-/processorParam:NormalMapFallback=null_normal.tga
-/processorParam:MaskFallback=null_mask.tga
-/processorParam:EffectFile=Effects/RenderEffect.fx
-/processorParam:GenerateTangentFrames=True
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=False
-/processorParam:DefaultEffect=BasicEffect
-/processorParam:GenerateMipmaps=True
-/processorParam:PremultiplyTextureAlpha=True
-/processorParam:PremultiplyVertexColors=True
-/processorParam:ResizeTexturesToPowerOfTwo=False
-/processorParam:TextureFormat=Compressed
-/processorParam:RotationX=0
-/processorParam:RotationY=0
-/processorParam:RotationZ=0
-/processorParam:Scale=1
-/processorParam:SwapWindingOrder=False
-/build:Scenes/Primitives/sphere.fbx
-
-#begin Scenes/Primitives/shrine.fbx
-/importer:FbxImporter
-/processor:MultiMaterialModelProcessor
-/processorParam:ProcessTextures=True
-/processorParam:SpecularMapFallback=null_specular.tga
-/processorParam:NormalMapFallback=null_normal.tga
-/processorParam:MaskFallback=null_mask.tga
-/processorParam:EffectFile=Effects/RenderEffect.fx
-/processorParam:GenerateTangentFrames=True
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=False
-/processorParam:DefaultEffect=BasicEffect
-/processorParam:GenerateMipmaps=True
-/processorParam:PremultiplyTextureAlpha=True
-/processorParam:PremultiplyVertexColors=True
-/processorParam:ResizeTexturesToPowerOfTwo=False
-/processorParam:TextureFormat=Compressed
-/processorParam:RotationX=0
-/processorParam:RotationY=0
-/processorParam:RotationZ=0
-/processorParam:Scale=1
-/processorParam:SwapWindingOrder=False
-/build:Scenes/Primitives/shrine.fbx
-
-#begin Effects/ColorMapEffect.fx
-/importer:EffectImporter
-/processor:EffectProcessor
-/processorParam:DebugMode=Auto
-/build:Effects/ColorMapEffect.fx
-
-#begin Scenes/Sponza/plane.fbx
-/importer:FbxImporter
-/processor:MultiMaterialModelProcessor
-/processorParam:ProcessTextures=True
-/processorParam:SpecularMapFallback=null_specular.tga
-/processorParam:NormalMapFallback=null_normal.tga
-/processorParam:MaskFallback=null_mask.tga
-/processorParam:EffectFile=Effects/RenderEffect.fx
-/processorParam:GenerateTangentFrames=True
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=False
-/processorParam:DefaultEffect=BasicEffect
-/processorParam:GenerateMipmaps=True
-/processorParam:PremultiplyTextureAlpha=True
-/processorParam:PremultiplyVertexColors=True
-/processorParam:ResizeTexturesToPowerOfTwo=False
-/processorParam:TextureFormat=Compressed
-/processorParam:RotationX=0
-/processorParam:RotationY=0
-/processorParam:RotationZ=0
-/processorParam:Scale=1
-/processorParam:SwapWindingOrder=False
-/build:Scenes/Sponza/plane.fbx
-
-#begin Effects/PostProcessOutlineEffect.fx
-/importer:EffectImporter
-/processor:EffectProcessor
-/processorParam:DebugMode=Auto
-/build:Effects/PostProcessOutlineEffect.fx
 

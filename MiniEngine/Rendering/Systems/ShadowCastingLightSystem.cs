@@ -15,7 +15,7 @@ namespace MiniEngine.Rendering.Systems
 
         private readonly ShadowMapSystem ShadowMapSystem;
 
-        private readonly Quad Quad;
+        private readonly FullScreenTriangle FullScreenTriangle;
 
         private readonly Dictionary<Entity, ShadowCastingLight> Lights;
 
@@ -25,7 +25,7 @@ namespace MiniEngine.Rendering.Systems
             this.ShadowCastingLightEffect = shadowCastingLightEffect;
             this.ShadowMapSystem = shadowMapSystem;
 
-            this.Quad = new Quad();
+            this.FullScreenTriangle = new FullScreenTriangle();
 
             this.Lights = new Dictionary<Entity, ShadowCastingLight>();
         }
@@ -82,7 +82,7 @@ namespace MiniEngine.Rendering.Systems
                     foreach (var pass in this.ShadowCastingLightEffect.Techniques[0].Passes)
                     {                      
                         pass.Apply();
-                        this.Quad.Render(this.Device);
+                        this.FullScreenTriangle.Render(this.Device);
                     }
                 }                
             }

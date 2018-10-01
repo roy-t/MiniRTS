@@ -19,7 +19,7 @@ namespace MiniEngine.Rendering.Systems
 
         private readonly GraphicsDevice Device;        
         private readonly Effect SunlightEffect;
-        private readonly Quad Quad;
+        private readonly FullScreenTriangle FullScreenTriangle;
         private readonly Frustum Frustum;
 
         private readonly Dictionary<Entity, Sunlight> Sunlights;
@@ -30,7 +30,7 @@ namespace MiniEngine.Rendering.Systems
             this.SunlightEffect = sunlightEffect;
             this.ShadowMapSystem = shadowMapSystem;
 
-            this.Quad = new Quad();
+            this.FullScreenTriangle = new FullScreenTriangle();
             this.Frustum = new Frustum();
 
             this.Sunlights = new Dictionary<Entity, Sunlight>(1);
@@ -164,7 +164,7 @@ namespace MiniEngine.Rendering.Systems
             foreach (var pass in this.SunlightEffect.Techniques[0].Passes)
             {
                 pass.Apply();
-                this.Quad.Render(this.Device);
+                this.FullScreenTriangle.Render(this.Device);
             }
         }      
     }    

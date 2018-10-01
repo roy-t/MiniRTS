@@ -8,6 +8,7 @@ using MiniEngine.Systems;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using MiniEngine.Rendering.Effects;
 using MiniEngine.Utilities;
 
 namespace MiniEngine.Configuration
@@ -43,11 +44,11 @@ namespace MiniEngine.Configuration
             RegisterContent<Effect>("postProcessEffect", "Effects");
             RegisterContent<Effect>("postProcessOutlineEffect", "Effects");
             RegisterContent<Effect>("directionalLightEffect", "Effects");
-            RegisterContent<Effect>("pointLightEffect", "Effects");
-            RegisterContent<Effect>("shadowMapEffect", "Effects");
-            RegisterContent<Effect>("colorMapEffect", "Effects");
+            RegisterContent<Effect>("pointLightEffect", "Effects");            
             RegisterContent<Effect>("shadowCastingLightEffect", "Effects");
             RegisterContent<Effect>("sunlightEffect", "Effects");
+
+            this.Container.Register<RenderEffect>(new PerRequestLifeTime());
 
             // Primitives
             RegisterContent<Model>("sphere", "Effects");

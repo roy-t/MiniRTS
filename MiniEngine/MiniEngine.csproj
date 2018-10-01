@@ -83,7 +83,10 @@
     <Compile Include="Rendering\Cameras\IMovableViewPoint.cs" />
     <Compile Include="Rendering\Components\ModelType.cs" />
     <Compile Include="Rendering\Components\ShadowMap.cs" />
+    <Compile Include="Rendering\Effects\RenderEffect.cs" />
+    <Compile Include="Rendering\Effects\Techniques.cs" />
     <Compile Include="Rendering\Primitives\BoundingRectangle.cs" />
+    <Compile Include="Rendering\Primitives\FullScreenTriangle.cs" />
     <Compile Include="Rendering\Primitives\GBuffer.cs" />
     <Compile Include="Rendering\Batches\ModelRenderBatch.cs" />
     <Compile Include="Rendering\Primitives\GBufferVertex.cs" />
@@ -118,7 +121,6 @@
     <Compile Include="Rendering\Components\Sunlight.cs" />
     <Compile Include="Rendering\Systems\SunlightSystem.cs" />
     <Compile Include="Rendering\Primitives\Frustum.cs" />
-    <Compile Include="Rendering\Primitives\Quad.cs" />
     <Compile Include="Rendering\DeferredRenderer.cs" />
     <Compile Include="Scenes\IScene.cs" />
     <Compile Include="Scenes\SponzaScene.cs" />
@@ -153,6 +155,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Content\Effects\Includes\" />
+    <Folder Include="Content\Effects\Techniques\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Content.Builder.targets" />

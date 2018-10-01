@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Rendering.Cameras;
 using MiniEngine.Rendering.Components;
+using MiniEngine.Rendering.Effects;
 using MiniEngine.Systems;
 
 namespace MiniEngine.Rendering.Systems
@@ -14,20 +14,14 @@ namespace MiniEngine.Rendering.Systems
         private const int DefaultResolution = 1024;
 
         private readonly GraphicsDevice Device;
-        private readonly Effect ShadowMapEffect;
-        private readonly Effect ColorMapEffect;
         private readonly ModelSystem ModelSystem;
         private readonly Dictionary<Entity, ShadowMap> ShadowMaps;
 
         public ShadowMapSystem(
             GraphicsDevice device,
-            Effect shadowMapEffect,
-            Effect colorMapEffect,
             ModelSystem modelSystem)
         {
             this.Device = device;
-            this.ShadowMapEffect = shadowMapEffect;
-            this.ColorMapEffect = colorMapEffect;
             this.ModelSystem = modelSystem;
 
             this.ShadowMaps = new Dictionary<Entity, ShadowMap>();
@@ -71,7 +65,7 @@ namespace MiniEngine.Rendering.Systems
 
                     using (this.Device.ShadowMapState())
                     {
-                        batches.DrawOpaque(this.ShadowMapEffect);                        
+                        batches.DrawOpaque(Techniques.ShadowMap);                        
                     }
 
                     // Use the same depth buffer to generate the color buffer
@@ -80,7 +74,7 @@ namespace MiniEngine.Rendering.Systems
 
                     using (this.Device.ColorMapState())
                     {
-                        batches.DrawTransparent(this.ColorMapEffect);
+                        batches.DrawTransparent(Techniques.ColorMap);
                     }
                 }
             }

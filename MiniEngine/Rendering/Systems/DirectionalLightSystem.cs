@@ -12,7 +12,7 @@ namespace MiniEngine.Rendering.Systems
     {
         private readonly GraphicsDevice Device;
         private readonly Effect Effect;        
-        private readonly Quad Quad;
+        private readonly FullScreenTriangle FullScreenTriangle;
 
         private readonly Dictionary<Entity, DirectionalLight> Lights;
 
@@ -20,7 +20,7 @@ namespace MiniEngine.Rendering.Systems
         {
             this.Device = device;
             this.Effect = directionalLightEffect;            
-            this.Quad = new Quad();
+            this.FullScreenTriangle = new FullScreenTriangle();
 
             this.Lights = new Dictionary<Entity, DirectionalLight>();
         }
@@ -64,7 +64,7 @@ namespace MiniEngine.Rendering.Systems
                     foreach (var pass in this.Effect.Techniques[0].Passes)
                     {                       
                         pass.Apply();
-                        this.Quad.Render(this.Device);
+                        this.FullScreenTriangle.Render(this.Device);
                     }
                 }
             }

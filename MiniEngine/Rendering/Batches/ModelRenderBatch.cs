@@ -3,121 +3,58 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Rendering.Cameras;
 using MiniEngine.Rendering.Components;
+using MiniEngine.Rendering.Effects;
 
 namespace MiniEngine.Rendering.Batches
 {
     public sealed class ModelRenderBatch
     {
-        private static Matrix[] sharedBoneMatrix;
-
+        private static Matrix[] SharedBoneMatrix;
+        
         private readonly IReadOnlyList<ModelPose> Models;
         private readonly IViewPoint ViewPoint;
-
-        
-
-        public ModelRenderBatch(ModelPose model, IViewPoint viewPoint)
-                    : this(new[]{model}, viewPoint) { }
+        private readonly RenderEffect Effect;        
 
         public ModelRenderBatch(IReadOnlyList<ModelPose> models, IViewPoint viewPoint)
         {
             this.Models = models;
-            this.ViewPoint = viewPoint;            
+            this.ViewPoint = viewPoint;
+            this.Effect = new RenderEffect();
         }
 
-        public void Draw(Effect effectOverride = null)
+        public void Draw(Techniques technique)
         {
-            if (effectOverride != null)
+            foreach (var modelPose in this.Models)
             {
-                foreach (var modelPose in this.Models)
-                {
-                    DrawModel(effectOverride, modelPose.Model, modelPose.Pose, this.ViewPoint);
-                }
+                DrawModel(technique, modelPose.Model, modelPose.Pose, this.ViewPoint);
             }
-            else
-            {
-                foreach (var modelPose in this.Models)
-                {
-                    DrawModel(modelPose.Model, modelPose.Pose, this.ViewPoint);
-                }
-            }            
         }
 
-        private static void DrawModel(Model model, Matrix world, IViewPoint viewPoint)
+        private void DrawModel(Techniques technique, Model model, Matrix world, IViewPoint viewPoint)
         {
             var bones = model.Bones.Count;
-            if (sharedBoneMatrix == null || sharedBoneMatrix.Length < bones)
+            if (SharedBoneMatrix == null || SharedBoneMatrix.Length < bones)
             {
-                sharedBoneMatrix = new Matrix[bones];
+                SharedBoneMatrix = new Matrix[bones];
             }
 
-            model.CopyAbsoluteBoneTransformsTo(sharedBoneMatrix);
+            model.CopyAbsoluteBoneTransformsTo(SharedBoneMatrix);
 
             foreach (var mesh in model.Meshes)
             {
                 foreach (var effect in mesh.Effects)
                 {
-                    effect.Parameters["World"].SetValue(sharedBoneMatrix[mesh.ParentBone.Index] * world);
-                    effect.Parameters["View"].SetValue(viewPoint.View);
-                    effect.Parameters["Projection"].SetValue(viewPoint.Projection);
+                    this.Effect.Wrap(effect);
+
+                    this.Effect.World = SharedBoneMatrix[mesh.ParentBone.Index] * world;
+                    this.Effect.View = viewPoint.View;
+                    this.Effect.Projection = viewPoint.Projection;
+
+                    this.Effect.Apply(technique);
                 }
 
                 mesh.Draw();
             }
-        }
-
-        private static void DrawModel(Effect effectOverride, Model model, Matrix world, IViewPoint viewpoint)
-        {            
-            effectOverride.Parameters["View"].SetValue(viewpoint.View);
-            effectOverride.Parameters["Projection"].SetValue(viewpoint.Projection);
-
-
-            var bones = model.Bones.Count;
-            if (sharedBoneMatrix == null || sharedBoneMatrix.Length < bones)
-            {
-                sharedBoneMatrix = new Matrix[bones];
-            }
-
-            model.CopyAbsoluteBoneTransformsTo(sharedBoneMatrix);
-
-            foreach (var mesh in model.Meshes)
-            {
-                var effects = new Effect[mesh.MeshParts.Count];
-
-                for (var i = 0; i < mesh.MeshParts.Count; i++)
-                {
-                    var part = mesh.MeshParts[i];
-
-                    CopyTextures(part.Effect, effectOverride);
-                    effects[i] = part.Effect;
-                    part.Effect = effectOverride;
-
-                }
-
-                effectOverride.Parameters["World"].SetValue(sharedBoneMatrix[mesh.ParentBone.Index] * world);
-                mesh.Draw();
-
-                for (var i = 0; i < mesh.MeshParts.Count; i++)
-                {
-                    var part = mesh.MeshParts[i];
-                    part.Effect = effects[i];
-                }
-            }
-        }
-
-        // TODO: instead of copying all texture parameters we should extend the model type
-        // and give it a bundle of textures per mesh part. So we can effectively set those on each shader
-        // that needs them (and change the textures if need be).
-        // or we could define multiple techniques for the same shader and do without overriding the texture!
-        // (Making the shadowmap and colormap effects includes!)
-        private static void CopyTextures(Effect source, Effect destination)
-        {
-            foreach (var parameter in source.Parameters)
-            {
-                if (parameter.ParameterType == EffectParameterType.Texture2D)
-                {
-                    destination.Parameters[parameter.Name]?.SetValue(parameter.GetValueTexture2D());
-                }
-            }
-        }
+        }       
     }
 }

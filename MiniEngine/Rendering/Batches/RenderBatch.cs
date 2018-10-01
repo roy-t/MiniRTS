@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Microsoft.Xna.Framework.Graphics;
+using MiniEngine.Rendering.Effects;
 
 namespace MiniEngine.Rendering.Batches
 {
@@ -17,21 +17,21 @@ namespace MiniEngine.Rendering.Batches
 
         public int TransparentBatchesCount => this.TransparentBatches.Count;
 
-        public void DrawOpaque(Effect effectOverride = null)
+        public void DrawOpaque(Techniques technique)
         {
-            this.OpaqueBatch.Draw(effectOverride);
+            this.OpaqueBatch.Draw(technique);
         }
 
-        public void DrawTransparent(int index, Effect effectOverride = null)
+        public void DrawTransparent(int index, Techniques technique)
         {
-            this.TransparentBatches[index].Draw(effectOverride);
+            this.TransparentBatches[index].Draw(technique);
         }
 
-        public void DrawTransparent(Effect effectOverride = null)
+        public void DrawTransparent(Techniques technique)
         {
             foreach (var batch in this.TransparentBatches)
             {
-                batch.Draw(effectOverride);
+                batch.Draw(technique);
             }
         }
     }
