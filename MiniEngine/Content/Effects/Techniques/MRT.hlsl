@@ -1,3 +1,6 @@
+// Stores the color, normal and depth information in three separate render targets
+// to construct a geometry-buffer.
+
 struct MRTVertexShaderInput
 {
     float4 Position : POSITION0;

@@ -1,4 +1,6 @@
-﻿#include "Includes/Defines.hlsl"
+﻿// Draws 2D outlines 
+
+#include "Includes/Defines.hlsl"
 
 texture Texture;
 sampler diffuseSampler = sampler_state

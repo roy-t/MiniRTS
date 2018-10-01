@@ -1,3 +1,5 @@
+// Combines the information in the geometry-buffer into a correctly lit picture
+
 #include "Includes/Defines.hlsl"
 #include "Includes/GBuffer.hlsl"
 #include "Includes/Helpers.hlsl"

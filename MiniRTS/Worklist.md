@@ -4,6 +4,7 @@
 - Clean up rendering pipeline, especially the DeferedRenderer class
 - Make rendering effects more of a pipeline, giving each stage a separate class and tweakable order of events
 - Move all effects to wrappers
+- The code for the sunlight effect is still too complicated for what it does, especially the C# code is a mess.
 
 ## Interesting
 

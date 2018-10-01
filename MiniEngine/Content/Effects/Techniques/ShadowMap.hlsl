@@ -1,3 +1,5 @@
+// Stores distances from the light source to the nearest visible object
+
 struct SMVertexShaderInput
 {
     float4 Position : POSITION0;

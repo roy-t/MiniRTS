@@ -1,3 +1,5 @@
+// Performs anti-aliasing (via FXAA)
+
 #include "Includes/Defines.hlsl"
 #include "Includes/GBuffer.hlsl"
 

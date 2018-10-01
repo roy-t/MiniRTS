@@ -1,3 +1,6 @@
+// Similar to the shadow map effect, but instead of distance this effect maps all colors visible by the observer
+// Used for transparency effects (like light shining through stained glass)
+
 struct CMVertexShaderInput
 {
     float4 Position : POSITION0;

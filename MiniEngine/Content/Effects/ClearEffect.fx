@@ -1,4 +1,6 @@
-﻿#include "Includes/Defines.hlsl"
+﻿// Clears the geometry-buffer
+
+#include "Includes/Defines.hlsl"
 
 struct VertexShaderInput
 {
