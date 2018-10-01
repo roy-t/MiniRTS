@@ -13,7 +13,7 @@ namespace MiniEngine.Rendering.Systems
     {
         public const int Resolution = 2048;
         public const int Cascades = 4;
-        private static readonly float[] CascadeDistances = { 0.05f, 0.15f, 0.5f, 1.0f };
+        private static readonly float[] CascadeDistances = { 0.075f, 0.15f, 0.3f, 1.0f };
 
         private readonly ShadowMapSystem ShadowMapSystem;
 
@@ -84,8 +84,9 @@ namespace MiniEngine.Rendering.Systems
                 foreach (var pair in this.Sunlights)
                 {
                     var light = pair.Value;
-                    var shadowMap = this.ShadowMapSystem.Get(pair.Key).DepthMap;
-                    RenderLight(light, shadowMap, perspectiveCamera, gBuffer);
+                    var maps = this.ShadowMapSystem.Get(pair.Key);                    
+                    
+                    RenderLight(light, maps.DepthMap, maps.ColorMap, perspectiveCamera, gBuffer);
                 }
             }
         }
@@ -135,7 +136,7 @@ namespace MiniEngine.Rendering.Systems
             }
         }          
 
-        private void RenderLight(Sunlight sunlight, RenderTarget2D shadowMap, PerspectiveCamera perspectiveCamera, GBuffer gBuffer)
+        private void RenderLight(Sunlight sunlight, RenderTarget2D shadowMap, RenderTarget2D colorMap, PerspectiveCamera perspectiveCamera, GBuffer gBuffer)
         {            
             // G-Buffer input                                    
             this.SunlightEffect.Parameters["NormalMap"].SetValue(gBuffer.NormalTarget);
@@ -151,6 +152,7 @@ namespace MiniEngine.Rendering.Systems
 
             // Shadow properties
             this.SunlightEffect.Parameters["ShadowMap"].SetValue(shadowMap);
+            this.SunlightEffect.Parameters["ColorMap"].SetValue(colorMap);
             this.SunlightEffect.Parameters["ShadowMatrix"].SetValue(sunlight.GlobalShadowMatrix);
             this.SunlightEffect.Parameters["CascadeSplits"].SetValue(
                 new Vector4(

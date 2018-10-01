@@ -49,8 +49,9 @@ namespace MiniEngine.Scenes
             this.worldEntity = this.EntityController.CreateEntity();
             
             this.AmbientLightSystem.Add(this.worldEntity, Color.White * 0.25f);
-            this.SunlightSystem.Add(this.worldEntity, Color.White, Vector3.Up, Vector3.Right * 0.75f + Vector3.Forward * 0.1f);
-            
+            //this.SunlightSystem.Add(this.worldEntity, Color.White, Vector3.Up, Vector3.Right * 0.75f + Vector3.Forward * 0.1f);
+            this.SunlightSystem.Add(this.worldEntity, Color.White, Vector3.Up, Vector3.Left * 0.75f + Vector3.Backward * 0.1f);
+
             this.ModelSystem.Add(this.worldEntity, this.sponza, Matrix.CreateScale(0.05f));
 
             this.planeEntity = this.EntityController.CreateEntity();
@@ -58,7 +59,7 @@ namespace MiniEngine.Scenes
             var position = new Vector3(-40.5f, 30.0f, 3.2f);
             var offset = new Vector3(1.0f, 0.25f, 0.0f) * 8;
 
-            this.ShadowCastingLightSystem.Add(this.planeEntity, position + offset, position - offset, Color.White);
+            //this.ShadowCastingLightSystem.Add(this.planeEntity, position + offset, position - offset, Color.White);
             
             var world = Matrix.Identity
                 * Matrix.CreateScale(4.4f * 0.01f)

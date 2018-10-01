@@ -27,7 +27,7 @@ namespace MiniEngine.Rendering.Components
                 depthMapResolution,
                 false,
                 SurfaceFormat.Color,
-                DepthFormat.Depth24, // TODO: can be None?
+                DepthFormat.None,
                 0,
                 RenderTargetUsage.DiscardContents,
                 false,

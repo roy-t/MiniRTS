@@ -179,7 +179,8 @@ namespace MiniEngine
                 var step = this.GraphicsDevice.Viewport.Width / gBuffer.Length;
                 for (var i = 0; i < gBuffer.Length; i++)
                 {
-                    var target = gBuffer[i];
+                    var target = gBuffer[i];                    
+
                     this.spriteBatch.Draw(
                         target,
                         new Vector2(step * i, 0),

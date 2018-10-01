@@ -27,6 +27,18 @@ float4 CascadeScales[NumCascades];
 Texture2DArray ShadowMap : register(t0);
 SamplerComparisonState ShadowSampler : register(s0);
 
+Texture2DArray ColorMap : register(t1);
+sampler colorSampler = sampler_state
+{
+    Texture = (ColorMap);
+    AddressU = CLAMP;
+    AddressV = CLAMP;
+    AddressW = CLAMP;
+    MinFilter = ANISOTROPIC;
+    MagFilter = ANISOTROPIC;
+    MipFilter = LINEAR;
+};
+
 struct VertexShaderInput
 {
     float3 Position : POSITION0;
@@ -48,15 +60,18 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
     return output;
 }
 
-float SampleShadowMap(float2 baseUv, float u, float v, float2 shadowMapSizeInv, uint cascadeIndex, float depth)
+float3 SampleShadowMap(float2 baseUv, float u, float v, float2 shadowMapSizeInv, uint cascadeIndex, float depth)
 {
     float2 uv = baseUv + float2(u, v) * shadowMapSizeInv;
     float z = depth;
 
-    return ShadowMap.SampleCmpLevelZero(ShadowSampler, float3(uv, cascadeIndex), z);
+    float shadow = ShadowMap.SampleCmpLevelZero(ShadowSampler, float3(uv, cascadeIndex), z);    
+    float3 color = ColorMap.Sample(colorSampler, float3(uv, cascadeIndex), 0);
+
+    return color * shadow;
 }
 
-float SampleShadowMapPCF(float3 shadowPosition, uint cascadeIndex)
+float3 SampleShadowMapPCF(float3 shadowPosition, uint cascadeIndex)
 {
     float2 shadowMapSize;
     float numSlices;
@@ -77,7 +92,7 @@ float SampleShadowMapPCF(float3 shadowPosition, uint cascadeIndex)
     baseUv -= float2(0.5f, 0.5f);
     baseUv *= shadowMapSizeInv;
 
-    float sum = 0.0f;
+    float3 sum = 0.0f;
 
     float uw0 = (4 - 3 * s);
     float uw1 = 7;
@@ -129,8 +144,7 @@ float3 SampleShadowCascade(float3 shadowPosition, uint cascadeIndex)
         return CascadeColors[cascadeIndex];
     }
     
-    float shadow = SampleShadowMapPCF(shadowPosition, cascadeIndex);	
-    return float3(shadow, shadow, shadow);
+    return SampleShadowMapPCF(shadowPosition, cascadeIndex);	    
 }
 
 float3 GetLightFactor(float3 positionWS, float depthVS, float2 texCoord)

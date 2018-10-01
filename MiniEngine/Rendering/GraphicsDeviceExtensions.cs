@@ -47,7 +47,7 @@ namespace MiniEngine.Rendering
                 AddressU = TextureAddressMode.Clamp,
                 AddressV = TextureAddressMode.Clamp,
                 AddressW = TextureAddressMode.Clamp,
-                Filter = TextureFilter.Linear,
+                Filter = TextureFilter.Anisotropic,
                 ComparisonFunction = CompareFunction.LessEqual,
                 FilterMode = TextureFilterMode.Comparison
             };
@@ -87,13 +87,19 @@ namespace MiniEngine.Rendering
 
                 ColorDestinationBlend = Blend.InverseSourceAlpha,
                 AlphaDestinationBlend = Blend.InverseSourceAlpha
-            };            
+            };
+
+            var rasterizerState = new RasterizerState
+            {
+                CullMode = CullMode.None,
+                DepthClipEnable = false
+            };
 
             return new DeviceState(
                 device,
                 blendState, 
                 DepthStencilState.DepthRead,
-                RasterizerState.CullCounterClockwise);
+                rasterizerState);
         }
 
         public static DeviceState PostProcessState(this GraphicsDevice device)

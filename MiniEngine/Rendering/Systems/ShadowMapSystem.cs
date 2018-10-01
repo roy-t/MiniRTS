@@ -57,7 +57,6 @@ namespace MiniEngine.Rendering.Systems
             {
                 for (var i = 0; i < shadowMap.Cascades; i++)
                 {
-
                     var batches = this.ModelSystem.ComputeBatches(shadowMap.ViewPoints[i]);
 
                     this.Device.SetRenderTarget(shadowMap.DepthMap, i);

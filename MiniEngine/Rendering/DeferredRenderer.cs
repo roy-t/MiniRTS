@@ -92,7 +92,9 @@ namespace MiniEngine.Rendering
             this.GBuffer.DiffuseTarget,
             this.GBuffer.NormalTarget,
             this.GBuffer.DepthTarget,
-            this.GBuffer.LightTarget,            
+            this.GBuffer.LightTarget,       
+                        this.ShadowMapSystem.DebugFoo().DepthMap,
+            this.ShadowMapSystem.DebugFoo().ColorMap,
         };
 
         public RenderTarget2D Render(PerspectiveCamera perspectiveCamera)

@@ -22,13 +22,21 @@ CMVertexShaderOutput CMMainVS(in CMVertexShaderInput input)
     return output;
 }
 
-float4 CMMainPS(CMVertexShaderOutput input) : COLOR0
+struct CMPixelShaderOutput
 {
+    float4 Color : COLOR0;
+};
+
+CMPixelShaderOutput CMMainPS(CMVertexShaderOutput input)
+{
+    CMPixelShaderOutput output = (CMPixelShaderOutput)0;
+
     float2 texCoord = input.TexCoord;
 
-    float4 color = tex2D(diffuseSampler, texCoord);
-    color.rgb *= (1.0f - color.a);
-    return color;
+    output.Color = tex2D(diffuseSampler, texCoord);
+    output.Color.rgb *= (1.0f - output.Color.a);
+    
+    return output;
 }
 
 technique ColorMap
