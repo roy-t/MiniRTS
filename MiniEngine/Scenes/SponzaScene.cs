@@ -64,6 +64,7 @@ namespace MiniEngine.Scenes
             
             var world = Matrix.Identity
                 * Matrix.CreateScale(4.4f * 0.01f)
+                * Matrix.CreateRotationX(MathHelper.PiOver2)
                 * Matrix.CreateRotationY(MathHelper.PiOver2)                
                 * Matrix.CreateTranslation(position)
                 ;

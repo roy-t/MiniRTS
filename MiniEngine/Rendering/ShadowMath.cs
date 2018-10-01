@@ -28,6 +28,9 @@ namespace MiniEngine.Rendering
             // Compute the bounding sphere of the frustum slice, round the center
             // so our shadows are more stable when moving the camera around
             var bounds = frustum.ComputeBounds();
+
+            // WARNING: This might cause problems when moving the shadow caster around in that case use
+            // var radius = (float)Math.Ceiling(bounds.Radius * 16.0f) / 16.0f;
             var radius = (float)Math.Ceiling(bounds.Radius);
 
             var shadowCamera = new OrthographicCamera(
