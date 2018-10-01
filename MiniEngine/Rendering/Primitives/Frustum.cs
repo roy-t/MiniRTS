@@ -70,18 +70,6 @@ namespace MiniEngine.Rendering.Primitives
             this.Corners[5] = new Vector3(1.0f, 1.0f, 1.0f);
             this.Corners[6] = new Vector3(1.0f, -1.0f, 1.0f);
             this.Corners[7] = new Vector3(-1.0f, -1.0f, 1.0f);
-        }
-
-
-        public void TestEquals(Vector3[] v)
-        {
-            for (var i = 0; i < 8; i++)
-            {
-                if (this.Corners[i] != v[i])
-                {
-                    
-                }
-            }
-        }
+        }       
     }
 }

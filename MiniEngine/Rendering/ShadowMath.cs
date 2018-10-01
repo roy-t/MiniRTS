@@ -25,10 +25,10 @@ namespace MiniEngine.Rendering
 
         public static IViewPoint CreateShadowCamera(Vector3 surfaceToLightVector, Frustum frustum, int shadowMapResolution)
         {
-            // Compute the bounding sphere of the frustum slice, round the center a little bit
+            // Compute the bounding sphere of the frustum slice, round the center
             // so our shadows are more stable when moving the camera around
             var bounds = frustum.ComputeBounds();
-            var radius = (float)Math.Ceiling(bounds.Radius * 16.0f) / 16.0f;
+            var radius = (float)Math.Ceiling(bounds.Radius);
 
             var shadowCamera = new OrthographicCamera(
                 -radius,
