@@ -74,18 +74,18 @@ namespace MiniEngine.Scenes
             this.planeEntity2 = this.EntityController.CreateEntity();
 
             position = new Vector3(-40.5f, 30.0f, -7.2f);                        
-            world = Matrix.Identity
+            var world2 = Matrix.Identity
                         * Matrix.CreateScale(4.4f * 0.01f)
                         * Matrix.CreateRotationY(MathHelper.PiOver4)
                         * Matrix.CreateTranslation(position)
                 ;
-            this.ModelSystem.Add(this.planeEntity2, this.plane, world, ModelType.Transparent);
-            
+            this.ModelSystem.Add(this.planeEntity2, this.plane, world2, ModelType.Transparent);
+
 
 
             //this.DebugRenderSystem.Add(this.worldEntity, this.sponza, Matrix.CreateScale(0.05f));
-            //this.DebugRenderSystem.Add(this.planeEntity, this.plane, world);
-            //this.DebugRenderSystem.Add(this.planeEntity2, this.plane, world);
+            this.DebugRenderSystem.Add(this.planeEntity, this.plane, world);
+            this.DebugRenderSystem.Add(this.planeEntity2, this.plane, world2);
         }
 
         public void Update(Seconds elapsed)

@@ -68,7 +68,7 @@ namespace MiniEngine.Rendering.Systems
 
         public void Remove(Entity entity) => this.Models.Remove(entity);
 
-        public void RenderGBuffer(IViewPoint viewPoint)
+        public void Render3DOverlay(IViewPoint viewPoint)
         {
             this.RenderEffect.World = Matrix.Identity;
             this.RenderEffect.View = viewPoint.View;
@@ -98,7 +98,7 @@ namespace MiniEngine.Rendering.Systems
             }
         }
 
-        public void RenderPostProcess(IViewPoint viewPoint)
+        public void Render2DOverlay(IViewPoint viewPoint)
         {
             using (this.Device.PostProcessState())
             {

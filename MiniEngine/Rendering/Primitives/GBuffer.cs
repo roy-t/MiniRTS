@@ -27,7 +27,7 @@ namespace MiniEngine.Rendering.Primitives
                 SurfaceFormat.Color,
                 DepthFormat.None,
                 aaSamples,
-                RenderTargetUsage.DiscardContents);
+                RenderTargetUsage.PreserveContents);
 
             this.DepthTarget = new RenderTarget2D(
                 device,
@@ -37,7 +37,7 @@ namespace MiniEngine.Rendering.Primitives
                 SurfaceFormat.Single,
                 DepthFormat.None,
                 aaSamples,
-                RenderTargetUsage.DiscardContents);
+                RenderTargetUsage.PreserveContents);
 
             this.LightTarget = new RenderTarget2D(
                 device,
@@ -47,7 +47,7 @@ namespace MiniEngine.Rendering.Primitives
                 SurfaceFormat.Color,
                 DepthFormat.None,
                 aaSamples,
-                RenderTargetUsage.DiscardContents);         
+                RenderTargetUsage.PreserveContents);         
         }
 
         public RenderTarget2D DiffuseTarget { get; }

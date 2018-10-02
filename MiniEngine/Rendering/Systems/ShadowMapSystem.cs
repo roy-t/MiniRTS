@@ -49,7 +49,7 @@ namespace MiniEngine.Rendering.Systems
             return $"shadow map, dimensions: {shadowMap.DepthMap.Width}x{shadowMap.DepthMap.Height}";
         }
 
-        public void Remove(Entity entity) => this.ShadowMaps.Remove(entity);
+        public void Remove(Entity entity) => this.ShadowMaps.Remove(entity);        
 
         public void RenderShadowMaps()
         {

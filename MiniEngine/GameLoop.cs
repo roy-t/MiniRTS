@@ -8,6 +8,7 @@ using MiniEngine.Rendering.Cameras;
 using MiniEngine.Scenes;
 using System.Collections.Generic;
 using System.Linq;
+using MiniEngine.Rendering.Pipelines;
 using MiniEngine.Utilities;
 using KeyboardInput = MiniEngine.Input.KeyboardInput;
 
@@ -32,6 +33,7 @@ namespace MiniEngine
         private int currentSceneIndex = 1;
         private DebugController debugController;
         private DeferredRenderer renderer;
+        private DeferredRenderPipeline renderPipeline;
         private EntityController entityController;
 
 
@@ -63,6 +65,7 @@ namespace MiniEngine
             this.debugController = this.injector.Resolve<DebugControllerFactory>().Build(this.perspectiveCamera);            
 
             this.renderer = this.injector.Resolve<DeferredRenderer>();
+            this.renderPipeline = this.injector.Resolve<DeferredRenderPipeline>();
 
             this.scenes = this.injector.ResolveAll<IScene>()
                               .ToList()
@@ -153,7 +156,8 @@ namespace MiniEngine
                 $" camera ({this.perspectiveCamera.Position.X:F2}, {this.perspectiveCamera.Position.Y:F2}, {this.perspectiveCamera.Position.Z:F2})";
 
             this.GraphicsDevice.Clear(Color.CornflowerBlue);
-            var result = this.renderer.Render(this.perspectiveCamera);
+            //var result = this.renderer.Render(this.perspectiveCamera);
+            var result = this.renderPipeline.Render(this.perspectiveCamera);
             this.GraphicsDevice.SetRenderTarget(null);
 
             this.spriteBatch.Begin(
@@ -171,7 +175,8 @@ namespace MiniEngine
                 Color.White);
 
 
-            var gBuffer = this.renderer.GetIntermediateRenderTargets();
+            //var gBuffer = this.renderer.GetIntermediateRenderTargets();
+            var gBuffer = this.renderPipeline.GetIntermediateRenderTargets();
             this.viewOptions = gBuffer.Length;
 
             if (this.detailView)

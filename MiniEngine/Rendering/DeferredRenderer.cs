@@ -72,7 +72,7 @@ namespace MiniEngine.Rendering
                 SurfaceFormat.Color,
                 DepthFormat.None,
                 0,
-                RenderTargetUsage.DiscardContents);
+                RenderTargetUsage.PreserveContents);
 
             this.PostProcessTarget = new RenderTarget2D(
                 device,
@@ -92,23 +92,25 @@ namespace MiniEngine.Rendering
             this.GBuffer.DiffuseTarget,
             this.GBuffer.NormalTarget,
             this.GBuffer.DepthTarget,
-            this.GBuffer.LightTarget,       
-                        this.ShadowMapSystem.DebugFoo().DepthMap,
-            this.ShadowMapSystem.DebugFoo().ColorMap,
+            this.GBuffer.LightTarget,                  
         };
 
         public RenderTarget2D Render(PerspectiveCamera perspectiveCamera)
         {
-            this.SunlightSystem.Update(perspectiveCamera);
-            this.ShadowMapSystem.RenderShadowMaps();
+            this.Device.SetRenderTarget(this.GBuffer.DiffuseTarget);
+            this.Device.Clear(Color.TransparentBlack);
 
             this.Device.SetRenderTarget(this.PostProcessTarget);
             this.Device.Clear(Color.Black);
 
+            this.SunlightSystem.Update(perspectiveCamera);
+            this.ShadowMapSystem.RenderShadowMaps();
+
+            
+
             var batches = this.ModelSystem.ComputeBatches(perspectiveCamera);
 
-            this.Device.SetRenderTarget(this.GBuffer.DiffuseTarget);
-            this.Device.Clear(Color.TransparentBlack);
+
 
             RenderBatch(perspectiveCamera, batches.OpaqueBatch);            
             foreach (var batch in batches.TransparentBatches)
@@ -116,17 +118,18 @@ namespace MiniEngine.Rendering
                 RenderBatch(perspectiveCamera, batch);
             }
 
+            this.DebugRenderSystem.Render2DOverlay(perspectiveCamera);
             return this.PostProcessTarget;
         }
 
         private void RenderBatch(PerspectiveCamera camera, ModelRenderBatch batch)
         {
             RenderGBuffer(batch);
-            this.DebugRenderSystem.RenderGBuffer(camera);
+            this.DebugRenderSystem.Render3DOverlay(camera);
             RenderLights(camera);
             Combine();
             PostProcess();
-            this.DebugRenderSystem.RenderPostProcess(camera);
+            
 
         }
 
@@ -185,7 +188,7 @@ namespace MiniEngine.Rendering
         private void RenderGBuffer(ModelRenderBatch batch)
         {
             this.Device.SetRenderTarget(this.GBuffer.DiffuseTarget);
-            this.Device.Clear(ClearOptions.Target, Color.TransparentBlack, 0.0f, 0);
+            this.Device.Clear(ClearOptions.Target, Color.TransparentBlack, 1.0f, 0);
 
             this.Device.SetRenderTarget(this.GBuffer.NormalTarget);
             this.Device.Clear(new Color(0.5f, 0.5f, 0.5f, 0.0f));

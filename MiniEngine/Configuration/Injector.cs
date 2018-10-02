@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using MiniEngine.Rendering.Effects;
+using MiniEngine.Rendering.Pipelines;
 using MiniEngine.Utilities;
 
 namespace MiniEngine.Configuration
@@ -58,6 +59,7 @@ namespace MiniEngine.Configuration
 
             // Renderer
             this.Container.Register<DeferredRenderer>();
+            this.Container.Register<DeferredRenderPipeline>();
 
             // Input
             this.Container.Register<KeyboardInput>();
