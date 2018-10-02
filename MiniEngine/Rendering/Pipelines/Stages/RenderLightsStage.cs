@@ -1,9 +1,8 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using MiniEngine.Rendering.Batches;
+﻿using MiniEngine.Rendering.Batches;
 using MiniEngine.Rendering.Cameras;
 using MiniEngine.Rendering.Primitives;
 
-namespace MiniEngine.Rendering.Pipelines
+namespace MiniEngine.Rendering.Pipelines.Stages
 {
     public sealed class RenderLightsStage : IModelPipelineStage
     {

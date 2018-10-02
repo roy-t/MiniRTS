@@ -4,7 +4,7 @@ using MiniEngine.Rendering.Cameras;
 using MiniEngine.Rendering.Primitives;
 using MiniEngine.Rendering.Systems;
 
-namespace MiniEngine.Rendering.Pipelines
+namespace MiniEngine.Rendering.Pipelines.Stages
 {
     public sealed class Render3DDebugOverlayStage : IModelPipelineStage
     {

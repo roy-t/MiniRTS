@@ -1,4 +1,5 @@
 ﻿using MiniEngine.Rendering.Cameras;
+using MiniEngine.Rendering.Pipelines.Stages;
 using MiniEngine.Rendering.Systems;
 
 namespace MiniEngine.Rendering.Pipelines.Extensions

@@ -1,15 +1,15 @@
-﻿using LightInject;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
+using LightInject;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Input;
 using MiniEngine.Rendering;
-using MiniEngine.Scenes;
-using MiniEngine.Systems;
-using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
 using MiniEngine.Rendering.Effects;
 using MiniEngine.Rendering.Pipelines;
+using MiniEngine.Scenes;
+using MiniEngine.Systems;
 using MiniEngine.Utilities;
 
 namespace MiniEngine.Configuration
@@ -43,14 +43,14 @@ namespace MiniEngine.Configuration
             RegisterEffect<CombineEffect>("CombineEffect");
             RegisterEffect<PostProcessEffect>("PostProcessEffect");
 
-            RegisterContent<Effect>("clearEffect", "Effects");                        
+            RegisterContent<Effect>("clearEffect", "Effects");
             RegisterContent<Effect>("postProcessOutlineEffect", "Effects");
             RegisterContent<Effect>("directionalLightEffect", "Effects");
-            RegisterContent<Effect>("pointLightEffect", "Effects");            
+            RegisterContent<Effect>("pointLightEffect", "Effects");
             RegisterContent<Effect>("shadowCastingLightEffect", "Effects");
             RegisterContent<Effect>("sunlightEffect", "Effects");
 
-            
+
             // Primitives
             RegisterContent<Model>("sphere", "Effects");
 
@@ -76,17 +76,17 @@ namespace MiniEngine.Configuration
         public T Resolve<T>()
         {
             return this.Container.GetInstance<T>();
-        }      
+        }
 
         public T Resolve<T>(string name)
         {
-            return this.Container.GetInstance<T>(name);            
+            return this.Container.GetInstance<T>(name);
         }
 
         public IEnumerable<T> ResolveAll<T>()
         {
             return this.Container.GetAllInstances<T>();
-        }      
+        }
 
         private void RegisterContent<T>(string name, string folder = "")
         {
@@ -96,24 +96,23 @@ namespace MiniEngine.Configuration
 
         private void RegisterEffect<T>(string name, string folder = "Effects")
             where T : EffectWrapper, new()
-        {            
-            this.Container.Register<T>(i =>
-            {
-                var wrapper = new T();
-                wrapper.Wrap(this.Content.Load<Effect>(Path.Combine(folder, name)));
-                return wrapper;
-            },
-            new PerRequestLifeTime());
+        {
+            this.Container.Register(
+                i =>
+                {
+                    var wrapper = new T();
+                    wrapper.Wrap(this.Content.Load<Effect>(Path.Combine(folder, name)));
+                    return wrapper;
+                },
+                new PerRequestLifeTime());
         }
 
         private void RegisterAllOf<T>()
-            where T : class 
+            where T : class
         {
             this.Container.RegisterAssembly(
                 Assembly.GetExecutingAssembly(),
-                (s, _) => typeof(T).IsAssignableFrom(s) && s != typeof(T));
+                (s, _) => typeof (T).IsAssignableFrom(s) && s != typeof (T));
         }
-
-      
     }
 }

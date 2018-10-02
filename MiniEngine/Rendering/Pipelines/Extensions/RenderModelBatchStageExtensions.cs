@@ -1,4 +1,5 @@
-﻿using MiniEngine.Rendering.Primitives;
+﻿using MiniEngine.Rendering.Pipelines.Stages;
+using MiniEngine.Rendering.Primitives;
 
 namespace MiniEngine.Rendering.Pipelines.Extensions
 {

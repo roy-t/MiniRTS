@@ -4,7 +4,7 @@ using MiniEngine.Rendering.Cameras;
 using MiniEngine.Rendering.Effects;
 using MiniEngine.Rendering.Primitives;
 
-namespace MiniEngine.Rendering.Pipelines
+namespace MiniEngine.Rendering.Pipelines.Stages
 {
     public sealed class RenderModelBatchStage : IModelPipelineStage
     {

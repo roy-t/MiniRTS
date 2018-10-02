@@ -2,7 +2,6 @@
 {
     public interface IInstanceFactory
     {
-
     }
 
     public interface IInstanceFactory<T, I> : IInstanceFactory

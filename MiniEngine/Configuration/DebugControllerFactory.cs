@@ -6,12 +6,14 @@ namespace MiniEngine.Configuration
 {
     public sealed class DebugControllerFactory : IInstanceFactory<DebugController, PerspectiveCamera>
     {
-        private readonly KeyboardInput KeyboardInput;
         private readonly CameraControllerFactory CameraControllerFactory;
-        private readonly LightSystemsControllerFactory LightSystemsControllerFactory;        
+        private readonly KeyboardInput KeyboardInput;
+        private readonly LightSystemsControllerFactory LightSystemsControllerFactory;
 
-        public DebugControllerFactory(KeyboardInput keyboardInput, CameraControllerFactory cameraControllerFactory,
-                                      LightSystemsControllerFactory lightSystemsControllerFactory)
+        public DebugControllerFactory(
+            KeyboardInput keyboardInput,
+            CameraControllerFactory cameraControllerFactory,
+            LightSystemsControllerFactory lightSystemsControllerFactory)
         {
             this.KeyboardInput = keyboardInput;
             this.CameraControllerFactory = cameraControllerFactory;

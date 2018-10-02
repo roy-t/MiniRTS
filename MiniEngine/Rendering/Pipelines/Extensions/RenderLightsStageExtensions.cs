@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
+using MiniEngine.Rendering.Pipelines.Stages;
 using MiniEngine.Rendering.Primitives;
 
 namespace MiniEngine.Rendering.Pipelines.Extensions
