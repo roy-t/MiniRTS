@@ -2,11 +2,12 @@
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Rendering.Cameras;
 using MiniEngine.Rendering.Effects;
+using MiniEngine.Rendering.Pipelines;
 using MiniEngine.Rendering.Pipelines.Extensions;
 using MiniEngine.Rendering.Primitives;
 using MiniEngine.Rendering.Systems;
 
-namespace MiniEngine.Rendering.Pipelines
+namespace MiniEngine.Rendering
 {
     public sealed class DeferredRenderPipeline
     {

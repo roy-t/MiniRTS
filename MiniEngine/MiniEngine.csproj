@@ -95,7 +95,7 @@
     <Compile Include="Rendering\Pipelines\Stages\DirectionalLightStage.cs" />
     <Compile Include="Rendering\Pipelines\Extensions\AntiAliasingStageExtensions.cs" />
     <Compile Include="Rendering\Pipelines\Extensions\ClearStageExtensions.cs" />
-    <Compile Include="Rendering\Pipelines\DeferredRenderPipeline.cs" />
+    <Compile Include="Rendering\DeferredRenderPipeline.cs" />
     <Compile Include="Rendering\Pipelines\Extensions\ClearToAmbientLightStageExtensions.cs" />
     <Compile Include="Rendering\Pipelines\Extensions\CombineDiffuseWithLigtingStageExtensions.cs" />
     <Compile Include="Rendering\Pipelines\Extensions\DirectionalLightStageExtensions.cs" />
@@ -161,7 +161,6 @@
     <Compile Include="Rendering\Components\Sunlight.cs" />
     <Compile Include="Rendering\Systems\SunlightSystem.cs" />
     <Compile Include="Rendering\Primitives\Frustum.cs" />
-    <Compile Include="Rendering\DeferredRenderer.cs" />
     <Compile Include="Scenes\IScene.cs" />
     <Compile Include="Scenes\SponzaScene.cs" />
     <Compile Include="Scenes\ZimaScene.cs" />

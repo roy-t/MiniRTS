@@ -58,7 +58,6 @@ namespace MiniEngine.Configuration
             RegisterAllOf<ISystem>();
 
             // Renderer
-            this.Container.Register<DeferredRenderer>();
             this.Container.Register<DeferredRenderPipeline>();
 
             // Input
