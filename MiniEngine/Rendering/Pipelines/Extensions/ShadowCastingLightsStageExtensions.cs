@@ -9,7 +9,7 @@ namespace MiniEngine.Rendering.Pipelines.Extensions
             this LightingPipeline pipeline,
             ShadowCastingLightSystem shadowCastingLightSystem)
         {
-            var stage = new ShadowCastingLightStage(shadowCastingLightSystem);
+            var stage = new ShadowCastingLightStage(pipeline.Device, shadowCastingLightSystem);
             pipeline.Add(stage);
             return pipeline;
         }

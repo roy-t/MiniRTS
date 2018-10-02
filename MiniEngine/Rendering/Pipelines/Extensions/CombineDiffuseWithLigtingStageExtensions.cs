@@ -10,10 +10,10 @@ namespace MiniEngine.Rendering.Pipelines.Extensions
         public static ModelPipeline CombineDiffuseWithLighting(
             this ModelPipeline pipeline,
             CombineEffect effect,
-            RenderTarget2D combineTarget,
+            RenderTarget2D destinationTarget,
             GBuffer gBuffer)
         {
-            var stage = new CombineDiffuseWithLightingStage(pipeline.Device, effect, combineTarget, gBuffer);
+            var stage = new CombineDiffuseWithLightingStage(pipeline.Device, effect, destinationTarget, gBuffer);
             pipeline.Add(stage);
             return pipeline;
         }

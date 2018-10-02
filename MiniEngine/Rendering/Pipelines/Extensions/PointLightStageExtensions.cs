@@ -9,7 +9,7 @@ namespace MiniEngine.Rendering.Pipelines.Extensions
             this LightingPipeline pipeline,
             PointLightSystem pointLightSystem)
         {
-            var stage = new PointLightStage(pointLightSystem);
+            var stage = new PointLightStage(pipeline.Device, pointLightSystem);
             pipeline.Add(stage);
             return pipeline;
         }

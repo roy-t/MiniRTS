@@ -9,7 +9,7 @@ namespace MiniEngine.Rendering.Pipelines.Extensions
             this LightingPipeline pipeline,
             DirectionalLightSystem directionalLightSystem)
         {
-            var stage = new DirectionalLightStage(directionalLightSystem);
+            var stage = new DirectionalLightStage(pipeline.Device, directionalLightSystem);
             pipeline.Add(stage);
             return pipeline;
         }
