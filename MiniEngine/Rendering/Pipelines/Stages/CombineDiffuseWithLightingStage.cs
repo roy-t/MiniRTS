@@ -6,7 +6,7 @@ using MiniEngine.Rendering.Primitives;
 
 namespace MiniEngine.Rendering.Pipelines.Stages
 {
-    public sealed class CombineDiffuseWithLightingStage : IModelPipelineStage
+    public sealed class CombineDiffuseWithLightingStage : IModelPipelineStage, IParticlePipelineStage
     {
         private readonly GraphicsDevice Device;
         private readonly CombineEffect Effect;
@@ -22,9 +22,9 @@ namespace MiniEngine.Rendering.Pipelines.Stages
             this.DestinationTarget = destinationTarget;
             this.GBuffer = gBuffer;
             this.FullScreenTriangle = new FullScreenTriangle();
-        }
+        }        
 
-        public void Execute(PerspectiveCamera camera, ModelRenderBatch batch)
+        private void Execute()
         {
             this.Device.SetRenderTarget(this.DestinationTarget);
             using (this.Device.PostProcessState())
@@ -39,5 +39,8 @@ namespace MiniEngine.Rendering.Pipelines.Stages
 
             this.Device.SetRenderTarget(null);
         }
+
+        public void Execute(PerspectiveCamera camera, ModelRenderBatch _) => Execute();
+        public void Execute(PerspectiveCamera camera, ParticleRenderBatch _) => Execute();
     }
 }

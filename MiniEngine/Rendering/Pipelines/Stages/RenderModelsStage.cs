@@ -16,8 +16,8 @@ namespace MiniEngine.Rendering.Pipelines.Stages
 
         public void Execute(PerspectiveCamera camera)
         {
-            var renderBatchList = this.ModelSystem.ComputeBatches(camera);
-            this.ModelPipeline.Execute(camera, renderBatchList);
+            var modelBatchList = this.ModelSystem.ComputeBatches(camera);
+            this.ModelPipeline.Execute(camera, modelBatchList);
         }
     }
 }

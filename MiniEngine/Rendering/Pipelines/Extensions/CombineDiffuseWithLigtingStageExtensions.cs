@@ -17,5 +17,16 @@ namespace MiniEngine.Rendering.Pipelines.Extensions
             pipeline.Add(stage);
             return pipeline;
         }
+
+        public static ParticlePipeline CombineDiffuseWithLighting(
+            this ParticlePipeline pipeline,
+            CombineEffect effect,
+            RenderTarget2D destinationTarget,
+            GBuffer gBuffer)
+        {
+            var stage = new CombineDiffuseWithLightingStage(pipeline.Device, effect, destinationTarget, gBuffer);
+            pipeline.Add(stage);
+            return pipeline;
+        }
     }
 }

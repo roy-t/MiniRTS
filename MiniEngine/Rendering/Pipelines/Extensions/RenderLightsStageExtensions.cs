@@ -15,5 +15,15 @@ namespace MiniEngine.Rendering.Pipelines.Extensions
             pipeline.Add(stage);
             return pipeline;
         }
+
+        public static ParticlePipeline RenderLights(
+            this ParticlePipeline pipeline,
+            LightingPipeline lightingPipeline,
+            GBuffer gBuffer)
+        {
+            var stage = new RenderLightsStage(lightingPipeline, gBuffer);
+            pipeline.Add(stage);
+            return pipeline;
+        }
     }
 }

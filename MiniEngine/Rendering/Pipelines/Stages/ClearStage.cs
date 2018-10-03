@@ -6,7 +6,7 @@ using MiniEngine.Rendering.Primitives;
 
 namespace MiniEngine.Rendering.Pipelines.Stages
 {
-    public sealed class ClearStage : IPipelineStage, IModelPipelineStage, ILightingPipelineStage
+    public sealed class ClearStage : IPipelineStage, IModelPipelineStage, ILightingPipelineStage, IParticlePipelineStage
     {
         private readonly GraphicsDevice Device;
         private readonly RenderTarget2D RenderTarget;
@@ -26,16 +26,15 @@ namespace MiniEngine.Rendering.Pipelines.Stages
         public float Depth { get; }
         public int Stencil { get; }
 
-        public void Execute(PerspectiveCamera _)
+        private void Execute()
         {
             this.Device.SetRenderTarget(this.RenderTarget);
             this.Device.Clear(this.Options, this.Color, this.Depth, this.Stencil);
         }
 
-        public void Execute(PerspectiveCamera _, ModelRenderBatch __)
-            => Execute(_);
-
-        public void Execute(PerspectiveCamera _, GBuffer __)
-            => Execute(_);
+        public void Execute(PerspectiveCamera _) => Execute();
+        public void Execute(PerspectiveCamera _, ModelRenderBatch __) => Execute();
+        public void Execute(PerspectiveCamera _, ParticleRenderBatch __) => Execute();
+        public void Execute(PerspectiveCamera _, GBuffer __) => Execute();
     }
 }

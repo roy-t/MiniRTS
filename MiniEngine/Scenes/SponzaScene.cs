@@ -14,13 +14,16 @@ namespace MiniEngine.Scenes
         private readonly SunlightSystem SunlightSystem;
         private readonly ShadowCastingLightSystem ShadowCastingLightSystem;
         private readonly ModelSystem ModelSystem;
+        private readonly ParticleSystem ParticleSystem;
         private readonly DebugRenderSystem DebugRenderSystem;
 
         private Entity worldEntity;
         private Entity planeEntity;
         private Entity planeEntity2;
+        private Entity particleEntity;
         private Model sponza;
         private Model plane;
+        private Texture2D explosion;
 
         public SponzaScene(
             EntityController entityController,
@@ -28,7 +31,8 @@ namespace MiniEngine.Scenes
             SunlightSystem sunlightSystem,
             ShadowCastingLightSystem shadowCastingLightSystem,
             ModelSystem modelSystem,
-            DebugRenderSystem debugRenderSystem)
+            DebugRenderSystem debugRenderSystem,
+            ParticleSystem particleSystem)
         {
             this.EntityController = entityController;
             this.AmbientLightSystem = ambientLightSystem;
@@ -36,12 +40,14 @@ namespace MiniEngine.Scenes
             this.ShadowCastingLightSystem = shadowCastingLightSystem;
             this.ModelSystem = modelSystem;
             this.DebugRenderSystem = debugRenderSystem;
+            this.ParticleSystem = particleSystem;
         }
 
         public void LoadContent(ContentManager content)
         {
             this.sponza = content.Load<Model>(@"Scenes\Sponza\Sponza");
             this.plane = content.Load<Model>(@"Scenes\Sponza\Plane");
+            this.explosion = content.Load<Texture2D>(@"Particles\Explosion");
         }
 
         public void Set()
@@ -81,6 +87,9 @@ namespace MiniEngine.Scenes
                 ;
             this.ModelSystem.Add(this.planeEntity2, this.plane, world2, ModelType.Transparent);
 
+
+            this.particleEntity = this.EntityController.CreateEntity();
+            this.ParticleSystem.Add(this.particleEntity, Vector3.Zero, this.explosion, 4, 4);
 
 
             //this.DebugRenderSystem.Add(this.worldEntity, this.sponza, Matrix.CreateScale(0.05f));

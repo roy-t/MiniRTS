@@ -23,10 +23,15 @@ namespace MiniEngine.Rendering.Primitives
         public Vector3 Tangent;
 
         public GBufferVertex(Vector3 position)
+            : this(position, Vector2.Zero)
+        {
+        }
+
+        public GBufferVertex(Vector3 position, Vector2 textureCoordinate)
         {
             this.Position = new Vector4(position, 1);
             this.Normal = Vector3.UnitZ;
-            this.TextureCoordinate = Vector2.Zero;
+            this.TextureCoordinate = textureCoordinate;
             this.BiNormal = Vector3.UnitX;
             this.Tangent = Vector3.UnitY;
         }

@@ -38,10 +38,7 @@ namespace MiniEngine.Rendering.Systems
             return $"directional light, direction: {light.Direction}, color: {light.Color}";
         }
 
-        public void Remove(Entity entity)
-        {
-            this.Lights.Remove(entity);
-        }
+        public void Remove(Entity entity) => this.Lights.Remove(entity);
 
         public void Render(PerspectiveCamera perspectiveCamera, GBuffer gBuffer)
         {            

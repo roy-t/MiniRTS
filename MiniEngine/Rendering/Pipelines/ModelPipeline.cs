@@ -22,14 +22,14 @@ namespace MiniEngine.Rendering.Pipelines
             this.Stages.Add(stage);
         }
 
-        public void Execute(PerspectiveCamera camera, RenderBatchList renderBatchList)
+        public void Execute(PerspectiveCamera camera, ModelBatchList modelBatchList)
         {            
             foreach (var stage in this.Stages)
             {
-                stage.Execute(camera, renderBatchList.OpaqueBatch);
+                stage.Execute(camera, modelBatchList.OpaqueBatch);
             }
 
-            foreach (var batch in renderBatchList.TransparentBatches)
+            foreach (var batch in modelBatchList.TransparentBatches)
             {
                 foreach (var stage in this.Stages)
                 {

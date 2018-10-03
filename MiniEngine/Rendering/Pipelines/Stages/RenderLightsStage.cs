@@ -4,7 +4,7 @@ using MiniEngine.Rendering.Primitives;
 
 namespace MiniEngine.Rendering.Pipelines.Stages
 {
-    public sealed class RenderLightsStage : IModelPipelineStage
+    public sealed class RenderLightsStage : IModelPipelineStage, IParticlePipelineStage
     {
         private readonly LightingPipeline LightingPipeline;
         private readonly GBuffer GBuffer;
@@ -16,6 +16,11 @@ namespace MiniEngine.Rendering.Pipelines.Stages
         }
 
         public void Execute(PerspectiveCamera camera, ModelRenderBatch _)
+        {
+            this.LightingPipeline.Execute(camera, this.GBuffer);
+        }
+
+        public void Execute(PerspectiveCamera camera, ParticleRenderBatch _)
         {
             this.LightingPipeline.Execute(camera, this.GBuffer);
         }

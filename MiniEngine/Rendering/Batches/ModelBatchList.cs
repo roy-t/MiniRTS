@@ -2,9 +2,9 @@
 
 namespace MiniEngine.Rendering.Batches
 {
-    public sealed class RenderBatchList
+    public sealed class ModelBatchList
     {        
-        public RenderBatchList(ModelRenderBatch opaqueBatch, IReadOnlyList<ModelRenderBatch> transparentBatches)
+        public ModelBatchList(ModelRenderBatch opaqueBatch, IReadOnlyList<ModelRenderBatch> transparentBatches)
         {
             this.OpaqueBatch = opaqueBatch;
             this.TransparentBatches = transparentBatches;

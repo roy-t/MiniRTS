@@ -6,7 +6,7 @@ using MiniEngine.Rendering.Primitives;
 
 namespace MiniEngine.Rendering.Pipelines.Stages
 {
-    public sealed class AntiAliasStage : IModelPipelineStage
+    public sealed class AntiAliasStage : IModelPipelineStage, IParticlePipelineStage
     {        
         private readonly GraphicsDevice Device;
         private readonly PostProcessEffect Effect;
@@ -34,9 +34,9 @@ namespace MiniEngine.Rendering.Pipelines.Stages
             this.FullScreenTriangle = new FullScreenTriangle();
         }
 
-        public float Strength { get; }
+        public float Strength { get; }        
 
-        public void Execute(PerspectiveCamera camera, ModelRenderBatch batch)
+        private void Execute()
         {
             this.Device.SetRenderTarget(this.DestinationTarget);
             using (this.Device.PostProcessState())
@@ -52,5 +52,8 @@ namespace MiniEngine.Rendering.Pipelines.Stages
                 this.FullScreenTriangle.Render(this.Device);
             }
         }
+
+        public void Execute(PerspectiveCamera camera, ModelRenderBatch _) => Execute();
+        public void Execute(PerspectiveCamera camera, ParticleRenderBatch _) => Execute();
     }
 }

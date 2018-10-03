@@ -43,16 +43,20 @@ namespace MiniEngine.Configuration
             RegisterEffect<CombineEffect>("CombineEffect");
             RegisterEffect<PostProcessEffect>("PostProcessEffect");
 
-            RegisterContent<Effect>("clearEffect", "Effects");
-            RegisterContent<Effect>("postProcessOutlineEffect", "Effects");
-            RegisterContent<Effect>("directionalLightEffect", "Effects");
-            RegisterContent<Effect>("pointLightEffect", "Effects");
-            RegisterContent<Effect>("shadowCastingLightEffect", "Effects");
-            RegisterContent<Effect>("sunlightEffect", "Effects");
+            RegisterContent<Effect>("ClearEffect", "clearEffect", "Effects");
+            RegisterContent<Effect>("PostProcessOutlineEffect", "postProcessOutlineEffect", "Effects");
+            RegisterContent<Effect>("DirectionalLightEffect", "directionalLightEffect", "Effects");
+            RegisterContent<Effect>("PointLightEffect", "pointLightEffect", "Effects");
+            RegisterContent<Effect>("ShadowCastingLightEffect", "shadowCastingLightEffect", "Effects");
+            RegisterContent<Effect>("SunlightEffect", "sunlightEffect", "Effects");
 
+            // Textures
+            RegisterContent<Texture2D>("null_mask", "nullMask");
+            RegisterContent<Texture2D>("null_normal", "nullNormal");
+            RegisterContent<Texture2D>("null_specular", "nullSpecular");
 
             // Primitives
-            RegisterContent<Model>("sphere", "Effects");
+            RegisterContent<Model>("sphere", "sphere", "Effects");
 
             // Systems
             RegisterAllOf<ISystem>();
@@ -87,10 +91,10 @@ namespace MiniEngine.Configuration
             return this.Container.GetAllInstances<T>();
         }
 
-        private void RegisterContent<T>(string name, string folder = "")
+        private void RegisterContent<T>(string contentName, string named, string folder = "")
         {
-            var content = this.Content.Load<T>(Path.Combine(folder, name));
-            this.Container.RegisterInstance(typeof (T), content, name);
+            var content = this.Content.Load<T>(Path.Combine(folder, contentName));
+            this.Container.RegisterInstance(typeof (T), content, named);
         }
 
         private void RegisterEffect<T>(string name, string folder = "Effects")
@@ -112,6 +116,6 @@ namespace MiniEngine.Configuration
             this.Container.RegisterAssembly(
                 Assembly.GetExecutingAssembly(),
                 (s, _) => typeof (T).IsAssignableFrom(s) && s != typeof (T));
-        }
+        }      
     }
 }
