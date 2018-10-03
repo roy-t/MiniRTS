@@ -8,6 +8,7 @@ using MiniEngine.Rendering.Components;
 using MiniEngine.Rendering.Effects;
 using MiniEngine.Rendering.Primitives;
 using MiniEngine.Systems;
+using MiniEngine.Utilities.Extensions;
 
 namespace MiniEngine.Rendering.Systems
 {
@@ -22,6 +23,7 @@ namespace MiniEngine.Rendering.Systems
         private readonly Texture2D NullSpecularMap;
 
         private readonly Dictionary<Entity, Emitter> Emitters;
+        private readonly Quad Quad;
 
         public ParticleSystem(
             GraphicsDevice device,
@@ -35,7 +37,9 @@ namespace MiniEngine.Rendering.Systems
             this.NullMask = nullMask;
             this.NullNormalMap = nullNormal;
             this.NullSpecularMap = nullSpecular;
+
             this.Emitters = new Dictionary<Entity, Emitter>();
+            this.Quad = new Quad(device);
         }
 
         public void Add(Entity entity, Vector3 position, Texture2D texture, int rows, int columns)
@@ -61,12 +65,13 @@ namespace MiniEngine.Rendering.Systems
             {
                 foreach (var particle in emitter.Particles)
                 {
-                    var particlePose = UpdateParticle(emitter, particle);
+                    var particlePose = UpdateParticle(camera, emitter, particle);
                     particles.Add(particlePose);
                 }
             }
 
             var particleRenderBatch = new ParticleRenderBatch(
+                this.Quad,
                 this.Effect,
                 particles,
                 camera,
@@ -77,12 +82,34 @@ namespace MiniEngine.Rendering.Systems
             return new ParticleBatchList(particleBatches);
         }
 
-        private ParticlePose UpdateParticle(Emitter emitter, Particle particle)
+        private static int counter = 0;
+        private ParticlePose UpdateParticle(PerspectiveCamera camera, Emitter emitter, Particle particle)
         {
-            // TODO: do something with time and stuff
-            // TODO: move the quad to the particle render batch and just tell it which uv coordinates to use
-            var quad = new Quad(this.Device);
-            return new ParticlePose(quad, emitter.Texture, Matrix.CreateScale(100));            
+            var forward = Vector3.Normalize(camera.LookAt - camera.Position);
+            var matrix = Matrix.CreateScale(10)
+                         * Matrix.CreateBillboard(particle.Position, camera.Position, Vector3.Up, forward);
+                         
+
+            counter++;
+
+            var index = counter / 60;
+
+            GetFrame(index, emitter.Rows, emitter.Columns, out var minUvs, out var maxUvs);
+
+            // TODO: do something with time and stuff            
+            return new ParticlePose(minUvs, maxUvs, emitter.Texture, matrix);            
+        }
+
+        private void GetFrame(int frame, int rows, int columns, out Vector2 minUvs, out Vector2 maxUvs)
+        {
+            var row = frame / rows;
+            var column = frame % rows;
+
+            var width = 1.0f / columns;
+            var height = 1.0f / rows;
+
+            minUvs = new Vector2(column * width, row * height);
+            maxUvs = new Vector2((column + 1) * width, (row + 1) * height);
         }
     }
 }

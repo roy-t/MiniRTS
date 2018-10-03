@@ -30,6 +30,21 @@ namespace MiniEngine.Rendering.Primitives
 
             this.Indices = new short[] { 0, 1, 2, 2, 3, 0 };
         }
+
+        public void SetTextureCoordinates(Vector2 minUv, Vector2 maxUv)
+        {
+            this.Vertices[0].TextureCoordinate.X = maxUv.X;
+            this.Vertices[0].TextureCoordinate.Y = maxUv.Y;
+
+            this.Vertices[1].TextureCoordinate.X = minUv.X;
+            this.Vertices[1].TextureCoordinate.Y = maxUv.Y;
+
+            this.Vertices[2].TextureCoordinate.X = minUv.X;
+            this.Vertices[2].TextureCoordinate.Y = minUv.Y;
+
+            this.Vertices[3].TextureCoordinate.X = maxUv.X;
+            this.Vertices[3].TextureCoordinate.Y = minUv.Y;
+        }
                
         public void Render()
         {            

@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Rendering.Cameras;
 using MiniEngine.Rendering.Components;
 using MiniEngine.Rendering.Effects;
+using MiniEngine.Rendering.Primitives;
 
 namespace MiniEngine.Rendering.Batches
 {
@@ -10,19 +11,21 @@ namespace MiniEngine.Rendering.Batches
     {
         private readonly IReadOnlyList<ParticlePose> Particles;
         private readonly IViewPoint ViewPoint;
+        private readonly Quad Quad;
         private readonly RenderEffect Effect;    
 
         private readonly Texture2D NullMask;
         private readonly Texture2D NullNormalMap;
         private readonly Texture2D NullSpecularMap;
 
-        public ParticleRenderBatch(RenderEffect effect,
+        public ParticleRenderBatch(Quad quad, RenderEffect effect,
             IReadOnlyList<ParticlePose> particles,
             IViewPoint viewPoint,
             Texture2D nullMask,
             Texture2D nullNormalMap,
             Texture2D nullSpecularMap)
         {
+            this.Quad = quad;
             this.Effect = effect;
             this.Particles = particles;
             this.ViewPoint = viewPoint;
@@ -47,7 +50,8 @@ namespace MiniEngine.Rendering.Batches
                 this.Effect.World = particle.Pose;
                 this.Effect.Apply(Techniques.MRT);
 
-                particle.Quad.Render();                
+                this.Quad.SetTextureCoordinates(particle.MinUv, particle.MaxUv);
+                this.Quad.Render();
             }
         }        
     }

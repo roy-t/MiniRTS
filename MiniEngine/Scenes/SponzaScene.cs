@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Rendering.Components;
 using MiniEngine.Rendering.Systems;
 using MiniEngine.Units;
+using MiniEngine.Utilities.Extensions;
 
 namespace MiniEngine.Scenes
 {
@@ -67,29 +68,20 @@ namespace MiniEngine.Scenes
             var offset = new Vector3(1.0f, 0.25f, 0.0f) * 8;
 
             //this.ShadowCastingLightSystem.Add(this.planeEntity, position + offset, position - offset, Color.White);
-            
-            var world = Matrix.Identity
-                * Matrix.CreateScale(4.4f * 0.01f)
-                * Matrix.CreateRotationX(MathHelper.PiOver2)
-                * Matrix.CreateRotationY(MathHelper.PiOver2)                
-                * Matrix.CreateTranslation(position)
-                ;
-            this.ModelSystem.Add(this.planeEntity, this.plane, world, ModelType.Transparent);
-            
+
+            var world = MatrixExtensions.CreateScaleRotationTranslation(4.4f * 0.01f, MathHelper.PiOver2, MathHelper.PiOver2, 0, position);
+            this.ModelSystem.Add(this.planeEntity, this.plane, world, ModelType.Transparent);            
 
             this.planeEntity2 = this.EntityController.CreateEntity();
 
             position = new Vector3(-40.5f, 30.0f, -7.2f);                        
-            var world2 = Matrix.Identity
-                        * Matrix.CreateScale(4.4f * 0.01f)
-                        * Matrix.CreateRotationY(MathHelper.PiOver4)
-                        * Matrix.CreateTranslation(position)
-                ;
+            var world2 = MatrixExtensions.CreateScaleRotationTranslation(4.4f * 0.01f, 0, MathHelper.PiOver4, 0, position);
+
             this.ModelSystem.Add(this.planeEntity2, this.plane, world2, ModelType.Transparent);
 
 
             this.particleEntity = this.EntityController.CreateEntity();
-            this.ParticleSystem.Add(this.particleEntity, Vector3.Zero, this.explosion, 4, 4);
+            this.ParticleSystem.Add(this.particleEntity, new Vector3(-50.0f, 10.0f, 0.0f), this.explosion, 4, 4);
 
 
             //this.DebugRenderSystem.Add(this.worldEntity, this.sponza, Matrix.CreateScale(0.05f));

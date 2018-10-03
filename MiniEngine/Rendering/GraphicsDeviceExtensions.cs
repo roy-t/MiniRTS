@@ -26,6 +26,18 @@ namespace MiniEngine.Rendering
         }
 
         /// <summary>
+        /// Graphics device state for drawing geometry to the G-Buffer
+        /// </summary>
+        public static DeviceState ParticleState(this GraphicsDevice device)
+        {
+            return new DeviceState(
+                device,
+                BlendState.Opaque,
+                DepthStencilState.Default,
+                RasterizerState.CullNone);
+        }
+
+        /// <summary>
         /// Graphics device state for drawing lights to the Light Target
         /// </summary>
         public static DeviceState LightState(this GraphicsDevice device)

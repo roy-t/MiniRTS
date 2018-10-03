@@ -20,7 +20,7 @@ namespace MiniEngine.Rendering.Pipelines.Stages
         public void Execute(PerspectiveCamera camera, ParticleRenderBatch batch)
         {
             this.Device.SetRenderTargets(this.GBuffer.DiffuseTarget, this.GBuffer.NormalTarget, this.GBuffer.DepthTarget);
-            using (this.Device.GeometryState())
+            using (this.Device.ParticleState())
             {
                 batch.Draw(Techniques.MRT);
             }

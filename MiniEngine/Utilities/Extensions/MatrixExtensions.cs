@@ -14,5 +14,13 @@ namespace MiniEngine.Utilities.Extensions
         {
             return matrix * TexScaleTransform;
         }
+
+
+        public static Matrix CreateScaleRotationTranslation(float scale, float rotX, float rotY, float rotZ, Vector3 translation)
+        {
+            return Matrix.CreateScale(scale)
+                   * Matrix.CreateFromYawPitchRoll(rotY, rotX, rotZ)
+                   * Matrix.CreateTranslation(translation);
+        }
     }
 }

@@ -15,7 +15,7 @@ namespace MiniEngine.Rendering.Components
 
             this.Particles = new List<Particle>();
             // TODO: actually spawn particles and stuff
-            this.Particles.Add(new Particle());
+            this.Particles.Add(new Particle(position, Vector3.Zero, Vector3.Zero, 10.0f, 1.0f / 4.0f));
         }
 
         public Vector3 Position { get; }
