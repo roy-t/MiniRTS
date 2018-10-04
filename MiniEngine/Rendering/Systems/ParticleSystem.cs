@@ -8,7 +8,6 @@ using MiniEngine.Rendering.Components;
 using MiniEngine.Rendering.Effects;
 using MiniEngine.Rendering.Primitives;
 using MiniEngine.Systems;
-using MiniEngine.Utilities.Extensions;
 
 namespace MiniEngine.Rendering.Systems
 {
@@ -16,11 +15,10 @@ namespace MiniEngine.Rendering.Systems
     {
         private static readonly Random Random = new Random();
 
-        private readonly GraphicsDevice Device;
         private readonly RenderEffect Effect;
-        private readonly Texture2D NullMask;
-        private readonly Texture2D NullNormalMap;
-        private readonly Texture2D NullSpecularMap;
+        private readonly Texture2D NeutralMask;
+        private readonly Texture2D NeutralNormalMap;
+        private readonly Texture2D NeutralSpecularMap;
 
         private readonly Dictionary<Entity, Emitter> Emitters;
         private readonly Quad Quad;
@@ -28,15 +26,14 @@ namespace MiniEngine.Rendering.Systems
         public ParticleSystem(
             GraphicsDevice device,
             RenderEffect effect,
-            Texture2D nullMask,
-            Texture2D nullNormal,
-            Texture2D nullSpecular)
+            Texture2D neutralMask,
+            Texture2D neutralNormal,
+            Texture2D neutralSpecular)
         {
-            this.Device = device;
             this.Effect = effect;
-            this.NullMask = nullMask;
-            this.NullNormalMap = nullNormal;
-            this.NullSpecularMap = nullSpecular;
+            this.NeutralMask = neutralMask;
+            this.NeutralNormalMap = neutralNormal;
+            this.NeutralSpecularMap = neutralSpecular;
 
             this.Emitters = new Dictionary<Entity, Emitter>();
             this.Quad = new Quad(device);
@@ -75,9 +72,9 @@ namespace MiniEngine.Rendering.Systems
                 this.Effect,
                 particles,
                 camera,
-                this.NullMask,
-                this.NullNormalMap,
-                this.NullSpecularMap);
+                this.NeutralMask,
+                this.NeutralNormalMap,
+                this.NeutralSpecularMap);
             var particleBatches = new List<ParticleRenderBatch> {particleRenderBatch};
             return new ParticleBatchList(particleBatches);
         }

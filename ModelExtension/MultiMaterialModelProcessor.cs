@@ -27,13 +27,13 @@ namespace ModelExtension
         public virtual bool ProcessTextures { get; set; } = true;
 
         [DisplayName("Specular Map Fallback")]
-        public string SpecularMapFallback { get; set; } = "null_specular.tga";
+        public string SpecularMapFallback { get; set; } = "NeutralSpecular.tga";
 
         [DisplayName("Normal Map Fallback")]
-        public string NormalMapFallback { get; set; } = "null_normal.tga";
+        public string NormalMapFallback { get; set; } = "NeutralNormal.tga";
 
         [DisplayName("Mask Fallback")]
-        public string MaskFallback { get; set; } = "null_mask.tga";
+        public string MaskFallback { get; set; } = "NeutralMask.tga";
 
         [DisplayName("Effect File")]
         [Description("The effect file which shaders to apply to the model")]

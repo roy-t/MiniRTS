@@ -14,31 +14,31 @@ namespace MiniEngine.Rendering.Batches
         private readonly Quad Quad;
         private readonly RenderEffect Effect;    
 
-        private readonly Texture2D NullMask;
-        private readonly Texture2D NullNormalMap;
-        private readonly Texture2D NullSpecularMap;
+        private readonly Texture2D Mask;
+        private readonly Texture2D NormalMap;
+        private readonly Texture2D SpecularMap;
 
         public ParticleRenderBatch(Quad quad, RenderEffect effect,
             IReadOnlyList<ParticlePose> particles,
             IViewPoint viewPoint,
-            Texture2D nullMask,
-            Texture2D nullNormalMap,
-            Texture2D nullSpecularMap)
+            Texture2D mask,
+            Texture2D normalMap,
+            Texture2D specularMap)
         {
             this.Quad = quad;
             this.Effect = effect;
             this.Particles = particles;
             this.ViewPoint = viewPoint;
-            this.NullMask = nullMask;
-            this.NullNormalMap = nullNormalMap;
-            this.NullSpecularMap = nullSpecularMap;
+            this.Mask = mask;
+            this.NormalMap = normalMap;
+            this.SpecularMap = specularMap;
         }
 
         public void Draw(Techniques technique)
         {
-            this.Effect.Mask = this.NullMask;
-            this.Effect.NormalMap = this.NullNormalMap;
-            this.Effect.SpecularMap = this.NullSpecularMap;
+            this.Effect.Mask = this.Mask;
+            this.Effect.NormalMap = this.NormalMap;
+            this.Effect.SpecularMap = this.SpecularMap;
 
             this.Effect.Projection = this.ViewPoint.Projection;
             this.Effect.View = this.ViewPoint.View;

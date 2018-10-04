@@ -51,9 +51,9 @@ namespace MiniEngine.Configuration
             RegisterContent<Effect>("SunlightEffect", "sunlightEffect", "Effects");
 
             // Textures
-            RegisterContent<Texture2D>("null_mask", "nullMask");
-            RegisterContent<Texture2D>("null_normal", "nullNormal");
-            RegisterContent<Texture2D>("null_specular", "nullSpecular");
+            RegisterContent<Texture2D>("NeutralMask", "neutralMask");
+            RegisterContent<Texture2D>("NeutralNormal", "neutralNormal");
+            RegisterContent<Texture2D>("NeutralSpecular", "neutralSpecular");
 
             // Primitives
             RegisterContent<Model>("sphere", "sphere", "Effects");
