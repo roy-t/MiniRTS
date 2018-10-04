@@ -15,14 +15,17 @@ namespace MiniEngine.Rendering.Systems
 
         private readonly GraphicsDevice Device;
         private readonly ModelSystem ModelSystem;
+        private readonly ParticleSystem ParticleSystem;
         private readonly Dictionary<Entity, ShadowMap> ShadowMaps;
 
         public ShadowMapSystem(
             GraphicsDevice device,
-            ModelSystem modelSystem)
+            ModelSystem modelSystem,
+            ParticleSystem particleSystem)
         {
             this.Device = device;
             this.ModelSystem = modelSystem;
+            this.ParticleSystem = particleSystem;
 
             this.ShadowMaps = new Dictionary<Entity, ShadowMap>();
         }
@@ -57,14 +60,15 @@ namespace MiniEngine.Rendering.Systems
             {
                 for (var i = 0; i < shadowMap.Cascades; i++)
                 {
-                    var batches = this.ModelSystem.ComputeBatches(shadowMap.ViewPoints[i]);
+                    var modelBatchList = this.ModelSystem.ComputeBatches(shadowMap.ViewPoints[i]);
+                    var particleBatchList = this.ParticleSystem.ComputeBatches(shadowMap.ViewPoints[i], 0.0f);
 
                     this.Device.SetRenderTarget(shadowMap.DepthMap, i);
                     this.Device.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.White, 1.0f, 0);
 
                     using (this.Device.ShadowMapState())
                     {
-                        batches.OpaqueBatch.Draw(Techniques.ShadowMap);                                          
+                        modelBatchList.OpaqueBatch.Draw(Techniques.ShadowMap);                                          
                     }
 
                     // Use the same depth buffer to generate the color buffer
@@ -73,10 +77,15 @@ namespace MiniEngine.Rendering.Systems
 
                     using (this.Device.ColorMapState())
                     {
-                        foreach (var batch in batches.TransparentBatches)
+                        foreach (var batch in modelBatchList.TransparentBatches)
                         {
                             batch.Draw(Techniques.ColorMap);
-                        }                        
+                        }
+
+                        foreach (var batch in particleBatchList.Batches)
+                        {
+                            batch.Draw(Techniques.ColorMap);
+                        }
                     }
                 }
             }

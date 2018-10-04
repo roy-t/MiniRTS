@@ -1,5 +1,6 @@
 ﻿using MiniEngine.Rendering.Cameras;
 using MiniEngine.Rendering.Systems;
+using MiniEngine.Units;
 
 namespace MiniEngine.Rendering.Pipelines.Stages
 {
@@ -14,10 +15,10 @@ namespace MiniEngine.Rendering.Pipelines.Stages
             this.ModelPipeline = modelPipeline;
         }
 
-        public void Execute(PerspectiveCamera camera)
+        public void Execute(PerspectiveCamera camera, Seconds elapsed)
         {
             var modelBatchList = this.ModelSystem.ComputeBatches(camera);
-            this.ModelPipeline.Execute(camera, modelBatchList);
+            this.ModelPipeline.Execute(camera, modelBatchList, elapsed);
         }
     }
 }

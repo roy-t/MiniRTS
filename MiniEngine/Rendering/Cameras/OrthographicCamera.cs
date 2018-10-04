@@ -35,8 +35,14 @@ namespace MiniEngine.Rendering.Cameras
         public Matrix Projection { get; private set; }
         public BoundingFrustum Frustum { get; private set; }
 
+        public Vector3 Position { get; private set; }
+        public Vector3 Forward { get; private set; }
+
         public void Move(Vector3 position, Vector3 lookAt)
         {
+            this.Position = position;
+            this.Forward = Vector3.Normalize(lookAt - position);
+
             this.View = Matrix.CreateLookAt(position, lookAt, Vector3.Up);
             this.Projection = Matrix.CreateOrthographicOffCenter(
                 this.MinX,

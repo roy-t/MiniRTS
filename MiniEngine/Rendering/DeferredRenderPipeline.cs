@@ -6,6 +6,7 @@ using MiniEngine.Rendering.Pipelines;
 using MiniEngine.Rendering.Pipelines.Extensions;
 using MiniEngine.Rendering.Primitives;
 using MiniEngine.Rendering.Systems;
+using MiniEngine.Units;
 
 namespace MiniEngine.Rendering
 {
@@ -52,7 +53,8 @@ namespace MiniEngine.Rendering
                                 .RenderDirectionalLights(directionalLightSystem)
                                 .RenderPointLights(pointLightSystem)
                                 .RenderShadowCastingLights(shadowCastingLightSystem)
-                                .RenderSunlights(sunlightSystem);
+                                .RenderSunlights(sunlightSystem);            
+                                
 
             var modelPipeline =
                 ModelPipeline.Create(device)
@@ -71,6 +73,7 @@ namespace MiniEngine.Rendering
                                 .Clear(this.GBuffer.DiffuseTarget, ClearOptions.Target, Color.TransparentBlack, 1, 0)
                                 .Clear(this.GBuffer.NormalTarget, new Color(0.5f, 0.5f, 0.5f, 0.0f))
                                 .Clear(this.GBuffer.DepthTarget, Color.TransparentBlack)
+                                //.Clear(this.GBuffer.LightTarget, new Color(255, 255, 255, 0)) // TODO: particles do not interact with light yet
                                 .Clear(combineTarget, Color.TransparentBlack)
                                 .RenderParticleBatch(this.GBuffer)
                                 .RenderLights(lightingPipeline, this.GBuffer)
@@ -85,15 +88,15 @@ namespace MiniEngine.Rendering
                         .Clear(this.GBuffer.DiffuseTarget, Color.TransparentBlack)
                         .Clear(this.PostProcessTarget, Color.Black)
                         .UpdateCascades(sunlightSystem)
-                        .RenderShadowMaps(shadowMapSystem)
-                        .RenderModels(modelSystem, modelPipeline)
+                        .RenderShadowMaps(shadowMapSystem)                        
+                        .RenderModels(modelSystem, modelPipeline)                        
                         .RenderParticles(particleSystem, particlePipeline)
                         .Render2DDebugOverlay(debugRenderSystem, this.PostProcessTarget);            
         }
 
-        public RenderTarget2D Render(PerspectiveCamera camera)
+        public RenderTarget2D Render(PerspectiveCamera camera, Seconds elapsed)
         {
-            this.Pipeline.Execute(camera);
+            this.Pipeline.Execute(camera, elapsed);
             return this.PostProcessTarget;
         }
 

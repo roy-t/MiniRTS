@@ -8,6 +8,7 @@ using MiniEngine.Rendering.Cameras;
 using MiniEngine.Scenes;
 using System.Collections.Generic;
 using System.Linq;
+using MiniEngine.Units;
 using MiniEngine.Utilities;
 using KeyboardInput = MiniEngine.Input.KeyboardInput;
 
@@ -146,10 +147,11 @@ namespace MiniEngine
             this.Window.Title = $"{gameTime.ElapsedGameTime.TotalMilliseconds:F2}ms, {(1.0f / gameTime.ElapsedGameTime.TotalSeconds):F2} fps, Fixed Time Step: {this.IsFixedTimeStep} (press 'F' so switch). Input State: {this.debugController.DescribeState()}";
             this.Window.Title +=
                 $" camera ({this.perspectiveCamera.Position.X:F2}, {this.perspectiveCamera.Position.Y:F2}, {this.perspectiveCamera.Position.Z:F2})";
+            
+            var result = this.renderPipeline.Render(this.perspectiveCamera, (float)gameTime.ElapsedGameTime.TotalSeconds);
 
-            this.GraphicsDevice.Clear(Color.CornflowerBlue);
-            var result = this.renderPipeline.Render(this.perspectiveCamera);
             this.GraphicsDevice.SetRenderTarget(null);
+            this.GraphicsDevice.Clear(Color.CornflowerBlue);
 
             this.spriteBatch.Begin(
                 SpriteSortMode.Deferred,

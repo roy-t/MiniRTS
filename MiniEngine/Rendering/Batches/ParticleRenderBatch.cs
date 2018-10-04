@@ -48,7 +48,7 @@ namespace MiniEngine.Rendering.Batches
                 this.Effect.DiffuseMap = particle.Texture;
                 
                 this.Effect.World = particle.Pose;
-                this.Effect.Apply(Techniques.MRT);
+                this.Effect.Apply(technique);
 
                 this.Quad.SetTextureCoordinates(particle.MinUv, particle.MaxUv);
                 this.Quad.Render();

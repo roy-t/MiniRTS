@@ -3,6 +3,7 @@ using MiniEngine.Rendering.Batches;
 using MiniEngine.Rendering.Cameras;
 using MiniEngine.Rendering.Effects;
 using MiniEngine.Rendering.Primitives;
+using MiniEngine.Units;
 
 namespace MiniEngine.Rendering.Pipelines.Stages
 {
@@ -40,7 +41,7 @@ namespace MiniEngine.Rendering.Pipelines.Stages
             this.Device.SetRenderTarget(null);
         }
 
-        public void Execute(PerspectiveCamera camera, ModelRenderBatch _) => Execute();
-        public void Execute(PerspectiveCamera camera, ParticleRenderBatch _) => Execute();
+        public void Execute(PerspectiveCamera camera, ModelRenderBatch _, Seconds __) => Execute();
+        public void Execute(PerspectiveCamera camera, ParticleRenderBatch _, Seconds __) => Execute();
     }
 }

@@ -1,7 +1,10 @@
 # Worklist
 ## TODO
 
-- Make sprites used in shadowmapper, do not give them shininess
+- Particles do not play nice with lights, at all, and the shadows also look weird!
+  - See temp changes to RenderParticlsBatchStage and DeferredRenderPipeline, as well Particle.hlsl
+  - Probably need to draw the Diffuse in additive mode and then to the normal and depth in opaque mode. 
+  - Then agressive blending on the normals, check if AA step doesn't mess things up.
 - Move all effects to wrappers
 - The code for the sunlight effect is still too complicated for what it does, especially the C# code is a mess.
 

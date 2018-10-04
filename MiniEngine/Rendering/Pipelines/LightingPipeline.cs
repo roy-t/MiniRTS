@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Rendering.Cameras;
 using MiniEngine.Rendering.Primitives;
+using MiniEngine.Units;
 
 namespace MiniEngine.Rendering.Pipelines
 {
@@ -22,11 +23,11 @@ namespace MiniEngine.Rendering.Pipelines
             this.Stages.Add(stage);
         }
 
-        public void Execute(PerspectiveCamera camera, GBuffer gBuffer)
+        public void Execute(PerspectiveCamera camera, GBuffer gBuffer, Seconds elapsed)
         {
             foreach (var stage in this.Stages)
             {
-                stage.Execute(camera, gBuffer);
+                stage.Execute(camera, gBuffer, elapsed);
             }
         }
 

@@ -30,10 +30,10 @@ namespace MiniEngine.Rendering.Primitives
         public GBufferVertex(Vector3 position, Vector2 textureCoordinate)
         {
             this.Position = new Vector4(position, 1);
-            this.Normal = Vector3.UnitZ;
+            this.Normal = Vector3.Forward;
             this.TextureCoordinate = textureCoordinate;
-            this.BiNormal = Vector3.UnitX;
-            this.Tangent = Vector3.UnitY;
+            this.BiNormal = Vector3.Up;
+            this.Tangent = Vector3.Right;
         }
 
         public VertexDeclaration VertexDeclaration => Declaration;

@@ -22,9 +22,13 @@ namespace MiniEngine.Scenes
         private Entity planeEntity;
         private Entity planeEntity2;
         private Entity particleEntity;
+        private Entity particleEntity2;
+        private Entity particleEntity3;
         private Model sponza;
         private Model plane;
         private Texture2D explosion;
+        private Texture2D explosion2;
+        private Texture2D smoke;
 
         public SponzaScene(
             EntityController entityController,
@@ -49,6 +53,8 @@ namespace MiniEngine.Scenes
             this.sponza = content.Load<Model>(@"Scenes\Sponza\Sponza");
             this.plane = content.Load<Model>(@"Scenes\Sponza\Plane");
             this.explosion = content.Load<Texture2D>(@"Particles\Explosion");
+            this.explosion2 = content.Load<Texture2D>(@"Particles\Explosion2");
+            this.smoke = content.Load<Texture2D>(@"Particles\Smoke");
         }
 
         public void Set()
@@ -81,7 +87,13 @@ namespace MiniEngine.Scenes
 
 
             this.particleEntity = this.EntityController.CreateEntity();
-            this.ParticleSystem.Add(this.particleEntity, new Vector3(-50.0f, 10.0f, 0.0f), this.explosion, 4, 4);
+            this.ParticleSystem.Add(this.particleEntity, new Vector3(-50.0f, 10.0f, 0.0f), this.smoke, 1, 1);
+
+            this.particleEntity2 = this.EntityController.CreateEntity();
+            this.ParticleSystem.Add(this.particleEntity2, new Vector3(-50.0f, 10.0f, 0.0f), this.explosion, 8, 8);
+
+            this.particleEntity3 = this.EntityController.CreateEntity();
+            this.ParticleSystem.Add(this.particleEntity3, new Vector3(-50.0f, 10.0f, 0.0f), this.explosion2, 1, 1);
 
 
             //this.DebugRenderSystem.Add(this.worldEntity, this.sponza, Matrix.CreateScale(0.05f));

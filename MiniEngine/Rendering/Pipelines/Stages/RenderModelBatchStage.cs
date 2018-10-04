@@ -3,6 +3,7 @@ using MiniEngine.Rendering.Batches;
 using MiniEngine.Rendering.Cameras;
 using MiniEngine.Rendering.Effects;
 using MiniEngine.Rendering.Primitives;
+using MiniEngine.Units;
 
 namespace MiniEngine.Rendering.Pipelines.Stages
 {
@@ -17,7 +18,7 @@ namespace MiniEngine.Rendering.Pipelines.Stages
             this.GBuffer = gBuffer;
         }
 
-        public void Execute(PerspectiveCamera camera, ModelRenderBatch batch)
+        public void Execute(PerspectiveCamera camera, ModelRenderBatch batch, Seconds _)
         {
             this.Device.SetRenderTargets(this.GBuffer.DiffuseTarget, this.GBuffer.NormalTarget, this.GBuffer.DepthTarget);
             using (this.Device.GeometryState())

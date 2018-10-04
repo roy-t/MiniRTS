@@ -3,6 +3,7 @@
     public enum Techniques
     {
         MRT,
+        Particle,
         ShadowMap,
         ColorMap
     }

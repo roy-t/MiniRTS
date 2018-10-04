@@ -17,13 +17,26 @@ namespace MiniEngine.Rendering
         }
 
         /// <summary>
-        /// Graphics device state for drawing geometry to the G-Buffer
+        /// Graphics device state for drawing particles to the G-Buffer
+        /// </summary>
+        public static DeviceState ParticleMRTState(this GraphicsDevice device)
+        {
+            return new DeviceState(
+                device,
+                BlendState.Opaque,
+                DepthStencilState.DepthRead,
+                RasterizerState.CullNone);
+        }
+
+
+        /// <summary>
+        /// Graphics device state for drawing particles to the G-Buffer
         /// </summary>
         public static DeviceState ParticleState(this GraphicsDevice device)
         {
             return new DeviceState(
                 device,
-                BlendState.Opaque,
+                BlendState.Additive,
                 DepthStencilState.Default,
                 RasterizerState.CullNone);
         }
@@ -90,6 +103,16 @@ namespace MiniEngine.Rendering
 
                 ColorDestinationBlend = Blend.InverseSourceAlpha,
                 AlphaDestinationBlend = Blend.InverseSourceAlpha
+            };
+
+            var blendState2 = new BlendState()
+            {
+                ColorSourceBlend = Blend.SourceAlpha,
+                ColorDestinationBlend = Blend.One,
+                ColorBlendFunction = BlendFunction.ReverseSubtract,
+                AlphaSourceBlend = Blend.SourceAlpha,
+                AlphaDestinationBlend = Blend.One,
+                AlphaBlendFunction = BlendFunction.ReverseSubtract
             };
 
             var rasterizerState = new RasterizerState

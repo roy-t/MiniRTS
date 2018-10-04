@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Rendering.Cameras;
 using MiniEngine.Rendering.Systems;
+using MiniEngine.Units;
 
 namespace MiniEngine.Rendering.Pipelines.Stages
 {
@@ -17,7 +18,7 @@ namespace MiniEngine.Rendering.Pipelines.Stages
             this.DestinationTarget = destinationTarget;
         }
 
-        public void Execute(PerspectiveCamera camera)
+        public void Execute(PerspectiveCamera camera, Seconds _)
         {
             this.Device.SetRenderTarget(this.DestinationTarget);
             this.DebugRenderSystem.Render2DOverlay(camera);

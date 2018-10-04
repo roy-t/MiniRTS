@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 
 namespace MiniEngine.Units
 {
@@ -79,7 +80,12 @@ namespace MiniEngine.Units
         public bool Equals(Seconds other)
         {
             return other.Value == this.Value;
-        }        
+        }
+
+        public override string ToString()
+        {
+            return $"{this.Value.ToString(CultureInfo.InvariantCulture)}s";
+        }
     }
 
     public struct Minutes

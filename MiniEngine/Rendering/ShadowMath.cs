@@ -67,7 +67,7 @@ namespace MiniEngine.Rendering
             shadowProj.M42 += roundOffset.Y;
             shadowProj.M43 += roundOffset.Z;
 
-            return new ViewPoint(viewPoint.View, shadowProj);
+            return new ViewPoint(viewPoint.View, shadowProj, viewPoint.Position, viewPoint.Forward);
         }
     }
 }

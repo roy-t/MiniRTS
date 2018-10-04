@@ -8,12 +8,13 @@ using MiniEngine.Rendering.Components;
 using MiniEngine.Rendering.Effects;
 using MiniEngine.Rendering.Primitives;
 using MiniEngine.Systems;
+using MiniEngine.Units;
 
 namespace MiniEngine.Rendering.Systems
 {
     public sealed class ParticleSystem : ISystem
     {
-        private static readonly Random Random = new Random();
+        private static readonly DistanceComparer PoseComparer = new DistanceComparer();
 
         private readonly RenderEffect Effect;
         private readonly Texture2D NeutralMask;
@@ -54,50 +55,45 @@ namespace MiniEngine.Rendering.Systems
 
         public void Remove(Entity entity) => this.Emitters.Remove(entity);
 
-        public ParticleBatchList ComputeBatches(PerspectiveCamera camera)
+        public ParticleBatchList ComputeBatches(IViewPoint viewPoint, Seconds elapsed)
         {
             var particles = new List<ParticlePose>();
 
             foreach (var emitter in this.Emitters.Values)
             {
+                emitter.Update(elapsed);
                 foreach (var particle in emitter.Particles)
                 {
-                    var particlePose = UpdateParticle(camera, emitter, particle);
+                    var particlePose = ComputePose(viewPoint, emitter, particle);
                     particles.Add(particlePose);
                 }
             }
+            
+            particles.Sort(PoseComparer);
 
             var particleRenderBatch = new ParticleRenderBatch(
                 this.Quad,
                 this.Effect,
                 particles,
-                camera,
+                viewPoint,
                 this.NeutralMask,
                 this.NeutralNormalMap,
                 this.NeutralSpecularMap);
-            var particleBatches = new List<ParticleRenderBatch> {particleRenderBatch};
+            var particleBatches = new List<ParticleRenderBatch> {particleRenderBatch};            
             return new ParticleBatchList(particleBatches);
         }
 
-        private static int counter = 0;
-        private ParticlePose UpdateParticle(PerspectiveCamera camera, Emitter emitter, Particle particle)
-        {
-            var forward = Vector3.Normalize(camera.LookAt - camera.Position);
-            var matrix = Matrix.CreateScale(10)
-                         * Matrix.CreateBillboard(particle.Position, camera.Position, Vector3.Up, forward);
+        private static ParticlePose ComputePose(IViewPoint viewPoint, Emitter emitter, Particle particle)
+        {                        
+            var matrix = Matrix.CreateScale(particle.Scale)
+                         * Matrix.CreateBillboard(particle.Position, viewPoint.Position, Vector3.Up, viewPoint.Forward);
                          
 
-            counter++;
-
-            var index = counter / 60;
-
-            GetFrame(index, emitter.Rows, emitter.Columns, out var minUvs, out var maxUvs);
-
-            // TODO: do something with time and stuff            
-            return new ParticlePose(minUvs, maxUvs, emitter.Texture, matrix);            
+            GetFrame(particle.Frame, emitter.Rows, emitter.Columns, out var minUvs, out var maxUvs);
+            return new ParticlePose(minUvs, maxUvs, emitter.Texture, matrix, Vector3.Distance(particle.Position, viewPoint.Position));            
         }
 
-        private void GetFrame(int frame, int rows, int columns, out Vector2 minUvs, out Vector2 maxUvs)
+        private static void GetFrame(int frame, int rows, int columns, out Vector2 minUvs, out Vector2 maxUvs)
         {
             var row = frame / rows;
             var column = frame % rows;
@@ -108,5 +104,13 @@ namespace MiniEngine.Rendering.Systems
             minUvs = new Vector2(column * width, row * height);
             maxUvs = new Vector2((column + 1) * width, (row + 1) * height);
         }
-    }
+
+        private class DistanceComparer : IComparer<ParticlePose>
+        {
+            public int Compare(ParticlePose x, ParticlePose y)
+            {
+                return y.Distance.CompareTo(x.Distance);
+            }
+        }
+    }   
 }

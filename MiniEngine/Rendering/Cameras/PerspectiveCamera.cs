@@ -22,6 +22,7 @@ namespace MiniEngine.Rendering.Cameras
 
         public Vector3 Position { get; private set; }
         public Vector3 LookAt { get; private set; }
+        public Vector3 Forward { get; private set; }
 
         public Matrix View { get; private set; }
         public Matrix Projection { get; private set; }
@@ -35,6 +36,8 @@ namespace MiniEngine.Rendering.Cameras
         {
             this.Position = position;
             this.LookAt = lookAt;
+
+            this.Forward = Vector3.Normalize(lookAt - position);
 
             this.View = Matrix.CreateLookAt(this.Position, this.LookAt, Vector3.Up);
             this.Projection = Matrix.CreatePerspectiveFieldOfView(

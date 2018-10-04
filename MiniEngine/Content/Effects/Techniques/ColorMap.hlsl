@@ -37,6 +37,10 @@ CMPixelShaderOutput CMMainPS(CMVertexShaderOutput input)
     float2 texCoord = input.TexCoord;
 
     output.Color = tex2D(diffuseSampler, texCoord);
+    /*output.Color.r = 1.0f - output.Color.r;
+    output.Color.g = 1.0f - output.Color.g;
+    output.Color.b = 1.0f - output.Color.b;*/
+    
     output.Color.rgb *= (1.0f - output.Color.a);
     
     return output;

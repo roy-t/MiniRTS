@@ -2,6 +2,7 @@
 using MiniEngine.Rendering.Cameras;
 using MiniEngine.Rendering.Primitives;
 using MiniEngine.Rendering.Systems;
+using MiniEngine.Units;
 
 namespace MiniEngine.Rendering.Pipelines.Stages
 {
@@ -16,7 +17,7 @@ namespace MiniEngine.Rendering.Pipelines.Stages
             this.SunlightSystem = sunlightSystem;
         }
 
-        public void Execute(PerspectiveCamera camera, GBuffer gBuffer)
+        public void Execute(PerspectiveCamera camera, GBuffer gBuffer, Seconds _)
         {
             this.Device.SetRenderTarget(gBuffer.LightTarget);
             this.SunlightSystem.RenderLights(camera, gBuffer);

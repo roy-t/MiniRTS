@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Rendering.Cameras;
+using MiniEngine.Units;
 
 namespace MiniEngine.Rendering.Pipelines
 {
@@ -21,11 +22,11 @@ namespace MiniEngine.Rendering.Pipelines
             this.Stages.Add(stage);
         }
 
-        public void Execute(PerspectiveCamera camera)
+        public void Execute(PerspectiveCamera camera, Seconds elapsed)
         {
             foreach (var stage in this.Stages)
             {
-                stage.Execute(camera);
+                stage.Execute(camera, elapsed);
             }
         }
 

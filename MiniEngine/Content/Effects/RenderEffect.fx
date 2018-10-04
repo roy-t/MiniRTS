@@ -54,6 +54,7 @@ sampler maskSampler = sampler_state
 };
 
 #include "Techniques/MRT.hlsl"
+#include "Techniques/Particle.hlsl"
 #include "Techniques/ShadowMap.hlsl"
 #include "Techniques/ColorMap.hlsl"
 

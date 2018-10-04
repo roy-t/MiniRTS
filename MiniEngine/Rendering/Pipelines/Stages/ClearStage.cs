@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Rendering.Batches;
 using MiniEngine.Rendering.Cameras;
 using MiniEngine.Rendering.Primitives;
+using MiniEngine.Units;
 
 namespace MiniEngine.Rendering.Pipelines.Stages
 {
@@ -32,9 +33,9 @@ namespace MiniEngine.Rendering.Pipelines.Stages
             this.Device.Clear(this.Options, this.Color, this.Depth, this.Stencil);
         }
 
-        public void Execute(PerspectiveCamera _) => Execute();
-        public void Execute(PerspectiveCamera _, ModelRenderBatch __) => Execute();
-        public void Execute(PerspectiveCamera _, ParticleRenderBatch __) => Execute();
-        public void Execute(PerspectiveCamera _, GBuffer __) => Execute();
+        public void Execute(PerspectiveCamera _, Seconds __) => Execute();
+        public void Execute(PerspectiveCamera _, ModelRenderBatch __, Seconds ___) => Execute();
+        public void Execute(PerspectiveCamera _, ParticleRenderBatch __, Seconds ___) => Execute();
+        public void Execute(PerspectiveCamera _, GBuffer __, Seconds ___) => Execute();
     }
 }

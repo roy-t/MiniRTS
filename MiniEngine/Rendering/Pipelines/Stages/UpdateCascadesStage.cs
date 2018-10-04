@@ -1,5 +1,6 @@
 ﻿using MiniEngine.Rendering.Cameras;
 using MiniEngine.Rendering.Systems;
+using MiniEngine.Units;
 
 namespace MiniEngine.Rendering.Pipelines.Stages
 {
@@ -12,7 +13,7 @@ namespace MiniEngine.Rendering.Pipelines.Stages
             this.SunlightSystem = sunlightSystem;
         }
 
-        public void Execute(PerspectiveCamera camera)
+        public void Execute(PerspectiveCamera camera, Seconds _)
         {
             this.SunlightSystem.Update(camera);
         }

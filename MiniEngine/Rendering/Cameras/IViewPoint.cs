@@ -7,5 +7,8 @@ namespace MiniEngine.Rendering.Cameras
         Matrix View { get; }
         Matrix Projection { get; }
         BoundingFrustum Frustum { get; }
+
+        Vector3 Position { get; }
+        Vector3 Forward { get; }
     }
 }

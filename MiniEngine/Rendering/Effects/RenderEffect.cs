@@ -58,6 +58,9 @@ namespace MiniEngine.Rendering.Effects
                 case Techniques.MRT:
                     this.effect.CurrentTechnique = this.effect.Techniques["MRT"];
                     break;
+                case Techniques.Particle:
+                    this.effect.CurrentTechnique = this.effect.Techniques["Particle"];
+                    break;
                 case Techniques.ShadowMap:
                     this.effect.CurrentTechnique = this.effect.Techniques["ShadowMap"];
                     break;
