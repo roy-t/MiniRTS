@@ -6,61 +6,39 @@ using MiniEngine.Rendering.Primitives;
 
 namespace MiniEngine.Rendering.Pipelines.Stages
 {
-    public sealed class AntiAliasStage : IModelPipelineStage, IParticlePipelineStage
+    public sealed class CopyColorsStage : IParticlePipelineStage
     {
         private readonly RenderTarget2D DestinationTarget;
         private readonly GraphicsDevice Device;
-        private readonly PostProcessEffect Effect;
-
+        private readonly CopyEffect Effect;
         private readonly FullScreenTriangle FullScreenTriangle;
-        private readonly GBuffer GBuffer;
         private readonly RenderTarget2D SourceTarget;
 
-        public AntiAliasStage(
+        public CopyColorsStage(
             GraphicsDevice device,
-            PostProcessEffect effect,
+            CopyEffect effect,
             RenderTarget2D sourceTarget,
-            RenderTarget2D destinationTarget,
-            GBuffer gBuffer,
-            float strength)
+            RenderTarget2D destinationTarget)
         {
-            this.Strength = strength;
             this.Device = device;
             this.Effect = effect;
             this.SourceTarget = sourceTarget;
             this.DestinationTarget = destinationTarget;
-            this.GBuffer = gBuffer;
-
             this.FullScreenTriangle = new FullScreenTriangle();
         }
 
-        public float Strength { get; }
-
-        public void Execute(PerspectiveCamera camera, ModelRenderBatch _)
-        {
-            Execute();
-        }
-
-        public void Execute(PerspectiveCamera camera, ParticleRenderBatch _)
-        {
-            Execute();
-        }
-
-        private void Execute()
+        public void Execute(PerspectiveCamera camera, ParticleRenderBatch batch)
         {
             this.Device.SetRenderTarget(this.DestinationTarget);
             using (this.Device.PostProcessState())
             {
-                this.Effect.ScaleX = 1.0f / this.SourceTarget.Width;
-                this.Effect.ScaleY = 1.0f / this.SourceTarget.Height;
                 this.Effect.DiffuseMap = this.SourceTarget;
-                this.Effect.NormalMap = this.GBuffer.NormalTarget;
-                this.Effect.Strength = this.Strength;
-
                 this.Effect.Apply();
 
                 this.FullScreenTriangle.Render(this.Device);
             }
+
+            this.Device.SetRenderTarget(null);
         }
     }
 }

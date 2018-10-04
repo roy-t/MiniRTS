@@ -1,5 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using System;
+﻿using System;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace MiniEngine.Rendering
 {
@@ -18,10 +18,14 @@ namespace MiniEngine.Rendering
             RasterizerState rasterizerState)
             : this(device, blendState, depthStencilState, rasterizerState, device.SamplerStates[0])
         {
-
         }
 
-        public DeviceState(GraphicsDevice device, BlendState blendState, DepthStencilState depthStencilState, RasterizerState rasterizerState, SamplerState samplerState)
+        public DeviceState(
+            GraphicsDevice device,
+            BlendState blendState,
+            DepthStencilState depthStencilState,
+            RasterizerState rasterizerState,
+            SamplerState samplerState)
         {
             this.Device = device;
             this.PreviousBlendState = device.BlendState;

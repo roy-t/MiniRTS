@@ -2,12 +2,11 @@
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Rendering.Cameras;
 using MiniEngine.Rendering.Primitives;
-using MiniEngine.Units;
 
 namespace MiniEngine.Rendering.Pipelines
 {
     public sealed class LightingPipeline
-    {        
+    {
         private readonly List<ILightingPipelineStage> Stages;
 
         public LightingPipeline(GraphicsDevice device)
@@ -23,12 +22,10 @@ namespace MiniEngine.Rendering.Pipelines
             this.Stages.Add(stage);
         }
 
-        public void Execute(PerspectiveCamera camera, GBuffer gBuffer, Seconds elapsed)
+        public void Execute(PerspectiveCamera camera, GBuffer gBuffer)
         {
             foreach (var stage in this.Stages)
-            {
-                stage.Execute(camera, gBuffer, elapsed);
-            }
+                stage.Execute(camera, gBuffer);
         }
 
         public static LightingPipeline Create(GraphicsDevice device)

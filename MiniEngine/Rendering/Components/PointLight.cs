@@ -3,7 +3,7 @@
 namespace MiniEngine.Rendering.Components
 {
     public class PointLight
-    {        
+    {
         public PointLight(Vector3 position, Color color, float radius, float intensity)
         {
             this.Position = position;

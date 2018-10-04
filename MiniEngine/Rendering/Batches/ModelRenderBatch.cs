@@ -10,10 +10,10 @@ namespace MiniEngine.Rendering.Batches
     public sealed class ModelRenderBatch
     {
         private static Matrix[] SharedBoneMatrix;
-        
+        private readonly RenderEffect Effect;
+
         private readonly IReadOnlyList<ModelPose> Models;
         private readonly IViewPoint ViewPoint;
-        private readonly RenderEffect Effect;        
 
         public ModelRenderBatch(IReadOnlyList<ModelPose> models, IViewPoint viewPoint)
         {
@@ -25,18 +25,14 @@ namespace MiniEngine.Rendering.Batches
         public void Draw(Techniques technique)
         {
             foreach (var modelPose in this.Models)
-            {
                 DrawModel(technique, modelPose.Model, modelPose.Pose, this.ViewPoint);
-            }
         }
 
         private void DrawModel(Techniques technique, Model model, Matrix world, IViewPoint viewPoint)
         {
             var bones = model.Bones.Count;
             if (SharedBoneMatrix == null || SharedBoneMatrix.Length < bones)
-            {
                 SharedBoneMatrix = new Matrix[bones];
-            }
 
             model.CopyAbsoluteBoneTransformsTo(SharedBoneMatrix);
 
@@ -55,6 +51,6 @@ namespace MiniEngine.Rendering.Batches
 
                 mesh.Draw();
             }
-        }       
+        }
     }
 }

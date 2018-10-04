@@ -5,6 +5,6 @@ namespace MiniEngine.Rendering.Pipelines
 {
     public interface IPipelineStage
     {
-        void Execute(PerspectiveCamera camera, Seconds elapsed);
+        void Execute(PerspectiveCamera camera, Seconds seconds);
     }
 }

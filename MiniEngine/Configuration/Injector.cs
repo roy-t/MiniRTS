@@ -41,6 +41,7 @@ namespace MiniEngine.Configuration
             RegisterEffect<RenderEffect>("RenderEffect");
             RegisterEffect<CombineEffect>("CombineEffect");
             RegisterEffect<PostProcessEffect>("PostProcessEffect");
+            RegisterEffect<CopyEffect>("CopyEffect");
 
             RegisterContent<Effect>("ClearEffect", "clearEffect", "Effects");
             RegisterContent<Effect>("PostProcessOutlineEffect", "postProcessOutlineEffect", "Effects");

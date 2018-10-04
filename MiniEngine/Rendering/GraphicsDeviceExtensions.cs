@@ -3,7 +3,7 @@
 namespace MiniEngine.Rendering
 {
     internal static class GraphicsDeviceExtensions
-    {       
+    {
         /// <summary>
         /// Graphics device state for drawing geometry to the G-Buffer
         /// </summary>
@@ -15,19 +15,6 @@ namespace MiniEngine.Rendering
                 DepthStencilState.Default,
                 RasterizerState.CullCounterClockwise);
         }
-
-        /// <summary>
-        /// Graphics device state for drawing particles to the G-Buffer
-        /// </summary>
-        public static DeviceState ParticleMRTState(this GraphicsDevice device)
-        {
-            return new DeviceState(
-                device,
-                BlendState.Opaque,
-                DepthStencilState.DepthRead,
-                RasterizerState.CullNone);
-        }
-
 
         /// <summary>
         /// Graphics device state for drawing particles to the G-Buffer
@@ -55,7 +42,7 @@ namespace MiniEngine.Rendering
 
         /// <summary>
         /// Graphics device state for drawing sunlights to the Light Target
-        /// </summary>        
+        /// </summary>
         public static DeviceState SunlightState(this GraphicsDevice device)
         {
             var samplerState = new SamplerState
@@ -91,6 +78,35 @@ namespace MiniEngine.Rendering
                 rasterizerState);
         }
 
+        public static DeviceState ShadowParticlesState(this GraphicsDevice device)
+        {
+            // Similar to the additive blending but substracts the colors 
+            // thus making objects that are very opaque darker (as if they let less light through)
+            var blendState = new BlendState
+            {
+                ColorSourceBlend = Blend.SourceAlpha,
+                AlphaSourceBlend = Blend.SourceAlpha,
+
+                ColorBlendFunction = BlendFunction.ReverseSubtract,
+                AlphaBlendFunction = BlendFunction.ReverseSubtract,
+
+                ColorDestinationBlend = Blend.One,
+                AlphaDestinationBlend = Blend.One
+            };
+
+            var rasterizerState = new RasterizerState
+            {
+                CullMode = CullMode.None,
+                DepthClipEnable = false
+            };
+
+            return new DeviceState(
+                device,
+                blendState,
+                DepthStencilState.DepthRead,
+                rasterizerState);
+        }
+
         public static DeviceState ColorMapState(this GraphicsDevice device)
         {
             // Similar to the alpha blending state but first divides
@@ -105,16 +121,6 @@ namespace MiniEngine.Rendering
                 AlphaDestinationBlend = Blend.InverseSourceAlpha
             };
 
-            var blendState2 = new BlendState()
-            {
-                ColorSourceBlend = Blend.SourceAlpha,
-                ColorDestinationBlend = Blend.One,
-                ColorBlendFunction = BlendFunction.ReverseSubtract,
-                AlphaSourceBlend = Blend.SourceAlpha,
-                AlphaDestinationBlend = Blend.One,
-                AlphaBlendFunction = BlendFunction.ReverseSubtract
-            };
-
             var rasterizerState = new RasterizerState
             {
                 CullMode = CullMode.None,
@@ -123,7 +129,7 @@ namespace MiniEngine.Rendering
 
             return new DeviceState(
                 device,
-                blendState, 
+                blendState,
                 DepthStencilState.DepthRead,
                 rasterizerState);
         }
@@ -138,10 +144,10 @@ namespace MiniEngine.Rendering
         }
 
         public static DeviceState WireFrameState(this GraphicsDevice device)
-        {            
+        {
             var rasterState = new RasterizerState
             {
-                CullMode = CullMode.None,                
+                CullMode = CullMode.None,
                 FillMode = FillMode.WireFrame
             };
 

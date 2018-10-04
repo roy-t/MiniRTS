@@ -6,8 +6,8 @@ namespace MiniEngine.Rendering.Primitives
     public sealed class Quad
     {
         private readonly GraphicsDevice Device;
-        private readonly GBufferVertex[] Vertices;
         private readonly short[] Indices;
+        private readonly GBufferVertex[] Vertices;
 
         public Quad(GraphicsDevice device)
         {
@@ -28,7 +28,15 @@ namespace MiniEngine.Rendering.Primitives
                     new Vector2(1, 0))
             };
 
-            this.Indices = new short[] { 0, 1, 2, 2, 3, 0 };
+            this.Indices = new short[]
+            {
+                0,
+                1,
+                2,
+                2,
+                3,
+                0
+            };
         }
 
         public void SetTextureCoordinates(Vector2 minUv, Vector2 maxUv)
@@ -45,9 +53,9 @@ namespace MiniEngine.Rendering.Primitives
             this.Vertices[3].TextureCoordinate.X = maxUv.X;
             this.Vertices[3].TextureCoordinate.Y = minUv.Y;
         }
-               
+
         public void Render()
-        {            
+        {
             this.Device.DrawUserIndexedPrimitives(
                 PrimitiveType.TriangleList,
                 this.Vertices,

@@ -5,7 +5,7 @@ using MiniEngine.Utilities;
 namespace MiniEngine.Rendering.Primitives
 {
     public readonly struct BoundingRectangle
-    {        
+    {
         public BoundingRectangle(float minX, float maxX, float minY, float maxY)
         {
             this.MinX = minX;
@@ -23,21 +23,13 @@ namespace MiniEngine.Rendering.Primitives
         {
             // Intersects
             if (this.MaxX >= rectangle.MinX && this.MinX <= rectangle.MaxX)
-            {
                 if (this.MaxY >= rectangle.MinY && this.MinY <= rectangle.MaxY)
-                {
                     return true;
-                }
-            }
 
             // Contains
             if (this.MinX <= rectangle.MinX && this.MaxX >= rectangle.MaxX)
-            {
                 if (this.MinY <= rectangle.MinY && this.MaxY >= rectangle.MaxY)
-                {
                     return true;
-                }
-            }
 
             return false;
         }
@@ -49,7 +41,7 @@ namespace MiniEngine.Rendering.Primitives
                 new Vector2(this.MinX, this.MaxY),
                 new Vector2(this.MaxX, this.MaxY),
                 new Vector2(this.MaxX, this.MinY),
-                new Vector2(this.MinX, this.MinY),
+                new Vector2(this.MinX, this.MinY)
             };
         }
 
@@ -69,16 +61,16 @@ namespace MiniEngine.Rendering.Primitives
             var minX = float.MaxValue;
             var maxX = float.MinValue;
 
-            var minY = float.MaxValue;            
+            var minY = float.MaxValue;
             var maxY = float.MinValue;
 
             var corners = box.GetCorners();
 
             foreach (var corner in corners)
-            {                
+            {
                 var projectedCorner = Transformations.WorldToView(corner, matrix);
 
-                minX = Math.Min(minX, projectedCorner.X);                
+                minX = Math.Min(minX, projectedCorner.X);
                 maxX = Math.Max(maxX, projectedCorner.X);
 
                 minY = Math.Min(minY, projectedCorner.Y);
@@ -86,6 +78,6 @@ namespace MiniEngine.Rendering.Primitives
             }
 
             return new BoundingRectangle(minX, maxX, minY, maxY);
-        }       
+        }
     }
 }

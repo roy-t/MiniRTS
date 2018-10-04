@@ -13,7 +13,7 @@ namespace MiniEngine.Rendering.Cameras
             this.Frustum = new BoundingFrustum(this.View * this.Projection);
         }
 
-        public Matrix View { get; }        
+        public Matrix View { get; }
         public Matrix Projection { get; }
         public Vector3 Position { get; }
         public Vector3 Forward { get; }

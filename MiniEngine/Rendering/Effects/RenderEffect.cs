@@ -8,7 +8,6 @@ namespace MiniEngine.Rendering.Effects
     {
         public RenderEffect()
         {
-
         }
 
         public RenderEffect(Effect renderEffect)
@@ -52,14 +51,14 @@ namespace MiniEngine.Rendering.Effects
         }
 
         public void Apply(Techniques technique)
-        {            
+        {
             switch (technique)
             {
                 case Techniques.MRT:
                     this.effect.CurrentTechnique = this.effect.Techniques["MRT"];
                     break;
-                case Techniques.Particle:
-                    this.effect.CurrentTechnique = this.effect.Techniques["Particle"];
+                case Techniques.Particles:
+                    this.effect.CurrentTechnique = this.effect.Techniques["Particles"];
                     break;
                 case Techniques.ShadowMap:
                     this.effect.CurrentTechnique = this.effect.Techniques["ShadowMap"];
@@ -67,11 +66,14 @@ namespace MiniEngine.Rendering.Effects
                 case Techniques.ColorMap:
                     this.effect.CurrentTechnique = this.effect.Techniques["ColorMap"];
                     break;
+                case Techniques.ShadowParticles:
+                    this.effect.CurrentTechnique = this.effect.Techniques["ShadowParticles"];
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(technique), technique, null);
             }
 
             ApplyPass();
-        }        
+        }
     }
 }

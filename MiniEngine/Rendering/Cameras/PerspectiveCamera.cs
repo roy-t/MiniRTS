@@ -12,23 +12,23 @@ namespace MiniEngine.Rendering.Cameras
             this.AspectRatio = viewport.AspectRatio;
             this.FieldOfView = MathHelper.PiOver2;
 
-            Move(Vector3.Backward * 10, Vector3.Zero);            
+            Move(Vector3.Backward * 10, Vector3.Zero);
         }
 
         public float NearPlane { get; }
         public float FarPlane { get; }
         public float AspectRatio { get; }
         public float FieldOfView { get; }
+        public Vector3 LookAt { get; private set; }
+        public Matrix ViewProjection { get; private set; }
+
+        public Matrix InverseViewProjection { get; private set; }
 
         public Vector3 Position { get; private set; }
-        public Vector3 LookAt { get; private set; }
         public Vector3 Forward { get; private set; }
 
         public Matrix View { get; private set; }
         public Matrix Projection { get; private set; }
-        public Matrix ViewProjection { get; private set; }
-        
-        public Matrix InverseViewProjection { get; private set; }
 
         public BoundingFrustum Frustum { get; private set; }
 

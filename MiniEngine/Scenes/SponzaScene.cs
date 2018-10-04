@@ -13,6 +13,7 @@ namespace MiniEngine.Scenes
         private readonly EntityController EntityController;
         private readonly AmbientLightSystem AmbientLightSystem;
         private readonly SunlightSystem SunlightSystem;
+        private readonly PointLightSystem PointLightSystem;
         private readonly ShadowCastingLightSystem ShadowCastingLightSystem;
         private readonly ModelSystem ModelSystem;
         private readonly ParticleSystem ParticleSystem;
@@ -35,6 +36,7 @@ namespace MiniEngine.Scenes
             AmbientLightSystem ambientLightSystem,
             SunlightSystem sunlightSystem,
             ShadowCastingLightSystem shadowCastingLightSystem,
+            PointLightSystem pointLightSystem,
             ModelSystem modelSystem,
             DebugRenderSystem debugRenderSystem,
             ParticleSystem particleSystem)
@@ -43,6 +45,7 @@ namespace MiniEngine.Scenes
             this.AmbientLightSystem = ambientLightSystem;
             this.SunlightSystem = sunlightSystem;
             this.ShadowCastingLightSystem = shadowCastingLightSystem;
+            this.PointLightSystem = pointLightSystem;
             this.ModelSystem = modelSystem;
             this.DebugRenderSystem = debugRenderSystem;
             this.ParticleSystem = particleSystem;
@@ -61,19 +64,14 @@ namespace MiniEngine.Scenes
         {
             this.worldEntity = this.EntityController.CreateEntity();
             
-            this.AmbientLightSystem.Add(this.worldEntity, Color.White * 0.25f);
-            //this.SunlightSystem.Add(this.worldEntity, Color.White, Vector3.Up, Vector3.Right * 0.75f + Vector3.Forward * 0.1f);
+            this.AmbientLightSystem.Add(this.worldEntity, Color.White * 0.25f);            
             this.SunlightSystem.Add(this.worldEntity, Color.White, Vector3.Up, Vector3.Left * 0.75f + Vector3.Backward * 0.1f);
 
             this.ModelSystem.Add(this.worldEntity, this.sponza, Matrix.CreateScale(0.05f));
             
-
             this.planeEntity = this.EntityController.CreateEntity();
 
-            var position = new Vector3(-40.5f, 30.0f, 3.2f);
-            var offset = new Vector3(1.0f, 0.25f, 0.0f) * 8;
-
-            //this.ShadowCastingLightSystem.Add(this.planeEntity, position + offset, position - offset, Color.White);
+            var position = new Vector3(-40.5f, 30.0f, 3.2f);            
 
             var world = MatrixExtensions.CreateScaleRotationTranslation(4.4f * 0.01f, MathHelper.PiOver2, MathHelper.PiOver2, 0, position);
             this.ModelSystem.Add(this.planeEntity, this.plane, world, ModelType.Transparent);            
@@ -86,14 +84,19 @@ namespace MiniEngine.Scenes
             this.ModelSystem.Add(this.planeEntity2, this.plane, world2, ModelType.Transparent);
 
 
+            var particleSpawn = new Vector3(-60.5f, 6.0f, 20.0f);
             this.particleEntity = this.EntityController.CreateEntity();
-            this.ParticleSystem.Add(this.particleEntity, new Vector3(-50.0f, 10.0f, 0.0f), this.smoke, 1, 1);
+            this.ParticleSystem.Add(this.particleEntity, particleSpawn, this.smoke, 1, 1);
 
             this.particleEntity2 = this.EntityController.CreateEntity();
-            this.ParticleSystem.Add(this.particleEntity2, new Vector3(-50.0f, 10.0f, 0.0f), this.explosion, 8, 8);
+            this.ParticleSystem.Add(this.particleEntity2, particleSpawn, this.explosion, 8, 8);
 
             this.particleEntity3 = this.EntityController.CreateEntity();
-            this.ParticleSystem.Add(this.particleEntity3, new Vector3(-50.0f, 10.0f, 0.0f), this.explosion2, 1, 1);
+            this.ParticleSystem.Add(this.particleEntity3, particleSpawn, this.explosion2, 1, 1);
+
+            this.PointLightSystem.Add(this.particleEntity, particleSpawn, Color.IndianRed, 20.0f, 1.0f);
+            var light = particleSpawn + Vector3.Up * 3;
+            this.ShadowCastingLightSystem.Add(this.particleEntity, light, light + Vector3.Up + Vector3.Left * 0.001f, Color.IndianRed);
 
 
             //this.DebugRenderSystem.Add(this.worldEntity, this.sponza, Matrix.CreateScale(0.05f));

@@ -6,19 +6,19 @@ namespace MiniEngine.Rendering.Pipelines.Stages
 {
     public sealed class RenderModelsStage : IPipelineStage
     {
-        private readonly ModelSystem ModelSystem;
         private readonly ModelPipeline ModelPipeline;
+        private readonly ModelSystem ModelSystem;
 
         public RenderModelsStage(ModelSystem modelSystem, ModelPipeline modelPipeline)
         {
-            this.ModelSystem = modelSystem;            
+            this.ModelSystem = modelSystem;
             this.ModelPipeline = modelPipeline;
         }
 
-        public void Execute(PerspectiveCamera camera, Seconds elapsed)
+        public void Execute(PerspectiveCamera camera, Seconds seconds)
         {
             var modelBatchList = this.ModelSystem.ComputeBatches(camera);
-            this.ModelPipeline.Execute(camera, modelBatchList, elapsed);
+            this.ModelPipeline.Execute(camera, modelBatchList);
         }
     }
 }

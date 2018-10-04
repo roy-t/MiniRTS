@@ -3,7 +3,7 @@
 namespace MiniEngine.Rendering.Batches
 {
     public sealed class ParticleBatchList
-    {        
+    {
         public ParticleBatchList(IReadOnlyList<ParticleRenderBatch> batches)
         {
             this.Batches = batches;

@@ -9,7 +9,7 @@ namespace MiniEngine.Rendering.Components
         {
             this.Position = position;
             this.Scale = scale;
-            this.LinearVelocity = linearVelocity;            
+            this.LinearVelocity = linearVelocity;
             this.TimePerFrame = timePerFrame;
 
             this.LifeTime = 0;
@@ -21,6 +21,6 @@ namespace MiniEngine.Rendering.Components
         public Vector3 LinearVelocity { get; set; }
         public Seconds LifeTime { get; set; }
         public Seconds TimePerFrame { get; set; }
-        public int Frame { get; set; }        
+        public int Frame { get; set; }
     }
 }

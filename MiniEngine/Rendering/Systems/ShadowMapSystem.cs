@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Rendering.Cameras;
@@ -30,6 +29,22 @@ namespace MiniEngine.Rendering.Systems
             this.ShadowMaps = new Dictionary<Entity, ShadowMap>();
         }
 
+        public bool Contains(Entity entity)
+        {
+            return this.ShadowMaps.ContainsKey(entity);
+        }
+
+        public string Describe(Entity entity)
+        {
+            var shadowMap = this.ShadowMaps[entity];
+            return $"shadow map, dimensions: {shadowMap.DepthMap.Width}x{shadowMap.DepthMap.Height}";
+        }
+
+        public void Remove(Entity entity)
+        {
+            this.ShadowMaps.Remove(entity);
+        }
+
         public void Add(Entity entity, IViewPoint viewPoint, int resolution = DefaultResolution)
         {
             this.ShadowMaps.Add(entity, new ShadowMap(this.Device, resolution, 1, viewPoint));
@@ -40,35 +55,25 @@ namespace MiniEngine.Rendering.Systems
             this.ShadowMaps.Add(entity, new ShadowMap(this.Device, resolution, cascades, viewPoints));
         }
 
-        public ShadowMap Get(Entity entity) => this.ShadowMaps[entity];
-
-        public ShadowMap DebugFoo() => this.ShadowMaps.Values.First();
-
-        public bool Contains(Entity entity) => this.ShadowMaps.ContainsKey(entity);
-
-        public string Describe(Entity entity)
+        public ShadowMap Get(Entity entity)
         {
-            var shadowMap = this.ShadowMaps[entity];
-            return $"shadow map, dimensions: {shadowMap.DepthMap.Width}x{shadowMap.DepthMap.Height}";
+            return this.ShadowMaps[entity];
         }
-
-        public void Remove(Entity entity) => this.ShadowMaps.Remove(entity);        
 
         public void RenderShadowMaps()
         {
             foreach (var shadowMap in this.ShadowMaps.Values)
-            {
                 for (var i = 0; i < shadowMap.Cascades; i++)
                 {
                     var modelBatchList = this.ModelSystem.ComputeBatches(shadowMap.ViewPoints[i]);
-                    var particleBatchList = this.ParticleSystem.ComputeBatches(shadowMap.ViewPoints[i], 0.0f);
+                    var particleBatchList = this.ParticleSystem.ComputeBatches(shadowMap.ViewPoints[i]);
 
                     this.Device.SetRenderTarget(shadowMap.DepthMap, i);
                     this.Device.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.White, 1.0f, 0);
 
                     using (this.Device.ShadowMapState())
                     {
-                        modelBatchList.OpaqueBatch.Draw(Techniques.ShadowMap);                                          
+                        modelBatchList.OpaqueBatch.Draw(Techniques.ShadowMap);
                     }
 
                     // Use the same depth buffer to generate the color buffer
@@ -78,17 +83,15 @@ namespace MiniEngine.Rendering.Systems
                     using (this.Device.ColorMapState())
                     {
                         foreach (var batch in modelBatchList.TransparentBatches)
-                        {
                             batch.Draw(Techniques.ColorMap);
-                        }
+                    }
 
+                    using (this.Device.ShadowParticlesState())
+                    {
                         foreach (var batch in particleBatchList.Batches)
-                        {
-                            batch.Draw(Techniques.ColorMap);
-                        }
+                            batch.Draw(Techniques.ShadowParticles);
                     }
                 }
-            }
         }
     }
 }

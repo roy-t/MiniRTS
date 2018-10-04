@@ -9,16 +9,18 @@ namespace MiniEngine.Rendering.Batches
 {
     public sealed class ParticleRenderBatch
     {
-        private readonly IReadOnlyList<ParticlePose> Particles;
-        private readonly IViewPoint ViewPoint;
-        private readonly Quad Quad;
-        private readonly RenderEffect Effect;    
+        private readonly RenderEffect Effect;
 
         private readonly Texture2D Mask;
         private readonly Texture2D NormalMap;
+        private readonly IReadOnlyList<ParticlePose> Particles;
+        private readonly Quad Quad;
         private readonly Texture2D SpecularMap;
+        private readonly IViewPoint ViewPoint;
 
-        public ParticleRenderBatch(Quad quad, RenderEffect effect,
+        public ParticleRenderBatch(
+            Quad quad,
+            RenderEffect effect,
             IReadOnlyList<ParticlePose> particles,
             IViewPoint viewPoint,
             Texture2D mask,
@@ -46,13 +48,13 @@ namespace MiniEngine.Rendering.Batches
             foreach (var particle in this.Particles)
             {
                 this.Effect.DiffuseMap = particle.Texture;
-                
+
                 this.Effect.World = particle.Pose;
                 this.Effect.Apply(technique);
 
                 this.Quad.SetTextureCoordinates(particle.MinUv, particle.MaxUv);
                 this.Quad.Render();
             }
-        }        
+        }
     }
 }

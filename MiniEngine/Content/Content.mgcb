@@ -26,6 +26,12 @@
 /processorParam:DebugMode=Auto
 /build:Effects/CombineEffect.fx
 
+#begin Effects/CopyEffect.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Effects/CopyEffect.fx
+
 #begin Effects/DirectionalLightEffect.fx
 /importer:EffectImporter
 /processor:EffectProcessor

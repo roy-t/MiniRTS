@@ -54,8 +54,9 @@ sampler maskSampler = sampler_state
 };
 
 #include "Techniques/MRT.hlsl"
-#include "Techniques/Particle.hlsl"
+#include "Techniques/Particles.hlsl"
 #include "Techniques/ShadowMap.hlsl"
 #include "Techniques/ColorMap.hlsl"
+#include "Techniques/ShadowParticles.hlsl"
 
 // The Effect Compiler doesn't like files without an empty new line

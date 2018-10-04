@@ -12,7 +12,13 @@ namespace MiniEngine.Rendering.Pipelines.Stages
         private readonly GraphicsDevice Device;
         private readonly RenderTarget2D RenderTarget;
 
-        public ClearStage(GraphicsDevice device, RenderTarget2D renderTarget, ClearOptions options, Color color, float depth, int stencil)
+        public ClearStage(
+            GraphicsDevice device,
+            RenderTarget2D renderTarget,
+            ClearOptions options,
+            Color color,
+            float depth,
+            int stencil)
         {
             this.Device = device;
             this.RenderTarget = renderTarget;
@@ -27,15 +33,30 @@ namespace MiniEngine.Rendering.Pipelines.Stages
         public float Depth { get; }
         public int Stencil { get; }
 
+        public void Execute(PerspectiveCamera _, GBuffer __)
+        {
+            Execute();
+        }
+
+        public void Execute(PerspectiveCamera _, ModelRenderBatch __)
+        {
+            Execute();
+        }
+
+        public void Execute(PerspectiveCamera _, ParticleRenderBatch __)
+        {
+            Execute();
+        }
+
+        public void Execute(PerspectiveCamera _, Seconds seconds)
+        {
+            Execute();
+        }
+
         private void Execute()
         {
             this.Device.SetRenderTarget(this.RenderTarget);
             this.Device.Clear(this.Options, this.Color, this.Depth, this.Stencil);
         }
-
-        public void Execute(PerspectiveCamera _, Seconds __) => Execute();
-        public void Execute(PerspectiveCamera _, ModelRenderBatch __, Seconds ___) => Execute();
-        public void Execute(PerspectiveCamera _, ParticleRenderBatch __, Seconds ___) => Execute();
-        public void Execute(PerspectiveCamera _, GBuffer __, Seconds ___) => Execute();
     }
 }

@@ -1,13 +1,13 @@
 ﻿using System;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using MiniEngine.Rendering.Cameras;
-using MiniEngine.Rendering.Components;
-using MiniEngine.Systems;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Rendering.Batches;
+using MiniEngine.Rendering.Cameras;
+using MiniEngine.Rendering.Components;
 using MiniEngine.Rendering.Primitives;
+using MiniEngine.Systems;
 using MiniEngine.Utilities.Extensions;
 
 namespace MiniEngine.Rendering.Systems
@@ -21,6 +21,27 @@ namespace MiniEngine.Rendering.Systems
         {
             this.OpaqueModels = new Dictionary<Entity, ModelPose>();
             this.TransparentModels = new Dictionary<Entity, ModelPose>();
+        }
+
+        public bool Contains(Entity entity)
+        {
+            return this.OpaqueModels.ContainsKey(entity) || this.TransparentModels.ContainsKey(entity);
+        }
+
+        public string Describe(Entity entity)
+        {
+            var model = this.OpaqueModels[entity] ?? this.TransparentModels[entity];
+            var modelType = this.OpaqueModels.ContainsKey(entity) ? ModelType.Opaque : ModelType.Transparent;
+
+            model.Pose.Decompose(out var scale, out var rotation, out var translation);
+
+            return $"model, translation: {translation}, rotation: {rotation}, scale: {scale}, type: {modelType}";
+        }
+
+        public void Remove(Entity entity)
+        {
+            this.OpaqueModels.Remove(entity);
+            this.TransparentModels.Remove(entity);
         }
 
         public void Add(Entity entity, Model model, Matrix pose, ModelType modelType = ModelType.Opaque)
@@ -39,63 +60,44 @@ namespace MiniEngine.Rendering.Systems
                 default:
                     throw new ArgumentOutOfRangeException(nameof(modelType), modelType, null);
             }
-            
-        }
-
-        public bool Contains(Entity entity) => this.OpaqueModels.ContainsKey(entity) || this.TransparentModels.ContainsKey(entity);        
-
-        public string Describe(Entity entity)
-        {
-            var model = this.OpaqueModels[entity] ?? this.TransparentModels[entity];
-            var modelType = this.OpaqueModels.ContainsKey(entity) ? ModelType.Opaque : ModelType.Transparent;
-
-            model.Pose.Decompose(out var scale, out var rotation, out var translation);
-        
-            return $"model, translation: {translation}, rotation: {rotation}, scale: {scale}, type: {modelType}";
-        }
-
-        public void Remove(Entity entity)
-        {
-            this.OpaqueModels.Remove(entity);
-            this.TransparentModels.Remove(entity);
         }
 
 
         public ModelBatchList ComputeBatches(IViewPoint viewPoint)
         {
-            var transparentBatches = new List<ModelRenderBatch>(this.TransparentModels.Count);            
+            var transparentBatches = new List<ModelRenderBatch>(this.TransparentModels.Count);
 
             var transparentModels = SortBackToFront(this.TransparentModels.Values, viewPoint);
             var batches = ComputeBatches(transparentModels, viewPoint);
             foreach (var batch in batches)
-            {
                 transparentBatches.Add(new ModelRenderBatch(batch, viewPoint));
-            }
 
-            return new ModelBatchList(new ModelRenderBatch(this.OpaqueModels.Values.ToList(), viewPoint), transparentBatches);
+            return new ModelBatchList(
+                new ModelRenderBatch(this.OpaqueModels.Values.ToList(), viewPoint),
+                transparentBatches);
         }
 
         private static IEnumerable<ModelPose> SortBackToFront(IEnumerable<ModelPose> models, IViewPoint viewPoint)
         {
             var modeList = new List<ModelPose>();
             var distanceList = new List<float>();
-            
+
             foreach (var model in models)
-            {             
                 if (viewPoint.Frustum.Intersects(model.BoundingSphere))
                 {
-                    var viewPosition = Vector4.Transform(model.BoundingSphere.Center, viewPoint.Frustum.Matrix);                    
+                    var viewPosition = Vector4.Transform(model.BoundingSphere.Center, viewPoint.Frustum.Matrix);
                     // Apply the perspective division
                     var distance = viewPosition.Z / viewPosition.W;
 
                     InsertBackToFront(modeList, distanceList, model, distance);
                 }
-            }
 
             return modeList;
         }
 
-        private static IReadOnlyList<List<ModelPose>> ComputeBatches(IEnumerable<ModelPose> models, IViewPoint viewPoint)
+        private static IReadOnlyList<List<ModelPose>> ComputeBatches(
+            IEnumerable<ModelPose> models,
+            IViewPoint viewPoint)
         {
             var batches = new List<List<ModelPose>>();
 
@@ -103,7 +105,9 @@ namespace MiniEngine.Rendering.Systems
             var currentBounds = new BoundingRectangle();
             foreach (var model in models)
             {
-                var bounds = BoundingRectangle.CreateFromProjectedBoundingBox(model.BoundingBox, viewPoint.Frustum.Matrix);
+                var bounds = BoundingRectangle.CreateFromProjectedBoundingBox(
+                    model.BoundingBox,
+                    viewPoint.Frustum.Matrix);
 
                 if (currentBatch.Count == 0)
                 {
@@ -124,14 +128,16 @@ namespace MiniEngine.Rendering.Systems
             }
 
             if (currentBatch.Count > 0)
-            {
                 batches.Add(currentBatch);
-            }
 
             return batches;
-        }           
+        }
 
-        private static void InsertBackToFront(IList<ModelPose> models, IList<float> distances, ModelPose model, float distance)
+        private static void InsertBackToFront(
+            IList<ModelPose> models,
+            IList<float> distances,
+            ModelPose model,
+            float distance)
         {
             for (var i = 0; i < models.Count; i++)
             {

@@ -1,8 +1,8 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using MiniEngine.Rendering.Cameras;
 using MiniEngine.Rendering.Primitives;
 using MiniEngine.Utilities.Extensions;
-using System;
 
 namespace MiniEngine.Rendering
 {
@@ -23,7 +23,10 @@ namespace MiniEngine.Rendering
         }
 
 
-        public static IViewPoint CreateShadowCamera(Vector3 surfaceToLightVector, Frustum frustum, int shadowMapResolution)
+        public static IViewPoint CreateShadowCamera(
+            Vector3 surfaceToLightVector,
+            Frustum frustum,
+            int shadowMapResolution)
         {
             // Compute the bounding sphere of the frustum slice, round the center
             // so our shadows are more stable when moving the camera around
@@ -31,7 +34,7 @@ namespace MiniEngine.Rendering
 
             // WARNING: This might cause problems when moving the shadow caster around in that case use
             // var radius = (float)Math.Ceiling(bounds.Radius * 16.0f) / 16.0f;
-            var radius = (float)Math.Ceiling(bounds.Radius);
+            var radius = (float) Math.Ceiling(bounds.Radius);
 
             var shadowCamera = new OrthographicCamera(
                 -radius,

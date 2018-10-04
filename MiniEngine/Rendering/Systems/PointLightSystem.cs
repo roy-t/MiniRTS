@@ -1,10 +1,10 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Rendering.Cameras;
 using MiniEngine.Rendering.Components;
-using MiniEngine.Systems;
-using System.Collections.Generic;
 using MiniEngine.Rendering.Primitives;
+using MiniEngine.Systems;
 
 namespace MiniEngine.Rendering.Systems
 {
@@ -12,9 +12,9 @@ namespace MiniEngine.Rendering.Systems
     {
         private readonly GraphicsDevice Device;
         private readonly Effect Effect;
-        private readonly Model Sphere;
 
         private readonly Dictionary<Entity, PointLight> Lights;
+        private readonly Model Sphere;
 
         public PointLightSystem(GraphicsDevice device, Effect pointLightEffect, Model sphere)
         {
@@ -25,12 +25,10 @@ namespace MiniEngine.Rendering.Systems
             this.Lights = new Dictionary<Entity, PointLight>();
         }
 
-        public void Add(Entity entity, Vector3 position, Color color, float radius, float intensity)
+        public bool Contains(Entity entity)
         {
-            this.Lights.Add(entity, new PointLight(position, color, radius, intensity));
+            return this.Lights.ContainsKey(entity);
         }
-
-        public bool Contains(Entity entity) => this.Lights.ContainsKey(entity);
 
         public string Describe(Entity entity)
         {
@@ -43,8 +41,13 @@ namespace MiniEngine.Rendering.Systems
             this.Lights.Remove(entity);
         }
 
+        public void Add(Entity entity, Vector3 position, Color color, float radius, float intensity)
+        {
+            this.Lights.Add(entity, new PointLight(position, color, radius, intensity));
+        }
+
         public void Render(PerspectiveCamera perspectiveCamera, GBuffer gBuffer)
-        {            
+        {
             using (this.Device.LightState())
             {
                 foreach (var light in this.Lights.Values)
@@ -76,22 +79,20 @@ namespace MiniEngine.Rendering.Systems
                         : RasterizerState.CullCounterClockwise;
 
                     foreach (var pass in this.Effect.Techniques[0].Passes)
-                    {                                          
+                    {
                         pass.Apply();
 
                         foreach (var mesh in this.Sphere.Meshes)
+                        foreach (var meshPart in mesh.MeshParts)
                         {
-                            foreach (var meshPart in mesh.MeshParts)
-                            {
-                                this.Device.Indices = meshPart.IndexBuffer;
-                                this.Device.SetVertexBuffer(meshPart.VertexBuffer);
-                                
-                                this.Device.DrawIndexedPrimitives(
-                                    PrimitiveType.TriangleList,
-                                    0,
-                                    meshPart.StartIndex,
-                                    meshPart.PrimitiveCount);
-                            }
+                            this.Device.Indices = meshPart.IndexBuffer;
+                            this.Device.SetVertexBuffer(meshPart.VertexBuffer);
+
+                            this.Device.DrawIndexedPrimitives(
+                                PrimitiveType.TriangleList,
+                                0,
+                                meshPart.StartIndex,
+                                meshPart.PrimitiveCount);
                         }
                     }
                 }

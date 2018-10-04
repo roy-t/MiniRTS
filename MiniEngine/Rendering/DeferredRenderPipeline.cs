@@ -12,15 +12,24 @@ namespace MiniEngine.Rendering
 {
     public sealed class DeferredRenderPipeline
     {
+        private readonly GBuffer GBuffer;
         private readonly Pipeline Pipeline;
         private readonly RenderTarget2D PostProcessTarget;
-        private readonly GBuffer GBuffer;
 
-        public DeferredRenderPipeline(GraphicsDevice device, ShadowMapSystem shadowMapSystem, ModelSystem modelSystem,
-                                      ParticleSystem particleSystem, CombineEffect combineEffect, PostProcessEffect postProcessEffect,
-                                      AmbientLightSystem ambientLightSystem, DirectionalLightSystem directionalLightSystem,
-                                      PointLightSystem pointLightSystem, ShadowCastingLightSystem shadowCastingLightSystem,
-                                      SunlightSystem sunlightSystem, DebugRenderSystem debugRenderSystem)
+        public DeferredRenderPipeline(
+            GraphicsDevice device,
+            ShadowMapSystem shadowMapSystem,
+            ModelSystem modelSystem,
+            CopyEffect copyEffect,
+            ParticleSystem particleSystem,
+            CombineEffect combineEffect,
+            PostProcessEffect postProcessEffect,
+            AmbientLightSystem ambientLightSystem,
+            DirectionalLightSystem directionalLightSystem,
+            PointLightSystem pointLightSystem,
+            ShadowCastingLightSystem shadowCastingLightSystem,
+            SunlightSystem sunlightSystem,
+            DebugRenderSystem debugRenderSystem)
         {
             var width = device.PresentationParameters.BackBufferWidth;
             var height = device.PresentationParameters.BackBufferHeight;
@@ -53,8 +62,8 @@ namespace MiniEngine.Rendering
                                 .RenderDirectionalLights(directionalLightSystem)
                                 .RenderPointLights(pointLightSystem)
                                 .RenderShadowCastingLights(shadowCastingLightSystem)
-                                .RenderSunlights(sunlightSystem);            
-                                
+                                .RenderSunlights(sunlightSystem);
+
 
             var modelPipeline =
                 ModelPipeline.Create(device)
@@ -64,34 +73,30 @@ namespace MiniEngine.Rendering
                              .Clear(combineTarget, Color.TransparentBlack)
                              .RenderModelBatch(this.GBuffer)
                              .Render3DDebugOverlay(debugRenderSystem, this.GBuffer)
-                             .RenderLights(lightingPipeline, this.GBuffer)                             
+                             .RenderLights(lightingPipeline, this.GBuffer)
                              .CombineDiffuseWithLighting(combineEffect, combineTarget, this.GBuffer)
                              .AntiAlias(postProcessEffect, combineTarget, this.PostProcessTarget, this.GBuffer, 2.0f);
 
             var particlePipeline =
                 ParticlePipeline.Create(device)
                                 .Clear(this.GBuffer.DiffuseTarget, ClearOptions.Target, Color.TransparentBlack, 1, 0)
-                                .Clear(this.GBuffer.NormalTarget, new Color(0.5f, 0.5f, 0.5f, 0.0f))
-                                .Clear(this.GBuffer.DepthTarget, Color.TransparentBlack)
-                                //.Clear(this.GBuffer.LightTarget, new Color(255, 255, 255, 0)) // TODO: particles do not interact with light yet
-                                .Clear(combineTarget, Color.TransparentBlack)
                                 .RenderParticleBatch(this.GBuffer)
-                                .RenderLights(lightingPipeline, this.GBuffer)
-                                .CombineDiffuseWithLighting(combineEffect, combineTarget, this.GBuffer)
-                                .AntiAlias(postProcessEffect, combineTarget, this.PostProcessTarget, this.GBuffer, 2.0f);
-                            
+                                .CopyColors(copyEffect, this.GBuffer.DiffuseTarget, this.PostProcessTarget);
+
             // TODO: we could move the anti-alias stage to the end of the normal pipeline
             // if we copy the deferred and normal result of each sub pipeline
+            // this would also give us AA between different batches
 
             this.Pipeline =
                 Pipeline.Create(device)
                         .Clear(this.GBuffer.DiffuseTarget, Color.TransparentBlack)
                         .Clear(this.PostProcessTarget, Color.Black)
-                        .UpdateCascades(sunlightSystem)
-                        .RenderShadowMaps(shadowMapSystem)                        
-                        .RenderModels(modelSystem, modelPipeline)                        
+                        .UpdateSystem(sunlightSystem)
+                        .UpdateSystem(particleSystem)
+                        .RenderShadowMaps(shadowMapSystem)
+                        .RenderModels(modelSystem, modelPipeline)
                         .RenderParticles(particleSystem, particlePipeline)
-                        .Render2DDebugOverlay(debugRenderSystem, this.PostProcessTarget);            
+                        .Render2DDebugOverlay(debugRenderSystem, this.PostProcessTarget);
         }
 
         public RenderTarget2D Render(PerspectiveCamera camera, Seconds elapsed)
@@ -100,12 +105,15 @@ namespace MiniEngine.Rendering
             return this.PostProcessTarget;
         }
 
-        public RenderTarget2D[] GetIntermediateRenderTargets() => new[]
+        public RenderTarget2D[] GetIntermediateRenderTargets()
         {
-            this.GBuffer.DiffuseTarget,
-            this.GBuffer.NormalTarget,
-            this.GBuffer.DepthTarget,
-            this.GBuffer.LightTarget,
-        };
+            return new[]
+            {
+                this.GBuffer.DiffuseTarget,
+                this.GBuffer.NormalTarget,
+                this.GBuffer.DepthTarget,
+                this.GBuffer.LightTarget
+            };
+        }
     }
 }

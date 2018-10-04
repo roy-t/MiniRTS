@@ -6,7 +6,6 @@ namespace MiniEngine.Rendering.Effects
     {
         public PostProcessEffect()
         {
-
         }
 
         public PostProcessEffect(Effect combineEffect)
@@ -39,6 +38,9 @@ namespace MiniEngine.Rendering.Effects
             set => this.effect.Parameters["NormalMap"].SetValue(value);
         }
 
-        public void Apply() => base.ApplyPass();
+        public void Apply()
+        {
+            ApplyPass();
+        }
     }
 }

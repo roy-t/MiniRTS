@@ -2,7 +2,6 @@
 using MiniEngine.Rendering.Cameras;
 using MiniEngine.Rendering.Primitives;
 using MiniEngine.Rendering.Systems;
-using MiniEngine.Units;
 
 namespace MiniEngine.Rendering.Pipelines.Stages
 {
@@ -17,7 +16,7 @@ namespace MiniEngine.Rendering.Pipelines.Stages
             this.ShadowCastingLightSystem = shadowCastingLightSystem;
         }
 
-        public void Execute(PerspectiveCamera camera, GBuffer gBuffer, Seconds _)
+        public void Execute(PerspectiveCamera camera, GBuffer gBuffer)
         {
             this.Device.SetRenderTarget(gBuffer.LightTarget);
             this.ShadowCastingLightSystem.RenderLights(camera, gBuffer);

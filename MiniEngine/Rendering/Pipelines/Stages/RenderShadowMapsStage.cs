@@ -13,7 +13,7 @@ namespace MiniEngine.Rendering.Pipelines.Stages
             this.ShadowMapSystem = shadowMapSystem;
         }
 
-        public void Execute(PerspectiveCamera camera, Seconds _)
+        public void Execute(PerspectiveCamera camera, Seconds seconds)
         {
             this.ShadowMapSystem.RenderShadowMaps();
         }

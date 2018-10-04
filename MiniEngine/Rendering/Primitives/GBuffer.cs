@@ -47,12 +47,12 @@ namespace MiniEngine.Rendering.Primitives
                 SurfaceFormat.Color,
                 DepthFormat.None,
                 aaSamples,
-                RenderTargetUsage.PreserveContents);         
+                RenderTargetUsage.PreserveContents);
         }
 
         public RenderTarget2D DiffuseTarget { get; }
         public RenderTarget2D NormalTarget { get; }
         public RenderTarget2D DepthTarget { get; }
-        public RenderTarget2D LightTarget { get; }        
+        public RenderTarget2D LightTarget { get; }
     }
 }

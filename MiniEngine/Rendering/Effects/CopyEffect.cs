@@ -2,25 +2,20 @@
 
 namespace MiniEngine.Rendering.Effects
 {
-    public sealed class CombineEffect : EffectWrapper
+    public sealed class CopyEffect : EffectWrapper
     {
-        public CombineEffect()
+        public CopyEffect()
         {
         }
 
-        public CombineEffect(Effect combineEffect)
+        public CopyEffect(Effect copyEffect)
         {
-            Wrap(combineEffect);
+            Wrap(copyEffect);
         }
 
         public Texture2D DiffuseMap
         {
             set => this.effect.Parameters["DiffuseMap"].SetValue(value);
-        }
-
-        public Texture2D LightMap
-        {
-            set => this.effect.Parameters["LightMap"].SetValue(value);
         }
 
         public void Apply()

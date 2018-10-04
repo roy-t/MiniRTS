@@ -2,7 +2,6 @@
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Rendering.Batches;
 using MiniEngine.Rendering.Cameras;
-using MiniEngine.Units;
 
 namespace MiniEngine.Rendering.Pipelines
 {
@@ -23,21 +22,16 @@ namespace MiniEngine.Rendering.Pipelines
             this.Stages.Add(stage);
         }
 
-        public void Execute(PerspectiveCamera camera, ModelBatchList modelBatchList, Seconds elapsed)
-        {            
+        public void Execute(PerspectiveCamera camera, ModelBatchList modelBatchList)
+        {
             foreach (var stage in this.Stages)
-            {
-                stage.Execute(camera, modelBatchList.OpaqueBatch, elapsed);
-            }
+                stage.Execute(camera, modelBatchList.OpaqueBatch);
 
             foreach (var batch in modelBatchList.TransparentBatches)
-            {
-                foreach (var stage in this.Stages)
-                {
-                    stage.Execute(camera, batch, elapsed);
-                }
-            }
+            foreach (var stage in this.Stages)
+                stage.Execute(camera, batch);
         }
+
         public static ModelPipeline Create(GraphicsDevice device)
         {
             return new ModelPipeline(device);

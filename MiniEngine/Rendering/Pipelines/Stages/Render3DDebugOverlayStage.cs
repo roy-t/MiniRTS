@@ -3,14 +3,13 @@ using MiniEngine.Rendering.Batches;
 using MiniEngine.Rendering.Cameras;
 using MiniEngine.Rendering.Primitives;
 using MiniEngine.Rendering.Systems;
-using MiniEngine.Units;
 
 namespace MiniEngine.Rendering.Pipelines.Stages
 {
     public sealed class Render3DDebugOverlayStage : IModelPipelineStage
     {
-        private readonly GraphicsDevice Device;
         private readonly DebugRenderSystem DebugRenderSystem;
+        private readonly GraphicsDevice Device;
         private readonly GBuffer GBuffer;
 
         public Render3DDebugOverlayStage(GraphicsDevice device, DebugRenderSystem debugRenderSystem, GBuffer gBuffer)
@@ -20,9 +19,12 @@ namespace MiniEngine.Rendering.Pipelines.Stages
             this.GBuffer = gBuffer;
         }
 
-        public void Execute(PerspectiveCamera camera, ModelRenderBatch batch, Seconds _)
+        public void Execute(PerspectiveCamera camera, ModelRenderBatch batch)
         {
-            this.Device.SetRenderTargets(this.GBuffer.DiffuseTarget, this.GBuffer.NormalTarget, this.GBuffer.DepthTarget);
+            this.Device.SetRenderTargets(
+                this.GBuffer.DiffuseTarget,
+                this.GBuffer.NormalTarget,
+                this.GBuffer.DepthTarget);
             this.DebugRenderSystem.Render3DOverlay(camera);
         }
     }

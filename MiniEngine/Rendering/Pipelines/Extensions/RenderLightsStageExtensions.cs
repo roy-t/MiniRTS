@@ -1,5 +1,4 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using MiniEngine.Rendering.Pipelines.Stages;
+﻿using MiniEngine.Rendering.Pipelines.Stages;
 using MiniEngine.Rendering.Primitives;
 
 namespace MiniEngine.Rendering.Pipelines.Extensions
@@ -8,16 +7,6 @@ namespace MiniEngine.Rendering.Pipelines.Extensions
     {
         public static ModelPipeline RenderLights(
             this ModelPipeline pipeline,
-            LightingPipeline lightingPipeline,
-            GBuffer gBuffer)
-        {
-            var stage = new RenderLightsStage(lightingPipeline, gBuffer);
-            pipeline.Add(stage);
-            return pipeline;
-        }
-
-        public static ParticlePipeline RenderLights(
-            this ParticlePipeline pipeline,
             LightingPipeline lightingPipeline,
             GBuffer gBuffer)
         {

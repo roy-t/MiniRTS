@@ -5,8 +5,8 @@ namespace MiniEngine.Rendering.Primitives
 {
     public sealed class FullScreenTriangle
     {
-        private readonly VertexPositionTexture[] Vertices;
         private readonly short[] Indices;
+        private readonly VertexPositionTexture[] Vertices;
 
         public FullScreenTriangle()
         {
@@ -23,7 +23,12 @@ namespace MiniEngine.Rendering.Primitives
                     new Vector2(0, -1))
             };
 
-            this.Indices = new short[]{ 0, 1, 2};
+            this.Indices = new short[]
+            {
+                0,
+                1,
+                2
+            };
         }
 
         /// <summary>

@@ -3,7 +3,7 @@
 namespace MiniEngine.Rendering.Components
 {
     public class DirectionalLight
-    {        
+    {
         public DirectionalLight(Vector3 direction, Color color)
         {
             this.Direction = direction;
@@ -17,6 +17,6 @@ namespace MiniEngine.Rendering.Components
         {
             get => new Color(this.ColorVector);
             set => this.ColorVector = value.ToVector3();
-        }        
+        }
     }
 }

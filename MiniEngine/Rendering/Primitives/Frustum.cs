@@ -1,11 +1,11 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using MiniEngine.Utilities.Extensions;
-using System;
 
 namespace MiniEngine.Rendering.Primitives
 {
     public sealed class Frustum
-    {        
+    {
         private readonly Vector3[] Corners;
 
         public Frustum()
@@ -31,9 +31,7 @@ namespace MiniEngine.Rendering.Primitives
         {
             var center = Vector3.Zero;
             for (var i = 0; i < 8; i++)
-            {
                 center += this.Corners[i];
-            }
 
             center /= 8;
             return center;
@@ -42,9 +40,7 @@ namespace MiniEngine.Rendering.Primitives
         public void Transform(Matrix matrix)
         {
             for (var i = 0; i < 8; i++)
-            {
                 this.Corners[i] = Vector4.Transform(this.Corners[i], matrix).ScaleToVector3();
-            }
         }
 
         public void Slice(float start, float end)
@@ -55,14 +51,14 @@ namespace MiniEngine.Rendering.Primitives
                 var ray = this.Corners[i + 4] - this.Corners[i];
 
                 // Slice by moving the corners on the ray
-                this.Corners[i + 4] = this.Corners[i] + (ray * end);
-                this.Corners[i] = this.Corners[i] + (ray * start);
+                this.Corners[i + 4] = this.Corners[i] + ray * end;
+                this.Corners[i] = this.Corners[i] + ray * start;
             }
         }
-       
+
         public void ResetToViewVolume()
-        {            
-            this.Corners[0] = new Vector3(-1.0f, 1.0f, 0.0f);            
+        {
+            this.Corners[0] = new Vector3(-1.0f, 1.0f, 0.0f);
             this.Corners[1] = new Vector3(1.0f, 1.0f, 0.0f);
             this.Corners[2] = new Vector3(1.0f, -1.0f, 0.0f);
             this.Corners[3] = new Vector3(-1.0f, -1.0f, 0.0f);
@@ -70,6 +66,6 @@ namespace MiniEngine.Rendering.Primitives
             this.Corners[5] = new Vector3(1.0f, 1.0f, 1.0f);
             this.Corners[6] = new Vector3(1.0f, -1.0f, 1.0f);
             this.Corners[7] = new Vector3(-1.0f, -1.0f, 1.0f);
-        }       
+        }
     }
 }

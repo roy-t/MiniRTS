@@ -1,14 +1,13 @@
 ﻿using MiniEngine.Rendering.Batches;
 using MiniEngine.Rendering.Cameras;
 using MiniEngine.Rendering.Primitives;
-using MiniEngine.Units;
 
 namespace MiniEngine.Rendering.Pipelines.Stages
 {
     public sealed class RenderLightsStage : IModelPipelineStage, IParticlePipelineStage
     {
-        private readonly LightingPipeline LightingPipeline;
         private readonly GBuffer GBuffer;
+        private readonly LightingPipeline LightingPipeline;
 
         public RenderLightsStage(LightingPipeline lightingPipeline, GBuffer gBuffer)
         {
@@ -16,12 +15,19 @@ namespace MiniEngine.Rendering.Pipelines.Stages
             this.GBuffer = gBuffer;
         }
 
-        private void Execute(PerspectiveCamera camera, Seconds elapsed)
+        public void Execute(PerspectiveCamera camera, ModelRenderBatch _)
         {
-            this.LightingPipeline.Execute(camera, this.GBuffer, elapsed);
+            Execute(camera);
         }
 
-        public void Execute(PerspectiveCamera camera, ModelRenderBatch _, Seconds elapsed) => Execute(camera, elapsed);                
-        public void Execute(PerspectiveCamera camera, ParticleRenderBatch _, Seconds elapsed) => Execute(camera, elapsed);
+        public void Execute(PerspectiveCamera camera, ParticleRenderBatch _)
+        {
+            Execute(camera);
+        }
+
+        private void Execute(PerspectiveCamera camera)
+        {
+            this.LightingPipeline.Execute(camera, this.GBuffer);
+        }
     }
 }

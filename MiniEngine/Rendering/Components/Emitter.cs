@@ -47,7 +47,7 @@ namespace MiniEngine.Rendering.Components
         public Seconds TimeToLive { get; }
         public Seconds TimePerFrame { get; }
 
-       
+
         public void Update(Seconds elapsed)
         {
             for (var i = this.Particles.Count - 1; i >= 0; i--)
@@ -61,13 +61,13 @@ namespace MiniEngine.Rendering.Components
                 else
                 {
                     particle.Position += particle.LinearVelocity * elapsed.Value;
-                    particle.Frame = (int)(particle.LifeTime.Value / particle.TimePerFrame.Value);
+                    particle.Frame = (int) (particle.LifeTime.Value / particle.TimePerFrame.Value);
                 }
             }
 
             this.timeToSpawn -= elapsed;
             if (this.timeToSpawn <= 0.0f)
-            {                
+            {
                 var velocity = Vector3.Normalize(this.Direction + GetSpreadVector()) * this.Speed;
 
                 this.timeToSpawn += this.SpawnInterval;
@@ -75,7 +75,7 @@ namespace MiniEngine.Rendering.Components
                     new Particle(
                         this.Position,
                         this.Scale,
-                        velocity,                                                
+                        velocity,
                         this.TimePerFrame));
             }
         }
@@ -91,7 +91,7 @@ namespace MiniEngine.Rendering.Components
 
         private static float GetRandomOffset()
         {
-            return (((float)Random.NextDouble()) * 2.0f) - 1.0f;
+            return (float) Random.NextDouble() * 2.0f - 1.0f;
         }
     }
 }

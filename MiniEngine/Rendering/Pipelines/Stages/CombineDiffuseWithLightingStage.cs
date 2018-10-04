@@ -3,27 +3,39 @@ using MiniEngine.Rendering.Batches;
 using MiniEngine.Rendering.Cameras;
 using MiniEngine.Rendering.Effects;
 using MiniEngine.Rendering.Primitives;
-using MiniEngine.Units;
 
 namespace MiniEngine.Rendering.Pipelines.Stages
 {
     public sealed class CombineDiffuseWithLightingStage : IModelPipelineStage, IParticlePipelineStage
     {
+        private readonly RenderTarget2D DestinationTarget;
         private readonly GraphicsDevice Device;
         private readonly CombineEffect Effect;
-        private readonly RenderTarget2D DestinationTarget;
-        private readonly GBuffer GBuffer;
         private readonly FullScreenTriangle FullScreenTriangle;
+        private readonly GBuffer GBuffer;
 
-        public CombineDiffuseWithLightingStage(GraphicsDevice device, CombineEffect effect,
-                                               RenderTarget2D destinationTarget, GBuffer gBuffer)
+        public CombineDiffuseWithLightingStage(
+            GraphicsDevice device,
+            CombineEffect effect,
+            RenderTarget2D destinationTarget,
+            GBuffer gBuffer)
         {
             this.Device = device;
             this.Effect = effect;
             this.DestinationTarget = destinationTarget;
             this.GBuffer = gBuffer;
             this.FullScreenTriangle = new FullScreenTriangle();
-        }        
+        }
+
+        public void Execute(PerspectiveCamera camera, ModelRenderBatch _)
+        {
+            Execute();
+        }
+
+        public void Execute(PerspectiveCamera camera, ParticleRenderBatch _)
+        {
+            Execute();
+        }
 
         private void Execute()
         {
@@ -40,8 +52,5 @@ namespace MiniEngine.Rendering.Pipelines.Stages
 
             this.Device.SetRenderTarget(null);
         }
-
-        public void Execute(PerspectiveCamera camera, ModelRenderBatch _, Seconds __) => Execute();
-        public void Execute(PerspectiveCamera camera, ParticleRenderBatch _, Seconds __) => Execute();
     }
 }

@@ -4,7 +4,7 @@ namespace MiniEngine.Rendering.Effects
 {
     public abstract class EffectWrapper
     {
-        protected Effect effect;        
+        protected Effect effect;
 
         public void Wrap(Effect effect)
         {

@@ -4,29 +4,29 @@ namespace MiniEngine.Rendering.Cameras
 {
     public sealed class OrthographicCamera : IMovableViewPoint
     {
-        private readonly float MinX;
-        private readonly float MaxX;
-        private readonly float MinY;        
-        private readonly float MaxY;
-        private readonly float NearZ;
         private readonly float FarZ;
+        private readonly float MaxX;
+        private readonly float MaxY;
+        private readonly float MinX;
+        private readonly float MinY;
+        private readonly float NearZ;
 
         public OrthographicCamera(
             float minX,
             float maxX,
-            float minY,            
+            float minY,
             float maxY,
             float nearZ,
             float farZ)
         {
-            this.MinX  = minX;            
-            this.MaxX  = maxX;
+            this.MinX = minX;
+            this.MaxX = maxX;
 
-            this.MinY  = minY;
-            this.MaxY  = maxY;
+            this.MinY = minY;
+            this.MaxY = maxY;
 
             this.NearZ = nearZ;
-            this.FarZ  = farZ;
+            this.FarZ = farZ;
 
             Move(Vector3.Backward * 10, Vector3.Zero);
         }
@@ -53,6 +53,6 @@ namespace MiniEngine.Rendering.Cameras
                 this.FarZ);
 
             this.Frustum = new BoundingFrustum(this.View * this.Projection);
-        }       
+        }
     }
 }

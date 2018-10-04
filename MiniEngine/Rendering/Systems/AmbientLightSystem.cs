@@ -1,6 +1,6 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using MiniEngine.Systems;
-using System.Collections.Generic;
 
 namespace MiniEngine.Rendering.Systems
 {
@@ -13,12 +13,10 @@ namespace MiniEngine.Rendering.Systems
             this.Lights = new Dictionary<Entity, Color>();
         }
 
-        public void Add(Entity entity, Color color)
+        public bool Contains(Entity entity)
         {
-            this.Lights.Add(entity, color);
+            return this.Lights.ContainsKey(entity);
         }
-
-        public bool Contains(Entity entity) => this.Lights.ContainsKey(entity);
 
 
         public string Describe(Entity entity)
@@ -30,7 +28,12 @@ namespace MiniEngine.Rendering.Systems
         public void Remove(Entity entity)
         {
             this.Lights.Remove(entity);
-        }              
+        }
+
+        public void Add(Entity entity, Color color)
+        {
+            this.Lights.Add(entity, color);
+        }
 
         public Color ComputeAmbientLightZeroAlpha()
         {
