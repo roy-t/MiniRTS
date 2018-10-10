@@ -16,18 +16,10 @@ float3 LightDirection;
 float3 CameraPosition;
 float3 Color; 
 
-texture ShadowMap;
-sampler shadowSampler = sampler_state
-{
-    Texture = (ShadowMap);
-    AddressU = CLAMP;
-    AddressV = CLAMP;
-    MinFilter = POINT;
-    MagFilter = POINT;
-    MipFilter = POINT;
-};
+Texture2D ShadowMap : register(t0);
+SamplerComparisonState ShadowSampler : register(s0);
 
-texture ColorMap;
+Texture2D ColorMap;
 sampler colorSampler = sampler_state
 {
     Texture = (ColorMap);
@@ -60,6 +52,64 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
     return output;
 }
 
+float3 SampleShadowMap(float2 baseUv, float u, float v, float2 shadowMapSizeInv, float z)
+{
+    float2 uv = baseUv + float2(u, v) * shadowMapSizeInv;
+    float shadow = ShadowMap.SampleCmpLevelZero(ShadowSampler, uv, z);                
+    float3 color = ColorMap.Sample(colorSampler, uv, 0).rgb;
+
+    return color * shadow;
+}
+
+float3 SampleShadowMapPCF(float2 shadowMapCoordinates, float z)
+{
+    float2 shadowMapSize;
+    ShadowMap.GetDimensions(shadowMapSize.x, shadowMapSize.y);
+    float2 uv = shadowMapCoordinates * shadowMapSize;
+    float2 shadowMapSizeInv = 1.0f / shadowMapSize;
+
+    float2 baseUv;
+    baseUv.x = floor(uv.x + 0.5f);
+    baseUv.y = floor(uv.y + 0.5f);
+
+    float s = (uv.x + 0.5f - baseUv.x);
+    float t = (uv.y + 0.5f - baseUv.y);
+
+    baseUv -= float2(0.5f, 0.5f);
+    baseUv *= shadowMapSizeInv;
+
+    float3 sum = 0.0f;
+
+    float uw0 = (4 - 3 * s);
+    float uw1 = 7;
+    float uw2 = (1 + 3 * s);
+
+    float u0 = (3 - 2 * s) / uw0 - 2;
+    float u1 = (3 + s) / uw1;
+    float u2 = s / uw2 + 2;
+
+    float vw0 = (4 - 3 * t);
+    float vw1 = 7;
+    float vw2 = (1 + 3 * t);
+
+    float v0 = (3 - 2 * t) / vw0 - 2;
+    float v1 = (3 + t) / vw1;
+    float v2 = t / vw2 + 2;
+
+    sum += uw0 * vw0 * SampleShadowMap(baseUv, u0, v0, shadowMapSizeInv, z);
+    sum += uw1 * vw0 * SampleShadowMap(baseUv, u1, v0, shadowMapSizeInv, z);
+    sum += uw2 * vw0 * SampleShadowMap(baseUv, u2, v0, shadowMapSizeInv, z);
+    
+    sum += uw0 * vw1 * SampleShadowMap(baseUv, u0, v1, shadowMapSizeInv, z);
+    sum += uw1 * vw1 * SampleShadowMap(baseUv, u1, v1, shadowMapSizeInv, z);
+    sum += uw2 * vw1 * SampleShadowMap(baseUv, u2, v1, shadowMapSizeInv, z);
+    
+    sum += uw0 * vw2 * SampleShadowMap(baseUv, u0, v2, shadowMapSizeInv, z);
+    sum += uw1 * vw2 * SampleShadowMap(baseUv, u1, v2, shadowMapSizeInv, z);
+    sum += uw2 * vw2 * SampleShadowMap(baseUv, u2, v2, shadowMapSizeInv, z);
+    return sum / 144.0f;
+}
+
 float4 MainPS(VertexShaderOutput input) : COLOR0
 {
     float2 texCoord = input.TexCoord;
@@ -79,23 +129,17 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
     if(shadowMapCoordinates.x >= 0.0f && shadowMapCoordinates.x <= 1.0f &&
         shadowMapCoordinates.y >= 0.0f && shadowMapCoordinates.y <= 1.0f)
     {        		                
-        float distanceToLightSource = (positionInLightReferenceFrame.z / positionInLightReferenceFrame.w);
-        float shadowMapSample = tex2D(shadowSampler, shadowMapCoordinates).r;
+        float distanceToLightSource = (positionInLightReferenceFrame.z / positionInLightReferenceFrame.w);                
+        float3 lightFactor = SampleShadowMapPCF(shadowMapCoordinates, distanceToLightSource - bias);
         
-        if((distanceToLightSource - bias) <= shadowMapSample)
-        {                           
-            float3 lightVector = normalize(-LightDirection);
+        float3 lightVector = normalize(-LightDirection);
 
-            float3 diffuseLight = ComputeDiffuseLightFactor(lightVector, normal, Color);
-            float specularLight = ComputeSpecularLightFactor(lightVector, normal, position, CameraPosition, shininess, SpecularPower);
+        float3 diffuseLight = ComputeDiffuseLightFactor(lightVector, normal, Color);
+        float specularLight = ComputeSpecularLightFactor(lightVector, normal, position, CameraPosition, shininess, SpecularPower);
             
-            // If the pixel is closer to the camera than the occluder it might have gone through a
-            // semi-transparent object, this factor stored in the colorMap.            
-            float3 colorMapSample = tex2D(colorSampler, shadowMapCoordinates).rgb;
-            float colorMapGrayScale = (colorMapSample.r + colorMapSample.g + colorMapSample.b) / 3.0f;
+        float colorMapGrayScale = (lightFactor.r + lightFactor.g + lightFactor.b) / 3.0f;
 
-            return float4(diffuseLight.rgb * colorMapSample, specularLight * colorMapGrayScale);
-        }       
+        return float4(diffuseLight.rgb * lightFactor, specularLight * colorMapGrayScale);                
     }
 
     return float4(0.0f, 0.0f, 0.0f, 0.0f);

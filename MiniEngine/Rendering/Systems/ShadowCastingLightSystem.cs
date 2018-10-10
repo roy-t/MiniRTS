@@ -62,7 +62,7 @@ namespace MiniEngine.Rendering.Systems
 
         public void RenderLights(PerspectiveCamera perspectiveCamera, GBuffer gBuffer)
         {
-            using (this.Device.LightState())
+            using (this.Device.ShadowCastingLightState())
             {
                 foreach (var lightEntity in this.Lights)
                 {

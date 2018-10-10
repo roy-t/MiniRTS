@@ -87,7 +87,7 @@ namespace MiniEngine.Rendering.Systems
 
         public void RenderLights(PerspectiveCamera perspectiveCamera, GBuffer gBuffer)
         {
-            using (this.Device.SunlightState())
+            using (this.Device.ShadowCastingLightState())
             {
                 foreach (var pair in this.Sunlights)
                 {

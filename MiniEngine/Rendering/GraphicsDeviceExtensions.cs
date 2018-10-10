@@ -41,9 +41,9 @@ namespace MiniEngine.Rendering
         }
 
         /// <summary>
-        /// Graphics device state for drawing sunlights to the Light Target
+        /// Graphics device state for drawing lights that cast shadows to the Light Target
         /// </summary>
-        public static DeviceState SunlightState(this GraphicsDevice device)
+        public static DeviceState ShadowCastingLightState(this GraphicsDevice device)
         {
             var samplerState = new SamplerState
             {
@@ -58,7 +58,7 @@ namespace MiniEngine.Rendering
             return new DeviceState(
                 device,
                 BlendState.AlphaBlend,
-                DepthStencilState.Default,
+                DepthStencilState.None,
                 RasterizerState.CullCounterClockwise,
                 samplerState);
         }

@@ -70,7 +70,7 @@ float3 SampleShadowMap(float2 baseUv, float u, float v, float2 shadowMapSizeInv,
     float z = depth;
 
     float shadow = ShadowMap.SampleCmpLevelZero(ShadowSampler, float3(uv, cascadeIndex), z);    
-    float3 color = ColorMap.Sample(colorSampler, float3(uv, cascadeIndex), 0);
+    float3 color = ColorMap.Sample(colorSampler, float3(uv, cascadeIndex), 0).rgb;
 
     return color * shadow;
 }
@@ -212,7 +212,8 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
     float3 diffuseLight = ComputeDiffuseLightFactor(SurfaceToLightVector, normal, LightColor);
     float specularLight = ComputeSpecularLightFactor(SurfaceToLightVector, normal, position, CameraPosition, shininess, SpecularPower);
 
-    return float4(diffuseLight.rgb * lightFactor, specularLight * lightFactor.r);    
+    float colorMapGrayScale = (lightFactor.r + lightFactor.g + lightFactor.b) / 3.0f;
+    return float4(diffuseLight.rgb * lightFactor, specularLight * colorMapGrayScale);    
 }
 
 technique DirectionalLightTechnique
