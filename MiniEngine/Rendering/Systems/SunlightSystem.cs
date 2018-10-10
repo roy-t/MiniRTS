@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Rendering.Cameras;
 using MiniEngine.Rendering.Components;
+using MiniEngine.Rendering.Effects;
 using MiniEngine.Rendering.Primitives;
 using MiniEngine.Systems;
 using MiniEngine.Units;
@@ -28,14 +29,14 @@ namespace MiniEngine.Rendering.Systems
         private readonly FullScreenTriangle FullScreenTriangle;
 
         private readonly ShadowMapSystem ShadowMapSystem;
-        private readonly Effect SunlightEffect;
+        private readonly SunlightEffect Effect;
 
         private readonly Dictionary<Entity, Sunlight> Sunlights;
 
-        public SunlightSystem(GraphicsDevice device, Effect sunlightEffect, ShadowMapSystem shadowMapSystem)
+        public SunlightSystem(GraphicsDevice device, SunlightEffect effect, ShadowMapSystem shadowMapSystem)
         {
             this.Device = device;
-            this.SunlightEffect = sunlightEffect;
+            this.Effect = effect;
             this.ShadowMapSystem = shadowMapSystem;
 
             this.FullScreenTriangle = new FullScreenTriangle();
@@ -154,36 +155,30 @@ namespace MiniEngine.Rendering.Systems
             PerspectiveCamera perspectiveCamera,
             GBuffer gBuffer)
         {
-            // G-Buffer input                                    
-            this.SunlightEffect.Parameters["NormalMap"].SetValue(gBuffer.NormalTarget);
-            this.SunlightEffect.Parameters["DepthMap"].SetValue(gBuffer.DepthTarget);
+            // G-Buffer input     
+            this.Effect.NormalMap = gBuffer.NormalTarget;
+            this.Effect.DepthMap = gBuffer.DepthTarget;
 
             // Light properties
-            this.SunlightEffect.Parameters["SurfaceToLightVector"].SetValue(sunlight.SurfaceToLightVector);
-            this.SunlightEffect.Parameters["LightColor"].SetValue(sunlight.ColorVector);
+            this.Effect.SurfaceToLightVector = sunlight.SurfaceToLightVector;
+            this.Effect.LightColor = sunlight.Color;
 
             // Camera properties for specular reflections, and rebuilding world positions
-            this.SunlightEffect.Parameters["CameraPosition"].SetValue(perspectiveCamera.Position);
-            this.SunlightEffect.Parameters["InverseViewProjection"].SetValue(perspectiveCamera.InverseViewProjection);
+            this.Effect.CameraPosition = perspectiveCamera.Position;
+            this.Effect.InverseViewProjection = perspectiveCamera.InverseViewProjection;
 
             // Shadow properties
-            this.SunlightEffect.Parameters["ShadowMap"].SetValue(shadowMap);
-            this.SunlightEffect.Parameters["ColorMap"].SetValue(colorMap);
-            this.SunlightEffect.Parameters["ShadowMatrix"].SetValue(sunlight.GlobalShadowMatrix);
-            this.SunlightEffect.Parameters["CascadeSplits"].SetValue(
-                new Vector4(
-                    sunlight.CascadeSplits[0],
-                    sunlight.CascadeSplits[1],
-                    sunlight.CascadeSplits[2],
-                    sunlight.CascadeSplits[3]));
-            this.SunlightEffect.Parameters["CascadeOffsets"].SetValue(sunlight.CascadeOffsets);
-            this.SunlightEffect.Parameters["CascadeScales"].SetValue(sunlight.CascadeScales);
+            this.Effect.ShadowMap = shadowMap;
+            this.Effect.ColorMap = colorMap;
+            this.Effect.ShadowMatrix = sunlight.GlobalShadowMatrix;
+            this.Effect.CascadeSplits = sunlight.CascadeSplits;
+            this.Effect.CascadeOffsets = sunlight.CascadeOffsets;
+            this.Effect.CascadeScales = sunlight.CascadeScales;
 
-            foreach (var pass in this.SunlightEffect.Techniques[0].Passes)
-            {
-                pass.Apply();
-                this.FullScreenTriangle.Render(this.Device);
-            }
+            this.Effect.Apply();
+
+            this.FullScreenTriangle.Render(this.Device);
+
         }
     }
 }

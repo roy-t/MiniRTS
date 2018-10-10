@@ -10,19 +10,12 @@ namespace MiniEngine.Rendering.Components
 
         public ShadowCastingLight(Vector3 position, Vector3 lookAt, Color color)
         {
-            this.ColorVector = color.ToVector3();
+            this.Color = color;
             this.ViewPoint = new PerspectiveCamera(new Viewport(0, 0, ShadowMapResolution, ShadowMapResolution));
             this.ViewPoint.Move(position, lookAt);
         }
 
         public PerspectiveCamera ViewPoint { get; }
-
-        public Vector3 ColorVector { get; set; }
-
-        public Color Color
-        {
-            get => new Color(this.ColorVector);
-            set => this.ColorVector = value.ToVector3();
-        }
+        public Color Color { get; set; }
     }
 }

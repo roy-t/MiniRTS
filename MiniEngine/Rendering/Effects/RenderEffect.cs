@@ -53,9 +53,7 @@ namespace MiniEngine.Rendering.Effects
         public void Apply(Techniques technique)
         {
             switch (technique)
-            {
-                
-                
+            {                                
                 case Techniques.ShadowMap:
                     this.effect.CurrentTechnique = this.effect.Techniques["ShadowMap"];
                     break;              

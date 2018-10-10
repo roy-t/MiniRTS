@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Rendering.Cameras;
 using MiniEngine.Rendering.Components;
+using MiniEngine.Rendering.Effects;
 using MiniEngine.Rendering.Primitives;
 using MiniEngine.Systems;
 
@@ -15,17 +16,17 @@ namespace MiniEngine.Rendering.Systems
         private readonly FullScreenTriangle FullScreenTriangle;
 
         private readonly Dictionary<Entity, ShadowCastingLight> Lights;
-        private readonly Effect ShadowCastingLightEffect;
+        private readonly ShadowCastingLightEffect Effect;
 
         private readonly ShadowMapSystem ShadowMapSystem;
 
         public ShadowCastingLightSystem(
             GraphicsDevice device,
-            Effect shadowCastingLightEffect,
+            ShadowCastingLightEffect effect,
             ShadowMapSystem shadowMapSystem)
         {
             this.Device = device;
-            this.ShadowCastingLightEffect = shadowCastingLightEffect;
+            this.Effect = effect;
             this.ShadowMapSystem = shadowMapSystem;
 
             this.FullScreenTriangle = new FullScreenTriangle();
@@ -68,32 +69,27 @@ namespace MiniEngine.Rendering.Systems
                     var light = lightEntity.Value;
                     var shadowMap = this.ShadowMapSystem.Get(lightEntity.Key);
 
-                    // G-Buffer input                        
-                    this.ShadowCastingLightEffect.Parameters["NormalMap"].SetValue(gBuffer.NormalTarget);
-                    this.ShadowCastingLightEffect.Parameters["DepthMap"].SetValue(gBuffer.DepthTarget);
+                    // G-Buffer input                    
+                    this.Effect.NormalMap = gBuffer.NormalTarget;
+                    this.Effect.DepthMap = gBuffer.DepthTarget;
 
-                    // Light properties
-                    this.ShadowCastingLightEffect.Parameters["LightDirection"].SetValue(
-                        Vector3.Normalize(light.ViewPoint.LookAt - light.ViewPoint.Position));
-                    this.ShadowCastingLightEffect.Parameters["LightPosition"].SetValue(light.ViewPoint.Position);
-                    this.ShadowCastingLightEffect.Parameters["Color"].SetValue(light.ColorVector);
-
+                    // Light properties                    
+                    this.Effect.LightDirection = light.ViewPoint.Forward;
+                    this.Effect.LightPosition = light.ViewPoint.Position;
+                    this.Effect.Color = light.Color;
+                    
                     // Camera properties for specular reflections
-                    this.ShadowCastingLightEffect.Parameters["CameraPosition"].SetValue(perspectiveCamera.Position);
-                    this.ShadowCastingLightEffect.Parameters["InverseViewProjection"]
-                        .SetValue(perspectiveCamera.InverseViewProjection);
+                    this.Effect.CameraPosition = perspectiveCamera.Position;
+                    this.Effect.InverseViewProjection = perspectiveCamera.InverseViewProjection;
 
                     // Shadow properties
-                    this.ShadowCastingLightEffect.Parameters["ShadowMap"].SetValue(shadowMap.DepthMap);
-                    this.ShadowCastingLightEffect.Parameters["ColorMap"].SetValue(shadowMap.ColorMap);
-                    this.ShadowCastingLightEffect.Parameters["LightViewProjection"]
-                        .SetValue(light.ViewPoint.ViewProjection);
+                    this.Effect.ShadowMap = shadowMap.DepthMap;
+                    this.Effect.ColorMap = shadowMap.ColorMap;
+                    this.Effect.LightViewProjection = light.ViewPoint.ViewProjection;
 
-                    foreach (var pass in this.ShadowCastingLightEffect.Techniques[0].Passes)
-                    {
-                        pass.Apply();
-                        this.FullScreenTriangle.Render(this.Device);
-                    }
+                    this.Effect.Apply();
+
+                    this.FullScreenTriangle.Render(this.Device);
                 }
             }
         }

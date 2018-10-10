@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Rendering.Cameras;
 using MiniEngine.Rendering.Components;
+using MiniEngine.Rendering.Effects;
 using MiniEngine.Rendering.Primitives;
 using MiniEngine.Systems;
 
@@ -11,15 +12,15 @@ namespace MiniEngine.Rendering.Systems
     public sealed class PointLightSystem : ISystem
     {
         private readonly GraphicsDevice Device;
-        private readonly Effect Effect;
+        private readonly PointLightEffect Effect;
 
         private readonly Dictionary<Entity, PointLight> Lights;
         private readonly Model Sphere;
 
-        public PointLightSystem(GraphicsDevice device, Effect pointLightEffect, Model sphere)
+        public PointLightSystem(GraphicsDevice device, PointLightEffect effect, Model sphere)
         {
             this.Device = device;
-            this.Effect = pointLightEffect;
+            this.Effect = effect;
             this.Sphere = sphere;
 
             this.Lights = new Dictionary<Entity, PointLight>();
@@ -53,23 +54,22 @@ namespace MiniEngine.Rendering.Systems
                 foreach (var light in this.Lights.Values)
                 {
                     // G-Buffer input                        
-                    this.Effect.Parameters["NormalMap"].SetValue(gBuffer.NormalTarget);
-                    this.Effect.Parameters["DepthMap"].SetValue(gBuffer.DepthTarget);
+                    this.Effect.NormalMap = gBuffer.NormalTarget;
+                    this.Effect.DepthMap = gBuffer.DepthTarget;
 
                     // Light properties
                     var sphereWorldMatrix = Matrix.CreateScale(light.Radius) * Matrix.CreateTranslation(light.Position);
-
-                    this.Effect.Parameters["World"].SetValue(sphereWorldMatrix);
-                    this.Effect.Parameters["LightPosition"].SetValue(light.Position);
-                    this.Effect.Parameters["Color"].SetValue(light.ColorVector);
-                    this.Effect.Parameters["Radius"].SetValue(light.Radius);
-                    this.Effect.Parameters["Intensity"].SetValue(light.Intensity);
+                    this.Effect.World = sphereWorldMatrix;
+                    this.Effect.LightPosition = light.Position;
+                    this.Effect.Color = light.Color;
+                    this.Effect.Radius = light.Radius;
+                    this.Effect.Intensity = light.Intensity;
 
                     // Camera properties for specular reflections
-                    this.Effect.Parameters["View"].SetValue(perspectiveCamera.View);
-                    this.Effect.Parameters["Projection"].SetValue(perspectiveCamera.Projection);
-                    this.Effect.Parameters["InverseViewProjection"].SetValue(perspectiveCamera.InverseViewProjection);
-                    this.Effect.Parameters["CameraPosition"].SetValue(perspectiveCamera.Position);
+                    this.Effect.View = perspectiveCamera.View;
+                    this.Effect.Projection = perspectiveCamera.Projection;
+                    this.Effect.InverseViewProjection = perspectiveCamera.InverseViewProjection;
+                    this.Effect.CameraPosition = perspectiveCamera.Position;
 
                     // If the camera is inside the light's radius we invert the cull direction
                     // otherwise the camera's sphere model is clipped
@@ -78,11 +78,10 @@ namespace MiniEngine.Rendering.Systems
                         ? RasterizerState.CullClockwise
                         : RasterizerState.CullCounterClockwise;
 
-                    foreach (var pass in this.Effect.Techniques[0].Passes)
-                    {
-                        pass.Apply();
+                    this.Effect.Apply();
 
-                        foreach (var mesh in this.Sphere.Meshes)
+                    foreach (var mesh in this.Sphere.Meshes)
+                    {
                         foreach (var meshPart in mesh.MeshParts)
                         {
                             this.Device.Indices = meshPart.IndexBuffer;

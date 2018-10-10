@@ -90,9 +90,13 @@
     <Compile Include="Rendering\Components\ShadowMap.cs" />
     <Compile Include="Rendering\Effects\CombineEffect.cs" />
     <Compile Include="Rendering\Effects\CopyEffect.cs" />
+    <Compile Include="Rendering\Effects\DirectionalLightEffect.cs" />
     <Compile Include="Rendering\Effects\EffectWrapper.cs" />
     <Compile Include="Rendering\Effects\FxaaEffect.cs" />
+    <Compile Include="Rendering\Effects\PointLightEffect.cs" />
     <Compile Include="Rendering\Effects\RenderEffect.cs" />
+    <Compile Include="Rendering\Effects\ShadowCastingLightEffect.cs" />
+    <Compile Include="Rendering\Effects\SunlightEffect.cs" />
     <Compile Include="Rendering\Effects\Techniques.cs" />
     <Compile Include="Rendering\Pipelines\Extensions\CopyColorsStageExtensions.cs" />
     <Compile Include="Rendering\Pipelines\Extensions\RenderParticleBatchStageExtensions.cs" />

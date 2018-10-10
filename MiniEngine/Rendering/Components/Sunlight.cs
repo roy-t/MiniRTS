@@ -24,13 +24,7 @@ namespace MiniEngine.Rendering.Components
         public Vector4[] CascadeScales { get; }
         public Matrix GlobalShadowMatrix { get; set; }
 
-        public Vector3 ColorVector { get; private set; }
-
-        public Color Color
-        {
-            get => new Color(this.ColorVector);
-            set => this.ColorVector = value.ToVector3();
-        }
+        public Color Color { get; set; }
 
         public Vector3 Position { get; private set; }
         public Vector3 LookAt { get; private set; }

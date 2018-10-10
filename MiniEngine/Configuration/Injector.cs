@@ -43,10 +43,10 @@ namespace MiniEngine.Configuration
             RegisterEffect<FxaaEffect>("FxaaEffect");
             RegisterEffect<CopyEffect>("CopyEffect");
 
-            RegisterContent<Effect>("DirectionalLightEffect", "directionalLightEffect", "Effects");
-            RegisterContent<Effect>("PointLightEffect", "pointLightEffect", "Effects");
-            RegisterContent<Effect>("ShadowCastingLightEffect", "shadowCastingLightEffect", "Effects");
-            RegisterContent<Effect>("SunlightEffect", "sunlightEffect", "Effects");
+            RegisterEffect<DirectionalLightEffect>("DirectionalLightEffect");
+            RegisterEffect<PointLightEffect>("PointLightEffect");
+            RegisterEffect<ShadowCastingLightEffect>("ShadowCastingLightEffect");
+            RegisterEffect<SunlightEffect>("SunlightEffect");
 
             // Textures
             RegisterContent<Texture2D>("NeutralMask", "neutralMask");

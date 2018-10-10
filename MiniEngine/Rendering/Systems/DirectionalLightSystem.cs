@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Rendering.Cameras;
+using MiniEngine.Rendering.Effects;
 using MiniEngine.Rendering.Primitives;
 using MiniEngine.Systems;
 using DirectionalLight = MiniEngine.Rendering.Components.DirectionalLight;
@@ -11,15 +12,15 @@ namespace MiniEngine.Rendering.Systems
     public sealed class DirectionalLightSystem : ISystem
     {
         private readonly GraphicsDevice Device;
-        private readonly Effect Effect;
+        private readonly DirectionalLightEffect Effect;
         private readonly FullScreenTriangle FullScreenTriangle;
 
         private readonly Dictionary<Entity, DirectionalLight> Lights;
 
-        public DirectionalLightSystem(GraphicsDevice device, Effect directionalLightEffect)
+        public DirectionalLightSystem(GraphicsDevice device, DirectionalLightEffect effect)
         {
             this.Device = device;
-            this.Effect = directionalLightEffect;
+            this.Effect = effect;
             this.FullScreenTriangle = new FullScreenTriangle();
 
             this.Lights = new Dictionary<Entity, DirectionalLight>();
@@ -53,22 +54,20 @@ namespace MiniEngine.Rendering.Systems
                 foreach (var light in this.Lights.Values)
                 {
                     // G-Buffer input                        
-                    this.Effect.Parameters["NormalMap"].SetValue(gBuffer.NormalTarget);
-                    this.Effect.Parameters["DepthMap"].SetValue(gBuffer.DepthTarget);
+                    this.Effect.NormalMap = gBuffer.NormalTarget;
+                    this.Effect.DepthMap = gBuffer.DepthTarget;
 
                     // Light properties
-                    this.Effect.Parameters["LightDirection"].SetValue(light.Direction);
-                    this.Effect.Parameters["Color"].SetValue(light.ColorVector);
+                    this.Effect.LightDirection = light.Direction;
+                    this.Effect.Color = light.Color;
 
                     // Camera properties for specular reflections
-                    this.Effect.Parameters["CameraPosition"].SetValue(perspectiveCamera.Position);
-                    this.Effect.Parameters["InverseViewProjection"].SetValue(perspectiveCamera.InverseViewProjection);
+                    this.Effect.CameraPosition = perspectiveCamera.Position;
+                    this.Effect.InverseViewProjection = perspectiveCamera.InverseViewProjection;
 
-                    foreach (var pass in this.Effect.Techniques[0].Passes)
-                    {
-                        pass.Apply();
-                        this.FullScreenTriangle.Render(this.Device);
-                    }
+                    this.Effect.Apply();
+
+                    this.FullScreenTriangle.Render(this.Device);                    
                 }
             }
         }

@@ -97,7 +97,7 @@ namespace MiniEngine.Rendering
             var rasterizerState = new RasterizerState
             {
                 CullMode = CullMode.None,
-                DepthClipEnable = false
+                DepthClipEnable = true
             };
 
             return new DeviceState(
@@ -127,7 +127,7 @@ namespace MiniEngine.Rendering
             var rasterizerState = new RasterizerState
             {
                 CullMode = CullMode.None,
-                DepthClipEnable = false
+                DepthClipEnable = true
             };
 
             return new DeviceState(
