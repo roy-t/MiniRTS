@@ -21,7 +21,7 @@ namespace MiniEngine.Rendering.Components
 
             this.Particles = new List<Particle>();
 
-            this.SpawnInterval = 0.01f;
+            this.SpawnInterval = 0.05f;
             this.timeToSpawn = 0.0f;
 
             this.Scale = 0.5f;
