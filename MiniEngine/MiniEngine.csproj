@@ -91,7 +91,7 @@
     <Compile Include="Rendering\Effects\CombineEffect.cs" />
     <Compile Include="Rendering\Effects\CopyEffect.cs" />
     <Compile Include="Rendering\Effects\EffectWrapper.cs" />
-    <Compile Include="Rendering\Effects\PostProcessEffect.cs" />
+    <Compile Include="Rendering\Effects\FxaaEffect.cs" />
     <Compile Include="Rendering\Effects\RenderEffect.cs" />
     <Compile Include="Rendering\Effects\Techniques.cs" />
     <Compile Include="Rendering\Pipelines\Extensions\CopyColorsStageExtensions.cs" />

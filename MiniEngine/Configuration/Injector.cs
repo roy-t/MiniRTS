@@ -40,11 +40,9 @@ namespace MiniEngine.Configuration
             // Effects            
             RegisterEffect<RenderEffect>("RenderEffect");
             RegisterEffect<CombineEffect>("CombineEffect");
-            RegisterEffect<PostProcessEffect>("PostProcessEffect");
+            RegisterEffect<FxaaEffect>("FxaaEffect");
             RegisterEffect<CopyEffect>("CopyEffect");
 
-            RegisterContent<Effect>("ClearEffect", "clearEffect", "Effects");
-            RegisterContent<Effect>("PostProcessOutlineEffect", "postProcessOutlineEffect", "Effects");
             RegisterContent<Effect>("DirectionalLightEffect", "directionalLightEffect", "Effects");
             RegisterContent<Effect>("PointLightEffect", "pointLightEffect", "Effects");
             RegisterContent<Effect>("ShadowCastingLightEffect", "shadowCastingLightEffect", "Effects");

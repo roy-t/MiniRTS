@@ -25,11 +25,17 @@ namespace MiniEngine.Rendering.Pipelines
         public void Execute(PerspectiveCamera camera, ModelBatchList modelBatchList)
         {
             foreach (var stage in this.Stages)
+            {
                 stage.Execute(camera, modelBatchList.OpaqueBatch);
+            }
 
             foreach (var batch in modelBatchList.TransparentBatches)
-            foreach (var stage in this.Stages)
-                stage.Execute(camera, batch);
+            {
+                foreach (var stage in this.Stages)
+                {
+                    stage.Execute(camera, batch);
+                }
+            }
         }
 
         public static ModelPipeline Create(GraphicsDevice device)

@@ -14,12 +14,6 @@
 
 #---------------------------------- Content ---------------------------------#
 
-#begin Effects/ClearEffect.fx
-/importer:EffectImporter
-/processor:EffectProcessor
-/processorParam:DebugMode=Auto
-/build:Effects/ClearEffect.fx
-
 #begin Effects/CombineEffect.fx
 /importer:EffectImporter
 /processor:EffectProcessor
@@ -38,23 +32,17 @@
 /processorParam:DebugMode=Auto
 /build:Effects/DirectionalLightEffect.fx
 
+#begin Effects/FxaaEffect.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Effects/FxaaEffect.fx
+
 #begin Effects/PointLightEffect.fx
 /importer:EffectImporter
 /processor:EffectProcessor
 /processorParam:DebugMode=Auto
 /build:Effects/PointLightEffect.fx
-
-#begin Effects/PostProcessEffect.fx
-/importer:EffectImporter
-/processor:EffectProcessor
-/processorParam:DebugMode=Auto
-/build:Effects/PostProcessEffect.fx
-
-#begin Effects/PostProcessOutlineEffect.fx
-/importer:EffectImporter
-/processor:EffectProcessor
-/processorParam:DebugMode=Auto
-/build:Effects/PostProcessOutlineEffect.fx
 
 #begin Effects/RenderEffect.fx
 /importer:EffectImporter

@@ -54,20 +54,19 @@ namespace MiniEngine.Rendering.Effects
         {
             switch (technique)
             {
-                case Techniques.MRT:
-                    this.effect.CurrentTechnique = this.effect.Techniques["MRT"];
-                    break;
-                case Techniques.Particles:
-                    this.effect.CurrentTechnique = this.effect.Techniques["Particles"];
-                    break;
+                
+                
                 case Techniques.ShadowMap:
                     this.effect.CurrentTechnique = this.effect.Techniques["ShadowMap"];
+                    break;              
+                case Techniques.GrayScale:
+                    this.effect.CurrentTechnique = this.effect.Techniques["GrayScale"];
                     break;
-                case Techniques.ColorMap:
-                    this.effect.CurrentTechnique = this.effect.Techniques["ColorMap"];
+                case Techniques.Textured:
+                    this.effect.CurrentTechnique = this.effect.Techniques["Textured"];
                     break;
-                case Techniques.ShadowParticles:
-                    this.effect.CurrentTechnique = this.effect.Techniques["ShadowParticles"];
+                case Techniques.Deferred:
+                    this.effect.CurrentTechnique = this.effect.Techniques["Deferred"];
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(technique), technique, null);

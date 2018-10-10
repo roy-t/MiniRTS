@@ -22,7 +22,7 @@ namespace MiniEngine.Rendering.Pipelines.Stages
             this.Device.SetRenderTarget(this.GBuffer.DiffuseTarget);
             using (this.Device.ParticleState())
             {
-                batch.Draw(Techniques.Particles);
+                batch.Draw(Techniques.Textured);
             }
         }
     }

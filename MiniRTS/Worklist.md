@@ -22,4 +22,5 @@
 ## Known Issues
 
 - Sometimes transparency effects from the sunlight disappear when zooming in. Possibly due to the camera for that cascade not seeing the object anymore, even though backface culling and z-culling are disabled. This can usually be prevented by tweaking the cascade distances.
+- Particles are rendered last in the shadow map state, might 'shadow' on a stained glass window that is in front of it.
 

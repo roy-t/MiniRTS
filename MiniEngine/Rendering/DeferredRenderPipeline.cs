@@ -23,7 +23,7 @@ namespace MiniEngine.Rendering
             CopyEffect copyEffect,
             ParticleSystem particleSystem,
             CombineEffect combineEffect,
-            PostProcessEffect postProcessEffect,
+            FxaaEffect postProcessEffect,
             AmbientLightSystem ambientLightSystem,
             DirectionalLightSystem directionalLightSystem,
             PointLightSystem pointLightSystem,
@@ -71,8 +71,7 @@ namespace MiniEngine.Rendering
                              .Clear(this.GBuffer.NormalTarget, new Color(0.5f, 0.5f, 0.5f, 0.0f))
                              .Clear(this.GBuffer.DepthTarget, Color.TransparentBlack)
                              .Clear(combineTarget, Color.TransparentBlack)
-                             .RenderModelBatch(this.GBuffer)
-                             .Render3DDebugOverlay(debugRenderSystem, this.GBuffer)
+                             .RenderModelBatch(this.GBuffer)                             
                              .RenderLights(lightingPipeline, this.GBuffer)
                              .CombineDiffuseWithLighting(combineEffect, combineTarget, this.GBuffer)
                              .AntiAlias(postProcessEffect, combineTarget, this.PostProcessTarget, this.GBuffer, 2.0f);
@@ -96,6 +95,7 @@ namespace MiniEngine.Rendering
                         .RenderShadowMaps(shadowMapSystem)
                         .RenderModels(modelSystem, modelPipeline)
                         .RenderParticles(particleSystem, particlePipeline)
+                        .Render3DDebugOverlay(debugRenderSystem, this.PostProcessTarget)
                         .Render2DDebugOverlay(debugRenderSystem, this.PostProcessTarget);
         }
 

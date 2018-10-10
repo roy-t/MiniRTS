@@ -15,23 +15,21 @@ namespace MiniEngine.Rendering.Systems
 
         private readonly short[] Indices;
         private readonly Dictionary<Entity, BoundingBox> Models;
-        private readonly Effect PostProcessOutlineEffect;
         private readonly RenderEffect RenderEffect;
         private readonly GBufferVertex[] Vertices;
 
-        public DebugRenderSystem(GraphicsDevice device, RenderEffect effect, Effect postProcessOutlineEffect)
+        private readonly Texture2D BlueOutlineTexture;
+        private readonly Texture2D RedOutlineTexture;
+
+
+        public DebugRenderSystem(GraphicsDevice device, RenderEffect effect)
         {
             this.Device = device;
             this.RenderEffect = effect;
-            this.PostProcessOutlineEffect = postProcessOutlineEffect;
             this.Models = new Dictionary<Entity, BoundingBox>();
 
-            this.RenderEffect.DiffuseMap = CreateTexture(Color.CornflowerBlue);
-            this.RenderEffect.SpecularMap = CreateTexture(Color.FromNonPremultiplied(255, 255, 255, 128));
-            this.RenderEffect.NormalMap = CreateTexture(Color.FromNonPremultiplied(128, 128, 255, 255));
-            this.RenderEffect.Mask = CreateTexture(Color.FromNonPremultiplied(255, 255, 255, 255));
-
-            this.PostProcessOutlineEffect.Parameters["Texture"].SetValue(CreateTexture(Color.Red));
+            this.BlueOutlineTexture = CreateTexture(Color.CornflowerBlue);            
+            this.RedOutlineTexture = CreateTexture(Color.Red);            
 
             this.Vertices = new[]
             {
@@ -103,10 +101,11 @@ namespace MiniEngine.Rendering.Systems
             this.RenderEffect.World = Matrix.Identity;
             this.RenderEffect.View = viewPoint.View;
             this.RenderEffect.Projection = viewPoint.Projection;
+            this.RenderEffect.DiffuseMap = this.BlueOutlineTexture;
 
             using (this.Device.WireFrameState())
             {
-                this.RenderEffect.Apply(Techniques.MRT);
+                this.RenderEffect.Apply(Techniques.Textured);
 
                 foreach (var bounds in this.Models.Values)
                 {
@@ -128,29 +127,31 @@ namespace MiniEngine.Rendering.Systems
 
         public void Render2DOverlay(IViewPoint viewPoint)
         {
+            this.RenderEffect.World = Matrix.Identity;
+            this.RenderEffect.View = Matrix.Identity;
+            this.RenderEffect.Projection = Matrix.Identity;
+            this.RenderEffect.DiffuseMap = this.RedOutlineTexture;
+
             using (this.Device.PostProcessState())
             {
-                foreach (var pass in this.PostProcessOutlineEffect.Techniques[0].Passes)
+                this.RenderEffect.Apply(Techniques.Textured);
+
+                foreach (var bounds in this.Models.Values)
                 {
-                    pass.Apply();
+                    var rect = BoundingRectangle.CreateFromProjectedBoundingBox(bounds, viewPoint.Frustum.Matrix);
+                    var projectedCorners = rect.GetCorners();
 
-                    foreach (var bounds in this.Models.Values)
-                    {
-                        var rect = BoundingRectangle.CreateFromProjectedBoundingBox(bounds, viewPoint.Frustum.Matrix);
-                        var projectedCorners = rect.GetCorners();
+                    for (var i = 0; i < projectedCorners.Length; i++)
+                        this.Vertices[i].Position = new Vector4(projectedCorners[i].X, projectedCorners[i].Y, 0, 1);
 
-                        for (var i = 0; i < projectedCorners.Length; i++)
-                            this.Vertices[i].Position = new Vector4(projectedCorners[i].X, projectedCorners[i].Y, 0, 1);
-
-                        this.Device.DrawUserIndexedPrimitives(
-                            PrimitiveType.LineList,
-                            this.Vertices,
-                            0,
-                            4,
-                            this.Indices,
-                            0,
-                            4);
-                    }
+                    this.Device.DrawUserIndexedPrimitives(
+                        PrimitiveType.LineList,
+                        this.Vertices,
+                        0,
+                        4,
+                        this.Indices,
+                        0,
+                        4);
                 }
             }
         }

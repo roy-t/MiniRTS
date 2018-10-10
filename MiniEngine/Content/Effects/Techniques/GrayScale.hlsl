@@ -1,20 +1,20 @@
 // Shader for rendering particles for color mapping
 
-struct ShadowParticlesVertexShaderInput
+struct GrayScaleVertexShaderInput
 {
     float4 Position : POSITION0; 
     float2 TexCoord : TEXCOORD0;    
 };
 
-struct ShadowParticlesVertexShaderOutput
+struct GrayScaleVertexShaderOutput
 {
     float4 Position : POSITION0;
     float2 TexCoord : TEXCOORD0;    
 };
 
-ShadowParticlesVertexShaderOutput ShadowParticlesMainVS(in ShadowParticlesVertexShaderInput input)
+GrayScaleVertexShaderOutput GrayScaleMainVS(in GrayScaleVertexShaderInput input)
 {
-    ShadowParticlesVertexShaderOutput output = (ShadowParticlesVertexShaderOutput)0;
+    GrayScaleVertexShaderOutput output = (GrayScaleVertexShaderOutput)0;
 
     float4 worldPosition = mul(float4(input.Position.xyz, 1), World);
     float4 viewPosition = mul(worldPosition, View);
@@ -24,14 +24,14 @@ ShadowParticlesVertexShaderOutput ShadowParticlesMainVS(in ShadowParticlesVertex
     return output;
 }
 
-struct ShadowParticlesPixelShaderOutput
+struct GrayScalePixelShaderOutput
 {
     float4 Color : COLOR0;
 };
 
-ShadowParticlesPixelShaderOutput ShadowParticlesMainPS(ShadowParticlesVertexShaderOutput input)
+GrayScalePixelShaderOutput GrayScaleMainPS(GrayScaleVertexShaderOutput input)
 {
-    ShadowParticlesPixelShaderOutput output = (ShadowParticlesPixelShaderOutput)0;
+    GrayScalePixelShaderOutput output = (GrayScalePixelShaderOutput)0;
     float2 texCoord = input.TexCoord;
     
     output.Color = tex2D(diffuseSampler, texCoord);       
@@ -40,11 +40,11 @@ ShadowParticlesPixelShaderOutput ShadowParticlesMainPS(ShadowParticlesVertexShad
     return output;
 }
 
-technique ShadowParticles
+technique GrayScale
 {
     pass P0
     {
-        VertexShader = compile VS_SHADERMODEL ShadowParticlesMainVS();
-        PixelShader = compile PS_SHADERMODEL ShadowParticlesMainPS();
+        VertexShader = compile VS_SHADERMODEL GrayScaleMainVS();
+        PixelShader = compile PS_SHADERMODEL GrayScaleMainPS();
     }
 }

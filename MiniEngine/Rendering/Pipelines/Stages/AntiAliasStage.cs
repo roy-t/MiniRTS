@@ -10,7 +10,7 @@ namespace MiniEngine.Rendering.Pipelines.Stages
     {
         private readonly RenderTarget2D DestinationTarget;
         private readonly GraphicsDevice Device;
-        private readonly PostProcessEffect Effect;
+        private readonly FxaaEffect Effect;
 
         private readonly FullScreenTriangle FullScreenTriangle;
         private readonly GBuffer GBuffer;
@@ -18,7 +18,7 @@ namespace MiniEngine.Rendering.Pipelines.Stages
 
         public AntiAliasStage(
             GraphicsDevice device,
-            PostProcessEffect effect,
+            FxaaEffect effect,
             RenderTarget2D sourceTarget,
             RenderTarget2D destinationTarget,
             GBuffer gBuffer,

@@ -25,7 +25,7 @@ namespace MiniEngine.Rendering.Pipelines.Stages
                 this.GBuffer.DepthTarget);
             using (this.Device.GeometryState())
             {
-                batch.Draw(Techniques.MRT);
+                batch.Draw(Techniques.Deferred);
             }
         }
     }

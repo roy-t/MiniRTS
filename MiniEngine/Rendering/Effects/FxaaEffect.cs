@@ -2,13 +2,13 @@
 
 namespace MiniEngine.Rendering.Effects
 {
-    public sealed class PostProcessEffect : EffectWrapper
+    public sealed class FxaaEffect : EffectWrapper
     {
-        public PostProcessEffect()
+        public FxaaEffect()
         {
         }
 
-        public PostProcessEffect(Effect combineEffect)
+        public FxaaEffect(Effect combineEffect)
         {
             Wrap(combineEffect);
         }

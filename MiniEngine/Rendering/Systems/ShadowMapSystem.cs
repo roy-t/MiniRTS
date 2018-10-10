@@ -63,11 +63,13 @@ namespace MiniEngine.Rendering.Systems
         public void RenderShadowMaps()
         {
             foreach (var shadowMap in this.ShadowMaps.Values)
+            {
                 for (var i = 0; i < shadowMap.Cascades; i++)
                 {
                     var modelBatchList = this.ModelSystem.ComputeBatches(shadowMap.ViewPoints[i]);
                     var particleBatchList = this.ParticleSystem.ComputeBatches(shadowMap.ViewPoints[i]);
 
+                    // First compute the shadow maps
                     this.Device.SetRenderTarget(shadowMap.DepthMap, i);
                     this.Device.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.White, 1.0f, 0);
 
@@ -76,22 +78,28 @@ namespace MiniEngine.Rendering.Systems
                         modelBatchList.OpaqueBatch.Draw(Techniques.ShadowMap);
                     }
 
-                    // Use the same depth buffer to generate the color buffer
+                    // Read the depth buffer and render objects that are partially
+                    // occluding, like a stained glass window
                     this.Device.SetRenderTarget(shadowMap.ColorMap, i);
                     this.Device.Clear(ClearOptions.Target, Color.White, 1.0f, 0);
 
-                    using (this.Device.ColorMapState())
+                    using (this.Device.AlphaBlendOccluderState())
                     {
                         foreach (var batch in modelBatchList.TransparentBatches)
-                            batch.Draw(Techniques.ColorMap);
-                    }
+                            batch.Draw(Techniques.Textured);
+                    }                    
 
-                    using (this.Device.ShadowParticlesState())
+                    // Read the depth buffer and render occluding particles
+                    using (this.Device.AdditiveBlendOccluderState())
                     {
                         foreach (var batch in particleBatchList.Batches)
-                            batch.Draw(Techniques.ShadowParticles);
+                            batch.Draw(Techniques.GrayScale);
                     }
+
+                    // TODO: if a particle is behind a stained glass window
+                    // it will shadow as if its in front of it. 
                 }
+            }
         }
     }
 }

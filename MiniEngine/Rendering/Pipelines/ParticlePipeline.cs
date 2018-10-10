@@ -25,8 +25,12 @@ namespace MiniEngine.Rendering.Pipelines
         public void Execute(PerspectiveCamera camera, ParticleBatchList particleBatchList)
         {
             foreach (var batch in particleBatchList.Batches)
-            foreach (var stage in this.Stages)
-                stage.Execute(camera, batch);
+            {
+                foreach (var stage in this.Stages)
+                {
+                    stage.Execute(camera, batch);
+                }
+            }
         }
 
         public static ParticlePipeline Create(GraphicsDevice device)

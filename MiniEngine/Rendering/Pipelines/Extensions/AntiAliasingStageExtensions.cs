@@ -9,7 +9,7 @@ namespace MiniEngine.Rendering.Pipelines.Extensions
     {
         public static ModelPipeline AntiAlias(
             this ModelPipeline pipeline,
-            PostProcessEffect effect,
+            FxaaEffect effect,
             RenderTarget2D sourceTarget,
             RenderTarget2D destinationTarget,
             GBuffer gBuffer,

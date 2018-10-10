@@ -53,10 +53,9 @@ sampler maskSampler = sampler_state
     AddressV = Wrap;
 };
 
-#include "Techniques/MRT.hlsl"
-#include "Techniques/Particles.hlsl"
 #include "Techniques/ShadowMap.hlsl"
-#include "Techniques/ColorMap.hlsl"
-#include "Techniques/ShadowParticles.hlsl"
+#include "Techniques/GrayScale.hlsl"
+#include "Techniques/Textured.hlsl"
+#include "Techniques/Deferred.hlsl"
 
 // The Effect Compiler doesn't like files without an empty new line

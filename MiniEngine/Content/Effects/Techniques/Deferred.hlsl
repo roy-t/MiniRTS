@@ -1,7 +1,7 @@
 // Stores the color, normal and depth information in three separate render targets
 // to construct a geometry-buffer.
 
-struct MRTVertexShaderInput
+struct DeferredVertexShaderInput
 {
     float4 Position : POSITION0;
     float3 Normal : NORMAL0;
@@ -10,7 +10,7 @@ struct MRTVertexShaderInput
     float3 Tangent : TANGENT0;
 };
 
-struct MRTVertexShaderOutput
+struct DeferredVertexShaderOutput
 {
     float4 Position : POSITION0;
     float2 TexCoord : TEXCOORD0;
@@ -18,9 +18,9 @@ struct MRTVertexShaderOutput
     float3x3 tangentToWorld : TEXCOORD2;
 };
 
-MRTVertexShaderOutput MRTMainVS(in MRTVertexShaderInput input)
+DeferredVertexShaderOutput DeferredMainVS(in DeferredVertexShaderInput input)
 {
-    MRTVertexShaderOutput output = (MRTVertexShaderOutput)0;
+    DeferredVertexShaderOutput output = (DeferredVertexShaderOutput)0;
 
     float4 worldPosition = mul(float4(input.Position.xyz, 1), World);
     float4 viewPosition = mul(worldPosition, View);
@@ -38,20 +38,20 @@ MRTVertexShaderOutput MRTMainVS(in MRTVertexShaderInput input)
     return output;
 }
 
-struct MRTPixelShaderOutput
+struct DeferredPixelShaderOutput
 {
     float4 Color : COLOR0;
     float4 Normal : COLOR1;
     float4 Depth : COLOR2;
 };
 
-MRTPixelShaderOutput MRTMainPS(MRTVertexShaderOutput input)
+DeferredPixelShaderOutput DeferredMainPS(DeferredVertexShaderOutput input)
 {
-    MRTPixelShaderOutput output = (MRTPixelShaderOutput)0;
+    DeferredPixelShaderOutput output = (DeferredPixelShaderOutput)0;
     float2 texCoord = input.TexCoord;
 
     float mask = tex2D(maskSampler, texCoord).r;
-    if (mask < 0.5f)
+    if (mask <= 0.5f)
     {
         clip(-1);
         return output;
@@ -82,11 +82,11 @@ MRTPixelShaderOutput MRTMainPS(MRTVertexShaderOutput input)
     return output;
 }
 
-technique MRT
+technique Deferred
 {
     pass P0
     {
-        VertexShader = compile VS_SHADERMODEL MRTMainVS();
-        PixelShader = compile PS_SHADERMODEL MRTMainPS();
+        VertexShader = compile VS_SHADERMODEL DeferredMainVS();
+        PixelShader = compile PS_SHADERMODEL DeferredMainPS();
     }
 }

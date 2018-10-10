@@ -78,20 +78,20 @@ namespace MiniEngine.Rendering
                 rasterizerState);
         }
 
-        public static DeviceState ShadowParticlesState(this GraphicsDevice device)
+        public static DeviceState AdditiveBlendOccluderState(this GraphicsDevice device)
         {
             // Similar to the additive blending but substracts the colors 
             // thus making objects that are very opaque darker (as if they let less light through)
             var blendState = new BlendState
-            {
-                ColorSourceBlend = Blend.SourceAlpha,
-                AlphaSourceBlend = Blend.SourceAlpha,
-
-                ColorBlendFunction = BlendFunction.ReverseSubtract,
+            {                
                 AlphaBlendFunction = BlendFunction.ReverseSubtract,
+                ColorBlendFunction = BlendFunction.ReverseSubtract,
 
-                ColorDestinationBlend = Blend.One,
-                AlphaDestinationBlend = Blend.One
+                AlphaSourceBlend = Blend.InverseSourceAlpha,
+                ColorSourceBlend = Blend.InverseSourceAlpha,
+                                                
+                AlphaDestinationBlend = Blend.InverseSourceAlpha,
+                ColorDestinationBlend = Blend.InverseSourceAlpha
             };
 
             var rasterizerState = new RasterizerState
@@ -107,18 +107,21 @@ namespace MiniEngine.Rendering
                 rasterizerState);
         }
 
-        public static DeviceState ColorMapState(this GraphicsDevice device)
+        public static DeviceState AlphaBlendOccluderState(this GraphicsDevice device)
         {
             // Similar to the alpha blending state but first divides
             // the source components by the inverse alpha, thus making
             // objects that are very opaque darker (as if they let less light through)
             var blendState = new BlendState
-            {
-                ColorSourceBlend = Blend.InverseSourceAlpha,
-                AlphaSourceBlend = Blend.InverseSourceAlpha,
+            {                
+                AlphaBlendFunction = BlendFunction.Add,    
+                ColorBlendFunction =  BlendFunction.Add,                
 
-                ColorDestinationBlend = Blend.InverseSourceAlpha,
-                AlphaDestinationBlend = Blend.InverseSourceAlpha
+                AlphaSourceBlend = Blend.InverseSourceAlpha,
+                ColorSourceBlend = Blend.InverseSourceAlpha,
+
+                AlphaDestinationBlend = Blend.InverseSourceAlpha,
+                ColorDestinationBlend = Blend.InverseSourceAlpha
             };
 
             var rasterizerState = new RasterizerState
@@ -153,8 +156,8 @@ namespace MiniEngine.Rendering
 
             return new DeviceState(
                 device,
-                BlendState.AlphaBlend,
-                DepthStencilState.Default,
+                BlendState.Opaque,
+                DepthStencilState.None,
                 rasterState);
         }
     }
