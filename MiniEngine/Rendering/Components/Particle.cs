@@ -3,7 +3,7 @@ using MiniEngine.Units;
 
 namespace MiniEngine.Rendering.Components
 {
-    public class Particle
+    public sealed class Particle
     {
         public Particle(Vector3 position, float scale, Vector3 linearVelocity, Seconds timePerFrame)
         {

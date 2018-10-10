@@ -2,7 +2,7 @@
 
 namespace MiniEngine.Rendering.Components
 {
-    public class DirectionalLight
+    public sealed class DirectionalLight
     {
         public DirectionalLight(Vector3 direction, Color color)
         {
