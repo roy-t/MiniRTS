@@ -71,7 +71,7 @@ namespace MiniEngine.Rendering
                              .Clear(this.GBuffer.NormalTarget, new Color(0.5f, 0.5f, 0.5f, 0.0f))
                              .Clear(this.GBuffer.DepthTarget, Color.TransparentBlack)
                              .Clear(combineTarget, Color.TransparentBlack)
-                             .RenderModelBatch(this.GBuffer)                             
+                             .RenderModelBatch(this.GBuffer)
                              .RenderLights(lightingPipeline, this.GBuffer)
                              .CombineDiffuseWithLighting(combineEffect, combineTarget, this.GBuffer)
                              .AntiAlias(postProcessEffect, combineTarget, this.PostProcessTarget, this.GBuffer, 2.0f);

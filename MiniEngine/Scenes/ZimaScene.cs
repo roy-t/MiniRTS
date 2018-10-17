@@ -67,7 +67,7 @@ namespace MiniEngine.Scenes
                 var y = Math.Cos(step * i) * 100;
                 this.PointLightSystem.Add(
                     this.pointLightEntities[i],
-                    new Vector3((float) x, (float) y, 0),
+                    new Vector3((float)x, (float)y, 0),
                     this.ColorWheel[i],
                     120,
                     1.0f);
@@ -85,7 +85,7 @@ namespace MiniEngine.Scenes
 
         public void Update(Seconds elapsed)
         {
-          
-        }        
+
+        }
     }
 }

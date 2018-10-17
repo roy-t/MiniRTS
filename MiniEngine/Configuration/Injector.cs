@@ -92,7 +92,7 @@ namespace MiniEngine.Configuration
         private void RegisterContent<T>(string contentName, string named, string folder = "")
         {
             var content = this.Content.Load<T>(Path.Combine(folder, contentName));
-            this.Container.RegisterInstance(typeof (T), content, named);
+            this.Container.RegisterInstance(typeof(T), content, named);
         }
 
         private void RegisterEffect<T>(string name, string folder = "Effects")
@@ -113,7 +113,7 @@ namespace MiniEngine.Configuration
         {
             this.Container.RegisterAssembly(
                 Assembly.GetExecutingAssembly(),
-                (s, _) => typeof (T).IsAssignableFrom(s) && s != typeof (T));
-        }      
+                (s, _) => typeof(T).IsAssignableFrom(s) && s != typeof(T));
+        }
     }
 }

@@ -63,22 +63,22 @@ namespace MiniEngine.Scenes
         public void Set()
         {
             this.worldEntity = this.EntityController.CreateEntity();
-            
-            this.AmbientLightSystem.Add(this.worldEntity, Color.White * 0.25f);            
+
+            this.AmbientLightSystem.Add(this.worldEntity, Color.White * 0.25f);
             this.SunlightSystem.Add(this.worldEntity, Color.White, Vector3.Up, Vector3.Left * 0.75f + Vector3.Backward * 0.1f);
 
             this.ModelSystem.Add(this.worldEntity, this.sponza, Matrix.CreateScale(0.05f));
-            
+
             this.planeEntity = this.EntityController.CreateEntity();
 
-            var position = new Vector3(-40.5f, 30.0f, 3.2f);            
+            var position = new Vector3(-40.5f, 30.0f, 3.2f);
 
             var world = MatrixExtensions.CreateScaleRotationTranslation(4.4f * 0.01f, MathHelper.PiOver2, MathHelper.PiOver2, 0, position);
-            this.ModelSystem.Add(this.planeEntity, this.plane, world, ModelType.Transparent);            
+            this.ModelSystem.Add(this.planeEntity, this.plane, world, ModelType.Transparent);
 
             this.planeEntity2 = this.EntityController.CreateEntity();
 
-            position = new Vector3(-40.5f, 30.0f, -7.2f);                        
+            position = new Vector3(-40.5f, 30.0f, -7.2f);
             var world2 = MatrixExtensions.CreateScaleRotationTranslation(4.4f * 0.01f, 0, MathHelper.PiOver4, 0, position);
 
             this.ModelSystem.Add(this.planeEntity2, this.plane, world2, ModelType.Transparent);
@@ -106,7 +106,7 @@ namespace MiniEngine.Scenes
 
         public void Update(Seconds elapsed)
         {
-            
+
         }
     }
 }

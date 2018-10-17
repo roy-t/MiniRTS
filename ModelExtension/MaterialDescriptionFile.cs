@@ -20,7 +20,7 @@ namespace ModelExtension
                 throw new FileNotFoundException($"Could not find file {file}", file);
             }
 
-            var parser = new MaterialDescriptionParser(modelPath);            
+            var parser = new MaterialDescriptionParser(modelPath);
             this.Descriptions = parser.Parse(file);
         }
 

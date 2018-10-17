@@ -17,10 +17,10 @@ namespace MiniEngine.Controllers
         private readonly PointLightSystem PointLightSystem;
         private readonly SunlightSystem SunlightSystem;
         private readonly DirectionalLightSystem DirectionalLightSystem;
-        private readonly ShadowCastingLightSystem ShadowCastingLightSystem;        
+        private readonly ShadowCastingLightSystem ShadowCastingLightSystem;
 
 
-        private readonly List<Entity> TemporaryEntities;        
+        private readonly List<Entity> TemporaryEntities;
 
         public LightSystemsController(
             KeyboardInput keyboardInput,
@@ -37,7 +37,7 @@ namespace MiniEngine.Controllers
             this.PointLightSystem = pointLightSystem;
             this.SunlightSystem = sunlightSystem;
             this.DirectionalLightSystem = directionalLightSystem;
-            this.ShadowCastingLightSystem = shadowCastingLightSystem;            
+            this.ShadowCastingLightSystem = shadowCastingLightSystem;
 
             this.TemporaryEntities = new List<Entity>();
         }

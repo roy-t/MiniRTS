@@ -4,7 +4,7 @@ using System.Globalization;
 namespace MiniEngine.Units
 {
     public struct Seconds : IEquatable<Seconds>
-    {       
+    {
         public Seconds(float value)
         {
             this.Value = value;
@@ -71,12 +71,12 @@ namespace MiniEngine.Units
         {
             if (obj is Seconds)
             {
-                return Equals((Seconds) obj);
+                return Equals((Seconds)obj);
             }
 
             return false;
         }
-        
+
         public bool Equals(Seconds other)
         {
             return other.Value == this.Value;

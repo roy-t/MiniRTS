@@ -79,7 +79,7 @@ namespace ModelExtension
                 geometry.Vertices.Channels.Remove(vertexChannelName);
             }
         }
-       
+
         protected override MaterialContent ConvertMaterial(
             MaterialContent material,
             ContentProcessorContext context)
@@ -114,7 +114,7 @@ namespace ModelExtension
                 deferredShadingMaterial,
                 typeof(MaterialProcessor).Name, parameters);
         }
-      
+
         #region Hide irrelevant model processor properties
         [Browsable(false)]
         public override bool GenerateTangentFrames => true;

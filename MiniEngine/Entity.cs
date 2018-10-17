@@ -15,22 +15,16 @@ namespace MiniEngine
         {
             if (obj is Entity entity)
             {
-                return Equals(entity);
+                return this.Equals(entity);
             }
 
             return false;
         }
 
-        public bool Equals(Entity other)
-        {
-            return this.Id == other.Id;
-        }
+        public bool Equals(Entity other) => this.Id == other.Id;
 
-        public override int GetHashCode()
-        {
-            return this.Id;
-        }
+        public override int GetHashCode() => this.Id;
 
-        public override string ToString() => $"Entity {this.Id}";        
+        public override string ToString() => $"Entity {this.Id}";
     }
 }

@@ -61,7 +61,7 @@ namespace MiniEngine.Rendering.Components
                 else
                 {
                     particle.Position += particle.LinearVelocity * elapsed.Value;
-                    particle.Frame = (int) (particle.LifeTime.Value / particle.TimePerFrame.Value);
+                    particle.Frame = (int)(particle.LifeTime.Value / particle.TimePerFrame.Value);
                 }
             }
 
@@ -91,7 +91,7 @@ namespace MiniEngine.Rendering.Components
 
         private static float GetRandomOffset()
         {
-            return (float) Random.NextDouble() * 2.0f - 1.0f;
+            return (float)Random.NextDouble() * 2.0f - 1.0f;
         }
     }
 }

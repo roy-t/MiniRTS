@@ -6,7 +6,7 @@ namespace MiniEngine.Rendering.Effects
 {
     public sealed class ShadowCastingLightEffect : EffectWrapper
     {
-        
+
         public ShadowCastingLightEffect()
         {
 

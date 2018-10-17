@@ -13,7 +13,7 @@ namespace MiniEngine.Utilities
             var g = Random.NextDouble();
             var b = Random.NextDouble();
 
-            var vector = new Vector3((float) r, (float) g, (float) b);
+            var vector = new Vector3((float)r, (float)g, (float)b);
             vector.Normalize();
 
             return new Color(vector);

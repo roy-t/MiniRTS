@@ -28,8 +28,8 @@ namespace MiniEngine.Rendering.Systems
             this.RenderEffect = effect;
             this.Models = new Dictionary<Entity, BoundingBox>();
 
-            this.BlueOutlineTexture = CreateTexture(Color.CornflowerBlue);            
-            this.RedOutlineTexture = CreateTexture(Color.Red);            
+            this.BlueOutlineTexture = CreateTexture(Color.CornflowerBlue);
+            this.RedOutlineTexture = CreateTexture(Color.Red);
 
             this.Vertices = new[]
             {
@@ -159,7 +159,7 @@ namespace MiniEngine.Rendering.Systems
         private Texture2D CreateTexture(Color color)
         {
             var texture = new Texture2D(this.Device, 1, 1);
-            texture.SetData(new[] {color});
+            texture.SetData(new[] { color });
 
             return texture;
         }

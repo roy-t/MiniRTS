@@ -67,7 +67,7 @@ namespace MiniEngine.Rendering.Systems
 
                     this.Effect.Apply();
 
-                    this.FullScreenTriangle.Render(this.Device);                    
+                    this.FullScreenTriangle.Render(this.Device);
                 }
             }
         }

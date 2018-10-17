@@ -87,7 +87,7 @@ namespace MiniEngine.Rendering.Systems
                     {
                         foreach (var batch in modelBatchList.TransparentBatches)
                             batch.Draw(Techniques.Textured);
-                    }                    
+                    }
 
                     // Read the depth buffer and render occluding particles
                     using (this.Device.AdditiveBlendOccluderState())

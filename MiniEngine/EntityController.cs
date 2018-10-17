@@ -14,8 +14,8 @@ namespace MiniEngine
         public EntityController(IEnumerable<ISystem> systems)
         {
             this.Entities = new List<Entity>();
-            this.Systems = new List<ISystem>(systems).AsReadOnly();                  
-        }     
+            this.Systems = new List<ISystem>(systems).AsReadOnly();
+        }
 
         public Entity CreateEntity()
         {
@@ -40,7 +40,7 @@ namespace MiniEngine
         {
             this.Entities.Remove(entity);
             RemoveEntityFromSystems(entity);
-        }        
+        }
 
         public void DestroyAllEntities()
         {
@@ -81,7 +81,7 @@ namespace MiniEngine
             foreach (var system in this.Systems)
             {
                 system.Remove(entity);
-            }            
+            }
         }
     }
 }

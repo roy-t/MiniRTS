@@ -83,13 +83,13 @@ namespace MiniEngine.Rendering
             // Similar to the additive blending but substracts the colors 
             // thus making objects that are very opaque darker (as if they let less light through)
             var blendState = new BlendState
-            {                
+            {
                 AlphaBlendFunction = BlendFunction.ReverseSubtract,
                 ColorBlendFunction = BlendFunction.ReverseSubtract,
 
                 AlphaSourceBlend = Blend.InverseSourceAlpha,
                 ColorSourceBlend = Blend.InverseSourceAlpha,
-                                                
+
                 AlphaDestinationBlend = Blend.InverseSourceAlpha,
                 ColorDestinationBlend = Blend.InverseSourceAlpha
             };
@@ -113,9 +113,9 @@ namespace MiniEngine.Rendering
             // the source components by the inverse alpha, thus making
             // objects that are very opaque darker (as if they let less light through)
             var blendState = new BlendState
-            {                
-                AlphaBlendFunction = BlendFunction.Add,    
-                ColorBlendFunction =  BlendFunction.Add,                
+            {
+                AlphaBlendFunction = BlendFunction.Add,
+                ColorBlendFunction = BlendFunction.Add,
 
                 AlphaSourceBlend = Blend.InverseSourceAlpha,
                 ColorSourceBlend = Blend.InverseSourceAlpha,

@@ -16,7 +16,7 @@ namespace MiniEngine.Rendering.Pipelines.Stages
             this.Device = device;
             this.DebugRenderSystem = debugRenderSystem;
             this.Target = target;
-        }        
+        }
 
         public void Execute(PerspectiveCamera camera, Seconds seconds)
         {

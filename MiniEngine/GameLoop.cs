@@ -16,7 +16,7 @@ namespace MiniEngine
 {
     public class GameLoop : Game
     {
-        private readonly GraphicsDeviceManager Graphics;        
+        private readonly GraphicsDeviceManager Graphics;
 
         private Injector injector;
 
@@ -44,11 +44,11 @@ namespace MiniEngine
                 PreferredBackBufferHeight = 1080,
                 SynchronizeWithVerticalRetrace = false,
                 GraphicsProfile = GraphicsProfile.HiDef
-            };          
+            };
 
             this.Content.RootDirectory = "Content";
             this.IsMouseVisible = true;
-        }       
+        }
 
         protected override void LoadContent()
         {
@@ -58,10 +58,10 @@ namespace MiniEngine
             this.injector = new Injector(this.GraphicsDevice, this.Content);
 
             this.keyboardInput = this.injector.Resolve<KeyboardInput>();
-            this.mouseInput = this.injector.Resolve<MouseInput>();                        
-                        
+            this.mouseInput = this.injector.Resolve<MouseInput>();
+
             this.entityController = this.injector.Resolve<EntityController>();
-            this.debugController = this.injector.Resolve<DebugControllerFactory>().Build(this.perspectiveCamera);            
+            this.debugController = this.injector.Resolve<DebugControllerFactory>().Build(this.perspectiveCamera);
 
             this.renderPipeline = this.injector.Resolve<DeferredRenderPipeline>();
 
@@ -75,7 +75,7 @@ namespace MiniEngine
                 scene.LoadContent(this.Content);
             }
 
-            this.scenes[this.currentSceneIndex].Set();            
+            this.scenes[this.currentSceneIndex].Set();
         }
 
         protected override void UnloadContent()
@@ -95,7 +95,7 @@ namespace MiniEngine
             // Do not handle input if game window is not activated
             if (!this.IsActive)
                 return;
-            
+
             var inputHandled = this.debugController.Update(gameTime.ElapsedGameTime);
             if (inputHandled)
                 return;
@@ -104,7 +104,7 @@ namespace MiniEngine
             if (this.keyboardInput.Click(Keys.Escape))
             {
                 Exit();
-            }            
+            }
 
             if (this.keyboardInput.Click(Keys.OemTilde))
             {
@@ -133,11 +133,11 @@ namespace MiniEngine
             {
                 this.viewIndex = (this.viewIndex + this.viewOptions - 1) % this.viewOptions;
             }
-            
+
             if (this.keyboardInput.Click(Keys.Scroll))
             {
                 this.entityController.DescribeAllEntities();
-            }                       
+            }
 
             base.Update(gameTime);
         }
@@ -147,7 +147,7 @@ namespace MiniEngine
             this.Window.Title = $"{gameTime.ElapsedGameTime.TotalMilliseconds:F2}ms, {(1.0f / gameTime.ElapsedGameTime.TotalSeconds):F2} fps, Fixed Time Step: {this.IsFixedTimeStep} (press 'F' so switch). Input State: {this.debugController.DescribeState()}";
             this.Window.Title +=
                 $" camera ({this.perspectiveCamera.Position.X:F2}, {this.perspectiveCamera.Position.Y:F2}, {this.perspectiveCamera.Position.Z:F2})";
-            
+
             var result = this.renderPipeline.Render(this.perspectiveCamera, (float)gameTime.ElapsedGameTime.TotalSeconds);
 
             this.GraphicsDevice.SetRenderTarget(null);
@@ -175,7 +175,7 @@ namespace MiniEngine
                 var step = this.GraphicsDevice.Viewport.Width / gBuffer.Length;
                 for (var i = 0; i < gBuffer.Length; i++)
                 {
-                    var target = gBuffer[i];                    
+                    var target = gBuffer[i];
 
                     this.spriteBatch.Draw(
                         target,

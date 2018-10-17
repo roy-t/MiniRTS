@@ -10,7 +10,7 @@ namespace MiniEngine.Rendering.Components
             this.Color = color;
         }
 
-        public Vector3 Direction { get; set; }        
+        public Vector3 Direction { get; set; }
         public Color Color { get; set; }
     }
 }

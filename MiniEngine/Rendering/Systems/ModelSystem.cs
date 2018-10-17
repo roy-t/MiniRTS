@@ -117,7 +117,7 @@ namespace MiniEngine.Rendering.Systems
                 else if (bounds.Intersects(currentBounds))
                 {
                     batches.Add(currentBatch);
-                    currentBatch = new List<ModelPose> {model};
+                    currentBatch = new List<ModelPose> { model };
                     currentBounds = bounds;
                 }
                 else

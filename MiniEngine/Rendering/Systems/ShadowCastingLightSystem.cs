@@ -77,7 +77,7 @@ namespace MiniEngine.Rendering.Systems
                     this.Effect.LightDirection = light.ViewPoint.Forward;
                     this.Effect.LightPosition = light.ViewPoint.Position;
                     this.Effect.Color = light.Color;
-                    
+
                     // Camera properties for specular reflections
                     this.Effect.CameraPosition = perspectiveCamera.Position;
                     this.Effect.InverseViewProjection = perspectiveCamera.InverseViewProjection;

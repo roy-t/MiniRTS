@@ -35,7 +35,7 @@ namespace ModelExtension
             }
 
             var lookup = new MaterialTypeLookUp(config);
-            var dictionary = new Dictionary<string, MaterialDescription>();            
+            var dictionary = new Dictionary<string, MaterialDescription>();
             foreach (var tuple in data.Sections[MappingSectionKey])
             {
                 var diffuse = Path.GetFullPath(Path.Combine(this.BasePath, config.RelativePath, tuple.KeyName));
@@ -108,7 +108,7 @@ namespace ModelExtension
             public string RelativePath { get; private set; }
             public MaterialType[] Values { get; private set; }
 
-            public static ParserConfiguration Default 
+            public static ParserConfiguration Default
             {
                 get
                 {
@@ -117,7 +117,7 @@ namespace ModelExtension
                     {
                         MaterialType.Normal,
                         MaterialType.Specular,
-                        MaterialType.Mask, 
+                        MaterialType.Mask,
                     };
 
                     return new ParserConfiguration(relativePath, values);
@@ -132,7 +132,7 @@ namespace ModelExtension
                 if (initSection.ContainsKey(RelativePathKey))
                 {
                     config.RelativePath = initSection[RelativePathKey];
-                }                
+                }
 
                 if (initSection.ContainsKey(ValuesKey))
                 {
@@ -156,7 +156,7 @@ namespace ModelExtension
                     return type;
                 }
 
-                throw new Exception($"Could not parse {name} as {typeof (MaterialType).FullName}");
+                throw new Exception($"Could not parse {name} as {typeof(MaterialType).FullName}");
             }
         }
 

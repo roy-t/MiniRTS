@@ -15,7 +15,7 @@ namespace MiniEngine.Input
 
         public MouseInput()
         {
-            this.Buttons = Enum.GetValues(typeof (MouseButtons)).OfType<MouseButtons>().ToArray();
+            this.Buttons = Enum.GetValues(typeof(MouseButtons)).OfType<MouseButtons>().ToArray();
             this.ButtonStates = new Dictionary<MouseButtons, InputState>();
 
             foreach (var button in this.Buttons)
@@ -71,7 +71,7 @@ namespace MiniEngine.Input
                         if (isDown)
                         {
                             this.ButtonStates[button] = InputState.JustPressed;
-                        }                        
+                        }
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();

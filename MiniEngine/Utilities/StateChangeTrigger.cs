@@ -2,7 +2,7 @@
 
 namespace MiniEngine.Utilities
 {
-    public sealed class StateChangeTrigger<T, C> where T : struct 
+    public sealed class StateChangeTrigger<T, C> where T : struct
     {
         private readonly T Before;
         private readonly T After;
@@ -23,6 +23,6 @@ namespace MiniEngine.Utilities
             }
 
             return currentState;
-        }        
+        }
     }
 }

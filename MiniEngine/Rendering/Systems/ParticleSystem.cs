@@ -71,10 +71,12 @@ namespace MiniEngine.Rendering.Systems
             var particles = new List<ParticlePose>();
 
             foreach (var emitter in this.Emitters.Values)
-            foreach (var particle in emitter.Particles)
             {
-                var particlePose = ComputePose(viewPoint, emitter, particle);
-                particles.Add(particlePose);
+                foreach (var particle in emitter.Particles)
+                {
+                    var particlePose = ComputePose(viewPoint, emitter, particle);
+                    particles.Add(particlePose);
+                }
             }
 
             particles.Sort(PoseComparer);
@@ -87,7 +89,7 @@ namespace MiniEngine.Rendering.Systems
                 this.NeutralMask,
                 this.NeutralNormalMap,
                 this.NeutralSpecularMap);
-            var particleBatches = new List<ParticleRenderBatch> {particleRenderBatch};
+            var particleBatches = new List<ParticleRenderBatch> { particleRenderBatch };
             return new ParticleBatchList(particleBatches);
         }
 

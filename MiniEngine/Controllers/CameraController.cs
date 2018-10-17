@@ -39,7 +39,7 @@ namespace MiniEngine.Controllers
             if (File.Exists("last_camera_position.ini"))
             {
                 var text = File.ReadAllText("last_camera_position.ini");
-                var lines = text.Split(new[] {Environment.NewLine}, StringSplitOptions.RemoveEmptyEntries);
+                var lines = text.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
                 var x = float.Parse(lines[0]);
                 var y = float.Parse(lines[1]);
                 var z = float.Parse(lines[2]);
@@ -47,7 +47,7 @@ namespace MiniEngine.Controllers
                 var lx = float.Parse(lines[3]);
                 var ly = float.Parse(lines[4]);
                 var lz = float.Parse(lines[5]);
-                
+
                 this.PerspectiveCamera.Move(new Vector3(x, y, z), new Vector3(lx, ly, lz));
             }
         }
@@ -119,7 +119,7 @@ namespace MiniEngine.Controllers
                 File.WriteAllText("last_camera_position.ini", text.ToString());
             }
 
-            
+
 
             this.PerspectiveCamera.Move(position, position + this.forward);
         }

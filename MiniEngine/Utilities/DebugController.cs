@@ -13,10 +13,10 @@ namespace MiniEngine.Utilities
         private readonly KeyboardInput Keyboard;
         private readonly LightSystemsController LightSystemsController;
         private readonly CameraController CameraController;
-        private readonly StateMachine<State, KeyboardInput> StateMachine;        
+        private readonly StateMachine<State, KeyboardInput> StateMachine;
 
         public DebugController(KeyboardInput keyboard, PerspectiveCamera camera,
-                               CameraControllerFactory cameraControllerFactory, 
+                               CameraControllerFactory cameraControllerFactory,
                                LightSystemsControllerFactory lightSystemsControllerFactory)
         {
             this.Keyboard = keyboard;
@@ -29,7 +29,7 @@ namespace MiniEngine.Utilities
                 CreateStateChangeTrigger(State.Movement, State.NoControl, k => k.JustReleased(Keys.Escape)),
                 CreateStateChangeTrigger(State.NoControl, State.Light, k => k.Click(Keys.L)),
                 CreateStateChangeTrigger(State.Light, State.NoControl, k => k.JustReleased(Keys.Escape)));
-        }        
+        }
 
 
         public bool Update(Seconds elapsed)

@@ -22,9 +22,9 @@ namespace MiniEngine.Utilities.Extensions
         public static Vector3 Round(this Vector3 value)
         {
             return new Vector3(
-                (float) Math.Round(value.X),
-                (float) Math.Round(value.Y),
-                (float) Math.Round(value.Z));
+                (float)Math.Round(value.X),
+                (float)Math.Round(value.Y),
+                (float)Math.Round(value.Z));
         }
     }
 }

@@ -23,13 +23,21 @@ namespace MiniEngine.Rendering.Primitives
         {
             // Intersects
             if (this.MaxX >= rectangle.MinX && this.MinX <= rectangle.MaxX)
+            {
                 if (this.MaxY >= rectangle.MinY && this.MinY <= rectangle.MaxY)
+                {
                     return true;
+                }
+            }
 
             // Contains
             if (this.MinX <= rectangle.MinX && this.MaxX >= rectangle.MaxX)
+            {
                 if (this.MinY <= rectangle.MinY && this.MaxY >= rectangle.MaxY)
+                {
                     return true;
+                }
+            }
 
             return false;
         }

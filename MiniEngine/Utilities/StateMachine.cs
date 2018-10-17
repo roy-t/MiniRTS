@@ -6,8 +6,8 @@ namespace MiniEngine.Utilities
 {
     public sealed class StateMachine<T, C>
         where T : struct
-    {        
-        private readonly IReadOnlyList<StateChangeTrigger<T, C>> StateChangeTriggers;        
+    {
+        private readonly IReadOnlyList<StateChangeTrigger<T, C>> StateChangeTriggers;
 
         public StateMachine(T startState, params StateChangeTrigger<T, C>[] stateChangeTriggers)
         {
@@ -21,7 +21,7 @@ namespace MiniEngine.Utilities
         {
             foreach (var trigger in this.StateChangeTriggers)
             {
-                this.State = trigger.GetNextState(this.State, context);               
+                this.State = trigger.GetNextState(this.State, context);
             }
         }
     }

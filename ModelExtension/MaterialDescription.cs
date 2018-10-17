@@ -4,10 +4,10 @@
     {
         public MaterialDescription(string diffuse, string normal, string specular, string mask)
         {
-            this.Diffuse  = diffuse;
-            this.Normal   = normal;
+            this.Diffuse = diffuse;
+            this.Normal = normal;
             this.Specular = specular;
-            this.Mask     = mask;
+            this.Mask = mask;
         }
 
         public string Diffuse { get; }

@@ -26,7 +26,7 @@ namespace MiniEngine.Input
 
         public KeyboardInput()
         {
-            this.Keys = Enum.GetValues(typeof (Keys)).OfType<Keys>().ToArray();
+            this.Keys = Enum.GetValues(typeof(Keys)).OfType<Keys>().ToArray();
             this.KeyStates = new Dictionary<Keys, InputState>();
 
             foreach (var key in this.Keys)
@@ -76,11 +76,11 @@ namespace MiniEngine.Input
                         if (isDown)
                         {
                             this.KeyStates[key] = InputState.JustPressed;
-                        }                        
+                        }
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
-                }             
+                }
             }
         }
 

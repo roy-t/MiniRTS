@@ -8,14 +8,14 @@ namespace MiniEngine.Utilities.Extensions
         // From: https://gamedev.stackexchange.com/questions/2438/how-do-i-create-bounding-boxes-with-xna-4-0
 
         public static BoundingBox ComputeBoundingBox(this Model model, Matrix worldTransform)
-        {            
+        {
             ComputeExtremes(model, worldTransform, out var min, out var max);
             return new BoundingBox(min, max);
         }
 
         public static BoundingSphere ComputeBoundingSphere(this Model model, Matrix worldTransform)
         {
-            ComputeExtremes(model, worldTransform, out var min, out var max);            
+            ComputeExtremes(model, worldTransform, out var min, out var max);
             return BoundingSphere.CreateFromPoints(new[] { min, max });
         }
 

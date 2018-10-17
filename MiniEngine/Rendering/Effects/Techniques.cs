@@ -1,8 +1,8 @@
 ﻿namespace MiniEngine.Rendering.Effects
 {
     public enum Techniques
-    {                
-        ShadowMap,        
+    {
+        ShadowMap,
         GrayScale,
         Textured,
         Deferred
