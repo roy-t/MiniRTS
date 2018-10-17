@@ -65,7 +65,9 @@ namespace MiniEngine.Rendering.Systems
         public void Update(PerspectiveCamera perspectiveCamera, Seconds elapsed)
         {
             foreach (var sunLight in this.Sunlights.Values)
+            {
                 ComputeCascades(sunLight, perspectiveCamera);
+            }
         }
 
         public void Add(Entity entity, Color color, Vector3 position, Vector3 lookAt)
@@ -82,7 +84,9 @@ namespace MiniEngine.Rendering.Systems
             this.Sunlights.Keys.CopyTo(keys, 0);
 
             foreach (var key in keys)
+            {
                 Remove(key);
+            }
         }
 
         public void RenderLights(PerspectiveCamera perspectiveCamera, GBuffer gBuffer)

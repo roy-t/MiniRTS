@@ -86,14 +86,18 @@ namespace MiniEngine.Rendering.Systems
                     using (this.Device.AlphaBlendOccluderState())
                     {
                         foreach (var batch in modelBatchList.TransparentBatches)
+                        {
                             batch.Draw(Techniques.Textured);
+                        }
                     }
 
                     // Read the depth buffer and render occluding particles
                     using (this.Device.AdditiveBlendOccluderState())
                     {
                         foreach (var batch in particleBatchList.Batches)
+                        {
                             batch.Draw(Techniques.GrayScale);
+                        }
                     }
 
                     // TODO: if a particle is behind a stained glass window

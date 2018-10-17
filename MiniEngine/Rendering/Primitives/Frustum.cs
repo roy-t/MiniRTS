@@ -31,7 +31,9 @@ namespace MiniEngine.Rendering.Primitives
         {
             var center = Vector3.Zero;
             for (var i = 0; i < 8; i++)
+            {
                 center += this.Corners[i];
+            }
 
             center /= 8;
             return center;
@@ -40,7 +42,9 @@ namespace MiniEngine.Rendering.Primitives
         public void Transform(Matrix matrix)
         {
             for (var i = 0; i < 8; i++)
+            {
                 this.Corners[i] = Vector4.Transform(this.Corners[i], matrix).ScaleToVector3();
+            }
         }
 
         public void Slice(float start, float end)

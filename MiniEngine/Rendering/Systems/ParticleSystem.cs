@@ -58,7 +58,9 @@ namespace MiniEngine.Rendering.Systems
         public void Update(PerspectiveCamera camera, Seconds elapsed)
         {
             foreach (var emitter in this.Emitters.Values)
+            {
                 emitter.Update(elapsed);
+            }
         }
 
         public void Add(Entity entity, Vector3 position, Texture2D texture, int rows, int columns)

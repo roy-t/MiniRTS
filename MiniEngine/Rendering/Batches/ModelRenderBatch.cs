@@ -25,14 +25,18 @@ namespace MiniEngine.Rendering.Batches
         public void Draw(Techniques technique)
         {
             foreach (var modelPose in this.Models)
+            {
                 DrawModel(technique, modelPose.Model, modelPose.Pose, this.ViewPoint);
+            }
         }
 
         private void DrawModel(Techniques technique, Model model, Matrix world, IViewPoint viewPoint)
         {
             var bones = model.Bones.Count;
             if (SharedBoneMatrix == null || SharedBoneMatrix.Length < bones)
+            {
                 SharedBoneMatrix = new Matrix[bones];
+            }
 
             model.CopyAbsoluteBoneTransformsTo(SharedBoneMatrix);
 

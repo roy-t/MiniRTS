@@ -25,7 +25,9 @@ namespace MiniEngine.Rendering.Pipelines
         public void Execute(PerspectiveCamera camera, GBuffer gBuffer)
         {
             foreach (var stage in this.Stages)
+            {
                 stage.Execute(camera, gBuffer);
+            }
         }
 
         public static LightingPipeline Create(GraphicsDevice device)

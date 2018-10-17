@@ -70,7 +70,9 @@ namespace MiniEngine.Rendering.Systems
             var transparentModels = SortBackToFront(this.TransparentModels.Values, viewPoint);
             var batches = ComputeBatches(transparentModels, viewPoint);
             foreach (var batch in batches)
+            {
                 transparentBatches.Add(new ModelRenderBatch(batch, viewPoint));
+            }
 
             return new ModelBatchList(
                 new ModelRenderBatch(this.OpaqueModels.Values.ToList(), viewPoint),
@@ -83,6 +85,7 @@ namespace MiniEngine.Rendering.Systems
             var distanceList = new List<float>();
 
             foreach (var model in models)
+            {
                 if (viewPoint.Frustum.Intersects(model.BoundingSphere))
                 {
                     var viewPosition = Vector4.Transform(model.BoundingSphere.Center, viewPoint.Frustum.Matrix);
@@ -91,6 +94,7 @@ namespace MiniEngine.Rendering.Systems
 
                     InsertBackToFront(modeList, distanceList, model, distance);
                 }
+            }
 
             return modeList;
         }
@@ -128,7 +132,9 @@ namespace MiniEngine.Rendering.Systems
             }
 
             if (currentBatch.Count > 0)
+            {
                 batches.Add(currentBatch);
+            }
 
             return batches;
         }

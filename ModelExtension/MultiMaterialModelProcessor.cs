@@ -107,7 +107,9 @@ namespace ModelExtension
                     texture.Key == "NormalMap" ||
                     texture.Key == "SpecularMap" ||
                     texture.Key == "Mask")
+                {
                     deferredShadingMaterial.Textures.Add(texture.Key, texture.Value);
+                }
             }
 
             return context.Convert<MaterialContent, MaterialContent>(

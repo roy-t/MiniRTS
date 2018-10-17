@@ -111,7 +111,9 @@ namespace MiniEngine.Rendering.Systems
                 {
                     var corners = bounds.GetCorners();
                     for (var i = 0; i < corners.Length; i++)
+                    {
                         this.Vertices[i].Position = new Vector4(corners[i], 1);
+                    }
 
                     this.Device.DrawUserIndexedPrimitives(
                         PrimitiveType.LineList,
@@ -142,7 +144,9 @@ namespace MiniEngine.Rendering.Systems
                     var projectedCorners = rect.GetCorners();
 
                     for (var i = 0; i < projectedCorners.Length; i++)
+                    {
                         this.Vertices[i].Position = new Vector4(projectedCorners[i].X, projectedCorners[i].Y, 0, 1);
+                    }
 
                     this.Device.DrawUserIndexedPrimitives(
                         PrimitiveType.LineList,

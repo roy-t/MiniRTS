@@ -8,7 +8,6 @@ using MiniEngine.Rendering.Cameras;
 using MiniEngine.Scenes;
 using System.Collections.Generic;
 using System.Linq;
-using MiniEngine.Units;
 using MiniEngine.Utilities;
 using KeyboardInput = MiniEngine.Input.KeyboardInput;
 
@@ -94,16 +93,19 @@ namespace MiniEngine
 
             // Do not handle input if game window is not activated
             if (!this.IsActive)
+            {
                 return;
+            }
 
             var inputHandled = this.debugController.Update(gameTime.ElapsedGameTime);
             if (inputHandled)
+            {
                 return;
-
+            }
 
             if (this.keyboardInput.Click(Keys.Escape))
             {
-                Exit();
+                this.Exit();
             }
 
             if (this.keyboardInput.Click(Keys.OemTilde))
@@ -144,7 +146,7 @@ namespace MiniEngine
 
         protected override void Draw(GameTime gameTime)
         {
-            this.Window.Title = $"{gameTime.ElapsedGameTime.TotalMilliseconds:F2}ms, {(1.0f / gameTime.ElapsedGameTime.TotalSeconds):F2} fps, Fixed Time Step: {this.IsFixedTimeStep} (press 'F' so switch). Input State: {this.debugController.DescribeState()}";
+            this.Window.Title = $"{gameTime.ElapsedGameTime.TotalMilliseconds:F2}ms, {1.0f / gameTime.ElapsedGameTime.TotalSeconds:F2} fps, Fixed Time Step: {this.IsFixedTimeStep} (press 'F' so switch). Input State: {this.debugController.DescribeState()}";
             this.Window.Title +=
                 $" camera ({this.perspectiveCamera.Position.X:F2}, {this.perspectiveCamera.Position.Y:F2}, {this.perspectiveCamera.Position.Z:F2})";
 
