@@ -13,9 +13,6 @@ namespace MiniEngine.Rendering.Pipelines.Stages
             this.System = system;
         }
 
-        public void Execute(PerspectiveCamera camera, Seconds seconds)
-        {
-            this.System.Update(camera, seconds);
-        }
+        public void Execute(PerspectiveCamera camera, Seconds seconds) => this.System.Update(camera, seconds);
     }
 }

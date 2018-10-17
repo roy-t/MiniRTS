@@ -10,7 +10,7 @@ namespace MiniEngine.Rendering.Effects
 
         public FxaaEffect(Effect combineEffect)
         {
-            Wrap(combineEffect);
+            this.Wrap(combineEffect);
         }
 
         public float Strength
@@ -38,9 +38,6 @@ namespace MiniEngine.Rendering.Effects
             set => this.effect.Parameters["NormalMap"].SetValue(value);
         }
 
-        public void Apply()
-        {
-            ApplyPass();
-        }
+        public void Apply() => this.ApplyPass();
     }
 }

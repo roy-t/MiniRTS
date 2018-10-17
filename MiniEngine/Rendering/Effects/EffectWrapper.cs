@@ -6,14 +6,8 @@ namespace MiniEngine.Rendering.Effects
     {
         protected Effect effect;
 
-        public void Wrap(Effect effect)
-        {
-            this.effect = effect;
-        }
+        public void Wrap(Effect effect) => this.effect = effect;
 
-        protected void ApplyPass()
-        {
-            this.effect.CurrentTechnique.Passes[0].Apply();
-        }
+        protected void ApplyPass() => this.effect.CurrentTechnique.Passes[0].Apply();
     }
 }

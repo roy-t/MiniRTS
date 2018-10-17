@@ -12,7 +12,7 @@ namespace MiniEngine.Rendering.Effects
 
         public RenderEffect(Effect renderEffect)
         {
-            Wrap(renderEffect);
+            this.Wrap(renderEffect);
         }
 
         public Matrix World
@@ -70,7 +70,7 @@ namespace MiniEngine.Rendering.Effects
                     throw new ArgumentOutOfRangeException(nameof(technique), technique, null);
             }
 
-            ApplyPass();
+            this.ApplyPass();
         }
     }
 }

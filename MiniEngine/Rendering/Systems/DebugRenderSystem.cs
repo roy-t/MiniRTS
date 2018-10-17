@@ -28,8 +28,8 @@ namespace MiniEngine.Rendering.Systems
             this.RenderEffect = effect;
             this.Models = new Dictionary<Entity, BoundingBox>();
 
-            this.BlueOutlineTexture = CreateTexture(Color.CornflowerBlue);
-            this.RedOutlineTexture = CreateTexture(Color.Red);
+            this.BlueOutlineTexture = this.CreateTexture(Color.CornflowerBlue);
+            this.RedOutlineTexture = this.CreateTexture(Color.Red);
 
             this.Vertices = new[]
             {
@@ -75,20 +75,11 @@ namespace MiniEngine.Rendering.Systems
             };
         }
 
-        public bool Contains(Entity entity)
-        {
-            return this.Models.ContainsKey(entity);
-        }
+        public bool Contains(Entity entity) => this.Models.ContainsKey(entity);
 
-        public string Describe(Entity entity)
-        {
-            return "debug";
-        }
+        public string Describe(Entity entity) => "debug";
 
-        public void Remove(Entity entity)
-        {
-            this.Models.Remove(entity);
-        }
+        public void Remove(Entity entity) => this.Models.Remove(entity);
 
         public void Add(Entity entity, Model model, Matrix pose)
         {

@@ -84,10 +84,7 @@ namespace MiniEngine.Input
             }
         }
 
-        public bool Click(Keys key)
-        {
-            return this.KeyStates[key] == InputState.JustPressed;
-        }
+        public bool Click(Keys key) => this.KeyStates[key] == InputState.JustPressed;
 
         public bool Hold(Keys key)
         {
@@ -116,7 +113,7 @@ namespace MiniEngine.Input
         {
             foreach (var key in this.Digits)
             {
-                if (Click(key.Key))
+                if (this.Click(key.Key))
                 {
                     value = key.Value;
                     return true;

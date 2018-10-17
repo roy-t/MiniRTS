@@ -62,30 +62,21 @@ namespace MiniEngine.Units
             return !a.Equals(b);
         }
 
-        public override int GetHashCode()
-        {
-            return this.Value.GetHashCode();
-        }
+        public override int GetHashCode() => this.Value.GetHashCode();
 
         public override bool Equals(object obj)
         {
             if (obj is Seconds)
             {
-                return Equals((Seconds)obj);
+                return this.Equals((Seconds)obj);
             }
 
             return false;
         }
 
-        public bool Equals(Seconds other)
-        {
-            return other.Value == this.Value;
-        }
+        public bool Equals(Seconds other) => other.Value == this.Value;
 
-        public override string ToString()
-        {
-            return $"{this.Value.ToString(CultureInfo.InvariantCulture)}s";
-        }
+        public override string ToString() => $"{this.Value.ToString(CultureInfo.InvariantCulture)}s";
     }
 
     public struct Minutes

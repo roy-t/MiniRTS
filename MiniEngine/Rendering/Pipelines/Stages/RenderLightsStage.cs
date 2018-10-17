@@ -15,19 +15,10 @@ namespace MiniEngine.Rendering.Pipelines.Stages
             this.GBuffer = gBuffer;
         }
 
-        public void Execute(PerspectiveCamera camera, ModelRenderBatch _)
-        {
-            Execute(camera);
-        }
+        public void Execute(PerspectiveCamera camera, ModelRenderBatch _) => this.Execute(camera);
 
-        public void Execute(PerspectiveCamera camera, ParticleRenderBatch _)
-        {
-            Execute(camera);
-        }
+        public void Execute(PerspectiveCamera camera, ParticleRenderBatch _) => this.Execute(camera);
 
-        private void Execute(PerspectiveCamera camera)
-        {
-            this.LightingPipeline.Execute(camera, this.GBuffer);
-        }
+        private void Execute(PerspectiveCamera camera) => this.LightingPipeline.Execute(camera, this.GBuffer);
     }
 }

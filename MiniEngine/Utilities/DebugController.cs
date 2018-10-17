@@ -51,18 +51,12 @@ namespace MiniEngine.Utilities
             return false;
         }
 
-        public string DescribeState()
-        {
-            return Enum.GetName(typeof(State), this.StateMachine.State);
-        }
+        public string DescribeState() => Enum.GetName(typeof(State), this.StateMachine.State);
 
         private static StateChangeTrigger<State, KeyboardInput> CreateStateChangeTrigger(
             State before,
             State after,
-            Func<KeyboardInput, bool> conditionFunc)
-        {
-            return new StateChangeTrigger<State, KeyboardInput>(before, after, conditionFunc);
-        }
+            Func<KeyboardInput, bool> conditionFunc) => new StateChangeTrigger<State, KeyboardInput>(before, after, conditionFunc);
 
         private enum State
         {

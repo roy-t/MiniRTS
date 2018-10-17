@@ -23,10 +23,7 @@ namespace MiniEngine.Rendering.Systems
             this.TransparentModels = new Dictionary<Entity, ModelPose>();
         }
 
-        public bool Contains(Entity entity)
-        {
-            return this.OpaqueModels.ContainsKey(entity) || this.TransparentModels.ContainsKey(entity);
-        }
+        public bool Contains(Entity entity) => this.OpaqueModels.ContainsKey(entity) || this.TransparentModels.ContainsKey(entity);
 
         public string Describe(Entity entity)
         {

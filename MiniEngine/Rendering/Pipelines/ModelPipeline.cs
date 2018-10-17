@@ -17,10 +17,7 @@ namespace MiniEngine.Rendering.Pipelines
 
         public GraphicsDevice Device { get; }
 
-        public void Add(IModelPipelineStage stage)
-        {
-            this.Stages.Add(stage);
-        }
+        public void Add(IModelPipelineStage stage) => this.Stages.Add(stage);
 
         public void Execute(PerspectiveCamera camera, ModelBatchList modelBatchList)
         {
@@ -38,9 +35,6 @@ namespace MiniEngine.Rendering.Pipelines
             }
         }
 
-        public static ModelPipeline Create(GraphicsDevice device)
-        {
-            return new ModelPipeline(device);
-        }
+        public static ModelPipeline Create(GraphicsDevice device) => new ModelPipeline(device);
     }
 }

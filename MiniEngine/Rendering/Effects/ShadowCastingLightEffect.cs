@@ -14,7 +14,7 @@ namespace MiniEngine.Rendering.Effects
 
         public ShadowCastingLightEffect(Effect effect)
         {
-            Wrap(effect);
+            this.Wrap(effect);
         }
 
         public Texture2D NormalMap
@@ -67,6 +67,6 @@ namespace MiniEngine.Rendering.Effects
             set => this.effect.Parameters["LightViewProjection"].SetValue(value);
         }
 
-        public void Apply() => ApplyPass();
+        public void Apply() => this.ApplyPass();
     }
 }

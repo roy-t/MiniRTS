@@ -26,7 +26,7 @@ namespace MiniEngine.Rendering.Batches
         {
             foreach (var modelPose in this.Models)
             {
-                DrawModel(technique, modelPose.Model, modelPose.Pose, this.ViewPoint);
+                this.DrawModel(technique, modelPose.Model, modelPose.Pose, this.ViewPoint);
             }
         }
 

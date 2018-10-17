@@ -39,10 +39,7 @@ namespace MiniEngine.Rendering.Systems
             this.Quad = new Quad(device);
         }
 
-        public bool Contains(Entity entity)
-        {
-            return this.Emitters.ContainsKey(entity);
-        }
+        public bool Contains(Entity entity) => this.Emitters.ContainsKey(entity);
 
         public string Describe(Entity entity)
         {
@@ -50,10 +47,7 @@ namespace MiniEngine.Rendering.Systems
             return $"emitter, position: {emitter.Position}, particles: {emitter.Particles.Count}";
         }
 
-        public void Remove(Entity entity)
-        {
-            this.Emitters.Remove(entity);
-        }
+        public void Remove(Entity entity) => this.Emitters.Remove(entity);
 
         public void Update(PerspectiveCamera camera, Seconds elapsed)
         {
@@ -63,10 +57,7 @@ namespace MiniEngine.Rendering.Systems
             }
         }
 
-        public void Add(Entity entity, Vector3 position, Texture2D texture, int rows, int columns)
-        {
-            this.Emitters.Add(entity, new Emitter(position, texture, rows, columns));
-        }
+        public void Add(Entity entity, Vector3 position, Texture2D texture, int rows, int columns) => this.Emitters.Add(entity, new Emitter(position, texture, rows, columns));
 
         public ParticleBatchList ComputeBatches(IViewPoint viewPoint)
         {
@@ -83,15 +74,18 @@ namespace MiniEngine.Rendering.Systems
 
             particles.Sort(PoseComparer);
 
-            var particleRenderBatch = new ParticleRenderBatch(
+            var particleBatches = new List<ParticleRenderBatch>
+            {
+                new ParticleRenderBatch(
                 this.Quad,
                 this.Effect,
                 particles,
                 viewPoint,
                 this.NeutralMask,
                 this.NeutralNormalMap,
-                this.NeutralSpecularMap);
-            var particleBatches = new List<ParticleRenderBatch> { particleRenderBatch };
+                this.NeutralSpecularMap)
+            };
+
             return new ParticleBatchList(particleBatches);
         }
 
@@ -124,10 +118,7 @@ namespace MiniEngine.Rendering.Systems
 
         private class DistanceComparer : IComparer<ParticlePose>
         {
-            public int Compare(ParticlePose x, ParticlePose y)
-            {
-                return y.Distance.CompareTo(x.Distance);
-            }
+            public int Compare(ParticlePose x, ParticlePose y) => y.Distance.CompareTo(x.Distance);
         }
     }
 }

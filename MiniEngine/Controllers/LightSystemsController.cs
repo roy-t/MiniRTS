@@ -46,7 +46,7 @@ namespace MiniEngine.Controllers
         {
             if (this.KeyboardInput.Click(Keys.P))
             {
-                this.PointLightSystem.Add(CreateTempEntity(), this.Camera.Position, Color.White, 10.0f, 1.0f);
+                this.PointLightSystem.Add(this.CreateTempEntity(), this.Camera.Position, Color.White, 10.0f, 1.0f);
             }
 
             if (this.KeyboardInput.Click(Keys.S))
@@ -65,18 +65,18 @@ namespace MiniEngine.Controllers
                 if (!exists)
                 {
                     this.SunlightSystem.RemoveAll();
-                    this.SunlightSystem.Add(CreateTempEntity(), Color.White, this.Camera.Position, this.Camera.LookAt);
+                    this.SunlightSystem.Add(this.CreateTempEntity(), Color.White, this.Camera.Position, this.Camera.LookAt);
                 }
             }
 
             if (this.KeyboardInput.Click(Keys.D))
             {
-                this.DirectionalLightSystem.Add(CreateTempEntity(), Vector3.Normalize(this.Camera.LookAt - this.Camera.Position), Color.White * 0.5f);
+                this.DirectionalLightSystem.Add(this.CreateTempEntity(), Vector3.Normalize(this.Camera.LookAt - this.Camera.Position), Color.White * 0.5f);
             }
 
             if (this.KeyboardInput.Click(Keys.C))
             {
-                this.ShadowCastingLightSystem.Add(CreateTempEntity(), this.Camera.Position, this.Camera.LookAt, Color.White);
+                this.ShadowCastingLightSystem.Add(this.CreateTempEntity(), this.Camera.Position, this.Camera.LookAt, Color.White);
             }
 
             if (this.KeyboardInput.Click(Keys.R))

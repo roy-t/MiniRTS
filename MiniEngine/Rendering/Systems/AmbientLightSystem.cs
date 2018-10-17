@@ -13,10 +13,7 @@ namespace MiniEngine.Rendering.Systems
             this.Lights = new Dictionary<Entity, Color>();
         }
 
-        public bool Contains(Entity entity)
-        {
-            return this.Lights.ContainsKey(entity);
-        }
+        public bool Contains(Entity entity) => this.Lights.ContainsKey(entity);
 
 
         public string Describe(Entity entity)
@@ -25,15 +22,9 @@ namespace MiniEngine.Rendering.Systems
             return $"ambient light, color {color}";
         }
 
-        public void Remove(Entity entity)
-        {
-            this.Lights.Remove(entity);
-        }
+        public void Remove(Entity entity) => this.Lights.Remove(entity);
 
-        public void Add(Entity entity, Color color)
-        {
-            this.Lights.Add(entity, color);
-        }
+        public void Add(Entity entity, Color color) => this.Lights.Add(entity, color);
 
         public Color ComputeAmbientLightZeroAlpha()
         {

@@ -12,7 +12,7 @@ namespace MiniEngine.Rendering.Effects
 
         public DirectionalLightEffect(Effect effect)
         {
-            Wrap(effect);
+            this.Wrap(effect);
         }
 
         public Texture2D NormalMap
@@ -45,6 +45,6 @@ namespace MiniEngine.Rendering.Effects
             set => this.effect.Parameters["InverseViewProjection"].SetValue(value);
         }
 
-        public void Apply() => ApplyPass();
+        public void Apply() => this.ApplyPass();
     }
 }

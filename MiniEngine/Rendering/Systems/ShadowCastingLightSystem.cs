@@ -34,10 +34,7 @@ namespace MiniEngine.Rendering.Systems
             this.Lights = new Dictionary<Entity, ShadowCastingLight>();
         }
 
-        public bool Contains(Entity entity)
-        {
-            return this.Lights.ContainsKey(entity);
-        }
+        public bool Contains(Entity entity) => this.Lights.ContainsKey(entity);
 
         public string Describe(Entity entity)
         {

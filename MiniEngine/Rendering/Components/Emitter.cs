@@ -68,7 +68,7 @@ namespace MiniEngine.Rendering.Components
             this.timeToSpawn -= elapsed;
             if (this.timeToSpawn <= 0.0f)
             {
-                var velocity = Vector3.Normalize(this.Direction + GetSpreadVector()) * this.Speed;
+                var velocity = Vector3.Normalize(this.Direction + this.GetSpreadVector()) * this.Speed;
 
                 this.timeToSpawn += this.SpawnInterval;
                 this.Particles.Add(
@@ -89,9 +89,6 @@ namespace MiniEngine.Rendering.Components
             return new Vector3(x, y, z);
         }
 
-        private static float GetRandomOffset()
-        {
-            return (float)Random.NextDouble() * 2.0f - 1.0f;
-        }
+        private static float GetRandomOffset() => (float)Random.NextDouble() * 2.0f - 1.0f;
     }
 }

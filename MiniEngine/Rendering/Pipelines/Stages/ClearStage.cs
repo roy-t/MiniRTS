@@ -33,25 +33,13 @@ namespace MiniEngine.Rendering.Pipelines.Stages
         public float Depth { get; }
         public int Stencil { get; }
 
-        public void Execute(PerspectiveCamera _, GBuffer __)
-        {
-            Execute();
-        }
+        public void Execute(PerspectiveCamera _, GBuffer __) => this.Execute();
 
-        public void Execute(PerspectiveCamera _, ModelRenderBatch __)
-        {
-            Execute();
-        }
+        public void Execute(PerspectiveCamera _, ModelRenderBatch __) => this.Execute();
 
-        public void Execute(PerspectiveCamera _, ParticleRenderBatch __)
-        {
-            Execute();
-        }
+        public void Execute(PerspectiveCamera _, ParticleRenderBatch __) => this.Execute();
 
-        public void Execute(PerspectiveCamera _, Seconds seconds)
-        {
-            Execute();
-        }
+        public void Execute(PerspectiveCamera _, Seconds seconds) => this.Execute();
 
         private void Execute()
         {

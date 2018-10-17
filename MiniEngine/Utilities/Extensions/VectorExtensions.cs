@@ -5,10 +5,7 @@ namespace MiniEngine.Utilities.Extensions
 {
     public static class VectorExtensions
     {
-        public static Vector3 ScaleToVector3(this Vector4 value)
-        {
-            return new Vector3(value.X, value.Y, value.Z) / value.W;
-        }
+        public static Vector3 ScaleToVector3(this Vector4 value) => new Vector3(value.X, value.Y, value.Z) / value.W;
 
         public static Vector4 Round(this Vector4 value)
         {

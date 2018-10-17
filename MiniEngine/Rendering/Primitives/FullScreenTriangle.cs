@@ -34,9 +34,6 @@ namespace MiniEngine.Rendering.Primitives
         /// <summary>
         /// Renders a triangle that covers the entire screen (when using device coordinates)
         /// </summary>
-        public void Render(GraphicsDevice device)
-        {
-            device.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, this.Vertices, 0, 3, this.Indices, 0, 1);
-        }
+        public void Render(GraphicsDevice device) => device.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, this.Vertices, 0, 3, this.Indices, 0, 1);
     }
 }

@@ -15,9 +15,6 @@ namespace MiniEngine.Configuration
             this.MouseInput = mouseInput;
         }
 
-        public CameraController Build(PerspectiveCamera camera)
-        {
-            return new CameraController(this.KeyboardInput, this.MouseInput, camera);
-        }
+        public CameraController Build(PerspectiveCamera camera) => new CameraController(this.KeyboardInput, this.MouseInput, camera);
     }
 }

@@ -26,10 +26,7 @@ namespace MiniEngine.Rendering.Systems
             this.Lights = new Dictionary<Entity, DirectionalLight>();
         }
 
-        public bool Contains(Entity entity)
-        {
-            return this.Lights.ContainsKey(entity);
-        }
+        public bool Contains(Entity entity) => this.Lights.ContainsKey(entity);
 
         public string Describe(Entity entity)
         {
@@ -37,15 +34,9 @@ namespace MiniEngine.Rendering.Systems
             return $"directional light, direction: {light.Direction}, color: {light.Color}";
         }
 
-        public void Remove(Entity entity)
-        {
-            this.Lights.Remove(entity);
-        }
+        public void Remove(Entity entity) => this.Lights.Remove(entity);
 
-        public void Add(Entity entity, Vector3 direction, Color color)
-        {
-            this.Lights.Add(entity, new DirectionalLight(direction, color));
-        }
+        public void Add(Entity entity, Vector3 direction, Color color) => this.Lights.Add(entity, new DirectionalLight(direction, color));
 
         public void Render(PerspectiveCamera perspectiveCamera, GBuffer gBuffer)
         {

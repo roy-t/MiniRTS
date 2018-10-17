@@ -36,15 +36,9 @@ namespace MiniEngine.Rendering.Pipelines.Stages
 
         public float Strength { get; }
 
-        public void Execute(PerspectiveCamera camera, ModelRenderBatch _)
-        {
-            Execute();
-        }
+        public void Execute(PerspectiveCamera camera, ModelRenderBatch _) => this.Execute();
 
-        public void Execute(PerspectiveCamera camera, ParticleRenderBatch _)
-        {
-            Execute();
-        }
+        public void Execute(PerspectiveCamera camera, ParticleRenderBatch _) => this.Execute();
 
         private void Execute()
         {

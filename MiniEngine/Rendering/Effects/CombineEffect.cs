@@ -10,7 +10,7 @@ namespace MiniEngine.Rendering.Effects
 
         public CombineEffect(Effect combineEffect)
         {
-            Wrap(combineEffect);
+            this.Wrap(combineEffect);
         }
 
         public Texture2D DiffuseMap
@@ -23,9 +23,6 @@ namespace MiniEngine.Rendering.Effects
             set => this.effect.Parameters["LightMap"].SetValue(value);
         }
 
-        public void Apply()
-        {
-            ApplyPass();
-        }
+        public void Apply() => this.ApplyPass();
     }
 }

@@ -15,7 +15,7 @@ namespace MiniEngine.Rendering.Components
             this.CascadeScales = new Vector4[cascades];
             this.GlobalShadowMatrix = Matrix.Identity;
 
-            Move(position, lookAt);
+            this.Move(position, lookAt);
         }
 
         public IViewPoint[] ShadowCameras { get; }

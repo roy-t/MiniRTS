@@ -81,10 +81,7 @@ namespace MiniEngine.Input
 
         public Point Movement { get; private set; }
 
-        public bool Click(MouseButtons button)
-        {
-            return this.ButtonStates[button] == InputState.JustPressed;
-        }
+        public bool Click(MouseButtons button) => this.ButtonStates[button] == InputState.JustPressed;
 
         public bool Hold(MouseButtons button)
         {

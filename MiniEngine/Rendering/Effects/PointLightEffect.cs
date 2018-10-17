@@ -12,7 +12,7 @@ namespace MiniEngine.Rendering.Effects
 
         public PointLightEffect(Effect effect)
         {
-            Wrap(effect);
+            this.Wrap(effect);
         }
 
         public Texture2D NormalMap
@@ -70,6 +70,6 @@ namespace MiniEngine.Rendering.Effects
             set => this.effect.Parameters["CameraPosition"].SetValue(value);
         }
 
-        public void Apply() => ApplyPass();
+        public void Apply() => this.ApplyPass();
     }
 }

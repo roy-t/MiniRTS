@@ -29,10 +29,7 @@ namespace MiniEngine.Rendering.Systems
             this.ShadowMaps = new Dictionary<Entity, ShadowMap>();
         }
 
-        public bool Contains(Entity entity)
-        {
-            return this.ShadowMaps.ContainsKey(entity);
-        }
+        public bool Contains(Entity entity) => this.ShadowMaps.ContainsKey(entity);
 
         public string Describe(Entity entity)
         {
@@ -40,25 +37,13 @@ namespace MiniEngine.Rendering.Systems
             return $"shadow map, dimensions: {shadowMap.DepthMap.Width}x{shadowMap.DepthMap.Height}";
         }
 
-        public void Remove(Entity entity)
-        {
-            this.ShadowMaps.Remove(entity);
-        }
+        public void Remove(Entity entity) => this.ShadowMaps.Remove(entity);
 
-        public void Add(Entity entity, IViewPoint viewPoint, int resolution = DefaultResolution)
-        {
-            this.ShadowMaps.Add(entity, new ShadowMap(this.Device, resolution, 1, viewPoint));
-        }
+        public void Add(Entity entity, IViewPoint viewPoint, int resolution = DefaultResolution) => this.ShadowMaps.Add(entity, new ShadowMap(this.Device, resolution, 1, viewPoint));
 
-        public void Add(Entity entity, IViewPoint[] viewPoints, int cascades, int resolution = DefaultResolution)
-        {
-            this.ShadowMaps.Add(entity, new ShadowMap(this.Device, resolution, cascades, viewPoints));
-        }
+        public void Add(Entity entity, IViewPoint[] viewPoints, int cascades, int resolution = DefaultResolution) => this.ShadowMaps.Add(entity, new ShadowMap(this.Device, resolution, cascades, viewPoints));
 
-        public ShadowMap Get(Entity entity)
-        {
-            return this.ShadowMaps[entity];
-        }
+        public ShadowMap Get(Entity entity) => this.ShadowMaps[entity];
 
         public void RenderShadowMaps()
         {

@@ -26,10 +26,7 @@ namespace MiniEngine.Rendering.Systems
             this.Lights = new Dictionary<Entity, PointLight>();
         }
 
-        public bool Contains(Entity entity)
-        {
-            return this.Lights.ContainsKey(entity);
-        }
+        public bool Contains(Entity entity) => this.Lights.ContainsKey(entity);
 
         public string Describe(Entity entity)
         {
@@ -37,15 +34,9 @@ namespace MiniEngine.Rendering.Systems
             return $"point light, position: {light.Position}, color: {light.Color}";
         }
 
-        public void Remove(Entity entity)
-        {
-            this.Lights.Remove(entity);
-        }
+        public void Remove(Entity entity) => this.Lights.Remove(entity);
 
-        public void Add(Entity entity, Vector3 position, Color color, float radius, float intensity)
-        {
-            this.Lights.Add(entity, new PointLight(position, color, radius, intensity));
-        }
+        public void Add(Entity entity, Vector3 position, Color color, float radius, float intensity) => this.Lights.Add(entity, new PointLight(position, color, radius, intensity));
 
         public void Render(PerspectiveCamera perspectiveCamera, GBuffer gBuffer)
         {

@@ -12,7 +12,7 @@ namespace MiniEngine.Rendering.Effects
 
         public SunlightEffect(Effect effect)
         {
-            Wrap(effect);
+            this.Wrap(effect);
         }
 
         public Texture2D NormalMap
@@ -75,6 +75,6 @@ namespace MiniEngine.Rendering.Effects
             set => this.effect.Parameters["CascadeScales"].SetValue(value);
         }
 
-        public void Apply() => ApplyPass();
+        public void Apply() => this.ApplyPass();
     }
 }

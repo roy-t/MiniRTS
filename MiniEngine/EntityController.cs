@@ -30,7 +30,7 @@ namespace MiniEngine
             var entities = new Entity[count];
             for (var i = 0; i < count; i++)
             {
-                entities[i] = CreateEntity();
+                entities[i] = this.CreateEntity();
             }
 
             return entities;
@@ -39,14 +39,14 @@ namespace MiniEngine
         public void DestroyEntity(Entity entity)
         {
             this.Entities.Remove(entity);
-            RemoveEntityFromSystems(entity);
+            this.RemoveEntityFromSystems(entity);
         }
 
         public void DestroyAllEntities()
         {
             foreach (var entity in this.Entities)
             {
-                RemoveEntityFromSystems(entity);
+                this.RemoveEntityFromSystems(entity);
             }
 
             this.Entities.Clear();
@@ -56,7 +56,7 @@ namespace MiniEngine
         {
             foreach (var entity in this.Entities)
             {
-                Console.WriteLine(DescribeEntity(entity));
+                Console.WriteLine(this.DescribeEntity(entity));
             }
         }
 

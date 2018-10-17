@@ -12,7 +12,7 @@ namespace MiniEngine.Rendering.Cameras
             this.AspectRatio = viewport.AspectRatio;
             this.FieldOfView = MathHelper.PiOver2;
 
-            Move(Vector3.Backward * 10, Vector3.Zero);
+            this.Move(Vector3.Backward * 10, Vector3.Zero);
         }
 
         public float NearPlane { get; }

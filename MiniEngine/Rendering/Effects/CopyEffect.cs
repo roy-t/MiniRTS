@@ -10,7 +10,7 @@ namespace MiniEngine.Rendering.Effects
 
         public CopyEffect(Effect copyEffect)
         {
-            Wrap(copyEffect);
+            this.Wrap(copyEffect);
         }
 
         public Texture2D DiffuseMap
@@ -18,9 +18,6 @@ namespace MiniEngine.Rendering.Effects
             set => this.effect.Parameters["DiffuseMap"].SetValue(value);
         }
 
-        public void Apply()
-        {
-            ApplyPass();
-        }
+        public void Apply() => this.ApplyPass();
     }
 }

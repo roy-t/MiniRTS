@@ -27,37 +27,37 @@ namespace MiniEngine.Configuration
             this.Container = new ServiceContainer(ContainerOptions.Default);
             this.Container.SetDefaultLifetime<PerContainerLifetime>();
 
-            Compose();
+            this.Compose();
         }
 
         public void Compose()
         {
-            RegisterAllOf<IInstanceFactory>();
+            this.RegisterAllOf<IInstanceFactory>();
 
             // Services
             this.Container.RegisterInstance(this.Device);
 
             // Effects            
-            RegisterEffect<RenderEffect>("RenderEffect");
-            RegisterEffect<CombineEffect>("CombineEffect");
-            RegisterEffect<FxaaEffect>("FxaaEffect");
-            RegisterEffect<CopyEffect>("CopyEffect");
+            this.RegisterEffect<RenderEffect>("RenderEffect");
+            this.RegisterEffect<CombineEffect>("CombineEffect");
+            this.RegisterEffect<FxaaEffect>("FxaaEffect");
+            this.RegisterEffect<CopyEffect>("CopyEffect");
 
-            RegisterEffect<DirectionalLightEffect>("DirectionalLightEffect");
-            RegisterEffect<PointLightEffect>("PointLightEffect");
-            RegisterEffect<ShadowCastingLightEffect>("ShadowCastingLightEffect");
-            RegisterEffect<SunlightEffect>("SunlightEffect");
+            this.RegisterEffect<DirectionalLightEffect>("DirectionalLightEffect");
+            this.RegisterEffect<PointLightEffect>("PointLightEffect");
+            this.RegisterEffect<ShadowCastingLightEffect>("ShadowCastingLightEffect");
+            this.RegisterEffect<SunlightEffect>("SunlightEffect");
 
             // Textures
-            RegisterContent<Texture2D>("NeutralMask", "neutralMask");
-            RegisterContent<Texture2D>("NeutralNormal", "neutralNormal");
-            RegisterContent<Texture2D>("NeutralSpecular", "neutralSpecular");
+            this.RegisterContent<Texture2D>("NeutralMask", "neutralMask");
+            this.RegisterContent<Texture2D>("NeutralNormal", "neutralNormal");
+            this.RegisterContent<Texture2D>("NeutralSpecular", "neutralSpecular");
 
             // Primitives
-            RegisterContent<Model>("sphere", "sphere", "Effects");
+            this.RegisterContent<Model>("sphere", "sphere", "Effects");
 
             // Systems
-            RegisterAllOf<ISystem>();
+            this.RegisterAllOf<ISystem>();
 
             // Renderer
             this.Container.Register<DeferredRenderPipeline>();
@@ -71,23 +71,14 @@ namespace MiniEngine.Configuration
             this.Container.Register<DebugController>();
 
             // Scenes
-            RegisterAllOf<IScene>();
+            this.RegisterAllOf<IScene>();
         }
 
-        public T Resolve<T>()
-        {
-            return this.Container.GetInstance<T>();
-        }
+        public T Resolve<T>() => this.Container.GetInstance<T>();
 
-        public T Resolve<T>(string name)
-        {
-            return this.Container.GetInstance<T>(name);
-        }
+        public T Resolve<T>(string name) => this.Container.GetInstance<T>(name);
 
-        public IEnumerable<T> ResolveAll<T>()
-        {
-            return this.Container.GetAllInstances<T>();
-        }
+        public IEnumerable<T> ResolveAll<T>() => this.Container.GetAllInstances<T>();
 
         private void RegisterContent<T>(string contentName, string named, string folder = "")
         {

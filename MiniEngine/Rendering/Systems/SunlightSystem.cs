@@ -45,10 +45,7 @@ namespace MiniEngine.Rendering.Systems
             this.Sunlights = new Dictionary<Entity, Sunlight>(1);
         }
 
-        public bool Contains(Entity entity)
-        {
-            return this.Sunlights.ContainsKey(entity);
-        }
+        public bool Contains(Entity entity) => this.Sunlights.ContainsKey(entity);
 
         public string Describe(Entity entity)
         {
@@ -66,7 +63,7 @@ namespace MiniEngine.Rendering.Systems
         {
             foreach (var sunLight in this.Sunlights.Values)
             {
-                ComputeCascades(sunLight, perspectiveCamera);
+                this.ComputeCascades(sunLight, perspectiveCamera);
             }
         }
 
@@ -85,7 +82,7 @@ namespace MiniEngine.Rendering.Systems
 
             foreach (var key in keys)
             {
-                Remove(key);
+                this.Remove(key);
             }
         }
 
@@ -98,7 +95,7 @@ namespace MiniEngine.Rendering.Systems
                     var light = pair.Value;
                     var maps = this.ShadowMapSystem.Get(pair.Key);
 
-                    RenderLight(light, maps.DepthMap, maps.ColorMap, perspectiveCamera, gBuffer);
+                    this.RenderLight(light, maps.DepthMap, maps.ColorMap, perspectiveCamera, gBuffer);
                 }
             }
         }

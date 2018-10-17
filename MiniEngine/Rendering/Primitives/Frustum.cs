@@ -15,7 +15,7 @@ namespace MiniEngine.Rendering.Primitives
 
         public BoundingSphere ComputeBounds()
         {
-            var center = ComputeCenter();
+            var center = this.ComputeCenter();
 
             var radius = 0.0f;
             for (var i = 0; i < 8; i++)

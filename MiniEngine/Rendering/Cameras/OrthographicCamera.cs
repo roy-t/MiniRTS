@@ -28,7 +28,7 @@ namespace MiniEngine.Rendering.Cameras
             this.NearZ = nearZ;
             this.FarZ = farZ;
 
-            Move(Vector3.Backward * 10, Vector3.Zero);
+            this.Move(Vector3.Backward * 10, Vector3.Zero);
         }
 
         public Matrix View { get; private set; }
