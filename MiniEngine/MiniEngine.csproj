@@ -79,15 +79,11 @@
     <Compile Include="Input\MouseButtons.cs" />
     <Compile Include="Input\MouseInput.cs" />
     <Compile Include="Rendering\Pipelines\Extensions\UpdateSystemStageExtensions.cs" />
-    <Compile Include="Rendering\Pipelines\Stages\ClearStage.cs" />
-    <Compile Include="Rendering\Pipelines\Extensions\ClearStageExtensions.cs" />
     <Compile Include="Rendering\DeferredRenderPipeline.cs" />
     <Compile Include="Rendering\Pipelines\Extensions\Render2DDebugOverlayStageExtensions.cs" />
     <Compile Include="Rendering\Pipelines\Extensions\Render3DDebugOverlayExtensions.cs" />
-    <Compile Include="Rendering\Pipelines\Extensions\RenderShadowMapsStageExtension.cs" />
     <Compile Include="Rendering\Pipelines\Stages\Render2DDebugOverlayStage.cs" />
     <Compile Include="Rendering\Pipelines\Stages\Render3DDebugOverlayStage.cs" />
-    <Compile Include="Rendering\Pipelines\Stages\RenderShadowMapsStage.cs" />
     <Compile Include="Rendering\Pipelines\Stages\UpdateSystemStage.cs" />
     <Compile Include="Rendering\Systems\DebugRenderSystem.cs" />
     <Compile Include="Scenes\PrimitivesScene.cs" />

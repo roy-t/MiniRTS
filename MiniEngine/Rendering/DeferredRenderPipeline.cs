@@ -8,6 +8,10 @@ using MiniEngine.Rendering.Pipelines;
 using MiniEngine.Rendering.Pipelines.Extensions;
 using MiniEngine.Rendering.Systems;
 using MiniEngine.Units;
+using MiniEngine.Pipeline.Extensions;
+using MiniEngine.Pipeline.Models.Extensions;
+using MiniEngine.Pipeline.Lights.Extensions;
+using MiniEngine.Pipeline.Particles.Extensions;
 
 namespace MiniEngine.Rendering
 {
@@ -88,7 +92,7 @@ namespace MiniEngine.Rendering
             // this would also give us AA between different batches
 
             this.Pipeline =
-                MiniEngine.Pipeline.RenderPipeline.Create(device)
+                RenderPipeline.Create(device)
                         .Clear(this.GBuffer.DiffuseTarget, Color.TransparentBlack)
                         .Clear(this.PostProcessTarget, Color.Black)
                         .UpdateSystem(sunlightSystem)

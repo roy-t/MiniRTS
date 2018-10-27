@@ -47,9 +47,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extensions\ClearStageExtensions.cs" />
     <Compile Include="IPipelineStage.cs" />
     <Compile Include="RenderPipeline.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Stages\ClearStage.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MiniEngine.Primitives\MiniEngine.Primitives.csproj">

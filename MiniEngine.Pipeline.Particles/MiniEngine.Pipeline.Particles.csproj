@@ -52,12 +52,14 @@
     <Compile Include="Components\Emitter.cs" />
     <Compile Include="Components\Particle.cs" />
     <Compile Include="Components\ParticlePose.cs" />
+    <Compile Include="Extensions\ClearStageExtensions.cs" />
     <Compile Include="Extensions\CopyColorsStageExtensions.cs" />
     <Compile Include="Extensions\RenderParticleBatchStageExtensions.cs" />
     <Compile Include="Extensions\RenderParticlesStageExtensions.cs" />
     <Compile Include="IParticlePipelineStage.cs" />
     <Compile Include="ParticlePipeline.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Stages\ClearStage.cs" />
     <Compile Include="Stages\CopyColorsStage.cs" />
     <Compile Include="Stages\RenderParticleBatchStage.cs" />
     <Compile Include="Stages\RenderParticlesStage.cs" />
