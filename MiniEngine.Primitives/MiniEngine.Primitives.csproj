@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bounds\BoundingRectangle.cs" />
+    <Compile Include="Bounds\ModelExtensions.cs" />
     <Compile Include="Frustum.cs" />
     <Compile Include="FullScreenTriangle.cs" />
     <Compile Include="GBuffer.cs" />

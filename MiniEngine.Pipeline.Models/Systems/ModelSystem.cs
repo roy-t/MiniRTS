@@ -7,7 +7,6 @@ using MiniEngine.Primitives.Cameras;
 using MiniEngine.Systems;
 using MiniEngine.Primitives.Bounds;
 using MiniEngine.Pipeline.Models.Components;
-using MiniEngine.Pipeline.Models.Utilities;
 using MiniEngine.Pipeline.Models.Batches;
 
 namespace MiniEngine.Pipeline.Models.Systems

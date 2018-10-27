@@ -5,7 +5,7 @@ using MiniEngine.Pipeline.Lights.Systems;
 using MiniEngine.Pipeline.Models.Components;
 using MiniEngine.Pipeline.Models.Systems;
 using MiniEngine.Pipeline.Particles.Systems;
-using MiniEngine.Rendering.Systems;
+using MiniEngine.Pipeline.Systems;
 using MiniEngine.Systems;
 using MiniEngine.Units;
 

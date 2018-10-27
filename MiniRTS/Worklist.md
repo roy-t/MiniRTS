@@ -17,7 +17,10 @@
 
 ## Possible Improvements
 
+- The MiniEngine.Primitives project should be organized better as there is no coherence between classes in that project
 - The FXAA algorithm could be improved, the sample distance is currently only goverened by the dot product of the UVs. I also tried perceived brightness differences, but that gave textures an ugly blur.
+- A different sampling strategy for normal maps could reduce bright edges
+- Treating diffuse textures as linear color space will improve the visual effect of a lot of algorithms
 
 ## Known Issues
 

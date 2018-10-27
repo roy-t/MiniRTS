@@ -1,9 +1,8 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
-using MiniEngine.Pipeline;
-using MiniEngine.Rendering.Pipelines.Stages;
-using MiniEngine.Rendering.Systems;
+using MiniEngine.Pipeline.Stages;
+using MiniEngine.Pipeline.Systems;
 
-namespace MiniEngine.Rendering.Pipelines.Extensions
+namespace MiniEngine.Pipeline.Extensions
 {
     public static class Render2DDebugOverlayStageExtensions
     {

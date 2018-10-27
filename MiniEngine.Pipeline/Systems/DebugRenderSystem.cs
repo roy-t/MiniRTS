@@ -8,9 +8,8 @@ using MiniEngine.Primitives.VertexTypes;
 using MiniEngine.Primitives.Bounds;
 using MiniEngine.Effects.Techniques;
 using MiniEngine.Effects.DeviceStates;
-using MiniEngine.Pipeline.Models.Utilities;
 
-namespace MiniEngine.Rendering.Systems
+namespace MiniEngine.Pipeline.Systems
 {
     public sealed class DebugRenderSystem : ISystem
     {

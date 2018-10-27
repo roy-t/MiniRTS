@@ -65,7 +65,6 @@
     <Compile Include="Stages\CombineDiffuseWithLightingStage.cs" />
     <Compile Include="Stages\RenderModelBatchStage.cs" />
     <Compile Include="Stages\RenderModelsStage.cs" />
-    <Compile Include="Utilities\ModelExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MiniEngine.Effects\MiniEngine.Effects.csproj">

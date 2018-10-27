@@ -48,15 +48,30 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Extensions\ClearStageExtensions.cs" />
+    <Compile Include="Extensions\Render2DDebugOverlayStageExtensions.cs" />
+    <Compile Include="Extensions\Render3DDebugOverlayExtensions.cs" />
+    <Compile Include="Extensions\UpdateSystemStageExtensions.cs" />
     <Compile Include="IPipelineStage.cs" />
     <Compile Include="RenderPipeline.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Stages\ClearStage.cs" />
+    <Compile Include="Stages\Render2DDebugOverlayStage.cs" />
+    <Compile Include="Stages\Render3DDebugOverlayStage.cs" />
+    <Compile Include="Stages\UpdateSystemStage.cs" />
+    <Compile Include="Systems\DebugRenderSystem.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\MiniEngine.Effects\MiniEngine.Effects.csproj">
+      <Project>{2bb9181f-a31d-4da2-93d2-64f5a56cf4f5}</Project>
+      <Name>MiniEngine.Effects</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MiniEngine.Primitives\MiniEngine.Primitives.csproj">
       <Project>{d02e8240-0178-4792-9c38-2455d1250fa6}</Project>
       <Name>MiniEngine.Primitives</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MiniEngine.Systems\MiniEngine.Systems.csproj">
+      <Project>{c1db1986-23b4-4293-a6ea-527da1adc78f}</Project>
+      <Name>MiniEngine.Systems</Name>
     </ProjectReference>
     <ProjectReference Include="..\MiniEngine.Units\MiniEngine.Units.csproj">
       <Project>{051e397d-4c6c-4f8f-8f40-cce916a45c5e}</Project>

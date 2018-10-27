@@ -1,8 +1,7 @@
-﻿using MiniEngine.Pipeline;
-using MiniEngine.Rendering.Pipelines.Stages;
+﻿using MiniEngine.Pipeline.Stages;
 using MiniEngine.Systems;
 
-namespace MiniEngine.Rendering.Pipelines.Extensions
+namespace MiniEngine.Pipeline.Extensions
 {
     public static class UpdateSystemStageExtensions
     {

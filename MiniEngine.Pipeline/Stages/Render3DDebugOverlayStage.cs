@@ -1,10 +1,9 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
-using MiniEngine.Pipeline;
+using MiniEngine.Pipeline.Systems;
 using MiniEngine.Primitives.Cameras;
-using MiniEngine.Rendering.Systems;
 using MiniEngine.Units;
 
-namespace MiniEngine.Rendering.Pipelines.Stages
+namespace MiniEngine.Pipeline.Stages
 {
     public sealed class Render3DDebugOverlayStage : IPipelineStage
     {

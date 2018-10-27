@@ -1,9 +1,8 @@
-﻿using MiniEngine.Pipeline;
-using MiniEngine.Primitives.Cameras;
+﻿using MiniEngine.Primitives.Cameras;
 using MiniEngine.Systems;
 using MiniEngine.Units;
 
-namespace MiniEngine.Rendering.Pipelines.Stages
+namespace MiniEngine.Pipeline.Stages
 {
     public sealed class UpdateSystemStage : IPipelineStage
     {
