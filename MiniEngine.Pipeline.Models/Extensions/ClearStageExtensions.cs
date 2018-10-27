@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Pipeline.Models.Stages;
-using MiniEngine.Rendering.Pipelines;
 
 namespace MiniEngine.Pipeline.Models.Extensions
 {

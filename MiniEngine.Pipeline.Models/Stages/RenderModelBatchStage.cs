@@ -1,10 +1,11 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
-using MiniEngine.Rendering.Batches;
 using MiniEngine.Primitives.Cameras;
-using MiniEngine.Rendering.Effects;
 using MiniEngine.Primitives;
+using MiniEngine.Effects.Techniques;
+using MiniEngine.Effects.DeviceStates;
+using MiniEngine.Pipeline.Models.Batches;
 
-namespace MiniEngine.Rendering.Pipelines.Stages
+namespace MiniEngine.Pipeline.Models.Stages
 {
     public sealed class RenderModelBatchStage : IModelPipelineStage
     {
@@ -25,7 +26,7 @@ namespace MiniEngine.Rendering.Pipelines.Stages
                 this.GBuffer.DepthTarget);
             using (this.Device.GeometryState())
             {
-                batch.Draw(Techniques.Deferred);
+                batch.Draw(RenderEffectTechniques.Deferred);
             }
         }
     }

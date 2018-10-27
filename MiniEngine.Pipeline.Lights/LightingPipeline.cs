@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Primitives.Cameras;
 using MiniEngine.Primitives;
 
-namespace MiniEngine.Rendering.Pipelines
+namespace MiniEngine.Pipeline.Lights
 {
     public sealed class LightingPipeline
     {

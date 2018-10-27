@@ -1,7 +1,7 @@
-﻿using MiniEngine.Rendering.Pipelines.Stages;
+﻿using MiniEngine.Pipeline.Models.Stages;
 using MiniEngine.Primitives;
 
-namespace MiniEngine.Rendering.Pipelines.Extensions
+namespace MiniEngine.Pipeline.Models.Extensions
 {
     public static class RenderModelBatchStageExtensions
     {

@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace MiniEngine.Rendering.Components
+namespace MiniEngine.Pipeline.Particles.Components
 {
     public sealed class ParticlePose
     {

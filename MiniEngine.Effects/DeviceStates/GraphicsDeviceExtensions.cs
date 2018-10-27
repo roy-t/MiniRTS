@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 
-namespace MiniEngine.Rendering
+namespace MiniEngine.Effects.DeviceStates
 {
     public static class GraphicsDeviceExtensions
     {

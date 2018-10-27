@@ -2,11 +2,13 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Primitives.Cameras;
-using MiniEngine.Rendering.Effects;
+using MiniEngine.Effects;
 using MiniEngine.Systems;
-using MiniEngine.Utilities.Extensions;
 using MiniEngine.Primitives.VertexTypes;
 using MiniEngine.Primitives.Bounds;
+using MiniEngine.Effects.Techniques;
+using MiniEngine.Effects.DeviceStates;
+using MiniEngine.Pipeline.Models.Utilities;
 
 namespace MiniEngine.Rendering.Systems
 {
@@ -97,7 +99,7 @@ namespace MiniEngine.Rendering.Systems
 
             using (this.Device.WireFrameState())
             {
-                this.RenderEffect.Apply(Techniques.Textured);
+                this.RenderEffect.Apply(RenderEffectTechniques.Textured);
 
                 foreach (var bounds in this.Models.Values)
                 {
@@ -128,7 +130,7 @@ namespace MiniEngine.Rendering.Systems
 
             using (this.Device.PostProcessState())
             {
-                this.RenderEffect.Apply(Techniques.Textured);
+                this.RenderEffect.Apply(RenderEffectTechniques.Textured);
 
                 foreach (var bounds in this.Models.Values)
                 {

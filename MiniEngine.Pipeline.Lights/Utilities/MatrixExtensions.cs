@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 
-namespace MiniEngine.Utilities.Extensions
+namespace MiniEngine.Pipeline.Lights.Utilities
 {
     public static class MatrixExtensions
     {
@@ -10,14 +10,6 @@ namespace MiniEngine.Utilities.Extensions
         /// <summary>
         /// Transforms the input matrix so that transformations to [-1, 1] will now fall in [0, 1]
         /// </summary>        
-        public static Matrix TextureScaleTransform(this Matrix matrix) => matrix * TexScaleTransform;
-
-
-        public static Matrix CreateScaleRotationTranslation(float scale, float rotX, float rotY, float rotZ, Vector3 translation)
-        {
-            return Matrix.CreateScale(scale)
-                   * Matrix.CreateFromYawPitchRoll(rotY, rotX, rotZ)
-                   * Matrix.CreateTranslation(translation);
-        }
+        public static Matrix TextureScaleTransform(this Matrix matrix) => matrix * TexScaleTransform;        
     }
 }

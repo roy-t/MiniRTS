@@ -1,7 +1,8 @@
 ﻿using MiniEngine.Controllers;
 using MiniEngine.Input;
+using MiniEngine.Pipeline.Lights.Systems;
 using MiniEngine.Primitives.Cameras;
-using MiniEngine.Rendering.Systems;
+using MiniEngine.Systems;
 
 namespace MiniEngine.Configuration
 {

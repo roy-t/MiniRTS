@@ -2,12 +2,13 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Primitives.Cameras;
-using MiniEngine.Rendering.Components;
-using MiniEngine.Rendering.Effects;
+using MiniEngine.Effects;
 using MiniEngine.Primitives;
 using MiniEngine.Systems;
+using MiniEngine.Effects.DeviceStates;
+using MiniEngine.Pipeline.Lights.Components;
 
-namespace MiniEngine.Rendering.Systems
+namespace MiniEngine.Pipeline.Lights.Systems
 {
     public sealed class ShadowCastingLightSystem : ISystem
     {

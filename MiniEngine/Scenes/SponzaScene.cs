@@ -1,10 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using MiniEngine.Rendering.Components;
+using MiniEngine.Pipeline.Lights.Systems;
+using MiniEngine.Pipeline.Models.Components;
+using MiniEngine.Pipeline.Models.Systems;
+using MiniEngine.Pipeline.Particles.Systems;
 using MiniEngine.Rendering.Systems;
+using MiniEngine.Systems;
 using MiniEngine.Units;
-using MiniEngine.Utilities.Extensions;
 
 namespace MiniEngine.Scenes
 {
@@ -65,7 +68,7 @@ namespace MiniEngine.Scenes
             this.worldEntity = this.EntityController.CreateEntity();
 
             this.AmbientLightSystem.Add(this.worldEntity, Color.White * 0.25f);
-            this.SunlightSystem.Add(this.worldEntity, Color.White, Vector3.Up, Vector3.Left * 0.75f + Vector3.Backward * 0.1f);
+            this.SunlightSystem.Add(this.worldEntity, Color.White, Vector3.Up, (Vector3.Left * 0.75f) + (Vector3.Backward * 0.1f));
 
             this.ModelSystem.Add(this.worldEntity, this.sponza, Matrix.CreateScale(0.05f));
 
@@ -73,13 +76,13 @@ namespace MiniEngine.Scenes
 
             var position = new Vector3(-40.5f, 30.0f, 3.2f);
 
-            var world = MatrixExtensions.CreateScaleRotationTranslation(4.4f * 0.01f, MathHelper.PiOver2, MathHelper.PiOver2, 0, position);
+            var world = CreateScaleRotationTranslation(4.4f * 0.01f, MathHelper.PiOver2, MathHelper.PiOver2, 0, position);
             this.ModelSystem.Add(this.planeEntity, this.plane, world, ModelType.Transparent);
 
             this.planeEntity2 = this.EntityController.CreateEntity();
 
             position = new Vector3(-40.5f, 30.0f, -7.2f);
-            var world2 = MatrixExtensions.CreateScaleRotationTranslation(4.4f * 0.01f, 0, MathHelper.PiOver4, 0, position);
+            var world2 = CreateScaleRotationTranslation(4.4f * 0.01f, 0, MathHelper.PiOver4, 0, position);
 
             this.ModelSystem.Add(this.planeEntity2, this.plane, world2, ModelType.Transparent);
 
@@ -95,13 +98,20 @@ namespace MiniEngine.Scenes
             this.ParticleSystem.Add(this.particleEntity3, particleSpawn, this.explosion2, 1, 1);
 
             this.PointLightSystem.Add(this.particleEntity, particleSpawn, Color.IndianRed, 20.0f, 1.0f);
-            var light = particleSpawn + Vector3.Up * 3;
-            this.ShadowCastingLightSystem.Add(this.particleEntity, light, light + Vector3.Up + Vector3.Left * 0.001f, Color.IndianRed);
+            var light = particleSpawn + (Vector3.Up * 3);
+            this.ShadowCastingLightSystem.Add(this.particleEntity, light, light + Vector3.Up + (Vector3.Left * 0.001f), Color.IndianRed);
 
 
             //this.DebugRenderSystem.Add(this.worldEntity, this.sponza, Matrix.CreateScale(0.05f));
             this.DebugRenderSystem.Add(this.planeEntity, this.plane, world);
             this.DebugRenderSystem.Add(this.planeEntity2, this.plane, world2);
+        }
+
+        public static Matrix CreateScaleRotationTranslation(float scale, float rotX, float rotY, float rotZ, Vector3 translation)
+        {
+            return Matrix.CreateScale(scale)
+                   * Matrix.CreateFromYawPitchRoll(rotY, rotX, rotZ)
+                   * Matrix.CreateTranslation(translation);
         }
 
         public void Update(Seconds elapsed)

@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Units;
 
-namespace MiniEngine.Rendering.Components
+namespace MiniEngine.Pipeline.Particles.Components
 {
     public sealed class Emitter
     {

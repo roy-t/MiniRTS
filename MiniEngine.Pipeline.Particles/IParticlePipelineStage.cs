@@ -1,7 +1,7 @@
-﻿using MiniEngine.Rendering.Batches;
+﻿using MiniEngine.Pipeline.Particles.Batches;
 using MiniEngine.Primitives.Cameras;
 
-namespace MiniEngine.Rendering.Pipelines
+namespace MiniEngine.Pipeline.Particles
 {
     public interface IParticlePipelineStage
     {

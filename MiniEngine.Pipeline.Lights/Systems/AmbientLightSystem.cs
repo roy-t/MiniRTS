@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework;
 using MiniEngine.Systems;
 
-namespace MiniEngine.Rendering.Systems
+namespace MiniEngine.Pipeline.Lights.Systems
 {
     public sealed class AmbientLightSystem : ISystem
     {

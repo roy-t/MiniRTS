@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using MiniEngine.Units;
 
-namespace MiniEngine.Rendering.Components
+namespace MiniEngine.Pipeline.Particles.Components
 {
     public sealed class Particle
     {
@@ -23,4 +23,4 @@ namespace MiniEngine.Rendering.Components
         public Seconds TimePerFrame { get; set; }
         public int Frame { get; set; }
     }
-}
+}     

@@ -1,9 +1,8 @@
-﻿using MiniEngine.Systems;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace MiniEngine
+namespace MiniEngine.Systems
 {
     public sealed class EntityController
     {

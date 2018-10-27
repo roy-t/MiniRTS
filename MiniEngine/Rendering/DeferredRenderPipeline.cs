@@ -3,8 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Pipeline;
 using MiniEngine.Primitives;
 using MiniEngine.Primitives.Cameras;
-using MiniEngine.Rendering.Effects;
-using MiniEngine.Rendering.Pipelines;
+using MiniEngine.Effects;
 using MiniEngine.Rendering.Pipelines.Extensions;
 using MiniEngine.Rendering.Systems;
 using MiniEngine.Units;
@@ -12,6 +11,12 @@ using MiniEngine.Pipeline.Extensions;
 using MiniEngine.Pipeline.Models.Extensions;
 using MiniEngine.Pipeline.Lights.Extensions;
 using MiniEngine.Pipeline.Particles.Extensions;
+using MiniEngine.Pipeline.Models.Systems;
+using MiniEngine.Pipeline.Models;
+using MiniEngine.Pipeline.Particles.Systems;
+using MiniEngine.Pipeline.Particles;
+using MiniEngine.Pipeline.Lights.Systems;
+using MiniEngine.Pipeline.Lights;
 
 namespace MiniEngine.Rendering
 {

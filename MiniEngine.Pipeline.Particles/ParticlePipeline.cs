@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework.Graphics;
-using MiniEngine.Rendering.Batches;
 using MiniEngine.Primitives.Cameras;
+using MiniEngine.Pipeline.Particles.Batches;
 
-namespace MiniEngine.Rendering.Pipelines
+namespace MiniEngine.Pipeline.Particles
 {
     public sealed class ParticlePipeline
     {

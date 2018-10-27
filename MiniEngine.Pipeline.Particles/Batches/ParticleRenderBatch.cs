@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Primitives.Cameras;
-using MiniEngine.Rendering.Components;
-using MiniEngine.Rendering.Effects;
+using MiniEngine.Pipeline.Particles.Components;
+using MiniEngine.Effects;
 using MiniEngine.Primitives;
+using MiniEngine.Effects.Techniques;
 
-namespace MiniEngine.Rendering.Batches
+namespace MiniEngine.Pipeline.Particles.Batches
 {
     public sealed class ParticleRenderBatch
     {
@@ -36,7 +37,7 @@ namespace MiniEngine.Rendering.Batches
             this.SpecularMap = specularMap;
         }
 
-        public void Draw(Techniques technique)
+        public void Draw(RenderEffectTechniques technique)
         {
             this.Effect.Mask = this.Mask;
             this.Effect.NormalMap = this.NormalMap;

@@ -1,7 +1,7 @@
-﻿using MiniEngine.Rendering.Pipelines.Stages;
-using MiniEngine.Rendering.Systems;
+﻿using MiniEngine.Pipeline.Lights.Stages;
+using MiniEngine.Pipeline.Lights.Systems;
 
-namespace MiniEngine.Rendering.Pipelines.Extensions
+namespace MiniEngine.Pipeline.Lights.Extensions
 {
     public static class PointLightStageExtensions
     {

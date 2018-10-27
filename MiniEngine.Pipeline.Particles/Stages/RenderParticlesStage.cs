@@ -1,9 +1,8 @@
-﻿using MiniEngine.Pipeline;
+﻿using MiniEngine.Pipeline.Particles.Systems;
 using MiniEngine.Primitives.Cameras;
-using MiniEngine.Rendering.Systems;
 using MiniEngine.Units;
 
-namespace MiniEngine.Rendering.Pipelines.Stages
+namespace MiniEngine.Pipeline.Particles.Stages
 {
     public sealed class RenderParticlesStage : IPipelineStage
     {

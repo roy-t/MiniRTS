@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Input;
 using MiniEngine.Rendering;
-using MiniEngine.Rendering.Effects;
+using MiniEngine.Effects;
 using MiniEngine.Scenes;
 using MiniEngine.Systems;
 using MiniEngine.Utilities;

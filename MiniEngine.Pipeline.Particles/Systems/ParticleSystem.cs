@@ -1,15 +1,15 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using MiniEngine.Rendering.Batches;
+using MiniEngine.Pipeline.Particles.Batches;
 using MiniEngine.Primitives.Cameras;
-using MiniEngine.Rendering.Components;
-using MiniEngine.Rendering.Effects;
+using MiniEngine.Pipeline.Particles.Components;
+using MiniEngine.Effects;
 using MiniEngine.Primitives;
 using MiniEngine.Systems;
 using MiniEngine.Units;
 
-namespace MiniEngine.Rendering.Systems
+namespace MiniEngine.Pipeline.Particles.Systems
 {
     public sealed class ParticleSystem : IUpdatableSystem
     {

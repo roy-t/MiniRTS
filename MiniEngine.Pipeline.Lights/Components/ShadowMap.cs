@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Primitives.Cameras;
 
-namespace MiniEngine.Rendering.Components
+namespace MiniEngine.Pipeline.Lights.Components
 {
     public sealed class ShadowMap
     {

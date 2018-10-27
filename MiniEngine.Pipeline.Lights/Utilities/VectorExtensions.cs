@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 
-namespace MiniEngine.Utilities.Extensions
+namespace MiniEngine.Pipeline.Lights.Utilities
 {
     public static class VectorExtensions
     {

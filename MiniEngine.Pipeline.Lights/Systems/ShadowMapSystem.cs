@@ -2,11 +2,14 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Primitives.Cameras;
-using MiniEngine.Rendering.Components;
-using MiniEngine.Rendering.Effects;
 using MiniEngine.Systems;
+using MiniEngine.Effects.Techniques;
+using MiniEngine.Effects.DeviceStates;
+using MiniEngine.Pipeline.Models.Systems;
+using MiniEngine.Pipeline.Particles.Systems;
+using MiniEngine.Pipeline.Lights.Components;
 
-namespace MiniEngine.Rendering.Systems
+namespace MiniEngine.Pipeline.Lights.Systems
 {
     public sealed class ShadowMapSystem : ISystem
     {
@@ -60,7 +63,7 @@ namespace MiniEngine.Rendering.Systems
 
                     using (this.Device.ShadowMapState())
                     {
-                        modelBatchList.OpaqueBatch.Draw(Techniques.ShadowMap);
+                        modelBatchList.OpaqueBatch.Draw(RenderEffectTechniques.ShadowMap);
                     }
 
                     // Read the depth buffer and render objects that are partially
@@ -72,7 +75,7 @@ namespace MiniEngine.Rendering.Systems
                     {
                         foreach (var batch in modelBatchList.TransparentBatches)
                         {
-                            batch.Draw(Techniques.Textured);
+                            batch.Draw(RenderEffectTechniques.Textured);
                         }
                     }
 
@@ -81,7 +84,7 @@ namespace MiniEngine.Rendering.Systems
                     {
                         foreach (var batch in particleBatchList.Batches)
                         {
-                            batch.Draw(Techniques.GrayScale);
+                            batch.Draw(RenderEffectTechniques.GrayScale);
                         }
                     }
 

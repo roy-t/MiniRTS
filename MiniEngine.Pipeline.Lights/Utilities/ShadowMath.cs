@@ -2,9 +2,8 @@
 using Microsoft.Xna.Framework;
 using MiniEngine.Primitives.Cameras;
 using MiniEngine.Primitives;
-using MiniEngine.Utilities.Extensions;
 
-namespace MiniEngine.Rendering
+namespace MiniEngine.Pipeline.Lights.Utilities
 {
     public static class ShadowMath
     {
@@ -15,7 +14,7 @@ namespace MiniEngine.Rendering
         {
             var frustumCenter = frustum.ComputeCenter();
 
-            var shadowCameraPos = frustumCenter + surfaceToLightDirection * -0.5f;
+            var shadowCameraPos = frustumCenter + (surfaceToLightDirection * -0.5f);
             var shadowCamera = new OrthographicCamera(-0.5f, 0.5f, -0.5f, 0.5f, 0.0f, 1.0f);
             shadowCamera.Move(shadowCameraPos, frustumCenter);
 
@@ -45,7 +44,7 @@ namespace MiniEngine.Rendering
                 radius * 2);
 
             // Compute the position of the shadow camera (the position where we're going to capture our shadow maps from)
-            var shadowCameraPos = bounds.Center + surfaceToLightVector * radius;
+            var shadowCameraPos = bounds.Center + (surfaceToLightVector * radius);
 
             shadowCamera.Move(shadowCameraPos, bounds.Center);
             return Stabilize(shadowCamera, shadowMapResolution);

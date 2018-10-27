@@ -1,8 +1,9 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MiniEngine.Effects.Techniques;
 
-namespace MiniEngine.Rendering.Effects
+namespace MiniEngine.Effects
 {
     public sealed class RenderEffect : EffectWrapper
     {
@@ -50,20 +51,20 @@ namespace MiniEngine.Rendering.Effects
             set => this.effect.Parameters["Mask"].SetValue(value);
         }
 
-        public void Apply(Techniques technique)
+        public void Apply(RenderEffectTechniques technique)
         {
             switch (technique)
             {
-                case Techniques.ShadowMap:
+                case RenderEffectTechniques.ShadowMap:
                     this.effect.CurrentTechnique = this.effect.Techniques["ShadowMap"];
                     break;
-                case Techniques.GrayScale:
+                case RenderEffectTechniques.GrayScale:
                     this.effect.CurrentTechnique = this.effect.Techniques["GrayScale"];
                     break;
-                case Techniques.Textured:
+                case RenderEffectTechniques.Textured:
                     this.effect.CurrentTechnique = this.effect.Techniques["Textured"];
                     break;
-                case Techniques.Deferred:
+                case RenderEffectTechniques.Deferred:
                     this.effect.CurrentTechnique = this.effect.Techniques["Deferred"];
                     break;
                 default:

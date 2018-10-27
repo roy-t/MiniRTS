@@ -1,6 +1,6 @@
-﻿namespace MiniEngine.Rendering.Effects
+﻿namespace MiniEngine.Effects.Techniques
 {
-    public enum Techniques
+    public enum RenderEffectTechniques
     {
         ShadowMap,
         GrayScale,

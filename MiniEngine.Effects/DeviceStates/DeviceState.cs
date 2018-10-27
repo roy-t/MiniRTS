@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace MiniEngine.Rendering
+namespace MiniEngine.Effects.DeviceStates
 {
     public sealed class DeviceState : IDisposable
     {

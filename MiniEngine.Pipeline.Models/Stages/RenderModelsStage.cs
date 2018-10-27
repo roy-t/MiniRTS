@@ -1,9 +1,8 @@
-﻿using MiniEngine.Pipeline;
+﻿using MiniEngine.Pipeline.Models.Systems;
 using MiniEngine.Primitives.Cameras;
-using MiniEngine.Rendering.Systems;
 using MiniEngine.Units;
 
-namespace MiniEngine.Rendering.Pipelines.Stages
+namespace MiniEngine.Pipeline.Models.Stages
 {
     public sealed class RenderModelsStage : IPipelineStage
     {

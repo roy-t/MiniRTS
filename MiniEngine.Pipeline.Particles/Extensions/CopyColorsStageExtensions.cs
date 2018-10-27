@@ -1,8 +1,8 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
-using MiniEngine.Rendering.Effects;
-using MiniEngine.Rendering.Pipelines.Stages;
+using MiniEngine.Effects;
+using MiniEngine.Pipeline.Particles.Stages;
 
-namespace MiniEngine.Rendering.Pipelines.Extensions
+namespace MiniEngine.Pipeline.Particles.Extensions
 {
     public static class CopyColorsStageExtensions
     {

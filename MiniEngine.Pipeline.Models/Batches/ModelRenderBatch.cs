@@ -2,10 +2,11 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Primitives.Cameras;
-using MiniEngine.Rendering.Components;
-using MiniEngine.Rendering.Effects;
+using MiniEngine.Effects;
+using MiniEngine.Effects.Techniques;
+using MiniEngine.Pipeline.Models.Components;
 
-namespace MiniEngine.Rendering.Batches
+namespace MiniEngine.Pipeline.Models.Batches
 {
     public sealed class ModelRenderBatch
     {
@@ -22,7 +23,7 @@ namespace MiniEngine.Rendering.Batches
             this.Effect = new RenderEffect();
         }
 
-        public void Draw(Techniques technique)
+        public void Draw(RenderEffectTechniques technique)
         {
             foreach (var modelPose in this.Models)
             {
@@ -30,7 +31,7 @@ namespace MiniEngine.Rendering.Batches
             }
         }
 
-        private void DrawModel(Techniques technique, Model model, Matrix world, IViewPoint viewPoint)
+        private void DrawModel(RenderEffectTechniques technique, Model model, Matrix world, IViewPoint viewPoint)
         {
             var bones = model.Bones.Count;
             if (SharedBoneMatrix == null || SharedBoneMatrix.Length < bones)

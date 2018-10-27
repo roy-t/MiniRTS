@@ -3,15 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using MiniEngine.Rendering.Batches;
 using MiniEngine.Primitives.Cameras;
-using MiniEngine.Rendering.Components;
-using MiniEngine.Primitives;
 using MiniEngine.Systems;
-using MiniEngine.Utilities.Extensions;
 using MiniEngine.Primitives.Bounds;
+using MiniEngine.Pipeline.Models.Components;
+using MiniEngine.Pipeline.Models.Utilities;
+using MiniEngine.Pipeline.Models.Batches;
 
-namespace MiniEngine.Rendering.Systems
+namespace MiniEngine.Pipeline.Models.Systems
 {
     public sealed class ModelSystem : ISystem
     {

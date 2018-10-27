@@ -1,8 +1,7 @@
-﻿using MiniEngine.Pipeline;
-using MiniEngine.Rendering.Pipelines.Stages;
-using MiniEngine.Rendering.Systems;
+﻿using MiniEngine.Pipeline.Particles.Stages;
+using MiniEngine.Pipeline.Particles.Systems;
 
-namespace MiniEngine.Rendering.Pipelines.Extensions
+namespace MiniEngine.Pipeline.Particles.Extensions
 {
     public static class RenderParticlesStageExtensions
     {

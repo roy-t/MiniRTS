@@ -1,9 +1,9 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Primitives.Cameras;
 using MiniEngine.Primitives;
-using MiniEngine.Rendering.Systems;
+using MiniEngine.Pipeline.Lights.Systems;
 
-namespace MiniEngine.Rendering.Pipelines.Stages
+namespace MiniEngine.Pipeline.Lights.Stages
 {
     public sealed class ShadowCastingLightStage : ILightingPipelineStage
     {

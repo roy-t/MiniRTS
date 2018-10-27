@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace MiniEngine.Rendering.Components
+namespace MiniEngine.Pipeline.Models.Components
 {
     public sealed class ModelPose
     {

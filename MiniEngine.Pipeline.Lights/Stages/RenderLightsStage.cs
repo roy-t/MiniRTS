@@ -1,8 +1,9 @@
-﻿using MiniEngine.Rendering.Batches;
-using MiniEngine.Primitives.Cameras;
+﻿using MiniEngine.Primitives.Cameras;
 using MiniEngine.Primitives;
+using MiniEngine.Pipeline.Models;
+using MiniEngine.Pipeline.Models.Batches;
 
-namespace MiniEngine.Rendering.Pipelines.Stages
+namespace MiniEngine.Pipeline.Lights.Stages
 {
     public sealed class RenderLightsStage : IModelPipelineStage
     {

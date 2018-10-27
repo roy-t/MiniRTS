@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace MiniEngine.Rendering.Batches
+namespace MiniEngine.Pipeline.Particles.Batches
 {
     public sealed class ParticleBatchList
     {

@@ -1,7 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using MiniEngine.Pipeline.Lights.Systems;
 using MiniEngine.Primitives.Cameras;
-using MiniEngine.Rendering.Systems;
+using MiniEngine.Systems;
 using MiniEngine.Units;
 using System.Collections.Generic;
 using KeyboardInput = MiniEngine.Input.KeyboardInput;

@@ -1,4 +1,4 @@
-﻿namespace MiniEngine.Rendering.Components
+﻿namespace MiniEngine.Pipeline.Models.Components
 {
     public enum ModelType
     {

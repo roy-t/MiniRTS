@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MiniEngine
+namespace MiniEngine.Systems
 {
     public readonly struct Entity : IEquatable<Entity>
     {

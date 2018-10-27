@@ -1,10 +1,11 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
-using MiniEngine.Rendering.Batches;
+using MiniEngine.Pipeline.Particles.Batches;
 using MiniEngine.Primitives.Cameras;
-using MiniEngine.Rendering.Effects;
 using MiniEngine.Primitives;
+using MiniEngine.Effects.Techniques;
+using MiniEngine.Effects.DeviceStates;
 
-namespace MiniEngine.Rendering.Pipelines.Stages
+namespace MiniEngine.Pipeline.Particles.Stages
 {
     public sealed class RenderParticleBatchStage : IParticlePipelineStage
     {
@@ -22,7 +23,7 @@ namespace MiniEngine.Rendering.Pipelines.Stages
             this.Device.SetRenderTarget(this.GBuffer.DiffuseTarget);
             using (this.Device.ParticleState())
             {
-                batch.Draw(Techniques.Textured);
+                batch.Draw(RenderEffectTechniques.Textured);
             }
         }
     }

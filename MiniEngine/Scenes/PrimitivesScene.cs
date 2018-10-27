@@ -1,8 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using MiniEngine.Rendering.Components;
-using MiniEngine.Rendering.Systems;
+using MiniEngine.Pipeline.Lights.Systems;
+using MiniEngine.Pipeline.Models.Components;
+using MiniEngine.Pipeline.Models.Systems;
+using MiniEngine.Systems;
 using MiniEngine.Units;
 
 namespace MiniEngine.Scenes

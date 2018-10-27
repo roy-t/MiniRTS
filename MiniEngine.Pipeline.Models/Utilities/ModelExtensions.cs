@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace MiniEngine.Utilities.Extensions
+namespace MiniEngine.Pipeline.Models.Utilities
 {
     public static class ModelExtensions
     {

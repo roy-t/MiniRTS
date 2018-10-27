@@ -2,14 +2,15 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Primitives.Cameras;
-using MiniEngine.Rendering.Components;
-using MiniEngine.Rendering.Effects;
 using MiniEngine.Primitives;
 using MiniEngine.Systems;
 using MiniEngine.Units;
-using MiniEngine.Utilities.Extensions;
+using MiniEngine.Effects;
+using MiniEngine.Effects.DeviceStates;
+using MiniEngine.Pipeline.Lights.Components;
+using MiniEngine.Pipeline.Lights.Utilities;
 
-namespace MiniEngine.Rendering.Systems
+namespace MiniEngine.Pipeline.Lights.Systems
 {
     public sealed class SunlightSystem : IUpdatableSystem
     {

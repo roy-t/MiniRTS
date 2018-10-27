@@ -1,7 +1,8 @@
-﻿using MiniEngine.Rendering.Pipelines.Stages;
+﻿using MiniEngine.Pipeline.Lights.Stages;
 using MiniEngine.Primitives;
+using MiniEngine.Pipeline.Models;
 
-namespace MiniEngine.Rendering.Pipelines.Extensions
+namespace MiniEngine.Pipeline.Lights.Extensions
 {
     public static class RenderLightsStageExtensions
     {
