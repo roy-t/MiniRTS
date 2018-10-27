@@ -1,4 +1,5 @@
-﻿using MiniEngine.Rendering.Cameras;
+﻿using MiniEngine.Pipeline;
+using MiniEngine.Primitives.Cameras;
 using MiniEngine.Systems;
 using MiniEngine.Units;
 

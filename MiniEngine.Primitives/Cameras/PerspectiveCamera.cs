@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace MiniEngine.Rendering.Cameras
+namespace MiniEngine.Primitives.Cameras
 {
     public sealed class PerspectiveCamera : IMovableViewPoint
     {

@@ -4,11 +4,12 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Rendering.Batches;
-using MiniEngine.Rendering.Cameras;
+using MiniEngine.Primitives.Cameras;
 using MiniEngine.Rendering.Components;
-using MiniEngine.Rendering.Primitives;
+using MiniEngine.Primitives;
 using MiniEngine.Systems;
 using MiniEngine.Utilities.Extensions;
+using MiniEngine.Primitives.Bounds;
 
 namespace MiniEngine.Rendering.Systems
 {

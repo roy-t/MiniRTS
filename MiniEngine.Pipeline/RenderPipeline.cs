@@ -1,15 +1,15 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework.Graphics;
-using MiniEngine.Rendering.Cameras;
+using MiniEngine.Primitives.Cameras;
 using MiniEngine.Units;
 
-namespace MiniEngine.Rendering.Pipelines
+namespace MiniEngine.Pipeline
 {
-    public sealed class Pipeline
+    public sealed class RenderPipeline
     {
         private readonly List<IPipelineStage> Stages;
 
-        public Pipeline(GraphicsDevice device)
+        public RenderPipeline(GraphicsDevice device)
         {
             this.Device = device;
             this.Stages = new List<IPipelineStage>();
@@ -27,6 +27,6 @@ namespace MiniEngine.Rendering.Pipelines
             }
         }
 
-        public static Pipeline Create(GraphicsDevice device) => new Pipeline(device);
+        public static RenderPipeline Create(GraphicsDevice device) => new RenderPipeline(device);
     }
 }

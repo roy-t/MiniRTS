@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace MiniEngine.Rendering.Primitives
+namespace MiniEngine.Primitives.VertexTypes
 {
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct GBufferVertex : IVertexType

@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using MiniEngine.Rendering.Cameras;
+using MiniEngine.Primitives.Cameras;
 using MiniEngine.Rendering.Effects;
-using MiniEngine.Rendering.Primitives;
 using MiniEngine.Systems;
 using MiniEngine.Utilities.Extensions;
+using MiniEngine.Primitives.VertexTypes;
+using MiniEngine.Primitives.Bounds;
 
 namespace MiniEngine.Rendering.Systems
 {

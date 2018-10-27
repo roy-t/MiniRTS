@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Rendering.Effects;
 using MiniEngine.Rendering.Pipelines.Stages;
-using MiniEngine.Rendering.Primitives;
+using MiniEngine.Primitives;
 
 namespace MiniEngine.Rendering.Pipelines.Extensions
 {

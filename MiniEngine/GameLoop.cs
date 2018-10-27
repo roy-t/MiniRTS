@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Input;
 using MiniEngine.Configuration;
 using MiniEngine.Input;
 using MiniEngine.Rendering;
-using MiniEngine.Rendering.Cameras;
+using MiniEngine.Primitives.Cameras;
 using MiniEngine.Scenes;
 using System.Collections.Generic;
 using System.Linq;

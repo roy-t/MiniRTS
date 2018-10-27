@@ -1,5 +1,5 @@
 ﻿using MiniEngine.Input;
-using MiniEngine.Rendering.Cameras;
+using MiniEngine.Primitives.Cameras;
 using MiniEngine.Utilities;
 
 namespace MiniEngine.Configuration

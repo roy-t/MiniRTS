@@ -1,5 +1,5 @@
 ﻿using MiniEngine.Rendering.Batches;
-using MiniEngine.Rendering.Cameras;
+using MiniEngine.Primitives.Cameras;
 
 namespace MiniEngine.Rendering.Pipelines
 {

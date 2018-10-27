@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
-using MiniEngine.Rendering.Cameras;
-using MiniEngine.Rendering.Primitives;
+using MiniEngine.Primitives.Cameras;
+using MiniEngine.Primitives;
 using MiniEngine.Rendering.Systems;
 
 namespace MiniEngine.Rendering.Pipelines.Stages

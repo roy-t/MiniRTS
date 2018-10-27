@@ -1,7 +1,7 @@
-﻿using MiniEngine.Rendering.Cameras;
+﻿using MiniEngine.Primitives.Cameras;
 using MiniEngine.Units;
 
-namespace MiniEngine.Rendering.Pipelines
+namespace MiniEngine.Pipeline
 {
     public interface IPipelineStage
     {

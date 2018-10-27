@@ -1,13 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MiniEngine.Pipeline;
 using MiniEngine.Rendering.Pipelines.Stages;
 
 namespace MiniEngine.Rendering.Pipelines.Extensions
 {
     public static class ClearStageExtensions
     {
-        public static Pipeline Clear(
-            this Pipeline pipeline,
+        public static RenderPipeline Clear(
+            this RenderPipeline pipeline,
             RenderTarget2D renderTarget,
             ClearOptions options,
             Color color,
@@ -19,7 +20,7 @@ namespace MiniEngine.Rendering.Pipelines.Extensions
             return pipeline;
         }
 
-        public static Pipeline Clear(this Pipeline pipeline, RenderTarget2D renderTarget, Color color)
+        public static RenderPipeline Clear(this RenderPipeline pipeline, RenderTarget2D renderTarget, Color color)
         {
             return Clear(
                 pipeline,

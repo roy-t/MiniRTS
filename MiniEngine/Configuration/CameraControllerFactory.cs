@@ -1,6 +1,6 @@
 ﻿using MiniEngine.Controllers;
 using MiniEngine.Input;
-using MiniEngine.Rendering.Cameras;
+using MiniEngine.Primitives.Cameras;
 
 namespace MiniEngine.Configuration
 {

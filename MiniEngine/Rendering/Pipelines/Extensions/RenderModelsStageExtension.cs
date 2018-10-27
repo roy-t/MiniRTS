@@ -1,12 +1,13 @@
-﻿using MiniEngine.Rendering.Pipelines.Stages;
+﻿using MiniEngine.Pipeline;
+using MiniEngine.Rendering.Pipelines.Stages;
 using MiniEngine.Rendering.Systems;
 
 namespace MiniEngine.Rendering.Pipelines.Extensions
 {
     public static class RenderModelsStageExtension
     {
-        public static Pipeline RenderModels(
-            this Pipeline pipeline,
+        public static RenderPipeline RenderModels(
+            this RenderPipeline pipeline,
             ModelSystem modelSystem,
             ModelPipeline modelPipeline)
         {

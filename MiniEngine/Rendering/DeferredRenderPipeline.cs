@@ -1,10 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using MiniEngine.Rendering.Cameras;
+using MiniEngine.Primitives;
+using MiniEngine.Primitives.Cameras;
 using MiniEngine.Rendering.Effects;
 using MiniEngine.Rendering.Pipelines;
 using MiniEngine.Rendering.Pipelines.Extensions;
-using MiniEngine.Rendering.Primitives;
 using MiniEngine.Rendering.Systems;
 using MiniEngine.Units;
 
@@ -13,7 +13,7 @@ namespace MiniEngine.Rendering
     public sealed class DeferredRenderPipeline
     {
         private readonly GBuffer GBuffer;
-        private readonly Pipeline Pipeline;
+        private readonly MiniEngine.Pipeline.RenderPipeline Pipeline;
         private readonly RenderTarget2D PostProcessTarget;
 
         public DeferredRenderPipeline(
@@ -87,7 +87,7 @@ namespace MiniEngine.Rendering
             // this would also give us AA between different batches
 
             this.Pipeline =
-                Pipeline.Create(device)
+                MiniEngine.Pipeline.RenderPipeline.Create(device)
                         .Clear(this.GBuffer.DiffuseTarget, Color.TransparentBlack)
                         .Clear(this.PostProcessTarget, Color.Black)
                         .UpdateSystem(sunlightSystem)

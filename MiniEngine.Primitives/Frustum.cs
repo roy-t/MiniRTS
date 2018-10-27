@@ -1,8 +1,7 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
-using MiniEngine.Utilities.Extensions;
 
-namespace MiniEngine.Rendering.Primitives
+namespace MiniEngine.Primitives
 {
     public sealed class Frustum
     {
@@ -43,7 +42,8 @@ namespace MiniEngine.Rendering.Primitives
         {
             for (var i = 0; i < 8; i++)
             {
-                this.Corners[i] = Vector4.Transform(this.Corners[i], matrix).ScaleToVector3();
+                var vector = Vector4.Transform(this.Corners[i], matrix);
+                this.Corners[i] = new Vector3(vector.X / vector.W, vector.Y / vector.W, vector.Z / vector.W);
             }
         }
 
@@ -55,8 +55,8 @@ namespace MiniEngine.Rendering.Primitives
                 var ray = this.Corners[i + 4] - this.Corners[i];
 
                 // Slice by moving the corners on the ray
-                this.Corners[i + 4] = this.Corners[i] + ray * end;
-                this.Corners[i] = this.Corners[i] + ray * start;
+                this.Corners[i + 4] = this.Corners[i] + (ray * end);
+                this.Corners[i] = this.Corners[i] + (ray * start);
             }
         }
 

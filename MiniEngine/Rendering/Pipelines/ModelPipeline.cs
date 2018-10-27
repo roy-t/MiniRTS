@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Rendering.Batches;
-using MiniEngine.Rendering.Cameras;
+using MiniEngine.Primitives.Cameras;
 
 namespace MiniEngine.Rendering.Pipelines
 {

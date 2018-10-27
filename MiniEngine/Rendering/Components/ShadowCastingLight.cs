@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using MiniEngine.Rendering.Cameras;
+using MiniEngine.Primitives.Cameras;
 
 namespace MiniEngine.Rendering.Components
 {

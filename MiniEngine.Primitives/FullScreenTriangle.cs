@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace MiniEngine.Rendering.Primitives
+namespace MiniEngine.Primitives
 {
     public sealed class FullScreenTriangle
     {

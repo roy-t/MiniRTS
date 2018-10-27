@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 
-namespace MiniEngine.Rendering.Cameras
+namespace MiniEngine.Primitives.Cameras
 {
     public interface IMovableViewPoint : IViewPoint
     {
