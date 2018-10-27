@@ -2,7 +2,7 @@
 
 namespace MiniEngine.Rendering
 {
-    internal static class GraphicsDeviceExtensions
+    public static class GraphicsDeviceExtensions
     {
         /// <summary>
         /// Graphics device state for drawing geometry to the G-Buffer

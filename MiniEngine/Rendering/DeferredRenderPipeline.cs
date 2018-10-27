@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MiniEngine.Pipeline;
 using MiniEngine.Primitives;
 using MiniEngine.Primitives.Cameras;
 using MiniEngine.Rendering.Effects;
@@ -13,7 +14,7 @@ namespace MiniEngine.Rendering
     public sealed class DeferredRenderPipeline
     {
         private readonly GBuffer GBuffer;
-        private readonly MiniEngine.Pipeline.RenderPipeline Pipeline;
+        private readonly RenderPipeline Pipeline;
         private readonly RenderTarget2D PostProcessTarget;
 
         public DeferredRenderPipeline(

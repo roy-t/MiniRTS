@@ -6,7 +6,7 @@ using MiniEngine.Primitives;
 
 namespace MiniEngine.Rendering.Pipelines.Stages
 {
-    public sealed class CombineDiffuseWithLightingStage : IModelPipelineStage, IParticlePipelineStage
+    public sealed class CombineDiffuseWithLightingStage : IModelPipelineStage
     {
         private readonly RenderTarget2D DestinationTarget;
         private readonly GraphicsDevice Device;
@@ -28,8 +28,6 @@ namespace MiniEngine.Rendering.Pipelines.Stages
         }
 
         public void Execute(PerspectiveCamera camera, ModelRenderBatch _) => this.Execute();
-
-        public void Execute(PerspectiveCamera camera, ParticleRenderBatch _) => this.Execute();
 
         private void Execute()
         {

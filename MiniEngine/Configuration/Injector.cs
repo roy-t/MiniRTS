@@ -102,9 +102,21 @@ namespace MiniEngine.Configuration
         private void RegisterAllOf<T>()
             where T : class
         {
-            this.Container.RegisterAssembly(
-                Assembly.GetExecutingAssembly(),
+            // TODO: use proper injection here for each referenced assembly instead of looking it up like this
+
+            var assemblies = new List<Assembly>();
+            var root = Assembly.GetExecutingAssembly();
+            assemblies.Add(root);
+            foreach (var assemblyName in Assembly.GetExecutingAssembly().GetReferencedAssemblies()) {
+                assemblies.Add(Assembly.Load(assemblyName));
+            }            
+
+            foreach(var assembly in assemblies)
+            {
+                this.Container.RegisterAssembly(
+                assembly,
                 (s, _) => typeof(T).IsAssignableFrom(s) && s != typeof(T));
+            }
         }
     }
 }

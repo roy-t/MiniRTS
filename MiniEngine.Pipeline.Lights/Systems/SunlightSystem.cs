@@ -131,7 +131,7 @@ namespace MiniEngine.Rendering.Systems
 
                 // Store the split distance in terms of view space depth
                 var clipDistance = perspectiveCamera.FarPlane - perspectiveCamera.NearPlane;
-                sunLight.CascadeSplits[cascadeIndex] = perspectiveCamera.NearPlane + farZ * clipDistance;
+                sunLight.CascadeSplits[cascadeIndex] = perspectiveCamera.NearPlane + (farZ * clipDistance);
 
                 // Find scale and offset of this cascade in world space                    
                 var invCascadeMat = Matrix.Invert(shadowMatrix);

@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace MiniEngine.Rendering
 {
-    internal sealed class DeviceState : IDisposable
+    public sealed class DeviceState : IDisposable
     {
         private readonly GraphicsDevice Device;
         private readonly BlendState PreviousBlendState;
