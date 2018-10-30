@@ -41,7 +41,7 @@ namespace ModelExtension
 
         public override ModelContent Process(NodeContent input, ContentProcessorContext context)
         {
-            if (input == null)
+            if (input is null)
             {
                 throw new ArgumentNullException(nameof(input));
             }

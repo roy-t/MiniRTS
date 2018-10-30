@@ -34,7 +34,7 @@ namespace MiniEngine.Pipeline.Models.Batches
         private void DrawModel(RenderEffectTechniques technique, Model model, Matrix world, IViewPoint viewPoint)
         {
             var bones = model.Bones.Count;
-            if (SharedBoneMatrix == null || SharedBoneMatrix.Length < bones)
+            if (SharedBoneMatrix is null || SharedBoneMatrix.Length < bones)
             {
                 SharedBoneMatrix = new Matrix[bones];
             }
