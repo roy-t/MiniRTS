@@ -157,7 +157,7 @@ namespace MiniEngine
             this.Window.Title +=
                 $" camera ({this.perspectiveCamera.Position.X:F2}, {this.perspectiveCamera.Position.Y:F2}, {this.perspectiveCamera.Position.Z:F2})";
             
-            this.meterRegistry.ResetCounters();
+            this.meterRegistry.NextFrame();
             var result = this.renderPipeline.Render(this.perspectiveCamera, (float)gameTime.ElapsedGameTime.TotalSeconds);
 
             this.GraphicsDevice.SetRenderTarget(null);

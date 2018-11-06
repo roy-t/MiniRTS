@@ -1,5 +1,4 @@
-﻿using System;
-using System.Globalization;
+﻿using System.Globalization;
 using System.Text;
 
 namespace MiniEngine.Telemetry
@@ -29,20 +28,25 @@ namespace MiniEngine.Telemetry
 
             foreach(var count in counts)
             {
-                this.StringBuilder.AppendLine($"# HELP {count.Name}");
-                this.StringBuilder.AppendLine($"# TYPE {count.Name} counter");
-                this.StringBuilder.AppendLine($"{count.Name}{PrometheusUtilities.ExpandTags(count.Tags)} {count.Count}");
+                AppendLinuxLine($"# HELP {count.Name}");
+                AppendLinuxLine($"# TYPE {count.Name} counter");
+                AppendLinuxLine($"{count.Name}{PrometheusUtilities.ExpandTags(count.Tags)} {count.Count}");
             }
 
             foreach(var measurement in measurements)
             {
-                this.StringBuilder.AppendLine($"# HELP {measurement.Name}");
-                this.StringBuilder.AppendLine($"# TYPE {measurement.Name} gauge");
-                this.StringBuilder.AppendLine($"{measurement.Name}{PrometheusUtilities.ExpandTags(measurement.Tags)} {measurement.Measurement.Value.ToString("R", CultureInfo.InvariantCulture)}");
+                AppendLinuxLine($"# HELP {measurement.Name}");
+                AppendLinuxLine($"# TYPE {measurement.Name} gauge");
+                AppendLinuxLine($"{measurement.Name}{PrometheusUtilities.ExpandTags(measurement.Tags)} {measurement.Measurement.Value.ToString("R", CultureInfo.InvariantCulture)}");
             }
 
-            this.StringBuilder.Replace(Environment.NewLine, "\n");
             return this.StringBuilder.ToString();
+        }
+
+        private void AppendLinuxLine(string line)
+        {
+            this.StringBuilder.Append(line);
+            this.StringBuilder.Append('\n');
         }
     }
 }

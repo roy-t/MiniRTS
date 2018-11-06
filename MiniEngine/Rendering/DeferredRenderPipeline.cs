@@ -14,7 +14,6 @@ using MiniEngine.Pipeline.Particles.Extensions;
 using MiniEngine.Pipeline.Particles.Systems;
 using MiniEngine.Pipeline.Shadows;
 using MiniEngine.Pipeline.Shadows.Extensions;
-using MiniEngine.Pipeline.Shadows.Stages;
 using MiniEngine.Pipeline.Shadows.Systems;
 using MiniEngine.Pipeline.Systems;
 using MiniEngine.Primitives;

@@ -8,6 +8,7 @@ using MiniEngine.Effects.DeviceStates;
 using MiniEngine.Pipeline.Models.Systems;
 using MiniEngine.Pipeline.Particles.Systems;
 using MiniEngine.Pipeline.Shadows.Components;
+using MiniEngine.Telemetry;
 
 namespace MiniEngine.Pipeline.Shadows.Systems
 {
@@ -20,7 +21,15 @@ namespace MiniEngine.Pipeline.Shadows.Systems
         private readonly ParticleSystem ParticleSystem;
         private readonly Dictionary<Entity, ShadowMap> ShadowMaps;
 
+        private readonly Counter ShadowMapCounter;
+        private readonly Counter ShadowMapCascadesCounter;
+        private readonly Gauge ShadowMapGauge;
+        private readonly Gauge OpaqueGauge;
+        private readonly Gauge TransparentGauge;
+        private readonly Gauge ParticleGauge;
+
         public ShadowMapSystem(
+            IMeterRegistry meterRegistry,
             GraphicsDevice device,
             ModelSystem modelSystem,
             ParticleSystem particleSystem)
@@ -28,6 +37,13 @@ namespace MiniEngine.Pipeline.Shadows.Systems
             this.Device = device;
             this.ModelSystem = modelSystem;
             this.ParticleSystem = particleSystem;
+
+            this.ShadowMapCounter = meterRegistry.CreateCounter("shadow_pipeline_shadow_map_counter");
+            this.ShadowMapCascadesCounter = meterRegistry.CreateCounter("shadow_pipeline_shadow_map_cascades_counter");
+            this.ShadowMapGauge = meterRegistry.CreateGauge("shadow_pipeline_total_render_time");
+            this.OpaqueGauge = meterRegistry.CreateGauge("shadow_pipeline_step_render_time", new Tag("step", "opaque"));
+            this.TransparentGauge = meterRegistry.CreateGauge("shadow_pipeline_step_render_time", new Tag("step", "transparent"));
+            this.ParticleGauge = meterRegistry.CreateGauge("shadow_pipeline_step_render_time", new Tag("step", "particles"));
 
             this.ShadowMaps = new Dictionary<Entity, ShadowMap>();
         }
@@ -50,48 +66,67 @@ namespace MiniEngine.Pipeline.Shadows.Systems
 
         public void RenderShadowMaps()
         {
+            this.ShadowMapCounter.IncreaseWith(this.ShadowMaps.Count);
+            this.ShadowMapGauge.BeginMeasurement();
             foreach (var shadowMap in this.ShadowMaps.Values)
             {
+                this.ShadowMapCascadesCounter.IncreaseWith(shadowMap.Cascades);
                 for (var i = 0; i < shadowMap.Cascades; i++)
-                {
+                {                                        
                     var modelBatchList = this.ModelSystem.ComputeBatches(shadowMap.ViewPoints[i]);
                     var particleBatchList = this.ParticleSystem.ComputeBatches(shadowMap.ViewPoints[i]);
 
-                    // First compute the shadow maps
-                    this.Device.SetRenderTarget(shadowMap.DepthMap, i);
-                    this.Device.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.White, 1.0f, 0);
-
-                    using (this.Device.ShadowMapState())
+                    this.OpaqueGauge.BeginMeasurement();
                     {
-                        modelBatchList.OpaqueBatch.Draw(RenderEffectTechniques.ShadowMap);
-                    }
-
-                    // Read the depth buffer and render objects that are partially
-                    // occluding, like a stained glass window
-                    this.Device.SetRenderTarget(shadowMap.ColorMap, i);
-                    this.Device.Clear(ClearOptions.Target, Color.White, 1.0f, 0);
-
-                    using (this.Device.AlphaBlendOccluderState())
-                    {
-                        foreach (var batch in modelBatchList.TransparentBatches)
+                        // First compute the shadow maps
+                        this.Device.SetRenderTarget(shadowMap.DepthMap, i);
+                        this.Device.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.White, 1.0f, 0);
+                        
+                        using (this.Device.ShadowMapState())
                         {
-                            batch.Draw(RenderEffectTechniques.Textured);
+                            modelBatchList.OpaqueBatch.Draw(RenderEffectTechniques.ShadowMap);
                         }
                     }
+                    this.OpaqueGauge.EndMeasurement();
 
-                    // Read the depth buffer and render occluding particles
-                    using (this.Device.AdditiveBlendOccluderState())
+
+                    this.TransparentGauge.BeginMeasurement();
                     {
-                        foreach (var batch in particleBatchList.Batches)
+                        // Read the depth buffer and render objects that are partially
+                        // occluding, like a stained glass window
+                        this.Device.SetRenderTarget(shadowMap.ColorMap, i);
+                        this.Device.Clear(ClearOptions.Target, Color.White, 1.0f, 0);
+
+                        
+                        using (this.Device.AlphaBlendOccluderState())
                         {
-                            batch.Draw(RenderEffectTechniques.GrayScale);
+                            foreach (var batch in modelBatchList.TransparentBatches)
+                            {
+                                batch.Draw(RenderEffectTechniques.Textured);
+                            }
+                        }
+
+                    }
+                    this.TransparentGauge.EndMeasurement();
+
+                    this.ParticleGauge.BeginMeasurement();
+                    {
+                        // Read the depth buffer and render occluding particles
+                        using (this.Device.AdditiveBlendOccluderState())
+                        {
+                            foreach (var batch in particleBatchList.Batches)
+                            {
+                                batch.Draw(RenderEffectTechniques.GrayScale);
+                            }
                         }
                     }
+                    this.ParticleGauge.EndMeasurement();
 
                     // TODO: if a particle is behind a stained glass window
                     // it will shadow as if its in front of it. 
                 }
             }
+            this.ShadowMapGauge.EndMeasurement();
         }
     }
 }

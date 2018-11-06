@@ -80,6 +80,10 @@
       <Project>{c1db1986-23b4-4293-a6ea-527da1adc78f}</Project>
       <Name>MiniEngine.Systems</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MiniEngine.Telemetry\MiniEngine.Telemetry.csproj">
+      <Project>{FE2DE91D-CA69-4844-8D5F-10A664F4E17D}</Project>
+      <Name>MiniEngine.Telemetry</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MiniEngine.Units\MiniEngine.Units.csproj">
       <Project>{051E397D-4C6C-4F8F-8F40-CCE916A45C5E}</Project>
       <Name>MiniEngine.Units</Name>

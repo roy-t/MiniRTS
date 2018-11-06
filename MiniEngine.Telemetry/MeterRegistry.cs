@@ -36,36 +36,23 @@ namespace MiniEngine.Telemetry
             return gauge;
         }
 
-        public IReadOnlyList<CountEntry> GetCounts()
+        public IReadOnlyList<CountEntry> GetCounts() => this.Counts;
+        public IReadOnlyList<MeasurementEntry> GetMeasurements() => this.Measurements;
+
+        public void NextFrame()
         {
             for (var i = 0; i < this.Counters.Count; i++)
             {
                 var counter = this.Counters[i];
                 this.Counts[i].Count = counter.Count;
+                counter.Reset();
             }
 
-            return this.Counts;
-        }
-
-        public IReadOnlyList<MeasurementEntry> GetMeasurements()
-        {
             for (var i = 0; i < this.Gauges.Count; i++)
             {
                 var gauge = this.Gauges[i];
                 this.Measurements[i].Measurement = gauge.Measurement;
             }
-
-            return this.Measurements;
-        }
-
-        public void ResetCounters()
-        {
-            for (var i = 0; i < this.Counters.Count; i++)
-            {
-                this.Counters[i].Reset();             
-            }
-
-            // Gauges do not need to be reset as their contents is overwritten every frame
         }
 
         private static string CreateFullTag(string name, IEnumerable<Tag> tags)

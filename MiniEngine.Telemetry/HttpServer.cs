@@ -41,6 +41,7 @@ namespace MiniEngine.Telemetry
             using (var listener = new HttpListener())
             {
                 listener.Prefixes.Add($"http://localhost:{this.Port}/");
+                listener.IgnoreWriteExceptions = true;
                 listener.Start();
 
                 while (this.IsActive)
@@ -49,9 +50,16 @@ namespace MiniEngine.Telemetry
                     var body = Encoding.UTF8.GetBytes(getBody());
 
                     context.Response.ContentLength64 = body.Length;
-                    using (var output = context.Response.OutputStream)
+                    try
                     {
-                        output.Write(body, 0, body.Length);
+                        using (var output = context.Response.OutputStream)
+                        {
+                            output.Write(body, 0, body.Length);
+                        }
+                    }
+                    catch 
+                    {
+                        // Do nothing if the other end decided to abort the connection
                     }
                 }
             }

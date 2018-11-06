@@ -29,6 +29,7 @@ scrape_configs:
     static_configs:
     - targets: ['localhost:9090']
   - job_name: 'MiniEngine'
-    scrape_interval: 15ms
+    scrape_interval: 33ms
+    scrape_timeout: 33ms
     static_configs:
     - targets: ['localhost:7070']
