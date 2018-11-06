@@ -14,10 +14,12 @@ using MiniEngine.Pipeline.Particles.Extensions;
 using MiniEngine.Pipeline.Particles.Systems;
 using MiniEngine.Pipeline.Shadows;
 using MiniEngine.Pipeline.Shadows.Extensions;
+using MiniEngine.Pipeline.Shadows.Stages;
 using MiniEngine.Pipeline.Shadows.Systems;
 using MiniEngine.Pipeline.Systems;
 using MiniEngine.Primitives;
 using MiniEngine.Primitives.Cameras;
+using MiniEngine.Telemetry;
 using MiniEngine.Units;
 
 namespace MiniEngine.Rendering
@@ -41,7 +43,8 @@ namespace MiniEngine.Rendering
             PointLightSystem pointLightSystem,
             ShadowCastingLightSystem shadowCastingLightSystem,
             SunlightSystem sunlightSystem,
-            DebugRenderSystem debugRenderSystem)
+            DebugRenderSystem debugRenderSystem,
+            IMeterRegistry meterRegistry)
         {
             var width = device.PresentationParameters.BackBufferWidth;
             var height = device.PresentationParameters.BackBufferHeight;
@@ -102,7 +105,7 @@ namespace MiniEngine.Rendering
             // this would also give us AA between different batches
 
             this.Pipeline =
-                RenderPipeline.Create(device)
+                RenderPipeline.Create(device, meterRegistry)
                         .Clear(this.GBuffer.DiffuseTarget, Color.TransparentBlack)
                         .Clear(this.PostProcessTarget, Color.Black)
                         .UpdateSystem(sunlightSystem)

@@ -10,6 +10,7 @@ using MiniEngine.Effects;
 using MiniEngine.Scenes;
 using MiniEngine.Systems;
 using MiniEngine.Utilities;
+using MiniEngine.Telemetry;
 
 namespace MiniEngine.Configuration
 {
@@ -72,6 +73,9 @@ namespace MiniEngine.Configuration
 
             // Scenes
             this.RegisterAllOf<IScene>();
+
+            // Telemetry
+            this.Container.Register<IMeterRegistry, MeterRegistry>();
         }
 
         public T Resolve<T>() => this.Container.GetInstance<T>();
