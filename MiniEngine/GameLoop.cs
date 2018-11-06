@@ -37,6 +37,7 @@ namespace MiniEngine
         private DeferredRenderPipeline renderPipeline;
         private EntityController entityController;
         private IMeterRegistry meterRegistry;
+        private ITelemetryServer telemetryServer;
 
         public GameLoop()
         {
@@ -65,6 +66,8 @@ namespace MiniEngine
             this.entityController = this.injector.Resolve<EntityController>();
             this.debugController = this.injector.Resolve<DebugControllerFactory>().Build(this.perspectiveCamera);
             this.meterRegistry = this.injector.Resolve<IMeterRegistry>();
+            this.telemetryServer = this.injector.Resolve<ITelemetryServer>();
+            this.telemetryServer.Start();
 
             this.renderPipeline = this.injector.Resolve<DeferredRenderPipeline>();
 
@@ -150,18 +153,10 @@ namespace MiniEngine
 
         protected override void Draw(GameTime gameTime)
         {
-            var counts = this.meterRegistry.GetCounts();
-            var measurements = this.meterRegistry.GetMeasurements();
-            var measurementString = string.Join(", ", measurements.Select(x => $"{x.Tag}: {x.Measurement}"));
-            var countString = string.Join(", ", counts.Select(x => $"{x.Tag}: {x.Count}"));
-
-
             this.Window.Title = $"{gameTime.ElapsedGameTime.TotalMilliseconds:F2}ms, {1.0f / gameTime.ElapsedGameTime.TotalSeconds:F2} fps, Fixed Time Step: {this.IsFixedTimeStep} (press 'F' so switch). Input State: {this.debugController.DescribeState()}";
             this.Window.Title +=
                 $" camera ({this.perspectiveCamera.Position.X:F2}, {this.perspectiveCamera.Position.Y:F2}, {this.perspectiveCamera.Position.Z:F2})";
-
-            //this.Window.Title = $"Counts: {countString} | Measurements: {measurementString} | Total: {gameTime.ElapsedGameTime.TotalMilliseconds:F2}ms, {1.0f / gameTime.ElapsedGameTime.TotalSeconds:F2} fps";            
-
+            
             this.meterRegistry.ResetCounters();
             var result = this.renderPipeline.Render(this.perspectiveCamera, (float)gameTime.ElapsedGameTime.TotalSeconds);
 

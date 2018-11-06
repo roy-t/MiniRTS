@@ -4,8 +4,8 @@ namespace MiniEngine.Telemetry
 {
     public interface IMeterRegistry
     {
-        Counter CreateCounter(string tag);
-        Gauge CreateGauge(string tag);
+        Counter CreateCounter(string name, params Tag[] tags);
+        Gauge CreateGauge(string name, params Tag[] tags);
 
         void ResetCounters();
 

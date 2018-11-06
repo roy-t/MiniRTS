@@ -18,20 +18,20 @@ namespace MiniEngine.Telemetry
             this.Measurements = new List<MeasurementEntry>();
         }
 
-        public Counter CreateCounter(string tag)
+        public Counter CreateCounter(string name, params Tag[] tags)
         {
-            var counter = new Counter(tag);
+            var counter = new Counter(name, tags);
             this.Counters.Add(counter);
-            this.Counts.Add(new CountEntry(tag, 0));
+            this.Counts.Add(new CountEntry(name, tags, 0));
 
             return counter;
         }
 
-        public Gauge CreateGauge(string tag)
+        public Gauge CreateGauge(string name, params Tag[] tags)
         {
-            var gauge = new Gauge(tag);
+            var gauge = new Gauge(name, tags);
             this.Gauges.Add(gauge);
-            this.Measurements.Add(new MeasurementEntry(tag, 0));
+            this.Measurements.Add(new MeasurementEntry(name, tags, 0));
 
             return gauge;
         }
@@ -62,11 +62,22 @@ namespace MiniEngine.Telemetry
         {
             for (var i = 0; i < this.Counters.Count; i++)
             {
-                this.Counters[i].Reset();
-                this.Counts[i].Count = 0;
+                this.Counters[i].Reset();             
             }
 
             // Gauges do not need to be reset as their contents is overwritten every frame
+        }
+
+        private static string CreateFullTag(string name, IEnumerable<Tag> tags)
+        {
+            if (tags == null)
+            {
+                return name;
+            }
+            else
+            {
+                return $"{name}{{{string.Join(", ", tags)}}}";
+            }
         }
     }
 }

@@ -46,10 +46,15 @@
     <Compile Include="CountEntry.cs" />
     <Compile Include="Counter.cs" />
     <Compile Include="Gauge.cs" />
+    <Compile Include="HttpServer.cs" />
     <Compile Include="IMeterRegistry.cs" />
+    <Compile Include="ITelemetryServer.cs" />
     <Compile Include="MeasurementEntry.cs" />
     <Compile Include="MeterRegistry.cs" />
+    <Compile Include="PrometheusServer.cs" />
+    <Compile Include="PrometheusUtilities.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tag.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MiniEngine.Units\MiniEngine.Units.csproj">

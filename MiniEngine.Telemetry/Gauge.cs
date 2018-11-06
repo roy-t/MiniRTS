@@ -1,5 +1,4 @@
 ﻿using MiniEngine.Units;
-using System;
 using System.Diagnostics;
 
 namespace MiniEngine.Telemetry
@@ -8,22 +7,26 @@ namespace MiniEngine.Telemetry
     {
         private readonly Stopwatch StopWatch;
 
-        public Gauge(string tag)
+        public Gauge(string name, Tag[] tags)
         {
-            this.Tag = tag;
+            this.Name = name;
+            this.Tags = tags;
             this.StopWatch = new Stopwatch();
         }
 
-        public string Tag { get; }
+        public string Name { get; }
+        public Tag[] Tags { get; }
         public Seconds Measurement { get; private set; }
 
 
-        public void Measure(Action action)
+        [Conditional("TRACE")]
+        public void BeginMeasurement() => this.StopWatch.Restart();
+
+        [Conditional("TRACE")]
+        public void EndMeasurement()
         {
-            this.StopWatch.Restart();
-            action();
             this.StopWatch.Stop();
             this.Measurement = this.StopWatch.Elapsed;            
-        }        
+        }
     }
 }

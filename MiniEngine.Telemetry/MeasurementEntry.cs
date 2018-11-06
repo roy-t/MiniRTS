@@ -4,15 +4,17 @@ namespace MiniEngine.Telemetry
 {
     public sealed class MeasurementEntry
     {
-        public MeasurementEntry(string tag, Seconds measurement)
+        public MeasurementEntry(string name, Tag[] tags, Seconds measurement)
         {
-            this.Tag = tag;
+            this.Name = name;
+            this.Tags = tags;
             this.Measurement = measurement;
         }
 
-        public string Tag { get; }
+        public string Name { get; }
+        public Tag[] Tags { get; }
         public Seconds Measurement { get; internal set; }
 
-        public override string ToString() => $"{this.Tag} : {this.Measurement.Value:F2}s";
+        public override string ToString() => $"{this.Name}{PrometheusUtilities.ExpandTags(this.Tags)} {this.Measurement.Value:F2}s";
     }
 }

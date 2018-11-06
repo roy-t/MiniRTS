@@ -76,6 +76,7 @@ namespace MiniEngine.Configuration
 
             // Telemetry
             this.Container.Register<IMeterRegistry, MeterRegistry>();
+            this.Container.Register<ITelemetryServer, PrometheusServer>();
         }
 
         public T Resolve<T>() => this.Container.GetInstance<T>();
