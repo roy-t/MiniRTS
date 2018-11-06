@@ -7,9 +7,9 @@ using MiniEngine.Effects.Techniques;
 using MiniEngine.Effects.DeviceStates;
 using MiniEngine.Pipeline.Models.Systems;
 using MiniEngine.Pipeline.Particles.Systems;
-using MiniEngine.Pipeline.Lights.Components;
+using MiniEngine.Pipeline.Shadows.Components;
 
-namespace MiniEngine.Pipeline.Lights.Systems
+namespace MiniEngine.Pipeline.Shadows.Systems
 {
     public sealed class ShadowMapSystem : ISystem
     {

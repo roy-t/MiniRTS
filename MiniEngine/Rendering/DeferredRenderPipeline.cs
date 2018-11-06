@@ -12,6 +12,9 @@ using MiniEngine.Pipeline.Models.Systems;
 using MiniEngine.Pipeline.Particles;
 using MiniEngine.Pipeline.Particles.Extensions;
 using MiniEngine.Pipeline.Particles.Systems;
+using MiniEngine.Pipeline.Shadows;
+using MiniEngine.Pipeline.Shadows.Extensions;
+using MiniEngine.Pipeline.Shadows.Systems;
 using MiniEngine.Pipeline.Systems;
 using MiniEngine.Primitives;
 using MiniEngine.Primitives.Cameras;
@@ -65,6 +68,10 @@ namespace MiniEngine.Rendering
                 0,
                 RenderTargetUsage.PreserveContents);
 
+            var shadowPipeline =
+                ShadowPipeline.Create(device)
+                              .RenderShadowMaps(shadowMapSystem);
+
             var lightingPipeline =
                 LightingPipeline.Create(device)
                                 .ClearToAmbientLight(ambientLightSystem)
@@ -72,7 +79,6 @@ namespace MiniEngine.Rendering
                                 .RenderPointLights(pointLightSystem)
                                 .RenderShadowCastingLights(shadowCastingLightSystem)
                                 .RenderSunlights(sunlightSystem);
-
 
             var modelPipeline =
                 ModelPipeline.Create(device)
@@ -92,7 +98,7 @@ namespace MiniEngine.Rendering
                                 .CopyColors(copyEffect, this.GBuffer.DiffuseTarget, this.PostProcessTarget);
 
             // TODO: we could move the anti-alias stage to the end of the normal pipeline
-            // if we copy the deferred and normal result of each sub pipeline
+            // if we copy the diffuse and normal result of each sub pipeline
             // this would also give us AA between different batches
 
             this.Pipeline =
@@ -101,7 +107,7 @@ namespace MiniEngine.Rendering
                         .Clear(this.PostProcessTarget, Color.Black)
                         .UpdateSystem(sunlightSystem)
                         .UpdateSystem(particleSystem)
-                        .RenderShadowMaps(shadowMapSystem)
+                        .RenderShadows(shadowPipeline)
                         .RenderModels(modelSystem, modelPipeline)
                         .RenderParticles(particleSystem, particlePipeline)
                         .Render3DDebugOverlay(debugRenderSystem, this.PostProcessTarget)

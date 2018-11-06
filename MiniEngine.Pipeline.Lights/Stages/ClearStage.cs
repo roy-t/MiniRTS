@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using MiniEngine.Pipeline.Particles.Batches;
 using MiniEngine.Primitives.Cameras;
 using MiniEngine.Primitives;
 
@@ -33,8 +32,6 @@ namespace MiniEngine.Pipeline.Lights.Stages
         public int Stencil { get; }
 
         public void Execute(PerspectiveCamera _, GBuffer __) => this.Execute();
-
-        public void Execute(PerspectiveCamera _, ParticleRenderBatch __) => this.Execute();
 
         private void Execute()
         {

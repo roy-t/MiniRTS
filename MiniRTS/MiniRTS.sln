@@ -28,6 +28,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiniEngine.Pipeline.Lights"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiniEngine.Pipeline.Particles", "..\MiniEngine.Pipeline.Particles\MiniEngine.Pipeline.Particles.csproj", "{373867C7-7717-4CCC-A049-F0E174F5F5A4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiniEngine.Pipeline.Shadows", "..\MiniEngine.Pipeline.Shadows\MiniEngine.Pipeline.Shadows.csproj", "{3C8F3FC4-9E92-475E-A9BD-AC687DC13963}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -155,6 +157,18 @@ Global
 		{373867C7-7717-4CCC-A049-F0E174F5F5A4}.Release|x64.Build.0 = Release|Any CPU
 		{373867C7-7717-4CCC-A049-F0E174F5F5A4}.Release|x86.ActiveCfg = Release|Any CPU
 		{373867C7-7717-4CCC-A049-F0E174F5F5A4}.Release|x86.Build.0 = Release|Any CPU
+		{3C8F3FC4-9E92-475E-A9BD-AC687DC13963}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C8F3FC4-9E92-475E-A9BD-AC687DC13963}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C8F3FC4-9E92-475E-A9BD-AC687DC13963}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{3C8F3FC4-9E92-475E-A9BD-AC687DC13963}.Debug|x64.Build.0 = Debug|Any CPU
+		{3C8F3FC4-9E92-475E-A9BD-AC687DC13963}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{3C8F3FC4-9E92-475E-A9BD-AC687DC13963}.Debug|x86.Build.0 = Debug|Any CPU
+		{3C8F3FC4-9E92-475E-A9BD-AC687DC13963}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C8F3FC4-9E92-475E-A9BD-AC687DC13963}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3C8F3FC4-9E92-475E-A9BD-AC687DC13963}.Release|x64.ActiveCfg = Release|Any CPU
+		{3C8F3FC4-9E92-475E-A9BD-AC687DC13963}.Release|x64.Build.0 = Release|Any CPU
+		{3C8F3FC4-9E92-475E-A9BD-AC687DC13963}.Release|x86.ActiveCfg = Release|Any CPU
+		{3C8F3FC4-9E92-475E-A9BD-AC687DC13963}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

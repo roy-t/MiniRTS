@@ -7,6 +7,7 @@ using MiniEngine.Primitives;
 using MiniEngine.Systems;
 using MiniEngine.Effects.DeviceStates;
 using MiniEngine.Pipeline.Lights.Components;
+using MiniEngine.Pipeline.Shadows.Systems;
 
 namespace MiniEngine.Pipeline.Lights.Systems
 {
