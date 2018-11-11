@@ -1,8 +1,8 @@
 ﻿namespace MiniEngine.Telemetry
 {
-    public interface ITelemetryServer
+    public interface IMetricServer
     {
-        void Start();
+        void Start(int port);
         void Stop();
     }
 }

@@ -33,8 +33,17 @@
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Prometheus.NetStandard, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\MiniRTS\packages\prometheus-net.2.1.3\lib\netstandard2.0\Prometheus.NetStandard.dll</HintPath>
+    </Reference>
+    <Reference Include="protobuf-net, Version=2.3.4.0, Culture=neutral, PublicKeyToken=257b51d87d2e4d67, processorArchitecture=MSIL">
+      <HintPath>..\MiniRTS\packages\protobuf-net.2.3.4\lib\net40\protobuf-net.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -43,24 +52,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CountEntry.cs" />
-    <Compile Include="Counter.cs" />
-    <Compile Include="Gauge.cs" />
-    <Compile Include="HttpServer.cs" />
     <Compile Include="IMeterRegistry.cs" />
-    <Compile Include="ITelemetryServer.cs" />
-    <Compile Include="MeasurementEntry.cs" />
-    <Compile Include="MeterRegistry.cs" />
-    <Compile Include="PrometheusServer.cs" />
-    <Compile Include="PrometheusUtilities.cs" />
+    <Compile Include="IMetricServer.cs" />
+    <Compile Include="NullMeterRegistry.cs" />
+    <Compile Include="NullMetricServer.cs" />
+    <Compile Include="PrometheusMeterRegistry.cs" />
+    <Compile Include="PrometheusMetricServer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Tag.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MiniEngine.Units\MiniEngine.Units.csproj">
       <Project>{051e397d-4c6c-4f8f-8f40-cce916a45c5e}</Project>
       <Name>MiniEngine.Units</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

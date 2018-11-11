@@ -8,44 +8,39 @@ namespace MiniEngine.Pipeline
 {
     public sealed class RenderPipeline
     {
-        private readonly IMeterRegistry MeterRegistry;
+        private const string StageGauge = "render_pipeline_stages_render_time";
+        private const string StageTag = "stage";
+        private const string TotalGauge = "render_pipeline_total_render_time";
+
 
         private readonly List<IPipelineStage> Stages;
-        private readonly List<Gauge> StageGauges;
-        private readonly Gauge TotalGauge;
+        private readonly IMeterRegistry MeterRegistry;
 
         public RenderPipeline(GraphicsDevice device, IMeterRegistry meterRegistry)
         {
             this.Device = device;
             this.MeterRegistry = meterRegistry;
             this.Stages = new List<IPipelineStage>();
-            this.StageGauges = new List<Gauge>();
-            this.TotalGauge = meterRegistry.CreateGauge("render_pipeline_total_render_time");
+
+            this.MeterRegistry.CreateGauge(StageGauge, StageTag);
+            this.MeterRegistry.CreateGauge(TotalGauge);
         }
 
         public GraphicsDevice Device { get; }
 
-        public void Add(IPipelineStage stage)
-        {
-            this.Stages.Add(stage);                       
-            this.StageGauges.Add(this.MeterRegistry.CreateGauge("render_pipeline_stages_render_time", new Tag("stage", stage.GetType().Name)));
-        }
+        public void Add(IPipelineStage stage) => this.Stages.Add(stage);
 
         public void Execute(PerspectiveCamera camera, Seconds elapsed)
         {
-            this.TotalGauge.BeginMeasurement();
+            this.MeterRegistry.StartGauge(TotalGauge);
             for(var i = 0; i < this.Stages.Count; i++)
             {
                 var stage = this.Stages[i];
-                var gauge = this.StageGauges[i];
-                
-                gauge.BeginMeasurement();
-                {
-                    stage.Execute(camera, elapsed);
-                }
-                gauge.EndMeasurement();
+                this.MeterRegistry.StartGauge(StageGauge);                
+                stage.Execute(camera, elapsed);
+                this.MeterRegistry.StopGauge(StageGauge, stage.GetType().Name);
             }
-            this.TotalGauge.EndMeasurement();
+            this.MeterRegistry.StopGauge(TotalGauge);
         }
 
         public static RenderPipeline Create(GraphicsDevice device, IMeterRegistry meterRegistry) => new RenderPipeline(device, meterRegistry);

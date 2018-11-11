@@ -14,36 +14,35 @@ namespace MiniEngine.Pipeline.Shadows.Systems
 {
     public sealed class ShadowMapSystem : ISystem
     {
+        private const string ShadowMapCounter = "shadow_pipeline_shadow_map_counter";
+        private const string ShadowMapCascadesCounter = "shadow_pipeline_shadow_map_cascades_counter";
+        private const string ShadowMapTotal = "shadow_pipeline_total_render_time";
+        private const string ShadowMapStep = "shadow_pipeline_step_render_time";
+
         private const int DefaultResolution = 1024;
 
         private readonly GraphicsDevice Device;
         private readonly ModelSystem ModelSystem;
         private readonly ParticleSystem ParticleSystem;
         private readonly Dictionary<Entity, ShadowMap> ShadowMaps;
+        private readonly IMeterRegistry MeterRegistry;
 
-        private readonly Counter ShadowMapCounter;
-        private readonly Counter ShadowMapCascadesCounter;
-        private readonly Gauge ShadowMapGauge;
-        private readonly Gauge OpaqueGauge;
-        private readonly Gauge TransparentGauge;
-        private readonly Gauge ParticleGauge;
-
-        public ShadowMapSystem(
-            IMeterRegistry meterRegistry,
+        public ShadowMapSystem(            
             GraphicsDevice device,
             ModelSystem modelSystem,
-            ParticleSystem particleSystem)
-        {
+            ParticleSystem particleSystem,
+            IMeterRegistry meterRegistry)
+        {            
             this.Device = device;
             this.ModelSystem = modelSystem;
             this.ParticleSystem = particleSystem;
+            this.MeterRegistry = meterRegistry;
 
-            this.ShadowMapCounter = meterRegistry.CreateCounter("shadow_pipeline_shadow_map_counter");
-            this.ShadowMapCascadesCounter = meterRegistry.CreateCounter("shadow_pipeline_shadow_map_cascades_counter");
-            this.ShadowMapGauge = meterRegistry.CreateGauge("shadow_pipeline_total_render_time");
-            this.OpaqueGauge = meterRegistry.CreateGauge("shadow_pipeline_step_render_time", new Tag("step", "opaque"));
-            this.TransparentGauge = meterRegistry.CreateGauge("shadow_pipeline_step_render_time", new Tag("step", "transparent"));
-            this.ParticleGauge = meterRegistry.CreateGauge("shadow_pipeline_step_render_time", new Tag("step", "particles"));
+
+            this.MeterRegistry.CreateGauge(ShadowMapCounter);
+            this.MeterRegistry.CreateGauge(ShadowMapCascadesCounter);
+            this.MeterRegistry.CreateGauge(ShadowMapTotal);
+            this.MeterRegistry.CreateGauge(ShadowMapStep, "step");
 
             this.ShadowMaps = new Dictionary<Entity, ShadowMap>();
         }
@@ -66,17 +65,18 @@ namespace MiniEngine.Pipeline.Shadows.Systems
 
         public void RenderShadowMaps()
         {
-            this.ShadowMapCounter.IncreaseWith(this.ShadowMaps.Count);
-            this.ShadowMapGauge.BeginMeasurement();
+            var cascades = 0;
+            this.MeterRegistry.SetGauge(ShadowMapCounter, this.ShadowMaps.Count);
+            this.MeterRegistry.StartGauge(ShadowMapTotal);
             foreach (var shadowMap in this.ShadowMaps.Values)
             {
-                this.ShadowMapCascadesCounter.IncreaseWith(shadowMap.Cascades);
+                cascades += shadowMap.Cascades;                
                 for (var i = 0; i < shadowMap.Cascades; i++)
                 {                                        
                     var modelBatchList = this.ModelSystem.ComputeBatches(shadowMap.ViewPoints[i]);
                     var particleBatchList = this.ParticleSystem.ComputeBatches(shadowMap.ViewPoints[i]);
 
-                    this.OpaqueGauge.BeginMeasurement();
+                    this.MeterRegistry.StartGauge(ShadowMapStep);
                     {
                         // First compute the shadow maps
                         this.Device.SetRenderTarget(shadowMap.DepthMap, i);
@@ -87,10 +87,10 @@ namespace MiniEngine.Pipeline.Shadows.Systems
                             modelBatchList.OpaqueBatch.Draw(RenderEffectTechniques.ShadowMap);
                         }
                     }
-                    this.OpaqueGauge.EndMeasurement();
+                    this.MeterRegistry.StopGauge(ShadowMapStep, "opaque");
 
 
-                    this.TransparentGauge.BeginMeasurement();
+                    this.MeterRegistry.StartGauge(ShadowMapStep);
                     {
                         // Read the depth buffer and render objects that are partially
                         // occluding, like a stained glass window
@@ -107,9 +107,9 @@ namespace MiniEngine.Pipeline.Shadows.Systems
                         }
 
                     }
-                    this.TransparentGauge.EndMeasurement();
+                    this.MeterRegistry.StopGauge(ShadowMapStep, "transparent");
 
-                    this.ParticleGauge.BeginMeasurement();
+                    this.MeterRegistry.StartGauge(ShadowMapStep);
                     {
                         // Read the depth buffer and render occluding particles
                         using (this.Device.AdditiveBlendOccluderState())
@@ -120,13 +120,14 @@ namespace MiniEngine.Pipeline.Shadows.Systems
                             }
                         }
                     }
-                    this.ParticleGauge.EndMeasurement();
+                    this.MeterRegistry.StopGauge(ShadowMapStep, "particles");
 
                     // TODO: if a particle is behind a stained glass window
                     // it will shadow as if its in front of it. 
                 }
             }
-            this.ShadowMapGauge.EndMeasurement();
+            this.MeterRegistry.SetGauge(ShadowMapCascadesCounter, cascades);
+            this.MeterRegistry.StopGauge(ShadowMapTotal);
         }
     }
 }

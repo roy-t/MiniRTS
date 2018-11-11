@@ -36,8 +36,7 @@ namespace MiniEngine
         private DebugController debugController;
         private DeferredRenderPipeline renderPipeline;
         private EntityController entityController;
-        private IMeterRegistry meterRegistry;
-        private ITelemetryServer telemetryServer;
+        private IMetricServer metricServer;
 
         public GameLoop()
         {
@@ -65,9 +64,8 @@ namespace MiniEngine
 
             this.entityController = this.injector.Resolve<EntityController>();
             this.debugController = this.injector.Resolve<DebugControllerFactory>().Build(this.perspectiveCamera);
-            this.meterRegistry = this.injector.Resolve<IMeterRegistry>();
-            this.telemetryServer = this.injector.Resolve<ITelemetryServer>();
-            this.telemetryServer.Start();
+            this.metricServer = this.injector.Resolve<IMetricServer>();
+            this.metricServer.Start(7070);
 
             this.renderPipeline = this.injector.Resolve<DeferredRenderPipeline>();
 
@@ -157,7 +155,6 @@ namespace MiniEngine
             this.Window.Title +=
                 $" camera ({this.perspectiveCamera.Position.X:F2}, {this.perspectiveCamera.Position.Y:F2}, {this.perspectiveCamera.Position.Z:F2})";
             
-            this.meterRegistry.NextFrame();
             var result = this.renderPipeline.Render(this.perspectiveCamera, (float)gameTime.ElapsedGameTime.TotalSeconds);
 
             this.GraphicsDevice.SetRenderTarget(null);
