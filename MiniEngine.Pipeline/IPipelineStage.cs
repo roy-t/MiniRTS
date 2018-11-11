@@ -1,10 +1,7 @@
-﻿using MiniEngine.Primitives.Cameras;
-using MiniEngine.Units;
-
-namespace MiniEngine.Pipeline
+﻿namespace MiniEngine.Pipeline
 {
-    public interface IPipelineStage
+    public interface IPipelineStage<T>
     {
-        void Execute(PerspectiveCamera camera, Seconds seconds);
+        void Execute(T input);
     }
 }

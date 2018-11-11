@@ -1,11 +1,9 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Pipeline.Systems;
-using MiniEngine.Primitives.Cameras;
-using MiniEngine.Units;
 
 namespace MiniEngine.Pipeline.Stages
 {
-    public sealed class Render3DDebugOverlayStage : IPipelineStage
+    public sealed class Render3DDebugOverlayStage : IPipelineStage<RenderPipelineStageInput>
     {
         private readonly DebugRenderSystem DebugRenderSystem;
         private readonly GraphicsDevice Device;
@@ -18,10 +16,10 @@ namespace MiniEngine.Pipeline.Stages
             this.Target = target;
         }
 
-        public void Execute(PerspectiveCamera camera, Seconds seconds)
+        public void Execute(RenderPipelineStageInput input)
         {
             this.Device.SetRenderTarget(this.Target);
-            this.DebugRenderSystem.Render3DOverlay(camera);
+            this.DebugRenderSystem.Render3DOverlay(input.Camera);
         }
     }
 }

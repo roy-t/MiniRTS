@@ -1,10 +1,8 @@
 ﻿using MiniEngine.Pipeline.Particles.Systems;
-using MiniEngine.Primitives.Cameras;
-using MiniEngine.Units;
 
 namespace MiniEngine.Pipeline.Particles.Stages
 {
-    public sealed class RenderParticlesStage : IPipelineStage
+    public sealed class RenderParticlesStage : IPipelineStage<RenderPipelineStageInput>
     {
         private readonly ParticlePipeline ParticlePipeline;
         private readonly ParticleSystem ParticleSystem;
@@ -15,10 +13,10 @@ namespace MiniEngine.Pipeline.Particles.Stages
             this.ParticlePipeline = particlePipeline;
         }
 
-        public void Execute(PerspectiveCamera camera, Seconds seconds)
+        public void Execute(RenderPipelineStageInput input)
         {
-            var particleBatchList = this.ParticleSystem.ComputeBatches(camera);
-            this.ParticlePipeline.Execute(camera, particleBatchList);
+            var particleBatchList = this.ParticleSystem.ComputeBatches(input.Camera);
+            this.ParticlePipeline.Execute(input.Camera, particleBatchList);
         }
     }
 }

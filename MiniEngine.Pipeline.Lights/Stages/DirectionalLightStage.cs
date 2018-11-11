@@ -1,11 +1,9 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
-using MiniEngine.Primitives.Cameras;
-using MiniEngine.Primitives;
 using MiniEngine.Pipeline.Lights.Systems;
 
 namespace MiniEngine.Pipeline.Lights.Stages
 {
-    public sealed class DirectionalLightStage : ILightingPipelineStage
+    public sealed class DirectionalLightStage : IPipelineStage<LightingPipelineInput>
     {
         private readonly GraphicsDevice Device;
         private readonly DirectionalLightSystem DirectionalLightSystem;
@@ -16,10 +14,10 @@ namespace MiniEngine.Pipeline.Lights.Stages
             this.DirectionalLightSystem = directionalLightSystem;
         }
 
-        public void Execute(PerspectiveCamera camera, GBuffer gBuffer)
+        public void Execute(LightingPipelineInput input)
         {
-            this.Device.SetRenderTarget(gBuffer.LightTarget);
-            this.DirectionalLightSystem.Render(camera, gBuffer);
+            this.Device.SetRenderTarget(input.GBuffer.LightTarget);
+            this.DirectionalLightSystem.Render(input.Camera, input.GBuffer);
         }
     }
 }

@@ -1,40 +1,15 @@
-﻿using System.Collections.Generic;
-using Microsoft.Xna.Framework.Graphics;
-using MiniEngine.Primitives.Cameras;
-using MiniEngine.Pipeline.Models.Batches;
+﻿using Microsoft.Xna.Framework.Graphics;
+using MiniEngine.Telemetry;
 
 namespace MiniEngine.Pipeline.Models
 {
-    public sealed class ModelPipeline
+    public sealed class ModelPipeline : APipeline<ModelPipelineInput>
     {
-        private readonly List<IModelPipelineStage> Stages;
-
-        public ModelPipeline(GraphicsDevice device)
+        public ModelPipeline(GraphicsDevice device, IMeterRegistry meterRegistry)
+            : base(device, meterRegistry, "model_pipeline")
         {
-            this.Device = device;
-            this.Stages = new List<IModelPipelineStage>();
         }
 
-        public GraphicsDevice Device { get; }
-
-        public void Add(IModelPipelineStage stage) => this.Stages.Add(stage);
-
-        public void Execute(PerspectiveCamera camera, ModelBatchList modelBatchList)
-        {
-            foreach (var stage in this.Stages)
-            {
-                stage.Execute(camera, modelBatchList.OpaqueBatch);
-            }
-
-            foreach (var batch in modelBatchList.TransparentBatches)
-            {
-                foreach (var stage in this.Stages)
-                {
-                    stage.Execute(camera, batch);
-                }
-            }
-        }
-
-        public static ModelPipeline Create(GraphicsDevice device) => new ModelPipeline(device);
+        public static ModelPipeline Create(GraphicsDevice device, IMeterRegistry meterRegistry) => new ModelPipeline(device, meterRegistry);
     }
 }

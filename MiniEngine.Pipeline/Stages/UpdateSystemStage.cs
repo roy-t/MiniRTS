@@ -1,10 +1,8 @@
-﻿using MiniEngine.Primitives.Cameras;
-using MiniEngine.Systems;
-using MiniEngine.Units;
+﻿using MiniEngine.Systems;
 
 namespace MiniEngine.Pipeline.Stages
 {
-    public sealed class UpdateSystemStage : IPipelineStage
+    public sealed class UpdateSystemStage : IPipelineStage<RenderPipelineStageInput>
     {
         private readonly IUpdatableSystem System;
 
@@ -13,6 +11,6 @@ namespace MiniEngine.Pipeline.Stages
             this.System = system;
         }
 
-        public void Execute(PerspectiveCamera camera, Seconds seconds) => this.System.Update(camera, seconds);
+        public void Execute(RenderPipelineStageInput input) => this.System.Update(input.Camera, input.Elapsed);
     }
 }

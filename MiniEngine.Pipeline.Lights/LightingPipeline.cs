@@ -1,32 +1,15 @@
-﻿using System.Collections.Generic;
-using Microsoft.Xna.Framework.Graphics;
-using MiniEngine.Primitives.Cameras;
-using MiniEngine.Primitives;
+﻿using Microsoft.Xna.Framework.Graphics;
+using MiniEngine.Telemetry;
 
 namespace MiniEngine.Pipeline.Lights
 {
-    public sealed class LightingPipeline
+    public sealed class LightingPipeline : APipeline<LightingPipelineInput>
     {
-        private readonly List<ILightingPipelineStage> Stages;
-
-        public LightingPipeline(GraphicsDevice device)
+        public LightingPipeline(GraphicsDevice device, IMeterRegistry meterRegistry)
+            : base(device, meterRegistry, "lighting_pipeline")
         {
-            this.Device = device;
-            this.Stages = new List<ILightingPipelineStage>();
         }
 
-        public GraphicsDevice Device { get; }
-
-        public void Add(ILightingPipelineStage stage) => this.Stages.Add(stage);
-
-        public void Execute(PerspectiveCamera camera, GBuffer gBuffer)
-        {
-            foreach (var stage in this.Stages)
-            {
-                stage.Execute(camera, gBuffer);
-            }
-        }
-
-        public static LightingPipeline Create(GraphicsDevice device) => new LightingPipeline(device);
+        public static LightingPipeline Create(GraphicsDevice device, IMeterRegistry meterRegistry) => new LightingPipeline(device, meterRegistry);
     }
 }

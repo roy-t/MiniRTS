@@ -1,11 +1,9 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
-using MiniEngine.Primitives.Cameras;
-using MiniEngine.Primitives;
 using MiniEngine.Pipeline.Lights.Systems;
 
 namespace MiniEngine.Pipeline.Lights.Stages
 {
-    public sealed class ShadowCastingLightStage : ILightingPipelineStage
+    public sealed class ShadowCastingLightStage : IPipelineStage<LightingPipelineInput>
     {
         private readonly GraphicsDevice Device;
         private readonly ShadowCastingLightSystem ShadowCastingLightSystem;
@@ -16,10 +14,10 @@ namespace MiniEngine.Pipeline.Lights.Stages
             this.ShadowCastingLightSystem = shadowCastingLightSystem;
         }
 
-        public void Execute(PerspectiveCamera camera, GBuffer gBuffer)
+        public void Execute(LightingPipelineInput input)
         {
-            this.Device.SetRenderTarget(gBuffer.LightTarget);
-            this.ShadowCastingLightSystem.RenderLights(camera, gBuffer);
+            this.Device.SetRenderTarget(input.GBuffer.LightTarget);
+            this.ShadowCastingLightSystem.RenderLights(input.Camera, input.GBuffer);
         }
     }
 }

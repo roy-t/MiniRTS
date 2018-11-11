@@ -1,42 +1,35 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
-using MiniEngine.Primitives.Cameras;
 using MiniEngine.Effects;
 using MiniEngine.Primitives;
 using MiniEngine.Effects.DeviceStates;
-using MiniEngine.Pipeline.Models.Batches;
 
 namespace MiniEngine.Pipeline.Models.Stages
 {
-    public sealed class CombineDiffuseWithLightingStage : IModelPipelineStage
+    public sealed class CombineDiffuseWithLightingStage : IPipelineStage<ModelPipelineInput>
     {
         private readonly RenderTarget2D DestinationTarget;
         private readonly GraphicsDevice Device;
         private readonly CombineEffect Effect;
         private readonly FullScreenTriangle FullScreenTriangle;
-        private readonly GBuffer GBuffer;
 
         public CombineDiffuseWithLightingStage(
             GraphicsDevice device,
             CombineEffect effect,
-            RenderTarget2D destinationTarget,
-            GBuffer gBuffer)
+            RenderTarget2D destinationTarget)
         {
             this.Device = device;
             this.Effect = effect;
             this.DestinationTarget = destinationTarget;
-            this.GBuffer = gBuffer;
             this.FullScreenTriangle = new FullScreenTriangle();
         }
 
-        public void Execute(PerspectiveCamera camera, ModelRenderBatch _) => this.Execute();
-
-        private void Execute()
+        public void Execute(ModelPipelineInput input)
         {
             this.Device.SetRenderTarget(this.DestinationTarget);
             using (this.Device.PostProcessState())
             {
-                this.Effect.DiffuseMap = this.GBuffer.DiffuseTarget;
-                this.Effect.LightMap = this.GBuffer.LightTarget;
+                this.Effect.DiffuseMap = input.GBuffer.DiffuseTarget;
+                this.Effect.LightMap = input.GBuffer.LightTarget;
 
                 this.Effect.Apply();
 

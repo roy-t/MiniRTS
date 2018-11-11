@@ -1,9 +1,6 @@
-﻿using MiniEngine.Primitives.Cameras;
-using MiniEngine.Units;
-
-namespace MiniEngine.Pipeline.Shadows.Stages
+﻿namespace MiniEngine.Pipeline.Shadows.Stages
 {
-    public sealed class RenderShadowsStage : IPipelineStage
+    public sealed class RenderShadowsStage : IPipelineStage<RenderPipelineStageInput>
     {
         private readonly ShadowPipeline ShadowPipeline;
 
@@ -12,6 +9,6 @@ namespace MiniEngine.Pipeline.Shadows.Stages
             this.ShadowPipeline = shadowPipeline;
         }
 
-        public void Execute(PerspectiveCamera camera, Seconds elapsed) => this.ShadowPipeline.Execute();
+        public void Execute(RenderPipelineStageInput _) => this.ShadowPipeline.Execute();
     }
 }

@@ -12,10 +12,9 @@ namespace MiniEngine.Pipeline.Models.Extensions
             FxaaEffect effect,
             RenderTarget2D sourceTarget,
             RenderTarget2D destinationTarget,
-            GBuffer gBuffer,
             float strength)
         {
-            var stage = new AntiAliasStage(pipeline.Device, effect, sourceTarget, destinationTarget, gBuffer, strength);
+            var stage = new AntiAliasStage(pipeline.Device, effect, sourceTarget, destinationTarget, strength);
             pipeline.Add(stage);
             return pipeline;
         }

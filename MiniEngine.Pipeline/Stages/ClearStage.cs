@@ -1,11 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using MiniEngine.Primitives.Cameras;
-using MiniEngine.Units;
 
 namespace MiniEngine.Pipeline.Stages
 {
-    public sealed class ClearStage : IPipelineStage
+    public sealed class ClearStage : IPipelineStage<RenderPipelineStageInput>
     {
         private readonly GraphicsDevice Device;
         private readonly RenderTarget2D RenderTarget;
@@ -31,9 +29,7 @@ namespace MiniEngine.Pipeline.Stages
         public float Depth { get; }
         public int Stencil { get; }
 
-        public void Execute(PerspectiveCamera _, Seconds seconds) => this.Execute();
-
-        private void Execute()
+        public void Execute(RenderPipelineStageInput _)
         {
             this.Device.SetRenderTarget(this.RenderTarget);
             this.Device.Clear(this.Options, this.Color, this.Depth, this.Stencil);

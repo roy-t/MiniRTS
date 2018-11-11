@@ -1,22 +1,16 @@
-﻿using MiniEngine.Primitives.Cameras;
-using MiniEngine.Primitives;
-using MiniEngine.Pipeline.Models;
-using MiniEngine.Pipeline.Models.Batches;
+﻿using MiniEngine.Pipeline.Models;
 
 namespace MiniEngine.Pipeline.Lights.Stages
 {
-    public sealed class RenderLightsStage : IModelPipelineStage
-    {
-        private readonly GBuffer GBuffer;
+    public sealed class RenderLightsStage : IPipelineStage<ModelPipelineInput>
+    { 
         private readonly LightingPipeline LightingPipeline;
 
-        public RenderLightsStage(LightingPipeline lightingPipeline, GBuffer gBuffer)
+        public RenderLightsStage(LightingPipeline lightingPipeline)
         {
             this.LightingPipeline = lightingPipeline;
-            this.GBuffer = gBuffer;
         }
 
-        public void Execute(PerspectiveCamera camera, ModelRenderBatch _) => this.Execute(camera);
-        private void Execute(PerspectiveCamera camera) => this.LightingPipeline.Execute(camera, this.GBuffer);
+        public void Execute(ModelPipelineInput input) => this.LightingPipeline.Execute(new LightingPipelineInput(input.Camera, input.GBuffer, "model"));
     }
 }
