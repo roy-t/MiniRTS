@@ -7,31 +7,23 @@ namespace MiniEngine.Pipeline.Particles.Stages
 {
     public sealed class CopyColorsStage : IPipelineStage<ParticlePipelineInput>
     {
-        private readonly RenderTarget2D DestinationTarget;
         private readonly GraphicsDevice Device;
         private readonly CopyEffect Effect;
         private readonly FullScreenTriangle FullScreenTriangle;
-        private readonly RenderTarget2D SourceTarget;
 
-        public CopyColorsStage(
-            GraphicsDevice device,
-            CopyEffect effect,
-            RenderTarget2D sourceTarget,
-            RenderTarget2D destinationTarget)
+        public CopyColorsStage(GraphicsDevice device, CopyEffect effect)
         {
             this.Device = device;
             this.Effect = effect;
-            this.SourceTarget = sourceTarget;
-            this.DestinationTarget = destinationTarget;
             this.FullScreenTriangle = new FullScreenTriangle();
         }
 
-        public void Execute(ParticlePipelineInput _)
+        public void Execute(ParticlePipelineInput input)
         {
-            this.Device.SetRenderTarget(this.DestinationTarget);
+            this.Device.SetRenderTarget(input.GBuffer.FinalTarget);
             using (this.Device.PostProcessState())
             {
-                this.Effect.DiffuseMap = this.SourceTarget;
+                this.Effect.DiffuseMap = input.GBuffer.DiffuseTarget;
                 this.Effect.Apply();
 
                 this.FullScreenTriangle.Render(this.Device);

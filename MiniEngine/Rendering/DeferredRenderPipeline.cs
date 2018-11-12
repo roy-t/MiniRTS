@@ -1,5 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Effects;
 using MiniEngine.Pipeline;
 using MiniEngine.Pipeline.Extensions;
@@ -27,8 +26,6 @@ namespace MiniEngine.Rendering
     {
         private readonly GBuffer GBuffer;
         private readonly RenderPipeline Pipeline;
-        private readonly RenderTarget2D PostProcessTarget;
-
         private readonly RenderPipelineStageInput Input;
 
         public DeferredRenderPipeline(
@@ -48,38 +45,19 @@ namespace MiniEngine.Rendering
             IMeterRegistry meterRegistry)
         {
             var width = device.PresentationParameters.BackBufferWidth;
-            var height = device.PresentationParameters.BackBufferHeight;
-
-            this.PostProcessTarget = new RenderTarget2D(
-                device,
-                width,
-                height,
-                false,
-                SurfaceFormat.Color,
-                DepthFormat.None,
-                0,
-                RenderTargetUsage.PreserveContents);
-
-            var combineTarget = new RenderTarget2D(
-                device,
-                width,
-                height,
-                false,
-                SurfaceFormat.Color,
-                DepthFormat.None,
-                0,
-                RenderTargetUsage.PreserveContents);
-
+            var height = device.PresentationParameters.BackBufferHeight;         
             this.GBuffer = new GBuffer(device, width, height);
-            this.Input = new RenderPipelineStageInput(this.GBuffer, "render");            
 
+            this.Input = new RenderPipelineStageInput();
+
+            // TODO: move cascading shadow map logic to separate system in shadow pipeline
             var shadowPipeline =
-                ShadowPipeline.Create(device)
+                ShadowPipeline.Create(device, meterRegistry)
                               .RenderShadowMaps(shadowMapSystem);
 
             var lightingPipeline =
                 LightingPipeline.Create(device, meterRegistry)
-                                .ClearToAmbientLight(ambientLightSystem)
+                                .ClearLightTargetToAmbient(ambientLightSystem)
                                 .RenderDirectionalLights(directionalLightSystem)
                                 .RenderPointLights(pointLightSystem)
                                 .RenderShadowCastingLights(shadowCastingLightSystem)
@@ -87,20 +65,17 @@ namespace MiniEngine.Rendering
 
             var modelPipeline =
                 ModelPipeline.Create(device, meterRegistry)
-                             .Clear(this.GBuffer.DiffuseTarget, ClearOptions.Target, Color.TransparentBlack, 1, 0)
-                             .Clear(this.GBuffer.NormalTarget, new Color(0.5f, 0.5f, 0.5f, 0.0f))
-                             .Clear(this.GBuffer.DepthTarget, Color.TransparentBlack)
-                             .Clear(combineTarget, Color.TransparentBlack)
+                             .ClearModelRenderTargets()
                              .RenderModelBatch()
                              .RenderLights(lightingPipeline)
-                             .CombineDiffuseWithLighting(combineEffect, combineTarget)
-                             .AntiAlias(postProcessEffect, combineTarget, this.PostProcessTarget, 2.0f);
+                             .CombineDiffuseWithLighting(combineEffect)
+                             .AntiAlias(postProcessEffect, 2.0f);
 
             var particlePipeline =
                 ParticlePipeline.Create(device, meterRegistry)
-                                .Clear(this.GBuffer.DiffuseTarget, ClearOptions.Target, Color.TransparentBlack, 1, 0)
+                                .ClearParticleRenderTargets()
                                 .RenderParticleBatch()
-                                .CopyColors(copyEffect, this.GBuffer.DiffuseTarget, this.PostProcessTarget);
+                                .CopyColors(copyEffect);
 
             // TODO: we could move the anti-alias stage to the end of the normal pipeline
             // if we copy the diffuse and normal result of each sub pipeline
@@ -108,23 +83,23 @@ namespace MiniEngine.Rendering
 
             this.Pipeline =
                 RenderPipeline.Create(device, meterRegistry)
-                        .Clear(this.GBuffer.DiffuseTarget, Color.TransparentBlack)
-                        .Clear(this.PostProcessTarget, Color.Black)
+                        .ClearRenderTargetSet()
                         .UpdateSystem(sunlightSystem)
                         .UpdateSystem(particleSystem)
                         .RenderShadows(shadowPipeline)
                         .RenderModels(modelSystem, modelPipeline)
                         .RenderParticles(particleSystem, particlePipeline)
-                        .Render3DDebugOverlay(debugRenderSystem, this.PostProcessTarget)
-                        .Render2DDebugOverlay(debugRenderSystem, this.PostProcessTarget);
+                        .Render3DDebugOverlay(debugRenderSystem)
+                        .Render2DDebugOverlay(debugRenderSystem);
 
         }
         
         public RenderTarget2D Render(PerspectiveCamera camera, Seconds elapsed)
         {
-            this.Input.Update(camera, elapsed);
+            this.Input.Update(camera, elapsed, this.GBuffer, "render");
             this.Pipeline.Execute(this.Input);
-            return this.PostProcessTarget;
+
+            return this.GBuffer.FinalTarget;
         }
 
         public RenderTarget2D[] GetIntermediateRenderTargets()

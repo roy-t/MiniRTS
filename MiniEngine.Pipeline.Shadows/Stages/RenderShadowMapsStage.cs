@@ -3,7 +3,7 @@ using MiniEngine.Pipeline.Shadows.Systems;
 
 namespace MiniEngine.Pipeline.Shadows.Stages
 {
-    public sealed class RenderShadowMapsStage : IShadowPipelineStage
+    public sealed class RenderShadowMapsStage : IPipelineStage<ShadowPipelineInput>
     {
         private readonly ShadowMapSystem ShadowMapSystem;
 
@@ -12,6 +12,6 @@ namespace MiniEngine.Pipeline.Shadows.Stages
             this.ShadowMapSystem = shadowMapSystem;
         }
 
-        public void Execute() => this.ShadowMapSystem.RenderShadowMaps();
+        public void Execute(ShadowPipelineInput _) => this.ShadowMapSystem.RenderShadowMaps();
     }
 }

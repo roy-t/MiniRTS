@@ -6,22 +6,17 @@ namespace MiniEngine.Pipeline
 {
     public sealed class RenderPipelineStageInput : IPipelineInput
     {
-        public RenderPipelineStageInput(GBuffer gBuffer, string pass)
+        public void Update(PerspectiveCamera camera, Seconds elapsed, GBuffer gBuffer, string pass)
         {
+            this.Camera = camera;
+            this.Elapsed = elapsed;
             this.GBuffer = gBuffer;
             this.Pass = pass;
         }
 
-        public void Update(PerspectiveCamera camera, Seconds elapsed)
-        {
-            this.Camera = camera;
-            this.Elapsed = elapsed;
-        }
-
         public PerspectiveCamera Camera { get; private set; }
         public Seconds Elapsed { get; private set; }
-        public GBuffer GBuffer { get; }
-
-        public string Pass { get; }
+        public GBuffer GBuffer { get; private set; }
+        public string Pass { get; private set; }
     }
 }

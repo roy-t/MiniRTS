@@ -1,5 +1,4 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using MiniEngine.Pipeline.Stages;
+﻿using MiniEngine.Pipeline.Stages;
 using MiniEngine.Pipeline.Systems;
 
 namespace MiniEngine.Pipeline.Extensions
@@ -8,10 +7,9 @@ namespace MiniEngine.Pipeline.Extensions
     {
         public static RenderPipeline Render3DDebugOverlay(
             this RenderPipeline pipeline,
-            DebugRenderSystem debugRenderSystem,
-            RenderTarget2D target)
+            DebugRenderSystem debugRenderSystem)
         {
-            var stage = new Render3DDebugOverlayStage(pipeline.Device, debugRenderSystem, target);
+            var stage = new Render3DDebugOverlayStage(pipeline.Device, debugRenderSystem);
             pipeline.Add(stage);
             return pipeline;
         }

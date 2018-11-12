@@ -7,26 +7,15 @@ namespace MiniEngine.Pipeline.Models.Stages
 {
     public sealed class AntiAliasStage : IPipelineStage<ModelPipelineInput>
     {
-        private readonly RenderTarget2D DestinationTarget;
         private readonly GraphicsDevice Device;
         private readonly FxaaEffect Effect;
-
         private readonly FullScreenTriangle FullScreenTriangle;
-        private readonly RenderTarget2D SourceTarget;
 
-        public AntiAliasStage(
-            GraphicsDevice device,
-            FxaaEffect effect,
-            RenderTarget2D sourceTarget,
-            RenderTarget2D destinationTarget,
-            float strength)
+        public AntiAliasStage(GraphicsDevice device, FxaaEffect effect, float strength)
         {
             this.Strength = strength;
             this.Device = device;
             this.Effect = effect;
-            this.SourceTarget = sourceTarget;
-            this.DestinationTarget = destinationTarget;
-
             this.FullScreenTriangle = new FullScreenTriangle();
         }
 
@@ -34,12 +23,12 @@ namespace MiniEngine.Pipeline.Models.Stages
 
         public void Execute(ModelPipelineInput input)
         {
-            this.Device.SetRenderTarget(this.DestinationTarget);
+            this.Device.SetRenderTarget(input.GBuffer.FinalTarget);
             using (this.Device.PostProcessState())
             {
-                this.Effect.ScaleX = 1.0f / this.SourceTarget.Width;
-                this.Effect.ScaleY = 1.0f / this.SourceTarget.Height;
-                this.Effect.DiffuseMap = this.SourceTarget;
+                this.Effect.ScaleX = 1.0f / input.GBuffer.CombineTarget.Width;
+                this.Effect.ScaleY = 1.0f / input.GBuffer.CombineTarget.Height;
+                this.Effect.DiffuseMap = input.GBuffer.CombineTarget;
                 this.Effect.NormalMap = input.GBuffer.NormalTarget;
                 this.Effect.Strength = this.Strength;
 

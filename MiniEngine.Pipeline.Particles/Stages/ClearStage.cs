@@ -6,33 +6,16 @@ namespace MiniEngine.Pipeline.Particles.Stages
     public sealed class ClearStage : IPipelineStage<ParticlePipelineInput>
     {
         private readonly GraphicsDevice Device;
-        private readonly RenderTarget2D RenderTarget;
 
-        public ClearStage(
-            GraphicsDevice device,
-            RenderTarget2D renderTarget,
-            ClearOptions options,
-            Color color,
-            float depth,
-            int stencil)
+        public ClearStage(GraphicsDevice device)
         {
             this.Device = device;
-            this.RenderTarget = renderTarget;
-            this.Options = options;
-            this.Color = color;
-            this.Depth = depth;
-            this.Stencil = stencil;
         }
 
-        public ClearOptions Options { get; }
-        public Color Color { get; }
-        public float Depth { get; }
-        public int Stencil { get; }        
-
-        public void Execute(ParticlePipelineInput _)
+        public void Execute(ParticlePipelineInput input)
         {
-            this.Device.SetRenderTarget(this.RenderTarget);
-            this.Device.Clear(this.Options, this.Color, this.Depth, this.Stencil);
+            this.Device.SetRenderTarget(input.GBuffer.DiffuseTarget);
+            this.Device.Clear(ClearOptions.Target, Color.TransparentBlack, 1.0f, 0);
         }
     }
 }

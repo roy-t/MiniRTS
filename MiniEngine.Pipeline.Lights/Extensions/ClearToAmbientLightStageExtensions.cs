@@ -5,7 +5,7 @@ namespace MiniEngine.Pipeline.Lights.Extensions
 {
     public static class ClearToAmbientLightStageExtensions
     {
-        public static LightingPipeline ClearToAmbientLight(
+        public static LightingPipeline ClearLightTargetToAmbient(
             this LightingPipeline pipeline,
             AmbientLightSystem ambientLightSystem)
         {

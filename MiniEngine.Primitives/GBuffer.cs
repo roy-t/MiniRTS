@@ -48,11 +48,33 @@ namespace MiniEngine.Primitives
                 DepthFormat.None,
                 aaSamples,
                 RenderTargetUsage.PreserveContents);
+
+              this.CombineTarget = new RenderTarget2D(
+                device,
+                width,
+                height,
+                false,
+                SurfaceFormat.Color,
+                DepthFormat.None,
+                0,
+                RenderTargetUsage.PreserveContents);
+
+              this.FinalTarget = new RenderTarget2D(
+                device,
+                width,
+                height,
+                false,
+                SurfaceFormat.Color,
+                DepthFormat.None,
+                0,
+                RenderTargetUsage.PreserveContents);
         }
 
         public RenderTarget2D DiffuseTarget { get; }
         public RenderTarget2D NormalTarget { get; }
         public RenderTarget2D DepthTarget { get; }
         public RenderTarget2D LightTarget { get; }
+        public RenderTarget2D CombineTarget { get; }
+        public RenderTarget2D FinalTarget { get; }
     }
 }

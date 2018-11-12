@@ -7,18 +7,16 @@ namespace MiniEngine.Pipeline.Stages
     {
         private readonly DebugRenderSystem DebugRenderSystem;
         private readonly GraphicsDevice Device;
-        private readonly RenderTarget2D Target;
 
-        public Render3DDebugOverlayStage(GraphicsDevice device, DebugRenderSystem debugRenderSystem, RenderTarget2D target)
+        public Render3DDebugOverlayStage(GraphicsDevice device, DebugRenderSystem debugRenderSystem)
         {
             this.Device = device;
             this.DebugRenderSystem = debugRenderSystem;
-            this.Target = target;
         }
 
         public void Execute(RenderPipelineStageInput input)
         {
-            this.Device.SetRenderTarget(this.Target);
+            this.Device.SetRenderTarget(input.GBuffer.FinalTarget);
             this.DebugRenderSystem.Render3DOverlay(input.Camera);
         }
     }

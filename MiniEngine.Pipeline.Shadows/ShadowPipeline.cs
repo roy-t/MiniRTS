@@ -1,30 +1,15 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
-using System.Collections.Generic;
+using MiniEngine.Telemetry;
 
 namespace MiniEngine.Pipeline.Shadows
 {
-    public sealed class ShadowPipeline
+    public sealed class ShadowPipeline : APipeline<ShadowPipelineInput>
     {
-        private readonly List<IShadowPipelineStage> Stages;
-
-        public ShadowPipeline(GraphicsDevice device)
+        public ShadowPipeline(GraphicsDevice device, IMeterRegistry meterRegistry)
+            : base(device, meterRegistry, "shadow_pipeline")
         {
-            this.Stages = new List<IShadowPipelineStage>();
-            this.Device = device;
         }
 
-        public GraphicsDevice Device { get; }
-
-        public void Add(IShadowPipelineStage stage) => this.Stages.Add(stage);
-
-        public void Execute()
-        {
-            foreach(var stage in this.Stages)
-            {
-                stage.Execute();
-            }
-        }
-
-        public static ShadowPipeline Create(GraphicsDevice device) => new ShadowPipeline(device);
+        public static ShadowPipeline Create(GraphicsDevice device, IMeterRegistry meterRegistry) => new ShadowPipeline(device, meterRegistry);
     }
 }

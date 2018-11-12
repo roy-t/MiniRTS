@@ -6,33 +6,33 @@ namespace MiniEngine.Pipeline.Stages
     public sealed class ClearStage : IPipelineStage<RenderPipelineStageInput>
     {
         private readonly GraphicsDevice Device;
-        private readonly RenderTarget2D RenderTarget;
-
-        public ClearStage(
-            GraphicsDevice device,
-            RenderTarget2D renderTarget,
-            ClearOptions options,
-            Color color,
-            float depth,
-            int stencil)
+        private readonly Color NormalClearColor;
+        
+        public ClearStage(GraphicsDevice device)
         {
             this.Device = device;
-            this.RenderTarget = renderTarget;
-            this.Options = options;
-            this.Color = color;
-            this.Depth = depth;
-            this.Stencil = stencil;
+            this.NormalClearColor = new Color(0.5f, 0.5f, 0.5f, 0.0f);
         }
 
-        public ClearOptions Options { get; }
-        public Color Color { get; }
-        public float Depth { get; }
-        public int Stencil { get; }
+        public void Execute(RenderPipelineStageInput input)
+        {            
+            this.Device.SetRenderTarget(input.GBuffer.DiffuseTarget);
+            this.Device.Clear(Color.TransparentBlack);
 
-        public void Execute(RenderPipelineStageInput _)
-        {
-            this.Device.SetRenderTarget(this.RenderTarget);
-            this.Device.Clear(this.Options, this.Color, this.Depth, this.Stencil);
+            this.Device.SetRenderTarget(input.GBuffer.NormalTarget);
+            this.Device.Clear(this.NormalClearColor);
+            
+            this.Device.SetRenderTarget(input.GBuffer.DepthTarget);
+            this.Device.Clear(Color.TransparentBlack);
+
+            this.Device.SetRenderTarget(input.GBuffer.LightTarget);
+            this.Device.Clear(Color.TransparentBlack);
+
+            this.Device.SetRenderTarget(input.GBuffer.CombineTarget);
+            this.Device.Clear(Color.TransparentBlack);
+
+            this.Device.SetRenderTarget(input.GBuffer.FinalTarget);
+            this.Device.Clear(Color.Black);            
         }
     }
 }

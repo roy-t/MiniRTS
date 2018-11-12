@@ -16,7 +16,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 1,
-  "iteration": 1542051750715,
+  "iteration": 1542051750719,
   "links": [],
   "panels": [
     {
@@ -176,7 +176,7 @@
       "renderer": "flot",
       "repeat": null,
       "repeatDirection": "v",
-      "repeatIteration": 1542051750715,
+      "repeatIteration": 1542051750719,
       "repeatPanelId": 3,
       "scopedVars": {
         "pipeline": {
@@ -296,7 +296,7 @@
       "renderer": "flot",
       "repeat": null,
       "repeatDirection": "v",
-      "repeatIteration": 1542051750715,
+      "repeatIteration": 1542051750719,
       "repeatPanelId": 3,
       "scopedVars": {
         "pipeline": {
@@ -416,7 +416,7 @@
       "renderer": "flot",
       "repeat": null,
       "repeatDirection": "v",
-      "repeatIteration": 1542051750715,
+      "repeatIteration": 1542051750719,
       "repeatPanelId": 3,
       "scopedVars": {
         "pipeline": {
@@ -505,10 +505,130 @@
       "datasource": "MiniEngine",
       "fill": 1,
       "gridPos": {
-        "h": 12,
+        "h": 13,
         "w": 24,
         "x": 0,
         "y": 52
+      },
+      "id": 9,
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": true,
+        "hideEmpty": false,
+        "hideZero": false,
+        "max": true,
+        "min": true,
+        "rightSide": false,
+        "show": true,
+        "sort": "avg",
+        "sortDesc": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "repeat": null,
+      "repeatDirection": "v",
+      "repeatIteration": 1542051750719,
+      "repeatPanelId": 3,
+      "scopedVars": {
+        "pipeline": {
+          "selected": false,
+          "text": "shadow_pipeline_stages_render_time",
+          "value": "shadow_pipeline_stages_render_time"
+        }
+      },
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "max($pipeline * 1000) by (stage)",
+          "format": "time_series",
+          "hide": false,
+          "instant": false,
+          "intervalFactor": 1,
+          "legendFormat": "{{stage}}",
+          "refId": "A"
+        },
+        {
+          "expr": "sum($pipeline * 1000)",
+          "format": "time_series",
+          "instant": false,
+          "intervalFactor": 1,
+          "legendFormat": "Total",
+          "refId": "B"
+        }
+      ],
+      "thresholds": [
+        {
+          "colorMode": "critical",
+          "fill": true,
+          "line": true,
+          "op": "gt",
+          "value": 16.66667,
+          "yaxis": "left"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "$pipeline",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": "Milliseconds",
+          "logBase": 1,
+          "max": "17",
+          "min": "0",
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "MiniEngine",
+      "fill": 1,
+      "gridPos": {
+        "h": 12,
+        "w": 24,
+        "x": 0,
+        "y": 65
       },
       "id": 5,
       "legend": {
@@ -534,10 +654,14 @@
       "seriesOverrides": [
         {
           "alias": "Total shadow map",
+          "pointradius": 1,
+          "points": true,
           "yaxis": 2
         },
         {
           "alias": "Total shadow map cascades",
+          "pointradius": 1,
+          "points": true,
           "yaxis": 2
         }
       ],
@@ -577,7 +701,7 @@
       "thresholds": [],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Shadows System",
+      "title": "ShadowMapSystem",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -625,7 +749,7 @@
         "h": 6,
         "w": 23,
         "x": 1,
-        "y": 64
+        "y": 77
       },
       "id": 2,
       "legend": {
@@ -734,7 +858,7 @@
       {
         "allValue": null,
         "current": {
-          "selected": true,
+          "tags": [],
           "text": "All",
           "value": "$__all"
         },
@@ -768,9 +892,14 @@
             "selected": false,
             "text": "particle_pipeline_stages_render_time",
             "value": "particle_pipeline_stages_render_time"
+          },
+          {
+            "selected": false,
+            "text": "shadow_pipeline_stages_render_time",
+            "value": "shadow_pipeline_stages_render_time"
           }
         ],
-        "query": "render_pipeline_stages_render_time,lighting_pipeline_stages_render_time,model_pipeline_stages_render_time,particle_pipeline_stages_render_time",
+        "query": "render_pipeline_stages_render_time,lighting_pipeline_stages_render_time,model_pipeline_stages_render_time,particle_pipeline_stages_render_time,shadow_pipeline_stages_render_time",
         "skipUrlSync": false,
         "type": "custom"
       }
@@ -808,5 +937,5 @@
   "timezone": "",
   "title": "MiniEngine - Rendering",
   "uid": "o4SCRyamz",
-  "version": 26
+  "version": 29
 }

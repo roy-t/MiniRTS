@@ -47,9 +47,9 @@
   <ItemGroup>
     <Compile Include="Components\ShadowMap.cs" />
     <Compile Include="Extensions\RenderShadowsStageExtensions.cs" />
-    <Compile Include="IShadowPipelineStage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ShadowPipeline.cs" />
+    <Compile Include="ShadowPipelineInput.cs" />
     <Compile Include="Stages\RenderShadowMapsStage.cs" />
     <Compile Include="Extensions\RenderShadowMapsStageExtension.cs" />
     <Compile Include="Stages\RenderShadowsStage.cs" />
