@@ -9,10 +9,9 @@ namespace MiniEngine.Pipeline.Models.Extensions
         public static RenderPipeline RenderModels(
             this RenderPipeline pipeline,
             ModelSystem modelSystem,
-            ModelPipeline modelPipeline,
-            GBuffer gBuffer)
+            ModelPipeline modelPipeline)
         {
-            var stage = new RenderModelsStage(modelSystem, modelPipeline, gBuffer);
+            var stage = new RenderModelsStage(modelSystem, modelPipeline);
             pipeline.Add(stage);
             return pipeline;
         }

@@ -1,11 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using MiniEngine.Pipeline.Particles.Batches;
-using MiniEngine.Primitives.Cameras;
 
 namespace MiniEngine.Pipeline.Particles.Stages
 {
-    public sealed class ClearStage : IParticlePipelineStage
+    public sealed class ClearStage : IPipelineStage<ParticlePipelineInput>
     {
         private readonly GraphicsDevice Device;
         private readonly RenderTarget2D RenderTarget;
@@ -29,11 +27,9 @@ namespace MiniEngine.Pipeline.Particles.Stages
         public ClearOptions Options { get; }
         public Color Color { get; }
         public float Depth { get; }
-        public int Stencil { get; }
+        public int Stencil { get; }        
 
-        public void Execute(PerspectiveCamera _, ParticleRenderBatch __) => this.Execute();
-
-        private void Execute()
+        public void Execute(ParticlePipelineInput _)
         {
             this.Device.SetRenderTarget(this.RenderTarget);
             this.Device.Clear(this.Options, this.Color, this.Depth, this.Stencil);

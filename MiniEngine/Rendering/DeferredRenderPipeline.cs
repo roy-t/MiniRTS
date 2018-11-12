@@ -29,6 +29,8 @@ namespace MiniEngine.Rendering
         private readonly RenderPipeline Pipeline;
         private readonly RenderTarget2D PostProcessTarget;
 
+        private readonly RenderPipelineStageInput Input;
+
         public DeferredRenderPipeline(
             GraphicsDevice device,
             ShadowMapSystem shadowMapSystem,
@@ -58,8 +60,6 @@ namespace MiniEngine.Rendering
                 0,
                 RenderTargetUsage.PreserveContents);
 
-            this.GBuffer = new GBuffer(device, width, height);
-
             var combineTarget = new RenderTarget2D(
                 device,
                 width,
@@ -69,6 +69,9 @@ namespace MiniEngine.Rendering
                 DepthFormat.None,
                 0,
                 RenderTargetUsage.PreserveContents);
+
+            this.GBuffer = new GBuffer(device, width, height);
+            this.Input = new RenderPipelineStageInput(this.GBuffer, "render");            
 
             var shadowPipeline =
                 ShadowPipeline.Create(device)
@@ -94,9 +97,9 @@ namespace MiniEngine.Rendering
                              .AntiAlias(postProcessEffect, combineTarget, this.PostProcessTarget, 2.0f);
 
             var particlePipeline =
-                ParticlePipeline.Create(device)
+                ParticlePipeline.Create(device, meterRegistry)
                                 .Clear(this.GBuffer.DiffuseTarget, ClearOptions.Target, Color.TransparentBlack, 1, 0)
-                                .RenderParticleBatch(this.GBuffer)
+                                .RenderParticleBatch()
                                 .CopyColors(copyEffect, this.GBuffer.DiffuseTarget, this.PostProcessTarget);
 
             // TODO: we could move the anti-alias stage to the end of the normal pipeline
@@ -110,15 +113,17 @@ namespace MiniEngine.Rendering
                         .UpdateSystem(sunlightSystem)
                         .UpdateSystem(particleSystem)
                         .RenderShadows(shadowPipeline)
-                        .RenderModels(modelSystem, modelPipeline, this.GBuffer)
+                        .RenderModels(modelSystem, modelPipeline)
                         .RenderParticles(particleSystem, particlePipeline)
                         .Render3DDebugOverlay(debugRenderSystem, this.PostProcessTarget)
                         .Render2DDebugOverlay(debugRenderSystem, this.PostProcessTarget);
-        }
 
+        }
+        
         public RenderTarget2D Render(PerspectiveCamera camera, Seconds elapsed)
         {
-            this.Pipeline.Execute(new RenderPipelineStageInput(camera, elapsed));
+            this.Input.Update(camera, elapsed);
+            this.Pipeline.Execute(this.Input);
             return this.PostProcessTarget;
         }
 

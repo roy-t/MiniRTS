@@ -56,8 +56,8 @@
     <Compile Include="Extensions\CopyColorsStageExtensions.cs" />
     <Compile Include="Extensions\RenderParticleBatchStageExtensions.cs" />
     <Compile Include="Extensions\RenderParticlesStageExtensions.cs" />
-    <Compile Include="IParticlePipelineStage.cs" />
     <Compile Include="ParticlePipeline.cs" />
+    <Compile Include="ParticlePipelineInput.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Stages\ClearStage.cs" />
     <Compile Include="Stages\CopyColorsStage.cs" />
@@ -81,6 +81,10 @@
     <ProjectReference Include="..\MiniEngine.Systems\MiniEngine.Systems.csproj">
       <Project>{c1db1986-23b4-4293-a6ea-527da1adc78f}</Project>
       <Name>MiniEngine.Systems</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MiniEngine.Telemetry\MiniEngine.Telemetry.csproj">
+      <Project>{FE2DE91D-CA69-4844-8D5F-10A664F4E17D}</Project>
+      <Name>MiniEngine.Telemetry</Name>
     </ProjectReference>
     <ProjectReference Include="..\MiniEngine.Units\MiniEngine.Units.csproj">
       <Project>{051e397d-4c6c-4f8f-8f40-cce916a45c5e}</Project>

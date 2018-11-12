@@ -1,14 +1,16 @@
 # Worklist
 ## TODO
 
+
+- The RenderPipeline was changed for a few pipeline projects change them for all (see ModelRenderPipeline for samples)!  
+
 - Particles need a lot more configurable parameters to look good
     - Add a tint color to the shader so we can fade out almost dead particles!
-- Move all effects to wrappers
-- The code for the sunlight effect is still too complicated for what it does, especially the C# code is a mess.
+- The code for the sunlight effect is still too complicated for what it does, can I partition the code differently?
 
 ## Interesting
 
-- Particle effects
+- Particle effects via a new method that weighs by depth so we can do it in 1 pass
 - Screen space ambient occlusion
 - Reflections
 - Water

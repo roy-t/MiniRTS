@@ -7,26 +7,29 @@ namespace MiniEngine.Pipeline.Models.Stages
     {
         private readonly ModelPipeline ModelPipeline;
         private readonly ModelSystem ModelSystem;
-        private readonly GBuffer GBuffer;
 
-        public RenderModelsStage(ModelSystem modelSystem, ModelPipeline modelPipeline, GBuffer gBuffer)
+        private readonly ModelPipelineInput Input;
+
+        public RenderModelsStage(ModelSystem modelSystem, ModelPipeline modelPipeline)
         {
             this.ModelSystem = modelSystem;
             this.ModelPipeline = modelPipeline;
-            this.GBuffer = gBuffer;
+
+            this.Input = new ModelPipelineInput();
         }
 
         public void Execute(RenderPipelineStageInput input)
         {
             var modelBatchList = this.ModelSystem.ComputeBatches(input.Camera);
 
-            this.ModelPipeline.Execute(new ModelPipelineInput(input.Camera, modelBatchList.OpaqueBatch, this.GBuffer, "opaque"));
-
+            this.Input.Update(input.Camera, modelBatchList.OpaqueBatch, input.GBuffer, "opaque");
+            this.ModelPipeline.Execute(this.Input);
 
             for(var i = 0; i < modelBatchList.TransparentBatches.Count; i++)
             {
                 var batch = modelBatchList.TransparentBatches[i];
-                this.ModelPipeline.Execute(new ModelPipelineInput(input.Camera, batch, this.GBuffer, $"transparent_{i}"));
+                this.Input.Update(input.Camera, batch, input.GBuffer, $"transparent_{i}");
+                this.ModelPipeline.Execute(this.Input);
             }
         }
     }

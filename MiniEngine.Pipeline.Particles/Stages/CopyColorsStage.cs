@@ -1,13 +1,11 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
-using MiniEngine.Pipeline.Particles.Batches;
-using MiniEngine.Primitives.Cameras;
 using MiniEngine.Effects;
 using MiniEngine.Primitives;
 using MiniEngine.Effects.DeviceStates;
 
 namespace MiniEngine.Pipeline.Particles.Stages
 {
-    public sealed class CopyColorsStage : IParticlePipelineStage
+    public sealed class CopyColorsStage : IPipelineStage<ParticlePipelineInput>
     {
         private readonly RenderTarget2D DestinationTarget;
         private readonly GraphicsDevice Device;
@@ -28,7 +26,7 @@ namespace MiniEngine.Pipeline.Particles.Stages
             this.FullScreenTriangle = new FullScreenTriangle();
         }
 
-        public void Execute(PerspectiveCamera camera, ParticleRenderBatch batch)
+        public void Execute(ParticlePipelineInput _)
         {
             this.Device.SetRenderTarget(this.DestinationTarget);
             using (this.Device.PostProcessState())

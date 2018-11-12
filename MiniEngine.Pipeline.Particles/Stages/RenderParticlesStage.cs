@@ -7,16 +7,25 @@ namespace MiniEngine.Pipeline.Particles.Stages
         private readonly ParticlePipeline ParticlePipeline;
         private readonly ParticleSystem ParticleSystem;
 
+        private readonly ParticlePipelineInput Input;
+
         public RenderParticlesStage(ParticleSystem particleSystem, ParticlePipeline particlePipeline)
         {
             this.ParticleSystem = particleSystem;
             this.ParticlePipeline = particlePipeline;
+
+            this.Input = new ParticlePipelineInput();
         }
 
         public void Execute(RenderPipelineStageInput input)
         {
             var particleBatchList = this.ParticleSystem.ComputeBatches(input.Camera);
-            this.ParticlePipeline.Execute(input.Camera, particleBatchList);
+            for(var i = 0; i < particleBatchList.Batches.Count; i++)
+            {
+                var batch = particleBatchList.Batches[i];
+                this.Input.Update(input.Camera, batch, input.GBuffer, $"transparent_{i}");
+                this.ParticlePipeline.Execute(this.Input);
+            }
         }
     }
 }

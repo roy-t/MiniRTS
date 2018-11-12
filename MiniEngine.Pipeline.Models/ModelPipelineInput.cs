@@ -6,7 +6,7 @@ namespace MiniEngine.Pipeline.Models
 {
     public sealed class ModelPipelineInput : IPipelineInput
     {
-        public ModelPipelineInput(PerspectiveCamera camera, ModelRenderBatch batch, GBuffer gBuffer, string pass)
+        public void Update(PerspectiveCamera camera, ModelRenderBatch batch, GBuffer gBuffer, string pass)
         {
             this.Camera = camera;
             this.Batch = batch;
@@ -14,9 +14,9 @@ namespace MiniEngine.Pipeline.Models
             this.Pass = pass;
         }
 
-        public PerspectiveCamera Camera { get; }
-        public ModelRenderBatch Batch { get; }
-        public GBuffer GBuffer { get; }
-        public string Pass { get; }
+        public PerspectiveCamera Camera { get; private set; }
+        public ModelRenderBatch Batch { get; private set;}
+        public GBuffer GBuffer { get; private set;}
+        public string Pass { get; private set;}
     }
 }
