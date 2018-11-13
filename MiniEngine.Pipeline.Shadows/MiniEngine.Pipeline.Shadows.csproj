@@ -45,10 +45,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Components\CascadeInfo.cs" />
     <Compile Include="Components\CascadedShadowMap.cs" />
     <Compile Include="Components\ShadowMap.cs" />
     <Compile Include="Extensions\RenderShadowsStageExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utilities\Reference.cs" />
     <Compile Include="ShadowPipeline.cs" />
     <Compile Include="ShadowPipelineInput.cs" />
     <Compile Include="Stages\RenderShadowMapsStage.cs" />
@@ -56,6 +58,9 @@
     <Compile Include="Stages\RenderShadowsStage.cs" />
     <Compile Include="Systems\CascadedShadowMapSystem.cs" />
     <Compile Include="Systems\ShadowMapSystem.cs" />
+    <Compile Include="Utilities\MatrixExtensions.cs" />
+    <Compile Include="Utilities\ShadowMath.cs" />
+    <Compile Include="Utilities\VectorExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MiniEngine.Effects\MiniEngine.Effects.csproj">

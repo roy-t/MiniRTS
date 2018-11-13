@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 
-namespace MiniEngine.Pipeline.Lights.Utilities
+namespace MiniEngine.Pipeline.Shadows.Utilities
 {
     public static class MatrixExtensions
     {

@@ -71,9 +71,6 @@
     <Compile Include="Systems\PointLightSystem.cs" />
     <Compile Include="Systems\ShadowCastingLightSystem.cs" />
     <Compile Include="Systems\SunlightSystem.cs" />
-    <Compile Include="Utilities\MatrixExtensions.cs" />
-    <Compile Include="Utilities\ShadowMath.cs" />
-    <Compile Include="Utilities\VectorExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MiniEngine.Effects\MiniEngine.Effects.csproj">

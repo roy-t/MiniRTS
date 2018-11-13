@@ -39,6 +39,7 @@ namespace MiniEngine.Rendering
             AmbientLightSystem ambientLightSystem,
             DirectionalLightSystem directionalLightSystem,
             PointLightSystem pointLightSystem,
+            CascadedShadowMapSystem cascadedShadowMapSystem,
             ShadowCastingLightSystem shadowCastingLightSystem,
             SunlightSystem sunlightSystem,
             DebugRenderSystem debugRenderSystem,
@@ -84,7 +85,7 @@ namespace MiniEngine.Rendering
             this.Pipeline =
                 RenderPipeline.Create(device, meterRegistry)
                         .ClearRenderTargetSet()
-                        .UpdateSystem(sunlightSystem)
+                        .UpdateSystem(cascadedShadowMapSystem)
                         .UpdateSystem(particleSystem)
                         .RenderShadows(shadowPipeline)
                         .RenderModels(modelSystem, modelPipeline)

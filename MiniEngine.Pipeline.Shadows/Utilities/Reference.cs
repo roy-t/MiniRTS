@@ -1,4 +1,4 @@
-﻿namespace MiniEngine.Primitives
+﻿namespace MiniEngine.Pipeline.Shadows.Utilities
 {
     public sealed class Reference<T>
     {

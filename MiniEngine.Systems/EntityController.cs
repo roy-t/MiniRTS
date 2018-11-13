@@ -44,37 +44,49 @@ namespace MiniEngine.Systems
         public void DescribeAllEntities()
         {
             var entities = this.Creator.GetAllEntities();
+            var builder = new StringBuilder();
+            var seen = new HashSet<Entity>();
             foreach (var entity in entities)
             {
-                Console.WriteLine(this.DescribeEntity(entity));
+                this.DescribeEntity(builder, seen, 0, entity);                
             }
+
+            Console.WriteLine(builder.ToString());
         }
 
         public string DescribeEntity(Entity entity)
         {
-            var builder = new StringBuilder(entity.ToString());
-            builder.AppendLine();
+            var builder = new StringBuilder();
+            var seen = new HashSet<Entity>();
 
-            this.DescribeEntity(builder, 1, entity);
+            this.DescribeEntity(builder, seen, 0, entity);
 
             return builder.ToString();
         }
 
-        private void DescribeEntity(StringBuilder builder, int depth, Entity entity)
+        private void DescribeEntity(StringBuilder builder, HashSet<Entity> seen, int depth, Entity entity)
         {
-            foreach (var system in this.Systems)
+            if (!seen.Contains(entity))
             {
-                if (system.Contains(entity))
-                {
-                    builder.Append(new string('\t', depth));
-                    builder.AppendLine(system.Describe(entity));
-                }
-            }
+                seen.Add(entity);
 
-            var children = this.Creator.GetChilderen(entity);
-            foreach (var child in children)
-            {
-                this.DescribeEntity(builder, depth + 1, entity);
+                builder.Append(new string('\t', depth));
+                builder.AppendLine(entity.ToString());
+
+                foreach (var system in this.Systems)
+                {
+                    if (system.Contains(entity))
+                    {
+                        builder.Append(new string('\t', depth + 1));
+                        builder.AppendLine(system.Describe(entity));
+                    }
+                }
+
+                var children = this.Creator.GetChilderen(entity);
+                foreach (var child in children)
+                {
+                    this.DescribeEntity(builder, seen, depth + 1, child);
+                }
             }
         }
 

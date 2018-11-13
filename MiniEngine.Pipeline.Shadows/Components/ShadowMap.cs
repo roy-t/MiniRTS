@@ -1,5 +1,5 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
-using MiniEngine.Primitives;
+using MiniEngine.Pipeline.Shadows.Utilities;
 using MiniEngine.Primitives.Cameras;
 
 namespace MiniEngine.Pipeline.Shadows.Components

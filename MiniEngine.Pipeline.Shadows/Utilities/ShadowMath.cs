@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework;
 using MiniEngine.Primitives.Cameras;
 using MiniEngine.Primitives;
 
-namespace MiniEngine.Pipeline.Lights.Utilities
+namespace MiniEngine.Pipeline.Shadows.Utilities
 {
     public static class ShadowMath
     {

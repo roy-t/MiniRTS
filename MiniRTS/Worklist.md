@@ -3,10 +3,7 @@
 
 - Particles need a lot more configurable parameters to look good
     - Add a tint color to the shader so we can fade out almost dead particles!
-- The code for the sunlight effect is still too complicated for what it does, can I partition the code differently?
-  - Move casecade calculations to a new system in the shadow pipeline
-  - Create a new stage etc before the shadow map stage
-  - The cascade system should reference the existing shadow map system for the actual shadow map computations
+- Cascaded shadow map code is much nicer now, but the Reference<> seems clunky
 - Right now everything is rendered for everything use spatial partitioning. Crazy idea: seperate thread that keeps updating the spatial partitioning thing as fast as possible?
 
 ## Interesting

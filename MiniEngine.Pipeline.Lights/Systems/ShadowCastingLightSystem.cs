@@ -56,7 +56,7 @@ namespace MiniEngine.Pipeline.Lights.Systems
             var shadowCastingLight = new ShadowCastingLight(position, lookAt, color);
 
             this.Lights.Add(entity, shadowCastingLight);
-            this.ShadowMapSystem.Add(entity, new Reference<IViewPoint>(shadowCastingLight.ViewPoint));
+            this.ShadowMapSystem.Add(entity, shadowCastingLight.ViewPoint);
         }
 
         public void RenderLights(PerspectiveCamera perspectiveCamera, GBuffer gBuffer)

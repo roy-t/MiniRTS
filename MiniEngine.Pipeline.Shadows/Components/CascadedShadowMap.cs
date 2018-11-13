@@ -1,14 +1,12 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
-using MiniEngine.Primitives;
-using MiniEngine.Primitives.Cameras;
 
 namespace MiniEngine.Pipeline.Shadows.Components
 {
     public sealed class CascadedShadowMap
     {
-        public CascadedShadowMap(GraphicsDevice device, int resolution, int cascades, Reference<IViewPoint>[] viewPoints)
+        public CascadedShadowMap(GraphicsDevice device, int resolution, int cascades)
         {
-            this.Cascades = cascades;
+            this.Cascades = cascades;            
 
             this.DepthMapArray = new RenderTarget2D(
                 device,
@@ -32,13 +30,7 @@ namespace MiniEngine.Pipeline.Shadows.Components
                 0,
                 RenderTargetUsage.DiscardContents,
                 false,
-                cascades);
-
-            this.ShadowMaps = new ShadowMap[cascades];
-            for(var i = 0; i < cascades; i++)
-            {
-                this.ShadowMaps[i] = new ShadowMap(this.DepthMapArray, this.ColorMapArray, i, viewPoints[i]);
-            }
+                cascades);           
         }
         
         public int Cascades { get; }

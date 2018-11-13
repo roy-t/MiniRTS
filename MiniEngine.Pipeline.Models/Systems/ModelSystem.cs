@@ -26,8 +26,18 @@ namespace MiniEngine.Pipeline.Models.Systems
 
         public string Describe(Entity entity)
         {
-            var model = this.OpaqueModels[entity] ?? this.TransparentModels[entity];
-            var modelType = this.OpaqueModels.ContainsKey(entity) ? ModelType.Opaque : ModelType.Transparent;
+            ModelPose model;
+            ModelType modelType;
+            if( this.OpaqueModels.ContainsKey(entity))
+            {
+                model = this.OpaqueModels[entity];
+                modelType = ModelType.Opaque;
+            }
+            else
+            {
+                model = this.TransparentModels[entity];
+                modelType = ModelType.Transparent;
+            }
 
             model.Pose.Decompose(out var scale, out var rotation, out var translation);
 

@@ -10,6 +10,7 @@ using MiniEngine.Pipeline.Particles.Systems;
 using MiniEngine.Pipeline.Shadows.Components;
 using MiniEngine.Telemetry;
 using MiniEngine.Primitives;
+using MiniEngine.Pipeline.Shadows.Utilities;
 
 namespace MiniEngine.Pipeline.Shadows.Systems
 {
@@ -56,8 +57,8 @@ namespace MiniEngine.Pipeline.Shadows.Systems
 
         public void Remove(Entity entity) => this.ShadowMaps.Remove(entity);
 
-        public void Add(Entity entity, Reference<IViewPoint> viewPoint, int resolution = DefaultResolution) 
-            => this.ShadowMaps.Add(entity, new ShadowMap(this.Device, resolution, viewPoint));
+        public void Add(Entity entity, IViewPoint viewPoint, int resolution = DefaultResolution) 
+            => this.ShadowMaps.Add(entity, new ShadowMap(this.Device, resolution, new Reference<IViewPoint>(viewPoint)));
         
         public void Add(Entity entity, RenderTarget2D depthMapArray, RenderTarget2D colorMapArray, int index, Reference<IViewPoint> viewPoint)
             => this.ShadowMaps.Add(entity, new ShadowMap(depthMapArray, colorMapArray, index, viewPoint));

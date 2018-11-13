@@ -55,22 +55,8 @@ namespace MiniEngine.Controllers
 
             if (this.KeyboardInput.Click(Keys.S))
             {
-                var exists = false;
-                foreach (var entity in this.TemporaryEntities)
-                {
-                    if (this.SunlightSystem.Contains(entity))
-                    {
-                        this.SunlightSystem.Remove(entity);
-                        this.SunlightSystem.Add(entity, Color.White, this.Camera.Position, this.Camera.LookAt);
-                        exists = true;
-                    }
-                }
-
-                if (!exists)
-                {
-                    this.SunlightSystem.RemoveAll();
-                    this.SunlightSystem.Add(this.CreateTempEntity(), Color.White, this.Camera.Position, this.Camera.LookAt);
-                }
+                this.SunlightSystem.RemoveAll();
+                this.SunlightSystem.Add(this.CreateTempEntity(), Color.White, this.Camera.Position, this.Camera.LookAt);
             }
 
             if (this.KeyboardInput.Click(Keys.D))
