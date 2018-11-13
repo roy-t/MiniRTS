@@ -67,8 +67,11 @@ namespace MiniEngine.Configuration
             this.Container.Register<KeyboardInput>();
             this.Container.Register<MouseInput>();
 
-            // Controllers
+            // Entities
+            this.Container.Register<EntityCreator>();
             this.Container.Register<EntityController>();
+
+            // Controllers
             this.Container.Register<DebugController>();
 
             // Scenes

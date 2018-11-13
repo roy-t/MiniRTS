@@ -11,7 +11,7 @@ namespace MiniEngine.Scenes
 {
     public sealed class PrimitivesScene : IScene
     {
-        private readonly EntityController EntityController;
+        private readonly EntityCreator EntityCreator;
         private readonly AmbientLightSystem AmbientLightSystem;
         private readonly ShadowCastingLightSystem ShadowCastingLightSystem;
         private readonly ModelSystem ModelSystem;
@@ -28,12 +28,12 @@ namespace MiniEngine.Scenes
         private Model shrineModel;
 
         public PrimitivesScene(
-            EntityController entityController,
+            EntityCreator entityCreator,
             AmbientLightSystem ambientLightSystem,
             ShadowCastingLightSystem shadowCastingLightSystem,
             ModelSystem modelSystem)
         {
-            this.EntityController = entityController;
+            this.EntityCreator = entityCreator;
             this.AmbientLightSystem = ambientLightSystem;
             this.ShadowCastingLightSystem = shadowCastingLightSystem;
             this.ModelSystem = modelSystem;
@@ -48,10 +48,10 @@ namespace MiniEngine.Scenes
 
         public void Set()
         {
-            this.worldEntity = this.EntityController.CreateEntity();
+            this.worldEntity = this.EntityCreator.CreateEntity();
             this.AmbientLightSystem.Add(this.worldEntity, Color.White * 0.25f);
 
-            this.shadowCastingLightEntity = this.EntityController.CreateEntity();
+            this.shadowCastingLightEntity = this.EntityCreator.CreateEntity();
             this.ShadowCastingLightSystem.Add(
                 this.shadowCastingLightEntity,
                 new Vector3(0, 100, -100),
@@ -67,7 +67,7 @@ namespace MiniEngine.Scenes
 
         private Entity CreateModelEntity(Model model, Matrix worldMatrix, ModelType modelType = ModelType.Opaque)
         {
-            var entity = this.EntityController.CreateEntity();
+            var entity = this.EntityCreator.CreateEntity();
             this.ModelSystem.Add(entity, model, worldMatrix, modelType);
             return entity;
         }

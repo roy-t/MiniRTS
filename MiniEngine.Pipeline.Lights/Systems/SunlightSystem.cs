@@ -30,16 +30,16 @@ namespace MiniEngine.Pipeline.Lights.Systems
         private readonly Frustum Frustum;
         private readonly FullScreenTriangle FullScreenTriangle;
 
-        private readonly ShadowMapSystem ShadowMapSystem;
+        private readonly CascadedShadowMapSystem CascadedShadowMapSystem;
         private readonly SunlightEffect Effect;
 
         private readonly Dictionary<Entity, Sunlight> Sunlights;
 
-        public SunlightSystem(GraphicsDevice device, SunlightEffect effect, ShadowMapSystem shadowMapSystem)
+        public SunlightSystem(GraphicsDevice device, SunlightEffect effect, CascadedShadowMapSystem cascadedShadowMapSystem)
         {
             this.Device = device;
             this.Effect = effect;
-            this.ShadowMapSystem = shadowMapSystem;
+            this.CascadedShadowMapSystem = cascadedShadowMapSystem;
 
             this.FullScreenTriangle = new FullScreenTriangle();
             this.Frustum = new Frustum();
@@ -58,7 +58,7 @@ namespace MiniEngine.Pipeline.Lights.Systems
         public void Remove(Entity entity)
         {
             this.Sunlights.Remove(entity);
-            this.ShadowMapSystem.Remove(entity);
+            this.CascadedShadowMapSystem.Remove(entity);
         }
 
         public void Update(PerspectiveCamera perspectiveCamera, Seconds elapsed)
@@ -72,9 +72,8 @@ namespace MiniEngine.Pipeline.Lights.Systems
         public void Add(Entity entity, Color color, Vector3 position, Vector3 lookAt)
         {
             var sunlight = new Sunlight(color, position, lookAt, Cascades);
-
-            this.ShadowMapSystem.Add(entity, sunlight.ShadowCameras, Cascades, Resolution);
-            this.Sunlights.Add(entity, sunlight);
+            this.CascadedShadowMapSystem.Add(entity, Cascades, sunlight.ShadowCameras, Resolution);
+            this.Sunlights.Add(entity, sunlight);            
         }
 
         public void RemoveAll()
@@ -95,9 +94,9 @@ namespace MiniEngine.Pipeline.Lights.Systems
                 foreach (var pair in this.Sunlights)
                 {
                     var light = pair.Value;
-                    var maps = this.ShadowMapSystem.Get(pair.Key);
+                    var maps = this.CascadedShadowMapSystem.Get(pair.Key);
 
-                    this.RenderLight(light, maps.DepthMap, maps.ColorMap, perspectiveCamera, gBuffer);
+                    this.RenderLight(light, maps.DepthMapArray, maps.ColorMapArray, perspectiveCamera, gBuffer);
                 }
             }
         }
@@ -126,7 +125,7 @@ namespace MiniEngine.Pipeline.Lights.Systems
                     sunLight.SurfaceToLightVector,
                     this.Frustum,
                     Resolution);
-                sunLight.ShadowCameras[cascadeIndex] = shadowCamera;
+                sunLight.ShadowCameras[cascadeIndex].Set(shadowCamera);
 
                 // ViewProjection matrix of the shadow camera that transforms to texture space [0, 1] instead of [-1, 1]
                 var shadowMatrix = (shadowCamera.View * shadowCamera.Projection).TextureScaleTransform();

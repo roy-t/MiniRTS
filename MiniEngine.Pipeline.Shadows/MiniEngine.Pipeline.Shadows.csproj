@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Components\CascadedShadowMap.cs" />
     <Compile Include="Components\ShadowMap.cs" />
     <Compile Include="Extensions\RenderShadowsStageExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -53,6 +54,7 @@
     <Compile Include="Stages\RenderShadowMapsStage.cs" />
     <Compile Include="Extensions\RenderShadowMapsStageExtension.cs" />
     <Compile Include="Stages\RenderShadowsStage.cs" />
+    <Compile Include="Systems\CascadedShadowMapSystem.cs" />
     <Compile Include="Systems\ShadowMapSystem.cs" />
   </ItemGroup>
   <ItemGroup>

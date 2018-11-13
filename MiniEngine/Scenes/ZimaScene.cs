@@ -11,7 +11,7 @@ namespace MiniEngine.Scenes
 {
     public sealed class ZimaScene : IScene
     {
-        private readonly EntityController EntityController;
+        private readonly EntityCreator EntityCreator;
         private readonly DirectionalLightSystem DirectionalLightSystem;
         private readonly PointLightSystem PointLightSystem;
         private readonly ModelSystem ModelSystem;
@@ -37,12 +37,12 @@ namespace MiniEngine.Scenes
         private Entity[] modelEntities;
 
         public ZimaScene(
-            EntityController entityController,
+            EntityCreator entityCreator,
             DirectionalLightSystem directionalLightSystem,
             PointLightSystem pointLightSystem,
             ModelSystem modelSystem)
         {
-            this.EntityController = entityController;
+            this.EntityCreator = entityCreator;
             this.DirectionalLightSystem = directionalLightSystem;
             this.PointLightSystem = pointLightSystem;
             this.ModelSystem = modelSystem;
@@ -63,7 +63,7 @@ namespace MiniEngine.Scenes
 
             for (var i = 0; i < this.pointLightEntities.Length; i++)
             {
-                this.pointLightEntities[i] = this.EntityController.CreateEntity();
+                this.pointLightEntities[i] = this.EntityCreator.CreateEntity();
 
                 var x = Math.Sin(step * i) * 100;
                 var y = Math.Cos(step * i) * 100;
@@ -75,11 +75,11 @@ namespace MiniEngine.Scenes
                     1.0f);
             }
 
-            this.directionalLightEntities = this.EntityController.CreateEntities(2);
+            this.directionalLightEntities = this.EntityCreator.CreateEntities(2);
             this.DirectionalLightSystem.Add(this.directionalLightEntities[0], Vector3.Normalize(Vector3.Forward + Vector3.Down), Color.White * 0.75f);
             this.DirectionalLightSystem.Add(this.directionalLightEntities[1], Vector3.Normalize(Vector3.Forward + Vector3.Up + Vector3.Left), Color.BlueViolet * 0.25f);
 
-            this.modelEntities = this.EntityController.CreateEntities(3);
+            this.modelEntities = this.EntityCreator.CreateEntities(3);
             this.ModelSystem.Add(this.modelEntities[0], this.ship1, Matrix.CreateRotationY(MathHelper.Pi) * Matrix.CreateScale(0.5f));
             this.ModelSystem.Add(this.modelEntities[1], this.lizard, Matrix.CreateRotationY(MathHelper.Pi) * Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Vector3.Left * 50));
             this.ModelSystem.Add(this.modelEntities[2], this.ship2, Matrix.CreateRotationX(-MathHelper.PiOver2) * Matrix.CreateRotationY(MathHelper.Pi) * Matrix.CreateScale(0.5f) * Matrix.CreateTranslation(Vector3.Right * 50));

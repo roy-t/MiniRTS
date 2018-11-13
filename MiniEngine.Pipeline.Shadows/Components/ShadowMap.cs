@@ -1,42 +1,50 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
+using MiniEngine.Primitives;
 using MiniEngine.Primitives.Cameras;
 
 namespace MiniEngine.Pipeline.Shadows.Components
 {
     public sealed class ShadowMap
     {
-        public ShadowMap(GraphicsDevice device, int depthMapResolution, int cascades, params IViewPoint[] viewPoint)
+        public ShadowMap(RenderTarget2D depthMapArray, RenderTarget2D colorMapArray, int index, Reference<IViewPoint> viewPoint)
+        {            
+            this.DepthMap = depthMapArray;
+            this.ColorMap = colorMapArray;
+            this.Index = index;
+            this.ViewPoint = viewPoint;
+        }
+
+        public ShadowMap(GraphicsDevice device, int resolution, Reference<IViewPoint> viewPoint)
         {
-            this.ViewPoints = viewPoint;
-            this.Cascades = cascades;
+            this.ViewPoint = viewPoint;
             this.DepthMap = new RenderTarget2D(
                 device,
-                depthMapResolution,
-                depthMapResolution,
+                resolution,
+                resolution,
                 false,
                 SurfaceFormat.Single,
                 DepthFormat.Depth24,
                 0,
                 RenderTargetUsage.DiscardContents,
-                false,
-                cascades);
+                false);
 
             this.ColorMap = new RenderTarget2D(
                 device,
-                depthMapResolution,
-                depthMapResolution,
+                resolution,
+                resolution,
                 false,
                 SurfaceFormat.Color,
                 DepthFormat.None,
                 0,
                 RenderTargetUsage.DiscardContents,
-                false,
-                cascades);
-        }
+                false);
 
-        public int Cascades { get; }
+            this.Index = 0;
+        }
+                
         public RenderTarget2D DepthMap { get; }
         public RenderTarget2D ColorMap { get; }
-        public IViewPoint[] ViewPoints { get; }
+        public int Index { get; }
+        public Reference<IViewPoint> ViewPoint { get; }
     }
 }

@@ -56,7 +56,7 @@ namespace MiniEngine.Primitives
                 false,
                 SurfaceFormat.Color,
                 DepthFormat.None,
-                0,
+                aaSamples,
                 RenderTargetUsage.PreserveContents);
 
               this.FinalTarget = new RenderTarget2D(
@@ -66,7 +66,7 @@ namespace MiniEngine.Primitives
                 false,
                 SurfaceFormat.Color,
                 DepthFormat.None,
-                0,
+                aaSamples,
                 RenderTargetUsage.PreserveContents);
         }
 

@@ -13,7 +13,7 @@ namespace MiniEngine.Scenes
 {
     public sealed class SponzaScene : IScene
     {
-        private readonly EntityController EntityController;
+        private readonly EntityCreator EntityCreator;
         private readonly AmbientLightSystem AmbientLightSystem;
         private readonly SunlightSystem SunlightSystem;
         private readonly PointLightSystem PointLightSystem;
@@ -35,7 +35,7 @@ namespace MiniEngine.Scenes
         private Texture2D smoke;
 
         public SponzaScene(
-            EntityController entityController,
+            EntityCreator entityCreator,
             AmbientLightSystem ambientLightSystem,
             SunlightSystem sunlightSystem,
             ShadowCastingLightSystem shadowCastingLightSystem,
@@ -44,7 +44,7 @@ namespace MiniEngine.Scenes
             DebugRenderSystem debugRenderSystem,
             ParticleSystem particleSystem)
         {
-            this.EntityController = entityController;
+            this.EntityCreator = entityCreator;
             this.AmbientLightSystem = ambientLightSystem;
             this.SunlightSystem = sunlightSystem;
             this.ShadowCastingLightSystem = shadowCastingLightSystem;
@@ -65,21 +65,21 @@ namespace MiniEngine.Scenes
 
         public void Set()
         {
-            this.worldEntity = this.EntityController.CreateEntity();
+            this.worldEntity = this.EntityCreator.CreateEntity();
 
             this.AmbientLightSystem.Add(this.worldEntity, Color.White * 0.25f);
             this.SunlightSystem.Add(this.worldEntity, Color.White, Vector3.Up, (Vector3.Left * 0.75f) + (Vector3.Backward * 0.1f));
 
             this.ModelSystem.Add(this.worldEntity, this.sponza, Matrix.CreateScale(0.05f));
 
-            this.planeEntity = this.EntityController.CreateEntity();
+            this.planeEntity = this.EntityCreator.CreateEntity();
 
             var position = new Vector3(-40.5f, 30.0f, 3.2f);
 
             var world = CreateScaleRotationTranslation(4.4f * 0.01f, MathHelper.PiOver2, MathHelper.PiOver2, 0, position);
             this.ModelSystem.Add(this.planeEntity, this.plane, world, ModelType.Transparent);
 
-            this.planeEntity2 = this.EntityController.CreateEntity();
+            this.planeEntity2 = this.EntityCreator.CreateEntity();
 
             position = new Vector3(-40.5f, 30.0f, -7.2f);
             var world2 = CreateScaleRotationTranslation(4.4f * 0.01f, 0, MathHelper.PiOver4, 0, position);
@@ -88,13 +88,13 @@ namespace MiniEngine.Scenes
 
 
             var particleSpawn = new Vector3(-60.5f, 6.0f, 20.0f);
-            this.particleEntity = this.EntityController.CreateEntity();
+            this.particleEntity = this.EntityCreator.CreateEntity();
             this.ParticleSystem.Add(this.particleEntity, particleSpawn, this.smoke, 1, 1);
 
-            this.particleEntity2 = this.EntityController.CreateEntity();
+            this.particleEntity2 = this.EntityCreator.CreateEntity();
             this.ParticleSystem.Add(this.particleEntity2, particleSpawn, this.explosion, 8, 8);
 
-            this.particleEntity3 = this.EntityController.CreateEntity();
+            this.particleEntity3 = this.EntityCreator.CreateEntity();
             this.ParticleSystem.Add(this.particleEntity3, particleSpawn, this.explosion2, 1, 1);
 
             this.PointLightSystem.Add(this.particleEntity, particleSpawn, Color.IndianRed, 20.0f, 1.0f);

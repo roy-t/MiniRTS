@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using MiniEngine.Primitives;
 using MiniEngine.Primitives.Cameras;
 
 namespace MiniEngine.Pipeline.Lights.Components
@@ -9,7 +10,7 @@ namespace MiniEngine.Pipeline.Lights.Components
         {
             this.Color = color;
 
-            this.ShadowCameras = new IViewPoint[cascades];
+            this.ShadowCameras = Reference<IViewPoint>.CreateEmpty(cascades);
             this.CascadeSplits = new float[cascades];
             this.CascadeOffsets = new Vector4[cascades];
             this.CascadeScales = new Vector4[cascades];
@@ -18,7 +19,7 @@ namespace MiniEngine.Pipeline.Lights.Components
             this.Move(position, lookAt);
         }
 
-        public IViewPoint[] ShadowCameras { get; }
+        public Reference<IViewPoint>[] ShadowCameras { get; }
         public float[] CascadeSplits { get; }
         public Vector4[] CascadeOffsets { get; }
         public Vector4[] CascadeScales { get; }

@@ -89,6 +89,6 @@ namespace MiniEngine.Pipeline.Particles.Components
             return new Vector3(x, y, z);
         }
 
-        private static float GetRandomOffset() => (float)Random.NextDouble() * 2.0f - 1.0f;
+        private static float GetRandomOffset() => ((float)Random.NextDouble() * 2.0f) - 1.0f;
     }
 }

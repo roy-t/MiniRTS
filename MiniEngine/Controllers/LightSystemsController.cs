@@ -13,6 +13,7 @@ namespace MiniEngine.Controllers
     {
         private readonly KeyboardInput KeyboardInput;
         private readonly PerspectiveCamera Camera;
+        private readonly EntityCreator EntityCreator;
         private readonly EntityController EntityController;
 
         private readonly PointLightSystem PointLightSystem;
@@ -26,6 +27,7 @@ namespace MiniEngine.Controllers
         public LightSystemsController(
             KeyboardInput keyboardInput,
             PerspectiveCamera camera,
+            EntityCreator entityCreator,
             EntityController entityController,
             PointLightSystem pointLightSystem,
             SunlightSystem sunlightSystem,
@@ -34,6 +36,7 @@ namespace MiniEngine.Controllers
         {
             this.KeyboardInput = keyboardInput;
             this.Camera = camera;
+            this.EntityCreator = entityCreator;
             this.EntityController = entityController;
             this.PointLightSystem = pointLightSystem;
             this.SunlightSystem = sunlightSystem;
@@ -93,7 +96,7 @@ namespace MiniEngine.Controllers
 
         private Entity CreateTempEntity()
         {
-            var entity = this.EntityController.CreateEntity();
+            var entity = this.EntityCreator.CreateEntity();
             this.TemporaryEntities.Add(entity);
 
             return entity;

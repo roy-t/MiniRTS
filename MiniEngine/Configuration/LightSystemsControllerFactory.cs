@@ -11,12 +11,14 @@ namespace MiniEngine.Configuration
         private readonly DirectionalLightSystem DirectionalLightSystem;
         private readonly EntityController EntityController;
         private readonly KeyboardInput KeyboardInput;
+        private readonly EntityCreator EntityCreator;
         private readonly PointLightSystem PointLightSystem;
         private readonly ShadowCastingLightSystem ShadowCastingLightSystem;
         private readonly SunlightSystem SunlightSystem;
 
         public LightSystemsControllerFactory(
             KeyboardInput keyboardInput,
+            EntityCreator entityCreator,
             EntityController entityController,
             PointLightSystem pointLightSystem,
             SunlightSystem sunlightSystem,
@@ -24,6 +26,7 @@ namespace MiniEngine.Configuration
             ShadowCastingLightSystem shadowCastingLightSystem)
         {
             this.KeyboardInput = keyboardInput;
+            this.EntityCreator = entityCreator;
             this.EntityController = entityController;
             this.PointLightSystem = pointLightSystem;
             this.SunlightSystem = sunlightSystem;
@@ -36,6 +39,7 @@ namespace MiniEngine.Configuration
             return new LightSystemsController(
                 this.KeyboardInput,
                 camera,
+                this.EntityCreator,
                 this.EntityController,
                 this.PointLightSystem,
                 this.SunlightSystem,
