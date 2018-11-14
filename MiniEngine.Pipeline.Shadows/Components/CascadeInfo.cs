@@ -1,6 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using MiniEngine.Pipeline.Shadows.Utilities;
-using MiniEngine.Primitives.Cameras;
 
 namespace MiniEngine.Pipeline.Shadows.Components
 {
@@ -17,10 +15,14 @@ namespace MiniEngine.Pipeline.Shadows.Components
             this.Resolution = resolution;
             this.CascadeDistances = cascadeDistances;
 
-            this.ShadowCameras = Reference<IViewPoint>.CreateEmpty(cascades);
+            this.ShadowCameras = new CascadeCamera[cascades];
+            for(var i = 0; i < cascades; i++)
+            {
+                this.ShadowCameras[i] = new CascadeCamera();
+            }
         }
 
-        public Reference<IViewPoint>[] ShadowCameras { get; }
+        public CascadeCamera[] ShadowCameras { get; }
 
         public float[] CascadeSplits { get; }
         public Vector4[] CascadeOffsets { get; }

@@ -58,9 +58,9 @@ namespace MiniEngine.Pipeline.Shadows.Systems
         public void Remove(Entity entity) => this.ShadowMaps.Remove(entity);
 
         public void Add(Entity entity, IViewPoint viewPoint, int resolution = DefaultResolution) 
-            => this.ShadowMaps.Add(entity, new ShadowMap(this.Device, resolution, new Reference<IViewPoint>(viewPoint)));
+            => this.ShadowMaps.Add(entity, new ShadowMap(this.Device, resolution, viewPoint));
         
-        public void Add(Entity entity, RenderTarget2D depthMapArray, RenderTarget2D colorMapArray, int index, Reference<IViewPoint> viewPoint)
+        public void Add(Entity entity, RenderTarget2D depthMapArray, RenderTarget2D colorMapArray, int index, IViewPoint viewPoint)
             => this.ShadowMaps.Add(entity, new ShadowMap(depthMapArray, colorMapArray, index, viewPoint));
 
         public ShadowMap Get(Entity entity) => this.ShadowMaps[entity];
@@ -72,8 +72,8 @@ namespace MiniEngine.Pipeline.Shadows.Systems
 
             foreach (var shadowMap in this.ShadowMaps.Values)
             {
-                var modelBatchList = this.ModelSystem.ComputeBatches(shadowMap.ViewPoint.Get());
-                var particleBatchList = this.ParticleSystem.ComputeBatches(shadowMap.ViewPoint.Get());
+                var modelBatchList = this.ModelSystem.ComputeBatches(shadowMap.ViewPoint);
+                var particleBatchList = this.ParticleSystem.ComputeBatches(shadowMap.ViewPoint);
 
                 this.MeterRegistry.StartGauge(ShadowMapStep);
                 {

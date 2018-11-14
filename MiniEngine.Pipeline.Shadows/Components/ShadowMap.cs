@@ -6,7 +6,7 @@ namespace MiniEngine.Pipeline.Shadows.Components
 {
     public sealed class ShadowMap
     {
-        public ShadowMap(RenderTarget2D depthMapArray, RenderTarget2D colorMapArray, int index, Reference<IViewPoint> viewPoint)
+        public ShadowMap(RenderTarget2D depthMapArray, RenderTarget2D colorMapArray, int index, IViewPoint viewPoint)
         {            
             this.DepthMap = depthMapArray;
             this.ColorMap = colorMapArray;
@@ -14,7 +14,7 @@ namespace MiniEngine.Pipeline.Shadows.Components
             this.ViewPoint = viewPoint;
         }
 
-        public ShadowMap(GraphicsDevice device, int resolution, Reference<IViewPoint> viewPoint)
+        public ShadowMap(GraphicsDevice device, int resolution, IViewPoint viewPoint)
         {
             this.ViewPoint = viewPoint;
             this.DepthMap = new RenderTarget2D(
@@ -45,6 +45,6 @@ namespace MiniEngine.Pipeline.Shadows.Components
         public RenderTarget2D DepthMap { get; }
         public RenderTarget2D ColorMap { get; }
         public int Index { get; }
-        public Reference<IViewPoint> ViewPoint { get; }
+        public IViewPoint ViewPoint { get; }
     }
 }

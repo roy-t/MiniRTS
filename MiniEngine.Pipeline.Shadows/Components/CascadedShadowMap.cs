@@ -34,7 +34,6 @@ namespace MiniEngine.Pipeline.Shadows.Components
         }
         
         public int Cascades { get; }
-        public ShadowMap[] ShadowMaps { get; }
 
         public RenderTarget2D DepthMapArray { get; }
         public RenderTarget2D ColorMapArray { get; }
