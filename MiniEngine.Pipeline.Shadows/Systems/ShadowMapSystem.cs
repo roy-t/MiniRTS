@@ -9,8 +9,6 @@ using MiniEngine.Pipeline.Models.Systems;
 using MiniEngine.Pipeline.Particles.Systems;
 using MiniEngine.Pipeline.Shadows.Components;
 using MiniEngine.Telemetry;
-using MiniEngine.Primitives;
-using MiniEngine.Pipeline.Shadows.Utilities;
 
 namespace MiniEngine.Pipeline.Shadows.Systems
 {

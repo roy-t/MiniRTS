@@ -1,12 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Pipeline.Shadows.Components;
-using MiniEngine.Pipeline.Shadows.Utilities;
 using MiniEngine.Primitives;
 using MiniEngine.Primitives.Cameras;
 using MiniEngine.Systems;
 using MiniEngine.Units;
-using System;
 using System.Collections.Generic;
 
 namespace MiniEngine.Pipeline.Shadows.Systems
@@ -21,6 +19,8 @@ namespace MiniEngine.Pipeline.Shadows.Systems
             0.3f,
             1.0f
         };
+
+        private static readonly Matrix TexScaleTransform = Matrix.CreateScale(0.5f, -0.5f, 1.0f) * Matrix.CreateTranslation(0.5f, 0.5f, 0.0f);
 
         private readonly GraphicsDevice Device;
         private readonly EntityCreator EntityCreator;
@@ -87,8 +87,7 @@ namespace MiniEngine.Pipeline.Shadows.Systems
             {
                 this.Frustum.ResetToViewVolume();
                 this.Frustum.Transform(perspectiveCamera.InverseViewProjection);
-                cascade.GlobalShadowMatrix =
-                    ShadowMath.CreateGlobalShadowMatrix(cascade.SurfaceToLightVector, this.Frustum);
+                cascade.GlobalShadowMatrix = CreateGlobalShadowMatrix(cascade.SurfaceToLightVector, this.Frustum);
 
                 for (var cascadeIndex = 0; cascadeIndex < cascade.CascadeSplits.Length; cascadeIndex++)
                 {
@@ -101,10 +100,12 @@ namespace MiniEngine.Pipeline.Shadows.Systems
                     var farZ = cascade.CascadeDistances[cascadeIndex];
                     this.Frustum.Slice(nearZ, farZ);
 
-                    cascade.ShadowCameras[cascadeIndex].CoverFrustum(cascade.SurfaceToLightVector, this.Frustum, cascade.Resolution);                  
+                    // Place a camera at the intersection of bounding sphere of the frustum and the ray
+                    // from the frustum's center in the direction of the surface to light vector
+                    cascade.ShadowCameras[cascadeIndex].CoverFrustum(cascade.SurfaceToLightVector, this.Frustum, cascade.Resolution);
 
                     // ViewProjection matrix of the shadow camera that transforms to texture space [0, 1] instead of [-1, 1]
-                    var shadowMatrix = cascade.ShadowCameras[cascadeIndex].ViewProjection.TextureScaleTransform();
+                    var shadowMatrix = cascade.ShadowCameras[cascadeIndex].ViewProjection * TexScaleTransform;
 
                     // Store the split distance in terms of view space depth
                     var clipDistance = perspectiveCamera.FarPlane - perspectiveCamera.NearPlane;
@@ -112,12 +113,12 @@ namespace MiniEngine.Pipeline.Shadows.Systems
 
                     // Find scale and offset of this cascade in world space                    
                     var invCascadeMat = Matrix.Invert(shadowMatrix);
-                    var cascadeCorner = Vector4.Transform(Vector3.Zero, invCascadeMat).ScaleToVector3();
-                    cascadeCorner = Vector4.Transform(cascadeCorner, cascade.GlobalShadowMatrix).ScaleToVector3();
+                    var cascadeCorner = ScaleToVector3(Vector4.Transform(Vector3.Zero, invCascadeMat));
+                    cascadeCorner = ScaleToVector3(Vector4.Transform(cascadeCorner, cascade.GlobalShadowMatrix));
 
                     // Do the same for the upper corner
-                    var otherCorner = Vector4.Transform(Vector3.One, invCascadeMat).ScaleToVector3();
-                    otherCorner = Vector4.Transform(otherCorner, cascade.GlobalShadowMatrix).ScaleToVector3();
+                    var otherCorner = ScaleToVector3(Vector4.Transform(Vector3.One, invCascadeMat));
+                    otherCorner = ScaleToVector3(Vector4.Transform(otherCorner, cascade.GlobalShadowMatrix));
 
                     // Calculate the scale and offset
                     var cascadeScale = Vector3.One / (otherCorner - cascadeCorner);
@@ -126,5 +127,21 @@ namespace MiniEngine.Pipeline.Shadows.Systems
                 }
             }
         }
+
+        /// <summary>
+        /// Create the shadow matrix that covers the entire frustum in texture space
+        /// </summary>
+        private static Matrix CreateGlobalShadowMatrix(Vector3 surfaceToLightDirection, Frustum frustum)
+        {
+            var frustumCenter = frustum.ComputeCenter();
+            var shadowCameraPos = frustumCenter + (surfaceToLightDirection * -0.5f);
+
+            var view = Matrix.CreateLookAt(shadowCameraPos, frustumCenter, Vector3.Up);
+            var projection = Matrix.CreateOrthographicOffCenter(-0.5f, 0.5f, -0.5f, 0.5f, 0.0f, 1.0f);
+
+            return view * projection * TexScaleTransform;
+        }
+
+        private static Vector3 ScaleToVector3(Vector4 value) => new Vector3(value.X, value.Y, value.Z) / value.W;
     }
 }

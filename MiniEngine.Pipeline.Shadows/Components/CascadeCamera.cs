@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using MiniEngine.Pipeline.Shadows.Utilities;
 using MiniEngine.Primitives;
 using MiniEngine.Primitives.Cameras;
 using System;
@@ -7,11 +6,14 @@ using System;
 namespace MiniEngine.Pipeline.Shadows.Components
 {
     public sealed class CascadeCamera : IViewPoint
-    {               
+    {                     
+        public CascadeCamera()
+        {
+            this.Frustum = new BoundingFrustum(Matrix.Identity);
+        }
+
         public Matrix View { get; private set; }
-        
-        private Matrix projection;
-        public Matrix Projection => this.projection;
+        public Matrix Projection { get; private set; }
 
         public Matrix ViewProjection { get; private set; }
 
@@ -19,27 +21,22 @@ namespace MiniEngine.Pipeline.Shadows.Components
         public Vector3 Position { get; private set; }
         public Vector3 Forward { get; private set; }
 
-        public CascadeCamera()
+        public void CoverFrustum(Vector3 surfaceToLightVector, Frustum frustum, int resolution)
         {
-            this.Frustum = new BoundingFrustum(Matrix.Identity);
-        }
+            // By using a rounding radius, and offseting the view matrix to a rounded value
+            // shimmering is reduced when the angle the shadow is seen at changes
 
-        public void CoverFrustum(Vector3 surfaceToLightVector, Frustum frustum, int shadowMapResolution)
-        {
             var bounds = frustum.ComputeBounds();
+
+            // WARNING: This might cause problems when moving the shadow caster around in that case use
+            // var radius = (float)Math.Ceiling(bounds.Radius * 16.0f) / 16.0f;
             var radius = (float)Math.Ceiling(bounds.Radius);
 
-            var position = bounds.Center + (surfaceToLightVector * radius);            
-            this.Move(position, bounds.Center, radius, shadowMapResolution);
-        }
-
-        private void Move(Vector3 position, Vector3 lookAt, float radius, int resolution)
-        {
-            this.Position = position;
-            this.Forward = Vector3.Normalize(lookAt - position);
+            this.Position = bounds.Center + (surfaceToLightVector * radius);                                          
+            this.Forward = Vector3.Normalize(bounds.Center - this.Position);
             
-            this.View = Matrix.CreateLookAt(position, lookAt, Vector3.Up);
-            this.projection = Matrix.CreateOrthographicOffCenter(
+            this.View = Matrix.CreateLookAt(this.Position, bounds.Center, Vector3.Up);
+            this.Projection = Matrix.CreateOrthographicOffCenter(
                 -radius,
                 radius,
                 -radius,
@@ -47,24 +44,31 @@ namespace MiniEngine.Pipeline.Shadows.Components
                 0.0f,
                 radius * 2);
           
+            
             var origin = Vector3.Transform(Vector3.Zero, this.View * this.Projection);
             origin = origin * (resolution / 2.0f);
 
-            var roundedOrigin = origin.Round();
+            var roundedOrigin = Round(origin);
             var roundOffset = roundedOrigin - origin;
             roundOffset = roundOffset * (2.0f / resolution);
-            roundOffset.Z = 0.0f;
 
             var projection = this.Projection;
 
             projection.M41 += roundOffset.X;
             projection.M42 += roundOffset.Y;
-            projection.M43 += roundOffset.Z;
 
-            this.projection = projection;
+            this.Projection = projection;
             
             this.ViewProjection = this.View * this.Projection;            
             this.Frustum.Matrix = this.ViewProjection;
+        }
+
+        private static Vector3 Round(Vector3 value)
+        {
+            return new Vector3(
+                (float)Math.Round(value.X),
+                (float)Math.Round(value.Y),
+                (float)Math.Round(value.Z));                
         }
     }
 }
