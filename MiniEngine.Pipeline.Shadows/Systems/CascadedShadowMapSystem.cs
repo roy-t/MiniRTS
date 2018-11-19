@@ -23,67 +23,55 @@ namespace MiniEngine.Pipeline.Shadows.Systems
         private static readonly Matrix TexScaleTransform = Matrix.CreateScale(0.5f, -0.5f, 1.0f) * Matrix.CreateTranslation(0.5f, 0.5f, 0.0f);
 
         private readonly GraphicsDevice Device;
-        private readonly EntityCreator EntityCreator;
-        private readonly Dictionary<Entity, CascadedShadowMap> ShadowMaps;
-        private readonly Dictionary<Entity, CascadeInfo> Cascades;
-        private readonly ShadowMapSystem ShadowMapSystem;
+        private readonly EntityLinker EntityLinker;
+        private readonly List<CascadedShadowMap> ShadowMaps;
+        private readonly List<CascadeInfo> Cascades;
 
         private readonly Frustum Frustum;
 
-        public CascadedShadowMapSystem(GraphicsDevice device, EntityCreator entityCreator, ShadowMapSystem shadowMapSystem)
+        public CascadedShadowMapSystem(GraphicsDevice device, EntityLinker entityLinker)
         {
             this.Device = device;
-            this.EntityCreator = entityCreator;            
-            this.ShadowMapSystem = shadowMapSystem;
+            this.EntityLinker = entityLinker;
 
-            this.ShadowMaps = new Dictionary<Entity, CascadedShadowMap>();
-            this.Cascades = new Dictionary<Entity, CascadeInfo>();
+            this.ShadowMaps = new List<CascadedShadowMap>();
+            this.Cascades = new List<CascadeInfo>();
 
             this.Frustum = new Frustum();
         }
 
         public void Add(Entity entity, Vector3 position, Vector3 lookAt, int cascades, int resolution, float[] cascadeDistances)
         {
-            var shadowMap = new CascadedShadowMap(this.Device, resolution, cascades);
-            this.ShadowMaps.Add(entity, shadowMap);
+            var cascadedShadowMap = new CascadedShadowMap(this.Device, resolution, cascades);
+            this.EntityLinker.AddComponent(entity, cascadedShadowMap);
 
             var cascade = new CascadeInfo(position, lookAt, cascades, resolution, cascadeDistances);
-            this.Cascades.Add(entity, cascade);
-
-            var childEntities = this.EntityCreator.CreateChildEntities(entity, cascades);
+            this.EntityLinker.AddComponent(entity, cascade);
+            
             for (var i = 0; i < cascades; i++)
-            {
-                this.ShadowMapSystem.Add(childEntities[i], shadowMap.DepthMapArray, shadowMap.ColorMapArray, i, cascade.ShadowCameras[i]);
+            {                
+                var shadowMap = new ShadowMap(cascadedShadowMap.DepthMapArray, cascadedShadowMap.ColorMapArray, i, cascade.ShadowCameras[i]);
+                this.EntityLinker.AddComponent(entity, shadowMap);
             }            
         }
 
         public void Add(Entity entity, Vector3 position, Vector3 lookAt, int cascades, int resolution = DefaultResolution)
             => this.Add(entity, position, lookAt, cascades, resolution, DefaultCascadeDistances);
 
-        public CascadedShadowMap GetMaps(Entity entity) => this.ShadowMaps[entity];
-        public CascadeInfo GetCascades(Entity entity) => this.Cascades[entity];
-
-        public bool Contains(Entity entity) => this.ShadowMaps.ContainsKey(entity);
-        public string Describe(Entity entity)
-        {
-            var map = this.ShadowMaps[entity];
-            return $"cascaded shadow map, dimensions: {map.DepthMapArray.Width}x{map.DepthMapArray.Height}, cascades: {map.Cascades}";
-        }
         public void Remove(Entity entity)
         {
-            this.ShadowMaps.Remove(entity);
-            var children = this.EntityCreator.GetChilderen(entity);
-            foreach(var child in children)
-            {
-                this.ShadowMapSystem.Remove(child);
-            }
-
-            this.Cascades.Remove(entity);
+            this.EntityLinker.RemoveComponents<CascadedShadowMap>(entity);
+            this.EntityLinker.RemoveComponents<CascadeInfo>(entity);
+            this.EntityLinker.RemoveComponents<ShadowMap>(entity);            
         }
 
         public void Update(PerspectiveCamera perspectiveCamera, Seconds elapsed)
         {
-            foreach (var cascade in this.Cascades.Values)
+            this.Cascades.Clear();
+            this.EntityLinker.GetComponentsOfType(this.Cascades);
+
+
+            foreach (var cascade in this.Cascades)
             {
                 this.Frustum.ResetToViewVolume();
                 this.Frustum.Transform(perspectiveCamera.InverseViewProjection);
@@ -127,6 +115,9 @@ namespace MiniEngine.Pipeline.Shadows.Systems
                 }
             }
         }
+
+        public bool Contains(Entity entity) => false;
+        public string Describe(Entity entity) => "";
 
         /// <summary>
         /// Create the shadow matrix that covers the entire frustum in texture space

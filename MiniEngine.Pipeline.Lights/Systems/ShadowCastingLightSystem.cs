@@ -8,6 +8,7 @@ using MiniEngine.Systems;
 using MiniEngine.Effects.DeviceStates;
 using MiniEngine.Pipeline.Lights.Components;
 using MiniEngine.Pipeline.Shadows.Systems;
+using MiniEngine.Pipeline.Shadows.Components;
 
 namespace MiniEngine.Pipeline.Lights.Systems
 {
@@ -21,14 +22,17 @@ namespace MiniEngine.Pipeline.Lights.Systems
         private readonly ShadowCastingLightEffect Effect;
 
         private readonly ShadowMapSystem ShadowMapSystem;
+        private readonly EntityLinker EntityLinker;
 
         public ShadowCastingLightSystem(
             GraphicsDevice device,
+            EntityLinker entityLinker,
             ShadowCastingLightEffect effect,
             ShadowMapSystem shadowMapSystem)
         {
             this.Device = device;
             this.Effect = effect;
+            this.EntityLinker = entityLinker;
             this.ShadowMapSystem = shadowMapSystem;
 
             this.FullScreenTriangle = new FullScreenTriangle();
@@ -66,7 +70,7 @@ namespace MiniEngine.Pipeline.Lights.Systems
                 foreach (var lightEntity in this.Lights)
                 {
                     var light = lightEntity.Value;
-                    var shadowMap = this.ShadowMapSystem.Get(lightEntity.Key);
+                    var shadowMap = this.EntityLinker.GetComponent<ShadowMap>(lightEntity.Key);
 
                     // G-Buffer input                    
                     this.Effect.NormalMap = gBuffer.NormalTarget;

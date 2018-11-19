@@ -69,6 +69,7 @@ namespace MiniEngine.Configuration
 
             // Entities
             this.Container.Register<EntityCreator>();
+            this.Container.Register<EntityLinker>();
             this.Container.Register<EntityController>();
 
             // Controllers

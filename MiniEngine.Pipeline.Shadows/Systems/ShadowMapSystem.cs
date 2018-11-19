@@ -21,54 +21,53 @@ namespace MiniEngine.Pipeline.Shadows.Systems
         private const int DefaultResolution = 1024;
 
         private readonly GraphicsDevice Device;
+        private readonly EntityLinker EntityLinker;
         private readonly ModelSystem ModelSystem;
         private readonly ParticleSystem ParticleSystem;
-        private readonly Dictionary<Entity, ShadowMap> ShadowMaps;
+        private readonly List<ShadowMap> ShadowMaps;
         private readonly IMeterRegistry MeterRegistry;
 
         public ShadowMapSystem(            
             GraphicsDevice device,
+            EntityLinker entityLinker,
             ModelSystem modelSystem,
             ParticleSystem particleSystem,
             IMeterRegistry meterRegistry)
         {            
             this.Device = device;
+            this.EntityLinker = entityLinker;
             this.ModelSystem = modelSystem;
-            this.ParticleSystem = particleSystem;
+            this.ParticleSystem = particleSystem;            
             this.MeterRegistry = meterRegistry;
-
+            
+            this.ShadowMaps = new List<ShadowMap>();
 
             this.MeterRegistry.CreateGauge(ShadowMapCounter);
             this.MeterRegistry.CreateGauge(ShadowMapTotal);
             this.MeterRegistry.CreateGauge(ShadowMapStep, "step");
-
-            this.ShadowMaps = new Dictionary<Entity, ShadowMap>();
         }
 
-        public bool Contains(Entity entity) => this.ShadowMaps.ContainsKey(entity);
+        public bool Contains(Entity entity) => false;
 
-        public string Describe(Entity entity)
-        {
-            var shadowMap = this.ShadowMaps[entity];
-            return $"shadow map, dimensions: {shadowMap.DepthMap.Width}x{shadowMap.DepthMap.Height}";
-        }
+        public string Describe(Entity entity) => "";
 
-        public void Remove(Entity entity) => this.ShadowMaps.Remove(entity);
+        public void Remove(Entity entity) => this.EntityLinker.RemoveComponents<ShadowMap>(entity);
 
         public void Add(Entity entity, IViewPoint viewPoint, int resolution = DefaultResolution) 
-            => this.ShadowMaps.Add(entity, new ShadowMap(this.Device, resolution, viewPoint));
+            => this.EntityLinker.AddComponent(entity, new ShadowMap(this.Device, resolution, viewPoint));
         
         public void Add(Entity entity, RenderTarget2D depthMapArray, RenderTarget2D colorMapArray, int index, IViewPoint viewPoint)
-            => this.ShadowMaps.Add(entity, new ShadowMap(depthMapArray, colorMapArray, index, viewPoint));
-
-        public ShadowMap Get(Entity entity) => this.ShadowMaps[entity];
+            => this.EntityLinker.AddComponent(entity, new ShadowMap(depthMapArray, colorMapArray, index, viewPoint));
 
         public void RenderShadowMaps()
         {
             this.MeterRegistry.SetGauge(ShadowMapCounter, this.ShadowMaps.Count);
             this.MeterRegistry.StartGauge(ShadowMapTotal);
 
-            foreach (var shadowMap in this.ShadowMaps.Values)
+            this.ShadowMaps.Clear();
+            this.EntityLinker.GetComponentsOfType(this.ShadowMaps);
+
+            foreach (var shadowMap in this.ShadowMaps)
             {
                 var modelBatchList = this.ModelSystem.ComputeBatches(shadowMap.ViewPoint);
                 var particleBatchList = this.ParticleSystem.ComputeBatches(shadowMap.ViewPoint);

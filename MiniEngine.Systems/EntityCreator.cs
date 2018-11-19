@@ -6,12 +6,10 @@ namespace MiniEngine.Systems
     {  
         private int next = 1;
         private readonly List<Entity> Entities;
-        private readonly Dictionary<Entity, Entity[]> ChildEntities;
 
         public EntityCreator()
         {
             this.Entities = new List<Entity>();
-            this.ChildEntities = new Dictionary<Entity, Entity[]>();
         }
 
         public Entity CreateEntity()
@@ -33,35 +31,8 @@ namespace MiniEngine.Systems
             return entities;
         }
 
-        public Entity[] CreateChildEntities(Entity parent, int count)
-        {
-            var children = this.CreateEntities(count);
-            this.ChildEntities.Add(parent, children);
-            return children;
-        }
-
         public IReadOnlyList<Entity> GetAllEntities() => this.Entities.AsReadOnly();
 
-        public Entity[] GetChilderen(Entity entity)
-        {
-            if(this.ChildEntities.TryGetValue(entity, out var children))
-            {
-                return children;
-            }
-
-            return new Entity[0];
-        }
-
-        public void Remove(Entity entity)
-        {
-            this.Entities.Remove(entity);
-            if (this.ChildEntities.TryGetValue(entity, out var children))
-            {
-                foreach(var child in children)
-                {
-                    this.Remove(child);
-                }
-            }
-        }
+        public void Remove(Entity entity) => this.Entities.Remove(entity);
     }
 }

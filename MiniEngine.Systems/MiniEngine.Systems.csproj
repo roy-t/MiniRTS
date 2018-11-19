@@ -50,8 +50,11 @@
     <Compile Include="Entity.cs" />
     <Compile Include="EntityController.cs" />
     <Compile Include="EntityCreator.cs" />
+    <Compile Include="EntityLinker.cs" />
+    <Compile Include="IComponent.cs" />
     <Compile Include="ISystem.cs" />
     <Compile Include="IUpdatableSystem.cs" />
+    <Compile Include="MultiValueDictionary.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -1,8 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
+using MiniEngine.Systems;
 
 namespace MiniEngine.Pipeline.Shadows.Components
 {
-    public sealed class CascadeInfo
+    public sealed class CascadeInfo : IComponent
     {
         public CascadeInfo(Vector3 position, Vector3 lookAt, int cascades, int resolution, float[] cascadeDistances)
         {
@@ -35,6 +36,8 @@ namespace MiniEngine.Pipeline.Shadows.Components
         
         public int Resolution { get; }
         public float[] CascadeDistances { get; }
+
+        public string Describe() => $"cascade info, position {this.Position}, look at: {this.LookAt}";
 
         public void Move(Vector3 position, Vector3 lookAt)
         {

@@ -1,8 +1,10 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
+using MiniEngine.Systems;
+using System;
 
 namespace MiniEngine.Pipeline.Shadows.Components
 {
-    public sealed class CascadedShadowMap
+    public sealed class CascadedShadowMap : IComponent
     {
         public CascadedShadowMap(GraphicsDevice device, int resolution, int cascades)
         {
@@ -36,6 +38,8 @@ namespace MiniEngine.Pipeline.Shadows.Components
         public int Cascades { get; }
 
         public RenderTarget2D DepthMapArray { get; }
-        public RenderTarget2D ColorMapArray { get; }
+        public RenderTarget2D ColorMapArray { get; }                
+
+        public string Describe() => $"cascaded shadow map, cascades: {this.Cascades}";
     }
 }

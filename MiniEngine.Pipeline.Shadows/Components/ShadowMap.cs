@@ -1,9 +1,10 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Primitives.Cameras;
+using MiniEngine.Systems;
 
 namespace MiniEngine.Pipeline.Shadows.Components
 {
-    public sealed class ShadowMap
+    public sealed class ShadowMap : IComponent
     {
         public ShadowMap(RenderTarget2D depthMapArray, RenderTarget2D colorMapArray, int index, IViewPoint viewPoint)
         {            
@@ -45,5 +46,7 @@ namespace MiniEngine.Pipeline.Shadows.Components
         public RenderTarget2D ColorMap { get; }
         public int Index { get; }
         public IViewPoint ViewPoint { get; }
+
+        public string Describe() => $"shadow map, resolution: {this.DepthMap.Width}x{this.DepthMap.Height}, index: {this.Index}";
     }
 }

@@ -8,6 +8,7 @@ using MiniEngine.Effects;
 using MiniEngine.Effects.DeviceStates;
 using MiniEngine.Pipeline.Lights.Components;
 using MiniEngine.Pipeline.Shadows.Systems;
+using MiniEngine.Pipeline.Shadows.Components;
 
 namespace MiniEngine.Pipeline.Lights.Systems
 {
@@ -21,14 +22,16 @@ namespace MiniEngine.Pipeline.Lights.Systems
         private readonly FullScreenTriangle FullScreenTriangle;
 
         private readonly CascadedShadowMapSystem CascadedShadowMapSystem;
+        private readonly EntityLinker EntityLinker;
         private readonly SunlightEffect Effect;
 
         private readonly Dictionary<Entity, Sunlight> Sunlights;
 
-        public SunlightSystem(GraphicsDevice device, SunlightEffect effect, CascadedShadowMapSystem cascadedShadowMapSystem)
+        public SunlightSystem(GraphicsDevice device, SunlightEffect effect, EntityLinker entityLinker, CascadedShadowMapSystem cascadedShadowMapSystem)
         {
             this.Device = device;
             this.Effect = effect;
+            this.EntityLinker = entityLinker;
             this.CascadedShadowMapSystem = cascadedShadowMapSystem;
 
             this.FullScreenTriangle = new FullScreenTriangle();
@@ -79,8 +82,8 @@ namespace MiniEngine.Pipeline.Lights.Systems
                     var entity = pair.Key;
                     var light = pair.Value;
 
-                    var maps = this.CascadedShadowMapSystem.GetMaps(entity);
-                    var cascades = this.CascadedShadowMapSystem.GetCascades(entity);
+                    var maps = this.EntityLinker.GetComponent<CascadedShadowMap>(entity);                    
+                    var cascades = this.EntityLinker.GetComponent<CascadeInfo>(entity);
 
                     // G-Buffer input     
                     this.Effect.NormalMap = gBuffer.NormalTarget;
