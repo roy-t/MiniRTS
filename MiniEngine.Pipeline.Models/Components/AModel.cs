@@ -3,9 +3,9 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace MiniEngine.Pipeline.Models.Components
 {
-    public sealed class ModelPose
+    public abstract class AModel
     {
-        public ModelPose(Model model, Matrix pose, BoundingSphere boundingSphere, BoundingBox boundingBox)
+        protected AModel(Model model, Matrix pose, BoundingSphere boundingSphere, BoundingBox boundingBox)
         {
             this.Model = model;
             this.Pose = pose;

@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Primitives.Cameras;
 using MiniEngine.Systems;
 using MiniEngine.Primitives.Bounds;
@@ -13,81 +10,40 @@ namespace MiniEngine.Pipeline.Models.Systems
 {
     public sealed class ModelSystem : ISystem
     {
-        private readonly Dictionary<Entity, ModelPose> OpaqueModels;
-        private readonly Dictionary<Entity, ModelPose> TransparentModels;
+        private readonly List<OpaqueModel> OpaqueModels;
+        private readonly List<TransparentModel> TransparentModels;
+        private readonly EntityLinker Linker;
 
-        public ModelSystem()
+        public ModelSystem(EntityLinker linker)
         {
-            this.OpaqueModels = new Dictionary<Entity, ModelPose>();
-            this.TransparentModels = new Dictionary<Entity, ModelPose>();
+            this.OpaqueModels = new List<OpaqueModel>();
+            this.TransparentModels = new List<TransparentModel>();
+            this.Linker = linker;
         }
-
-        public bool Contains(Entity entity) => this.OpaqueModels.ContainsKey(entity) || this.TransparentModels.ContainsKey(entity);
-
-        public string Describe(Entity entity)
-        {
-            ModelPose model;
-            ModelType modelType;
-            if( this.OpaqueModels.ContainsKey(entity))
-            {
-                model = this.OpaqueModels[entity];
-                modelType = ModelType.Opaque;
-            }
-            else
-            {
-                model = this.TransparentModels[entity];
-                modelType = ModelType.Transparent;
-            }
-
-            model.Pose.Decompose(out var scale, out var rotation, out var translation);
-
-            return $"model, translation: {translation}, rotation: {rotation}, scale: {scale}, type: {modelType}";
-        }
-
-        public void Remove(Entity entity)
-        {
-            this.OpaqueModels.Remove(entity);
-            this.TransparentModels.Remove(entity);
-        }
-
-        public void Add(Entity entity, Model model, Matrix pose, ModelType modelType = ModelType.Opaque)
-        {
-            var boundingSphere = model.ComputeBoundingSphere(pose);
-            var boundingBox = model.ComputeBoundingBox(pose);
-
-            switch (modelType)
-            {
-                case ModelType.Opaque:
-                    this.OpaqueModels.Add(entity, new ModelPose(model, pose, boundingSphere, boundingBox));
-                    break;
-                case ModelType.Transparent:
-                    this.TransparentModels.Add(entity, new ModelPose(model, pose, boundingSphere, boundingBox));
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(modelType), modelType, null);
-            }
-        }
-
-
+        
         public ModelBatchList ComputeBatches(IViewPoint viewPoint)
         {
+            this.TransparentModels.Clear();
+            this.Linker.GetComponentsOfType(this.TransparentModels);
+
+            this.OpaqueModels.Clear();
+            this.Linker.GetComponentsOfType(this.OpaqueModels);
+
             var transparentBatches = new List<ModelRenderBatch>(this.TransparentModels.Count);
 
-            var transparentModels = SortBackToFront(this.TransparentModels.Values, viewPoint);
+            var transparentModels = SortBackToFront(this.TransparentModels, viewPoint);
             var batches = ComputeBatches(transparentModels, viewPoint);
             foreach (var batch in batches)
             {
                 transparentBatches.Add(new ModelRenderBatch(batch, viewPoint));
             }
 
-            return new ModelBatchList(
-                new ModelRenderBatch(this.OpaqueModels.Values.ToList(), viewPoint),
-                transparentBatches);
+            return new ModelBatchList(new ModelRenderBatch(this.OpaqueModels, viewPoint), transparentBatches);
         }
 
-        private static IEnumerable<ModelPose> SortBackToFront(IEnumerable<ModelPose> models, IViewPoint viewPoint)
+        private static IEnumerable<AModel> SortBackToFront(IEnumerable<TransparentModel> models, IViewPoint viewPoint)
         {
-            var modeList = new List<ModelPose>();
+            var modeList = new List<AModel>();
             var distanceList = new List<float>();
 
             foreach (var model in models)
@@ -105,13 +61,13 @@ namespace MiniEngine.Pipeline.Models.Systems
             return modeList;
         }
 
-        private static IReadOnlyList<List<ModelPose>> ComputeBatches(
-            IEnumerable<ModelPose> models,
+        private static IReadOnlyList<List<AModel>> ComputeBatches(
+            IEnumerable<AModel> models,
             IViewPoint viewPoint)
         {
-            var batches = new List<List<ModelPose>>();
+            var batches = new List<List<AModel>>();
 
-            var currentBatch = new List<ModelPose>();
+            var currentBatch = new List<AModel>();
             var currentBounds = new BoundingRectangle();
             foreach (var model in models)
             {
@@ -127,7 +83,7 @@ namespace MiniEngine.Pipeline.Models.Systems
                 else if (bounds.Intersects(currentBounds))
                 {
                     batches.Add(currentBatch);
-                    currentBatch = new List<ModelPose> { model };
+                    currentBatch = new List<AModel> { model };
                     currentBounds = bounds;
                 }
                 else
@@ -146,9 +102,9 @@ namespace MiniEngine.Pipeline.Models.Systems
         }
 
         private static void InsertBackToFront(
-            IList<ModelPose> models,
+            IList<AModel> models,
             IList<float> distances,
-            ModelPose model,
+            AModel model,
             float distance)
         {
             for (var i = 0; i < models.Count; i++)

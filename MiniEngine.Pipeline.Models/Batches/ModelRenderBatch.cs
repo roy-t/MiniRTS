@@ -13,10 +13,10 @@ namespace MiniEngine.Pipeline.Models.Batches
         private static Matrix[] SharedBoneMatrix;
         private readonly RenderEffect Effect;
 
-        private readonly IReadOnlyList<ModelPose> Models;
+        private readonly IReadOnlyList<AModel> Models;
         private readonly IViewPoint ViewPoint;
 
-        public ModelRenderBatch(IReadOnlyList<ModelPose> models, IViewPoint viewPoint)
+        public ModelRenderBatch(IReadOnlyList<AModel> models, IViewPoint viewPoint)
         {
             this.Models = models;
             this.ViewPoint = viewPoint;

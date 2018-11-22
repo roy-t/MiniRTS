@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Pipeline.Lights.Systems;
-using MiniEngine.Pipeline.Models.Components;
+using MiniEngine.Pipeline.Models.Factories;
 using MiniEngine.Pipeline.Models.Systems;
 using MiniEngine.Pipeline.Particles.Factories;
 using MiniEngine.Pipeline.Systems;
@@ -17,6 +17,8 @@ namespace MiniEngine.Scenes
         private readonly AmbientLightSystem AmbientLightSystem;
         private readonly SunlightSystem SunlightSystem;
         private readonly PointLightSystem PointLightSystem;
+        private readonly OpaqueModelFactory OpaqueModelFactory;
+        private readonly TransparentModelFactory TransparentModelFactory;
         private readonly ShadowCastingLightSystem ShadowCastingLightSystem;
         private readonly ModelSystem ModelSystem;
         private readonly EmitterFactory EmitterFactory;
@@ -40,7 +42,8 @@ namespace MiniEngine.Scenes
             SunlightSystem sunlightSystem,
             ShadowCastingLightSystem shadowCastingLightSystem,
             PointLightSystem pointLightSystem,
-            ModelSystem modelSystem,
+            OpaqueModelFactory opaqueModelFactory,
+            TransparentModelFactory transparentModelFactory,
             DebugRenderSystem debugRenderSystem,
             EmitterFactory emitterFactory)
         {
@@ -49,7 +52,8 @@ namespace MiniEngine.Scenes
             this.SunlightSystem = sunlightSystem;
             this.ShadowCastingLightSystem = shadowCastingLightSystem;
             this.PointLightSystem = pointLightSystem;
-            this.ModelSystem = modelSystem;
+            this.OpaqueModelFactory = opaqueModelFactory;
+            this.TransparentModelFactory = transparentModelFactory;
             this.DebugRenderSystem = debugRenderSystem;
             this.EmitterFactory = emitterFactory;
         }
@@ -70,22 +74,21 @@ namespace MiniEngine.Scenes
             this.AmbientLightSystem.Add(this.worldEntity, Color.White * 0.25f);
             this.SunlightSystem.Add(this.worldEntity, Color.White, Vector3.Up, (Vector3.Left * 0.75f) + (Vector3.Backward * 0.1f));
 
-            this.ModelSystem.Add(this.worldEntity, this.sponza, Matrix.CreateScale(0.05f));
+            this.OpaqueModelFactory.Construct(this.worldEntity, this.sponza, Matrix.CreateScale(0.05f));
 
             this.planeEntity = this.EntityCreator.CreateEntity();
 
             var position = new Vector3(-40.5f, 30.0f, 3.2f);
 
             var world = CreateScaleRotationTranslation(4.4f * 0.01f, MathHelper.PiOver2, MathHelper.PiOver2, 0, position);
-            this.ModelSystem.Add(this.planeEntity, this.plane, world, ModelType.Transparent);
+            this.TransparentModelFactory.Construct(this.planeEntity, this.plane, world);
 
             this.planeEntity2 = this.EntityCreator.CreateEntity();
 
             position = new Vector3(-40.5f, 30.0f, -7.2f);
             var world2 = CreateScaleRotationTranslation(4.4f * 0.01f, 0, MathHelper.PiOver4, 0, position);
 
-            this.ModelSystem.Add(this.planeEntity2, this.plane, world2, ModelType.Transparent);
-
+            this.TransparentModelFactory.Construct(this.planeEntity2, this.plane, world2);
 
             var particleSpawn = new Vector3(-60.5f, 6.0f, 20.0f);
             this.particleEntity = this.EntityCreator.CreateEntity();

@@ -49,13 +49,16 @@
   <ItemGroup>
     <Compile Include="Batches\ModelBatchList.cs" />
     <Compile Include="Batches\ModelRenderBatch.cs" />
-    <Compile Include="Components\ModelPose.cs" />
-    <Compile Include="Components\ModelType.cs" />
+    <Compile Include="Components\AModel.cs" />
+    <Compile Include="Components\TransparentModel.cs" />
+    <Compile Include="Components\OpaqueModel.cs" />
     <Compile Include="Extensions\AntiAliasingStageExtensions.cs" />
     <Compile Include="Extensions\ClearStageExtensions.cs" />
     <Compile Include="Extensions\CombineDiffuseWithLigtingStageExtensions.cs" />
     <Compile Include="Extensions\RenderModelBatchStageExtensions.cs" />
     <Compile Include="Extensions\RenderModelsStageExtension.cs" />
+    <Compile Include="Factories\TransparentModelFactory.cs" />
+    <Compile Include="Factories\OpaqueModelFactory.cs" />
     <Compile Include="ModelPipeline.cs" />
     <Compile Include="ModelPipelineInput.cs" />
     <Compile Include="Stages\ClearStage.cs" />

@@ -32,7 +32,7 @@ namespace MiniEngine
         private PerspectiveCamera perspectiveCamera;
         private SpriteBatch spriteBatch;
         private IReadOnlyList<IScene> scenes;
-        private int currentSceneIndex = 1;
+        private int currentSceneIndex = 0;
         private DebugController debugController;
         private DeferredRenderPipeline renderPipeline;
         private EntityController entityController;
