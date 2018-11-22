@@ -7,8 +7,8 @@ using MiniEngine.Systems;
 using MiniEngine.Effects;
 using MiniEngine.Effects.DeviceStates;
 using MiniEngine.Pipeline.Lights.Components;
-using MiniEngine.Pipeline.Shadows.Systems;
 using MiniEngine.Pipeline.Shadows.Components;
+using MiniEngine.Pipeline.Shadows.Factories;
 
 namespace MiniEngine.Pipeline.Lights.Systems
 {
@@ -21,18 +21,19 @@ namespace MiniEngine.Pipeline.Lights.Systems
         private readonly Frustum Frustum;
         private readonly FullScreenTriangle FullScreenTriangle;
 
-        private readonly CascadedShadowMapSystem CascadedShadowMapSystem;
+        private readonly CascadedShadowMapFactory CascadedShadowMapFactory;
         private readonly EntityLinker EntityLinker;
         private readonly SunlightEffect Effect;
 
         private readonly Dictionary<Entity, Sunlight> Sunlights;
 
-        public SunlightSystem(GraphicsDevice device, SunlightEffect effect, EntityLinker entityLinker, CascadedShadowMapSystem cascadedShadowMapSystem)
+        public SunlightSystem(GraphicsDevice device, SunlightEffect effect, EntityLinker entityLinker, 
+            CascadedShadowMapFactory cascadedShadowMapFactory)
         {
             this.Device = device;
             this.Effect = effect;
             this.EntityLinker = entityLinker;
-            this.CascadedShadowMapSystem = cascadedShadowMapSystem;
+            this.CascadedShadowMapFactory = cascadedShadowMapFactory;
 
             this.FullScreenTriangle = new FullScreenTriangle();
             this.Frustum = new Frustum();
@@ -51,7 +52,7 @@ namespace MiniEngine.Pipeline.Lights.Systems
         public void Remove(Entity entity)
         {
             this.Sunlights.Remove(entity);
-            this.CascadedShadowMapSystem.Remove(entity);
+            this.CascadedShadowMapFactory.Deconstruct(entity);
         }       
 
         public void Add(Entity entity, Color color, Vector3 position, Vector3 lookAt)
@@ -59,7 +60,7 @@ namespace MiniEngine.Pipeline.Lights.Systems
             var sunlight = new Sunlight(color, Cascades);
             this.Sunlights.Add(entity, sunlight);         
 
-            this.CascadedShadowMapSystem.Add(entity, position, lookAt, Cascades, Resolution);               
+            this.CascadedShadowMapFactory.Construct(entity, position, lookAt, Cascades, Resolution);               
         }
 
         public void RemoveAll()
@@ -82,15 +83,14 @@ namespace MiniEngine.Pipeline.Lights.Systems
                     var entity = pair.Key;
                     var light = pair.Value;
 
-                    var maps = this.EntityLinker.GetComponent<CascadedShadowMap>(entity);                    
-                    var cascades = this.EntityLinker.GetComponent<CascadeInfo>(entity);
+                    var shadowMapCascades = this.EntityLinker.GetComponent<ShadowMapCascades>(entity);                                        
 
                     // G-Buffer input     
                     this.Effect.NormalMap = gBuffer.NormalTarget;
                     this.Effect.DepthMap = gBuffer.DepthTarget;
 
                     // Light properties
-                    this.Effect.SurfaceToLightVector = cascades.SurfaceToLightVector;
+                    this.Effect.SurfaceToLightVector = shadowMapCascades.SurfaceToLightVector;
                     this.Effect.LightColor = light.Color;
 
                     // Camera properties for specular reflections, and rebuilding world positions
@@ -98,12 +98,12 @@ namespace MiniEngine.Pipeline.Lights.Systems
                     this.Effect.InverseViewProjection = perspectiveCamera.InverseViewProjection;
 
                     // Shadow properties
-                    this.Effect.ShadowMap = maps.DepthMapArray;
-                    this.Effect.ColorMap = maps.ColorMapArray;
-                    this.Effect.ShadowMatrix = cascades.GlobalShadowMatrix;
-                    this.Effect.CascadeSplits = cascades.CascadeSplits;
-                    this.Effect.CascadeOffsets = cascades.CascadeOffsets;
-                    this.Effect.CascadeScales = cascades.CascadeScales;
+                    this.Effect.ShadowMap = shadowMapCascades.DepthMapArray;
+                    this.Effect.ColorMap = shadowMapCascades.ColorMapArray;
+                    this.Effect.ShadowMatrix = shadowMapCascades.GlobalShadowMatrix;
+                    this.Effect.CascadeSplits = shadowMapCascades.CascadeSplits;
+                    this.Effect.CascadeOffsets = shadowMapCascades.CascadeOffsets;
+                    this.Effect.CascadeScales = shadowMapCascades.CascadeScales;
 
                     this.Effect.Apply();
 

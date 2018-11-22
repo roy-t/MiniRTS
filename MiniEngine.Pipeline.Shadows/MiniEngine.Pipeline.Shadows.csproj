@@ -46,10 +46,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Components\CascadeCamera.cs" />
-    <Compile Include="Components\CascadeInfo.cs" />
-    <Compile Include="Components\CascadedShadowMap.cs" />
+    <Compile Include="Components\ShadowMapCascades.cs" />
     <Compile Include="Components\ShadowMap.cs" />
     <Compile Include="Extensions\RenderShadowsStageExtensions.cs" />
+    <Compile Include="Factories\CascadedShadowMapFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ShadowPipeline.cs" />
     <Compile Include="ShadowPipelineInput.cs" />

@@ -2,8 +2,7 @@
 {
     public interface ISystem
     {
-        bool Contains(Entity entity);
-        string Describe(Entity entity);
+        // TODO: remove from every system once all systems use factories
         void Remove(Entity entity);
     }
 }

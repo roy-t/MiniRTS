@@ -33,6 +33,9 @@ namespace MiniEngine.Systems
             where T : IComponent
             => (T)this.EntityComponents.Get(entity).First(x => x.GetType() == typeof(T));
 
+        public IEnumerable<IComponent> GetAllComponents(Entity entity)
+            => this.EntityComponents.Get(entity);
+        
         public void AddComponent<T>(Entity entity, T component)
             where T : IComponent
         {

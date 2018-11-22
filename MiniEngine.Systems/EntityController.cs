@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text;
 
 namespace MiniEngine.Systems
@@ -7,11 +6,13 @@ namespace MiniEngine.Systems
     public sealed class EntityController
     {
         private readonly EntityCreator Creator;
+        private readonly EntityLinker EntityLinker;
         private readonly IReadOnlyList<ISystem> Systems;
 
-        public EntityController(EntityCreator creator, IEnumerable<ISystem> systems)
+        public EntityController(EntityCreator creator, EntityLinker entityLinker, IEnumerable<ISystem> systems)
         {
             this.Creator = creator;
+            this.EntityLinker = entityLinker;
             this.Systems = new List<ISystem>(systems).AsReadOnly();
         }
 
@@ -40,26 +41,25 @@ namespace MiniEngine.Systems
 
         public void DescribeAllEntities()
         {
+            var builder = new StringBuilder();
             foreach(var entity in this.Creator.GetAllEntities())
             {
-                this.DescribeEntity(entity);
+                this.DescribeEntity(builder, entity);
             }
         }
 
-        public string DescribeEntity(Entity entity)
-        {
-            var builder = new StringBuilder();
+        public string DescribeEntity(Entity entity) => this.DescribeEntity(new StringBuilder(), entity);
+
+        private string DescribeEntity(StringBuilder builder, Entity entity)
+        {            
             builder.AppendLine(entity.ToString());
 
-            foreach (var system in this.Systems)
+            foreach(var component in this.EntityLinker.GetAllComponents(entity))
             {
-                if (system.Contains(entity))
-                {
-                    builder.Append('\t');
-                    builder.AppendLine(system.Describe(entity));
-                }
+                builder.Append('\t');
+                builder.AppendLine(component.ToString());
             }
-
+            
             return builder.ToString();
         }
 

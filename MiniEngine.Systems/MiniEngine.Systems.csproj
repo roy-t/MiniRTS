@@ -47,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AComponentFactory.cs" />
     <Compile Include="Entity.cs" />
     <Compile Include="EntityController.cs" />
     <Compile Include="EntityCreator.cs" />
