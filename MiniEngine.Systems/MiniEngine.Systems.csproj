@@ -47,12 +47,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AComponentFactory.cs" />
+    <Compile Include="Factories\AComponentFactory.cs" />
     <Compile Include="Entity.cs" />
     <Compile Include="EntityController.cs" />
     <Compile Include="EntityCreator.cs" />
     <Compile Include="EntityLinker.cs" />
-    <Compile Include="IComponent.cs" />
+    <Compile Include="Components\IComponent.cs" />
+    <Compile Include="Factories\IComponentFactory.cs" />
     <Compile Include="ISystem.cs" />
     <Compile Include="IUpdatableSystem.cs" />
     <Compile Include="MultiValueDictionary.cs" />

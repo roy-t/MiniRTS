@@ -11,6 +11,7 @@ using MiniEngine.Scenes;
 using MiniEngine.Systems;
 using MiniEngine.Utilities;
 using MiniEngine.Telemetry;
+using MiniEngine.Systems.Factories;
 
 namespace MiniEngine.Configuration
 {
@@ -59,7 +60,7 @@ namespace MiniEngine.Configuration
 
             // Systems
             this.RegisterAllOf<ISystem>();
-            this.RegisterAllOf<AComponentFactory>();
+            this.RegisterAllOf<IComponentFactory>();
 
             // Renderer
             this.Container.Register<DeferredRenderPipeline>();

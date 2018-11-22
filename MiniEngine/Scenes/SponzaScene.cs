@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Pipeline.Lights.Systems;
 using MiniEngine.Pipeline.Models.Components;
 using MiniEngine.Pipeline.Models.Systems;
-using MiniEngine.Pipeline.Particles.Systems;
+using MiniEngine.Pipeline.Particles.Factories;
 using MiniEngine.Pipeline.Systems;
 using MiniEngine.Systems;
 using MiniEngine.Units;
@@ -19,7 +19,7 @@ namespace MiniEngine.Scenes
         private readonly PointLightSystem PointLightSystem;
         private readonly ShadowCastingLightSystem ShadowCastingLightSystem;
         private readonly ModelSystem ModelSystem;
-        private readonly ParticleSystem ParticleSystem;
+        private readonly EmitterFactory EmitterFactory;
         private readonly DebugRenderSystem DebugRenderSystem;
 
         private Entity worldEntity;
@@ -42,7 +42,7 @@ namespace MiniEngine.Scenes
             PointLightSystem pointLightSystem,
             ModelSystem modelSystem,
             DebugRenderSystem debugRenderSystem,
-            ParticleSystem particleSystem)
+            EmitterFactory emitterFactory)
         {
             this.EntityCreator = entityCreator;
             this.AmbientLightSystem = ambientLightSystem;
@@ -51,7 +51,7 @@ namespace MiniEngine.Scenes
             this.PointLightSystem = pointLightSystem;
             this.ModelSystem = modelSystem;
             this.DebugRenderSystem = debugRenderSystem;
-            this.ParticleSystem = particleSystem;
+            this.EmitterFactory = emitterFactory;
         }
 
         public void LoadContent(ContentManager content)
@@ -89,13 +89,13 @@ namespace MiniEngine.Scenes
 
             var particleSpawn = new Vector3(-60.5f, 6.0f, 20.0f);
             this.particleEntity = this.EntityCreator.CreateEntity();
-            this.ParticleSystem.Add(this.particleEntity, particleSpawn, this.smoke, 1, 1);
+            this.EmitterFactory.Construct(this.particleEntity, particleSpawn, this.smoke, 1, 1);
 
             this.particleEntity2 = this.EntityCreator.CreateEntity();
-            this.ParticleSystem.Add(this.particleEntity2, particleSpawn, this.explosion, 8, 8);
+            this.EmitterFactory.Construct(this.particleEntity2, particleSpawn, this.explosion, 8, 8);
 
             this.particleEntity3 = this.EntityCreator.CreateEntity();
-            this.ParticleSystem.Add(this.particleEntity3, particleSpawn, this.explosion2, 1, 1);
+            this.EmitterFactory.Construct(this.particleEntity3, particleSpawn, this.explosion2, 1, 1);
 
             this.PointLightSystem.Add(this.particleEntity, particleSpawn, Color.IndianRed, 20.0f, 1.0f);
             var light = particleSpawn + (Vector3.Up * 3);

@@ -1,4 +1,4 @@
-﻿namespace MiniEngine.Systems
+﻿namespace MiniEngine.Systems.Components
 {
     public interface IComponent
     {

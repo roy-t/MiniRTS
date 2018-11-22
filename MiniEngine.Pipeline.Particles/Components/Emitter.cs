@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MiniEngine.Systems.Components;
 using MiniEngine.Units;
 
 namespace MiniEngine.Pipeline.Particles.Components
 {
-    public sealed class Emitter
+    public sealed class Emitter : IComponent
     {
         private static readonly Random Random = new Random();
 
@@ -90,5 +91,7 @@ namespace MiniEngine.Pipeline.Particles.Components
         }
 
         private static float GetRandomOffset() => ((float)Random.NextDouble() * 2.0f) - 1.0f;
+
+        public override string ToString() => $"emitter, position: {this.Position}, particles: {this.Particles.Count}";
     }
 }

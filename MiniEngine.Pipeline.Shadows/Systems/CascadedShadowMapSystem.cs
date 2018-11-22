@@ -94,8 +94,6 @@ namespace MiniEngine.Pipeline.Shadows.Systems
             return view * projection * TexScaleTransform;
         }
 
-        private static Vector3 ScaleToVector3(Vector4 value) => new Vector3(value.X, value.Y, value.Z) / value.W;
-        
-        public void Remove(Entity entity) => throw new System.NotImplementedException();
+        private static Vector3 ScaleToVector3(Vector4 value) => new Vector3(value.X, value.Y, value.Z) / value.W;        
     }
 }

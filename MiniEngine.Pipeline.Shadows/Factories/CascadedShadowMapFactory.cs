@@ -2,10 +2,11 @@
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Pipeline.Shadows.Components;
 using MiniEngine.Systems;
+using MiniEngine.Systems.Factories;
 
 namespace MiniEngine.Pipeline.Shadows.Factories
 {
-    public sealed class CascadedShadowMapFactory : AComponentFactory
+    public sealed class CascadedShadowMapFactory : AComponentFactory<ShadowMapCascades>
     {        
         private const int DefaultResolution = 1024;
         private static readonly float[] DefaultCascadeDistances =
@@ -35,7 +36,7 @@ namespace MiniEngine.Pipeline.Shadows.Factories
         public void Construct(Entity entity, Vector3 position, Vector3 lookAt, int cascades, int resolution = DefaultResolution)
             => this.Build(entity, position, lookAt, cascades, resolution, DefaultCascadeDistances);
 
-        public void Deconstruct(Entity entity)
+        public override void Deconstruct(Entity entity)
         {
             this.Linker.RemoveComponents<ShadowMapCascades>(entity);
             this.Linker.RemoveComponents<ShadowMap>(entity);            

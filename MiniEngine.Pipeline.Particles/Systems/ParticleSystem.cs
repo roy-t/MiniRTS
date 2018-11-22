@@ -16,8 +16,8 @@ namespace MiniEngine.Pipeline.Particles.Systems
         private static readonly DistanceComparer PoseComparer = new DistanceComparer();
 
         private readonly RenderEffect Effect;
-
-        private readonly Dictionary<Entity, Emitter> Emitters;
+        private readonly EntityLinker Linker;
+        private readonly List<Emitter> Emitters;
         private readonly Texture2D NeutralMask;
         private readonly Texture2D NeutralNormalMap;
         private readonly Texture2D NeutralSpecularMap;
@@ -26,44 +26,38 @@ namespace MiniEngine.Pipeline.Particles.Systems
         public ParticleSystem(
             GraphicsDevice device,
             RenderEffect effect,
+            EntityLinker linker,
             Texture2D neutralMask,
             Texture2D neutralNormal,
             Texture2D neutralSpecular)
         {
             this.Effect = effect;
+            this.Linker = linker;
             this.NeutralMask = neutralMask;
             this.NeutralNormalMap = neutralNormal;
             this.NeutralSpecularMap = neutralSpecular;
 
-            this.Emitters = new Dictionary<Entity, Emitter>();
+            this.Emitters = new List<Emitter>();
             this.Quad = new Quad(device);
-        }
-
-        public bool Contains(Entity entity) => this.Emitters.ContainsKey(entity);
-
-        public string Describe(Entity entity)
-        {
-            var emitter = this.Emitters[entity];
-            return $"emitter, position: {emitter.Position}, particles: {emitter.Particles.Count}";
-        }
-
-        public void Remove(Entity entity) => this.Emitters.Remove(entity);
+        }        
 
         public void Update(PerspectiveCamera camera, Seconds elapsed)
         {
-            foreach (var emitter in this.Emitters.Values)
+            this.Emitters.Clear();
+            this.Linker.GetComponentsOfType(this.Emitters);
+            foreach (var emitter in this.Emitters)
             {
                 emitter.Update(elapsed);
             }
         }
 
-        public void Add(Entity entity, Vector3 position, Texture2D texture, int rows, int columns) => this.Emitters.Add(entity, new Emitter(position, texture, rows, columns));
-
         public ParticleBatchList ComputeBatches(IViewPoint viewPoint)
         {
             var particles = new List<ParticlePose>();
-
-            foreach (var emitter in this.Emitters.Values)
+            
+            this.Emitters.Clear();
+            this.Linker.GetComponentsOfType(this.Emitters);
+            foreach (var emitter in this.Emitters)
             {
                 foreach (var particle in emitter.Particles)
                 {
