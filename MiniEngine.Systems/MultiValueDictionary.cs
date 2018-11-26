@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace MiniEngine.Systems
 {
@@ -38,5 +39,7 @@ namespace MiniEngine.Systems
 
             return new List<TValue>(0);
         }
+
+        internal void Remove(TKey key) => this.Dictionary.Remove(key);
     }
 }

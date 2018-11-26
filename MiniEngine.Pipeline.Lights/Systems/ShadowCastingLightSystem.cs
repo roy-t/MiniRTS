@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Primitives.Cameras;
 using MiniEngine.Effects;
@@ -8,7 +7,6 @@ using MiniEngine.Systems;
 using MiniEngine.Effects.DeviceStates;
 using MiniEngine.Pipeline.Lights.Components;
 using MiniEngine.Pipeline.Shadows.Systems;
-using MiniEngine.Pipeline.Shadows.Components;
 
 namespace MiniEngine.Pipeline.Lights.Systems
 {
@@ -18,7 +16,7 @@ namespace MiniEngine.Pipeline.Lights.Systems
 
         private readonly FullScreenTriangle FullScreenTriangle;
 
-        private readonly Dictionary<Entity, ShadowCastingLight> Lights;
+        private readonly List<ShadowCastingLight> Lights;
         private readonly ShadowCastingLightEffect Effect;
 
         private readonly ShadowMapSystem ShadowMapSystem;
@@ -37,41 +35,18 @@ namespace MiniEngine.Pipeline.Lights.Systems
 
             this.FullScreenTriangle = new FullScreenTriangle();
 
-            this.Lights = new Dictionary<Entity, ShadowCastingLight>();
-        }
-
-        public bool Contains(Entity entity) => this.Lights.ContainsKey(entity);
-
-        public string Describe(Entity entity)
-        {
-            var light = this.Lights[entity];
-            return
-                $"shadow casting light, direction: {light.ViewPoint.LookAt - light.ViewPoint.Position}, color: {light.Color}";
-        }
-
-        public void Remove(Entity entity)
-        {
-            this.Lights.Remove(entity);
-            this.ShadowMapSystem.Remove(entity);
-        }
-
-        public void Add(Entity entity, Vector3 position, Vector3 lookAt, Color color)
-        {
-            var shadowCastingLight = new ShadowCastingLight(position, lookAt, color);
-
-            this.Lights.Add(entity, shadowCastingLight);
-            this.ShadowMapSystem.Add(entity, shadowCastingLight.ViewPoint);
+            this.Lights = new List<ShadowCastingLight>();
         }
 
         public void RenderLights(PerspectiveCamera perspectiveCamera, GBuffer gBuffer)
         {
+            this.Lights.Clear();
+            this.EntityLinker.GetComponentsOfType(this.Lights);
+
             using (this.Device.ShadowCastingLightState())
             {
-                foreach (var lightEntity in this.Lights)
+                foreach (var light in this.Lights)
                 {
-                    var light = lightEntity.Value;
-                    var shadowMap = this.EntityLinker.GetComponent<ShadowMap>(lightEntity.Key);
-
                     // G-Buffer input                    
                     this.Effect.NormalMap = gBuffer.NormalTarget;
                     this.Effect.DepthMap = gBuffer.DepthTarget;
@@ -86,8 +61,8 @@ namespace MiniEngine.Pipeline.Lights.Systems
                     this.Effect.InverseViewProjection = perspectiveCamera.InverseViewProjection;
 
                     // Shadow properties
-                    this.Effect.ShadowMap = shadowMap.DepthMap;
-                    this.Effect.ColorMap = shadowMap.ColorMap;
+                    this.Effect.ShadowMap = light.ShadowMap.DepthMap;
+                    this.Effect.ColorMap = light.ShadowMap.ColorMap;
                     this.Effect.LightViewProjection = light.ViewPoint.ViewProjection;
 
                     this.Effect.Apply();

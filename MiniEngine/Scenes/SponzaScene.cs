@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using MiniEngine.Pipeline.Lights.Factories;
 using MiniEngine.Pipeline.Lights.Systems;
 using MiniEngine.Pipeline.Models.Factories;
 using MiniEngine.Pipeline.Models.Systems;
@@ -14,13 +15,9 @@ namespace MiniEngine.Scenes
     public sealed class SponzaScene : IScene
     {
         private readonly EntityCreator EntityCreator;
-        private readonly AmbientLightSystem AmbientLightSystem;
-        private readonly SunlightSystem SunlightSystem;
-        private readonly PointLightSystem PointLightSystem;
+        private readonly LightsFactory LightsFactory;
         private readonly OpaqueModelFactory OpaqueModelFactory;
         private readonly TransparentModelFactory TransparentModelFactory;
-        private readonly ShadowCastingLightSystem ShadowCastingLightSystem;
-        private readonly ModelSystem ModelSystem;
         private readonly EmitterFactory EmitterFactory;
         private readonly DebugRenderSystem DebugRenderSystem;
 
@@ -38,7 +35,7 @@ namespace MiniEngine.Scenes
 
         public SponzaScene(
             EntityCreator entityCreator,
-            AmbientLightSystem ambientLightSystem,
+            LightsFactory lightsFactory,
             SunlightSystem sunlightSystem,
             ShadowCastingLightSystem shadowCastingLightSystem,
             PointLightSystem pointLightSystem,
@@ -48,10 +45,7 @@ namespace MiniEngine.Scenes
             EmitterFactory emitterFactory)
         {
             this.EntityCreator = entityCreator;
-            this.AmbientLightSystem = ambientLightSystem;
-            this.SunlightSystem = sunlightSystem;
-            this.ShadowCastingLightSystem = shadowCastingLightSystem;
-            this.PointLightSystem = pointLightSystem;
+            this.LightsFactory = lightsFactory;
             this.OpaqueModelFactory = opaqueModelFactory;
             this.TransparentModelFactory = transparentModelFactory;
             this.DebugRenderSystem = debugRenderSystem;
@@ -71,8 +65,9 @@ namespace MiniEngine.Scenes
         {
             this.worldEntity = this.EntityCreator.CreateEntity();
 
-            this.AmbientLightSystem.Add(this.worldEntity, Color.White * 0.25f);
-            this.SunlightSystem.Add(this.worldEntity, Color.White, Vector3.Up, (Vector3.Left * 0.75f) + (Vector3.Backward * 0.1f));
+            this.LightsFactory.AmbientLightFactory.Construct(this.worldEntity, Color.White * 0.25f);
+
+            this.LightsFactory.SunlightFactory.Construct(this.worldEntity, Color.White, Vector3.Up, (Vector3.Left * 0.75f) + (Vector3.Backward * 0.1f));
 
             this.OpaqueModelFactory.Construct(this.worldEntity, this.sponza, Matrix.CreateScale(0.05f));
 
@@ -100,9 +95,9 @@ namespace MiniEngine.Scenes
             this.particleEntity3 = this.EntityCreator.CreateEntity();
             this.EmitterFactory.Construct(this.particleEntity3, particleSpawn, this.explosion2, 1, 1);
 
-            this.PointLightSystem.Add(this.particleEntity, particleSpawn, Color.IndianRed, 20.0f, 1.0f);
+            this.LightsFactory.PointLightFactory.Construct(this.particleEntity, particleSpawn, Color.IndianRed, 20.0f, 1.0f);
             var light = particleSpawn + (Vector3.Up * 3);
-            this.ShadowCastingLightSystem.Add(this.particleEntity, light, light + Vector3.Up + (Vector3.Left * 0.001f), Color.IndianRed);
+            this.LightsFactory.ShadowCastingLightFactory.Construct(this.particleEntity, light, light + Vector3.Up + (Vector3.Left * 0.001f), Color.IndianRed);
 
 
             //this.DebugRenderSystem.Add(this.worldEntity, this.sponza, Matrix.CreateScale(0.05f));

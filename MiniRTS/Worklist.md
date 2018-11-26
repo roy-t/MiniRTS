@@ -3,8 +3,10 @@
 
 - Particles need a lot more configurable parameters to look good
     - Add a tint color to the shader so we can fade out almost dead particles!
-- Cascaded shadow map code is much nicer now, but the Reference<> seems clunky
 - Right now everything is rendered for everything use spatial partitioning. Crazy idea: seperate thread that keeps updating the spatial partitioning thing as fast as possible?
+- BUG: light controller adds a second light instead of removing the first one!
+  - Need an efficient way to get all entities with a given component type
+  - Are dictionaries the right way for this?
 
 ## Interesting
 

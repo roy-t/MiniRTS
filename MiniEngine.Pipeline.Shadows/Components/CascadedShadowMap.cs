@@ -4,9 +4,9 @@ using MiniEngine.Systems.Components;
 
 namespace MiniEngine.Pipeline.Shadows.Components
 {
-    public sealed class ShadowMapCascades : IComponent
+    public sealed class CascadedShadowMap : IComponent
     {
-        public ShadowMapCascades(GraphicsDevice device, int resolution, int cascades,
+        public CascadedShadowMap(GraphicsDevice device, int resolution, int cascades,
             Vector3 position, Vector3 lookAt, float[] cascadeDistances)
         {
             this.DepthMapArray = new RenderTarget2D(

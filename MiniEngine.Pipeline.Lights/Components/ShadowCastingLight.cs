@@ -1,21 +1,23 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+using MiniEngine.Pipeline.Shadows.Components;
 using MiniEngine.Primitives.Cameras;
+using MiniEngine.Systems.Components;
 
 namespace MiniEngine.Pipeline.Lights.Components
 {
-    public sealed class ShadowCastingLight
-    {
-        private const int ShadowMapResolution = 1024;
-
-        public ShadowCastingLight(Vector3 position, Vector3 lookAt, Color color)
-        {
+    public sealed class ShadowCastingLight : IComponent
+    {        
+        public ShadowCastingLight(PerspectiveCamera viewPoint, ShadowMap shadowMap, Color color)
+        {            
+            this.ViewPoint = viewPoint;
+            this.ShadowMap = shadowMap;
             this.Color = color;
-            this.ViewPoint = new PerspectiveCamera(new Viewport(0, 0, ShadowMapResolution, ShadowMapResolution));
-            this.ViewPoint.Move(position, lookAt);
         }
 
         public PerspectiveCamera ViewPoint { get; }
+        public ShadowMap ShadowMap { get; }
         public Color Color { get; set; }
+
+        public override string ToString() => $"shadow casting light, direction: {this.ViewPoint.LookAt - this.ViewPoint.Position}, color: {this.Color}";
     }
 }

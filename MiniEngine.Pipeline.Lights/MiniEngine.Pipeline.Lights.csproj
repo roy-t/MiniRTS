@@ -47,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Components\AmbientLight.cs" />
     <Compile Include="Components\DirectionalLight.cs" />
     <Compile Include="Components\PointLight.cs" />
     <Compile Include="Components\ShadowCastingLight.cs" />
@@ -57,6 +58,12 @@
     <Compile Include="Extensions\RenderLightsStageExtensions.cs" />
     <Compile Include="Extensions\ShadowCastingLightsStageExtensions.cs" />
     <Compile Include="Extensions\SunlightStageExtensions.cs" />
+    <Compile Include="Factories\AmbientLightFactory.cs" />
+    <Compile Include="Factories\DirectionalLightFactory.cs" />
+    <Compile Include="Factories\LightsFactory.cs" />
+    <Compile Include="Factories\PointLightFactory.cs" />
+    <Compile Include="Factories\ShadowCastingLightFactory.cs" />
+    <Compile Include="Factories\SunlightFactory.cs" />
     <Compile Include="LightingPipeline.cs" />
     <Compile Include="LightingPipelineInput.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -1,39 +1,32 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using MiniEngine.Pipeline.Lights.Components;
 using MiniEngine.Systems;
 
 namespace MiniEngine.Pipeline.Lights.Systems
 {
     public sealed class AmbientLightSystem : ISystem
     {
-        private readonly Dictionary<Entity, Color> Lights;
-
-        public AmbientLightSystem()
+        private readonly EntityLinker EntityLinker;
+        private readonly List<AmbientLight> Lights;
+        
+        public AmbientLightSystem(EntityLinker entityLinker)
         {
-            this.Lights = new Dictionary<Entity, Color>();
+            this.Lights = new List<AmbientLight>();
+            this.EntityLinker = entityLinker;
         }
-
-        public bool Contains(Entity entity) => this.Lights.ContainsKey(entity);
-
-
-        public string Describe(Entity entity)
-        {
-            var color = this.Lights[entity];
-            return $"ambient light, color {color}";
-        }
-
-        public void Remove(Entity entity) => this.Lights.Remove(entity);
-
-        public void Add(Entity entity, Color color) => this.Lights.Add(entity, color);
-
+               
         public Color ComputeAmbientLightZeroAlpha()
         {
+            this.Lights.Clear();
+            this.EntityLinker.GetComponentsOfType(this.Lights);
+
             var accumulate = Color.TransparentBlack;
-            foreach (var color in this.Lights.Values)
+            foreach (var light in this.Lights)
             {
-                accumulate.R += color.R;
-                accumulate.G += color.G;
-                accumulate.B += color.B;
+                accumulate.R += light.Color.R;
+                accumulate.G += light.Color.G;
+                accumulate.B += light.Color.B;
             }
 
             return accumulate;

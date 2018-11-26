@@ -17,7 +17,7 @@ namespace MiniEngine.Pipeline.Shadows.Systems
         private readonly GraphicsDevice Device;
         private readonly EntityLinker Linker;
         private readonly CascadedShadowMapFactory ComponentFactory;
-        private readonly List<ShadowMapCascades> ShadowMaps;
+        private readonly List<CascadedShadowMap> ShadowMaps;
         private readonly Frustum Frustum;
 
         public CascadedShadowMapSystem(GraphicsDevice device, EntityLinker linker, CascadedShadowMapFactory componentFactory)
@@ -26,7 +26,7 @@ namespace MiniEngine.Pipeline.Shadows.Systems
             this.Linker = linker;
             this.ComponentFactory = componentFactory;
 
-            this.ShadowMaps = new List<ShadowMapCascades>();
+            this.ShadowMaps = new List<CascadedShadowMap>();
             this.Frustum = new Frustum();
         }     
 

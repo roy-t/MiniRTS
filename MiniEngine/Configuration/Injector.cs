@@ -12,6 +12,7 @@ using MiniEngine.Systems;
 using MiniEngine.Utilities;
 using MiniEngine.Telemetry;
 using MiniEngine.Systems.Factories;
+using MiniEngine.Pipeline.Lights.Factories;
 
 namespace MiniEngine.Configuration
 {
@@ -61,6 +62,7 @@ namespace MiniEngine.Configuration
             // Systems
             this.RegisterAllOf<ISystem>();
             this.RegisterAllOf<IComponentFactory>();
+            this.Container.Register<LightsFactory>();
 
             // Renderer
             this.Container.Register<DeferredRenderPipeline>();

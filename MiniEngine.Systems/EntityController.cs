@@ -42,13 +42,15 @@ namespace MiniEngine.Systems
             }            
         }
 
-        public void DescribeAllEntities()
+        public string DescribeAllEntities()
         {
             var builder = new StringBuilder();
             foreach(var entity in this.Creator.GetAllEntities())
             {
                 this.DescribeEntity(builder, entity);
             }
+
+            return builder.ToString();
         }
 
         public string DescribeEntity(Entity entity) => this.DescribeEntity(new StringBuilder(), entity);

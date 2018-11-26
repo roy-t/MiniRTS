@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Primitives.Cameras;
 using MiniEngine.Effects;
 using MiniEngine.Primitives;
 using MiniEngine.Systems;
-using DirectionalLight = MiniEngine.Pipeline.Lights.Components.DirectionalLight;
 using MiniEngine.Effects.DeviceStates;
+
+using DirectionalLight = MiniEngine.Pipeline.Lights.Components.DirectionalLight;
 
 namespace MiniEngine.Pipeline.Lights.Systems
 {
@@ -14,36 +14,29 @@ namespace MiniEngine.Pipeline.Lights.Systems
     {
         private readonly GraphicsDevice Device;
         private readonly DirectionalLightEffect Effect;
+        private readonly EntityLinker EntityLinker;
         private readonly FullScreenTriangle FullScreenTriangle;
 
-        private readonly Dictionary<Entity, DirectionalLight> Lights;
+        private readonly List<DirectionalLight> Lights;
 
-        public DirectionalLightSystem(GraphicsDevice device, DirectionalLightEffect effect)
+        public DirectionalLightSystem(GraphicsDevice device, DirectionalLightEffect effect, EntityLinker entityLinker)
         {
             this.Device = device;
             this.Effect = effect;
+            this.EntityLinker = entityLinker;
             this.FullScreenTriangle = new FullScreenTriangle();
 
-            this.Lights = new Dictionary<Entity, DirectionalLight>();
+            this.Lights = new List<DirectionalLight>();
         }
-
-        public bool Contains(Entity entity) => this.Lights.ContainsKey(entity);
-
-        public string Describe(Entity entity)
-        {
-            var light = this.Lights[entity];
-            return $"directional light, direction: {light.Direction}, color: {light.Color}";
-        }
-
-        public void Remove(Entity entity) => this.Lights.Remove(entity);
-
-        public void Add(Entity entity, Vector3 direction, Color color) => this.Lights.Add(entity, new DirectionalLight(direction, color));
 
         public void Render(PerspectiveCamera perspectiveCamera, GBuffer gBuffer)
         {
+            this.Lights.Clear();
+            this.EntityLinker.GetComponentsOfType(this.Lights);
+
             using (this.Device.LightState())
             {
-                foreach (var light in this.Lights.Values)
+                foreach (var light in this.Lights)
                 {
                     // G-Buffer input                        
                     this.Effect.NormalMap = gBuffer.NormalTarget;

@@ -25,7 +25,7 @@ namespace MiniEngine.Systems
                 output.Add((T)component);
             }            
         }
-
+        
         public IEnumerable<T> GetComponents<T>(Entity entity) 
             where T : IComponent
             => this.EntityComponents.Get(entity).Where(x => x.GetType() == typeof(T)).Select(x => (T)x);
@@ -58,6 +58,6 @@ namespace MiniEngine.Systems
                 entityComponents.Remove(item);
                 typeComponents.Remove(item);
             }
-        }        
+        }
     }
 }

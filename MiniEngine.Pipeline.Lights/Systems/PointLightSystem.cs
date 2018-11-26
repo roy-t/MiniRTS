@@ -15,35 +15,27 @@ namespace MiniEngine.Pipeline.Lights.Systems
         private readonly GraphicsDevice Device;
         private readonly PointLightEffect Effect;
 
-        private readonly Dictionary<Entity, PointLight> Lights;
+        private readonly List<PointLight> Lights;
         private readonly Model Sphere;
+        private readonly EntityLinker EntityLinker;
 
-        public PointLightSystem(GraphicsDevice device, PointLightEffect effect, Model sphere)
+        public PointLightSystem(GraphicsDevice device, PointLightEffect effect, Model sphere, EntityLinker entityLinker)
         {
             this.Device = device;
             this.Effect = effect;
             this.Sphere = sphere;
-
-            this.Lights = new Dictionary<Entity, PointLight>();
+            this.EntityLinker = entityLinker;
+            this.Lights = new List<PointLight>();
         }
-
-        public bool Contains(Entity entity) => this.Lights.ContainsKey(entity);
-
-        public string Describe(Entity entity)
-        {
-            var light = this.Lights[entity];
-            return $"point light, position: {light.Position}, color: {light.Color}";
-        }
-
-        public void Remove(Entity entity) => this.Lights.Remove(entity);
-
-        public void Add(Entity entity, Vector3 position, Color color, float radius, float intensity) => this.Lights.Add(entity, new PointLight(position, color, radius, intensity));
 
         public void Render(PerspectiveCamera perspectiveCamera, GBuffer gBuffer)
         {
+            this.Lights.Clear();
+            this.EntityLinker.GetComponentsOfType(this.Lights);
+
             using (this.Device.LightState())
             {
-                foreach (var light in this.Lights.Values)
+                foreach (var light in this.Lights)
                 {
                     // G-Buffer input                        
                     this.Effect.NormalMap = gBuffer.NormalTarget;

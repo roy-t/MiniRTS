@@ -1,6 +1,6 @@
 ﻿using MiniEngine.Controllers;
 using MiniEngine.Input;
-using MiniEngine.Pipeline.Lights.Systems;
+using MiniEngine.Pipeline.Lights.Factories;
 using MiniEngine.Primitives.Cameras;
 using MiniEngine.Systems;
 
@@ -8,30 +8,24 @@ namespace MiniEngine.Configuration
 {
     public sealed class LightSystemsControllerFactory : IInstanceFactory<LightSystemsController, PerspectiveCamera>
     {
-        private readonly DirectionalLightSystem DirectionalLightSystem;
+        private readonly LightsFactory LightsFactory;
         private readonly EntityController EntityController;
         private readonly KeyboardInput KeyboardInput;
         private readonly EntityCreator EntityCreator;
-        private readonly PointLightSystem PointLightSystem;
-        private readonly ShadowCastingLightSystem ShadowCastingLightSystem;
-        private readonly SunlightSystem SunlightSystem;
+        private readonly EntityLinker EntityLinker;
 
         public LightSystemsControllerFactory(
             KeyboardInput keyboardInput,
             EntityCreator entityCreator,
             EntityController entityController,
-            PointLightSystem pointLightSystem,
-            SunlightSystem sunlightSystem,
-            DirectionalLightSystem directionalLightSystem,
-            ShadowCastingLightSystem shadowCastingLightSystem)
+            LightsFactory lightsFactory,
+            EntityLinker entityLinker)
         {
             this.KeyboardInput = keyboardInput;
             this.EntityCreator = entityCreator;
             this.EntityController = entityController;
-            this.PointLightSystem = pointLightSystem;
-            this.SunlightSystem = sunlightSystem;
-            this.DirectionalLightSystem = directionalLightSystem;
-            this.ShadowCastingLightSystem = shadowCastingLightSystem;
+            this.LightsFactory = lightsFactory;
+            this.EntityLinker = entityLinker;
         }
 
         public LightSystemsController Build(PerspectiveCamera camera)
@@ -41,10 +35,8 @@ namespace MiniEngine.Configuration
                 camera,
                 this.EntityCreator,
                 this.EntityController,
-                this.PointLightSystem,
-                this.SunlightSystem,
-                this.DirectionalLightSystem,
-                this.ShadowCastingLightSystem);
+                this.LightsFactory,
+                this.EntityLinker);
         }
     }
 }

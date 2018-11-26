@@ -143,7 +143,7 @@ namespace MiniEngine
 
             if (this.keyboardInput.Click(Keys.Scroll))
             {
-                this.entityController.DescribeAllEntities();
+                Console.WriteLine(this.entityController.DescribeAllEntities());
             }
 
             base.Update(gameTime);

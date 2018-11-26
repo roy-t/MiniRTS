@@ -46,7 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Components\CascadeCamera.cs" />
-    <Compile Include="Components\ShadowMapCascades.cs" />
+    <Compile Include="Components\CascadedShadowMap.cs" />
     <Compile Include="Components\ShadowMap.cs" />
     <Compile Include="Extensions\RenderShadowsStageExtensions.cs" />
     <Compile Include="Factories\CascadedShadowMapFactory.cs" />
@@ -57,6 +57,7 @@
     <Compile Include="Extensions\RenderShadowMapsStageExtension.cs" />
     <Compile Include="Stages\RenderShadowsStage.cs" />
     <Compile Include="Systems\CascadedShadowMapSystem.cs" />
+    <Compile Include="Factories\ShadowMapFactory.cs" />
     <Compile Include="Systems\ShadowMapSystem.cs" />
   </ItemGroup>
   <ItemGroup>
