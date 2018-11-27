@@ -1,4 +1,5 @@
-﻿using MiniEngine.Systems.Factories;
+﻿using MiniEngine.Systems.Components;
+using MiniEngine.Systems.Factories;
 using System.Collections.Generic;
 using System.Text;
 
@@ -58,8 +59,10 @@ namespace MiniEngine.Systems
         private string DescribeEntity(StringBuilder builder, Entity entity)
         {            
             builder.AppendLine(entity.ToString());
+            var components = new List<IComponent>();
+            this.EntityLinker.GetComponentsOfEntity(entity, components);
 
-            foreach(var component in this.EntityLinker.GetAllComponents(entity))
+            foreach(var component in components)
             {
                 builder.Append('\t');
                 builder.AppendLine(component.ToString());

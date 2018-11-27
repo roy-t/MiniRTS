@@ -47,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ComponentLookup.cs" />
     <Compile Include="Factories\AComponentFactory.cs" />
     <Compile Include="Entity.cs" />
     <Compile Include="EntityController.cs" />
@@ -56,7 +57,6 @@
     <Compile Include="Factories\IComponentFactory.cs" />
     <Compile Include="ISystem.cs" />
     <Compile Include="IUpdatableSystem.cs" />
-    <Compile Include="MultiValueDictionary.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
