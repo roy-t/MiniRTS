@@ -14,9 +14,9 @@ namespace MiniEngine.Controllers
     public sealed class CameraController
     {
         private static readonly MetersPerSecond TranslateSpeed = 50.0f;
-
+        
         // percentage to rotate the camera per pixel the mouse moved
-        private const float RotateFactor = MathHelper.TwoPi * 0.001f;
+        private static readonly Radians RotateFactor = Radians.Pi* 0.002f;
 
         private readonly KeyboardInput Keyboard;
         private readonly MouseInput Mouse;

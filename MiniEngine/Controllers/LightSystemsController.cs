@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework.Input;
 using MiniEngine.Pipeline.Lights.Components;
 using MiniEngine.Pipeline.Lights.Factories;
-using MiniEngine.Pipeline.Lights.Systems;using MiniEngine.Primitives.Cameras;
+using MiniEngine.Primitives.Cameras;
 using MiniEngine.Systems;
 using MiniEngine.Units;
 using System.Collections.Generic;
@@ -21,8 +21,6 @@ namespace MiniEngine.Controllers
         private readonly EntityLinker EntityLinker;
         private readonly List<Entity> TemporaryEntities;
 
-        private readonly Entity SunlightEntity;
-
         public LightSystemsController(
             KeyboardInput keyboardInput,
             PerspectiveCamera camera,
@@ -38,8 +36,6 @@ namespace MiniEngine.Controllers
             this.LightsFactory = lightsFactory;
             this.EntityLinker = entityLinker;
             this.TemporaryEntities = new List<Entity>();
-
-            this.SunlightEntity = this.EntityCreator.CreateEntity();
         }
 
         public void Update(Seconds elapsed)
@@ -51,8 +47,8 @@ namespace MiniEngine.Controllers
 
             if (this.KeyboardInput.Click(Keys.S))
             {
-                this.EntityLinker.RemoveComponents<Sunlight>(this.SunlightEntity);                      
-                this.LightsFactory.SunlightFactory.Construct(this.SunlightEntity, Color.White, this.Camera.Position, this.Camera.LookAt);
+                this.EntityLinker.RemoveComponents<Sunlight>();
+                this.LightsFactory.SunlightFactory.Construct(this.CreateTempEntity(), Color.White, this.Camera.Position, this.Camera.LookAt);
             }
 
             if (this.KeyboardInput.Click(Keys.D))

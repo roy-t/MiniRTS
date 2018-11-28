@@ -44,7 +44,7 @@ namespace MiniEngine.Pipeline.Particles.Systems
         public void Update(PerspectiveCamera camera, Seconds elapsed)
         {
             this.Emitters.Clear();
-            this.Linker.GetComponentsOfType(this.Emitters);
+            this.Linker.GetComponents(this.Emitters);
             foreach (var emitter in this.Emitters)
             {
                 emitter.Update(elapsed);
@@ -56,7 +56,7 @@ namespace MiniEngine.Pipeline.Particles.Systems
             var particles = new List<ParticlePose>();
             
             this.Emitters.Clear();
-            this.Linker.GetComponentsOfType(this.Emitters);
+            this.Linker.GetComponents(this.Emitters);
             foreach (var emitter in this.Emitters)
             {
                 foreach (var particle in emitter.Particles)

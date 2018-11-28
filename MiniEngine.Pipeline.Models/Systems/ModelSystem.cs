@@ -24,10 +24,10 @@ namespace MiniEngine.Pipeline.Models.Systems
         public ModelBatchList ComputeBatches(IViewPoint viewPoint)
         {
             this.TransparentModels.Clear();
-            this.Linker.GetComponentsOfType(this.TransparentModels);
+            this.Linker.GetComponents(this.TransparentModels);
 
             this.OpaqueModels.Clear();
-            this.Linker.GetComponentsOfType(this.OpaqueModels);
+            this.Linker.GetComponents(this.OpaqueModels);
 
             var transparentBatches = new List<ModelRenderBatch>(this.TransparentModels.Count);
 

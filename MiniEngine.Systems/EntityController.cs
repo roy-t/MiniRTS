@@ -60,7 +60,7 @@ namespace MiniEngine.Systems
         {            
             builder.AppendLine(entity.ToString());
             var components = new List<IComponent>();
-            this.EntityLinker.GetComponentsOfEntity(entity, components);
+            this.EntityLinker.GetComponents(entity, components);
 
             foreach(var component in components)
             {

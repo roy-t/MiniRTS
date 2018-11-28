@@ -65,7 +65,7 @@ namespace MiniEngine.Pipeline.Shadows.Systems
             this.MeterRegistry.StartGauge(ShadowMapTotal);
 
             this.ShadowMaps.Clear();
-            this.EntityLinker.GetComponentsOfType(this.ShadowMaps);
+            this.EntityLinker.GetComponents(this.ShadowMaps);
 
             foreach (var shadowMap in this.ShadowMaps)
             {

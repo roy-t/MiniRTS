@@ -33,7 +33,7 @@ namespace MiniEngine.Pipeline.Shadows.Systems
         public void Update(PerspectiveCamera perspectiveCamera, Seconds elapsed)
         {
             this.ShadowMaps.Clear();
-            this.Linker.GetComponentsOfType(this.ShadowMaps);
+            this.Linker.GetComponents(this.ShadowMaps);
 
             foreach (var shadowMapCascade in this.ShadowMaps)
             {

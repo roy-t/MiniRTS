@@ -1,27 +1,26 @@
-﻿using MiniEngine.Systems.Components;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
-namespace MiniEngine.Systems
+namespace MiniEngine.Systems.Components
 {
     public sealed class ComponentLookup
     {
-        private readonly Dictionary<Entity, List<Record>> ComponentsPerEntity;
-        private readonly Dictionary<Type, List<Record>> EntitiesPerComponent;
+        private readonly Dictionary<Entity, List<EntityComponentRecord>> ComponentsPerEntity;
+        private readonly Dictionary<Type, List<EntityComponentRecord>> EntitiesPerComponent;
 
-        private readonly List<Record> WorkList;
-        private readonly List<Record> EmptyResult;
+        private readonly List<EntityComponentRecord> WorkList;
+        private readonly List<EntityComponentRecord> EmptyResult;
 
         public ComponentLookup()
         {
-            this.ComponentsPerEntity = new Dictionary<Entity, List<Record>>();
-            this.EntitiesPerComponent = new Dictionary<Type, List<Record>>();
+            this.ComponentsPerEntity = new Dictionary<Entity, List<EntityComponentRecord>>();
+            this.EntitiesPerComponent = new Dictionary<Type, List<EntityComponentRecord>>();
 
-            this.WorkList = new List<Record>();
-            this.EmptyResult = new List<Record>(0);
+            this.WorkList = new List<EntityComponentRecord>();
+            this.EmptyResult = new List<EntityComponentRecord>(0);
         }
 
-        public IReadOnlyList<Record> Search(Entity entity)
+        public IReadOnlyList<EntityComponentRecord> Search(Entity entity)
         {
             if(this.ComponentsPerEntity.TryGetValue(entity, out var records))
             {
@@ -31,7 +30,7 @@ namespace MiniEngine.Systems
             return this.EmptyResult;
         }
         
-        public IReadOnlyList<Record> Search(Type componentType)
+        public IReadOnlyList<EntityComponentRecord> Search(Type componentType)
         {
             if(this.EntitiesPerComponent.TryGetValue(componentType, out var records))
             {
@@ -43,7 +42,7 @@ namespace MiniEngine.Systems
 
         public void AddComponent(Entity entity, IComponent component)
         {
-            var record = new Record(entity, component);
+            var record = new EntityComponentRecord(entity, component);
             
             if(this.ComponentsPerEntity.TryGetValue(entity, out var entityList))
             {
@@ -51,9 +50,11 @@ namespace MiniEngine.Systems
             }
             else
             {
-                var newList = new List<Record>
+                var newList = new List<EntityComponentRecord>
                 {
+#pragma warning disable IDE0009 // Member access should be qualified.
                     record
+#pragma warning restore IDE0009 // Member access should be qualified.
                 };
                 this.ComponentsPerEntity.Add(entity, newList);
             }
@@ -65,15 +66,17 @@ namespace MiniEngine.Systems
             }
             else
             {
-                var newList = new List<Record>
+                var newList = new List<EntityComponentRecord>
                 {
+#pragma warning disable IDE0009 // Member access should be qualified.
                     record
+#pragma warning restore IDE0009 // Member access should be qualified.
                 };
                 this.EntitiesPerComponent.Add(type, newList);
             }
         }
 
-        public void Remove(Entity entity, Type componentType)
+        public void RemoveComponent(Entity entity, Type componentType)
         {
             if (this.ComponentsPerEntity.TryGetValue(entity, out var componentRecords))
             {
@@ -111,17 +114,20 @@ namespace MiniEngine.Systems
 
             this.WorkList.Clear();
         }
-      
-        public class Record
-        {
-            public Record(Entity entity, IComponent component)
-            {
-                this.Entity = entity;
-                this.Component = component;
-            }
 
-            public Entity Entity { get; }
-            public IComponent Component { get; }
-        }
+        public void RemoveAllComponents(Type type)
+        {
+            if (this.EntitiesPerComponent.TryGetValue(type, out var entityRecords))
+            {                                
+                foreach (var record in entityRecords)
+                {
+                    this.ComponentsPerEntity[record.Entity].Remove(record);
+                }
+
+                this.EntitiesPerComponent.Remove(type);
+            }
+            
+            this.WorkList.Clear();
+        }             
     }
 }

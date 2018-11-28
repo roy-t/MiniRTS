@@ -19,7 +19,7 @@ namespace MiniEngine.Pipeline.Lights.Systems
         public Color ComputeAmbientLightZeroAlpha()
         {
             this.Lights.Clear();
-            this.EntityLinker.GetComponentsOfType(this.Lights);
+            this.EntityLinker.GetComponents(this.Lights);
 
             var accumulate = Color.TransparentBlack;
             foreach (var light in this.Lights)

@@ -31,7 +31,7 @@ namespace MiniEngine.Pipeline.Lights.Systems
         public void Render(PerspectiveCamera perspectiveCamera, GBuffer gBuffer)
         {
             this.Lights.Clear();
-            this.EntityLinker.GetComponentsOfType(this.Lights);
+            this.EntityLinker.GetComponents(this.Lights);
 
             using (this.Device.LightState())
             {
