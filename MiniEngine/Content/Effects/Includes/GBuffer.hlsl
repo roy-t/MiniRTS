@@ -63,10 +63,15 @@ float ReadShininess(float2 texCoord)
     return tex2D(normalSampler, texCoord).a;	
 }
 
+float ReadDepth(float2 texCoord)
+{
+    return tex2D(depthSampler, texCoord).r;
+}
+
 float4 ReadWorldPosition(float2 texCoord, float4x4 inverseViewProjection)
 {
     // Read depth
-    float depthVal = tex2D(depthSampler, texCoord).r;
+    float depthVal = ReadDepth(texCoord);
 
     // Compute screen-space position
     float4 position;

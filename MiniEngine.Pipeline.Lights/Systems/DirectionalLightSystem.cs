@@ -25,7 +25,6 @@ namespace MiniEngine.Pipeline.Lights.Systems
             this.Effect = effect;
             this.EntityLinker = entityLinker;
             this.FullScreenTriangle = new FullScreenTriangle();
-
             this.Lights = new List<DirectionalLight>();
         }
 

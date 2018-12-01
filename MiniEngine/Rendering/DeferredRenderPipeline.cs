@@ -51,18 +51,18 @@ namespace MiniEngine.Rendering
 
             this.Input = new RenderPipelineStageInput();
 
-            // TODO: move cascading shadow map logic to separate system in shadow pipeline
             var shadowPipeline =
                 ShadowPipeline.Create(device, meterRegistry)
                               .RenderShadowMaps(shadowMapSystem);
 
             var lightingPipeline =
                 LightingPipeline.Create(device, meterRegistry)
-                                .ClearLightTargetToAmbient(ambientLightSystem)
-                                .RenderDirectionalLights(directionalLightSystem)
-                                .RenderPointLights(pointLightSystem)
-                                .RenderShadowCastingLights(shadowCastingLightSystem)
-                                .RenderSunlights(sunlightSystem);
+                                // TODO, move clearing from ambient light stage to separate stage
+                                .RenderAmbientLight(ambientLightSystem);
+                                //.RenderDirectionalLights(directionalLightSystem)
+                                //.RenderPointLights(pointLightSystem)
+                                //.RenderShadowCastingLights(shadowCastingLightSystem)
+                                //.RenderSunlights(sunlightSystem);
 
             var modelPipeline =
                 ModelPipeline.Create(device, meterRegistry)
@@ -79,7 +79,8 @@ namespace MiniEngine.Rendering
                                 .CopyColors(copyEffect);
 
             // TODO: we could move the anti-alias stage to the end of the normal pipeline
-            // if we copy the diffuse and normal result of each sub pipeline
+            // if we copy the diffuse and normal result of each sub pipeline, without confusing
+            // the lights about where something is and isn't (gBuffer depth check?)
             // this would also give us AA between different batches
 
             this.Pipeline =

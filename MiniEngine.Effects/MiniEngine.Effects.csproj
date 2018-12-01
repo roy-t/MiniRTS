@@ -47,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AmbientLightEffect.cs" />
     <Compile Include="CombineEffect.cs" />
     <Compile Include="CopyEffect.cs" />
     <Compile Include="DeviceStates\DeviceState.cs" />

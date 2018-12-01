@@ -52,7 +52,7 @@
     <Compile Include="Components\PointLight.cs" />
     <Compile Include="Components\ShadowCastingLight.cs" />
     <Compile Include="Components\Sunlight.cs" />
-    <Compile Include="Extensions\ClearToAmbientLightStageExtensions.cs" />
+    <Compile Include="Extensions\AmbientLightStageExtensions.cs" />
     <Compile Include="Extensions\DirectionalLightStageExtensions.cs" />
     <Compile Include="Extensions\PointLightStageExtensions.cs" />
     <Compile Include="Extensions\RenderLightsStageExtensions.cs" />
@@ -67,7 +67,7 @@
     <Compile Include="LightingPipeline.cs" />
     <Compile Include="LightingPipelineInput.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Stages\ClearToAmbientStage.cs" />
+    <Compile Include="Stages\AmbientLightStage.cs" />
     <Compile Include="Stages\DirectionalLightStage.cs" />
     <Compile Include="Stages\PointLightStage.cs" />
     <Compile Include="Stages\RenderLightsStage.cs" />

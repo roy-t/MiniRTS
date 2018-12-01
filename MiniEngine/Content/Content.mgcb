@@ -14,6 +14,12 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#begin Effects/AmbientLightEffect.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Effects/AmbientLightEffect.fx
+
 #begin Effects/CombineEffect.fx
 /importer:EffectImporter
 /processor:EffectProcessor
