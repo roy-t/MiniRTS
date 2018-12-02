@@ -1,0 +1,44 @@
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+
+namespace MiniEngine.Effects
+{
+    public sealed class AmbientOcclusionEffect : EffectWrapper
+    {
+        public AmbientOcclusionEffect()
+        {
+
+        }
+
+        public AmbientOcclusionEffect(Effect effect)
+        {
+            this.Wrap(effect);
+        }
+    
+        public Texture2D DepthMap
+        {
+            set => this.effect.Parameters["DepthMap"].SetValue(value);
+        }
+        public Matrix View
+        {
+            set => this.effect.Parameters["View"].SetValue(value);
+        }
+
+        public Matrix Projection
+        {
+            set => this.effect.Parameters["Projection"].SetValue(value);
+        }
+
+        public Matrix InverseViewProjection
+        {
+            set => this.effect.Parameters["InverseViewProjection"].SetValue(value);
+        }        
+
+        public Vector3[] Kernel
+        {
+            set => this.effect.Parameters["Kernel"].SetValue(value);
+        }
+
+        public void Apply() => this.ApplyPass();
+    }
+}

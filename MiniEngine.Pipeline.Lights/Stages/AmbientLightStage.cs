@@ -17,9 +17,14 @@ namespace MiniEngine.Pipeline.Lights.Stages
 
         public void Execute(LightingPipelineInput input)
         {
+            // TODO: move two clear steps to their own stage
+            this.Device.SetRenderTarget(input.GBuffer.AmbientOcclusionTarget);
+            this.Device.Clear(Color.TransparentBlack);
+            this.AmbientLightSystem.RenderAmbientOcclusion(input.Camera, input.GBuffer);
+
             this.Device.SetRenderTarget(input.GBuffer.LightTarget);
             this.Device.Clear(Color.TransparentBlack);
-            this.AmbientLightSystem.Render(input.Camera, input.GBuffer);
+            this.AmbientLightSystem.RenderAmbientLight(input.Camera, input.GBuffer);
         }
     }
 }

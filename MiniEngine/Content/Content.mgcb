@@ -20,6 +20,12 @@
 /processorParam:DebugMode=Auto
 /build:Effects/AmbientLightEffect.fx
 
+#begin Effects/AmbientOcclusionEffect.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Effects/AmbientOcclusionEffect.fx
+
 #begin Effects/CombineEffect.fx
 /importer:EffectImporter
 /processor:EffectProcessor

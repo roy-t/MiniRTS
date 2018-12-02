@@ -16,42 +16,58 @@ namespace MiniEngine.Pipeline.Lights.Systems
         private const int KernelSize = 64;
 
         private readonly GraphicsDevice Device;
-        private readonly AmbientLightEffect Effect;
+        private readonly AmbientOcclusionEffect AmbientOcclusionEffect;
+        private readonly AmbientLightEffect AmbientLightEffect;
         private readonly EntityLinker EntityLinker;
         private readonly FullScreenTriangle FullScreenTriangle;
         private readonly List<AmbientLight> Lights;
         private readonly Vector3[] Kernel;
                 
-        public AmbientLightSystem(GraphicsDevice device, AmbientLightEffect effect, EntityLinker entityLinker)
+        public AmbientLightSystem(GraphicsDevice device, AmbientOcclusionEffect ambientLightEffect, AmbientLightEffect blurEffect, EntityLinker entityLinker)
         {
             this.Device = device;
-            this.Effect = effect;
+            this.AmbientOcclusionEffect = ambientLightEffect;
+            this.AmbientLightEffect = blurEffect;
             this.EntityLinker = entityLinker;
             this.FullScreenTriangle = new FullScreenTriangle();
-            this.Lights = new List<AmbientLight>();
-            
+            this.Lights = new List<AmbientLight>();                       
+
             this.Kernel = this.GenerateKernel();
         }
 
-        public void Render(PerspectiveCamera camera, GBuffer gBuffer)
-        {
-            var ambientLight = this.ComputeAmbientLightZeroAlpha();
-
+        public void RenderAmbientOcclusion(PerspectiveCamera camera, GBuffer gBuffer)
+        {                                
             using(this.Device.LightState())
             {
                 // G-Buffer input
-                this.Effect.DepthMap = gBuffer.DepthTarget;
+                this.AmbientOcclusionEffect.DepthMap = gBuffer.DepthTarget;
 
-                // Light properties
-                this.Effect.Color = ambientLight;
-                this.Effect.Kernel = this.Kernel;
+                // Light properties                
+                this.AmbientOcclusionEffect.Kernel = this.Kernel;
 
                 // Camera properties
-                this.Effect.View = camera.View;
-                this.Effect.Projection = camera.Projection;
-                this.Effect.InverseViewProjection = camera.InverseViewProjection;
+                this.AmbientOcclusionEffect.View = camera.View;
+                this.AmbientOcclusionEffect.Projection = camera.Projection;
+                this.AmbientOcclusionEffect.InverseViewProjection = camera.InverseViewProjection;
 
-                this.Effect.Apply();
+                this.AmbientOcclusionEffect.Apply();
+                this.FullScreenTriangle.Render(this.Device);
+            }
+        }
+
+        public void RenderAmbientLight(PerspectiveCamera camera, GBuffer gBuffer)
+        {
+            var ambientLight = this.ComputeAmbientLightZeroAlpha();
+
+            using (this.Device.LightState())
+            {
+                // G-Buffer input
+                this.AmbientLightEffect.AmbientOcclusionMap = gBuffer.AmbientOcclusionTarget;
+                
+                // Light properties
+                this.AmbientLightEffect.Color = ambientLight;
+
+                this.AmbientLightEffect.Apply();
                 this.FullScreenTriangle.Render(this.Device);
             }
         }
@@ -71,22 +87,21 @@ namespace MiniEngine.Pipeline.Lights.Systems
 
             return accumulate;
         }
-
+        
         private Vector3[] GenerateKernel()
-        {
+        {            
             var random = new Random(235);
-
             var kernel = new Vector3[KernelSize];
 
             for(var i = 0; i < KernelSize; i++)
             {
-                var scale = (float)i / (float)KernelSize;
+                var scale = i / (float)KernelSize;
                 var v = new Vector3
                 (
                     (2.0f * (float)random.NextDouble()) - 1.0f,
                     (2.0f * (float)random.NextDouble()) - 1.0f,
                     (2.0f * (float)random.NextDouble()) - 1.0f
-                );
+                );                 
 
                 v *= 0.1f + (0.9f * scale * scale);
 

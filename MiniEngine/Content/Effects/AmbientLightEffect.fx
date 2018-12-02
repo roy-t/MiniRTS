@@ -1,15 +1,21 @@
+// Copies the color information in the diffuse texture to the currently set render target
+
 #include "Includes/Defines.hlsl"
-#include "Includes/Matrices.hlsl"
-#include "Includes/GBuffer.hlsl"
-#include "Includes/Helpers.hlsl"
-#include "Includes/Light.hlsl"
 
-static const int KERNEL_SIZE = 64;
+float3 Color;
 
-float SampleRadius = 10.0f;
-float Strength = 1.0f;
-float3 Color; 
-float3 Kernel[KERNEL_SIZE];
+float4 Offsets = float4(-1.5f, -0.5f, 0.5f, 1.5f);
+
+Texture2D AmbientOcclusionMap;
+sampler ambientOcclusionSampler = sampler_state
+{
+    Texture = (AmbientOcclusionMap);
+    AddressU = CLAMP;
+    AddressV = CLAMP;
+    MagFilter = POINT;
+    MinFilter = POINT;
+    Mipfilter = POINT;
+};
 
 struct VertexShaderInput
 {
@@ -23,57 +29,43 @@ struct VertexShaderOutput
     float2 TexCoord : TEXCOORD0;
 };
 
-VertexShaderOutput MainVS(in VertexShaderInput input)
+VertexShaderOutput MainVS(VertexShaderInput input)
 {
     VertexShaderOutput output = (VertexShaderOutput)0;
 
-    output.Position = float4(input.Position,1);       
+    output.Position = float4(input.Position,1);
     output.TexCoord = input.TexCoord;
 
     return output;
 }
 
-// Inspired by: http://ogldev.atspace.co.uk/www/tutorial45/tutorial45.html
 float4 MainPS(VertexShaderOutput input) : COLOR0
-{    
-    float2 texCoord = input.TexCoord;      
-    float4 position = ReadWorldPosition(texCoord, InverseViewProjection);
-    float depth = ReadDepth(texCoord);
+{
+    float2 texCoord = input.TexCoord;
+    float2 dimensions;
+    AmbientOcclusionMap.GetDimensions(dimensions.x, dimensions.y);
 
-    float ambientOcclusion = 0.0f;
-
-    for (int i = 0; i < KERNEL_SIZE; i++)
+    float occlusion = 0.0f;
+    for (int x = 0; x < 4; x++)
     {
-        // Generate a random position near the original position        
-        float4 sampleWorld = float4(position.xyz + Kernel[i], 1.0f);
-        
-        // Figure out the corresponding depth        
-        float4 sampleProjection = mul(mul(sampleWorld, View), Projection);
-        
-        // Sample the depth camera to see if there is an object between
-        // position and sampleWorld
-        float2 sampleTex = ToTextureCoordinates(sampleProjection.xy, sampleProjection.w);
-        float sampleDepth = ReadDepth(sampleTex.xy);
-        
-        // If something is closer position is (partially)-occluded
-        if (abs(depth - sampleDepth) < SampleRadius)
+        for (int y = 0; y < 4; y++)
         {
-            ambientOcclusion += step(sampleDepth, depth);
+            float2 tc = texCoord;
+            tc.x = texCoord.x + (Offsets[x] / dimensions.x);
+            tc.y = texCoord.y + (Offsets[y] / dimensions.y);
+            occlusion += tex2D(ambientOcclusionSampler, tc).r;
         }
-    }
+    }        
 
-    ambientOcclusion = 1.0f - (ambientOcclusion / 64.0f);    
-    ambientOcclusion = pow(ambientOcclusion, Strength);
-    float x = (Color.r * 0.000001f) + ambientOcclusion;
-    return float4(x, x, x, 0.0f);
+    occlusion /= 16.0f;
+    /*occlusion = tex2D(ambientOcclusionSampler, texCoord).r;*/
 
-    // TODO: real term here, above is for debugging!
-    //return float4(Color.rgb * ambientOcclusion, 0.0f);
+    return float4(Color.r * occlusion, Color.g * occlusion, Color.b * occlusion, 0.0f);
 }
 
 technique AmbientLightTechnique
 {
-    pass Pass0
+    pass P0
     {
         VertexShader = compile VS_SHADERMODEL MainVS();
         PixelShader = compile PS_SHADERMODEL MainPS();
