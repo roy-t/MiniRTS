@@ -24,6 +24,10 @@ namespace MiniEngine.Pipeline.Lights.Stages
             this.Device.SetRenderTarget(input.GBuffer.LightTarget);
             this.Device.Clear(Color.TransparentBlack);
             this.AmbientLightSystem.Blur(input.GBuffer.TempTarget);
+
+
+            //this.Device.SetRenderTarget(input.GBuffer.LightTarget);
+            //this.Device.Clear(new Color(255, 255, 255, 0));
         }
     }
 }

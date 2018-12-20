@@ -6,8 +6,8 @@
 
 // Bias to prevent shadow acne
 static const float bias = 0.0001f;
-
-static const int KERNEL_SIZE = 128;
+static const float Pi = 3.1415926535f;
+static const int KERNEL_SIZE = 64;
 
 float SampleRadius = 0.005f;
 float Strength = 1.0f;
@@ -33,8 +33,8 @@ texture NoiseMap;
 sampler noiseSampler = sampler_state
 {
     Texture = (NoiseMap);
-    AddressU = CLAMP;
-    AddressV = CLAMP;
+    AddressU = WRAP;
+    AddressV = WRAP;
     MagFilter = POINT;
     MinFilter = POINT;
     Mipfilter = POINT;
@@ -61,17 +61,24 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
     float sum = 0.0f;
     for (int i = 0; i < KERNEL_SIZE; i++)
     {
-        float3 noise = tex2D(noiseSampler, Kernel[i].xy + texCoord).rgb * 0.10f;
+        float2 noiseTex = float2(position.x, position.y * 0.5f + position.z * 0.5f) * Pi * Pi * Pi * Pi * Pi * Pi * Pi;
+        float3 noise = tex2D(noiseSampler, noiseTex).rgb * (Pi / 2.0f);
+        float3 offset;
+        offset.x = (cos(noise.x) - sin(noise.x)) * Kernel[i].x;
+        offset.y = (sin(noise.y) + cos(noise.y)) * Kernel[i].y;
+        offset.z = (cos(noise.x) - sin(noise.z)) * Kernel[i].z;
+
+
         // Generate a random position near the original position        
-        float4 sampleWorld = float4(position.xyz + Kernel[i] + noise, 1.0f);
+        float4 sampleWorld = float4(position.xyz + offset, 1.0f);
 
         // Transform to view space
         float4 sampleView = mul(mul(sampleWorld, View), Projection);
 
         // Transform to texture coordinates
         float2 sampleTex = ToTextureCoordinates(sampleView.xy, sampleView.w);
-        if (sampleTex.x >= 0.0f && sampleTex.x <= 1.0f &&
-            sampleTex.y >= 0.0f && sampleTex.y <= 1.0f)
+       /* if (sampleTex.x >= 0.0f && sampleTex.x <= 1.0f &&
+            sampleTex.y >= 0.0f && sampleTex.y <= 1.0f)*/
         {
             sum += 1.0f;
             ambientLight += ShadowMap.SampleCmpLevelZero(ShadowSampler, sampleTex, depth);

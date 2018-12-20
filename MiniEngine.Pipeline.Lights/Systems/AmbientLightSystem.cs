@@ -13,7 +13,7 @@ namespace MiniEngine.Pipeline.Lights.Systems
 {
     public sealed class AmbientLightSystem : ISystem
     {
-        private const int KernelSize = 128;
+        private const int KernelSize = 64;
 
         private readonly GraphicsDevice Device;
         private readonly AmbientLightEffect Effect;
@@ -112,7 +112,7 @@ namespace MiniEngine.Pipeline.Lights.Systems
 
         private Vector3[] GenerateKernel()
         {
-            var random = new Random(235);
+            var random = new Random(369);
 
             var kernel = new Vector3[KernelSize];
 
