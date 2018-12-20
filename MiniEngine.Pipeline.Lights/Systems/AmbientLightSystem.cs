@@ -17,16 +17,18 @@ namespace MiniEngine.Pipeline.Lights.Systems
 
         private readonly GraphicsDevice Device;
         private readonly AmbientLightEffect Effect;
+        private readonly BlurEffect BlurEffect;
         private readonly EntityLinker EntityLinker;
         private readonly FullScreenTriangle FullScreenTriangle;
         private readonly List<AmbientLight> Lights;
         private readonly Vector3[] Kernel;
         private readonly Texture2D NoiseMap;        
 
-        public AmbientLightSystem(GraphicsDevice device, AmbientLightEffect effect, EntityLinker entityLinker)
+        public AmbientLightSystem(GraphicsDevice device, AmbientLightEffect effect, BlurEffect blurEffect, EntityLinker entityLinker)
         {
             this.Device = device;
             this.Effect = effect;
+            this.BlurEffect = blurEffect;
             this.EntityLinker = entityLinker;
             this.FullScreenTriangle = new FullScreenTriangle();
             this.Lights = new List<AmbientLight>();
@@ -80,8 +82,16 @@ namespace MiniEngine.Pipeline.Lights.Systems
                 this.Effect.InverseViewProjection = camera.InverseViewProjection;
 
                 this.Effect.Apply();
-                this.FullScreenTriangle.Render(this.Device);
-            }
+                this.FullScreenTriangle.Render(this.Device);                
+            }            
+        }
+
+        // TODO: move Blurring to a general class
+        public void Blur(Texture2D texture)
+        {
+            this.BlurEffect.SourceMap = texture;
+            this.BlurEffect.Apply();
+            this.FullScreenTriangle.Render(this.Device);
         }
                
         private Color ComputeAmbientLightZeroAlpha()

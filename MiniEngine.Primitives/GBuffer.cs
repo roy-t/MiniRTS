@@ -59,6 +59,16 @@ namespace MiniEngine.Primitives
                 aaSamples,
                 RenderTargetUsage.PreserveContents);
 
+             this.TempTarget = new RenderTarget2D(
+                device,
+                width,
+                height,
+                false,
+                SurfaceFormat.Color,
+                DepthFormat.None,
+                aaSamples,
+                RenderTargetUsage.PreserveContents);
+
               this.FinalTarget = new RenderTarget2D(
                 device,
                 width,
@@ -74,6 +84,7 @@ namespace MiniEngine.Primitives
         public RenderTarget2D NormalTarget { get; }
         public RenderTarget2D DepthTarget { get; }
         public RenderTarget2D LightTarget { get; }
+        public RenderTarget2D TempTarget { get; }
         public RenderTarget2D CombineTarget { get; }
         public RenderTarget2D FinalTarget { get; }
     }

@@ -45,6 +45,7 @@ namespace MiniEngine.Configuration
             this.RegisterEffect<CombineEffect>("CombineEffect");
             this.RegisterEffect<FxaaEffect>("FxaaEffect");
             this.RegisterEffect<CopyEffect>("CopyEffect");
+            this.RegisterEffect<BlurEffect>("BlurEffect");
 
             this.RegisterEffect<AmbientLightEffect>("AmbientLightEffect");
             this.RegisterEffect<DirectionalLightEffect>("DirectionalLightEffect");

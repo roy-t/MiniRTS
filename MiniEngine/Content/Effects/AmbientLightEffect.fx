@@ -11,7 +11,7 @@ static const int KERNEL_SIZE = 128;
 
 float SampleRadius = 0.005f;
 float Strength = 1.0f;
-float3 Color; 
+float3 Color;
 float3 Kernel[KERNEL_SIZE];
 
 struct VertexShaderInput
@@ -44,7 +44,7 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
 {
     VertexShaderOutput output = (VertexShaderOutput)0;
 
-    output.Position = float4(input.Position,1);       
+    output.Position = float4(input.Position, 1);
     output.TexCoord = input.TexCoord;
 
     return output;
@@ -52,22 +52,22 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
 
 // Inspired by: http://ogldev.atspace.co.uk/www/tutorial45/tutorial45.html
 float4 MainPS(VertexShaderOutput input) : COLOR0
-{    
-    float2 texCoord = input.TexCoord;          
-    float4 position = ReadWorldPosition(texCoord, InverseViewProjection);    
+{
+    float2 texCoord = input.TexCoord;
+    float4 position = ReadWorldPosition(texCoord, InverseViewProjection);
     float depth = ReadDepth(texCoord) - bias;
 
     float ambientLight = 0.0f;
     float sum = 0.0f;
     for (int i = 0; i < KERNEL_SIZE; i++)
     {
-        float3 noise = tex2D(noiseSampler, Kernel[i] + texCoord).rgb * 0.10f;
+        float3 noise = tex2D(noiseSampler, Kernel[i].xy + texCoord).rgb * 0.10f;
         // Generate a random position near the original position        
-        float4 sampleWorld = float4(position.xyz + Kernel[i] + noise, 1.0f);                
+        float4 sampleWorld = float4(position.xyz + Kernel[i] + noise, 1.0f);
 
         // Transform to view space
         float4 sampleView = mul(mul(sampleWorld, View), Projection);
-       
+
         // Transform to texture coordinates
         float2 sampleTex = ToTextureCoordinates(sampleView.xy, sampleView.w);
         if (sampleTex.x >= 0.0f && sampleTex.x <= 1.0f &&
@@ -89,5 +89,5 @@ technique AmbientLightTechnique
     {
         VertexShader = compile VS_SHADERMODEL MainVS();
         PixelShader = compile PS_SHADERMODEL MainPS();
-    }    
+    }
 }
