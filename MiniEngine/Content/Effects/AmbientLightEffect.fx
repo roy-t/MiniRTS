@@ -4,9 +4,12 @@
 #include "Includes/Helpers.hlsl"
 #include "Includes/Light.hlsl"
 
+// Bias to prevent shadow acne
+static const float bias = 0.0001f;
+
 static const int KERNEL_SIZE = 64;
 
-float SampleRadius = 10.0f;
+float SampleRadius = 0.005f;
 float Strength = 1.0f;
 float3 Color; 
 float3 Kernel[KERNEL_SIZE];
@@ -23,6 +26,9 @@ struct VertexShaderOutput
     float2 TexCoord : TEXCOORD0;
 };
 
+Texture2D ShadowMap : register(t0);
+SamplerComparisonState ShadowSampler : register(s0);
+
 VertexShaderOutput MainVS(in VertexShaderInput input)
 {
     VertexShaderOutput output = (VertexShaderOutput)0;
@@ -38,37 +44,57 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
 {    
     float2 texCoord = input.TexCoord;      
     float4 position = ReadWorldPosition(texCoord, InverseViewProjection);
-    float depth = ReadDepth(texCoord);
+    float depth = ReadDepth(texCoord) - bias;
 
-    float ambientOcclusion = 0.0f;
+    float ambientLight = 0.0f;
+    float sum = 0.0f;
+    for (int i = 0; i < KERNEL_SIZE; i++)
+    {
+        // Generate a random position near the original position        
+        float4 sampleWorld = float4(position.xyz + Kernel[i], 1.0f);
+
+        // Transform to view space
+        float4 sampleView = mul(mul(sampleWorld, View), Projection);
+       
+        // Transform to texture coordinates
+        float2 sampleTex = ToTextureCoordinates(sampleView.xy, sampleView.w);
+        if (sampleTex.x >= 0.0f && sampleTex.x <= 1.0f &&
+            sampleTex.y >= 0.0f && sampleTex.y <= 1.0f)
+        {
+            sum += 1.0f;
+            ambientLight += ShadowMap.SampleCmpLevelZero(ShadowSampler, sampleTex, depth);
+        }
+    }
+
+    ambientLight /= sum;
+    ambientLight = pow(ambientLight, Strength);
+    return float4(Color.rgb * ambientLight, 0.0f);
+}
+
+float4 WorldPositionPS(VertexShaderOutput input) : COLOR0
+{
+    float2 texCoord = input.TexCoord;
+    float4 position = ReadWorldPosition(texCoord, InverseViewProjection);
+    float depth = ReadDepth(texCoord) / 3;
+
+    float d = 0.0f;
 
     for (int i = 0; i < KERNEL_SIZE; i++)
     {
         // Generate a random position near the original position        
         float4 sampleWorld = float4(position.xyz + Kernel[i], 1.0f);
-        
+
         // Figure out the corresponding depth        
-        float4 sampleProjection = mul(mul(sampleWorld, View), Projection);
-        
-        // Sample the depth camera to see if there is an object between
-        // position and sampleWorld
+        float4 sampleProjection = mul(mul(sampleWorld, View), Projection) / 50.0f;
         float2 sampleTex = ToTextureCoordinates(sampleProjection.xy, sampleProjection.w);
         float sampleDepth = ReadDepth(sampleTex.xy);
-        
-        // If something is closer position is (partially)-occluded
-        if (abs(depth - sampleDepth) < SampleRadius)
-        {
-            ambientOcclusion += step(sampleDepth, depth);
-        }
+
+        d += sampleDepth / 3.0f;
     }
 
-    ambientOcclusion = 1.0f - (ambientOcclusion / 64.0f);    
-    ambientOcclusion = pow(ambientOcclusion, Strength);
-    float x = (Color.r * 0.000001f) + ambientOcclusion;
-    return float4(x, x, x, 0.0f);
+    d /= (KERNEL_SIZE);
 
-    // TODO: real term here, above is for debugging!
-    //return float4(Color.rgb * ambientOcclusion, 0.0f);
+    return float4(depth, depth, depth, 0.0f);
 }
 
 technique AmbientLightTechnique
@@ -77,5 +103,5 @@ technique AmbientLightTechnique
     {
         VertexShader = compile VS_SHADERMODEL MainVS();
         PixelShader = compile PS_SHADERMODEL MainPS();
-    }
+    }    
 }

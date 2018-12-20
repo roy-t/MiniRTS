@@ -37,10 +37,11 @@ namespace MiniEngine.Pipeline.Lights.Systems
         {
             var ambientLight = this.ComputeAmbientLightZeroAlpha();
 
-            using(this.Device.LightState())
+            using(this.Device.ShadowCastingLightState())
             {
                 // G-Buffer input
                 this.Effect.DepthMap = gBuffer.DepthTarget;
+                this.Effect.ShadowMap = gBuffer.DepthTarget;
 
                 // Light properties
                 this.Effect.Color = ambientLight;

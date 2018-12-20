@@ -19,6 +19,12 @@ namespace MiniEngine.Effects
         {
             set => this.effect.Parameters["DepthMap"].SetValue(value);
         }
+
+        public Texture2D ShadowMap
+        {
+            set => this.effect.Parameters["ShadowMap"].SetValue(value);
+        }
+
         public Matrix View
         {
             set => this.effect.Parameters["View"].SetValue(value);
