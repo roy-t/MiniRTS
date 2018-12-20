@@ -25,6 +25,11 @@ namespace MiniEngine.Effects
             set => this.effect.Parameters["ShadowMap"].SetValue(value);
         }
 
+        public Texture2D NoiseMap
+        {
+            set => this.effect.Parameters["NoiseMap"].SetValue(value);
+        }
+
         public Matrix View
         {
             set => this.effect.Parameters["View"].SetValue(value);

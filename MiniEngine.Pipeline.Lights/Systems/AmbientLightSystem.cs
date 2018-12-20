@@ -13,7 +13,7 @@ namespace MiniEngine.Pipeline.Lights.Systems
 {
     public sealed class AmbientLightSystem : ISystem
     {
-        private const int KernelSize = 64;
+        private const int KernelSize = 128;
 
         private readonly GraphicsDevice Device;
         private readonly AmbientLightEffect Effect;
@@ -21,7 +21,8 @@ namespace MiniEngine.Pipeline.Lights.Systems
         private readonly FullScreenTriangle FullScreenTriangle;
         private readonly List<AmbientLight> Lights;
         private readonly Vector3[] Kernel;
-                
+        private readonly Texture2D NoiseMap;        
+
         public AmbientLightSystem(GraphicsDevice device, AmbientLightEffect effect, EntityLinker entityLinker)
         {
             this.Device = device;
@@ -31,6 +32,31 @@ namespace MiniEngine.Pipeline.Lights.Systems
             this.Lights = new List<AmbientLight>();
             
             this.Kernel = this.GenerateKernel();
+
+            this.NoiseMap = new Texture2D(device, device.Viewport.Width, device.Viewport.Height, false, SurfaceFormat.Color);
+            var random = new Random(255);
+            SimplexNoise.Seed = random.Next();
+            var noiseX = SimplexNoise.Calc2D(this.NoiseMap.Width, this.NoiseMap.Height, 1.0f);            
+            SimplexNoise.Seed = random.Next();
+            var noiseY = SimplexNoise.Calc2D(this.NoiseMap.Width, this.NoiseMap.Height, 1.0f);
+
+            SimplexNoise.Seed = random.Next();
+            var noiseZ = SimplexNoise.Calc2D(this.NoiseMap.Width, this.NoiseMap.Height, 1.0f);
+
+            var noise = new Color[this.NoiseMap.Width * this.NoiseMap.Height];
+            for (var y = 0; y < this.NoiseMap.Height; y++)
+            {
+                for (var x = 0; x < this.NoiseMap.Width; x++)
+                {
+                    var r = (noiseX[x, y] / 128.0f) - 1.0f;
+                    var g = (noiseY[x, y] / 128.0f) - 1.0f;
+                    var b = (noiseZ[x, y] / 128.0f) - 1.0f;
+
+                    noise[x * y] = new Color(r, g, b);
+                }
+            }
+
+            this.NoiseMap.SetData(noise);
         }
 
         public void Render(PerspectiveCamera camera, GBuffer gBuffer)
@@ -42,6 +68,7 @@ namespace MiniEngine.Pipeline.Lights.Systems
                 // G-Buffer input
                 this.Effect.DepthMap = gBuffer.DepthTarget;
                 this.Effect.ShadowMap = gBuffer.DepthTarget;
+                this.Effect.NoiseMap = this.NoiseMap;
 
                 // Light properties
                 this.Effect.Color = ambientLight;

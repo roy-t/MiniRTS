@@ -67,6 +67,7 @@
     <Compile Include="LightingPipeline.cs" />
     <Compile Include="LightingPipelineInput.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SimplexNoise.cs" />
     <Compile Include="Stages\AmbientLightStage.cs" />
     <Compile Include="Stages\DirectionalLightStage.cs" />
     <Compile Include="Stages\PointLightStage.cs" />
