@@ -54,6 +54,45 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
 float4 MainPS(VertexShaderOutput input) : COLOR0
 {
     float2 texCoord = input.TexCoord;
+    float4 position = ReadWorldPosition(texCoord, InverseViewProjection);    
+    float ambientLight = 0.0f;
+    for (int i = 0; i < KERNEL_SIZE; i++)
+    {
+        // Rotate the kernel using the pre-generated noise, seeded by the world position
+        // of the object
+        int ix = (int)(position.x * 73856093);
+        int iy = (int)(position.y * 50000059);
+        int iz = (int)(position.z * 83492791);
+        float2 uv = (ix ^ iy ^ iz) * 0.0001f;         
+        
+        float3 noise = tex2D(noiseSampler, uv).rgb * (Pi / 2.0f);
+        
+        float3 offset;
+        offset.x = (cos(noise.x) - sin(noise.x)) * Kernel[i].x;
+        offset.y = (sin(noise.y) + cos(noise.y)) * Kernel[i].y;
+        offset.z = (cos(noise.x) - sin(noise.z)) * Kernel[i].z;
+
+        // Generate a random position near the original position        
+        float4 sampleWorld = float4(position.xyz + offset, 1.0f);
+
+        // Transform to view space
+        float4 sampleView = mul(mul(sampleWorld, View), Projection);
+                
+        // Check if the random point is occluded or not
+        float depth = sampleView.z / sampleView.w;
+        float2 sampleTex = ToTextureCoordinates(sampleView.xy, sampleView.w);
+        ambientLight += ShadowMap.SampleCmpLevelZero(ShadowSampler, sampleTex, depth);
+    }
+
+    ambientLight /= KERNEL_SIZE;
+    ambientLight = pow(ambientLight, Strength);
+    return float4(Color.rgb * ambientLight, 0.0f);
+}
+
+// Inspired by: http://ogldev.atspace.co.uk/www/tutorial45/tutorial45.html
+float4 OldPS(VertexShaderOutput input) : COLOR0
+{
+    float2 texCoord = input.TexCoord;
     float4 position = ReadWorldPosition(texCoord, InverseViewProjection);
     float depth = ReadDepth(texCoord) - bias;
 
@@ -77,17 +116,17 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
 
         // Transform to texture coordinates
         float2 sampleTex = ToTextureCoordinates(sampleView.xy, sampleView.w);
-       /* if (sampleTex.x >= 0.0f && sampleTex.x <= 1.0f &&
-            sampleTex.y >= 0.0f && sampleTex.y <= 1.0f)*/
-        {
-            sum += 1.0f;
-            ambientLight += ShadowMap.SampleCmpLevelZero(ShadowSampler, sampleTex, depth);
-        }
-    }
+        /* if (sampleTex.x >= 0.0f && sampleTex.x <= 1.0f &&
+             sampleTex.y >= 0.0f && sampleTex.y <= 1.0f)*/
+         {
+             sum += 1.0f;
+             ambientLight += ShadowMap.SampleCmpLevelZero(ShadowSampler, sampleTex, depth);
+         }
+     }
 
-    ambientLight /= sum;
-    ambientLight = pow(ambientLight, Strength);
-    return float4(Color.rgb * ambientLight, 0.0f);
+     ambientLight /= sum;
+     ambientLight = pow(ambientLight, Strength);
+     return float4(Color.rgb * ambientLight, 0.0f);
 }
 
 technique AmbientLightTechnique
@@ -96,5 +135,12 @@ technique AmbientLightTechnique
     {
         VertexShader = compile VS_SHADERMODEL MainVS();
         PixelShader = compile PS_SHADERMODEL MainPS();
+    }
+
+
+    pass OldPass
+    {
+        VertexShader = compile VS_SHADERMODEL MainVS();
+        PixelShader = compile PS_SHADERMODEL OldPS();
     }
 }

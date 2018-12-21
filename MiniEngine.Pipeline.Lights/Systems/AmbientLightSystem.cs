@@ -35,7 +35,7 @@ namespace MiniEngine.Pipeline.Lights.Systems
             
             this.Kernel = this.GenerateKernel();
 
-            this.NoiseMap = new Texture2D(device, device.Viewport.Width, device.Viewport.Height, false, SurfaceFormat.Color);
+            this.NoiseMap = new Texture2D(device, 64, 64, false, SurfaceFormat.Color);
             var random = new Random(255);
             SimplexNoise.Seed = random.Next();
             var noiseX = SimplexNoise.Calc2D(this.NoiseMap.Width, this.NoiseMap.Height, 1.0f);            

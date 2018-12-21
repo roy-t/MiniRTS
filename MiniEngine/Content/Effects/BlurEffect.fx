@@ -56,7 +56,10 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
 
 float4 MainPS(VertexShaderOutput input) : COLOR0
 {
+
+    // TODO: blur only objects that belong to the same object
     const float2 texCoord = input.TexCoord;
+
     float2 mapSize;   
     SourceMap.GetDimensions(mapSize.x, mapSize.y);
 
