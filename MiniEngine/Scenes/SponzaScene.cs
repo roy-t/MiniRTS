@@ -65,9 +65,7 @@ namespace MiniEngine.Scenes
         {
             this.worldEntity = this.EntityCreator.CreateEntity();
 
-            //this.LightsFactory.AmbientLightFactory.Construct(this.worldEntity, Color.White * 0.25f);
-            this.LightsFactory.AmbientLightFactory.Construct(this.worldEntity, Color.White);
-
+            this.LightsFactory.AmbientLightFactory.Construct(this.worldEntity, Color.White * 0.25f);
 
             this.LightsFactory.SunlightFactory.Construct(this.worldEntity, Color.White, Vector3.Up, (Vector3.Left * 0.75f) + (Vector3.Backward * 0.1f));
 

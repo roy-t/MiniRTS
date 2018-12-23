@@ -49,16 +49,6 @@ namespace MiniEngine.Primitives
                 aaSamples,
                 RenderTargetUsage.PreserveContents);
 
-             this.AmbientOcclusionTarget = new RenderTarget2D(
-                device,
-                width,
-                height,
-                false,
-                SurfaceFormat.Single,  // TODO: HalfSingle is probably enough
-                DepthFormat.None,
-                aaSamples,
-                RenderTargetUsage.PreserveContents);
-
               this.CombineTarget = new RenderTarget2D(
                 device,
                 width,
@@ -83,7 +73,6 @@ namespace MiniEngine.Primitives
         public RenderTarget2D DiffuseTarget { get; }
         public RenderTarget2D NormalTarget { get; }
         public RenderTarget2D DepthTarget { get; }
-        public RenderTarget2D AmbientOcclusionTarget { get; }
         public RenderTarget2D LightTarget { get; }
         public RenderTarget2D CombineTarget { get; }
         public RenderTarget2D FinalTarget { get; }

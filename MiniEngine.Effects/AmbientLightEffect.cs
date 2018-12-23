@@ -14,15 +14,34 @@ namespace MiniEngine.Effects
         {
             this.Wrap(effect);
         }
+    
+        public Texture2D DepthMap
+        {
+            set => this.effect.Parameters["DepthMap"].SetValue(value);
+        }
+        public Matrix View
+        {
+            set => this.effect.Parameters["View"].SetValue(value);
+        }
+
+        public Matrix Projection
+        {
+            set => this.effect.Parameters["Projection"].SetValue(value);
+        }
+
+        public Matrix InverseViewProjection
+        {
+            set => this.effect.Parameters["InverseViewProjection"].SetValue(value);
+        }
 
         public Color Color
         {
             set => this.effect.Parameters["Color"].SetValue(value.ToVector3());
-        }   
+        }     
 
-        public Texture2D AmbientOcclusionMap
+        public Vector3[] Kernel
         {
-            set => this.effect.Parameters["AmbientOcclusionMap"].SetValue(value);
+            set => this.effect.Parameters["Kernel"].SetValue(value);
         }
 
         public void Apply() => this.ApplyPass();
