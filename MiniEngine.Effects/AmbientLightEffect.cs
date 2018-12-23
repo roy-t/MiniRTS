@@ -19,6 +19,17 @@ namespace MiniEngine.Effects
         {
             set => this.effect.Parameters["DepthMap"].SetValue(value);
         }
+
+        public Texture2D FilteredDepthMap
+        {
+            set => this.effect.Parameters["FilteredDepthMap"].SetValue(value);
+        }
+
+        public Texture2D NoiseMap
+        {
+            set => this.effect.Parameters["NoiseMap"].SetValue(value);
+        }
+
         public Matrix View
         {
             set => this.effect.Parameters["View"].SetValue(value);
@@ -42,6 +53,11 @@ namespace MiniEngine.Effects
         public Vector3[] Kernel
         {
             set => this.effect.Parameters["Kernel"].SetValue(value);
+        }
+
+        public float Strength
+        {
+            set => this.effect.Parameters["Strength"].SetValue(value);
         }
 
         public void Apply() => this.ApplyPass();

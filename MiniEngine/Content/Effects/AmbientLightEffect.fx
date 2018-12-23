@@ -1,14 +1,16 @@
+// Computes the ambient light in the scene using Screen Space Ambient Occlusion.
+// Inspired by: http://ogldev.atspace.co.uk/www/tutorial45/tutorial45.html
+
 #include "Includes/Defines.hlsl"
 #include "Includes/Matrices.hlsl"
 #include "Includes/GBuffer.hlsl"
 #include "Includes/Helpers.hlsl"
-#include "Includes/Light.hlsl"
 
+static const float Pi = 3.1415926535f;
 static const int KERNEL_SIZE = 64;
 
-float SampleRadius = 10.0f;
 float Strength = 1.0f;
-float3 Color; 
+float3 Color;
 float3 Kernel[KERNEL_SIZE];
 
 struct VertexShaderInput
@@ -23,52 +25,66 @@ struct VertexShaderOutput
     float2 TexCoord : TEXCOORD0;
 };
 
+Texture2D FilteredDepthMap : register(t0);
+SamplerComparisonState FilteredDepthMapSampler : register(s0);
+
+texture NoiseMap;
+sampler noiseSampler = sampler_state
+{
+    Texture = (NoiseMap);
+    AddressU = WRAP;
+    AddressV = WRAP;
+    MagFilter = POINT;
+    MinFilter = POINT;
+    Mipfilter = POINT;
+};
+
 VertexShaderOutput MainVS(in VertexShaderInput input)
 {
     VertexShaderOutput output = (VertexShaderOutput)0;
 
-    output.Position = float4(input.Position,1);       
+    output.Position = float4(input.Position, 1);
     output.TexCoord = input.TexCoord;
 
     return output;
 }
 
-// Inspired by: http://ogldev.atspace.co.uk/www/tutorial45/tutorial45.html
 float4 MainPS(VertexShaderOutput input) : COLOR0
-{    
-    float2 texCoord = input.TexCoord;      
-    float4 position = ReadWorldPosition(texCoord, InverseViewProjection);
-    float depth = ReadDepth(texCoord);
-
-    float ambientOcclusion = 0.0f;
-
+{
+    float2 texCoord = input.TexCoord;
+    float4 position = ReadWorldPosition(texCoord, InverseViewProjection);    
+    float ambientLight = 0.0f;
     for (int i = 0; i < KERNEL_SIZE; i++)
     {
+        // Rotate the kernel using the pre-generated noise, seeded by the world position
+        // of the object
+        int ix = (int)(position.x * 73856093);
+        int iy = (int)(position.y * 50000059);
+        int iz = (int)(position.z * 83492791);
+        float2 uv = (ix ^ iy ^ iz) * 0.0001f;
+        
+        float3 noise = tex2D(noiseSampler, uv).rgb * (Pi / 2.0f);
+        
+        float3 offset;
+        offset.x = (cos(noise.x) - sin(noise.x)) * Kernel[i].x;
+        offset.y = (sin(noise.y) + cos(noise.y)) * Kernel[i].y;
+        offset.z = (cos(noise.x) - sin(noise.z)) * Kernel[i].z;
+
         // Generate a random position near the original position        
-        float4 sampleWorld = float4(position.xyz + Kernel[i], 1.0f);
-        
-        // Figure out the corresponding depth        
-        float4 sampleProjection = mul(mul(sampleWorld, View), Projection);
-        
-        // Sample the depth camera to see if there is an object between
-        // position and sampleWorld
-        float2 sampleTex = ToTextureCoordinates(sampleProjection.xy, sampleProjection.w);
-        float sampleDepth = ReadDepth(sampleTex.xy);
-        
-        // If something is closer position is (partially)-occluded
-        if (abs(depth - sampleDepth) < SampleRadius)
-        {
-            ambientOcclusion += step(sampleDepth, depth);
-        }
+        float4 sampleWorld = float4(position.xyz + offset, 1.0f);
+
+        // Transform to view space
+        float4 sampleView = mul(mul(sampleWorld, View), Projection);
+                
+        // Check if the random point is occluded or not
+        float depth = sampleView.z / sampleView.w;
+        float2 sampleTex = ToTextureCoordinates(sampleView.xy, sampleView.w);
+        ambientLight += FilteredDepthMap.SampleCmpLevelZero(FilteredDepthMapSampler, sampleTex, depth);
     }
 
-    ambientOcclusion = 1.0f - (ambientOcclusion / 64.0f);    
-    ambientOcclusion = pow(ambientOcclusion, Strength);
-    float x = (Color.r * 0.000001f) + ambientOcclusion;
-    return float4(x, x, x, 0.0f);
-
-    // TODO: real term here, above is for debugging!
-    //return float4(Color.rgb * ambientOcclusion, 0.0f);
+    ambientLight /= KERNEL_SIZE;
+    ambientLight = pow(ambientLight, Strength);
+    return float4(Color.rgb * ambientLight, 0.0f);
 }
 
 technique AmbientLightTechnique

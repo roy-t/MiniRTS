@@ -88,9 +88,9 @@ namespace MiniEngine.Rendering
                         .ClearRenderTargetSet()
                         .UpdateSystem(cascadedShadowMapSystem)
                         .UpdateSystem(particleSystem)
-                        .RenderShadows(shadowPipeline)
+                        //.RenderShadows(shadowPipeline)
                         .RenderModels(modelSystem, modelPipeline)
-                        .RenderParticles(particleSystem, particlePipeline)
+                        //.RenderParticles(particleSystem, particlePipeline)
                         .Render3DDebugOverlay(debugRenderSystem)
                         .Render2DDebugOverlay(debugRenderSystem);
 

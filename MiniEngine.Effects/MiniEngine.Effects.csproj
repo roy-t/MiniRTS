@@ -53,6 +53,7 @@
     <Compile Include="DeviceStates\DeviceState.cs" />
     <Compile Include="DirectionalLightEffect.cs" />
     <Compile Include="EffectWrapper.cs" />
+    <Compile Include="BlurEffect.cs" />
     <Compile Include="FxaaEffect.cs" />
     <Compile Include="DeviceStates\GraphicsDeviceExtensions.cs" />
     <Compile Include="PointLightEffect.cs" />
