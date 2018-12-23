@@ -69,7 +69,7 @@ namespace MiniEngine.Pipeline.Lights.Systems
             {
                 // G-Buffer input
                 this.Effect.DepthMap = gBuffer.DepthTarget;
-                this.Effect.ShadowMap = gBuffer.DepthTarget;
+                this.Effect.FilteredDepthMap = gBuffer.DepthTarget;
                 this.Effect.NoiseMap = this.NoiseMap;
 
                 // Light properties
@@ -86,12 +86,20 @@ namespace MiniEngine.Pipeline.Lights.Systems
             }            
         }
 
-        // TODO: move Blurring to a general class
-        public void Blur(Texture2D texture)
+        public void Blur(PerspectiveCamera camera, GBuffer gBuffer)
         {
-            this.BlurEffect.SourceMap = texture;
-            this.BlurEffect.Apply();
-            this.FullScreenTriangle.Render(this.Device);
+            using (this.Device.ShadowCastingLightState())
+            {
+                // G-Buffer input
+                this.BlurEffect.DepthMap = gBuffer.DepthTarget;
+
+                
+                this.BlurEffect.SourceMap = gBuffer.TempTarget;
+                this.BlurEffect.MaxDistance = camera.FarPlane;
+                
+                this.BlurEffect.Apply();
+                this.FullScreenTriangle.Render(this.Device);
+            }
         }
                
         private Color ComputeAmbientLightZeroAlpha()

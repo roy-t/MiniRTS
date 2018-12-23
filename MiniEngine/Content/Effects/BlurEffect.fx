@@ -1,4 +1,8 @@
+// Blurs a texture using poisson disk sampling. Uses the depth map 
+// to make sure blur does not bleed between objects that are far apart
+
 #include "Includes/Defines.hlsl"
+#include "Includes/GBuffer.hlsl"
 
 struct VertexShaderInput
 {
@@ -12,6 +16,10 @@ struct VertexShaderOutput
     float2 TexCoord : TEXCOORD0;
 };
 
+float MaxDistance;
+float MaxBlurDistance = 0.25f;
+float SampleRadius = 10.0f;
+
 Texture2D SourceMap;
 sampler sourceSampler = sampler_state
 {
@@ -22,7 +30,6 @@ sampler sourceSampler = sampler_state
     MinFilter = LINEAR;
     Mipfilter = LINEAR;
 };
-
 
 static float2 Offsets[16] =
 {
@@ -55,25 +62,32 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
 }
 
 float4 MainPS(VertexShaderOutput input) : COLOR0
-{
-
-    // TODO: blur only objects that belong to the same object
-    const float2 texCoord = input.TexCoord;
-
+{    
+    float2 texCoord = input.TexCoord;
     float2 mapSize;   
     SourceMap.GetDimensions(mapSize.x, mapSize.y);
 
-    float4 color = float4(0, 0, 0, 0);
+    float depth = ReadDepth(texCoord);    
+    float4 color = tex2D(sourceSampler, texCoord);
+    float sum = 1.0f;
 
     for (int i = 0; i < 16; i++)
     {
         float2 tc = texCoord;
-        tc.x += (Offsets[i].x * 3.0f) / mapSize.x;
-        tc.y += (Offsets[i].y * 3.0f) / mapSize.y;
-        color += tex2D(sourceSampler, tc);
+        tc.x += (Offsets[i].x * SampleRadius) / mapSize.x;
+        tc.y += (Offsets[i].y * SampleRadius) / mapSize.y;
+
+        float blurDepth = ReadDepth(tc);
+        float distance = abs(blurDepth - depth) * MaxDistance;
+                
+        if (distance <= MaxBlurDistance)
+        {
+            sum += 1.0f;
+            color += tex2D(sourceSampler, tc);
+        }
     }
 
-    return float4(color / 16.0f);
+    return float4(color / sum);
 }
 
 technique AmbientLightTechnique
