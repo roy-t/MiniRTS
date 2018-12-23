@@ -58,11 +58,11 @@ namespace MiniEngine.Rendering
             var lightingPipeline =
                 LightingPipeline.Create(device, meterRegistry)
                                 // TODO, move clearing from ambient light stage to separate stage
-                                .RenderAmbientLight(ambientLightSystem);
-                                //.RenderDirectionalLights(directionalLightSystem)
-                                //.RenderPointLights(pointLightSystem)
-                                //.RenderShadowCastingLights(shadowCastingLightSystem)
-                                //.RenderSunlights(sunlightSystem);
+                                .RenderAmbientLight(ambientLightSystem)
+                                .RenderDirectionalLights(directionalLightSystem)
+                                .RenderPointLights(pointLightSystem)
+                                .RenderShadowCastingLights(shadowCastingLightSystem)
+                                .RenderSunlights(sunlightSystem);
 
             var modelPipeline =
                 ModelPipeline.Create(device, meterRegistry)
@@ -88,9 +88,9 @@ namespace MiniEngine.Rendering
                         .ClearRenderTargetSet()
                         .UpdateSystem(cascadedShadowMapSystem)
                         .UpdateSystem(particleSystem)
-                        //.RenderShadows(shadowPipeline)
+                        .RenderShadows(shadowPipeline)
                         .RenderModels(modelSystem, modelPipeline)
-                        //.RenderParticles(particleSystem, particlePipeline)
+                        .RenderParticles(particleSystem, particlePipeline)
                         .Render3DDebugOverlay(debugRenderSystem)
                         .Render2DDebugOverlay(debugRenderSystem);
 
