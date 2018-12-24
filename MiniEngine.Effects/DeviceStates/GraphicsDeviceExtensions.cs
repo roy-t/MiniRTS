@@ -42,6 +42,7 @@ namespace MiniEngine.Effects.DeviceStates
 
         /// <summary>
         /// Graphics device state for drawing lights that cast shadows to the Light Target
+        /// or perform or other comparisons on a single texture that contains depth information.        
         /// </summary>
         public static DeviceState ShadowCastingLightState(this GraphicsDevice device)
         {
@@ -63,6 +64,9 @@ namespace MiniEngine.Effects.DeviceStates
                 samplerState);
         }
 
+        /// <summary>
+        /// Graphics device state for rendering shadow maps
+        /// </summary>
         public static DeviceState ShadowMapState(this GraphicsDevice device)
         {
             var rasterizerState = new RasterizerState
@@ -78,10 +82,12 @@ namespace MiniEngine.Effects.DeviceStates
                 rasterizerState);
         }
 
+        /// <summary>
+        /// Similar to the additive blending but substracts the colors 
+        /// thus making objects that are very opaque darker (as if they let less light through)
+        /// </summary>
         public static DeviceState AdditiveBlendOccluderState(this GraphicsDevice device)
         {
-            // Similar to the additive blending but substracts the colors 
-            // thus making objects that are very opaque darker (as if they let less light through)
             var blendState = new BlendState
             {
                 AlphaBlendFunction = BlendFunction.ReverseSubtract,
@@ -107,11 +113,13 @@ namespace MiniEngine.Effects.DeviceStates
                 rasterizerState);
         }
 
+        /// <summary>
+        /// Similar to the alpha blending state but first divides
+        /// the source components by the inverse alpha, thus making
+        /// objects that are very opaque darker (as if they let less light through)
+        /// </summary>
         public static DeviceState AlphaBlendOccluderState(this GraphicsDevice device)
         {
-            // Similar to the alpha blending state but first divides
-            // the source components by the inverse alpha, thus making
-            // objects that are very opaque darker (as if they let less light through)
             var blendState = new BlendState
             {
                 AlphaBlendFunction = BlendFunction.Add,
@@ -137,6 +145,9 @@ namespace MiniEngine.Effects.DeviceStates
                 rasterizerState);
         }
 
+        /// <summary>
+        /// Graphics device state for 2D post processing
+        /// </summary>
         public static DeviceState PostProcessState(this GraphicsDevice device)
         {
             return new DeviceState(
@@ -146,6 +157,9 @@ namespace MiniEngine.Effects.DeviceStates
                 RasterizerState.CullCounterClockwise);
         }
 
+        /// <summary>
+        /// Graphics device state for rendering everything as wireframes
+        /// </summary>
         public static DeviceState WireFrameState(this GraphicsDevice device)
         {
             var rasterState = new RasterizerState

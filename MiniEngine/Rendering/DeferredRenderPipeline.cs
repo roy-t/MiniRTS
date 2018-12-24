@@ -56,8 +56,8 @@ namespace MiniEngine.Rendering
                               .RenderShadowMaps(shadowMapSystem);
 
             var lightingPipeline =
-                LightingPipeline.Create(device, meterRegistry)
-                                // TODO, move clearing from ambient light stage to separate stage
+                LightingPipeline.Create(device, meterRegistry)                
+                                .ClearLightTargets()
                                 .RenderAmbientLight(ambientLightSystem)
                                 .RenderDirectionalLights(directionalLightSystem)
                                 .RenderPointLights(pointLightSystem)

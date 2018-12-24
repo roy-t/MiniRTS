@@ -61,16 +61,16 @@ namespace MiniEngine.Pipeline.Lights.Systems
             this.NoiseMap.SetData(noise);
         }
 
-        public void Render(PerspectiveCamera camera, GBuffer gBuffer)
+        public void Render(PerspectiveCamera camera, RenderTarget2D normalTarget, RenderTarget2D depthTarget)
         {
             var ambientLight = this.ComputeAmbientLightZeroAlpha();
 
             using(this.Device.ShadowCastingLightState())
             {
                 // G-Buffer input
-                this.Effect.NormalMap = gBuffer.NormalTarget;
-                this.Effect.DepthMap = gBuffer.DepthTarget;
-                this.Effect.FilteredDepthMap = gBuffer.DepthTarget;
+                this.Effect.NormalMap = normalTarget;
+                this.Effect.DepthMap = depthTarget;
+                this.Effect.FilteredDepthMap = depthTarget;
                 this.Effect.NoiseMap = this.NoiseMap;
 
                 // Light properties
@@ -87,14 +87,14 @@ namespace MiniEngine.Pipeline.Lights.Systems
             }            
         }
 
-        public void Blur(PerspectiveCamera camera, GBuffer gBuffer)
+        public void Blur(PerspectiveCamera camera, RenderTarget2D sourceTarget, RenderTarget2D depthTarget)
         {
             using (this.Device.ShadowCastingLightState())
             {
                 // G-Buffer input
-                this.BlurEffect.DepthMap = gBuffer.DepthTarget;
+                this.BlurEffect.DepthMap = depthTarget;
                 
-                this.BlurEffect.SourceMap = gBuffer.TempTarget;
+                this.BlurEffect.SourceMap = sourceTarget;
                 this.BlurEffect.MaxDistance = camera.FarPlane;
                 
                 this.BlurEffect.Apply();

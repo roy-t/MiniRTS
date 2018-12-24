@@ -53,6 +53,7 @@
     <Compile Include="Components\ShadowCastingLight.cs" />
     <Compile Include="Components\Sunlight.cs" />
     <Compile Include="Extensions\AmbientLightStageExtensions.cs" />
+    <Compile Include="Extensions\ClearStageExtensions.cs" />
     <Compile Include="Extensions\DirectionalLightStageExtensions.cs" />
     <Compile Include="Extensions\PointLightStageExtensions.cs" />
     <Compile Include="Extensions\RenderLightsStageExtensions.cs" />
@@ -69,6 +70,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SimplexNoise.cs" />
     <Compile Include="Stages\AmbientLightStage.cs" />
+    <Compile Include="Stages\ClearStage.cs" />
     <Compile Include="Stages\DirectionalLightStage.cs" />
     <Compile Include="Stages\PointLightStage.cs" />
     <Compile Include="Stages\RenderLightsStage.cs" />

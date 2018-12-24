@@ -1,5 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Pipeline.Lights.Systems;
 
 namespace MiniEngine.Pipeline.Lights.Stages
@@ -18,12 +17,10 @@ namespace MiniEngine.Pipeline.Lights.Stages
         public void Execute(LightingPipelineInput input)
         {
             this.Device.SetRenderTarget(input.GBuffer.TempTarget);
-            this.Device.Clear(Color.TransparentBlack);
-            this.AmbientLightSystem.Render(input.Camera, input.GBuffer);
+            this.AmbientLightSystem.Render(input.Camera, input.GBuffer.NormalTarget, input.GBuffer.DepthTarget);
 
             this.Device.SetRenderTarget(input.GBuffer.LightTarget);
-            this.Device.Clear(Color.TransparentBlack);
-            this.AmbientLightSystem.Blur(input.Camera, input.GBuffer);
+            this.AmbientLightSystem.Blur(input.Camera, input.GBuffer.TempTarget, input.GBuffer.DepthTarget);
         }
     }
 }
