@@ -18,7 +18,7 @@ struct VertexShaderOutput
 
 float MaxDistance;
 float MaxBlurDistance = 0.25f;
-float SampleRadius = 10.0f;
+float SampleRadius = 8.0f;
 
 Texture2D SourceMap;
 sampler sourceSampler = sampler_state

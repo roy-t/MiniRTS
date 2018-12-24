@@ -30,4 +30,5 @@
 - Particles are rendered last in the shadow map state, might 'shadow' on a stained glass window that is in front of it.
 - Shadowey particles appear on the roof (-z culling?)
 - Particles are really expensive, as they are drawn for every shadow casting light, and every cascade. Let's first try to add spatial partitioning to reduce the draws, then make the draw calls more efficient
+- SSAO: tiling effect for flat surfaces that have no normal map
 

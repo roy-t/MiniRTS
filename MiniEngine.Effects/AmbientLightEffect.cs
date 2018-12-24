@@ -14,6 +14,11 @@ namespace MiniEngine.Effects
         {
             this.Wrap(effect);
         }
+
+        public Texture2D NormalMap
+        {
+            set => this.effect.Parameters["NormalMap"].SetValue(value);
+        }
     
         public Texture2D DepthMap
         {
@@ -55,9 +60,9 @@ namespace MiniEngine.Effects
             set => this.effect.Parameters["Kernel"].SetValue(value);
         }
 
-        public float Strength
+        public float NormalOffset
         {
-            set => this.effect.Parameters["Strength"].SetValue(value);
+            set => this.effect.Parameters["NormalOffset"].SetValue(value);
         }
 
         public void Apply() => this.ApplyPass();

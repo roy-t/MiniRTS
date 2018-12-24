@@ -4,7 +4,6 @@ using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Pipeline.Lights.Factories;
 using MiniEngine.Pipeline.Lights.Systems;
 using MiniEngine.Pipeline.Models.Factories;
-using MiniEngine.Pipeline.Models.Systems;
 using MiniEngine.Pipeline.Particles.Factories;
 using MiniEngine.Pipeline.Systems;
 using MiniEngine.Systems;
@@ -65,7 +64,7 @@ namespace MiniEngine.Scenes
         {
             this.worldEntity = this.EntityCreator.CreateEntity();
 
-            this.LightsFactory.AmbientLightFactory.Construct(this.worldEntity, Color.White);
+            this.LightsFactory.AmbientLightFactory.Construct(this.worldEntity, Color.White * 0.5f);
 
             this.LightsFactory.SunlightFactory.Construct(this.worldEntity, Color.White, Vector3.Up, (Vector3.Left * 0.75f) + (Vector3.Backward * 0.1f));
 

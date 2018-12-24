@@ -9,7 +9,7 @@
 static const float Pi = 3.1415926535f;
 static const int KERNEL_SIZE = 64;
 
-float Strength = 1.0f;
+float NormalOffset = 0.15f;
 float3 Color;
 float3 Kernel[KERNEL_SIZE];
 
@@ -52,7 +52,9 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
 float4 MainPS(VertexShaderOutput input) : COLOR0
 {
     float2 texCoord = input.TexCoord;
-    float4 position = ReadWorldPosition(texCoord, InverseViewProjection);    
+
+    float3 normal = tex2D(normalSampler, texCoord).xyz;
+    float3 position = ReadWorldPosition(texCoord, InverseViewProjection).xyz + (normal * NormalOffset);
     float ambientLight = 0.0f;
     for (int i = 0; i < KERNEL_SIZE; i++)
     {
@@ -68,7 +70,7 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
         float3 offset;
         offset.x = (cos(noise.x) - sin(noise.x)) * Kernel[i].x;
         offset.y = (sin(noise.y) + cos(noise.y)) * Kernel[i].y;
-        offset.z = (cos(noise.x) - sin(noise.z)) * Kernel[i].z;
+        offset.z = (cos(noise.x) - sin(noise.z)) * Kernel[i].z;        
 
         // Generate a random position near the original position        
         float4 sampleWorld = float4(position.xyz + offset, 1.0f);
@@ -76,14 +78,14 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
         // Transform to view space
         float4 sampleView = mul(mul(sampleWorld, View), Projection);
                 
-        // Check if the random point is occluded or not
+        // Check if the random point is occluded or not        
+        float2 sampleTex = ToTextureCoordinates(sampleView.xy, sampleView.w);        
         float depth = sampleView.z / sampleView.w;
-        float2 sampleTex = ToTextureCoordinates(sampleView.xy, sampleView.w);
+        
         ambientLight += FilteredDepthMap.SampleCmpLevelZero(FilteredDepthMapSampler, sampleTex, depth);
     }
 
     ambientLight /= KERNEL_SIZE;
-    ambientLight = pow(ambientLight, Strength);
     return float4(Color.rgb * ambientLight, 0.0f);
 }
 

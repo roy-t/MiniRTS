@@ -68,6 +68,7 @@ namespace MiniEngine.Pipeline.Lights.Systems
             using(this.Device.ShadowCastingLightState())
             {
                 // G-Buffer input
+                this.Effect.NormalMap = gBuffer.NormalTarget;
                 this.Effect.DepthMap = gBuffer.DepthTarget;
                 this.Effect.FilteredDepthMap = gBuffer.DepthTarget;
                 this.Effect.NoiseMap = this.NoiseMap;
@@ -92,7 +93,6 @@ namespace MiniEngine.Pipeline.Lights.Systems
             {
                 // G-Buffer input
                 this.BlurEffect.DepthMap = gBuffer.DepthTarget;
-
                 
                 this.BlurEffect.SourceMap = gBuffer.TempTarget;
                 this.BlurEffect.MaxDistance = camera.FarPlane;

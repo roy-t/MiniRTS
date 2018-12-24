@@ -25,7 +25,7 @@ namespace MiniEngine
         private KeyboardInput keyboardInput;
         private MouseInput mouseInput;
 
-        private bool detailView = true;
+        private int detailView = 1;
         private int viewIndex;
         private int viewOptions;
 
@@ -115,7 +115,7 @@ namespace MiniEngine
 
             if (this.keyboardInput.Click(Keys.OemTilde))
             {
-                this.detailView = !this.detailView;
+                this.detailView = (this.detailView + 1) % 3;
             }
 
             if (this.keyboardInput.Click(Keys.Tab))
@@ -177,7 +177,7 @@ namespace MiniEngine
             var gBuffer = this.renderPipeline.GetIntermediateRenderTargets();
             this.viewOptions = gBuffer.Length;
 
-            if (this.detailView)
+            if (this.detailView == 1)
             {
                 var step = this.GraphicsDevice.Viewport.Width / gBuffer.Length;
                 for (var i = 0; i < gBuffer.Length; i++)
@@ -196,7 +196,7 @@ namespace MiniEngine
                         0);
                 }
             }
-            else
+            else if (this.detailView == 2)
             {
                 this.spriteBatch.Draw(
                     gBuffer[this.viewIndex],
