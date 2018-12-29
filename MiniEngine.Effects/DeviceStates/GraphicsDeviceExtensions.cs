@@ -21,10 +21,27 @@ namespace MiniEngine.Effects.DeviceStates
         /// </summary>
         public static DeviceState ParticleState(this GraphicsDevice device)
         {
+            var blendStates = new BlendState
+            {
+                IndependentBlendEnable = true
+            };
+
+            blendStates[0].AlphaSourceBlend = Blend.One;
+            blendStates[0].ColorSourceBlend = Blend.One;
+            blendStates[0].AlphaDestinationBlend = Blend.One;
+            blendStates[0].ColorDestinationBlend = Blend.One;
+
+            blendStates[1].AlphaSourceBlend = Blend.Zero;
+            blendStates[1].ColorSourceBlend = Blend.Zero;
+            blendStates[1].AlphaDestinationBlend = Blend.InverseSourceColor;
+            blendStates[1].ColorDestinationBlend = Blend.InverseSourceColor;
+
+
+
             return new DeviceState(
                 device,
-                BlendState.Additive,
-                DepthStencilState.Default,
+                blendStates,
+                DepthStencilState.DepthRead,
                 RasterizerState.CullNone);
         }
 
@@ -153,6 +170,26 @@ namespace MiniEngine.Effects.DeviceStates
             return new DeviceState(
                 device,
                 BlendState.AlphaBlend,
+                DepthStencilState.None,
+                RasterizerState.CullCounterClockwise);
+        }
+
+        /// <summary>
+        /// Graphics device state for 2D post processing
+        /// </summary>
+        public static DeviceState FooState(this GraphicsDevice device)
+        {
+            var blendState = new BlendState
+            {
+                AlphaSourceBlend = Blend.SourceAlpha,
+                ColorSourceBlend = Blend.SourceAlpha,
+                AlphaDestinationBlend = Blend.InverseSourceAlpha,
+                ColorDestinationBlend = Blend.InverseSourceAlpha
+            };
+
+            return new DeviceState(
+                device,
+                BlendState.Additive,
                 DepthStencilState.None,
                 RasterizerState.CullCounterClockwise);
         }

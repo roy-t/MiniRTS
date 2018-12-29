@@ -44,8 +44,9 @@ namespace MiniEngine.Configuration
             this.RegisterEffect<RenderEffect>("RenderEffect");
             this.RegisterEffect<CombineEffect>("CombineEffect");
             this.RegisterEffect<FxaaEffect>("FxaaEffect");
-            this.RegisterEffect<CopyEffect>("CopyEffect");
             this.RegisterEffect<BlurEffect>("BlurEffect");
+            this.RegisterEffect<WeightedParticlesEffect>("WeightedParticlesEffect");
+            this.RegisterEffect<AverageParticlesEffect>("AverageParticlesEffect");
 
             this.RegisterEffect<AmbientLightEffect>("AmbientLightEffect");
             this.RegisterEffect<DirectionalLightEffect>("DirectionalLightEffect");

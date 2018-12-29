@@ -4,14 +4,11 @@
 - Particles need a lot more configurable parameters to look good
     - Add a tint color to the shader so we can fade out almost dead particles!
 - Right now everything is rendered for everything use spatial partitioning. Crazy idea: seperate thread that keeps updating the spatial partitioning thing as fast as possible?
-- BUG: light controller adds a second light instead of removing the first one!
-  - Need an efficient way to get all entities with a given component type
-  - Are dictionaries the right way for this?
+- Stuff is starting to get a bit slow, OPTIMIZE!
 
 ## Interesting
 
 - Particle effects via a new method that weighs by depth so we can do it in 1 pass
-- Screen space ambient occlusion
 - Reflections
 - Water
 - Terrain/tree/water generation

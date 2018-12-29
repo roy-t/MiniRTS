@@ -31,7 +31,7 @@ namespace MiniEngine.Systems
             return entities;
         }
 
-        public IReadOnlyList<Entity> GetAllEntities() => this.Entities.AsReadOnly();
+        public IReadOnlyList<Entity> GetAllEntities() => new List<Entity>(this.Entities).AsReadOnly();
 
         internal void Remove(Entity entity) => this.Entities.Remove(entity);
     }

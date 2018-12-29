@@ -14,7 +14,7 @@ namespace MiniEngine.Pipeline.Lights.Stages
 
         public void Execute(LightingPipelineInput input)
         {
-            this.Device.SetRenderTarget(input.GBuffer.TempTarget);
+            this.Device.SetRenderTarget(input.GBuffer.BlurTarget);
             this.Device.Clear(Color.TransparentBlack);
 
             this.Device.SetRenderTarget(input.GBuffer.LightTarget);

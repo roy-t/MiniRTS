@@ -36,7 +36,7 @@ namespace MiniEngine.Effects.DeviceStates
             device.BlendState = blendState;
             device.DepthStencilState = depthStencilState;
             device.RasterizerState = rasterizerState;
-            device.SamplerStates[0] = samplerState;
+            device.SamplerStates[0] = samplerState;            
         }
 
         public void Dispose()

@@ -48,8 +48,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AmbientLightEffect.cs" />
+    <Compile Include="AverageParticlesEffect.cs" />
     <Compile Include="CombineEffect.cs" />
-    <Compile Include="CopyEffect.cs" />
     <Compile Include="DeviceStates\DeviceState.cs" />
     <Compile Include="DirectionalLightEffect.cs" />
     <Compile Include="EffectWrapper.cs" />
@@ -62,6 +62,7 @@
     <Compile Include="ShadowCastingLightEffect.cs" />
     <Compile Include="SunlightEffect.cs" />
     <Compile Include="Techniques\RenderEffectTechniques.cs" />
+    <Compile Include="WeightedParticlesEffect.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

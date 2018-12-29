@@ -16,11 +16,11 @@ namespace MiniEngine.Pipeline.Lights.Stages
 
         public void Execute(LightingPipelineInput input)
         {
-            this.Device.SetRenderTarget(input.GBuffer.TempTarget);
+            this.Device.SetRenderTarget(input.GBuffer.BlurTarget);
             this.AmbientLightSystem.Render(input.Camera, input.GBuffer.NormalTarget, input.GBuffer.DepthTarget);
 
             this.Device.SetRenderTarget(input.GBuffer.LightTarget);
-            this.AmbientLightSystem.Blur(input.Camera, input.GBuffer.TempTarget, input.GBuffer.DepthTarget);
+            this.AmbientLightSystem.Blur(input.Camera, input.GBuffer.BlurTarget, input.GBuffer.DepthTarget);
         }
     }
 }

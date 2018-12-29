@@ -20,6 +20,12 @@
 /processorParam:DebugMode=Auto
 /build:Effects/AmbientLightEffect.fx
 
+#begin Effects/AverageParticlesEffect.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Effects/AverageParticlesEffect.fx
+
 #begin Effects/BlurEffect.fx
 /importer:EffectImporter
 /processor:EffectProcessor
@@ -31,12 +37,6 @@
 /processor:EffectProcessor
 /processorParam:DebugMode=Auto
 /build:Effects/CombineEffect.fx
-
-#begin Effects/CopyEffect.fx
-/importer:EffectImporter
-/processor:EffectProcessor
-/processorParam:DebugMode=Auto
-/build:Effects/CopyEffect.fx
 
 #begin Effects/DirectionalLightEffect.fx
 /importer:EffectImporter
@@ -93,6 +93,12 @@
 /processorParam:DebugMode=Auto
 /build:Effects/SunlightEffect.fx
 
+#begin Effects/WeightedParticlesEffect.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Effects/WeightedParticlesEffect.fx
+
 #begin NeutralMask.tga
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -134,8 +140,8 @@
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
 /processorParam:ColorKeyEnabled=False
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=False
+/processorParam:GenerateMipmaps=True
+/processorParam:PremultiplyAlpha=True
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
@@ -145,8 +151,8 @@
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=True
 /processorParam:PremultiplyAlpha=True
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
@@ -157,8 +163,8 @@
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=True
 /processorParam:PremultiplyAlpha=True
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False

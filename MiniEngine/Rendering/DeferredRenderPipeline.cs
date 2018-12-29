@@ -32,10 +32,9 @@ namespace MiniEngine.Rendering
             GraphicsDevice device,
             ShadowMapSystem shadowMapSystem,
             ModelSystem modelSystem,
-            CopyEffect copyEffect,
             ParticleSystem particleSystem,
             CombineEffect combineEffect,
-            FxaaEffect postProcessEffect,
+            FxaaEffect fxaaEffect,
             AmbientLightSystem ambientLightSystem,
             DirectionalLightSystem directionalLightSystem,
             PointLightSystem pointLightSystem,
@@ -70,18 +69,12 @@ namespace MiniEngine.Rendering
                              .RenderModelBatch()
                              .RenderLights(lightingPipeline)
                              .CombineDiffuseWithLighting(combineEffect)
-                             .AntiAlias(postProcessEffect, 2.0f);
+                             .AntiAlias(fxaaEffect, 2.0f);
 
             var particlePipeline =
                 ParticlePipeline.Create(device, meterRegistry)
                                 .ClearParticleRenderTargets()
-                                .RenderParticleBatch()
-                                .CopyColors(copyEffect);
-
-            // TODO: we could move the anti-alias stage to the end of the normal pipeline
-            // if we copy the diffuse and normal result of each sub pipeline, without confusing
-            // the lights about where something is and isn't (gBuffer depth check?)
-            // this would also give us AA between different batches
+                                .RenderWeightedParticles(particleSystem);            
 
             this.Pipeline =
                 RenderPipeline.Create(device, meterRegistry)
@@ -100,7 +93,6 @@ namespace MiniEngine.Rendering
         {
             this.Input.Update(camera, elapsed, this.GBuffer, "render");
             this.Pipeline.Execute(this.Input);
-
             return this.GBuffer.FinalTarget;
         }
 
@@ -109,9 +101,11 @@ namespace MiniEngine.Rendering
             return new[]
             {
                 this.GBuffer.DiffuseTarget,
-                this.GBuffer.NormalTarget,
-                this.GBuffer.DepthTarget,
-                this.GBuffer.LightTarget
+                this.GBuffer.ParticleTarget,
+                this.GBuffer.CombineTarget
+                //this.GBuffer.NormalTarget,
+                //this.GBuffer.DepthTarget,
+                //this.GBuffer.LightTarget
             };
         }
     }

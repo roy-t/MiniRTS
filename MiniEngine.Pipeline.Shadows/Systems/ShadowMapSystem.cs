@@ -69,8 +69,7 @@ namespace MiniEngine.Pipeline.Shadows.Systems
 
             foreach (var shadowMap in this.ShadowMaps)
             {
-                var modelBatchList = this.ModelSystem.ComputeBatches(shadowMap.ViewPoint);
-                var particleBatchList = this.ParticleSystem.ComputeBatches(shadowMap.ViewPoint);
+                var modelBatchList = this.ModelSystem.ComputeBatches(shadowMap.ViewPoint);                
 
                 this.MeterRegistry.StartGauge(ShadowMapStep);
                 {
@@ -103,22 +102,23 @@ namespace MiniEngine.Pipeline.Shadows.Systems
                 }
                 this.MeterRegistry.StopGauge(ShadowMapStep, "transparent");
 
-                this.MeterRegistry.StartGauge(ShadowMapStep);
-                {
-                    // Read the depth buffer and render occluding particles
-                    using (this.Device.AdditiveBlendOccluderState())
-                    {
-                        foreach (var batch in particleBatchList.Batches)
-                        {
-                            batch.Draw(RenderEffectTechniques.GrayScale);
-                        }
-                    }
-                }
-                this.MeterRegistry.StopGauge(ShadowMapStep, "particles");
+                // TODO: enable particles for shadows again
+                //var particleBatchList = this.ParticleSystem.ComputeBatches(shadowMap.ViewPoint);
+                //this.MeterRegistry.StartGauge(ShadowMapStep);
+                //{
+                //    // Read the depth buffer and render occluding particles
+                //    using (this.Device.AdditiveBlendOccluderState())
+                //    {
+                //        foreach (var batch in particleBatchList.Batches)
+                //        {
+                //            batch.Draw(RenderEffectTechniques.GrayScale);
+                //        }
+                //    }
+                //}
+                //this.MeterRegistry.StopGauge(ShadowMapStep, "particles");
 
                 // TODO: if a particle is behind a stained glass window
                 // it will shadow as if its in front of it. 
-
             }
             
             this.MeterRegistry.StopGauge(ShadowMapTotal);
