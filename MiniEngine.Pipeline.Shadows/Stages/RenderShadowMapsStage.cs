@@ -12,6 +12,6 @@ namespace MiniEngine.Pipeline.Shadows.Stages
             this.ShadowMapSystem = shadowMapSystem;
         }
 
-        public void Execute(ShadowPipelineInput _) => this.ShadowMapSystem.RenderShadowMaps();
+        public void Execute(ShadowPipelineInput input) => this.ShadowMapSystem.RenderShadowMaps(input.GBuffer);
     }
 }

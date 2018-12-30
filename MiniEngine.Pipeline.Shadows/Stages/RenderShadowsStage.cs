@@ -14,7 +14,7 @@
 
         public void Execute(RenderPipelineStageInput input)
         {
-            this.Input.Update(input.Camera, "shadows");
+            this.Input.Update(input.GBuffer, input.Camera, "shadows");
             this.ShadowPipeline.Execute(this.Input);
         }
     }

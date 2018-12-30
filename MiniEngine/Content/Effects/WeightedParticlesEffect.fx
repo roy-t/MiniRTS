@@ -1,6 +1,8 @@
 #include "Includes/Defines.hlsl"
 #include "Includes/Matrices.hlsl"
 
+// Inspired by http://casual-effects.blogspot.com/2015/03/implemented-weighted-blended-order.html
+
 struct VertexShaderInput
 {
     float3 Position : POSITION0;
