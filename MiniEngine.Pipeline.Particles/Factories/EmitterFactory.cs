@@ -8,7 +8,7 @@ namespace MiniEngine.Pipeline.Particles.Factories
 {
     public sealed class EmitterFactory : AComponentFactory<Emitter>
     {
-        public EmitterFactory(GraphicsDevice device, EntityLinker linker) 
+        public EmitterFactory(GraphicsDevice device, EntityLinker linker)
             : base(device, linker) { }
 
         public void Construct(Entity entity, Vector3 position, Texture2D texture, int rows, int columns)

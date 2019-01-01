@@ -6,9 +6,9 @@ using MiniEngine.Systems.Components;
 namespace MiniEngine.Pipeline.Lights.Components
 {
     public sealed class ShadowCastingLight : IComponent
-    {        
+    {
         public ShadowCastingLight(PerspectiveCamera viewPoint, ShadowMap shadowMap, Color color)
-        {            
+        {
             this.ViewPoint = viewPoint;
             this.ShadowMap = shadowMap;
             this.Color = color;

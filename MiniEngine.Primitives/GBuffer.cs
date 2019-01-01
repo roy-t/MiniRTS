@@ -106,8 +106,8 @@ namespace MiniEngine.Primitives
             var sizeMb = 0L;
 
             foreach (var target in targets)
-            {                
-                for(var i = 0; i < target.LevelCount; i++)
+            {
+                for (var i = 0; i < target.LevelCount; i++)
                 {
                     var width = target.Width * 1 / (i + 1);
                     var height = target.Height * 1 / (i + 1);
@@ -118,7 +118,7 @@ namespace MiniEngine.Primitives
 
                     size += targetSize;
                     sizeMb += (targetSize / (1024 * 1024));
-                }                
+                }
             }
 
             return size;

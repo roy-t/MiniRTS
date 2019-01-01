@@ -7,7 +7,7 @@ namespace MiniEngine.Pipeline.Shadows.Components
     public sealed class ShadowMap : IComponent
     {
         public ShadowMap(RenderTarget2D depthMapArray, RenderTarget2D colorMapArray, int index, IViewPoint viewPoint)
-        {            
+        {
             this.DepthMap = depthMapArray;
             this.ColorMap = colorMapArray;
             this.Index = index;
@@ -41,7 +41,7 @@ namespace MiniEngine.Pipeline.Shadows.Components
 
             this.Index = 0;
         }
-                
+
         public RenderTarget2D DepthMap { get; }
         public RenderTarget2D ColorMap { get; }
         public int Index { get; }

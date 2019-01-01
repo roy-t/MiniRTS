@@ -48,6 +48,6 @@ namespace MiniEngine.Units
 
         public override string ToString() => $"{this.Value.ToString("F2", CultureInfo.InvariantCulture)}s";
 
-        public static MetersPerSecond operator / (Meters meters, Seconds seconds) => new MetersPerSecond(meters.Value / seconds.Value);        
+        public static MetersPerSecond operator /(Meters meters, Seconds seconds) => new MetersPerSecond(meters.Value / seconds.Value);
     }
 }

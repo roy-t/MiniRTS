@@ -15,8 +15,8 @@ namespace MiniEngine.Pipeline.Models
         }
 
         public PerspectiveCamera Camera { get; private set; }
-        public ModelRenderBatch Batch { get; private set;}
-        public GBuffer GBuffer { get; private set;}
-        public string Pass { get; private set;}
+        public ModelRenderBatch Batch { get; private set; }
+        public GBuffer GBuffer { get; private set; }
+        public string Pass { get; private set; }
     }
 }

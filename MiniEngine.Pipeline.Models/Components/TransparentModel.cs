@@ -4,9 +4,9 @@ using MiniEngine.Systems.Components;
 
 namespace MiniEngine.Pipeline.Models.Components
 {
-    public sealed class TransparentModel : AModel,  IComponent
+    public sealed class TransparentModel : AModel, IComponent
     {
-        public TransparentModel(Model model, Matrix pose, BoundingSphere boundingSphere, BoundingBox boundingBox) 
+        public TransparentModel(Model model, Matrix pose, BoundingSphere boundingSphere, BoundingBox boundingBox)
             : base(model, pose, boundingSphere, boundingBox) { }
 
         public override string ToString()

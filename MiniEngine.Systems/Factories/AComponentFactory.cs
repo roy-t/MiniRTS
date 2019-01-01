@@ -15,7 +15,7 @@ namespace MiniEngine.Systems.Factories
             this.Linker = linker;
         }
 
-        public virtual void Deconstruct(Entity entity) 
+        public virtual void Deconstruct(Entity entity)
             => this.Linker.RemoveComponents<T>(entity);
     }
 }

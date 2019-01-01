@@ -49,5 +49,5 @@ namespace MiniEngine.Units
         public bool Equals(Seconds other) => other.Value == this.Value;
 
         public override string ToString() => $"{this.Value.ToString("F2", CultureInfo.InvariantCulture)}s";
-    }   
+    }
 }

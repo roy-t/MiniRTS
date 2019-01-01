@@ -1,6 +1,5 @@
 ﻿using MiniEngine.Pipeline.Models.Stages;
 using MiniEngine.Pipeline.Models.Systems;
-using MiniEngine.Primitives;
 
 namespace MiniEngine.Pipeline.Models.Extensions
 {

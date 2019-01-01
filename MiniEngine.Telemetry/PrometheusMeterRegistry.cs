@@ -19,7 +19,7 @@ namespace MiniEngine.Telemetry
 
         public void CreateGauge(string name, params string[] labelNames)
         {
-            var gauge = Metrics.CreateGauge(name, string.Empty, labelNames);            
+            var gauge = Metrics.CreateGauge(name, string.Empty, labelNames);
             this.Gauges.Add(name, gauge);
             this.Stopwatches.Add(name, new Stopwatch());
         }

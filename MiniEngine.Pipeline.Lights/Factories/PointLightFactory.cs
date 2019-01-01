@@ -8,7 +8,7 @@ namespace MiniEngine.Pipeline.Lights.Factories
 {
     public sealed class PointLightFactory : AComponentFactory<PointLight>
     {
-        public PointLightFactory(GraphicsDevice device, EntityLinker linker) 
+        public PointLightFactory(GraphicsDevice device, EntityLinker linker)
             : base(device, linker) { }
 
         public void Construct(Entity entity, Vector3 position, Color color, float radius, float intensity)

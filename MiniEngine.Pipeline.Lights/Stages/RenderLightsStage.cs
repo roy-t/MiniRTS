@@ -3,7 +3,7 @@
 namespace MiniEngine.Pipeline.Lights.Stages
 {
     public sealed class RenderLightsStage : IPipelineStage<ModelPipelineInput>
-    { 
+    {
         private readonly LightingPipeline LightingPipeline;
         private readonly LightingPipelineInput Input;
 
@@ -13,7 +13,7 @@ namespace MiniEngine.Pipeline.Lights.Stages
             this.Input = new LightingPipelineInput();
         }
 
-        public void Execute(ModelPipelineInput input) 
+        public void Execute(ModelPipelineInput input)
         {
             this.Input.Update(input.Camera, input.GBuffer, "model");
             this.LightingPipeline.Execute(this.Input);

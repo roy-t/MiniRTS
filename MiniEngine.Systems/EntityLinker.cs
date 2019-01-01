@@ -23,22 +23,22 @@ namespace MiniEngine.Systems
             => this.LookUp.RemoveAllComponents(typeof(T));
 
         public void GetComponents(Entity entity, IList<IComponent> output)
-        {            
+        {
             var components = this.LookUp.Search(entity);
-            foreach(var component in components)
+            foreach (var component in components)
             {
                 output.Add(component.Component);
             }
-        }    
+        }
 
         public void GetComponents<T>(IList<T> output)
             where T : IComponent
         {
             var components = this.LookUp.Search(typeof(T));
-            foreach(var component in components)
+            foreach (var component in components)
             {
                 output.Add((T)component.Component);
-            }            
-        }                         
+            }
+        }
     }
 }

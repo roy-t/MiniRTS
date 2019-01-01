@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Systems.Components;
 using MiniEngine.Units;
+using System;
+using System.Collections.Generic;
 
 namespace MiniEngine.Pipeline.Particles.Components
 {

@@ -1,8 +1,8 @@
-﻿using System;
+﻿using IniParser;
+using IniParser.Model;
+using System;
 using System.Collections.Generic;
 using System.IO;
-using IniParser;
-using IniParser.Model;
 
 namespace ModelExtension
 {

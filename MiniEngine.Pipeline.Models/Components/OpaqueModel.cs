@@ -4,9 +4,9 @@ using MiniEngine.Systems.Components;
 
 namespace MiniEngine.Pipeline.Models.Components
 {
-    public sealed class OpaqueModel : AModel,  IComponent
+    public sealed class OpaqueModel : AModel, IComponent
     {
-        public OpaqueModel(Model model, Matrix pose, BoundingSphere boundingSphere, BoundingBox boundingBox) 
+        public OpaqueModel(Model model, Matrix pose, BoundingSphere boundingSphere, BoundingBox boundingBox)
             : base(model, pose, boundingSphere, boundingBox) { }
 
         public override string ToString()

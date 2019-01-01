@@ -1,15 +1,15 @@
-﻿using System.Collections.Generic;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using MiniEngine.Primitives.Cameras;
-using MiniEngine.Systems;
-using MiniEngine.Effects.Techniques;
 using MiniEngine.Effects.DeviceStates;
+using MiniEngine.Effects.Techniques;
 using MiniEngine.Pipeline.Models.Systems;
 using MiniEngine.Pipeline.Particles.Systems;
 using MiniEngine.Pipeline.Shadows.Components;
-using MiniEngine.Telemetry;
 using MiniEngine.Primitives;
+using MiniEngine.Primitives.Cameras;
+using MiniEngine.Systems;
+using MiniEngine.Telemetry;
+using System.Collections.Generic;
 
 namespace MiniEngine.Pipeline.Shadows.Systems
 {
@@ -28,19 +28,19 @@ namespace MiniEngine.Pipeline.Shadows.Systems
         private readonly List<ShadowMap> ShadowMaps;
         private readonly IMeterRegistry MeterRegistry;
 
-        public ShadowMapSystem(            
+        public ShadowMapSystem(
             GraphicsDevice device,
             EntityLinker entityLinker,
             ModelSystem modelSystem,
             ParticleSystem particleSystem,
             IMeterRegistry meterRegistry)
-        {            
+        {
             this.Device = device;
             this.EntityLinker = entityLinker;
             this.ModelSystem = modelSystem;
-            this.ParticleSystem = particleSystem;            
+            this.ParticleSystem = particleSystem;
             this.MeterRegistry = meterRegistry;
-            
+
             this.ShadowMaps = new List<ShadowMap>();
 
             this.MeterRegistry.CreateGauge(ShadowMapCounter);
@@ -54,9 +54,9 @@ namespace MiniEngine.Pipeline.Shadows.Systems
 
         public void Remove(Entity entity) => this.EntityLinker.RemoveComponents<ShadowMap>(entity);
 
-        public void Add(Entity entity, IViewPoint viewPoint, int resolution = DefaultResolution) 
+        public void Add(Entity entity, IViewPoint viewPoint, int resolution = DefaultResolution)
             => this.EntityLinker.AddComponent(entity, new ShadowMap(this.Device, resolution, viewPoint));
-        
+
         public void Add(Entity entity, RenderTarget2D depthMapArray, RenderTarget2D colorMapArray, int index, IViewPoint viewPoint)
             => this.EntityLinker.AddComponent(entity, new ShadowMap(depthMapArray, colorMapArray, index, viewPoint));
 
@@ -70,7 +70,7 @@ namespace MiniEngine.Pipeline.Shadows.Systems
 
             foreach (var shadowMap in this.ShadowMaps)
             {
-                var modelBatchList = this.ModelSystem.ComputeBatches(shadowMap.ViewPoint);                
+                var modelBatchList = this.ModelSystem.ComputeBatches(shadowMap.ViewPoint);
 
                 this.MeterRegistry.StartGauge(ShadowMapStep);
                 {
@@ -129,7 +129,7 @@ namespace MiniEngine.Pipeline.Shadows.Systems
                 // TODO: if a particle is behind a stained glass window
                 // it will shadow as if its in front of it. 
             }
-            
+
             this.MeterRegistry.StopGauge(ShadowMapTotal);
         }
     }

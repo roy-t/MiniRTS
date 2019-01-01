@@ -22,17 +22,17 @@ namespace MiniEngine.Systems.Components
 
         public IReadOnlyList<EntityComponentRecord> Search(Entity entity)
         {
-            if(this.ComponentsPerEntity.TryGetValue(entity, out var records))
+            if (this.ComponentsPerEntity.TryGetValue(entity, out var records))
             {
                 return records;
             }
 
             return this.EmptyResult;
         }
-        
+
         public IReadOnlyList<EntityComponentRecord> Search(Type componentType)
         {
-            if(this.EntitiesPerComponent.TryGetValue(componentType, out var records))
+            if (this.EntitiesPerComponent.TryGetValue(componentType, out var records))
             {
                 return records;
             }
@@ -43,8 +43,8 @@ namespace MiniEngine.Systems.Components
         public void AddComponent(Entity entity, IComponent component)
         {
             var record = new EntityComponentRecord(entity, component);
-            
-            if(this.ComponentsPerEntity.TryGetValue(entity, out var entityList))
+
+            if (this.ComponentsPerEntity.TryGetValue(entity, out var entityList))
             {
                 entityList.Add(record);
             }
@@ -118,7 +118,7 @@ namespace MiniEngine.Systems.Components
         public void RemoveAllComponents(Type type)
         {
             if (this.EntitiesPerComponent.TryGetValue(type, out var entityRecords))
-            {                                
+            {
                 foreach (var record in entityRecords)
                 {
                     this.ComponentsPerEntity[record.Entity].Remove(record);
@@ -126,8 +126,8 @@ namespace MiniEngine.Systems.Components
 
                 this.EntitiesPerComponent.Remove(type);
             }
-            
+
             this.WorkList.Clear();
-        }             
+        }
     }
 }

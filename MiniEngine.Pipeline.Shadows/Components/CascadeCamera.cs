@@ -6,7 +6,7 @@ using System;
 namespace MiniEngine.Pipeline.Shadows.Components
 {
     public sealed class CascadeCamera : IViewPoint
-    {                     
+    {
         public CascadeCamera()
         {
             this.Frustum = new BoundingFrustum(Matrix.Identity);
@@ -32,9 +32,9 @@ namespace MiniEngine.Pipeline.Shadows.Components
             // var radius = (float)Math.Ceiling(bounds.Radius * 16.0f) / 16.0f;
             var radius = (float)Math.Ceiling(bounds.Radius);
 
-            this.Position = bounds.Center + (surfaceToLightVector * radius);                                          
+            this.Position = bounds.Center + (surfaceToLightVector * radius);
             this.Forward = Vector3.Normalize(bounds.Center - this.Position);
-            
+
             this.View = Matrix.CreateLookAt(this.Position, bounds.Center, Vector3.Up);
             this.Projection = Matrix.CreateOrthographicOffCenter(
                 -radius,
@@ -43,8 +43,8 @@ namespace MiniEngine.Pipeline.Shadows.Components
                 radius,
                 0.0f,
                 radius * 2);
-          
-            
+
+
             var origin = Vector3.Transform(Vector3.Zero, this.View * this.Projection);
             origin = origin * (resolution / 2.0f);
 
@@ -58,8 +58,8 @@ namespace MiniEngine.Pipeline.Shadows.Components
             projection.M42 += roundOffset.Y;
 
             this.Projection = projection;
-            
-            this.ViewProjection = this.View * this.Projection;            
+
+            this.ViewProjection = this.View * this.Projection;
             this.Frustum.Matrix = this.ViewProjection;
         }
 
@@ -68,7 +68,7 @@ namespace MiniEngine.Pipeline.Shadows.Components
             return new Vector3(
                 (float)Math.Round(value.X),
                 (float)Math.Round(value.Y),
-                (float)Math.Round(value.Z));                
+                (float)Math.Round(value.Z));
         }
     }
 }

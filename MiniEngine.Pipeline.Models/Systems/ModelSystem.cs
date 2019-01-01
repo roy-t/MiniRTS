@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
+using MiniEngine.Pipeline.Models.Batches;
+using MiniEngine.Pipeline.Models.Components;
+using MiniEngine.Primitives.Bounds;
 using MiniEngine.Primitives.Cameras;
 using MiniEngine.Systems;
-using MiniEngine.Primitives.Bounds;
-using MiniEngine.Pipeline.Models.Components;
-using MiniEngine.Pipeline.Models.Batches;
+using System.Collections.Generic;
 
 namespace MiniEngine.Pipeline.Models.Systems
 {
@@ -20,7 +20,7 @@ namespace MiniEngine.Pipeline.Models.Systems
             this.TransparentModels = new List<TransparentModel>();
             this.Linker = linker;
         }
-        
+
         public ModelBatchList ComputeBatches(IViewPoint viewPoint)
         {
             this.TransparentModels.Clear();

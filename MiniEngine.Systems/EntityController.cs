@@ -40,13 +40,13 @@ namespace MiniEngine.Systems
             foreach (var entity in entities)
             {
                 this.DestroyEntity(entity);
-            }            
+            }
         }
 
         public string DescribeAllEntities()
         {
             var builder = new StringBuilder();
-            foreach(var entity in this.Creator.GetAllEntities())
+            foreach (var entity in this.Creator.GetAllEntities())
             {
                 this.DescribeEntity(builder, entity);
             }
@@ -57,23 +57,23 @@ namespace MiniEngine.Systems
         public string DescribeEntity(Entity entity) => this.DescribeEntity(new StringBuilder(), entity);
 
         private string DescribeEntity(StringBuilder builder, Entity entity)
-        {            
+        {
             builder.AppendLine(entity.ToString());
             var components = new List<IComponent>();
             this.EntityLinker.GetComponents(entity, components);
 
-            foreach(var component in components)
+            foreach (var component in components)
             {
                 builder.Append('\t');
                 builder.AppendLine(component.ToString());
             }
-            
+
             return builder.ToString();
         }
 
         private void RemoveEntityFromSystems(Entity entity)
         {
-            foreach(var factory in this.Factories)
+            foreach (var factory in this.Factories)
             {
                 factory.Deconstruct(entity);
             }

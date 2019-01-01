@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Effects;
-using MiniEngine.Primitives;
 using MiniEngine.Effects.DeviceStates;
+using MiniEngine.Primitives;
 
 namespace MiniEngine.Pipeline.Models.Stages
 {
@@ -11,7 +11,7 @@ namespace MiniEngine.Pipeline.Models.Stages
         private readonly CombineEffect Effect;
         private readonly FullScreenTriangle FullScreenTriangle;
 
-        public CombineDiffuseWithLightingStage(GraphicsDevice device, CombineEffect effect)            
+        public CombineDiffuseWithLightingStage(GraphicsDevice device, CombineEffect effect)
         {
             this.Device = device;
             this.Effect = effect;

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Effects;
 using MiniEngine.Effects.DeviceStates;
@@ -8,6 +6,8 @@ using MiniEngine.Pipeline.Lights.Components;
 using MiniEngine.Primitives;
 using MiniEngine.Primitives.Cameras;
 using MiniEngine.Systems;
+using System;
+using System.Collections.Generic;
 
 namespace MiniEngine.Pipeline.Lights.Systems
 {
@@ -22,7 +22,7 @@ namespace MiniEngine.Pipeline.Lights.Systems
         private readonly FullScreenTriangle FullScreenTriangle;
         private readonly List<AmbientLight> Lights;
         private readonly Vector3[] Kernel;
-        private readonly Texture2D NoiseMap;        
+        private readonly Texture2D NoiseMap;
 
         public AmbientLightSystem(GraphicsDevice device, AmbientLightEffect effect, BlurEffect blurEffect, EntityLinker entityLinker)
         {
@@ -32,13 +32,13 @@ namespace MiniEngine.Pipeline.Lights.Systems
             this.EntityLinker = entityLinker;
             this.FullScreenTriangle = new FullScreenTriangle();
             this.Lights = new List<AmbientLight>();
-            
+
             this.Kernel = this.GenerateKernel();
 
             this.NoiseMap = new Texture2D(device, 64, 64, false, SurfaceFormat.Color);
             var random = new Random(255);
             SimplexNoise.Seed = random.Next();
-            var noiseX = SimplexNoise.Calc2D(this.NoiseMap.Width, this.NoiseMap.Height, 1.0f);            
+            var noiseX = SimplexNoise.Calc2D(this.NoiseMap.Width, this.NoiseMap.Height, 1.0f);
             SimplexNoise.Seed = random.Next();
             var noiseY = SimplexNoise.Calc2D(this.NoiseMap.Width, this.NoiseMap.Height, 1.0f);
 
@@ -65,7 +65,7 @@ namespace MiniEngine.Pipeline.Lights.Systems
         {
             var ambientLight = this.ComputeAmbientLightZeroAlpha();
 
-            using(this.Device.ShadowCastingLightState())
+            using (this.Device.ShadowCastingLightState())
             {
                 // G-Buffer input
                 this.Effect.NormalMap = normalTarget;
@@ -83,8 +83,8 @@ namespace MiniEngine.Pipeline.Lights.Systems
                 this.Effect.InverseViewProjection = camera.InverseViewProjection;
 
                 this.Effect.Apply();
-                this.FullScreenTriangle.Render(this.Device);                
-            }            
+                this.FullScreenTriangle.Render(this.Device);
+            }
         }
 
         public void Blur(PerspectiveCamera camera, RenderTarget2D sourceTarget, RenderTarget2D depthTarget)
@@ -93,17 +93,17 @@ namespace MiniEngine.Pipeline.Lights.Systems
             {
                 // G-Buffer input
                 this.BlurEffect.DepthMap = depthTarget;
-                
+
                 this.BlurEffect.SourceMap = sourceTarget;
                 this.BlurEffect.MaxDistance = camera.FarPlane;
-                
+
                 this.BlurEffect.Apply();
                 this.FullScreenTriangle.Render(this.Device);
             }
         }
-               
+
         private Color ComputeAmbientLightZeroAlpha()
-        {   
+        {
             this.Lights.Clear();
             this.EntityLinker.GetComponents(this.Lights);
 
@@ -124,7 +124,7 @@ namespace MiniEngine.Pipeline.Lights.Systems
 
             var kernel = new Vector3[KernelSize];
 
-            for(var i = 0; i < KernelSize; i++)
+            for (var i = 0; i < KernelSize; i++)
             {
                 var scale = (float)i / (float)KernelSize;
                 var v = new Vector3

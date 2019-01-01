@@ -7,7 +7,7 @@ using MiniEngine.Systems.Factories;
 namespace MiniEngine.Pipeline.Shadows.Factories
 {
     public sealed class CascadedShadowMapFactory : AComponentFactory<CascadedShadowMap>
-    {        
+    {
         private const int DefaultResolution = 1024;
 
         private static readonly float[] DefaultCascadeDistances =
@@ -33,7 +33,7 @@ namespace MiniEngine.Pipeline.Shadows.Factories
             this.Linker.AddComponent(entity, cascadedShadowMap);
 
             for (var i = 0; i < cascades; i++)
-            {                
+            {
                 this.ShadowMapFactory.Construct(entity, cascadedShadowMap.DepthMapArray, cascadedShadowMap.ColorMapArray, i, cascadedShadowMap.ShadowCameras[i]);
             }
 
@@ -46,7 +46,7 @@ namespace MiniEngine.Pipeline.Shadows.Factories
         public override void Deconstruct(Entity entity)
         {
             this.Linker.RemoveComponents<CascadedShadowMap>(entity);
-            this.Linker.RemoveComponents<ShadowMap>(entity);            
+            this.Linker.RemoveComponents<ShadowMap>(entity);
         }
     }
 }

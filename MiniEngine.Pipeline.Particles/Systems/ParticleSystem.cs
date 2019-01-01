@@ -1,13 +1,13 @@
-﻿using System.Collections.Generic;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using MiniEngine.Primitives.Cameras;
-using MiniEngine.Pipeline.Particles.Components;
 using MiniEngine.Effects;
+using MiniEngine.Effects.DeviceStates;
+using MiniEngine.Pipeline.Particles.Components;
 using MiniEngine.Primitives;
+using MiniEngine.Primitives.Cameras;
 using MiniEngine.Systems;
 using MiniEngine.Units;
-using MiniEngine.Effects.DeviceStates;
+using System.Collections.Generic;
 
 namespace MiniEngine.Pipeline.Particles.Systems
 {
@@ -20,12 +20,12 @@ namespace MiniEngine.Pipeline.Particles.Systems
         private readonly EntityLinker Linker;
         private readonly List<Emitter> Emitters;
         private readonly List<ParticlePose> Particles;
-        private readonly Texture2D NeutralMask;        
+        private readonly Texture2D NeutralMask;
 
         private readonly Texture2D NeutralNormalMap;
         private readonly Texture2D NeutralSpecularMap;
         private readonly FullScreenTriangle FullScreenTriangle;
-        private readonly Quad Quad;        
+        private readonly Quad Quad;
 
         public ParticleSystem(
             GraphicsDevice device,
@@ -46,18 +46,18 @@ namespace MiniEngine.Pipeline.Particles.Systems
 
             this.Emitters = new List<Emitter>();
             this.Particles = new List<ParticlePose>();
-            
+
             this.FullScreenTriangle = new FullScreenTriangle();
             this.Quad = new Quad(device);
-        }  
-        
+        }
+
         public void RenderWeights(IViewPoint viewPoint)
         {
             this.GatherParticles(viewPoint);
-            using(this.Device.ParticleState())
+            using (this.Device.ParticleState())
             {
-                foreach(var particle in this.Particles)
-                {                    
+                foreach (var particle in this.Particles)
+                {
                     this.WeightedParticlesEffect.World = particle.Pose;
                     this.WeightedParticlesEffect.View = viewPoint.View;
                     this.WeightedParticlesEffect.Projection = viewPoint.Projection;
@@ -137,6 +137,6 @@ namespace MiniEngine.Pipeline.Particles.Systems
 
             minUvs = new Vector2(column * width, row * height);
             maxUvs = new Vector2((column + 1) * width, (row + 1) * height);
-        }   
+        }
     }
 }

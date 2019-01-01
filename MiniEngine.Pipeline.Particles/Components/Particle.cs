@@ -23,4 +23,4 @@ namespace MiniEngine.Pipeline.Particles.Components
         public Seconds TimePerFrame { get; set; }
         public int Frame { get; set; }
     }
-}     
+}

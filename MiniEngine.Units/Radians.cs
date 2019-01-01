@@ -48,8 +48,8 @@ namespace MiniEngine.Units
 
         public override string ToString() => $"{this.Value.ToString("F2", CultureInfo.InvariantCulture)}s";
 
-        public static RadianPerSecond operator / (Radians radians, Seconds seconds) => new RadianPerSecond(radians.Value / seconds.Value);
+        public static RadianPerSecond operator /(Radians radians, Seconds seconds) => new RadianPerSecond(radians.Value / seconds.Value);
 
-        public static Radians Pi => new Radians(3.14159274f);        
+        public static Radians Pi => new Radians(3.14159274f);
     }
 }

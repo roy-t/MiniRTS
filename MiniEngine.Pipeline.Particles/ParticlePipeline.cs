@@ -10,7 +10,7 @@ namespace MiniEngine.Pipeline.Particles
         {
         }
 
-        public static ParticlePipeline Create(GraphicsDevice device, IMeterRegistry meterRegistry) 
+        public static ParticlePipeline Create(GraphicsDevice device, IMeterRegistry meterRegistry)
             => new ParticlePipeline(device, meterRegistry);
     }
 }

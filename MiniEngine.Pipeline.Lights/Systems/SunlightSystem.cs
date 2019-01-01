@@ -1,12 +1,12 @@
-﻿using System.Collections.Generic;
-using Microsoft.Xna.Framework.Graphics;
-using MiniEngine.Primitives.Cameras;
-using MiniEngine.Primitives;
-using MiniEngine.Systems;
+﻿using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Effects;
 using MiniEngine.Effects.DeviceStates;
 using MiniEngine.Pipeline.Lights.Components;
 using MiniEngine.Pipeline.Shadows.Factories;
+using MiniEngine.Primitives;
+using MiniEngine.Primitives.Cameras;
+using MiniEngine.Systems;
+using System.Collections.Generic;
 
 namespace MiniEngine.Pipeline.Lights.Systems
 {
@@ -21,7 +21,7 @@ namespace MiniEngine.Pipeline.Lights.Systems
 
         private readonly List<Sunlight> Lights;
 
-        public SunlightSystem(GraphicsDevice device, SunlightEffect effect, EntityLinker entityLinker, 
+        public SunlightSystem(GraphicsDevice device, SunlightEffect effect, EntityLinker entityLinker,
             CascadedShadowMapFactory cascadedShadowMapFactory)
         {
             this.Device = device;
@@ -70,6 +70,6 @@ namespace MiniEngine.Pipeline.Lights.Systems
                     this.FullScreenTriangle.Render(this.Device);
                 }
             }
-        }             
+        }
     }
 }

@@ -14,8 +14,9 @@ namespace MiniEngine.Pipeline.Lights.Factories
 
         private readonly CascadedShadowMapFactory CascadedShadowMapFactory;
 
-        public SunlightFactory(GraphicsDevice device, EntityLinker linker, CascadedShadowMapFactory cascadedShadowMapFactory) 
-            : base(device, linker) {
+        public SunlightFactory(GraphicsDevice device, EntityLinker linker, CascadedShadowMapFactory cascadedShadowMapFactory)
+            : base(device, linker)
+        {
             this.CascadedShadowMapFactory = cascadedShadowMapFactory;
         }
 

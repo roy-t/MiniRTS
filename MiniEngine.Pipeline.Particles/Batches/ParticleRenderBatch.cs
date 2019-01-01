@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
-using Microsoft.Xna.Framework.Graphics;
-using MiniEngine.Primitives.Cameras;
-using MiniEngine.Pipeline.Particles.Components;
+﻿using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Effects;
-using MiniEngine.Primitives;
 using MiniEngine.Effects.Techniques;
+using MiniEngine.Pipeline.Particles.Components;
+using MiniEngine.Primitives;
+using MiniEngine.Primitives.Cameras;
+using System.Collections.Generic;
 
 namespace MiniEngine.Pipeline.Particles.Batches
 {

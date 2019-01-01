@@ -3,7 +3,7 @@
 namespace MiniEngine.Systems
 {
     public sealed class EntityCreator
-    {  
+    {
         private int next = 1;
         private readonly List<Entity> Entities;
 

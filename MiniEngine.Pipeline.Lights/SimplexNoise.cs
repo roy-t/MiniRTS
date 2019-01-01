@@ -27,9 +27,9 @@ namespace MiniEngine.Pipeline.Lights
             return values;
         }
 
-        public static float[, ,] Calc3D(int width, int height, int length, float scale)
+        public static float[,,] Calc3D(int width, int height, int length, float scale)
         {
-            float[, ,] values = new float[width, height, length];
+            float[,,] values = new float[width, height, length];
             for (int i = 0; i < width; i++)
                 for (int j = 0; j < height; j++)
                     for (int k = 0; k < length; k++)
@@ -312,7 +312,7 @@ namespace MiniEngine.Pipeline.Lights
             129,22,39,253, 19,98,108,110,79,113,224,232,178,185, 112,104,218,246,97,228,
             251,34,242,193,238,210,144,12,191,179,162,241, 81,51,145,235,249,14,239,107,
             49,192,214, 31,181,199,106,157,184, 84,204,176,115,121,50,45,127, 4,150,254,
-            138,236,205,93,222,114,67,29,24,72,243,141,128,195,78,66,215,61,156,180 
+            138,236,205,93,222,114,67,29,24,72,243,141,128,195,78,66,215,61,156,180
         };
 
         private static int FastFloor(float x)

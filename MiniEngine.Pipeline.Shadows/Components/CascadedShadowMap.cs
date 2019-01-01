@@ -52,19 +52,19 @@ namespace MiniEngine.Pipeline.Shadows.Components
         public int Cascades => this.CascadeSplits.Length;
 
         public RenderTarget2D DepthMapArray { get; }
-        public RenderTarget2D ColorMapArray { get; }        
-        
+        public RenderTarget2D ColorMapArray { get; }
+
         public CascadeCamera[] ShadowCameras { get; }
 
         public float[] CascadeSplits { get; }
         public Vector4[] CascadeOffsets { get; }
         public Vector4[] CascadeScales { get; }
         public Matrix GlobalShadowMatrix { get; set; }
-        
+
         public Vector3 Position { get; private set; }
         public Vector3 LookAt { get; private set; }
         public Vector3 SurfaceToLightVector { get; private set; }
-        
+
         public int Resolution { get; }
         public float[] CascadeDistances { get; }
 
@@ -74,7 +74,7 @@ namespace MiniEngine.Pipeline.Shadows.Components
             this.LookAt = lookAt;
             this.SurfaceToLightVector = Vector3.Normalize(position - lookAt);
         }
-        
+
         public override string ToString() => $"cascaded shadow map, position {this.Position}, look at: {this.LookAt}, cascades: {this.Cascades}";
     }
 }

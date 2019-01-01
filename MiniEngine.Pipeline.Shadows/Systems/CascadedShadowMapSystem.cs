@@ -11,7 +11,7 @@ using System.Collections.Generic;
 namespace MiniEngine.Pipeline.Shadows.Systems
 {
     public sealed class CascadedShadowMapSystem : IUpdatableSystem
-    {        
+    {
         private static readonly Matrix TexScaleTransform = Matrix.CreateScale(0.5f, -0.5f, 1.0f) * Matrix.CreateTranslation(0.5f, 0.5f, 0.0f);
 
         private readonly GraphicsDevice Device;
@@ -28,7 +28,7 @@ namespace MiniEngine.Pipeline.Shadows.Systems
 
             this.ShadowMaps = new List<CascadedShadowMap>();
             this.Frustum = new Frustum();
-        }     
+        }
 
         public void Update(PerspectiveCamera perspectiveCamera, Seconds elapsed)
         {
@@ -94,6 +94,6 @@ namespace MiniEngine.Pipeline.Shadows.Systems
             return view * projection * TexScaleTransform;
         }
 
-        private static Vector3 ScaleToVector3(Vector4 value) => new Vector3(value.X, value.Y, value.Z) / value.W;        
+        private static Vector3 ScaleToVector3(Vector4 value) => new Vector3(value.X, value.Y, value.Z) / value.W;
     }
 }

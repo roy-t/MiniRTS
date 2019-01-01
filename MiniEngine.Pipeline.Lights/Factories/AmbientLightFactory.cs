@@ -8,7 +8,7 @@ namespace MiniEngine.Pipeline.Lights.Factories
 {
     public sealed class AmbientLightFactory : AComponentFactory<AmbientLight>
     {
-        public AmbientLightFactory(GraphicsDevice device, EntityLinker linker) 
+        public AmbientLightFactory(GraphicsDevice device, EntityLinker linker)
             : base(device, linker) { }
 
         public void Construct(Entity entity, Color color)

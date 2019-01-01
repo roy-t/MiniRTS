@@ -13,6 +13,6 @@
 
         public static implicit operator float(MetersPerSecond mps) => mps.Value;
 
-        public static Meters operator * (MetersPerSecond mps, Seconds seconds) => new Meters(mps.Value * seconds.Value);
+        public static Meters operator *(MetersPerSecond mps, Seconds seconds) => new Meters(mps.Value * seconds.Value);
     }
 }

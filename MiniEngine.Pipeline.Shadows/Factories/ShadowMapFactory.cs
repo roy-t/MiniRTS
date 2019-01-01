@@ -10,7 +10,7 @@ namespace MiniEngine.Pipeline.Shadows.Factories
     {
         private const int DefaultResolution = 1024;
 
-        public ShadowMapFactory(GraphicsDevice device, EntityLinker linker) 
+        public ShadowMapFactory(GraphicsDevice device, EntityLinker linker)
             : base(device, linker) { }
 
         public ShadowMap Construct(Entity entity, IViewPoint viewPoint, int resolution = DefaultResolution)

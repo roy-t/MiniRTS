@@ -15,8 +15,9 @@ namespace MiniEngine.Pipeline.Lights.Factories
 
         private readonly ShadowMapFactory ShadowMapFactory;
 
-        public ShadowCastingLightFactory(GraphicsDevice device, EntityLinker linker, ShadowMapFactory shadowMapFactory) 
-            : base(device, linker) {
+        public ShadowCastingLightFactory(GraphicsDevice device, EntityLinker linker, ShadowMapFactory shadowMapFactory)
+            : base(device, linker)
+        {
             this.ShadowMapFactory = shadowMapFactory;
         }
 
@@ -25,8 +26,8 @@ namespace MiniEngine.Pipeline.Lights.Factories
             var viewPoint = new PerspectiveCamera(new Viewport(0, 0, resolution, resolution));
             viewPoint.Move(position, lookAt);
 
-            var shadowMap = this.ShadowMapFactory.Construct(entity, viewPoint, resolution);          
-            var light = new ShadowCastingLight(viewPoint, shadowMap, color);                        
+            var shadowMap = this.ShadowMapFactory.Construct(entity, viewPoint, resolution);
+            var light = new ShadowCastingLight(viewPoint, shadowMap, color);
             this.Linker.AddComponent(entity, light);
         }
     }

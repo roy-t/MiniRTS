@@ -7,7 +7,7 @@ namespace MiniEngine.Pipeline.Particles.Stages
     {
         private static readonly Color ParticleTargetClearColor = new Color(1.0f, 0, 0, 0);
         private readonly GraphicsDevice Device;
-        
+
 
         public ClearStage(GraphicsDevice device)
         {

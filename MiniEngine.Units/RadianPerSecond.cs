@@ -13,6 +13,6 @@
 
         public static implicit operator float(RadianPerSecond radians) => radians.Value;
 
-        public static Radians operator * (RadianPerSecond rps, Seconds seconds) => new Radians(rps.Value * seconds.Value);        
+        public static Radians operator *(RadianPerSecond rps, Seconds seconds) => new Radians(rps.Value * seconds.Value);
     }
 }

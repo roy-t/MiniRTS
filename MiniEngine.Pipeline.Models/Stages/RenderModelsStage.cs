@@ -1,5 +1,4 @@
 ﻿using MiniEngine.Pipeline.Models.Systems;
-using MiniEngine.Primitives;
 
 namespace MiniEngine.Pipeline.Models.Stages
 {
@@ -25,7 +24,7 @@ namespace MiniEngine.Pipeline.Models.Stages
             this.Input.Update(input.Camera, modelBatchList.OpaqueBatch, input.GBuffer, "opaque");
             this.ModelPipeline.Execute(this.Input);
 
-            for(var i = 0; i < modelBatchList.TransparentBatches.Count; i++)
+            for (var i = 0; i < modelBatchList.TransparentBatches.Count; i++)
             {
                 var batch = modelBatchList.TransparentBatches[i];
                 this.Input.Update(input.Camera, batch, input.GBuffer, $"transparent_{i}");

@@ -9,6 +9,6 @@ namespace MiniEngine.Pipeline.Models.Extensions
             var stage = new ClearStage(pipeline.Device);
             pipeline.Add(stage);
             return pipeline;
-        }     
+        }
     }
 }

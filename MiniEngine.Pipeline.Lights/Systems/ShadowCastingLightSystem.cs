@@ -1,12 +1,12 @@
-﻿using System.Collections.Generic;
-using Microsoft.Xna.Framework.Graphics;
-using MiniEngine.Primitives.Cameras;
+﻿using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Effects;
-using MiniEngine.Primitives;
-using MiniEngine.Systems;
 using MiniEngine.Effects.DeviceStates;
 using MiniEngine.Pipeline.Lights.Components;
 using MiniEngine.Pipeline.Shadows.Systems;
+using MiniEngine.Primitives;
+using MiniEngine.Primitives.Cameras;
+using MiniEngine.Systems;
+using System.Collections.Generic;
 
 namespace MiniEngine.Pipeline.Lights.Systems
 {

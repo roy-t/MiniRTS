@@ -9,7 +9,7 @@ namespace MiniEngine.Pipeline.Models.Factories
 {
     public sealed class OpaqueModelFactory : AComponentFactory<OpaqueModel>
     {
-        public OpaqueModelFactory(GraphicsDevice device, EntityLinker linker) 
+        public OpaqueModelFactory(GraphicsDevice device, EntityLinker linker)
             : base(device, linker) { }
 
         public void Construct(Entity entity, Model model, Matrix pose)
