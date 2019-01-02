@@ -13,12 +13,15 @@ using KeyboardInput = MiniEngine.Input.KeyboardInput;
 using MiniEngine.Systems;
 using MiniEngine.Telemetry;
 using System;
+using MiniEngine.UI;
+using ImGuiNET;
 
 namespace MiniEngine
 {
-    public class GameLoop : Game
+    public sealed class GameLoop : Game
     {
         private readonly GraphicsDeviceManager Graphics;
+        
 
         private Injector injector;
 
@@ -28,6 +31,8 @@ namespace MiniEngine
         private int detailView = 1;
         private int viewIndex;
         private int viewOptions;
+
+        private ImGuiRenderer gui;
 
         private PerspectiveCamera perspectiveCamera;
         private SpriteBatch spriteBatch;
@@ -44,17 +49,22 @@ namespace MiniEngine
             {
                 PreferredBackBufferWidth = 1920,
                 PreferredBackBufferHeight = 1080,
+                PreferMultiSampling = true,                
                 SynchronizeWithVerticalRetrace = false,
                 GraphicsProfile = GraphicsProfile.HiDef
-            };
+            };                       
 
             this.Content.RootDirectory = "Content";
             this.IsMouseVisible = true;
         }
-
+        
         protected override void LoadContent()
         {
+            this.gui = new ImGuiRenderer(this);
+            this.gui.RebuildFontAtlas();
+
             this.spriteBatch = new SpriteBatch(this.GraphicsDevice);
+
             this.perspectiveCamera = new PerspectiveCamera(this.GraphicsDevice.Viewport);
 
             this.injector = new Injector(this.GraphicsDevice, this.Content);
@@ -211,6 +221,12 @@ namespace MiniEngine
             }
 
             this.spriteBatch.End();
+
+            this.gui.BeginLayout(gameTime);
+            {
+                ImGui.ShowDemoWindow();
+            }
+            this.gui.EndLayout();
 
             base.Draw(gameTime);
         }

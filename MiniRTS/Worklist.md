@@ -29,3 +29,6 @@
 - Particles are really expensive, as they are drawn for every shadow casting light, and every cascade. Let's first try to add spatial partitioning to reduce the draws, then make the draw calls more efficient
 - SSAO: tiling effect for flat surfaces that have no normal map
 
+
+## Known Issues in dependencies
+- The IMGUI.net NuGet package does not automatically copy cimgui.dll to the output directory on build. See https://github.com/mellinoe/ImGui.NET/issues/83 because of this I've added it the the UI project (as a link). But this might break when updating the library! Or when redistributing the engine

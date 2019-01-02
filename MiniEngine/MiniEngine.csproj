@@ -88,6 +88,9 @@
     <Compile Include="Utilities\StateMachine.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="ImGui.NET, Version=1.66.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\MiniRTS\packages\ImGui.NET.1.66.0\lib\netstandard2.0\ImGui.NET.dll</HintPath>
+    </Reference>
     <Reference Include="LightInject, Version=5.1.5.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\MiniRTS\packages\LightInject.5.1.5\lib\net46\LightInject.dll</HintPath>
     </Reference>
@@ -96,6 +99,16 @@
       <HintPath>C:\Program Files (x86)\MonoGame\v3.0\Assemblies\Windows\MonoGame.Framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Buffers, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\MiniRTS\packages\System.Buffers.4.4.0\lib\netstandard2.0\System.Buffers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\MiniRTS\packages\System.Numerics.Vectors.4.4.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\MiniRTS\packages\System.Runtime.CompilerServices.Unsafe.4.4.0\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -143,6 +156,10 @@
     <ProjectReference Include="..\MiniEngine.Telemetry\MiniEngine.Telemetry.csproj">
       <Project>{fe2de91d-ca69-4844-8d5f-10a664f4e17d}</Project>
       <Name>MiniEngine.Telemetry</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MiniEngine.UI\MiniEngine.UI.csproj">
+      <Project>{278c12e6-3984-4e5c-aba1-108f1296f6b6}</Project>
+      <Name>MiniEngine.UI</Name>
     </ProjectReference>
     <ProjectReference Include="..\MiniEngine.Units\MiniEngine.Units.csproj">
       <Project>{051e397d-4c6c-4f8f-8f40-cce916a45c5e}</Project>
