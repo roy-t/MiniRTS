@@ -73,7 +73,7 @@
     <Compile Include="Configuration\LightSystemsControllerFactory.cs" />
     <Compile Include="Controllers\CameraController.cs" />
     <Compile Include="Controllers\LightSystemsController.cs" />
-    <Compile Include="DebugDisplay.cs" />
+    <Compile Include="UI\DebugDisplay.cs" />
     <Compile Include="GameLoop.cs" />
     <Compile Include="Input\InputState.cs" />
     <Compile Include="Input\KeyboardInput.cs" />
@@ -81,8 +81,7 @@
     <Compile Include="Input\MouseInput.cs" />
     <Compile Include="Rendering\DeferredRenderPipeline.cs" />
     <Compile Include="Scenes\ZScene.cs" />
-    <Compile Include="UIState.cs" />
-    <Compile Include="UIStateSerializer.cs" />
+    <Compile Include="UI\UIState.cs" />
     <Compile Include="Utilities\DebugController.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

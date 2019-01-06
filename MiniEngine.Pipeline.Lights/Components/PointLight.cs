@@ -18,6 +18,17 @@ namespace MiniEngine.Pipeline.Lights.Components
         public float Radius { get; set; }
         public float Intensity { get; set; }
 
+        public ComponentDescription Describe()
+        {
+            var description = new ComponentDescription("Point light");
+            description.AddProperty("Color", this.Color, x => this.Color = x, 0.0f, 1.0f);
+            description.AddProperty("Position", this.Position, x => this.Position= x, -100.0f, 100.0f);
+            description.AddProperty("Radius", this.Radius, x => this.Radius = x, 0.0f, 100.0f);
+            description.AddProperty("Intensity", this.Intensity, x => this.Intensity= x, 0.0f, 1.0f);
+
+            return description;
+        }
+
         public override string ToString() => $"point light, position: {this.Position}, color: {this.Color}, radius: {this.Radius}";
     }
 }

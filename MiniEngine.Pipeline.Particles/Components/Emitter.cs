@@ -33,7 +33,7 @@ namespace MiniEngine.Pipeline.Particles.Components
             this.TimePerFrame = 0.125f;
         }
 
-        public Vector3 Position { get; }
+        public Vector3 Position { get; set; }
         public Texture2D Texture { get; }
         public int Rows { get; }
         public int Columns { get; }
@@ -92,6 +92,15 @@ namespace MiniEngine.Pipeline.Particles.Components
 
         private static float GetRandomOffset() => ((float)Random.NextDouble() * 2.0f) - 1.0f;
 
+
+        public ComponentDescription Describe()
+        {
+            var description = new ComponentDescription("Emitter");
+            description.AddProperty("Position", this.Position, x => this.Position = x, -100.0f, 100.0f);
+            description.AddLabel("Particles", this.Particles.Count);
+
+            return description;
+        }
         public override string ToString() => $"emitter, position: {this.Position}, particles: {this.Particles.Count}";
     }
 }

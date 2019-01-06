@@ -47,6 +47,17 @@ namespace MiniEngine.Pipeline.Shadows.Components
         public int Index { get; }
         public IViewPoint ViewPoint { get; }
 
+        public ComponentDescription Describe()
+        {
+            var description = new ComponentDescription("Shadow map");
+            description.AddLabel("Width", this.DepthMap.Width);
+            description.AddLabel("Height", this.DepthMap.Height);
+            description.AddLabel("Index", this.Index);
+
+            return description;
+        }
+
         public override string ToString() => $"shadow map, resolution: {this.DepthMap.Width}x{this.DepthMap.Height}, index: {this.Index}";
+        
     }
 }

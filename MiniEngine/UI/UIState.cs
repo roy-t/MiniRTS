@@ -8,7 +8,7 @@ using System.Linq;
 using System.Threading;
 using System.Xml.Serialization;
 
-namespace MiniEngine
+namespace MiniEngine.UI
 {
     public sealed class UIState
     {
@@ -23,11 +23,12 @@ namespace MiniEngine
         }
 
         public bool ShowGui { get; set; }
-        public int Columns { get; set; }
+        public int Columns;
         public DebugDisplay DebugDisplay { get; set; }
 
-        [XmlIgnore]
-        public bool ShowDemo { get; set; }
+        public bool ShowDemo;
+        public int SelectedEntity;
+        public bool EntityWindowOpen;
 
         [XmlIgnore]
         public List<RenderTargetDescription> SelectedRenderTargets { get; }
@@ -51,7 +52,7 @@ namespace MiniEngine
             this.SelectedRenderTargetNames = this.SelectedRenderTargets.Select(rt => rt.Name).ToList();
 
             var serializer = new XmlSerializer(typeof(UIState));
-            using (var stream = File.OpenWrite(UIStateFile))
+            using (var stream = File.CreateText(UIStateFile))
             {
                 serializer.Serialize(stream, this);
             }

@@ -75,6 +75,16 @@ namespace MiniEngine.Pipeline.Shadows.Components
             this.SurfaceToLightVector = Vector3.Normalize(position - lookAt);
         }
 
+        public ComponentDescription Describe()
+        {
+            var description = new ComponentDescription("Cascaded shadow map");
+            description.AddLabel("Position", this.Position);
+            description.AddLabel("Look at", this.LookAt);
+            description.AddLabel("Cascades", this.Cascades);
+
+            return description;
+        }
+
         public override string ToString() => $"cascaded shadow map, position {this.Position}, look at: {this.LookAt}, cascades: {this.Cascades}";
     }
 }

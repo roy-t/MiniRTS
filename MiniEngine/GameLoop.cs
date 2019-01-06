@@ -15,6 +15,8 @@ using MiniEngine.Telemetry;
 using System;
 using MiniEngine.UI;
 using ImGuiNET;
+using MiniEngine.Controllers;
+using MiniEngine.Units;
 
 namespace MiniEngine
 {
@@ -32,7 +34,7 @@ namespace MiniEngine
         private SpriteBatch spriteBatch;
         private IReadOnlyList<IScene> scenes;
         private IScene currentScene;
-        private DebugController debugController;
+        private CameraController cameraController;
         private DeferredRenderPipeline renderPipeline;
         private EntityController entityController;
         private IMetricServer metricServer;
@@ -68,10 +70,8 @@ namespace MiniEngine
             this.mouseInput = this.injector.Resolve<MouseInput>();
 
             this.entityController = this.injector.Resolve<EntityController>();
-            this.debugController = this.injector.Resolve<DebugControllerFactory>().Build(this.perspectiveCamera);
-            this.metricServer = this.injector.Resolve<IMetricServer>();
-            this.metricServer.Start(7070);
-
+            this.cameraController = new CameraController(this.keyboardInput, this.mouseInput, this.perspectiveCamera);
+            
             this.renderPipeline = this.injector.Resolve<DeferredRenderPipeline>();
 
             this.scenes = this.injector.ResolveAll<IScene>()
@@ -86,6 +86,8 @@ namespace MiniEngine
             this.SwitchScenes(this.scenes.First());
 
             this.ui = UIState.Deserialize(this.renderPipeline.GetGBuffer());
+            this.metricServer = this.injector.Resolve<IMetricServer>();
+            this.metricServer.Start(7070);
         }
 
         private void SwitchScenes(IScene scene)
@@ -105,40 +107,29 @@ namespace MiniEngine
 
         protected override void Update(GameTime gameTime)
         {
-            this.debugController.Update(gameTime.ElapsedGameTime);
-
-            this.currentScene.Update(gameTime.ElapsedGameTime);
-
-            this.keyboardInput.Update();
-            this.mouseInput.Update();
-
+            var elapsed = (Seconds)gameTime.ElapsedGameTime;
+            this.currentScene.Update(elapsed);
             // Do not handle input if game window is not activated
             if (!this.IsActive)
             {
                 return;
             }
 
+            this.keyboardInput.Update();
+            this.mouseInput.Update();
+
+
+            this.cameraController.Update(elapsed);                                 
+
             if(this.keyboardInput.Click(Keys.F12))
             {
                 this.ui.ShowGui = !this.ui.ShowGui;
             }
-
-            // TODO: make these controllers use IMGUI, and always allow the camera to move
-            var inputHandled = this.debugController.Update(gameTime.ElapsedGameTime);
-            if (inputHandled)
-            {
-                return;
-            }
-           
+            
             if (this.keyboardInput.Click(Keys.Escape))
             {
                 this.Exit();
             }            
-
-            if (this.keyboardInput.Click(Keys.F))
-            {
-                this.IsFixedTimeStep = !this.IsFixedTimeStep;
-            }           
 
             if (this.keyboardInput.Click(Keys.Scroll))
             {
@@ -150,9 +141,9 @@ namespace MiniEngine
 
         protected override void Draw(GameTime gameTime)
         {
-            this.Window.Title = $"{gameTime.ElapsedGameTime.TotalMilliseconds:F2}ms, {1.0f / gameTime.ElapsedGameTime.TotalSeconds:F2} fps, Fixed Time Step: {this.IsFixedTimeStep} (press 'F' so switch). Input State: {this.debugController.DescribeState()}";
+            this.Window.Title = $"{gameTime.ElapsedGameTime.TotalMilliseconds:F2}ms, {1.0f / gameTime.ElapsedGameTime.TotalSeconds:F2} fps.";
             this.Window.Title +=
-                $" camera ({this.perspectiveCamera.Position.X:F2}, {this.perspectiveCamera.Position.Y:F2}, {this.perspectiveCamera.Position.Z:F2})";
+                $" Camera ({this.perspectiveCamera.Position.X:F2}, {this.perspectiveCamera.Position.Y:F2}, {this.perspectiveCamera.Position.Z:F2})";
 
             var result = this.renderPipeline.Render(this.perspectiveCamera, (float)gameTime.ElapsedGameTime.TotalSeconds);
 
@@ -176,7 +167,7 @@ namespace MiniEngine
             var gBuffer = this.renderPipeline.GetGBuffer();
 
             switch (this.ui.DebugDisplay)
-            {
+            {                
                 case DebugDisplay.None:
                     break;
                 case DebugDisplay.Single:
@@ -241,6 +232,20 @@ namespace MiniEngine
                             ImGui.EndMenu();
                         }
 
+                        if (ImGui.BeginMenu("Entities"))
+                        {
+                            var descriptions = this.entityController.DescribeAllEntities();
+                            ImGui.Text($"Entities: {descriptions.Count}");
+                            ImGui.Text($"Components: {descriptions.Sum(x => x.ComponentCount)}");
+                            ImGui.Separator();
+
+                            if(ImGui.ListBox("", ref this.ui.SelectedEntity, descriptions.Select(x => $"{x.Entity} ({x.ComponentCount} components)").ToArray(), descriptions.Count, 10))
+                            {
+                                this.ui.EntityWindowOpen = true;
+                            }
+                            ImGui.EndMenu();
+                        }
+
                         if (ImGui.BeginMenu("Debug"))
                         {
                             if (ImGui.MenuItem(DebugDisplay.None.ToString(), null, this.ui.DebugDisplay == DebugDisplay.None))
@@ -251,6 +256,14 @@ namespace MiniEngine
                             if (ImGui.BeginMenu(DebugDisplay.Combined.ToString()))
                             {
                                 var descriptions = this.renderPipeline.GetGBuffer().RenderTargets;
+                                var columns = this.ui.Columns;
+                                if(ImGui.SliderInt("Columns", ref columns, 1, Math.Max(5, descriptions.Count)))
+                                {
+                                    this.ui.Columns = columns;
+                                }
+
+                                ImGui.Separator();
+
                                 foreach (var target in descriptions)
                                 {
                                     var selected = this.ui.SelectedRenderTargets.Contains(target);
@@ -268,11 +281,11 @@ namespace MiniEngine
                                         this.ui.SelectedRenderTargets.Sort();
                                         this.ui.DebugDisplay = DebugDisplay.Combined;
                                     }
-                                }                                                              
+                                }
 
                                 ImGui.EndMenu();
-                            }     
-                            
+                            }
+
                             if (ImGui.BeginMenu(DebugDisplay.Single.ToString()))
                             {
                                 var descriptions = this.renderPipeline.GetGBuffer().RenderTargets;
@@ -288,19 +301,43 @@ namespace MiniEngine
                                 ImGui.EndMenu();
                             }
 
+                            if (ImGui.MenuItem("Fixed Timestep", null, this.IsFixedTimeStep))
+                            {
+                                this.IsFixedTimeStep = !this.IsFixedTimeStep;
+                            }
+
                             var showDemo = this.ui.ShowDemo;
                             if (ImGui.MenuItem("Show Demo Window", null, ref showDemo))
                             {
                                 this.ui.ShowDemo = showDemo;
-                            }                            
+                            }
 
                             ImGui.EndMenu();
                         }
 
                         ImGui.EndMainMenuBar();
-                    }                    
+                    }
 
                     if (this.ui.ShowDemo) { ImGui.ShowDemoWindow(); }
+
+                    if (this.ui.EntityWindowOpen && ImGui.Begin("Entity Details", ref this.ui.EntityWindowOpen, ImGuiWindowFlags.AlwaysVerticalScrollbar))
+                    {
+                        var entityDescriptions = this.entityController.DescribeAllEntities();
+                        var selectedEntity = entityDescriptions[this.ui.SelectedEntity];
+                        foreach (var component in selectedEntity.Components)
+                        {
+                            ImGui.Separator();
+                            ImGui.Text(component.Name);
+                            foreach (var property in component.Properties)
+                            {
+                                Editors.CreateEditor(component.Name, property.Name, property.Value, property.Min, property.Max, property.Setter);
+                            }
+                        }
+
+                        ImGui.End();
+                    }
+
+
                 }
                 this.gui.EndLayout();
             }

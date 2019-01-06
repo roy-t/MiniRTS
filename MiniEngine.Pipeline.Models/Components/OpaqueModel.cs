@@ -9,6 +9,14 @@ namespace MiniEngine.Pipeline.Models.Components
         public OpaqueModel(Model model, Matrix pose, BoundingSphere boundingSphere, BoundingBox boundingBox)
             : base(model, pose, boundingSphere, boundingBox) { }
 
+        public ComponentDescription Describe()
+        {
+            var description = new ComponentDescription("Opaque model");
+            this.Describe(description);
+
+            return description;            
+        }
+
         public override string ToString()
         {
             this.Pose.Decompose(out var scale, out var rotation, out var translation);

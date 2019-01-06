@@ -60,6 +60,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DrawVertDeclaration.cs" />
+    <Compile Include="Editors.cs" />
     <Compile Include="ImGuiRenderer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

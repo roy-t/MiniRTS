@@ -48,8 +48,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Components\ComponentDescription.cs" />
     <Compile Include="Components\ComponentLookup.cs" />
+    <Compile Include="Components\ComponentProperty.cs" />
     <Compile Include="Components\EntityComponentRecord.cs" />
+    <Compile Include="EntityDescription.cs" />
     <Compile Include="Factories\AComponentFactory.cs" />
     <Compile Include="Entity.cs" />
     <Compile Include="EntityController.cs" />

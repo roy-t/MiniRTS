@@ -18,6 +18,15 @@ namespace MiniEngine.Pipeline.Lights.Components
         public ShadowMap ShadowMap { get; }
         public Color Color { get; set; }
 
+        public ComponentDescription Describe()
+        {
+            var description = new ComponentDescription("Shadow casting light");
+            description.AddProperty("Color", this.Color, x => this.Color = x, 0.0f, 1.0f);
+            description.AddLabel("Direction", this.ViewPoint.LookAt - this.ViewPoint.Position);
+
+            return description;
+        }
+
         public override string ToString() => $"shadow casting light, direction: {this.ViewPoint.LookAt - this.ViewPoint.Position}, color: {this.Color}";
     }
 }

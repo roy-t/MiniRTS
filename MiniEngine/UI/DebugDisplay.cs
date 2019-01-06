@@ -1,4 +1,4 @@
-﻿namespace MiniEngine
+﻿namespace MiniEngine.UI
 {
     public enum DebugDisplay
     {

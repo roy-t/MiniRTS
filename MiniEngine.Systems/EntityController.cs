@@ -43,32 +43,33 @@ namespace MiniEngine.Systems
             }
         }
 
-        public string DescribeAllEntities()
+        public List<EntityDescription> DescribeAllEntities()
         {
+            var entities = new List<EntityDescription>();
             var builder = new StringBuilder();
+
             foreach (var entity in this.Creator.GetAllEntities())
             {
-                this.DescribeEntity(builder, entity);
+                builder.Clear();
+
+                entities.Add(new EntityDescription(entity, this.DescribeEntity(entity)));
             }
 
-            return builder.ToString();
+            return entities;
         }
 
-        public string DescribeEntity(Entity entity) => this.DescribeEntity(new StringBuilder(), entity);
-
-        private string DescribeEntity(StringBuilder builder, Entity entity)
+        private List<ComponentDescription> DescribeEntity(Entity entity)
         {
-            builder.AppendLine(entity.ToString());
             var components = new List<IComponent>();
+            var descriptions = new List<ComponentDescription>();
             this.EntityLinker.GetComponents(entity, components);
 
             foreach (var component in components)
             {
-                builder.Append('\t');
-                builder.AppendLine(component.ToString());
+                descriptions.Add(component.Describe());
             }
 
-            return builder.ToString();
+            return descriptions;
         }
 
         private void RemoveEntityFromSystems(Entity entity)
