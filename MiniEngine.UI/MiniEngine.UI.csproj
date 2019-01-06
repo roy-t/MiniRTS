@@ -76,5 +76,11 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MiniEngine.Units\MiniEngine.Units.csproj">
+      <Project>{051E397D-4C6C-4F8F-8F40-CCE916A45C5E}</Project>
+      <Name>MiniEngine.Units</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

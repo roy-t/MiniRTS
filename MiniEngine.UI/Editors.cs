@@ -1,5 +1,6 @@
 ﻿using ImGuiNET;
 using Microsoft.Xna.Framework;
+using MiniEngine.Units;
 using System;
 using Num = System.Numerics;
 
@@ -27,6 +28,31 @@ namespace MiniEngine.UI
                     }
                     break;
 
+
+                case Quaternion quaternion:
+                    Vector4 d;
+                    quaternion.Deconstruct(out d.X, out d.Y, out d.Z, out d.W);
+                    var vd = ToNumVector4(d);
+                    if (ImGui.SliderFloat4(label, ref vd, -1.0f, 1.0f))
+                    {
+                        setter(new Quaternion(ToXNAVector4(vd)));
+                    }
+
+                    //var yawPitchRoll = QuaternionToYawPitchRoll(quaternion);
+                    //if (ImGui.SliderAngle(label + " yaw", ref yawPitchRoll.X))
+                    //{
+                    //    setter(Quaternion.CreateFromYawPitchRoll(yawPitchRoll.X, yawPitchRoll.Y, yawPitchRoll.Z));
+                    //}
+                    //if (ImGui.SliderAngle(label + " pitch", ref yawPitchRoll.Y))
+                    //{
+                    //    setter(Quaternion.CreateFromYawPitchRoll(yawPitchRoll.X, yawPitchRoll.Y, yawPitchRoll.Z));
+                    //}
+                    //if (ImGui.SliderAngle(label + " roll", ref yawPitchRoll.Z))
+                    //{
+                    //    setter(Quaternion.CreateFromYawPitchRoll(yawPitchRoll.X, yawPitchRoll.Y, yawPitchRoll.Z));
+                    //}
+                    break;
+
                 case Color color:
                     var c = ToNumVector4(color.ToVector4());
                     if (ImGui.ColorEdit4(label, ref c))
@@ -35,6 +61,13 @@ namespace MiniEngine.UI
                     }
                     break;
 
+                case Seconds s:
+                    var fs = s.Value;
+                    if (ImGui.SliderFloat(label, ref fs, (float)min, (float)max))
+                    {
+                        setter(new Seconds(fs));
+                    }
+                    break;
                 case float f:
                     if (ImGui.SliderFloat(label, ref f, (float)min, (float)max))
                     {
@@ -46,6 +79,15 @@ namespace MiniEngine.UI
                     ImGui.LabelText(label + "*", value.ToString());
                     return;
             }
+        }
+
+        private static Vector3 QuaternionToYawPitchRoll(Quaternion q)
+        {            
+            var yaw = (float)Math.Atan2(2.0 * (q.Y * q.Z + q.W * q.X), q.W * q.W - q.X * q.X - q.Y * q.Y + q.Z * q.Z);
+            var pitch = (float)Math.Asin(-2.0 * (q.X * q.Z - q.W * q.Y));
+            var roll = (float)Math.Atan2(2.0 * (q.X * q.Y + q.W * q.Z), q.W * q.W + q.X * q.X - q.Y * q.Y - q.Z * q.Z);
+
+            return new Vector3(yaw, pitch, roll);
         }
 
         private static Num.Vector3 ToNumVector3(Vector3 v) => new Num.Vector3(v.X, v.Y, v.Z);

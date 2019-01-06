@@ -8,7 +8,6 @@ using MiniEngine.Primitives.Cameras;
 using MiniEngine.Scenes;
 using System.Collections.Generic;
 using System.Linq;
-using MiniEngine.Utilities;
 using KeyboardInput = MiniEngine.Input.KeyboardInput;
 using MiniEngine.Systems;
 using MiniEngine.Telemetry;
@@ -241,7 +240,7 @@ namespace MiniEngine
 
                             if(ImGui.ListBox("", ref this.ui.SelectedEntity, descriptions.Select(x => $"{x.Entity} ({x.ComponentCount} components)").ToArray(), descriptions.Count, 10))
                             {
-                                this.ui.EntityWindowOpen = true;
+                                this.ui.ShowEntityWindow = true;
                             }
                             ImGui.EndMenu();
                         }
@@ -320,24 +319,24 @@ namespace MiniEngine
 
                     if (this.ui.ShowDemo) { ImGui.ShowDemoWindow(); }
 
-                    if (this.ui.EntityWindowOpen && ImGui.Begin("Entity Details", ref this.ui.EntityWindowOpen, ImGuiWindowFlags.AlwaysVerticalScrollbar))
+                    if (this.ui.ShowEntityWindow)
                     {
-                        var entityDescriptions = this.entityController.DescribeAllEntities();
-                        var selectedEntity = entityDescriptions[this.ui.SelectedEntity];
-                        foreach (var component in selectedEntity.Components)
+                        if (ImGui.Begin("Entity Details", ref this.ui.ShowEntityWindow))
                         {
-                            ImGui.Separator();
-                            ImGui.Text(component.Name);
-                            foreach (var property in component.Properties)
+                            var entityDescriptions = this.entityController.DescribeAllEntities();
+                            var selectedEntity = entityDescriptions[this.ui.SelectedEntity];
+                            foreach (var component in selectedEntity.Components)
                             {
-                                Editors.CreateEditor(component.Name, property.Name, property.Value, property.Min, property.Max, property.Setter);
+                                ImGui.Separator();
+                                ImGui.Text(component.Name);
+                                foreach (var property in component.Properties)
+                                {
+                                    Editors.CreateEditor(component.Name, property.Name, property.Value, property.Min, property.Max, property.Setter);
+                                }
                             }
                         }
-
                         ImGui.End();
                     }
-
-
                 }
                 this.gui.EndLayout();
             }

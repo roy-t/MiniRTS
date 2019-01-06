@@ -28,7 +28,7 @@ namespace MiniEngine.UI
 
         public bool ShowDemo;
         public int SelectedEntity;
-        public bool EntityWindowOpen;
+        public bool ShowEntityWindow;
 
         [XmlIgnore]
         public List<RenderTargetDescription> SelectedRenderTargets { get; }
