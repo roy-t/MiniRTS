@@ -96,17 +96,6 @@ namespace MiniEngine.Rendering
             return this.GBuffer.FinalTarget;
         }
 
-        public RenderTarget2D[] GetIntermediateRenderTargets()
-        {
-            return new[]
-            {
-                this.GBuffer.DiffuseTarget,
-                this.GBuffer.ParticleTarget,
-                this.GBuffer.CombineTarget
-                //this.GBuffer.NormalTarget,
-                //this.GBuffer.DepthTarget,
-                //this.GBuffer.LightTarget
-            };
-        }
+        public GBuffer GetGBuffer() => this.GBuffer;
     }
 }

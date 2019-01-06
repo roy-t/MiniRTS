@@ -11,7 +11,7 @@ using MiniEngine.Units;
 
 namespace MiniEngine.Scenes
 {
-    public sealed class SponzaScene : IScene
+    public sealed class ZScene : IScene
     {
         private readonly EntityCreator EntityCreator;
         private readonly LightsFactory LightsFactory;
@@ -32,7 +32,7 @@ namespace MiniEngine.Scenes
         private Texture2D explosion2;
         private Texture2D smoke;        
 
-        public SponzaScene(
+        public ZScene(
             EntityCreator entityCreator,
             LightsFactory lightsFactory,
             SunlightSystem sunlightSystem,
@@ -60,13 +60,13 @@ namespace MiniEngine.Scenes
             this.smoke = content.Load<Texture2D>(@"Particles\Smoke");
         }
 
-        public string Name => "Sponza";
+        public string Name => "Z-Scene";
 
         public void Set()
         {
             this.worldEntity = this.EntityCreator.CreateEntity();
 
-            this.LightsFactory.AmbientLightFactory.Construct(this.worldEntity, Color.White * 0.5f);
+            this.LightsFactory.AmbientLightFactory.Construct(this.worldEntity, Color.Purple * 0.5f);
 
             this.LightsFactory.SunlightFactory.Construct(this.worldEntity, Color.White, Vector3.Up, (Vector3.Left * 0.75f) + (Vector3.Backward * 0.1f));
 

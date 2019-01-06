@@ -162,7 +162,7 @@ namespace MiniEngine.UI
             this.keys.Add(io.KeyMap[(int)ImGuiKey.X] = (int)Keys.X);
             this.keys.Add(io.KeyMap[(int)ImGuiKey.Y] = (int)Keys.Y);
             this.keys.Add(io.KeyMap[(int)ImGuiKey.Z] = (int)Keys.Z);
-
+         
             // MonoGame-specific //////////////////////
             this.Game.Window.TextInput += (s, a) =>
             {
