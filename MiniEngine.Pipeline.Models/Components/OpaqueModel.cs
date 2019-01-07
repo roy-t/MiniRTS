@@ -1,12 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MiniEngine.Primitives;
 using MiniEngine.Systems.Components;
 
 namespace MiniEngine.Pipeline.Models.Components
 {
     public sealed class OpaqueModel : AModel, IComponent
     {
-        public OpaqueModel(Model model, Matrix pose, BoundingSphere boundingSphere, BoundingBox boundingBox)
+        public OpaqueModel(Model model, Pose pose, BoundingSphere boundingSphere, BoundingBox boundingBox)
             : base(model, pose, boundingSphere, boundingBox) { }
 
         public ComponentDescription Describe()
@@ -17,10 +18,7 @@ namespace MiniEngine.Pipeline.Models.Components
             return description;            
         }
 
-        public override string ToString()
-        {
-            this.Pose.Decompose(out var scale, out var rotation, out var translation);
-            return $"opaque model, translation: {translation}, rotation: {rotation}, scale: {scale}";
-        }
+        public override string ToString() 
+            => $"opaque model, translation: {this.Pose.Translation}, yaw: {this.Pose.Yaw}, pitch: {this.Pose.Pitch}, roll: {this.Pose.Roll}, scale: {this.Pose.Scale}";
     }
 }

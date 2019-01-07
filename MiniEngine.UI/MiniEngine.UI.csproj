@@ -77,6 +77,10 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\MiniEngine.Primitives\MiniEngine.Primitives.csproj">
+      <Project>{D02E8240-0178-4792-9C38-2455D1250FA6}</Project>
+      <Name>MiniEngine.Primitives</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MiniEngine.Units\MiniEngine.Units.csproj">
       <Project>{051E397D-4C6C-4F8F-8F40-CCE916A45C5E}</Project>
       <Name>MiniEngine.Units</Name>

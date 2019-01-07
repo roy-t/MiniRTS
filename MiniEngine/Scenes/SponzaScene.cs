@@ -6,6 +6,7 @@ using MiniEngine.Pipeline.Lights.Systems;
 using MiniEngine.Pipeline.Models.Factories;
 using MiniEngine.Pipeline.Particles.Factories;
 using MiniEngine.Pipeline.Systems;
+using MiniEngine.Primitives;
 using MiniEngine.Systems;
 using MiniEngine.Units;
 
@@ -70,7 +71,7 @@ namespace MiniEngine.Scenes
 
             this.LightsFactory.SunlightFactory.Construct(this.worldEntity, Color.White, Vector3.Up, (Vector3.Left * 0.75f) + (Vector3.Backward * 0.1f));
 
-            this.OpaqueModelFactory.Construct(this.worldEntity, this.sponza, Matrix.CreateScale(0.05f));
+            this.OpaqueModelFactory.Construct(this.worldEntity, this.sponza, CreateScaleRotationTranslation(0.05f, 0, 0, 0, Vector3.Zero));
 
             this.planeEntity = this.EntityCreator.CreateEntity();
 
@@ -102,16 +103,12 @@ namespace MiniEngine.Scenes
 
 
             //this.DebugRenderSystem.Add(this.worldEntity, this.sponza, Matrix.CreateScale(0.05f));
-            this.DebugRenderSystem.Add(this.planeEntity, this.plane, world);
-            this.DebugRenderSystem.Add(this.planeEntity2, this.plane, world2);
+            this.DebugRenderSystem.Add(this.planeEntity, this.plane, world.Matrix);
+            this.DebugRenderSystem.Add(this.planeEntity2, this.plane, world2.Matrix);
         }
 
-        public static Matrix CreateScaleRotationTranslation(float scale, float rotX, float rotY, float rotZ, Vector3 translation)
-        {
-            return Matrix.CreateScale(scale)
-                   * Matrix.CreateFromYawPitchRoll(rotY, rotX, rotZ)
-                   * Matrix.CreateTranslation(translation);
-        }
+        public static Pose CreateScaleRotationTranslation(float scale, float rotX, float rotY, float rotZ, Vector3 translation) 
+            => new Pose(translation, scale, rotY, rotX, rotZ);
 
         public void Update(Seconds elapsed)
         {

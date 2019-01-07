@@ -53,6 +53,7 @@
     <Compile Include="Frustum.cs" />
     <Compile Include="FullScreenTriangle.cs" />
     <Compile Include="GBuffer.cs" />
+    <Compile Include="Pose.cs" />
     <Compile Include="RenderTargetDescription.cs" />
     <Compile Include="VertexTypes\GBufferVertex.cs" />
     <Compile Include="Cameras\IMovableViewPoint.cs" />

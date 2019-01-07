@@ -15,7 +15,7 @@ namespace MiniEngine.Systems.Components
         public List<ComponentProperty> Properties { get; }
 
 
-        public void AddProperty<T>(string name, T value, Action<T> setter, object min, object max) 
+        public void AddProperty<T>(string name, T value, Action<T> setter, object min = null, object max = null) 
             => this.Properties.Add(new ComponentProperty(name, value, x => setter((T)x), typeof(T), min, max));
 
         public void AddLabel<T>(string name, T value)

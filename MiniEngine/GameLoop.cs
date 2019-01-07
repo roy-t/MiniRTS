@@ -327,11 +327,13 @@ namespace MiniEngine
                             var selectedEntity = entityDescriptions[this.ui.SelectedEntity];
                             foreach (var component in selectedEntity.Components)
                             {
-                                ImGui.Separator();
-                                ImGui.Text(component.Name);
-                                foreach (var property in component.Properties)
+                                if (ImGui.TreeNode(component.Name))
                                 {
-                                    Editors.CreateEditor(component.Name, property.Name, property.Value, property.Min, property.Max, property.Setter);
+                                    foreach (var property in component.Properties)
+                                    {
+                                        Editors.CreateEditor(property.Name, property.Value, property.Min, property.Max, property.Setter);
+                                    }
+                                    ImGui.TreePop();
                                 }
                             }
                         }
@@ -340,7 +342,6 @@ namespace MiniEngine
                 }
                 this.gui.EndLayout();
             }
-
             base.Draw(gameTime);
         }
     }
