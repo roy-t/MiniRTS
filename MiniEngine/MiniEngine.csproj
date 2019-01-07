@@ -81,6 +81,7 @@
     <Compile Include="Input\MouseInput.cs" />
     <Compile Include="Rendering\DeferredRenderPipeline.cs" />
     <Compile Include="Scenes\ZScene.cs" />
+    <Compile Include="UI\LightsWindow.cs" />
     <Compile Include="UI\UIState.cs" />
     <Compile Include="Utilities\DebugController.cs" />
     <Compile Include="Program.cs" />

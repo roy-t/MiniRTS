@@ -13,6 +13,7 @@ using MiniEngine.Utilities;
 using MiniEngine.Telemetry;
 using MiniEngine.Systems.Factories;
 using MiniEngine.Pipeline.Lights.Factories;
+using MiniEngine.UI;
 
 namespace MiniEngine.Configuration
 {
@@ -70,9 +71,10 @@ namespace MiniEngine.Configuration
             // Renderer
             this.Container.Register<DeferredRenderPipeline>();
 
-            // Input
+            // UI
             this.Container.Register<KeyboardInput>();
             this.Container.Register<MouseInput>();
+            this.Container.Register<LightsWindow>();
 
             // Entities
             this.Container.Register<EntityCreator>();

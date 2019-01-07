@@ -1,4 +1,5 @@
-﻿using MiniEngine.Primitives;
+﻿using Microsoft.Xna.Framework;
+using MiniEngine.Primitives;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -20,6 +21,9 @@ namespace MiniEngine.UI
             this.DebugDisplay = DebugDisplay.None;
             this.Columns = 4;
             this.ShowGui = true;
+
+            this.CameraPosition = Vector3.Zero;
+            this.CameraLookAt = Vector3.Forward;
         }
 
         public bool ShowGui { get; set; }
@@ -29,6 +33,11 @@ namespace MiniEngine.UI
         public bool ShowDemo;
         public int SelectedEntity;
         public bool ShowEntityWindow;
+        public bool ShowLightsWindow;
+
+        public Vector3 SpawnPosition { get; set; }
+        public Vector3 CameraPosition { get; set; }
+        public Vector3 CameraLookAt { get; set; }
 
         [XmlIgnore]
         public List<RenderTargetDescription> SelectedRenderTargets { get; }
@@ -43,10 +52,13 @@ namespace MiniEngine.UI
         [EditorBrowsable(EditorBrowsableState.Never)]
         public string SelectedRenderTargetName { get; set; }
 
-        public void Serialize()
+        public void Serialize(Vector3 cameraPosition, Vector3 cameraLookAt)
         {
             var culture = Thread.CurrentThread.CurrentCulture;
             Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
+
+            this.CameraPosition = cameraPosition;
+            this.CameraLookAt = cameraLookAt;
 
             this.SelectedRenderTargetName = this.SelectedRenderTarget?.Name;
             this.SelectedRenderTargetNames = this.SelectedRenderTargets.Select(rt => rt.Name).ToList();

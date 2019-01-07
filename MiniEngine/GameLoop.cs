@@ -28,6 +28,7 @@ namespace MiniEngine
         private KeyboardInput keyboardInput;
         private MouseInput mouseInput;            
         private ImGuiRenderer gui;
+        private LightsWindow lightsWindow;
         
         private PerspectiveCamera perspectiveCamera;
         private SpriteBatch spriteBatch;
@@ -55,10 +56,7 @@ namespace MiniEngine
         }
 
         protected override void LoadContent()
-        {
-            this.gui = new ImGuiRenderer(this);
-            this.gui.RebuildFontAtlas();
-
+        {            
             this.spriteBatch = new SpriteBatch(this.GraphicsDevice);
 
             this.perspectiveCamera = new PerspectiveCamera(this.GraphicsDevice.Viewport);
@@ -83,8 +81,13 @@ namespace MiniEngine
             }
 
             this.SwitchScenes(this.scenes.First());
-
+            
+            this.gui = new ImGuiRenderer(this);
+            this.gui.RebuildFontAtlas();
             this.ui = UIState.Deserialize(this.renderPipeline.GetGBuffer());
+            this.lightsWindow = this.injector.Resolve<LightsWindow>();
+
+            this.perspectiveCamera.Move(this.ui.CameraPosition, this.ui.CameraLookAt);
             this.metricServer = this.injector.Resolve<IMetricServer>();
             this.metricServer.Start(7070);
         }
@@ -102,7 +105,7 @@ namespace MiniEngine
         }
 
         protected override void OnExiting(object sender, EventArgs args) 
-            => this.ui.Serialize();
+            => this.ui.Serialize(this.perspectiveCamera.Position, this.perspectiveCamera.LookAt);
 
         protected override void Update(GameTime gameTime)
         {
@@ -245,6 +248,23 @@ namespace MiniEngine
                             ImGui.EndMenu();
                         }
 
+                        if(ImGui.BeginMenu("Creators"))
+                        {
+                            if (ImGui.MenuItem("Lights", null, ref this.ui.ShowLightsWindow))
+                            {
+                                this.ui.SpawnPosition = this.perspectiveCamera.Position;
+                                this.lightsWindow.InitialPosition = this.ui.SpawnPosition;
+                            }
+                            ImGui.EndMenu();
+                        }
+
+                        if(ImGui.BeginMenu("Rendering"))
+                        {
+                            ImGui.Text("TODO: create a settings menu here and rebuild the render pipeline with the settings object");
+                            ImGui.EndMenu();
+                        }
+                        
+
                         if (ImGui.BeginMenu("Debug"))
                         {
                             if (ImGui.MenuItem(DebugDisplay.None.ToString(), null, this.ui.DebugDisplay == DebugDisplay.None))
@@ -315,9 +335,12 @@ namespace MiniEngine
                         }
 
                         ImGui.EndMainMenuBar();
-                    }
+                    }                    
 
-                    if (this.ui.ShowDemo) { ImGui.ShowDemoWindow(); }
+                    if(this.ui.ShowLightsWindow)
+                    {
+                        this.lightsWindow.Show();
+                    }
 
                     if (this.ui.ShowEntityWindow)
                     {
@@ -333,12 +356,14 @@ namespace MiniEngine
                                     {
                                         Editors.CreateEditor(property.Name, property.Value, property.Min, property.Max, property.Setter);
                                     }
-                                    ImGui.TreePop();
+                                    ImGui.TreePop();                                    
                                 }
                             }
                         }
                         ImGui.End();
                     }
+
+                    if (this.ui.ShowDemo) { ImGui.ShowDemoWindow(); }
                 }
                 this.gui.EndLayout();
             }
