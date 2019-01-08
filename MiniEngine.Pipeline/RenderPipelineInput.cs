@@ -4,7 +4,7 @@ using MiniEngine.Units;
 
 namespace MiniEngine.Pipeline
 {
-    public sealed class RenderPipelineStageInput : IPipelineInput
+    public sealed class RenderPipelineInput : IPipelineInput
     {
         public void Update(PerspectiveCamera camera, Seconds elapsed, GBuffer gBuffer, string pass)
         {

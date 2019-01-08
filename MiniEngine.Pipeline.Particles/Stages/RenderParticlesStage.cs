@@ -2,7 +2,7 @@
 
 namespace MiniEngine.Pipeline.Particles.Stages
 {
-    public sealed class RenderParticlesStage : IPipelineStage<RenderPipelineStageInput>
+    public sealed class RenderParticlesStage : IPipelineStage<RenderPipelineInput>
     {
         private readonly ParticlePipeline ParticlePipeline;
         private readonly ParticleSystem ParticleSystem;
@@ -17,7 +17,7 @@ namespace MiniEngine.Pipeline.Particles.Stages
             this.Input = new ParticlePipelineInput();
         }
 
-        public void Execute(RenderPipelineStageInput input)
+        public void Execute(RenderPipelineInput input)
         {
             this.Input.Update(input.Camera, input.GBuffer, $"particles");
             this.ParticlePipeline.Execute(this.Input);

@@ -2,7 +2,7 @@
 
 namespace MiniEngine.Pipeline.Models.Stages
 {
-    public sealed class RenderModelsStage : IPipelineStage<RenderPipelineStageInput>
+    public sealed class RenderModelsStage : IPipelineStage<RenderPipelineInput>
     {
         private readonly ModelPipeline ModelPipeline;
         private readonly ModelSystem ModelSystem;
@@ -17,7 +17,7 @@ namespace MiniEngine.Pipeline.Models.Stages
             this.Input = new ModelPipelineInput();
         }
 
-        public void Execute(RenderPipelineStageInput input)
+        public void Execute(RenderPipelineInput input)
         {
             var modelBatchList = this.ModelSystem.ComputeBatches(input.Camera);
 

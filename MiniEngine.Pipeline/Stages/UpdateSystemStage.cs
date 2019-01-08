@@ -2,7 +2,7 @@
 
 namespace MiniEngine.Pipeline.Stages
 {
-    public sealed class UpdateSystemStage : IPipelineStage<RenderPipelineStageInput>
+    public sealed class UpdateSystemStage : IPipelineStage<RenderPipelineInput>
     {
         private readonly IUpdatableSystem System;
 
@@ -11,6 +11,6 @@ namespace MiniEngine.Pipeline.Stages
             this.System = system;
         }
 
-        public void Execute(RenderPipelineStageInput input) => this.System.Update(input.Camera, input.Elapsed);
+        public void Execute(RenderPipelineInput input) => this.System.Update(input.Camera, input.Elapsed);
     }
 }

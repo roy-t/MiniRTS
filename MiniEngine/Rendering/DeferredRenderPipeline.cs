@@ -14,7 +14,6 @@ using MiniEngine.Pipeline.Particles.Systems;
 using MiniEngine.Pipeline.Shadows;
 using MiniEngine.Pipeline.Shadows.Extensions;
 using MiniEngine.Pipeline.Shadows.Systems;
-using MiniEngine.Pipeline.Systems;
 using MiniEngine.Primitives;
 using MiniEngine.Primitives.Cameras;
 using MiniEngine.Telemetry;
@@ -26,7 +25,7 @@ namespace MiniEngine.Rendering
     {
         private readonly GBuffer GBuffer;
         private readonly RenderPipeline Pipeline;
-        private readonly RenderPipelineStageInput Input;
+        private readonly RenderPipelineInput Input;
 
         public DeferredRenderPipeline(
             GraphicsDevice device,
@@ -41,14 +40,14 @@ namespace MiniEngine.Rendering
             CascadedShadowMapSystem cascadedShadowMapSystem,
             ShadowCastingLightSystem shadowCastingLightSystem,
             SunlightSystem sunlightSystem,
-            DebugRenderSystem debugRenderSystem,
+            OutlineSystem outlineSystem,
             IMeterRegistry meterRegistry)
         {
             var width = device.PresentationParameters.BackBufferWidth;
             var height = device.PresentationParameters.BackBufferHeight;         
             this.GBuffer = new GBuffer(device, width, height);
 
-            this.Input = new RenderPipelineStageInput();
+            this.Input = new RenderPipelineInput();
 
             var shadowPipeline =
                 ShadowPipeline.Create(device, meterRegistry)
@@ -74,7 +73,7 @@ namespace MiniEngine.Rendering
             var particlePipeline =
                 ParticlePipeline.Create(device, meterRegistry)
                                 .ClearParticleRenderTargets()
-                                .RenderWeightedParticles(particleSystem);            
+                                .RenderWeightedParticles(particleSystem);
 
             this.Pipeline =
                 RenderPipeline.Create(device, meterRegistry)
@@ -84,8 +83,8 @@ namespace MiniEngine.Rendering
                         .RenderShadows(shadowPipeline)
                         .RenderModels(modelSystem, modelPipeline)
                         .RenderParticles(particleSystem, particlePipeline)
-                        .Render3DDebugOverlay(debugRenderSystem)
-                        .Render2DDebugOverlay(debugRenderSystem);
+                        .Render3DOutline(outlineSystem)
+                        .Render2DOutline(outlineSystem);                        
 
         }
         

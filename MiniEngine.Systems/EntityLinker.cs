@@ -1,4 +1,5 @@
 ﻿using MiniEngine.Systems.Components;
+using System;
 using System.Collections.Generic;
 
 namespace MiniEngine.Systems
@@ -31,6 +32,21 @@ namespace MiniEngine.Systems
             {
                 output.Add(component.Component);
             }
+        }
+
+        public T GetComponent<T>(Entity entity)
+            where T : IComponent
+        {            
+            var components = this.LookUp.Search(entity);
+            foreach (var component in components)
+            {
+                if(component.GetType() == typeof(T))
+                {
+                    return (T)component.Component;
+                }
+            }
+
+            throw new Exception($"Failed to find component of type {typeof(T)} for entity {entity}");
         }
 
         public void GetComponents<T>(IList<T> output)

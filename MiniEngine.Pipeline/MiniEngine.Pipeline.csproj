@@ -50,19 +50,14 @@
   <ItemGroup>
     <Compile Include="APipeline.cs" />
     <Compile Include="Extensions\ClearStageExtensions.cs" />
-    <Compile Include="Extensions\Render2DDebugOverlayStageExtensions.cs" />
-    <Compile Include="Extensions\Render3DDebugOverlayExtensions.cs" />
     <Compile Include="Extensions\UpdateSystemStageExtensions.cs" />
     <Compile Include="IPipelineInput.cs" />
     <Compile Include="IPipelineStage.cs" />
     <Compile Include="RenderPipeline.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RenderPipelineStageInput.cs" />
+    <Compile Include="RenderPipelineInput.cs" />
     <Compile Include="Stages\ClearStage.cs" />
-    <Compile Include="Stages\Render2DDebugOverlayStage.cs" />
-    <Compile Include="Stages\Render3DDebugOverlayStage.cs" />
     <Compile Include="Stages\UpdateSystemStage.cs" />
-    <Compile Include="Systems\DebugRenderSystem.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MiniEngine.Effects\MiniEngine.Effects.csproj">

@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace MiniEngine.Pipeline.Stages
 {
-    public sealed class ClearStage : IPipelineStage<RenderPipelineStageInput>
+    public sealed class ClearStage : IPipelineStage<RenderPipelineInput>
     {
         private readonly GraphicsDevice Device;
         private readonly Color NormalClearColor;
@@ -14,7 +14,7 @@ namespace MiniEngine.Pipeline.Stages
             this.NormalClearColor = new Color(0.5f, 0.5f, 0.5f, 0.0f);
         }
 
-        public void Execute(RenderPipelineStageInput input)
+        public void Execute(RenderPipelineInput input)
         {            
             this.Device.SetRenderTarget(input.GBuffer.DiffuseTarget);
             this.Device.Clear(Color.TransparentBlack);

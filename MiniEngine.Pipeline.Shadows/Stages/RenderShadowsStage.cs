@@ -1,6 +1,6 @@
 ﻿namespace MiniEngine.Pipeline.Shadows.Stages
 {
-    public sealed class RenderShadowsStage : IPipelineStage<RenderPipelineStageInput>
+    public sealed class RenderShadowsStage : IPipelineStage<RenderPipelineInput>
     {
         private readonly ShadowPipeline ShadowPipeline;
 
@@ -12,7 +12,7 @@
             this.Input = new ShadowPipelineInput();
         }
 
-        public void Execute(RenderPipelineStageInput input)
+        public void Execute(RenderPipelineInput input)
         {
             this.Input.Update(input.GBuffer, input.Camera, "shadows");
             this.ShadowPipeline.Execute(this.Input);

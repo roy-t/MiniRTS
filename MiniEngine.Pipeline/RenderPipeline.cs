@@ -3,7 +3,7 @@ using MiniEngine.Telemetry;
 
 namespace MiniEngine.Pipeline
 {
-    public sealed class RenderPipeline : APipeline<RenderPipelineStageInput>
+    public sealed class RenderPipeline : APipeline<RenderPipelineInput>
     {       
         public RenderPipeline(GraphicsDevice device, IMeterRegistry meterRegistry)
             : base(device, meterRegistry, "render_pipeline")

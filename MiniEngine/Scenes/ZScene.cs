@@ -2,27 +2,29 @@
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Pipeline.Lights.Factories;
-using MiniEngine.Pipeline.Lights.Systems;
+using MiniEngine.Pipeline.Models.Components;
 using MiniEngine.Pipeline.Models.Factories;
 using MiniEngine.Pipeline.Particles.Factories;
-using MiniEngine.Pipeline.Systems;
 using MiniEngine.Primitives;
 using MiniEngine.Systems;
 using MiniEngine.Units;
+using System.Collections.Generic;
 
 namespace MiniEngine.Scenes
 {
-    public sealed class ZScene : IScene
+    public sealed class ZScene  : IScene
     {
         private readonly EntityCreator EntityCreator;
         private readonly LightsFactory LightsFactory;
         private readonly OpaqueModelFactory OpaqueModelFactory;
         private readonly TransparentModelFactory TransparentModelFactory;
         private readonly EmitterFactory EmitterFactory;
-        private readonly DebugRenderSystem DebugRenderSystem;
+        private readonly EntityLinker Linker;
+        private readonly OutlineFactory OutlineFactory;
 
         private Entity worldEntity;
         private Entity planeEntity;
+        private Entity outlinesEntity;
         private Entity planeEntity2;
         private Entity particleEntity;
         private Entity particleEntity2;
@@ -36,20 +38,19 @@ namespace MiniEngine.Scenes
         public ZScene(
             EntityCreator entityCreator,
             LightsFactory lightsFactory,
-            SunlightSystem sunlightSystem,
-            ShadowCastingLightSystem shadowCastingLightSystem,
-            PointLightSystem pointLightSystem,
             OpaqueModelFactory opaqueModelFactory,
             TransparentModelFactory transparentModelFactory,
-            DebugRenderSystem debugRenderSystem,
-            EmitterFactory emitterFactory)
+            OutlineFactory outlineFactory,
+            EmitterFactory emitterFactory,
+            EntityLinker linker)
         {
             this.EntityCreator = entityCreator;
             this.LightsFactory = lightsFactory;
             this.OpaqueModelFactory = opaqueModelFactory;
             this.TransparentModelFactory = transparentModelFactory;
-            this.DebugRenderSystem = debugRenderSystem;
+            this.OutlineFactory = outlineFactory;
             this.EmitterFactory = emitterFactory;
+            this.Linker = linker;
         }
 
         public void LoadContent(ContentManager content)
@@ -61,7 +62,7 @@ namespace MiniEngine.Scenes
             this.smoke = content.Load<Texture2D>(@"Particles\Smoke");
         }
 
-        public string Name => "Z-Scene";
+        public string Name => "ZScene";
 
         public void Set()
         {
@@ -102,12 +103,16 @@ namespace MiniEngine.Scenes
             this.LightsFactory.ShadowCastingLightFactory.Construct(this.particleEntity, light, light + Vector3.Up + (Vector3.Left * 0.001f), Color.IndianRed);
 
 
-            //this.DebugRenderSystem.Add(this.worldEntity, this.sponza, Matrix.CreateScale(0.05f));
-            this.DebugRenderSystem.Add(this.planeEntity, this.plane, world.Matrix);
-            this.DebugRenderSystem.Add(this.planeEntity2, this.plane, world2.Matrix);
+            this.outlinesEntity = this.EntityCreator.CreateEntity();
+            var models = new List<TransparentModel>();
+            this.Linker.GetComponents(models);
+            foreach(var model in models)
+            {
+                this.OutlineFactory.Construct(this.outlinesEntity, model);
+            }
         }
 
-          public static Pose CreateScaleRotationTranslation(float scale, float rotX, float rotY, float rotZ, Vector3 translation) 
+        public static Pose CreateScaleRotationTranslation(float scale, float rotX, float rotY, float rotZ, Vector3 translation) 
             => new Pose(translation, scale, rotY, rotX, rotZ);
 
         public void Update(Seconds elapsed)
