@@ -9,11 +9,9 @@ using MiniEngine.Rendering;
 using MiniEngine.Effects;
 using MiniEngine.Scenes;
 using MiniEngine.Systems;
-using MiniEngine.Utilities;
 using MiniEngine.Telemetry;
 using MiniEngine.Systems.Factories;
 using MiniEngine.Pipeline.Lights.Factories;
-using MiniEngine.UI;
 
 namespace MiniEngine.Configuration
 {
@@ -74,15 +72,12 @@ namespace MiniEngine.Configuration
             // UI
             this.Container.Register<KeyboardInput>();
             this.Container.Register<MouseInput>();
-            this.Container.Register<LightsWindow>();
 
             // Entities
             this.Container.Register<EntityCreator>();
             this.Container.Register<EntityLinker>();
             this.Container.Register<EntityController>();
 
-            // Controllers
-            this.Container.Register<DebugController>();
 
             // Scenes
             this.RegisterAllOf<IScene>();

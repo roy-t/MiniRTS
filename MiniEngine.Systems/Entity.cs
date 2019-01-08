@@ -29,5 +29,7 @@ namespace MiniEngine.Systems
         public override int GetHashCode() => this.Id;
 
         public override string ToString() => $"Entity {this.Id}";
+
+        public static implicit operator int(Entity entity) => entity.Id;
     }
 }

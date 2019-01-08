@@ -41,7 +41,7 @@ namespace MiniEngine.Systems
             {
                 this.DestroyEntity(entity);
             }
-        }
+        }         
 
         public List<EntityDescription> DescribeAllEntities()
         {

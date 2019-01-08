@@ -1,21 +1,23 @@
-﻿using Microsoft.Xna.Framework;
+﻿using ImGuiNET;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MiniEngine.Configuration;
+using MiniEngine.Controllers;
 using MiniEngine.Input;
-using MiniEngine.Rendering;
+using MiniEngine.Pipeline.Lights.Factories;
 using MiniEngine.Primitives.Cameras;
+using MiniEngine.Rendering;
 using MiniEngine.Scenes;
+using MiniEngine.Systems;
+using MiniEngine.Systems.Components;
+using MiniEngine.Telemetry;
+using MiniEngine.UI;
+using MiniEngine.Units;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using KeyboardInput = MiniEngine.Input.KeyboardInput;
-using MiniEngine.Systems;
-using MiniEngine.Telemetry;
-using System;
-using MiniEngine.UI;
-using ImGuiNET;
-using MiniEngine.Controllers;
-using MiniEngine.Units;
 
 namespace MiniEngine
 {
@@ -28,15 +30,17 @@ namespace MiniEngine
         private KeyboardInput keyboardInput;
         private MouseInput mouseInput;            
         private ImGuiRenderer gui;
-        private LightsWindow lightsWindow;
         
-        private PerspectiveCamera perspectiveCamera;
+        private PerspectiveCamera camera;
         private SpriteBatch spriteBatch;
         private IReadOnlyList<IScene> scenes;
         private IScene currentScene;
         private CameraController cameraController;
+        private LightsController lightsController;
         private DeferredRenderPipeline renderPipeline;
+        private EntityCreator entityCreator;
         private EntityController entityController;
+        private EntityLinker entityLinker;
         private IMetricServer metricServer;
 
         public GameLoop()
@@ -58,16 +62,18 @@ namespace MiniEngine
         protected override void LoadContent()
         {            
             this.spriteBatch = new SpriteBatch(this.GraphicsDevice);
-
-            this.perspectiveCamera = new PerspectiveCamera(this.GraphicsDevice.Viewport);
+            this.camera = new PerspectiveCamera(this.GraphicsDevice.Viewport);
 
             this.injector = new Injector(this.GraphicsDevice, this.Content);
-
             this.keyboardInput = this.injector.Resolve<KeyboardInput>();
             this.mouseInput = this.injector.Resolve<MouseInput>();
-
+            this.entityCreator = this.injector.Resolve<EntityCreator>();
             this.entityController = this.injector.Resolve<EntityController>();
-            this.cameraController = new CameraController(this.keyboardInput, this.mouseInput, this.perspectiveCamera);
+            this.entityLinker = this.injector.Resolve<EntityLinker>();
+            
+
+            this.cameraController = new CameraController(this.keyboardInput, this.mouseInput, this.camera);
+            this.lightsController = new LightsController(this.entityCreator, this.entityController, this.entityLinker, this.injector.Resolve<LightsFactory>());
             
             this.renderPipeline = this.injector.Resolve<DeferredRenderPipeline>();
 
@@ -85,9 +91,8 @@ namespace MiniEngine
             this.gui = new ImGuiRenderer(this);
             this.gui.RebuildFontAtlas();
             this.ui = UIState.Deserialize(this.renderPipeline.GetGBuffer());
-            this.lightsWindow = this.injector.Resolve<LightsWindow>();
 
-            this.perspectiveCamera.Move(this.ui.CameraPosition, this.ui.CameraLookAt);
+            this.camera.Move(this.ui.CameraPosition, this.ui.CameraLookAt);
             this.metricServer = this.injector.Resolve<IMetricServer>();
             this.metricServer.Start(7070);
         }
@@ -105,7 +110,7 @@ namespace MiniEngine
         }
 
         protected override void OnExiting(object sender, EventArgs args) 
-            => this.ui.Serialize(this.perspectiveCamera.Position, this.perspectiveCamera.LookAt);
+            => this.ui.Serialize(this.camera.Position, this.camera.LookAt);
 
         protected override void Update(GameTime gameTime)
         {
@@ -145,9 +150,9 @@ namespace MiniEngine
         {
             this.Window.Title = $"{gameTime.ElapsedGameTime.TotalMilliseconds:F2}ms, {1.0f / gameTime.ElapsedGameTime.TotalSeconds:F2} fps.";
             this.Window.Title +=
-                $" Camera ({this.perspectiveCamera.Position.X:F2}, {this.perspectiveCamera.Position.Y:F2}, {this.perspectiveCamera.Position.Z:F2})";
+                $" Camera ({this.camera.Position.X:F2}, {this.camera.Position.Y:F2}, {this.camera.Position.Z:F2})";
 
-            var result = this.renderPipeline.Render(this.perspectiveCamera, (float)gameTime.ElapsedGameTime.TotalSeconds);
+            var result = this.renderPipeline.Render(this.camera, (float)gameTime.ElapsedGameTime.TotalSeconds);
 
             this.GraphicsDevice.SetRenderTarget(null);
             this.GraphicsDevice.Clear(Color.CornflowerBlue);
@@ -240,21 +245,56 @@ namespace MiniEngine
                             ImGui.Text($"Entities: {descriptions.Count}");
                             ImGui.Text($"Components: {descriptions.Sum(x => x.ComponentCount)}");
                             ImGui.Separator();
-
-                            if(ImGui.ListBox("", ref this.ui.SelectedEntity, descriptions.Select(x => $"{x.Entity} ({x.ComponentCount} components)").ToArray(), descriptions.Count, 10))
+                            
+                            if(ImGui.ListBox("", ref this.ui.ListBoxItem, descriptions.Select(x => $"{x.Entity} ({x.ComponentCount} components)").ToArray(), descriptions.Count, 10))
                             {
+                                this.ui.SelectedEntity = descriptions[this.ui.ListBoxItem].Entity;
                                 this.ui.ShowEntityWindow = true;
                             }
                             ImGui.EndMenu();
                         }
 
-                        if(ImGui.BeginMenu("Creators"))
+                        if (ImGui.BeginMenu("Create"))
                         {
-                            if (ImGui.MenuItem("Lights", null, ref this.ui.ShowLightsWindow))
+                            ImGui.TextDisabled("Lights");
+                            if (ImGui.MenuItem("Ambient Light"))
                             {
-                                this.ui.SpawnPosition = this.perspectiveCamera.Position;
-                                this.lightsWindow.InitialPosition = this.ui.SpawnPosition;
+                                var entity = this.lightsController.CreateAmbientLight();
+                                this.ui.SelectedEntity = entity;
+                                this.ui.ShowEntityWindow = true;
                             }
+                            if (ImGui.MenuItem("Directional Light"))
+                            {
+                                var entity = this.lightsController.CreateDirectionalLight(this.camera.Position, this.camera.LookAt);
+                                this.ui.SelectedEntity = entity;
+                                this.ui.ShowEntityWindow = true;
+                            }
+                            if (ImGui.MenuItem("Point Light"))
+                            {
+                                var entity = this.lightsController.CreatePointLight(this.camera.Position);
+                                this.ui.SelectedEntity = entity;
+                                this.ui.ShowEntityWindow = true;
+                            }
+                            if (ImGui.MenuItem("Shadow Casting Light"))
+                            {
+                                var entity = this.lightsController.CreateShadowCastingLight(this.camera.Position, this.camera.LookAt);
+                                this.ui.SelectedEntity = entity;
+                                this.ui.ShowEntityWindow = true;
+                            }
+                            if (ImGui.MenuItem("Sun Light"))
+                            {
+                                var entity = this.lightsController.CreateSunLight(this.camera.Position, this.camera.LookAt);
+                                this.ui.SelectedEntity = entity;
+                                this.ui.ShowEntityWindow = true;
+                            }                                                        
+                            if (ImGui.MenuItem("Remove created lights"))
+                            {
+                                this.lightsController.RemoveCreatedLights();
+                            }
+                            if (ImGui.MenuItem("Remove all lights"))
+                            {
+                                this.lightsController.RemoveAllLights();
+                            }                            
                             ImGui.EndMenu();
                         }
 
@@ -264,7 +304,6 @@ namespace MiniEngine
                             ImGui.EndMenu();
                         }
                         
-
                         if (ImGui.BeginMenu("Debug"))
                         {
                             if (ImGui.MenuItem(DebugDisplay.None.ToString(), null, this.ui.DebugDisplay == DebugDisplay.None))
@@ -336,28 +375,39 @@ namespace MiniEngine
 
                         ImGui.EndMainMenuBar();
                     }                    
-
-                    if(this.ui.ShowLightsWindow)
-                    {
-                        this.lightsWindow.Show();
-                    }
-
+              
                     if (this.ui.ShowEntityWindow)
                     {
                         if (ImGui.Begin("Entity Details", ref this.ui.ShowEntityWindow))
                         {
-                            var entityDescriptions = this.entityController.DescribeAllEntities();
-                            var selectedEntity = entityDescriptions[this.ui.SelectedEntity];
-                            foreach (var component in selectedEntity.Components)
+                            var components = new List<IComponent>();
+                            this.entityLinker.GetComponents(this.ui.SelectedEntity, components);
+
+                            foreach (var component in components)
                             {
-                                if (ImGui.TreeNode(component.Name))
+                                var description = component.Describe();
+                                if (ImGui.TreeNode(description.Name + " #" + component.GetHashCode().ToString("00").Substring(0, 2)))
                                 {
-                                    foreach (var property in component.Properties)
+                                    foreach (var property in description.Properties)
                                     {
                                         Editors.CreateEditor(property.Name, property.Value, property.Min, property.Max, property.Setter);
                                     }
-                                    ImGui.TreePop();                                    
+
+                                    if (ImGui.Button("Remove Component"))
+                                    {
+                                        this.entityLinker.RemoveComponent(this.ui.SelectedEntity, component);                                       
+                                    }
+                                    ImGui.TreePop();
                                 }
+
+                               
+                            }
+                        }
+                        if (this.entityCreator.GetAllEntities().Contains(this.ui.SelectedEntity))
+                        {
+                            if (ImGui.Button("Destroy Entity"))
+                            {
+                                this.entityController.DestroyEntity(this.ui.SelectedEntity);
                             }
                         }
                         ImGui.End();

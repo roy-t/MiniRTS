@@ -76,6 +76,45 @@ namespace MiniEngine.Systems.Components
             }
         }
 
+        public void RemoveComponent(Entity entity, IComponent component)
+        {
+            if (this.ComponentsPerEntity.TryGetValue(entity, out var componentRecords))
+            {
+                foreach (var record in componentRecords)
+                {
+                    if (record.Component == component)
+                    {
+                        this.WorkList.Add(record);
+                    }
+                }
+
+                foreach (var record in this.WorkList)
+                {
+                    componentRecords.Remove(record);
+                }
+            }
+
+            this.WorkList.Clear();
+
+            if (this.EntitiesPerComponent.TryGetValue(component.GetType(), out var entityRecords))
+            {
+                foreach (var record in entityRecords)
+                {
+                    if (record.Component == component)
+                    {
+                        this.WorkList.Add(record);
+                    }
+                }
+
+                foreach (var record in this.WorkList)
+                {
+                    entityRecords.Remove(record);
+                }
+            }
+
+            this.WorkList.Clear();
+        }
+
         public void RemoveComponent(Entity entity, Type componentType)
         {
             if (this.ComponentsPerEntity.TryGetValue(entity, out var componentRecords))

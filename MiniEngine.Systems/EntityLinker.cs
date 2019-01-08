@@ -14,6 +14,8 @@ namespace MiniEngine.Systems
 
         public void AddComponent(Entity entity, IComponent component) => this.LookUp.AddComponent(entity, component);
 
+        public void RemoveComponent(Entity entity, IComponent component) => this.LookUp.RemoveComponent(entity, component);
+
         public void RemoveComponents<T>(Entity entity)
             where T : IComponent
             => this.LookUp.RemoveComponent(entity, typeof(T));
@@ -38,6 +40,16 @@ namespace MiniEngine.Systems
             foreach (var component in components)
             {
                 output.Add((T)component.Component);
+            }
+        }
+
+        public void GetEntities<T>(IList<Entity> output)
+            where T : IComponent
+        {
+            var components = this.LookUp.Search(typeof(T));
+            foreach(var component in components)
+            {
+                output.Add(component.Entity);
             }
         }
     }

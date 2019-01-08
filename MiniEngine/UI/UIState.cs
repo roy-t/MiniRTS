@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using MiniEngine.Primitives;
+using MiniEngine.Systems;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -24,20 +25,22 @@ namespace MiniEngine.UI
 
             this.CameraPosition = Vector3.Zero;
             this.CameraLookAt = Vector3.Forward;
+
+            this.Data = new SerializationData();
         }
 
-        public bool ShowGui { get; set; }
-        public int Columns;
-        public DebugDisplay DebugDisplay { get; set; }
-
-        public bool ShowDemo;
-        public int SelectedEntity;
+        public bool ShowDemo;        
         public bool ShowEntityWindow;
         public bool ShowLightsWindow;
+        public int Columns;
 
-        public Vector3 SpawnPosition { get; set; }
+        public bool ShowGui { get; set; }        
+        public DebugDisplay DebugDisplay { get; set; }        
         public Vector3 CameraPosition { get; set; }
-        public Vector3 CameraLookAt { get; set; }
+        public Vector3 CameraLookAt { get; set; }        
+
+        [XmlIgnore]
+        public int ListBoxItem;
 
         [XmlIgnore]
         public List<RenderTargetDescription> SelectedRenderTargets { get; }
@@ -45,12 +48,11 @@ namespace MiniEngine.UI
         [XmlIgnore]
         public RenderTargetDescription SelectedRenderTarget { get; set; }             
 
+        [XmlIgnore]
+        public Entity SelectedEntity {get; set;}
 
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public List<string> SelectedRenderTargetNames { get; set; }
-
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public string SelectedRenderTargetName { get; set; }
+        public SerializationData Data { get; set; }
 
         public void Serialize(Vector3 cameraPosition, Vector3 cameraLookAt)
         {
@@ -60,8 +62,9 @@ namespace MiniEngine.UI
             this.CameraPosition = cameraPosition;
             this.CameraLookAt = cameraLookAt;
 
-            this.SelectedRenderTargetName = this.SelectedRenderTarget?.Name;
-            this.SelectedRenderTargetNames = this.SelectedRenderTargets.Select(rt => rt.Name).ToList();
+            this.Data.SelectedEntityInt = this.SelectedEntity;
+            this.Data.SelectedRenderTargetName = this.SelectedRenderTarget?.Name;
+            this.Data.SelectedRenderTargetNames = this.SelectedRenderTargets.Select(rt => rt.Name).ToList();
 
             var serializer = new XmlSerializer(typeof(UIState));
             using (var stream = File.CreateText(UIStateFile))
@@ -83,8 +86,9 @@ namespace MiniEngine.UI
                 {
                     var uiState = (UIState)serializer.Deserialize(stream);
 
-                    uiState.SelectedRenderTarget = gBuffer.RenderTargets.FirstOrDefault(rt => rt.Name.Equals(uiState.SelectedRenderTargetName));
-                    foreach (var name in uiState.SelectedRenderTargetNames)
+                    uiState.SelectedEntity = new Entity(uiState.Data.SelectedEntityInt);
+                    uiState.SelectedRenderTarget = gBuffer.RenderTargets.FirstOrDefault(rt => rt.Name.Equals(uiState.Data.SelectedRenderTargetName));
+                    foreach (var name in uiState.Data.SelectedRenderTargetNames)
                     {
                         uiState.SelectedRenderTargets.Add(gBuffer.RenderTargets.First(rt => rt.Name.Equals(name)));
                     }
@@ -101,6 +105,13 @@ namespace MiniEngine.UI
             {
                 Thread.CurrentThread.CurrentCulture = culture;
             }            
+        }
+
+        public class SerializationData
+        {            
+            public int SelectedEntityInt { get; set; }
+            public List<string> SelectedRenderTargetNames { get; set; }
+            public string SelectedRenderTargetName { get; set; }
         }
     }
 }
