@@ -5,7 +5,7 @@ using MiniEngine.Systems.Components;
 
 namespace MiniEngine.Pipeline.Models.Components
 {
-    public abstract class AModel
+    public abstract class AModel : IComponent
     {
         protected AModel(Model model, Pose pose, BoundingSphere boundingSphere, BoundingBox boundingBox)
         {
@@ -20,6 +20,7 @@ namespace MiniEngine.Pipeline.Models.Components
         public BoundingSphere BoundingSphere { get; set; }
         public BoundingBox BoundingBox { get; set; }
 
+        public abstract ComponentDescription Describe();
 
         protected void Describe(ComponentDescription description) 
             => description.AddProperty("Pose", this.Pose, x => this.Pose = x);       

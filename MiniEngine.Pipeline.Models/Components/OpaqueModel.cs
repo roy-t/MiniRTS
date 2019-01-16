@@ -5,12 +5,12 @@ using MiniEngine.Systems.Components;
 
 namespace MiniEngine.Pipeline.Models.Components
 {
-    public sealed class OpaqueModel : AModel, IComponent
+    public sealed class OpaqueModel : AModel
     {
         public OpaqueModel(Model model, Pose pose, BoundingSphere boundingSphere, BoundingBox boundingBox)
             : base(model, pose, boundingSphere, boundingBox) { }
 
-        public ComponentDescription Describe()
+        public override ComponentDescription Describe()
         {
             var description = new ComponentDescription("Opaque model");
             this.Describe(description);

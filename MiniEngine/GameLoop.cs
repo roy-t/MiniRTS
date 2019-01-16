@@ -6,6 +6,8 @@ using MiniEngine.Configuration;
 using MiniEngine.Controllers;
 using MiniEngine.Input;
 using MiniEngine.Pipeline.Lights.Factories;
+using MiniEngine.Pipeline.Models.Components;
+using MiniEngine.Pipeline.Models.Factories;
 using MiniEngine.Primitives.Cameras;
 using MiniEngine.Rendering;
 using MiniEngine.Scenes;
@@ -37,6 +39,7 @@ namespace MiniEngine
         private IScene currentScene;
         private CameraController cameraController;
         private LightsController lightsController;
+        private OutlineFactory outlineFactory;
         private DeferredRenderPipeline renderPipeline;
         private EntityCreator entityCreator;
         private EntityController entityController;
@@ -70,10 +73,11 @@ namespace MiniEngine
             this.entityCreator = this.injector.Resolve<EntityCreator>();
             this.entityController = this.injector.Resolve<EntityController>();
             this.entityLinker = this.injector.Resolve<EntityLinker>();
-            
+            this.outlineFactory = this.injector.Resolve<OutlineFactory>();
 
             this.cameraController = new CameraController(this.keyboardInput, this.mouseInput, this.camera);
             this.lightsController = new LightsController(this.entityCreator, this.entityController, this.entityLinker, this.injector.Resolve<LightsFactory>());
+            
             
             this.renderPipeline = this.injector.Resolve<DeferredRenderPipeline>();
 
@@ -102,11 +106,6 @@ namespace MiniEngine
             this.entityController.DestroyAllEntities();
             this.currentScene = scene;
             this.currentScene.Set();
-        }
-
-        protected override void UnloadContent()
-        {
-            // TODO: Unload any non ContentManager content here
         }
 
         protected override void OnExiting(object sender, EventArgs args) 
@@ -256,7 +255,6 @@ namespace MiniEngine
 
                         if (ImGui.BeginMenu("Create"))
                         {
-                            ImGui.TextDisabled("Lights");
                             if (ImGui.MenuItem("Ambient Light"))
                             {
                                 var entity = this.lightsController.CreateAmbientLight();
@@ -294,7 +292,13 @@ namespace MiniEngine
                             if (ImGui.MenuItem("Remove all lights"))
                             {
                                 this.lightsController.RemoveAllLights();
-                            }                            
+                            }
+                            ImGui.Separator();
+                            var enableOutline = this.entityLinker.HasComponent<AModel>(this.ui.SelectedEntity) && !this.entityLinker.HasComponent<Outline>(this.ui.SelectedEntity);
+                            if(ImGui.MenuItem("Outline", enableOutline))
+                            {
+                                this.outlineFactory.Construct(this.ui.SelectedEntity);
+                            }
                             ImGui.EndMenu();
                         }
 
@@ -378,7 +382,7 @@ namespace MiniEngine
               
                     if (this.ui.ShowEntityWindow)
                     {
-                        if (ImGui.Begin("Entity Details", ref this.ui.ShowEntityWindow))
+                        if (ImGui.Begin($"{this.ui.SelectedEntity}", ref this.ui.ShowEntityWindow))
                         {
                             var components = new List<IComponent>();
                             this.entityLinker.GetComponents(this.ui.SelectedEntity, components);
@@ -408,6 +412,9 @@ namespace MiniEngine
                             if (ImGui.Button("Destroy Entity"))
                             {
                                 this.entityController.DestroyEntity(this.ui.SelectedEntity);
+                                this.ui.ShowEntityWindow = false;
+                                var entities = this.entityController.DescribeAllEntities();
+                                this.ui.SelectedEntity = entities.Any() ? entities.First().Entity : new Entity(-1);
                             }
                         }
                         ImGui.End();

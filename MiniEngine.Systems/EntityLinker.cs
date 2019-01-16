@@ -34,13 +34,26 @@ namespace MiniEngine.Systems
             }
         }
 
+        public void GetComponents<T>(Entity entity, IList<T> output)
+            where T : IComponent
+        {
+            var components = this.LookUp.Search(entity);
+            foreach (var component in components)
+            {
+                if (typeof(T).IsAssignableFrom(component.Component.GetType()))
+                {
+                    output.Add((T)component.Component);
+                }
+            }
+        }
+
         public T GetComponent<T>(Entity entity)
             where T : IComponent
         {            
             var components = this.LookUp.Search(entity);
             foreach (var component in components)
             {
-                if(component.GetType() == typeof(T))
+                if (typeof(T).IsAssignableFrom(component.Component.GetType()))
                 {
                     return (T)component.Component;
                 }
@@ -59,6 +72,20 @@ namespace MiniEngine.Systems
             }
         }
 
+        public bool HasComponent<T>(Entity entity)
+            where T : IComponent
+        {
+            var components = this.LookUp.Search(entity);
+            foreach (var component in components)
+            {
+                if (typeof(T).IsAssignableFrom(component.Component.GetType()))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         public void GetEntities<T>(IList<Entity> output)
             where T : IComponent
         {
@@ -67,6 +94,6 @@ namespace MiniEngine.Systems
             {
                 output.Add(component.Entity);
             }
-        }
+        }        
     }
 }

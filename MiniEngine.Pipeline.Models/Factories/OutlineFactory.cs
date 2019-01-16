@@ -11,8 +11,10 @@ namespace MiniEngine.Pipeline.Models.Factories
         public OutlineFactory(GraphicsDevice device, EntityLinker linker) 
             : base(device, linker) { }
 
-        public void Construct(Entity entity, AModel model)
+        public void Construct(Entity entity)
         {
+            var model = this.Linker.GetComponent<AModel>(entity);
+
             var outline = new Outline(model, Color.Blue * 0.5f, Color.Red * 0.5f);
             this.Linker.AddComponent(entity, outline);
         }
