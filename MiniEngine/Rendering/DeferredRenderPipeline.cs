@@ -18,14 +18,34 @@ using MiniEngine.Primitives;
 using MiniEngine.Primitives.Cameras;
 using MiniEngine.Telemetry;
 using MiniEngine.Units;
+using System;
 
 namespace MiniEngine.Rendering
 {
     public sealed class DeferredRenderPipeline
     {
         private readonly GBuffer GBuffer;
-        private readonly RenderPipeline Pipeline;
         private readonly RenderPipelineInput Input;
+        
+        private readonly ShadowMapSystem ShadowMapSystem;
+        private readonly ModelSystem ModelSystem;
+        private readonly ParticleSystem ParticleSystem;
+        private readonly CombineEffect CombineEffect;
+        private readonly FxaaEffect FxaaEffect;
+        private readonly AmbientLightSystem AmbientLightSystem;
+        private readonly DirectionalLightSystem DirectionalLightSystem;
+        private readonly PointLightSystem PointLightSystem;
+        private readonly CascadedShadowMapSystem CascadedShadowMapSystem;
+        private readonly ShadowCastingLightSystem ShadowCastingLightSystem;
+        private readonly SunlightSystem SunlightSystem;
+        private readonly OutlineSystem OutlineSystem;        
+
+        private readonly ShadowPipeline ShadowPipeline;
+        private readonly LightingPipeline LightingPipeline;
+        private readonly ModelPipeline ModelPipeline;
+        private readonly ParticlePipeline ParticlePipeline;        
+
+        private readonly RenderPipeline Pipeline;
 
         public DeferredRenderPipeline(
             GraphicsDevice device,
@@ -43,51 +63,82 @@ namespace MiniEngine.Rendering
             OutlineSystem outlineSystem,
             IMeterRegistry meterRegistry)
         {
+            this.ShadowMapSystem = shadowMapSystem;
+            this.ModelSystem = modelSystem;
+            this.ParticleSystem = particleSystem;
+            this.CombineEffect = combineEffect;
+            this.FxaaEffect = fxaaEffect;
+            this.AmbientLightSystem = ambientLightSystem;
+            this.DirectionalLightSystem = directionalLightSystem;
+            this.PointLightSystem = pointLightSystem;
+            this.CascadedShadowMapSystem = cascadedShadowMapSystem;
+            this.ShadowCastingLightSystem = shadowCastingLightSystem;
+            this.SunlightSystem = sunlightSystem;
+            this.OutlineSystem = outlineSystem;
+
             var width = device.PresentationParameters.BackBufferWidth;
-            var height = device.PresentationParameters.BackBufferHeight;         
+            var height = device.PresentationParameters.BackBufferHeight;
             this.GBuffer = new GBuffer(device, width, height);
 
             this.Input = new RenderPipelineInput();
 
-            var shadowPipeline =
-                ShadowPipeline.Create(device, meterRegistry)
-                              .RenderShadowMaps(shadowMapSystem);
+            this.Settings = new RenderPipelineSettings();
 
-            var lightingPipeline =
-                LightingPipeline.Create(device, meterRegistry)                
-                                .ClearLightTargets()
-                                .RenderAmbientLight(ambientLightSystem)
-                                .RenderDirectionalLights(directionalLightSystem)
-                                .RenderPointLights(pointLightSystem)
-                                .RenderShadowCastingLights(shadowCastingLightSystem)
-                                .RenderSunlights(sunlightSystem);
+            this.ShadowPipeline = ShadowPipeline.Create(device, meterRegistry);
+            this.LightingPipeline = LightingPipeline.Create(device, meterRegistry);
+            this.ModelPipeline = ModelPipeline.Create(device, meterRegistry);
+            this.ParticlePipeline = ParticlePipeline.Create(device, meterRegistry);
 
-            var modelPipeline =
-                ModelPipeline.Create(device, meterRegistry)
-                             .ClearModelRenderTargets()
-                             .RenderModelBatch()
-                             .RenderLights(lightingPipeline)
-                             .CombineDiffuseWithLighting(combineEffect)
-                             .AntiAlias(fxaaEffect, 2.0f);
+            this.Pipeline = RenderPipeline.Create(device, meterRegistry);
 
-            var particlePipeline =
-                ParticlePipeline.Create(device, meterRegistry)
-                                .ClearParticleRenderTargets()
-                                .RenderWeightedParticles(particleSystem);
-
-            this.Pipeline =
-                RenderPipeline.Create(device, meterRegistry)
-                        .ClearRenderTargetSet()
-                        .UpdateSystem(cascadedShadowMapSystem)
-                        .UpdateSystem(particleSystem)
-                        .RenderShadows(shadowPipeline)
-                        .RenderModels(modelSystem, modelPipeline)
-                        .RenderParticles(particleSystem, particlePipeline)
-                        .Render3DOutline(outlineSystem)
-                        .Render2DOutline(outlineSystem);                        
-
+            this.Recreate();
         }
-        
+
+        public RenderPipelineSettings Settings { get; }
+
+        public void Recreate()
+        {
+            this.ShadowPipeline.Clear();
+            this.LightingPipeline.Clear();
+            this.ParticlePipeline.Clear();
+            this.ModelPipeline.Clear();
+            this.Pipeline.Clear();
+
+            this.ShadowPipeline
+                .RenderShadowMaps(this.ShadowMapSystem);
+
+            // TODO: what about settings like shadow map resolution?
+            var ls = this.Settings.LightSettings;
+            this.LightingPipeline
+                .ClearLightTargets()
+                .EnableIf(ls.EnableAmbientLights, x => x.RenderAmbientLight(this.AmbientLightSystem))
+                .EnableIf(ls.EnableDirectionalLights, x => x.RenderDirectionalLights(this.DirectionalLightSystem))
+                .EnableIf(ls.EnablePointLights, x => x.RenderPointLights(this.PointLightSystem))
+                .EnableIf(ls.EnableShadowCastingLights, x => x.RenderShadowCastingLights(this.ShadowCastingLightSystem))
+                .EnableIf(ls.EnableSunLights, x => x.RenderSunlights(this.SunlightSystem));
+
+            this.ModelPipeline
+                .ClearModelRenderTargets()
+                .RenderModelBatch()
+                .RenderLights(this.LightingPipeline)
+                .CombineDiffuseWithLighting(this.CombineEffect)
+                .AntiAlias(this.FxaaEffect, this.Settings.ModelSettings.FxaaFactor);
+
+            this.ParticlePipeline
+                .ClearParticleRenderTargets()
+                .RenderWeightedParticles(this.ParticleSystem);
+
+            this.Pipeline
+                .ClearRenderTargetSet()
+                .UpdateSystem(this.CascadedShadowMapSystem)
+                .UpdateSystem(this.ParticleSystem)
+                .EnableIf(this.Settings.EnableShadows, x => x.RenderShadows(this.ShadowPipeline))
+                .EnableIf(this.Settings.EnableModels, x => x.RenderModels(this.ModelSystem, this.ModelPipeline))
+                .EnableIf(this.Settings.EnableParticles, x => x.RenderParticles(this.ParticleSystem, this.ParticlePipeline))
+                .EnableIf(this.Settings.Enable3DOutlines, x => x.Render3DOutline(this.OutlineSystem))
+                .EnableIf(this.Settings.Enable2DOutlines, x => x.Render2DOutline(this.OutlineSystem));
+        }
+      
         public RenderTarget2D Render(PerspectiveCamera camera, Seconds elapsed)
         {
             this.Input.Update(camera, elapsed, this.GBuffer, "render");

@@ -213,6 +213,10 @@ namespace MiniEngine
 
             this.spriteBatch.End();
 
+            // TODO: make the menu cleaner, separate into one file per menu, store data in one object per menu
+            // create helper methods for most common cases (like enabling graphics). Try to store outside of
+            // main project if possible. Try to auto generate a lot based on factories and stuff.
+
             if (this.ui.ShowGui)
             {
                 this.gui.BeginLayout(gameTime);
@@ -304,7 +308,20 @@ namespace MiniEngine
 
                         if(ImGui.BeginMenu("Rendering"))
                         {
-                            ImGui.Text("TODO: create a settings menu here and rebuild the render pipeline with the settings object");
+                            Editors.CreateEditor(nameof(this.renderPipeline.Settings.EnableModels), this.renderPipeline.Settings.EnableModels, false, true, x => { this.renderPipeline.Settings.EnableModels = (bool)x; this.renderPipeline.Recreate(); });
+                            Editors.CreateEditor(nameof(this.renderPipeline.Settings.EnableParticles), this.renderPipeline.Settings.EnableParticles, false, true, x => { this.renderPipeline.Settings.EnableParticles = (bool)x; this.renderPipeline.Recreate(); });
+                            Editors.CreateEditor(nameof(this.renderPipeline.Settings.EnableShadows), this.renderPipeline.Settings.EnableShadows, false, true, x => { this.renderPipeline.Settings.EnableShadows = (bool)x; this.renderPipeline.Recreate(); });                            
+                            Editors.CreateEditor(nameof(this.renderPipeline.Settings.Enable2DOutlines), this.renderPipeline.Settings.Enable2DOutlines, false, true, x => { this.renderPipeline.Settings.Enable2DOutlines = (bool)x; this.renderPipeline.Recreate(); });                            
+                            Editors.CreateEditor(nameof(this.renderPipeline.Settings.Enable3DOutlines), this.renderPipeline.Settings.Enable3DOutlines, false, true, x => { this.renderPipeline.Settings.Enable3DOutlines = (bool)x; this.renderPipeline.Recreate(); });                            
+                            ImGui.Separator();
+                            Editors.CreateEditor(nameof(this.renderPipeline.Settings.ModelSettings.FxaaFactor), this.renderPipeline.Settings.ModelSettings.FxaaFactor, 0, 16, x => { this.renderPipeline.Settings.ModelSettings.FxaaFactor = (int)x; this.renderPipeline.Recreate(); });                            
+                            ImGui.Separator();
+                            Editors.CreateEditor(nameof(this.renderPipeline.Settings.LightSettings.EnableAmbientLights), this.renderPipeline.Settings.LightSettings.EnableAmbientLights, false, true, x => { this.renderPipeline.Settings.LightSettings.EnableAmbientLights = (bool)x; this.renderPipeline.Recreate(); });                            
+                            Editors.CreateEditor(nameof(this.renderPipeline.Settings.LightSettings.EnableDirectionalLights), this.renderPipeline.Settings.LightSettings.EnableDirectionalLights, false, true, x => { this.renderPipeline.Settings.LightSettings.EnableDirectionalLights = (bool)x; this.renderPipeline.Recreate(); });                            
+                            Editors.CreateEditor(nameof(this.renderPipeline.Settings.LightSettings.EnablePointLights), this.renderPipeline.Settings.LightSettings.EnablePointLights, false, true, x => { this.renderPipeline.Settings.LightSettings.EnablePointLights = (bool)x; this.renderPipeline.Recreate(); });                            
+                            Editors.CreateEditor(nameof(this.renderPipeline.Settings.LightSettings.EnableShadowCastingLights), this.renderPipeline.Settings.LightSettings.EnableShadowCastingLights, false, true, x => { this.renderPipeline.Settings.LightSettings.EnableShadowCastingLights = (bool)x; this.renderPipeline.Recreate(); });                            
+                            Editors.CreateEditor(nameof(this.renderPipeline.Settings.LightSettings.EnableSunLights), this.renderPipeline.Settings.LightSettings.EnableSunLights, false, true, x => { this.renderPipeline.Settings.LightSettings.EnableSunLights = (bool)x; this.renderPipeline.Recreate(); });                                                        
+
                             ImGui.EndMenu();
                         }
                         
@@ -329,15 +346,16 @@ namespace MiniEngine
                                 foreach (var target in descriptions)
                                 {
                                     var selected = this.ui.SelectedRenderTargets.Contains(target);
-                                    if (ImGui.MenuItem(target.Name, null, selected))
+                                    if (ImGui.Checkbox(target.Name, ref selected))
                                     {
                                         if (selected)
                                         {
-                                            this.ui.SelectedRenderTargets.Remove(target);
+                                            this.ui.SelectedRenderTargets.Add(target);
                                         }
                                         else
                                         {
-                                            this.ui.SelectedRenderTargets.Add(target);
+                                            this.ui.SelectedRenderTargets.Remove(target);
+                                            
                                         }
 
                                         this.ui.SelectedRenderTargets.Sort();

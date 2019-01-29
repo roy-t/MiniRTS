@@ -71,6 +71,9 @@
     <Compile Include="Configuration\Injector.cs" />
     <Compile Include="Controllers\CameraController.cs" />
     <Compile Include="Controllers\LightsController.cs" />
+    <Compile Include="Rendering\LightPipelineSettings.cs" />
+    <Compile Include="Rendering\ModelPipelineSettings.cs" />
+    <Compile Include="Rendering\RenderPipelineSettings.cs" />
     <Compile Include="UI\DebugDisplay.cs" />
     <Compile Include="GameLoop.cs" />
     <Compile Include="Input\InputState.cs" />

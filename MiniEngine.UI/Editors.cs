@@ -66,7 +66,19 @@ namespace MiniEngine.UI
                         setter(f);
                     }
                     break;
+                case int i:
+                    if (ImGui.SliderInt(label, ref i, (int)min, (int)max))
+                    {
+                        setter(i);
+                    }
+                    break;
 
+                case bool b:
+                    if (ImGui.Checkbox(label, ref b))
+                    {
+                        setter(b);
+                    }
+                    break;
                 default:
                     ImGui.LabelText(label + "*", value.ToString());
                     return;

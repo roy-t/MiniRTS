@@ -27,6 +27,8 @@ namespace MiniEngine.Pipeline
 
         public void Add(IPipelineStage<T> stage) => this.Stages.Add(stage);
 
+        public void Clear() => this.Stages.Clear();
+
         public void Execute(T input)
         {
             foreach(var stage in this.Stages)
