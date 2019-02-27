@@ -33,6 +33,8 @@ sampler textureSampler = sampler_state
     Mipfilter = POINT;
 };
 
+float4 Tint;
+
 VertexShaderOutput MainVS(in VertexShaderInput input)
 {
     VertexShaderOutput output = (VertexShaderOutput)0;
@@ -54,7 +56,7 @@ PixelShaderOutput MainPS(VertexShaderOutput input)
     float2 texCoord = input.TexCoord;
     float depth = input.Depth.x / input.Depth.y;
 
-    float4 color = tex2D(textureSampler, texCoord);
+    float4 color = tex2D(textureSampler, texCoord) * Tint;    
     
     float w = clamp(pow(1.0f + 0.01f, 3.0) * 1e8 * pow(1.0f - depth * 0.9f, 3.0f), 1e-2, 3e3);
 

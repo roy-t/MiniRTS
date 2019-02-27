@@ -35,6 +35,11 @@ namespace MiniEngine.Effects
             set => this.effect.Parameters["Texture"].SetValue(value);
         }
 
+        public Vector4 Tint
+        {
+            set => this.effect.Parameters["Tint"].SetValue(value);
+        }
+
         public void Apply() => this.ApplyPass();
     }
 }

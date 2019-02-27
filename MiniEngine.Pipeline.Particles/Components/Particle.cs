@@ -14,6 +14,7 @@ namespace MiniEngine.Pipeline.Particles.Components
 
             this.LifeTime = 0;
             this.Frame = 0;
+            this.Tint = Color.Purple;
         }
 
         public Vector3 Position { get; set; }
@@ -22,5 +23,6 @@ namespace MiniEngine.Pipeline.Particles.Components
         public Seconds LifeTime { get; set; }
         public Seconds TimePerFrame { get; set; }
         public int Frame { get; set; }
+        public Color Tint { get; set; }
     }
 }

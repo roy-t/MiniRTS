@@ -13,7 +13,7 @@ namespace MiniEngine.Pipeline.Particles.Components
 
         private Seconds timeToSpawn;
 
-        public Emitter(Vector3 position, Texture2D texture, int rows, int columns)
+        public Emitter(Vector3 position, Texture2D texture, int rows, int columns, float scale)
         {
             this.Position = position;
             this.Texture = texture;
@@ -25,7 +25,7 @@ namespace MiniEngine.Pipeline.Particles.Components
             this.SpawnInterval = 0.05f;
             this.timeToSpawn = 0.0f;
 
-            this.Scale = 0.5f;
+            this.Scale = scale;
             this.Direction = Vector3.Up;
             this.Speed = 3.0f;
             this.Spread = 0.5f;
@@ -63,6 +63,10 @@ namespace MiniEngine.Pipeline.Particles.Components
                 {
                     particle.Position += particle.LinearVelocity * elapsed.Value;
                     particle.Frame = (int)(particle.LifeTime.Value / particle.TimePerFrame.Value);
+
+                    var lifeTimeRatio = 1.0f - (particle.LifeTime / this.TimeToLive);
+
+                    particle.Tint = new Color(lifeTimeRatio, lifeTimeRatio, lifeTimeRatio, lifeTimeRatio);
                 }
             }
 
@@ -103,7 +107,7 @@ namespace MiniEngine.Pipeline.Particles.Components
             description.AddProperty("Speed", this.Speed, x => this.Speed= x, 0.0f, 10.0f);
             description.AddProperty("Spread", this.Spread, x => this.Spread = x, 0.0f, 1.0f);
             description.AddProperty("Time to live", this.TimeToLive, x => this.TimeToLive = x, 0.0f, 5.0f);
-            description.AddProperty("Time per frame", this.TimePerFrame, x => this.TimePerFrame = x, 0.0f, 0.1f);
+            description.AddProperty("Time per frame", this.TimePerFrame, x => this.TimePerFrame = x, 0.0f, 0.1f);            
             description.AddLabel("Particles", this.Particles.Count);
 
             return description;

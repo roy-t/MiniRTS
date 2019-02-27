@@ -83,13 +83,13 @@ namespace MiniEngine.Scenes
 
             var particleSpawn = new Vector3(-60.5f, 6.0f, 20.0f);
             this.particleEntity = this.EntityCreator.CreateEntity();
-            this.EmitterFactory.Construct(this.particleEntity, particleSpawn, this.smoke, 1, 1);
+            this.EmitterFactory.Construct(this.particleEntity, particleSpawn, this.smoke, 1, 1, 2.0f);
 
             this.particleEntity2 = this.EntityCreator.CreateEntity();
-            this.EmitterFactory.Construct(this.particleEntity2, particleSpawn, this.explosion, 8, 8);
+            this.EmitterFactory.Construct(this.particleEntity2, particleSpawn, this.explosion, 8, 8, 0.25f);
 
             this.particleEntity3 = this.EntityCreator.CreateEntity();
-            this.EmitterFactory.Construct(this.particleEntity3, particleSpawn, this.explosion2, 1, 1);
+            this.EmitterFactory.Construct(this.particleEntity3, particleSpawn, this.explosion2, 1, 1, 0.75f);
 
             this.LightsFactory.PointLightFactory.Construct(this.particleEntity, particleSpawn, Color.IndianRed, 20.0f, 1.0f);
             var light = particleSpawn + (Vector3.Up * 3);

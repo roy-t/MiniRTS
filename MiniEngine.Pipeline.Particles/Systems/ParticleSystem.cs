@@ -62,6 +62,7 @@ namespace MiniEngine.Pipeline.Particles.Systems
                     this.WeightedParticlesEffect.View = viewPoint.View;
                     this.WeightedParticlesEffect.Projection = viewPoint.Projection;
                     this.WeightedParticlesEffect.DiffuseMap = particle.Texture;
+                    this.WeightedParticlesEffect.Tint = particle.Tint.ToVector4();                        
 
                     this.WeightedParticlesEffect.Apply();
 
@@ -122,7 +123,8 @@ namespace MiniEngine.Pipeline.Particles.Systems
                 maxUvs,
                 emitter.Texture,
                 matrix,
-                Vector3.Distance(particle.Position, viewPoint.Position));
+                Vector3.Distance(particle.Position, viewPoint.Position),
+                particle.Tint);
         }
 
         private static void GetFrame(int frame, int rows, int columns, out Vector2 minUvs, out Vector2 maxUvs)
