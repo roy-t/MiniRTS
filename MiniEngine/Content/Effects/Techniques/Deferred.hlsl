@@ -42,7 +42,7 @@ struct DeferredPixelShaderOutput
 {
     float4 Color : COLOR0;
     float4 Normal : COLOR1;
-    float4 Depth : COLOR2;
+    float Depth : COLOR2;
 };
 
 DeferredPixelShaderOutput DeferredMainPS(DeferredVertexShaderOutput input)

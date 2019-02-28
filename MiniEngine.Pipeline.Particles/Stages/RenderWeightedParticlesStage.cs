@@ -18,7 +18,7 @@ namespace MiniEngine.Pipeline.Particles.Stages
         public void Execute(ParticlePipelineInput input)
         {
             this.Device.SetRenderTargets(input.GBuffer.DiffuseTarget, input.GBuffer.ParticleTarget);
-            this.ParticleSystem.RenderWeights(input.Camera);
+            this.ParticleSystem.RenderWeights(input.Camera, input.GBuffer);
 
             this.Device.SetRenderTarget(input.GBuffer.FinalTarget);
             this.ParticleSystem.RenderParticles(input.GBuffer.DiffuseTarget, input.GBuffer.ParticleTarget);

@@ -51,7 +51,7 @@ namespace MiniEngine.Pipeline.Particles.Systems
             this.Quad = new Quad(device);
         }
 
-        public void RenderWeights(IViewPoint viewPoint)
+        public void RenderWeights(IViewPoint viewPoint, GBuffer gBuffer)
         {
             this.GatherParticles(viewPoint);
             using (this.Device.ParticleState())
@@ -62,7 +62,8 @@ namespace MiniEngine.Pipeline.Particles.Systems
                     this.WeightedParticlesEffect.View = viewPoint.View;
                     this.WeightedParticlesEffect.Projection = viewPoint.Projection;
                     this.WeightedParticlesEffect.DiffuseMap = particle.Texture;
-                    this.WeightedParticlesEffect.Tint = particle.Tint.ToVector4();                        
+                    this.WeightedParticlesEffect.Tint = particle.Tint.ToVector4();
+                    this.WeightedParticlesEffect.DepthMap = gBuffer.BlurTarget; // TODO: depth here not blur target! :D
 
                     this.WeightedParticlesEffect.Apply();
 

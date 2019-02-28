@@ -22,12 +22,12 @@ namespace MiniEngine.Pipeline.Particles.Components
 
             this.Particles = new List<Particle>();
 
-            this.SpawnInterval = 0.05f;
+            this.SpawnInterval = 2.0f;
             this.timeToSpawn = 0.0f;
 
             this.Scale = scale;
             this.Direction = Vector3.Up;
-            this.Speed = 3.0f;
+            this.Speed = 0.5f;
             this.Spread = 0.5f;
             this.TimeToLive = 2.0f;
             this.TimePerFrame = 0.125f;

@@ -30,6 +30,11 @@ namespace MiniEngine.Effects
             set => this.effect.Parameters["Projection"].SetValue(value);
         }
 
+        public Texture2D DepthMap
+        {
+            set => this.effect.Parameters["DepthMap"].SetValue(value);
+        }
+
         public Texture2D DiffuseMap
         {
             set => this.effect.Parameters["Texture"].SetValue(value);
@@ -38,7 +43,7 @@ namespace MiniEngine.Effects
         public Vector4 Tint
         {
             set => this.effect.Parameters["Tint"].SetValue(value);
-        }
+        }        
 
         public void Apply() => this.ApplyPass();
     }
