@@ -5,3 +5,21 @@ float2 ToTextureCoordinates(float2 screenCoordinates, float w)
 {
 	return 0.5f * (float2(screenCoordinates.x / w, -screenCoordinates.y / w) + 1);
 }
+
+// Computes the world position without sampling any texture, see GBuffer.hlsl 
+// for when you do not yet have the depth
+float4 ReadWorldPosition(float2 texCoord, float depth, float4x4 inverseViewProjection)
+{
+    // Compute screen-space position
+    float4 position;
+    position.x = texCoord.x * 2.0f - 1.0f;
+    position.y = -(texCoord.y * 2.0f - 1.0f);
+    position.z = depth;
+    position.w = 1.0f;
+
+    // Transform to world space
+    position = mul(position, inverseViewProjection);
+    position /= position.w;
+
+    return position;
+}

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MiniEngine.Pipeline.Utilities;
 using MiniEngine.Systems.Components;
 using MiniEngine.Units;
 using System;
@@ -22,12 +23,12 @@ namespace MiniEngine.Pipeline.Particles.Components
 
             this.Particles = new List<Particle>();
 
-            this.SpawnInterval = 2.0f;
+            this.SpawnInterval = 0.05f;
             this.timeToSpawn = 0.0f;
 
             this.Scale = scale;
             this.Direction = Vector3.Up;
-            this.Speed = 0.5f;
+            this.Speed = 3.0f;
             this.Spread = 0.5f;
             this.TimeToLive = 2.0f;
             this.TimePerFrame = 0.125f;
@@ -64,8 +65,8 @@ namespace MiniEngine.Pipeline.Particles.Components
                     particle.Position += particle.LinearVelocity * elapsed.Value;
                     particle.Frame = (int)(particle.LifeTime.Value / particle.TimePerFrame.Value);
 
-                    var lifeTimeRatio = 1.0f - (particle.LifeTime / this.TimeToLive);
-
+                    var progress = particle.LifeTime / this.TimeToLive;
+                    var lifeTimeRatio = 1.0f - Easings.ExponentialEaseIn(progress);
                     particle.Tint = new Color(lifeTimeRatio, lifeTimeRatio, lifeTimeRatio, lifeTimeRatio);
                 }
             }

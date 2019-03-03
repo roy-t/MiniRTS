@@ -1,6 +1,7 @@
 #include "Includes/Defines.hlsl"
 #include "Includes/Matrices.hlsl"
 #include "Includes/GBuffer.hlsl"
+#include "Includes/Helpers.hlsl"
 
 // Inspired by http://casual-effects.blogspot.com/2015/03/implemented-weighted-blended-order.html
 
@@ -12,9 +13,9 @@ struct VertexShaderInput
 
 struct VertexShaderOutput
 {
-    float4 Position : POSITION0;    
+    float4 Position : POSITION0;
     float2 TexCoord : TEXCOORD0;
-    float2 Depth : TEXCOORD1;   
+    float2 Depth : TEXCOORD1;
     float4 ParticlePosition : TEXCOORD2;
 };
 
@@ -51,45 +52,25 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
     return output;
 }
 
-float SmoothFade(float Input, float ContrastPower)
-{
-    float Output = 0.5*pow(saturate(2 * ((Input > 0.5) ? 1 - Input : Input)), ContrastPower);
-    Output = (Input > 0.5) ? 1 - Output : Output;
-
-    return Output;
-}
-
 PixelShaderOutput MainPS(VertexShaderOutput input)
-{   
+{
     PixelShaderOutput output = (PixelShaderOutput)0;
-
-    float2 texCoord = input.TexCoord;
     float depth = input.Depth.x / input.Depth.y;
-
-    // TODO: I'm trying to read the depth of the current pixel in the depth buffer
-    // by taking our position in view space, converting it to texture coordinates
-    // and then using it to sample the depth buffer.
-    // But the math seems off, I sample the wrong part of the input texture here!
-    float2 texCoord2 = 0.5f * (float2(input.ParticlePosition.x, -input.ParticlePosition.y) + 1);
-    float worldDepth = ReadDepth(texCoord2);
+    float2 screenCoord = ToTextureCoordinates(input.ParticlePosition.xy, input.ParticlePosition.w);
+    float worldDepth = ReadDepth(screenCoord);
+                
+    float4 particleWorld = ReadWorldPosition(screenCoord, depth, InverseViewProjection);
+    float4 depthWorld = ReadWorldPosition(screenCoord, worldDepth, InverseViewProjection);
+      
+    float diff = distance(particleWorld.xyz, depthWorld.xyz);            
+    float fade = min(diff, 1.0);    
     
-    float diff = abs(depth - worldDepth);
-    //float fade = SmoothFade((worldDepth * depth), 10.0f);    
-    float fade = 1.0f; 
-    //float fade = saturate((depth * worldDepth) * 1.0f);
-    /*if (diff < 0.01)
-    {
-        fade = 0.0f;
-    }    */
-    float4 color = (tex2D(textureSampler, texCoord) * fade) * saturate(1.0 + Tint);
-    color.r = worldDepth;
-    color.gb *= 0.00001f;
-    color.a = 1;
-    //color.b = worldDepth;
+    float2 texCoord = input.TexCoord;
+    float4 color = (tex2D(textureSampler, texCoord) * fade) * Tint;
     float w = clamp(pow(1.0f + 0.01f, 3.0) * 1e8 * pow(1.0f - depth * 0.9f, 3.0f), 1e-2, 3e3);
 
     output.Color = float4(color.rgb * color.a, color.a) * w;
-    output.Weight = float4(color.a, 0, 0, 1.0f);    
+    output.Weight = float4(color.a, 0, 0, 1.0f);
 
     return output;
 }

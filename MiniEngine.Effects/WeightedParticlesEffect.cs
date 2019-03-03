@@ -30,6 +30,11 @@ namespace MiniEngine.Effects
             set => this.effect.Parameters["Projection"].SetValue(value);
         }
 
+        public Matrix InverseViewProjection
+        {
+            set => this.effect.Parameters["InverseViewProjection"].SetValue(value);
+        }
+
         public Texture2D DepthMap
         {
             set => this.effect.Parameters["DepthMap"].SetValue(value);
