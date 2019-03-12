@@ -80,6 +80,8 @@
     <Compile Include="Input\MouseInput.cs" />
     <Compile Include="Rendering\DeferredRenderPipeline.cs" />
     <Compile Include="Scenes\ZScene.cs" />
+    <Compile Include="UI\EntityMenu.cs" />
+    <Compile Include="UI\EntityState.cs" />
     <Compile Include="UI\UIState.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -165,9 +167,7 @@
       <Name>MiniEngine.Units</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Utilities\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Content.Builder.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

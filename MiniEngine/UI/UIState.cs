@@ -27,10 +27,13 @@ namespace MiniEngine.UI
             this.CameraLookAt = Vector3.Forward;
 
             this.Data = new SerializationData();
+
+            this.EntityState = new EntityState();
         }
 
+        public EntityState EntityState { get; set; }
+
         public bool ShowDemo;        
-        public bool ShowEntityWindow;
         public bool ShowLightsWindow;
         public int Columns;
 
@@ -39,8 +42,6 @@ namespace MiniEngine.UI
         public Vector3 CameraPosition { get; set; }
         public Vector3 CameraLookAt { get; set; }        
 
-        [XmlIgnore]
-        public int ListBoxItem;
 
         [XmlIgnore]
         public List<RenderTargetDescription> SelectedRenderTargets { get; }
@@ -48,8 +49,6 @@ namespace MiniEngine.UI
         [XmlIgnore]
         public RenderTargetDescription SelectedRenderTarget { get; set; }             
 
-        [XmlIgnore]
-        public Entity SelectedEntity {get; set;}
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public SerializationData Data { get; set; }
@@ -62,7 +61,7 @@ namespace MiniEngine.UI
             this.CameraPosition = cameraPosition;
             this.CameraLookAt = cameraLookAt;
 
-            this.Data.SelectedEntityInt = this.SelectedEntity;
+            this.Data.SelectedEntityInt = this.EntityState.SelectedEntity;
             this.Data.SelectedRenderTargetName = this.SelectedRenderTarget?.Name;
             this.Data.SelectedRenderTargetNames = this.SelectedRenderTargets.Select(rt => rt.Name).ToList();
 
@@ -86,7 +85,7 @@ namespace MiniEngine.UI
                 {
                     var uiState = (UIState)serializer.Deserialize(stream);
 
-                    uiState.SelectedEntity = new Entity(uiState.Data.SelectedEntityInt);
+                    uiState.EntityState.SelectedEntity = new Entity(uiState.Data.SelectedEntityInt);
                     uiState.SelectedRenderTarget = gBuffer.RenderTargets.FirstOrDefault(rt => rt.Name.Equals(uiState.Data.SelectedRenderTargetName));
                     foreach (var name in uiState.Data.SelectedRenderTargetNames)
                     {

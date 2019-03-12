@@ -46,6 +46,8 @@ namespace MiniEngine
         private EntityLinker entityLinker;
         private IMetricServer metricServer;
 
+        private EntityMenu entitiesMenu;
+
         public GameLoop()
         {
             this.Graphics = new GraphicsDeviceManager(this)
@@ -92,10 +94,14 @@ namespace MiniEngine
 
             this.SwitchScenes(this.scenes.First());
             
+
             this.gui = new ImGuiRenderer(this);
             this.gui.RebuildFontAtlas();
-            this.ui = UIState.Deserialize(this.renderPipeline.GetGBuffer());
 
+            this.ui = UIState.Deserialize(this.renderPipeline.GetGBuffer());
+            this.entitiesMenu = new EntityMenu(this.entityController);
+            this.entitiesMenu.State = this.ui.EntityState;
+            
             this.camera.Move(this.ui.CameraPosition, this.ui.CameraLookAt);
             this.metricServer = this.injector.Resolve<IMetricServer>();
             this.metricServer.Start(7070);
@@ -242,52 +248,39 @@ namespace MiniEngine
                             ImGui.EndMenu();
                         }
 
-                        if (ImGui.BeginMenu("Entities"))
-                        {
-                            var descriptions = this.entityController.DescribeAllEntities();
-                            ImGui.Text($"Entities: {descriptions.Count}");
-                            ImGui.Text($"Components: {descriptions.Sum(x => x.ComponentCount)}");
-                            ImGui.Separator();
-                            
-                            if(ImGui.ListBox("", ref this.ui.ListBoxItem, descriptions.Select(x => $"{x.Entity} ({x.ComponentCount} components)").ToArray(), descriptions.Count, 10))
-                            {
-                                this.ui.SelectedEntity = descriptions[this.ui.ListBoxItem].Entity;
-                                this.ui.ShowEntityWindow = true;
-                            }
-                            ImGui.EndMenu();
-                        }
-
+                        this.entitiesMenu.Render();
+                    
                         if (ImGui.BeginMenu("Create"))
                         {
                             if (ImGui.MenuItem("Ambient Light"))
                             {
                                 var entity = this.lightsController.CreateAmbientLight();
-                                this.ui.SelectedEntity = entity;
-                                this.ui.ShowEntityWindow = true;
+                                this.ui.EntityState.SelectedEntity = entity;
+                                this.ui.EntityState.ShowEntityWindow = true;
                             }
                             if (ImGui.MenuItem("Directional Light"))
                             {
                                 var entity = this.lightsController.CreateDirectionalLight(this.camera.Position, this.camera.LookAt);
-                                this.ui.SelectedEntity = entity;
-                                this.ui.ShowEntityWindow = true;
+                                this.ui.EntityState.SelectedEntity = entity;
+                                this.ui.EntityState.ShowEntityWindow = true;
                             }
                             if (ImGui.MenuItem("Point Light"))
                             {
                                 var entity = this.lightsController.CreatePointLight(this.camera.Position);
-                                this.ui.SelectedEntity = entity;
-                                this.ui.ShowEntityWindow = true;
+                                this.ui.EntityState.SelectedEntity = entity;
+                                this.ui.EntityState.ShowEntityWindow = true;
                             }
                             if (ImGui.MenuItem("Shadow Casting Light"))
                             {
                                 var entity = this.lightsController.CreateShadowCastingLight(this.camera.Position, this.camera.LookAt);
-                                this.ui.SelectedEntity = entity;
-                                this.ui.ShowEntityWindow = true;
+                                this.ui.EntityState.SelectedEntity = entity;
+                                this.ui.EntityState.ShowEntityWindow = true;
                             }
                             if (ImGui.MenuItem("Sun Light"))
                             {
                                 var entity = this.lightsController.CreateSunLight(this.camera.Position, this.camera.LookAt);
-                                this.ui.SelectedEntity = entity;
-                                this.ui.ShowEntityWindow = true;
+                                this.ui.EntityState.SelectedEntity = entity;
+                                this.ui.EntityState.ShowEntityWindow = true;
                             }                                                        
                             if (ImGui.MenuItem("Remove created lights"))
                             {
@@ -298,10 +291,10 @@ namespace MiniEngine
                                 this.lightsController.RemoveAllLights();
                             }
                             ImGui.Separator();
-                            var enableOutline = this.entityLinker.HasComponent<AModel>(this.ui.SelectedEntity) && !this.entityLinker.HasComponent<Outline>(this.ui.SelectedEntity);
+                            var enableOutline = this.entityLinker.HasComponent<AModel>(this.ui.EntityState.SelectedEntity) && !this.entityLinker.HasComponent<Outline>(this.ui.EntityState.SelectedEntity);
                             if(ImGui.MenuItem("Outline", enableOutline))
                             {
-                                this.outlineFactory.Construct(this.ui.SelectedEntity);
+                                this.outlineFactory.Construct(this.ui.EntityState.SelectedEntity);
                             }
                             ImGui.EndMenu();
                         }
@@ -398,12 +391,12 @@ namespace MiniEngine
                         ImGui.EndMainMenuBar();
                     }                    
               
-                    if (this.ui.ShowEntityWindow)
+                    if (this.ui.EntityState.ShowEntityWindow)
                     {
-                        if (ImGui.Begin($"{this.ui.SelectedEntity}", ref this.ui.ShowEntityWindow))
+                        if (ImGui.Begin($"{this.ui.EntityState.SelectedEntity}", ref this.ui.EntityState.ShowEntityWindow))
                         {
                             var components = new List<IComponent>();
-                            this.entityLinker.GetComponents(this.ui.SelectedEntity, components);
+                            this.entityLinker.GetComponents(this.ui.EntityState.SelectedEntity, components);
 
                             foreach (var component in components)
                             {
@@ -417,7 +410,7 @@ namespace MiniEngine
 
                                     if (ImGui.Button("Remove Component"))
                                     {
-                                        this.entityLinker.RemoveComponent(this.ui.SelectedEntity, component);                                       
+                                        this.entityLinker.RemoveComponent(this.ui.EntityState.SelectedEntity, component);                                       
                                     }
                                     ImGui.TreePop();
                                 }
@@ -425,14 +418,14 @@ namespace MiniEngine
                                
                             }
                         }
-                        if (this.entityCreator.GetAllEntities().Contains(this.ui.SelectedEntity))
+                        if (this.entityCreator.GetAllEntities().Contains(this.ui.EntityState.SelectedEntity))
                         {
                             if (ImGui.Button("Destroy Entity"))
                             {
-                                this.entityController.DestroyEntity(this.ui.SelectedEntity);
-                                this.ui.ShowEntityWindow = false;
+                                this.entityController.DestroyEntity(this.ui.EntityState.SelectedEntity);
+                                this.ui.EntityState.ShowEntityWindow = false;
                                 var entities = this.entityController.DescribeAllEntities();
-                                this.ui.SelectedEntity = entities.Any() ? entities.First().Entity : new Entity(-1);
+                                this.ui.EntityState.SelectedEntity = entities.Any() ? entities.First().Entity : new Entity(-1);
                             }
                         }
                         ImGui.End();
