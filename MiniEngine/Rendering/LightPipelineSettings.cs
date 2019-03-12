@@ -25,6 +25,5 @@
 
         public bool EnableSunLights { get; set; }
         public int SunLightsResolution { get; set; }
-
     }
 }

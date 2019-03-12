@@ -33,9 +33,7 @@ namespace MiniEngine.Configuration
         }
 
         public void Compose()
-        {
-            this.RegisterAllOf<IInstanceFactory>();
-
+        {            
             // Services
             this.Container.RegisterInstance(this.Device);
 

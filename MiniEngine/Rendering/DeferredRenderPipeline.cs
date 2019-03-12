@@ -18,7 +18,6 @@ using MiniEngine.Primitives;
 using MiniEngine.Primitives.Cameras;
 using MiniEngine.Telemetry;
 using MiniEngine.Units;
-using System;
 
 namespace MiniEngine.Rendering
 {
@@ -106,8 +105,7 @@ namespace MiniEngine.Rendering
 
             this.ShadowPipeline
                 .RenderShadowMaps(this.ShadowMapSystem);
-
-            // TODO: what about settings like shadow map resolution?
+            
             var ls = this.Settings.LightSettings;
             this.LightingPipeline
                 .ClearLightTargets()

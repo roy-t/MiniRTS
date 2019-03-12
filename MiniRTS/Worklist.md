@@ -1,14 +1,32 @@
 # Worklist
 ## TODO
 
-- Particles need a lot more configurable parameters to look good
-    - Add a tint color to the shader so we can fade out almost dead particles!
-- Right now everything is rendered for everything use spatial partitioning. Crazy idea: seperate thread that keeps updating the spatial partitioning thing as fast as possible?
-- Stuff is starting to get a bit slow, OPTIMIZE!
+### Misc
+- Allow scenes to share code or inherit
+- Make it cleaner to select or deselect render pipeline features
+- Make it possible to tweak parameters used by components (like shadowmap resolution) at runtime
+
+### Particles
+- Split emitters into transparent and additive emitters, add additive blending
+- Make particles work again with shadows
+- Particles need a lot more configurable parameters to look gooed
+- Move Easings.cs to a separate projects
+- Figure out if we can use a geometry shader and just send points to the GPU
+
+### Models
+- Clean up code
+- Make batch processing work like particles
+
+### UI
+- Separate UI code into parts, have this reflect in the UI rendering and serialization code
+- Clean-up all code that generates UI sliders
+- Give components more control over the kind of UI controls they get (infinite sliders, ranges.. etc..)
+
+### General
+- Find bottlenecks and optimize
 
 ## Interesting
 
-- Particle effects via a new method that weighs by depth so we can do it in 1 pass
 - Reflections
 - Water
 - Terrain/tree/water generation
@@ -24,11 +42,7 @@
 ## Known Issues
 
 - Sometimes transparency effects from the sunlight disappear when zooming in. Possibly due to the camera for that cascade not seeing the object anymore, even though backface culling and z-culling are disabled. This can usually be prevented by tweaking the cascade distances.
-- Particles are rendered last in the shadow map state, might 'shadow' on a stained glass window that is in front of it.
-- Shadowey particles appear on the roof (-z culling?)
-- Particles are really expensive, as they are drawn for every shadow casting light, and every cascade. Let's first try to add spatial partitioning to reduce the draws, then make the draw calls more efficient
 - SSAO: tiling effect for flat surfaces that have no normal map
-
 
 ## Known Issues in dependencies
 - The IMGUI.net NuGet package does not automatically copy cimgui.dll to the output directory on build. See https://github.com/mellinoe/ImGui.NET/issues/83 because of this I've added it the the UI project (as a link). But this might break when updating the library! Or when redistributing the engine

@@ -66,8 +66,6 @@
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Configuration\CameraControllerFactory.cs" />
-    <Compile Include="Configuration\IInstanceFactory.cs" />
     <Compile Include="Configuration\Injector.cs" />
     <Compile Include="Controllers\CameraController.cs" />
     <Compile Include="Controllers\LightsController.cs" />

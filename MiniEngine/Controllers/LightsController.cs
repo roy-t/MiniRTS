@@ -84,7 +84,7 @@ namespace MiniEngine.Controllers
             this.EntityLinker.RemoveComponents<ShadowCastingLight>();
             this.EntityLinker.RemoveComponents<AmbientLight>();
 
-            RemoveCreatedLights();
+            this.RemoveCreatedLights();
         }
         
         private Entity CreateTempEntity()

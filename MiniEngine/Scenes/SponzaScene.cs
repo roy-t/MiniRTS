@@ -24,7 +24,6 @@ namespace MiniEngine.Scenes
         private Entity planeEntity;
         private Entity planeEntity2;
         private Entity particleEntity;
-        private Entity particleEntity2;
         private Entity particleEntity3;
         private Model sponza;
         private Model plane;
@@ -83,10 +82,7 @@ namespace MiniEngine.Scenes
 
             var particleSpawn = new Vector3(-60.5f, 6.0f, 20.0f);
             this.particleEntity = this.EntityCreator.CreateEntity();
-            this.EmitterFactory.Construct(this.particleEntity, particleSpawn, this.smoke, 1, 1, 2.0f);
-
-            //this.particleEntity2 = this.EntityCreator.CreateEntity();
-            //this.EmitterFactory.Construct(this.particleEntity2, particleSpawn, this.explosion, 8, 8, 1.0f);
+            this.EmitterFactory.Construct(this.particleEntity, particleSpawn, this.smoke, 1, 1, 2.0f);            
 
             this.particleEntity3 = this.EntityCreator.CreateEntity();
             this.EmitterFactory.Construct(this.particleEntity3, particleSpawn, this.explosion2, 1, 1, 1.5f);
