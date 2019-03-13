@@ -5,6 +5,7 @@
 - Allow scenes to share code or inherit
 - Make it cleaner to select or deselect render pipeline features
 - Make it possible to tweak parameters used by components (like shadowmap resolution) at runtime
+- Move all storage of components closer to their creators and give the EntityLinker hooks to get the info it needs
 
 ### Particles
 - Split emitters into transparent and additive emitters, add additive blending

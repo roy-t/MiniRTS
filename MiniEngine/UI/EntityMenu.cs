@@ -10,12 +10,13 @@ namespace MiniEngine.UI
 
         private int listBoxItem;
 
-        public EntityMenu(EntityController entityController)
+        public EntityMenu(UIState ui, EntityController entityController)
         {
             this.EntityController = entityController;
+            this.State = ui.EntityState;
         }
 
-        public EntityState State { get; set; }
+        public EntityState State { get; }
 
         public void Render()
         {

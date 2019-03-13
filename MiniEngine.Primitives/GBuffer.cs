@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
-using System.Collections.Generic;
 
 namespace MiniEngine.Primitives
 {
@@ -90,17 +89,7 @@ namespace MiniEngine.Primitives
               0,
               RenderTargetUsage.PreserveContents);
 
-            this.RenderTargets = new List<RenderTargetDescription>()
-            {
-                new RenderTargetDescription(this.DepthTarget, "diffuse", 0),
-                new RenderTargetDescription(this.NormalTarget, "normal", 1),
-                new RenderTargetDescription(this.ParticleTarget, "particle", 2),
-                new RenderTargetDescription(this.DepthTarget, "depth", 3),
-                new RenderTargetDescription(this.LightTarget, "light", 4),
-                new RenderTargetDescription(this.BlurTarget, "blur", 5),
-                new RenderTargetDescription(this.CombineTarget, "combine", 6),
-                new RenderTargetDescription(this.FinalTarget, "final", 7),
-            };
+            
         }
 
         public RenderTarget2D DiffuseTarget { get; }
@@ -110,9 +99,6 @@ namespace MiniEngine.Primitives
         public RenderTarget2D LightTarget { get; }
         public RenderTarget2D BlurTarget { get; }
         public RenderTarget2D CombineTarget { get; }
-        public RenderTarget2D FinalTarget { get; }
-
-
-        public IReadOnlyList<RenderTargetDescription> RenderTargets;
+        public RenderTarget2D FinalTarget { get; }        
     }
 }

@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using System;
 
-namespace MiniEngine.Primitives
+namespace MiniEngine.UI
 {
     public sealed class RenderTargetDescription : IComparable<RenderTargetDescription>
     {
