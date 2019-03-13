@@ -4,8 +4,6 @@ namespace MiniEngine.Systems
 {
     public readonly struct Entity : IEquatable<Entity>
     {
-        private readonly int Id;
-
         public Entity(int id)
         {
             this.Id = id;
@@ -20,6 +18,8 @@ namespace MiniEngine.Systems
 
             return false;
         }
+
+        public int Id { get; }
 
         public static bool operator ==(Entity a, Entity b) => a.Equals(b);
         public static bool operator !=(Entity a, Entity b) => !a.Equals(b);

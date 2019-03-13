@@ -61,7 +61,6 @@ namespace MiniEngine.UI
             this.CameraPosition = cameraPosition;
             this.CameraLookAt = cameraLookAt;
 
-            this.Data.SelectedEntityInt = this.EntityState.SelectedEntity;
             this.Data.SelectedRenderTargetName = this.SelectedRenderTarget?.Name;
             this.Data.SelectedRenderTargetNames = this.SelectedRenderTargets.Select(rt => rt.Name).ToList();
 
@@ -85,7 +84,6 @@ namespace MiniEngine.UI
                 {
                     var uiState = (UIState)serializer.Deserialize(stream);
 
-                    uiState.EntityState.SelectedEntity = new Entity(uiState.Data.SelectedEntityInt);
                     uiState.SelectedRenderTarget = gBuffer.RenderTargets.FirstOrDefault(rt => rt.Name.Equals(uiState.Data.SelectedRenderTargetName));
                     foreach (var name in uiState.Data.SelectedRenderTargetNames)
                     {
@@ -108,7 +106,6 @@ namespace MiniEngine.UI
 
         public class SerializationData
         {            
-            public int SelectedEntityInt { get; set; }
             public List<string> SelectedRenderTargetNames { get; set; }
             public string SelectedRenderTargetName { get; set; }
         }

@@ -1,27 +1,29 @@
 ﻿using MiniEngine.Systems;
-using System.ComponentModel;
+using System.Xml;
+using System.Xml.Schema;
 using System.Xml.Serialization;
 
 namespace MiniEngine.UI
 {
-    public sealed class EntityState
+    public sealed class EntityState : IXmlSerializable
     {
-        public bool ShowEntityWindow;
-
-        [XmlIgnore]
+        public bool ShowEntityWindow;        
         public Entity SelectedEntity;
+        
+        public void ReadXml(XmlReader reader)
+        {
+            this.ShowEntityWindow = reader.ReadElementAsBoolean(nameof(this.ShowEntityWindow));
+            this.SelectedEntity = new Entity(reader.ReadElementAsInt(nameof(this.SelectedEntity)));
 
-        // TODO: fix serialization without messy hidden data!
-        //#region SerializationProperties
+            reader.ReadEndElement();
+        }
 
-        //[XmlAttribute(AttributeName = "SelectedEntity")]
-        //[EditorBrowsable(EditorBrowsableState.Never)]
-        //public int SelectedEntityInt
-        //{
-        //    get => this.SelectedEntity;
-        //    set => this.SelectedEntity = new Entity(value);
-        //}
+        public void WriteXml(XmlWriter writer)
+        {
+            writer.WriteElement(nameof(this.ShowEntityWindow), this.ShowEntityWindow);
+            writer.WriteElement(nameof(this.SelectedEntity), this.SelectedEntity.Id);            
+        }
 
-        //#endregion
+        public XmlSchema GetSchema() => null;
     }
 }
