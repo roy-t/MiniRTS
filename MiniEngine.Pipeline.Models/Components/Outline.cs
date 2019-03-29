@@ -19,8 +19,8 @@ namespace MiniEngine.Pipeline.Models.Components
         public ComponentDescription Describe()
         {
             var description = new ComponentDescription("Outline");
-            description.AddProperty("Color 3D", this.Color3D, x => this.Color3D = x);
-            description.AddProperty("Color 2D", this.Color2D, x => this.Color2D = x);
+            description.AddProperty("Color 3D", this.Color3D, x => this.Color3D = x, MinMaxDescription.ZeroToOne);
+            description.AddProperty("Color 2D", this.Color2D, x => this.Color2D = x, MinMaxDescription.ZeroToOne);
 
             return description;
         }

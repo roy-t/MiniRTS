@@ -21,10 +21,10 @@ namespace MiniEngine.Pipeline.Lights.Components
         public ComponentDescription Describe()
         {
             var description = new ComponentDescription("Point light");
-            description.AddProperty("Color", this.Color, x => this.Color = x, 0.0f, 1.0f);
-            description.AddProperty("Position", this.Position, x => this.Position= x, -100.0f, 100.0f);
-            description.AddProperty("Radius", this.Radius, x => this.Radius = x, 0.0f, 100.0f);
-            description.AddProperty("Intensity", this.Intensity, x => this.Intensity= x, 0.0f, 1.0f);
+            description.AddProperty("Color", this.Color, x => this.Color = x, MinMaxDescription.ZeroToOne);
+            description.AddProperty("Position", this.Position, x => this.Position = x, MinMaxDescription.MinusInfinityToInfinity);
+            description.AddProperty("Radius", this.Radius, x => this.Radius = x, MinMaxDescription.ZeroToInfinity);
+            description.AddProperty("Intensity", this.Intensity, x => this.Intensity = x, MinMaxDescription.ZeroToOne);
 
             return description;
         }

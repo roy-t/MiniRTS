@@ -23,6 +23,6 @@ namespace MiniEngine.Pipeline.Models.Components
         public abstract ComponentDescription Describe();
 
         protected void Describe(ComponentDescription description) 
-            => description.AddProperty("Pose", this.Pose, x => this.Pose = x);       
+            => description.AddProperty("Pose", this.Pose, x => this.Pose = x, MinMaxDescription.MinusInfinityToInfinity);       
     }
 }

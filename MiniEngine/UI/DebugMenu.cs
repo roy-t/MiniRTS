@@ -9,14 +9,14 @@ namespace MiniEngine.UI
         private readonly RenderTargetDescriber RenderTargetDescriber;        
         private readonly Game Game;
 
+        private readonly DebugState State;
+
         public DebugMenu(UIState ui, RenderTargetDescriber RenderTargetDescriber, Game game)
         {
             this.RenderTargetDescriber = RenderTargetDescriber;
             this.Game = game;
             this.State = ui.DebugState;
-        }
-
-        public DebugState State { get; }
+        }        
 
         public void Render()
         {

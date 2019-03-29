@@ -9,15 +9,14 @@ namespace MiniEngine.UI
     public sealed class EntityWindow
     {
         private readonly EntityManager EntityManager;
+        private readonly EntityState EntityState;
 
         public EntityWindow(UIState ui, EntityManager entityManager)
         {
             this.EntityState = ui.EntityState;
             this.EntityManager = entityManager;
         }
-
-        public EntityState EntityState { get; }
-
+        
         public void Render()
         {
             if (ImGui.Begin($"{this.EntityState.SelectedEntity}", ref this.EntityState.ShowEntityWindow))
@@ -32,7 +31,7 @@ namespace MiniEngine.UI
                     {
                         foreach (var property in description.Properties)
                         {
-                            Editors.CreateEditor(property.Name, property.Value, property.Min, property.Max, property.Setter);
+                            Editors.CreateEditor(property.Name, property.Value, property.MinMax, property.Setter);
                         }
 
                         if (ImGui.Button("Remove Component"))

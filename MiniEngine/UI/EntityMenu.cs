@@ -7,6 +7,7 @@ namespace MiniEngine.UI
     public sealed class EntityMenu
     {
         private readonly EntityManager EntityManager;
+        private readonly EntityState State;
 
         private int listBoxItem;
 
@@ -14,9 +15,7 @@ namespace MiniEngine.UI
         {
             this.EntityManager = entityManager;
             this.State = ui.EntityState;
-        }
-
-        public EntityState State { get; }
+        }        
 
         public void Render()
         {

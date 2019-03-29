@@ -21,9 +21,9 @@ namespace MiniEngine.Pipeline.Lights.Components
         public ComponentDescription Describe()
         {
             var description = new ComponentDescription("Shadow casting light");
-            description.AddProperty("Color", this.Color, x => this.Color = x, 0.0f, 1.0f);
-            description.AddProperty("Position", this.ViewPoint.Position, x => this.ViewPoint.Move(x, this.ViewPoint.LookAt), -100.0f, 100.0f);
-            description.AddProperty("Look At", this.ViewPoint.LookAt, x => this.ViewPoint.Move(this.ViewPoint.Position, x), -100.0f, 100.0f);
+            description.AddProperty("Color", this.Color, x => this.Color = x, MinMaxDescription.ZeroToOne);
+            description.AddProperty("Position", this.ViewPoint.Position, x => this.ViewPoint.Move(x, this.ViewPoint.LookAt), MinMaxDescription.MinusInfinityToInfinity);
+            description.AddProperty("Look At", this.ViewPoint.LookAt, x => this.ViewPoint.Move(this.ViewPoint.Position, x), MinMaxDescription.MinusInfinityToInfinity);
             
             return description;
         }

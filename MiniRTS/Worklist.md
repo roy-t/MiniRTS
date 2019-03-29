@@ -18,11 +18,6 @@
 - Clean up code
 - Make batch processing work like particles
 
-### UI
-- Separate UI code into parts, have this reflect in the UI rendering and serialization code
-- Clean-up all code that generates UI sliders
-- Give components more control over the kind of UI controls they get (infinite sliders, ranges.. etc..)
-
 ### General
 - Find bottlenecks and optimize
 

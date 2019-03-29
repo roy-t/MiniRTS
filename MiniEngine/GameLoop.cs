@@ -1,16 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
-using MiniEngine.Pipeline.Models.Factories;
 using MiniEngine.Primitives.Cameras;
 using MiniEngine.Rendering;
-using MiniEngine.Systems;
 using MiniEngine.Telemetry;
 using MiniEngine.UI;
 using MiniEngine.Units;
 using System;
-
-using System.Linq;
 
 namespace MiniEngine
 {
@@ -22,11 +18,8 @@ namespace MiniEngine
         private PerspectiveCamera camera;
         private SpriteBatch spriteBatch;        
                 
-        private OutlineFactory outlineFactory;
         private DeferredRenderPipeline renderPipeline;
-        private EntityCreator entityCreator;
-        private EntityController entityController;
-        private EntityLinker entityLinker;
+
         private IMetricServer metricServer;
 
         private UIManager uiManager;
@@ -53,16 +46,12 @@ namespace MiniEngine
             this.camera = new PerspectiveCamera(this.GraphicsDevice.Viewport);
 
             this.injector = new Injector(this.GraphicsDevice, this.Content);
-            this.entityCreator = this.injector.Resolve<EntityCreator>();
-            this.entityController = this.injector.Resolve<EntityController>();
-            this.entityLinker = this.injector.Resolve<EntityLinker>();
-            this.outlineFactory = this.injector.Resolve<OutlineFactory>();
-                                    
+
             this.renderPipeline = this.injector.Resolve<DeferredRenderPipeline>();
 
             this.sceneSelector = new SceneSelector(this.Content, this.injector);
-            var renderTargetDescriber = new RenderTargetDescriber(this.renderPipeline.GetGBuffer());
 
+            var renderTargetDescriber = new RenderTargetDescriber(this.renderPipeline.GetGBuffer());
             this.uiManager = new UIManager(this, this.spriteBatch, renderTargetDescriber, this.renderPipeline, this.camera, this.sceneSelector, this.injector);
           
             this.metricServer = this.injector.Resolve<IMetricServer>();

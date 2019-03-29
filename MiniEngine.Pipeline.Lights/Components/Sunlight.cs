@@ -18,9 +18,9 @@ namespace MiniEngine.Pipeline.Lights.Components
         public ComponentDescription Describe()
         {
             var description = new ComponentDescription("Sun light");
-            description.AddProperty("Color", this.Color, x => this.Color = x, 0.0f, 1.0f);
-            description.AddProperty("Position", this.ShadowMapCascades.Position, x => this.ShadowMapCascades.Move(x, this.ShadowMapCascades.LookAt), -100.0f, 100.0f);
-            description.AddProperty("Look At", this.ShadowMapCascades.LookAt, x => this.ShadowMapCascades.Move(this.ShadowMapCascades.Position, x), -100.0f, 100.0f);
+            description.AddProperty("Color", this.Color, x => this.Color = x, MinMaxDescription.ZeroToOne);
+            description.AddProperty("Position", this.ShadowMapCascades.Position, x => this.ShadowMapCascades.Move(x, this.ShadowMapCascades.LookAt), MinMaxDescription.MinusInfinityToInfinity);
+            description.AddProperty("Look At", this.ShadowMapCascades.LookAt, x => this.ShadowMapCascades.Move(this.ShadowMapCascades.Position, x), MinMaxDescription.MinusInfinityToInfinity);
 
             return description;
         }

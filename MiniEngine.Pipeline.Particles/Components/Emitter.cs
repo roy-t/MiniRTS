@@ -101,14 +101,14 @@ namespace MiniEngine.Pipeline.Particles.Components
         public ComponentDescription Describe()
         {
             var description = new ComponentDescription("Emitter");
-            description.AddProperty("Position", this.Position, x => this.Position = x, -100.0f, 100.0f);
-            description.AddProperty("Spawn interval", this.SpawnInterval, x => this.SpawnInterval = x, 0.01f, 1.0f);
-            description.AddProperty("Scale", this.Scale, x => this.Scale = x, 0.0f, 4.0f);
-            description.AddProperty("Direction", this.Direction, x => this.Direction = x, -1.0f, 1.0f);            
-            description.AddProperty("Speed", this.Speed, x => this.Speed= x, 0.0f, 10.0f);
-            description.AddProperty("Spread", this.Spread, x => this.Spread = x, 0.0f, 1.0f);
-            description.AddProperty("Time to live", this.TimeToLive, x => this.TimeToLive = x, 0.0f, 5.0f);
-            description.AddProperty("Time per frame", this.TimePerFrame, x => this.TimePerFrame = x, 0.0f, 0.1f);            
+            description.AddProperty("Position", this.Position, x => this.Position = x, MinMaxDescription.MinusInfinityToInfinity);
+            description.AddProperty("Spawn interval", this.SpawnInterval, x => this.SpawnInterval = x, MinMaxDescription.ZeroToInfinity);
+            description.AddProperty("Scale", this.Scale, x => this.Scale = x, MinMaxDescription.ZeroToInfinity);
+            description.AddProperty("Direction", this.Direction, x => this.Direction = x, MinMaxDescription.MinusOneToOne);            
+            description.AddProperty("Speed", this.Speed, x => this.Speed = x, MinMaxDescription.ZeroToInfinity);
+            description.AddProperty("Spread", this.Spread, x => this.Spread = x, MinMaxDescription.ZeroToOne);
+            description.AddProperty("Time to live", this.TimeToLive, x => this.TimeToLive = x, MinMaxDescription.ZeroToInfinity);
+            description.AddProperty("Time per frame", this.TimePerFrame, x => this.TimePerFrame = x, MinMaxDescription.ZeroToInfinity);            
             description.AddLabel("Particles", this.Particles.Count);
 
             return description;

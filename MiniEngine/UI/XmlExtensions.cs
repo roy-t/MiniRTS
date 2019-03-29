@@ -33,7 +33,7 @@ namespace MiniEngine.UI
 
         public static bool ReadNext(this XmlReader reader, string element)
         {
-            if(reader.Name.Equals(element, System.StringComparison.OrdinalIgnoreCase))
+            if(reader.Name.Equals(element, StringComparison.OrdinalIgnoreCase))
             {
                 return true;
             }

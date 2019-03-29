@@ -89,7 +89,6 @@
     <Compile Include="UI\EntityState.cs" />
     <Compile Include="UI\EntityWindow.cs" />
     <Compile Include="UI\FileMenu.cs" />
-    <Compile Include="UI\FileMenuState.cs" />
     <Compile Include="UI\RenderingMenu.cs" />
     <Compile Include="UI\RenderTargetDescriber.cs" />
     <Compile Include="UI\RenderTargetDescription.cs" />

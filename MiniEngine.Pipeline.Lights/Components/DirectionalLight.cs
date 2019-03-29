@@ -17,8 +17,8 @@ namespace MiniEngine.Pipeline.Lights.Components
         public ComponentDescription Describe()
         {
             var description = new ComponentDescription("Directional light");
-            description.AddProperty("Direction", this.Direction, x => this.Direction = x, -1.0f, 1.0f);
-            description.AddProperty("Color", this.Color, x => this.Color = x, 0.0f, 1.0f);
+            description.AddProperty("Direction", this.Direction, x => this.Direction = x, MinMaxDescription.MinusOneToOne);
+            description.AddProperty("Color", this.Color, x => this.Color = x, MinMaxDescription.ZeroToOne);
             return description;
         }
 
