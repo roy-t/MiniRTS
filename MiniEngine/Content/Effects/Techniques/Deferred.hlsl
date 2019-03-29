@@ -77,7 +77,7 @@ DeferredPixelShaderOutput DeferredMainPS(DeferredVertexShaderOutput input)
     // make 1.0f most shiney here
     output.Normal.a = 1.0f - specularPower;
 
-    output.Depth = input.Depth.x / input.Depth.y;
+    output.Depth = (input.Depth.x / input.Depth.y);
 
     return output;
 }

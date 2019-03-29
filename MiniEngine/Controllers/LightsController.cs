@@ -1,34 +1,22 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
 using MiniEngine.Pipeline.Lights.Components;
 using MiniEngine.Pipeline.Lights.Factories;
-using MiniEngine.Primitives.Cameras;
 using MiniEngine.Systems;
-using MiniEngine.Units;
 using System.Collections.Generic;
-using KeyboardInput = MiniEngine.Input.KeyboardInput;
 
 namespace MiniEngine.Controllers
 {
     public sealed class LightsController
     {
-        private readonly EntityCreator EntityCreator;
-        private readonly EntityController EntityController;
-
+        private readonly EntityManager EntityManager;
         private readonly LightsFactory LightsFactory;
-        private readonly EntityLinker EntityLinker;
+
         private readonly List<Entity> TemporaryEntities;
 
-        public LightsController(
-            EntityCreator entityCreator,
-            EntityController entityController,
-            EntityLinker entityLinker,
-            LightsFactory lightsFactory)
+        public LightsController(EntityManager entityManager, LightsFactory lightsFactory)
         {
-            this.EntityCreator = entityCreator;
-            this.EntityController = entityController;
+            this.EntityManager = entityManager;
             this.LightsFactory = lightsFactory;
-            this.EntityLinker = entityLinker;
             this.TemporaryEntities = new List<Entity>();
         }
 
@@ -71,25 +59,25 @@ namespace MiniEngine.Controllers
         {
             foreach(var entity in this.TemporaryEntities)
             {
-                this.EntityController.DestroyEntity(entity);
+                this.EntityManager.Controller.DestroyEntity(entity);
             }
             this.TemporaryEntities.Clear();
         }
 
         public void RemoveAllLights()
         {
-            this.EntityLinker.RemoveComponents<PointLight>();
-            this.EntityLinker.RemoveComponents<Sunlight>();
-            this.EntityLinker.RemoveComponents<DirectionalLight>();
-            this.EntityLinker.RemoveComponents<ShadowCastingLight>();
-            this.EntityLinker.RemoveComponents<AmbientLight>();
+            this.EntityManager.Linker.RemoveComponents<PointLight>();
+            this.EntityManager.Linker.RemoveComponents<Sunlight>();
+            this.EntityManager.Linker.RemoveComponents<DirectionalLight>();
+            this.EntityManager.Linker.RemoveComponents<ShadowCastingLight>();
+            this.EntityManager.Linker.RemoveComponents<AmbientLight>();
 
             this.RemoveCreatedLights();
         }
         
         private Entity CreateTempEntity()
         {
-            var entity = this.EntityCreator.CreateEntity();
+            var entity = this.EntityManager.Creator.CreateEntity();
             this.TemporaryEntities.Add(entity);
 
             return entity;

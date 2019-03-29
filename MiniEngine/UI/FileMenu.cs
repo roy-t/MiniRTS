@@ -1,15 +1,18 @@
 ﻿using ImGuiNET;
+using Microsoft.Xna.Framework;
 
 namespace MiniEngine.UI
 {
     public sealed class FileMenu
     {
-        private readonly GameLoop GameLoop;
+        private readonly Game Game;
+        private readonly SceneSelector SceneSelector;
 
-        public FileMenu(UIState uiState, GameLoop gameLoop)
+        public FileMenu(UIState uiState, Game game, SceneSelector sceneSelector)
         {
-            this.GameLoop = gameLoop;
             this.State = uiState.EditorState;
+            this.Game = game;
+            this.SceneSelector = sceneSelector;            
         }
 
         public EditorState State { get; }
@@ -20,18 +23,18 @@ namespace MiniEngine.UI
             {
                 if (ImGui.BeginMenu("Scenes"))
                 {
-                    foreach (var scene in this.GameLoop.Scenes)
+                    foreach (var scene in this.SceneSelector.Scenes)
                     {
-                        if (ImGui.MenuItem(scene.Name, null, scene == this.GameLoop.CurrentScene))
+                        if (ImGui.MenuItem(scene.Name, null, scene == this.SceneSelector.CurrentScene))
                         {
-                            this.GameLoop.SwitchScenes(scene);
+                            this.SceneSelector.SwitchScenes(scene);
                         }
                     }
                     ImGui.EndMenu();
                 }
 
                 if (ImGui.MenuItem("Hide GUI", "F12")) { this.State.ShowGui = false; }
-                if (ImGui.MenuItem("Quit")) { this.GameLoop.Exit(); }
+                if (ImGui.MenuItem("Quit")) { this.Game.Exit(); }
                 ImGui.EndMenu();
             }
         }

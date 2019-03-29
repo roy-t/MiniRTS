@@ -53,6 +53,7 @@
     <Compile Include="Components\ComponentProperty.cs" />
     <Compile Include="Components\EntityComponentRecord.cs" />
     <Compile Include="EntityDescription.cs" />
+    <Compile Include="EntityManager.cs" />
     <Compile Include="Factories\AComponentFactory.cs" />
     <Compile Include="Entity.cs" />
     <Compile Include="EntityController.cs" />

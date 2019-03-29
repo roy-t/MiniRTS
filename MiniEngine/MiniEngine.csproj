@@ -72,6 +72,7 @@
     <Compile Include="Rendering\LightPipelineSettings.cs" />
     <Compile Include="Rendering\ModelPipelineSettings.cs" />
     <Compile Include="Rendering\RenderPipelineSettings.cs" />
+    <Compile Include="SceneSelector.cs" />
     <Compile Include="UI\CreateMenu.cs" />
     <Compile Include="UI\DebugDisplay.cs" />
     <Compile Include="GameLoop.cs" />
@@ -86,11 +87,13 @@
     <Compile Include="UI\EditorState.cs" />
     <Compile Include="UI\EntityMenu.cs" />
     <Compile Include="UI\EntityState.cs" />
+    <Compile Include="UI\EntityWindow.cs" />
     <Compile Include="UI\FileMenu.cs" />
     <Compile Include="UI\FileMenuState.cs" />
     <Compile Include="UI\RenderingMenu.cs" />
+    <Compile Include="UI\RenderTargetDescriber.cs" />
     <Compile Include="UI\RenderTargetDescription.cs" />
-    <Compile Include="UI\UIRenderer.cs" />
+    <Compile Include="UI\UIManager.cs" />
     <Compile Include="UI\UIState.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

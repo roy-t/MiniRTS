@@ -9,14 +9,14 @@ namespace MiniEngine.UI
 {
     public sealed class CreateMenu
     {
-        private readonly EntityLinker EntityLinker;
+        private readonly EntityManager EntityManager;
         private readonly OutlineFactory OutlineFactory;
         private readonly LightsController LightsController;
         private readonly PerspectiveCamera Camera;
 
-        public CreateMenu(UIState ui, EntityLinker entityLinker, OutlineFactory outLineFactory, LightsController lightsController, PerspectiveCamera camera)
+        public CreateMenu(UIState ui, EntityManager entityManager, OutlineFactory outLineFactory, LightsController lightsController, PerspectiveCamera camera)
         {
-            this.EntityLinker = entityLinker;
+            this.EntityManager = entityManager;
             this.OutlineFactory = outLineFactory;
             this.LightsController = lightsController;
             this.Camera = camera;
@@ -69,7 +69,7 @@ namespace MiniEngine.UI
                 }
 
                 ImGui.Separator();
-                var enableOutline = this.EntityLinker.HasComponent<AModel>(this.State.SelectedEntity) && !this.EntityLinker.HasComponent<Outline>(this.State.SelectedEntity);
+                var enableOutline = this.EntityManager.Linker.HasComponent<AModel>(this.State.SelectedEntity) && !this.EntityManager.Linker.HasComponent<Outline>(this.State.SelectedEntity);
                 if (ImGui.MenuItem("Outline", enableOutline))
                 {
                     this.OutlineFactory.Construct(this.State.SelectedEntity);

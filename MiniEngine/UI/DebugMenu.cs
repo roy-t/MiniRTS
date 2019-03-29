@@ -1,17 +1,18 @@
 ﻿using ImGuiNET;
+using Microsoft.Xna.Framework;
 using System;
 
 namespace MiniEngine.UI
 {
     public sealed class DebugMenu
     {
-        private readonly UIRenderer UIRenderer;        
-        private readonly GameLoop GameLoop;
+        private readonly RenderTargetDescriber RenderTargetDescriber;        
+        private readonly Game Game;
 
-        public DebugMenu(UIState ui, UIRenderer uiRenderer, GameLoop gameLoop)
+        public DebugMenu(UIState ui, RenderTargetDescriber RenderTargetDescriber, Game game)
         {
-            this.UIRenderer = uiRenderer;
-            this.GameLoop = gameLoop;
+            this.RenderTargetDescriber = RenderTargetDescriber;
+            this.Game = game;
             this.State = ui.DebugState;
         }
 
@@ -28,7 +29,7 @@ namespace MiniEngine.UI
 
                 if (ImGui.BeginMenu(DebugDisplay.Combined.ToString()))
                 {
-                    var descriptions = this.UIRenderer.RenderTargets;
+                    var descriptions = this.RenderTargetDescriber.RenderTargets;
                     var columns = this.State.Columns;
                     if (ImGui.SliderInt("Columns", ref columns, 1, Math.Max(5, descriptions.Count)))
                     {
@@ -62,7 +63,7 @@ namespace MiniEngine.UI
 
                 if (ImGui.BeginMenu(DebugDisplay.Single.ToString()))
                 {
-                    var descriptions = this.UIRenderer.RenderTargets;
+                    var descriptions = this.RenderTargetDescriber.RenderTargets;
                     foreach (var target in descriptions)
                     {
                         var selected = this.State.SelectedRenderTarget == target.Name;
@@ -75,9 +76,9 @@ namespace MiniEngine.UI
                     ImGui.EndMenu();
                 }
 
-                if (ImGui.MenuItem("Fixed Timestep", null, this.GameLoop.IsFixedTimeStep))
+                if (ImGui.MenuItem("Fixed Timestep", null, this.Game.IsFixedTimeStep))
                 {
-                    this.GameLoop.IsFixedTimeStep = !this.GameLoop.IsFixedTimeStep;
+                    this.Game.IsFixedTimeStep = !this.Game.IsFixedTimeStep;
                 }
 
                 var showDemo = this.State.ShowDemo;

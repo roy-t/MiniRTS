@@ -6,13 +6,13 @@ namespace MiniEngine.UI
 {
     public sealed class EntityMenu
     {
-        private readonly EntityController EntityController;
+        private readonly EntityManager EntityManager;
 
         private int listBoxItem;
 
-        public EntityMenu(UIState ui, EntityController entityController)
+        public EntityMenu(UIState ui, EntityManager entityManager)
         {
-            this.EntityController = entityController;
+            this.EntityManager = entityManager;
             this.State = ui.EntityState;
         }
 
@@ -22,7 +22,7 @@ namespace MiniEngine.UI
         {
             if(ImGui.BeginMenu("Entities"))
             {
-                var descriptions = this.EntityController.DescribeAllEntities();
+                var descriptions = this.EntityManager.Controller.DescribeAllEntities();
                 ImGui.Text($"Entities: {descriptions.Count}");
                 ImGui.Text($"Components: {descriptions.Sum(x => x.ComponentCount)}");
                 ImGui.Separator();

@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using MiniEngine.Primitives;
 using System;
 using System.Globalization;
 using System.IO;
@@ -40,7 +39,7 @@ namespace MiniEngine.UI
             Thread.CurrentThread.CurrentCulture = culture;
         }
 
-        public static UIState Deserialize(GBuffer gBuffer)
+        public static UIState Deserialize()
         {
             var culture = Thread.CurrentThread.CurrentCulture;
             Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;

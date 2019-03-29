@@ -75,7 +75,7 @@ namespace MiniEngine.Configuration
             this.Container.Register<EntityCreator>();
             this.Container.Register<EntityLinker>();
             this.Container.Register<EntityController>();
-
+            this.Container.Register<EntityManager>();
 
             // Scenes
             this.RegisterAllOf<IScene>();
