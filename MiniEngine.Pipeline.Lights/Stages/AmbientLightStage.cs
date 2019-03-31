@@ -6,21 +6,31 @@ namespace MiniEngine.Pipeline.Lights.Stages
     public sealed class AmbientLightStage : IPipelineStage<LightingPipelineInput>
     {
         private readonly AmbientLightSystem AmbientLightSystem;
+        private readonly bool EnableSSAO;
         private readonly GraphicsDevice Device;
 
-        public AmbientLightStage(GraphicsDevice device, AmbientLightSystem ambientLightSystem)
+        public AmbientLightStage(GraphicsDevice device, AmbientLightSystem ambientLightSystem, bool enableSSAO)
         {
             this.Device = device;
             this.AmbientLightSystem = ambientLightSystem;
+            this.EnableSSAO = enableSSAO;
         }
 
         public void Execute(LightingPipelineInput input)
         {
-            this.Device.SetRenderTarget(input.GBuffer.BlurTarget);
-            this.AmbientLightSystem.Render(input.Camera, input.GBuffer.NormalTarget, input.GBuffer.DepthTarget);
+            if (EnableSSAO)
+            {
+                this.Device.SetRenderTarget(input.GBuffer.BlurTarget);
+                this.AmbientLightSystem.RenderSSAO(input.Camera, input.GBuffer.NormalTarget, input.GBuffer.DepthTarget);
 
-            this.Device.SetRenderTarget(input.GBuffer.LightTarget);
-            this.AmbientLightSystem.Blur(input.Camera, input.GBuffer.BlurTarget, input.GBuffer.DepthTarget);
+                this.Device.SetRenderTarget(input.GBuffer.LightTarget);
+                this.AmbientLightSystem.Blur(input.Camera, input.GBuffer.BlurTarget, input.GBuffer.DepthTarget);
+            }
+            else
+            {
+                this.Device.SetRenderTarget(input.GBuffer.LightTarget);
+                this.AmbientLightSystem.RenderFlat();
+            }
         }
     }
 }

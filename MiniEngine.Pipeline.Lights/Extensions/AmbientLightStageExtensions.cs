@@ -7,9 +7,10 @@ namespace MiniEngine.Pipeline.Lights.Extensions
     {
         public static LightingPipeline RenderAmbientLight(
             this LightingPipeline pipeline,
-            AmbientLightSystem ambientLightSystem)
+            AmbientLightSystem ambientLightSystem,
+            bool enableSSAO)
         {
-            var stage = new AmbientLightStage(pipeline.Device, ambientLightSystem);
+            var stage = new AmbientLightStage(pipeline.Device, ambientLightSystem, enableSSAO);
             pipeline.Add(stage);
             return pipeline;
         }

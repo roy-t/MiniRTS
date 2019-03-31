@@ -109,7 +109,7 @@ namespace MiniEngine.Rendering
             var ls = this.Settings.LightSettings;
             this.LightingPipeline
                 .ClearLightTargets()
-                .EnableIf(ls.EnableAmbientLights, x => x.RenderAmbientLight(this.AmbientLightSystem))
+                .EnableIf(ls.EnableAmbientLights, x => x.RenderAmbientLight(this.AmbientLightSystem, ls.EnableSSAO))
                 .EnableIf(ls.EnableDirectionalLights, x => x.RenderDirectionalLights(this.DirectionalLightSystem))
                 .EnableIf(ls.EnablePointLights, x => x.RenderPointLights(this.PointLightSystem))
                 .EnableIf(ls.EnableShadowCastingLights, x => x.RenderShadowCastingLights(this.ShadowCastingLightSystem))

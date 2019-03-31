@@ -32,6 +32,7 @@ namespace MiniEngine.UI
                 Editors.CreateEditor(nameof(this.RenderPipeline.Settings.LightSettings.EnablePointLights), this.RenderPipeline.Settings.LightSettings.EnablePointLights, MinMaxDescription.ZeroToOne, x => { this.RenderPipeline.Settings.LightSettings.EnablePointLights = (bool)x; this.RenderPipeline.Recreate(); });
                 Editors.CreateEditor(nameof(this.RenderPipeline.Settings.LightSettings.EnableShadowCastingLights), this.RenderPipeline.Settings.LightSettings.EnableShadowCastingLights, MinMaxDescription.ZeroToOne, x => { this.RenderPipeline.Settings.LightSettings.EnableShadowCastingLights = (bool)x; this.RenderPipeline.Recreate(); });
                 Editors.CreateEditor(nameof(this.RenderPipeline.Settings.LightSettings.EnableSunLights), this.RenderPipeline.Settings.LightSettings.EnableSunLights, MinMaxDescription.ZeroToOne, x => { this.RenderPipeline.Settings.LightSettings.EnableSunLights = (bool)x; this.RenderPipeline.Recreate(); });
+                Editors.CreateEditor(nameof(this.RenderPipeline.Settings.LightSettings.EnableSSAO), this.RenderPipeline.Settings.LightSettings.EnableSSAO, MinMaxDescription.ZeroToOne, x => { this.RenderPipeline.Settings.LightSettings.EnableSSAO = (bool)x; this.RenderPipeline.Recreate(); });
 
                 ImGui.EndMenu();
             }

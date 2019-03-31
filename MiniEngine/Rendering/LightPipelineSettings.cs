@@ -13,8 +13,9 @@
 
             this.EnableSunLights = true;
             this.SunLightsResolution = 2048;
-        }
 
+            this.EnableSSAO = true;
+        }
 
         public bool EnableAmbientLights { get; set; }
         public bool EnableDirectionalLights { get; set; }
@@ -25,5 +26,7 @@
 
         public bool EnableSunLights { get; set; }
         public int SunLightsResolution { get; set; }
+
+        public bool EnableSSAO { get; set; }
     }
 }

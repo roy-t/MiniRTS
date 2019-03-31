@@ -61,7 +61,7 @@ namespace MiniEngine.Pipeline.Lights.Systems
             this.NoiseMap.SetData(noise);
         }
 
-        public void Render(PerspectiveCamera camera, RenderTarget2D normalTarget, RenderTarget2D depthTarget)
+        public void RenderSSAO(PerspectiveCamera camera, RenderTarget2D normalTarget, RenderTarget2D depthTarget)
         {
             var ambientLight = this.ComputeAmbientLightZeroAlpha();
 
@@ -85,6 +85,12 @@ namespace MiniEngine.Pipeline.Lights.Systems
                 this.Effect.Apply();
                 this.FullScreenTriangle.Render(this.Device);
             }
+        }
+
+        public void RenderFlat()
+        {
+            var ambientLight = this.ComputeAmbientLightZeroAlpha();
+            this.Device.Clear(ambientLight);
         }
 
         public void Blur(PerspectiveCamera camera, RenderTarget2D sourceTarget, RenderTarget2D depthTarget)

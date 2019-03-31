@@ -73,6 +73,7 @@
     <Compile Include="Rendering\ModelPipelineSettings.cs" />
     <Compile Include="Rendering\RenderPipelineSettings.cs" />
     <Compile Include="SceneSelector.cs" />
+    <Compile Include="Scenes\SSAOScene.cs" />
     <Compile Include="UI\CreateMenu.cs" />
     <Compile Include="UI\DebugDisplay.cs" />
     <Compile Include="GameLoop.cs" />
