@@ -19,7 +19,7 @@ namespace MiniEngine.Effects.DeviceStates
         /// <summary>
         /// Graphics device state for drawing particles to the G-Buffer
         /// </summary>
-        public static DeviceState ParticleState(this GraphicsDevice device)
+        public static DeviceState WeightedParticlesState(this GraphicsDevice device)
         {
             var blendStates = new BlendState
             {
@@ -175,24 +175,16 @@ namespace MiniEngine.Effects.DeviceStates
         }
 
         /// <summary>
-        /// Graphics device state for 2D post processing
+        /// Graphics device state for additive blending        
         /// </summary>
-        public static DeviceState FooState(this GraphicsDevice device)
-        {
-            var blendState = new BlendState
-            {
-                AlphaSourceBlend = Blend.SourceAlpha,
-                ColorSourceBlend = Blend.SourceAlpha,
-                AlphaDestinationBlend = Blend.InverseSourceAlpha,
-                ColorDestinationBlend = Blend.InverseSourceAlpha
-            };
-
+        public static DeviceState AdditiveParticleState(this GraphicsDevice device)
+        {           
             return new DeviceState(
                 device,
                 BlendState.Additive,
-                DepthStencilState.None,
-                RasterizerState.CullCounterClockwise);
-        }
+                DepthStencilState.DepthRead,
+                RasterizerState.CullNone);
+        }      
 
         /// <summary>
         /// Graphics device state for rendering everything as wireframes

@@ -34,14 +34,14 @@ namespace MiniEngine.Pipeline.Lights.Systems
             this.Lights = new List<AmbientLight>();
 
             this.Kernel = this.GenerateKernel();
+            
+            var random = new Random(255);
 
             this.NoiseMap = new Texture2D(device, 64, 64, false, SurfaceFormat.Color);
-            var random = new Random(255);
             SimplexNoise.Seed = random.Next();
             var noiseX = SimplexNoise.Calc2D(this.NoiseMap.Width, this.NoiseMap.Height, 1.0f);
             SimplexNoise.Seed = random.Next();
             var noiseY = SimplexNoise.Calc2D(this.NoiseMap.Width, this.NoiseMap.Height, 1.0f);
-
             SimplexNoise.Seed = random.Next();
             var noiseZ = SimplexNoise.Calc2D(this.NoiseMap.Width, this.NoiseMap.Height, 1.0f);
 

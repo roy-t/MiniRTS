@@ -8,13 +8,13 @@ using System.Collections.Generic;
 
 namespace MiniEngine.Pipeline.Particles.Components
 {
-    public sealed class Emitter : IComponent
+    public abstract class AEmitter : IComponent
     {
         private static readonly Random Random = new Random();
 
         private Seconds timeToSpawn;
 
-        public Emitter(Vector3 position, Texture2D texture, int rows, int columns, float scale)
+        public AEmitter(Vector3 position, Texture2D texture, int rows, int columns, float scale)
         {
             this.Position = position;
             this.Texture = texture;
@@ -40,7 +40,7 @@ namespace MiniEngine.Pipeline.Particles.Components
         public int Columns { get; }
         public List<Particle> Particles { get; }
 
-        private Seconds SpawnInterval { get; set; }
+        public Seconds SpawnInterval { get; set; }
 
         public float Scale { get; set; }
         public Vector3 Direction { get; set; }
@@ -86,6 +86,21 @@ namespace MiniEngine.Pipeline.Particles.Components
             }
         }
 
+        public abstract ComponentDescription Describe();
+
+        protected void Describe(ComponentDescription description)
+        {
+            description.AddProperty("Position", this.Position, x => this.Position = x, MinMaxDescription.MinusInfinityToInfinity);
+            description.AddProperty("Spawn interval", this.SpawnInterval, x => this.SpawnInterval = x, MinMaxDescription.ZeroToInfinity);
+            description.AddProperty("Scale", this.Scale, x => this.Scale = x, MinMaxDescription.ZeroToInfinity);
+            description.AddProperty("Direction", this.Direction, x => this.Direction = x, MinMaxDescription.MinusOneToOne);
+            description.AddProperty("Speed", this.Speed, x => this.Speed = x, MinMaxDescription.ZeroToInfinity);
+            description.AddProperty("Spread", this.Spread, x => this.Spread = x, MinMaxDescription.ZeroToOne);
+            description.AddProperty("Time to live", this.TimeToLive, x => this.TimeToLive = x, MinMaxDescription.ZeroToInfinity);
+            description.AddProperty("Time per frame", this.TimePerFrame, x => this.TimePerFrame = x, MinMaxDescription.ZeroToInfinity);
+            description.AddLabel("Particles", this.Particles.Count);
+        }
+
         private Vector3 GetSpreadVector()
         {
             var x = GetRandomOffset() * this.Spread;
@@ -97,22 +112,6 @@ namespace MiniEngine.Pipeline.Particles.Components
 
         private static float GetRandomOffset() => ((float)Random.NextDouble() * 2.0f) - 1.0f;
 
-
-        public ComponentDescription Describe()
-        {
-            var description = new ComponentDescription("Emitter");
-            description.AddProperty("Position", this.Position, x => this.Position = x, MinMaxDescription.MinusInfinityToInfinity);
-            description.AddProperty("Spawn interval", this.SpawnInterval, x => this.SpawnInterval = x, MinMaxDescription.ZeroToInfinity);
-            description.AddProperty("Scale", this.Scale, x => this.Scale = x, MinMaxDescription.ZeroToInfinity);
-            description.AddProperty("Direction", this.Direction, x => this.Direction = x, MinMaxDescription.MinusOneToOne);            
-            description.AddProperty("Speed", this.Speed, x => this.Speed = x, MinMaxDescription.ZeroToInfinity);
-            description.AddProperty("Spread", this.Spread, x => this.Spread = x, MinMaxDescription.ZeroToOne);
-            description.AddProperty("Time to live", this.TimeToLive, x => this.TimeToLive = x, MinMaxDescription.ZeroToInfinity);
-            description.AddProperty("Time per frame", this.TimePerFrame, x => this.TimePerFrame = x, MinMaxDescription.ZeroToInfinity);            
-            description.AddLabel("Particles", this.Particles.Count);
-
-            return description;
-        }
         public override string ToString() => $"emitter, position: {this.Position}, particles: {this.Particles.Count}";
     }
 }

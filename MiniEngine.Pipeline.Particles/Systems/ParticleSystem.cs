@@ -16,9 +16,11 @@ namespace MiniEngine.Pipeline.Particles.Systems
         private readonly GraphicsDevice Device;
         private readonly WeightedParticlesEffect WeightedParticlesEffect;
         private readonly AverageParticlesEffect AverageParticlesEffect;
+        private readonly AdditiveParticlesEffect AdditiveParticlesEffect;
 
         private readonly EntityLinker Linker;
-        private readonly List<Emitter> Emitters;
+        private readonly List<AveragedEmitter> AveragedEmitters;
+        private readonly List<AdditiveEmitter> AdditiveEmitters;
         private readonly List<ParticlePose> Particles;
         private readonly Texture2D NeutralMask;
 
@@ -31,30 +33,38 @@ namespace MiniEngine.Pipeline.Particles.Systems
             GraphicsDevice device,
             WeightedParticlesEffect weightedParticlesEffect,
             AverageParticlesEffect averageParticlesEffect,
+            AdditiveParticlesEffect additiveParticlesEffect,
             EntityLinker linker,
             Texture2D neutralMask,
             Texture2D neutralNormal,
             Texture2D neutralSpecular)
         {
             this.Device = device;
+
             this.WeightedParticlesEffect = weightedParticlesEffect;
             this.AverageParticlesEffect = averageParticlesEffect;
+            this.AdditiveParticlesEffect = additiveParticlesEffect;
+
             this.Linker = linker;
             this.NeutralMask = neutralMask;
             this.NeutralNormalMap = neutralNormal;
             this.NeutralSpecularMap = neutralSpecular;
 
-            this.Emitters = new List<Emitter>();
+            this.AveragedEmitters = new List<AveragedEmitter>();
+            this.AdditiveEmitters = new List<AdditiveEmitter>();
+
             this.Particles = new List<ParticlePose>();
 
             this.FullScreenTriangle = new FullScreenTriangle();
             this.Quad = new Quad(device);
         }
 
-        public void RenderWeights(PerspectiveCamera camera, GBuffer gBuffer)
+        public void RenderParticleWeights(PerspectiveCamera camera, GBuffer gBuffer)
         {
-            this.GatherParticles(camera);
-            using (this.Device.ParticleState())
+            this.Particles.Clear();
+            this.GatherParticles(this.AveragedEmitters, camera);
+
+            using (this.Device.WeightedParticlesState())
             {
                 foreach (var particle in this.Particles)
                 {
@@ -74,9 +84,9 @@ namespace MiniEngine.Pipeline.Particles.Systems
             }
         }
 
-        public void RenderParticles(RenderTarget2D colorMap, RenderTarget2D weightMap)
+        public void AverageParticles(RenderTarget2D colorMap, RenderTarget2D weightMap)
         {
-            using (this.Device.FooState())
+            using (this.Device.AdditiveParticleState())
             {
                 this.AverageParticlesEffect.ColorMap = colorMap;
                 this.AverageParticlesEffect.WeightMap = weightMap;
@@ -84,26 +94,59 @@ namespace MiniEngine.Pipeline.Particles.Systems
                 this.AverageParticlesEffect.Apply();
 
                 this.FullScreenTriangle.Render(this.Device);
+
+            }           
+        }
+
+        public void RenderAdditiveParticles(PerspectiveCamera camera, GBuffer gBuffer)
+        {
+            this.Particles.Clear();
+            this.GatherParticles(this.AdditiveEmitters, camera);
+
+            using (this.Device.AdditiveParticleState())
+            {
+                foreach (var particle in this.Particles)
+                {
+                    this.AdditiveParticlesEffect.World = particle.Pose;
+                    this.AdditiveParticlesEffect.View = camera.View;
+                    this.AdditiveParticlesEffect.Projection = camera.Projection;
+                    this.AdditiveParticlesEffect.DiffuseMap = particle.Texture;
+                    this.AdditiveParticlesEffect.Tint = particle.Tint.ToVector4();
+                    this.AdditiveParticlesEffect.DepthMap = gBuffer.DepthTarget;
+                    this.AdditiveParticlesEffect.InverseViewProjection = camera.InverseViewProjection;
+
+                    this.AdditiveParticlesEffect.Apply();
+
+                    this.Quad.SetTextureCoordinates(particle.MinUv, particle.MaxUv);
+                    this.Quad.Render();
+                }
             }
         }
 
         public void Update(PerspectiveCamera camera, Seconds elapsed)
         {
-            this.Emitters.Clear();
-            this.Linker.GetComponents(this.Emitters);
-            foreach (var emitter in this.Emitters)
+            this.Update(this.AveragedEmitters, elapsed);
+            this.Update(this.AdditiveEmitters, elapsed);            
+        }
+
+        private void Update<T>(List<T> emitters, Seconds elapsed)
+            where T : AEmitter
+        {
+            emitters.Clear();
+            this.Linker.GetComponents(emitters);
+            foreach (var emitter in emitters)
             {
                 emitter.Update(elapsed);
             }
         }
 
-        private void GatherParticles(IViewPoint viewPoint)
+        private void GatherParticles<T>(List<T> emitters, IViewPoint viewPoint)
+            where T : AEmitter
         {
-            this.Particles.Clear();
-            this.Emitters.Clear();
+            emitters.Clear();                        
+            this.Linker.GetComponents(emitters);            
 
-            this.Linker.GetComponents(this.Emitters);
-            foreach (var emitter in this.Emitters)
+            foreach (var emitter in emitters)
             {
                 foreach (var particle in emitter.Particles)
                 {
@@ -113,7 +156,7 @@ namespace MiniEngine.Pipeline.Particles.Systems
             }
         }
 
-        private static ParticlePose ComputePose(IViewPoint viewPoint, Emitter emitter, Particle particle)
+        private static ParticlePose ComputePose(IViewPoint viewPoint, AEmitter emitter, Particle particle)
         {
             var matrix = Matrix.CreateScale(particle.Scale)
                          * Matrix.CreateBillboard(particle.Position, viewPoint.Position, Vector3.Up, viewPoint.Forward);

@@ -63,6 +63,7 @@
     <Compile Include="ShadowCastingLightEffect.cs" />
     <Compile Include="SunlightEffect.cs" />
     <Compile Include="Techniques\RenderEffectTechniques.cs" />
+    <Compile Include="AdditiveParticlesEffect.cs" />
     <Compile Include="WeightedParticlesEffect.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

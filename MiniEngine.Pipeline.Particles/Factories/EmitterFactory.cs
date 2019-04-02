@@ -6,14 +6,20 @@ using MiniEngine.Systems.Factories;
 
 namespace MiniEngine.Pipeline.Particles.Factories
 {
-    public sealed class EmitterFactory : AComponentFactory<Emitter>
+    public sealed class EmitterFactory : AComponentFactory<AveragedEmitter>
     {
         public EmitterFactory(GraphicsDevice device, EntityLinker linker)
             : base(device, linker) { }
 
-        public void Construct(Entity entity, Vector3 position, Texture2D texture, int rows, int columns, float scale)
+        public void ConstructAveragedEmitter(Entity entity, Vector3 position, Texture2D texture, int rows, int columns, float scale)
         {
-            var emitter = new Emitter(position, texture, rows, columns, scale);
+            var emitter = new AveragedEmitter(position, texture, rows, columns, scale);
+            this.Linker.AddComponent(entity, emitter);
+        }
+
+        public void ConstructAdditiveEmitter(Entity entity, Vector3 position, Texture2D texture, int rows, int columns, float scale)
+        {
+            var emitter = new AdditiveEmitter(position, texture, rows, columns, scale);
             this.Linker.AddComponent(entity, emitter);
         }
     }
