@@ -22,9 +22,8 @@ namespace MiniEngine.Pipeline.Particles.Stages
 
             this.Device.SetRenderTarget(input.GBuffer.FinalTarget);
             this.ParticleSystem.AverageParticles(input.GBuffer.DiffuseTarget, input.GBuffer.ParticleTarget);
-            
-            // TODO: we only set two render targets here so that we can use the depth buffer of the diffuse target
-            this.Device.SetRenderTargets(input.GBuffer.DiffuseTarget, input.GBuffer.FinalTarget);
+                        
+            this.Device.SetRenderTargets(input.GBuffer.FinalTarget);
             this.ParticleSystem.RenderAdditiveParticles(input.Camera, input.GBuffer);
         }
     }

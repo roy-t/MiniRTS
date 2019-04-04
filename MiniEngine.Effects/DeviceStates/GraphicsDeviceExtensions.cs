@@ -175,14 +175,14 @@ namespace MiniEngine.Effects.DeviceStates
         }
 
         /// <summary>
-        /// Graphics device state for additive blending        
+        /// Graphics device state for additive blending of particles
         /// </summary>
         public static DeviceState AdditiveParticleState(this GraphicsDevice device)
         {           
             return new DeviceState(
                 device,
                 BlendState.Additive,
-                DepthStencilState.DepthRead,
+                DepthStencilState.None,
                 RasterizerState.CullNone);
         }      
 

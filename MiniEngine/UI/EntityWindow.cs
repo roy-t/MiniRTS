@@ -19,7 +19,7 @@ namespace MiniEngine.UI
         
         public void Render()
         {
-            if (ImGui.Begin($"{this.EntityState.SelectedEntity}", ref this.EntityState.ShowEntityWindow))
+            if (ImGui.Begin($"{this.EntityState.SelectedEntity}", ref this.EntityState.ShowEntityWindow, ImGuiWindowFlags.NoCollapse))
             {
                 var components = new List<IComponent>();
                 this.EntityManager.Linker.GetComponents(this.EntityState.SelectedEntity, components);

@@ -19,13 +19,6 @@ struct VertexShaderOutput
     float4 ParticlePosition : TEXCOORD2;
 };
 
-struct PixelShaderOutput
-{
-    float4 Discard : COLOR0;
-    float4 Color : COLOR1;
-};
-
-
 texture Texture;
 sampler textureSampler = sampler_state
 {
@@ -53,26 +46,27 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
     return output;
 }
 
-PixelShaderOutput MainPS(VertexShaderOutput input)
-{    
-    PixelShaderOutput output = (PixelShaderOutput)0;
+float4 MainPS(VertexShaderOutput input) : COLOR0
+{        
     float depth = input.Depth.x / input.Depth.y;
     float2 screenCoord = ToTextureCoordinates(input.ParticlePosition.xy, input.ParticlePosition.w);
     float worldDepth = ReadDepth(screenCoord);    
+
+    // Manual depth test with the z-buffer
+    if (depth > worldDepth)
+    {
+        clip(-1);
+    }
     
     float4 particleWorld = ReadWorldPosition(screenCoord, depth, InverseViewProjection);
     float4 depthWorld = ReadWorldPosition(screenCoord, worldDepth, InverseViewProjection);
-
+        
+    // Fade out near other objects
     float diff = distance(particleWorld.xyz, depthWorld.xyz);
     float fade = min(diff, 1.0);
     
     float2 texCoord = input.TexCoord;
-    float4 color = (tex2D(textureSampler, texCoord) * fade) * Tint;    
-
-    output.Discard = float4(0, 0, 0, 0);
-    output.Color = color;
-
-    return output;
+    return (tex2D(textureSampler, texCoord) * fade) * Tint;        
 }
 
 technique WeightedParticlesTechnique

@@ -87,7 +87,7 @@ namespace MiniEngine.Scenes
 
             //this.particleEntity3 = this.EntityCreator.CreateEntity();
             //this.EmitterFactory.Construct(this.particleEntity3, particleSpawn, this.explosion2, 1, 1, 1.5f);
-
+            
             this.particleEntity3 = this.EntityCreator.CreateEntity();
             this.EmitterFactory.ConstructAdditiveEmitter(this.particleEntity3, particleSpawn, this.explosion2, 1, 1, 1.0f);
 
