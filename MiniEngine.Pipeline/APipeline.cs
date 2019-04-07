@@ -29,13 +29,13 @@ namespace MiniEngine.Pipeline
 
         public void Clear() => this.Stages.Clear();
 
-        public void Execute(T input)
+        public void Execute(T input, string label)
         {
             foreach(var stage in this.Stages)
             {
                 this.MeterRegistry.StartGauge(this.StageGauge);
                 stage.Execute(input);
-                this.MeterRegistry.StopGauge(this.StageGauge, stage.GetType().Name, input.Pass);
+                this.MeterRegistry.StopGauge(this.StageGauge, stage.GetType().Name, label);
             }
         }
     }

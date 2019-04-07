@@ -19,8 +19,8 @@ namespace MiniEngine.Pipeline.Particles.Stages
 
         public void Execute(RenderPipelineInput input)
         {
-            this.Input.Update(input.Camera, input.GBuffer, $"particles");
-            this.ParticlePipeline.Execute(this.Input);
+            this.Input.Update(input.Camera, input.GBuffer, input.Pass);
+            this.ParticlePipeline.Execute(this.Input, "particles");
         }
     }
 }

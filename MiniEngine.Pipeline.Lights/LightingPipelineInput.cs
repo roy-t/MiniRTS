@@ -5,7 +5,7 @@ namespace MiniEngine.Pipeline.Lights
 {
     public sealed class LightingPipelineInput : IPipelineInput
     {
-        public void Update(PerspectiveCamera camera, GBuffer gBuffer, string pass)
+        public void Update(PerspectiveCamera camera, GBuffer gBuffer, Pass pass)
         {
             this.Camera = camera;
             this.GBuffer = gBuffer;
@@ -14,6 +14,6 @@ namespace MiniEngine.Pipeline.Lights
 
         public PerspectiveCamera Camera { get; private set; }
         public GBuffer GBuffer { get; private set; }
-        public string Pass { get; private set; }
+        public Pass Pass { get; private set; }
     }
 }

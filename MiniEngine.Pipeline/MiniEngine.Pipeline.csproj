@@ -53,6 +53,8 @@
     <Compile Include="Extensions\UpdateSystemStageExtensions.cs" />
     <Compile Include="IPipelineInput.cs" />
     <Compile Include="IPipelineStage.cs" />
+    <Compile Include="Pass.cs" />
+    <Compile Include="PassType.cs" />
     <Compile Include="RenderPipeline.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RenderPipelineInput.cs" />

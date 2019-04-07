@@ -6,13 +6,12 @@
 - Make it cleaner to select or deselect render pipeline features
 - Make it possible to tweak parameters used by components (like shadowmap resolution) at runtime
 - Move all storage of components closer to their creators and give the EntityLinker hooks to get the info it needs
+- Move render states to effects since they are usually tightly coupled?
 
 ### Particles
-- Split emitters into transparent and additive emitters, add additive blending
 - Make particles work again with shadows
 - Particles need a lot more configurable parameters to look gooed
 - Move Easings.cs to a separate projects
-- Figure out if we can use a geometry shader and just send points to the GPU
 
 ### Models
 - Clean up code
@@ -22,11 +21,9 @@
 - Find bottlenecks and optimize
 
 ## Interesting
-
 - Reflections
 - Water
 - Terrain/tree/water generation
-
 
 ## Possible Improvements
 
@@ -36,7 +33,6 @@
 - Treating diffuse textures as linear color space will improve the visual effect of a lot of algorithms
 
 ## Known Issues
-
 - Sometimes transparency effects from the sunlight disappear when zooming in. Possibly due to the camera for that cascade not seeing the object anymore, even though backface culling and z-culling are disabled. This can usually be prevented by tweaking the cascade distances.
 - SSAO: tiling effect for flat surfaces that have no normal map
 

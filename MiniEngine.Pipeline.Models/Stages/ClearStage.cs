@@ -21,10 +21,8 @@ namespace MiniEngine.Pipeline.Models.Stages
             
             this.Device.SetRenderTarget(input.GBuffer.NormalTarget);
             this.Device.Clear(this.NormalClearColor);
-
-            // TODO: do not compare to string!
-            // only clear the depth buffer in the opaque stage
-            if (input.Pass == "opaque")
+            
+            if (input.Pass.Type == PassType.Opaque)
             {
                 this.Device.SetRenderTarget(input.GBuffer.DepthTarget);
                 this.Device.Clear(Color.TransparentBlack);

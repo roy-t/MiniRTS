@@ -45,6 +45,7 @@ namespace MiniEngine.Rendering
         private readonly ParticlePipeline ParticlePipeline;        
 
         private readonly RenderPipeline Pipeline;
+        private readonly Pass rootPass;
 
         public DeferredRenderPipeline(
             GraphicsDevice device,
@@ -89,6 +90,7 @@ namespace MiniEngine.Rendering
             this.ParticlePipeline = ParticlePipeline.Create(device, meterRegistry);
 
             this.Pipeline = RenderPipeline.Create(device, meterRegistry);
+            this.rootPass = new Pass(PassType.Opaque, 0);
 
             this.Recreate();
         }
@@ -139,8 +141,8 @@ namespace MiniEngine.Rendering
       
         public RenderTarget2D Render(PerspectiveCamera camera, Seconds elapsed)
         {
-            this.Input.Update(camera, elapsed, this.GBuffer, "render");
-            this.Pipeline.Execute(this.Input);
+            this.Input.Update(camera, elapsed, this.GBuffer, this.rootPass);
+            this.Pipeline.Execute(this.Input, "root");
             return this.GBuffer.FinalTarget;
         }
 

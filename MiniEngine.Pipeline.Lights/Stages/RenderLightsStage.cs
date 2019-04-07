@@ -15,8 +15,8 @@ namespace MiniEngine.Pipeline.Lights.Stages
 
         public void Execute(ModelPipelineInput input)
         {
-            this.Input.Update(input.Camera, input.GBuffer, "model");
-            this.LightingPipeline.Execute(this.Input);
+            this.Input.Update(input.Camera, input.GBuffer, input.Pass);
+            this.LightingPipeline.Execute(this.Input, "lights");
         }
     }
 }

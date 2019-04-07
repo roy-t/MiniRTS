@@ -2,6 +2,6 @@
 {
     public interface IPipelineInput
     {
-        string Pass { get; }
+        Pass Pass { get; }
     }
 }
