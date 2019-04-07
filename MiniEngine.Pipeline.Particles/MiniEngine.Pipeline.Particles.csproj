@@ -56,7 +56,8 @@
     <Compile Include="Components\Particle.cs" />
     <Compile Include="Components\ParticlePose.cs" />
     <Compile Include="Extensions\ClearStageExtensions.cs" />
-    <Compile Include="Extensions\RenderWeightedParticlesStageExtensions.cs" />
+    <Compile Include="Extensions\RenderAdditiveParticlesStageExtensions.cs" />
+    <Compile Include="Extensions\RenderTransparentParticlesStageExtensions.cs" />
     <Compile Include="Extensions\RenderParticlesStageExtensions.cs" />
     <Compile Include="Factories\EmitterFactory.cs" />
     <Compile Include="ParticlePipeline.cs" />
@@ -64,8 +65,11 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Stages\ClearStage.cs" />
     <Compile Include="Stages\RenderParticlesStage.cs" />
-    <Compile Include="Stages\RenderWeightedParticlesStage.cs" />
-    <Compile Include="Systems\ParticleSystem.cs" />
+    <Compile Include="Stages\RenderAdditiveParticlesStage.cs" />
+    <Compile Include="Stages\RenderTransparentParticlesStage.cs" />
+    <Compile Include="Systems\AdditiveParticleSystem.cs" />
+    <Compile Include="Systems\ParticleHelper.cs" />
+    <Compile Include="Systems\TransparentParticleSystem.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MiniEngine.Effects\MiniEngine.Effects.csproj">

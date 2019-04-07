@@ -24,7 +24,7 @@ namespace MiniEngine.Pipeline.Shadows.Systems
         private readonly GraphicsDevice Device;
         private readonly EntityLinker EntityLinker;
         private readonly ModelSystem ModelSystem;
-        private readonly ParticleSystem ParticleSystem;
+        private readonly TransparentParticleSystem ParticleSystem;
         private readonly List<ShadowMap> ShadowMaps;
         private readonly IMeterRegistry MeterRegistry;
 
@@ -32,7 +32,7 @@ namespace MiniEngine.Pipeline.Shadows.Systems
             GraphicsDevice device,
             EntityLinker entityLinker,
             ModelSystem modelSystem,
-            ParticleSystem particleSystem,
+            TransparentParticleSystem particleSystem,
             IMeterRegistry meterRegistry)
         {
             this.Device = device;

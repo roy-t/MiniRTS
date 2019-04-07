@@ -7,10 +7,9 @@ namespace MiniEngine.Pipeline.Particles.Extensions
     {
         public static RenderPipeline RenderParticles(
             this RenderPipeline pipeline,
-            ParticleSystem particleSystem,
             ParticlePipeline particlePipeline)
         {
-            var stage = new RenderParticlesStage(particleSystem, particlePipeline);
+            var stage = new RenderParticlesStage(particlePipeline);
             pipeline.Add(stage);
             return pipeline;
         }

@@ -28,7 +28,8 @@ namespace MiniEngine.Rendering
         
         private readonly ShadowMapSystem ShadowMapSystem;
         private readonly ModelSystem ModelSystem;
-        private readonly ParticleSystem ParticleSystem;
+        private readonly TransparentParticleSystem TransparentParticleSystem;
+        private readonly AdditiveParticleSystem AdditiveParticleSystem;
         private readonly CombineEffect CombineEffect;
         private readonly FxaaEffect FxaaEffect;
         private readonly AmbientLightSystem AmbientLightSystem;
@@ -51,7 +52,8 @@ namespace MiniEngine.Rendering
             GraphicsDevice device,
             ShadowMapSystem shadowMapSystem,
             ModelSystem modelSystem,
-            ParticleSystem particleSystem,
+            TransparentParticleSystem particleSystem,
+            AdditiveParticleSystem additiveParticleSystem,
             CombineEffect combineEffect,
             FxaaEffect fxaaEffect,
             AmbientLightSystem ambientLightSystem,
@@ -65,7 +67,8 @@ namespace MiniEngine.Rendering
         {
             this.ShadowMapSystem = shadowMapSystem;
             this.ModelSystem = modelSystem;
-            this.ParticleSystem = particleSystem;
+            this.TransparentParticleSystem = particleSystem;
+            this.AdditiveParticleSystem = additiveParticleSystem;
             this.CombineEffect = combineEffect;
             this.FxaaEffect = fxaaEffect;
             this.AmbientLightSystem = ambientLightSystem;
@@ -126,15 +129,17 @@ namespace MiniEngine.Rendering
 
             this.ParticlePipeline
                 .ClearParticleRenderTargets()
-                .RenderWeightedParticles(this.ParticleSystem);
+                .RenderTransparentParticles(this.TransparentParticleSystem)
+                .RenderAdditiveParticles(this.AdditiveParticleSystem);
 
             this.Pipeline
                 .ClearRenderTargetSet()
                 .UpdateSystem(this.CascadedShadowMapSystem)
-                .UpdateSystem(this.ParticleSystem)
+                .UpdateSystem(this.TransparentParticleSystem)
+                .UpdateSystem(this.AdditiveParticleSystem)
                 .EnableIf(this.Settings.EnableShadows, x => x.RenderShadows(this.ShadowPipeline))
                 .EnableIf(this.Settings.EnableModels, x => x.RenderModels(this.ModelSystem, this.ModelPipeline))
-                .EnableIf(this.Settings.EnableParticles, x => x.RenderParticles(this.ParticleSystem, this.ParticlePipeline))
+                .EnableIf(this.Settings.EnableParticles, x => x.RenderParticles(this.ParticlePipeline))
                 .EnableIf(this.Settings.Enable3DOutlines, x => x.Render3DOutline(this.OutlineSystem))
                 .EnableIf(this.Settings.Enable2DOutlines, x => x.Render2DOutline(this.OutlineSystem));
         }

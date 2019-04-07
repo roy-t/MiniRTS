@@ -3,17 +3,16 @@ using MiniEngine.Pipeline.Particles.Systems;
 
 namespace MiniEngine.Pipeline.Particles.Stages
 {
-    public sealed class RenderWeightedParticlesStage : IPipelineStage<ParticlePipelineInput>
+    public sealed class RenderTransparentParticlesStage : IPipelineStage<ParticlePipelineInput>
     {
         private readonly GraphicsDevice Device;
-        private readonly ParticleSystem ParticleSystem;
+        private readonly TransparentParticleSystem ParticleSystem;
 
-        public RenderWeightedParticlesStage(GraphicsDevice device, ParticleSystem particleSystem)
+        public RenderTransparentParticlesStage(GraphicsDevice device, TransparentParticleSystem particleSystem)
         {
             this.Device = device;
             this.ParticleSystem = particleSystem;
         }
-
 
         public void Execute(ParticlePipelineInput input)
         {
@@ -22,9 +21,6 @@ namespace MiniEngine.Pipeline.Particles.Stages
 
             this.Device.SetRenderTarget(input.GBuffer.FinalTarget);
             this.ParticleSystem.AverageParticles(input.GBuffer.DiffuseTarget, input.GBuffer.ParticleTarget);
-                        
-            this.Device.SetRenderTargets(input.GBuffer.FinalTarget);
-            this.ParticleSystem.RenderAdditiveParticles(input.Camera, input.GBuffer);
         }
     }
 }

@@ -3,13 +3,13 @@ using MiniEngine.Pipeline.Particles.Systems;
 
 namespace MiniEngine.Pipeline.Particles.Extensions
 {
-    public static class RenderWeightedParticlesStageExtensions
+    public static class RenderAdditiveParticlesStageExtensions
     {
-        public static ParticlePipeline RenderWeightedParticles(
+        public static ParticlePipeline RenderAdditiveParticles(
             this ParticlePipeline pipeline,
-            ParticleSystem particleSystem)
+            AdditiveParticleSystem particleSystem)
         {
-            var stage = new RenderWeightedParticlesStage(pipeline.Device, particleSystem);
+            var stage = new RenderAdditiveParticlesStage(pipeline.Device, particleSystem);
             pipeline.Add(stage);
             return pipeline;
         }
