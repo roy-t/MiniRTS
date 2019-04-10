@@ -5,7 +5,7 @@ namespace MiniEngine.Pipeline.Models
 {
     public sealed class ModelPipeline : APipeline<ModelPipelineInput>
     {
-        public ModelPipeline(GraphicsDevice device, IMeterRegistry meterRegistry)
+        private ModelPipeline(GraphicsDevice device, IMeterRegistry meterRegistry)
             : base(device, meterRegistry, "model_pipeline")
         {
         }

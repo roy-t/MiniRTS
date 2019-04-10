@@ -9,7 +9,7 @@ namespace MiniEngine.Pipeline
     {
         private readonly string StageGauge;
 
-        private readonly List<IPipelineStage<T>> Stages;
+        protected readonly List<IPipelineStage<T>> Stages;
         private readonly IMeterRegistry MeterRegistry;
 
         public APipeline(GraphicsDevice device, IMeterRegistry meterRegistry, string name)

@@ -5,7 +5,7 @@ namespace MiniEngine.Pipeline.Shadows
 {
     public sealed class ShadowPipeline : APipeline<ShadowPipelineInput>
     {
-        public ShadowPipeline(GraphicsDevice device, IMeterRegistry meterRegistry)
+        private ShadowPipeline(GraphicsDevice device, IMeterRegistry meterRegistry)
             : base(device, meterRegistry, "shadow_pipeline")
         {
         }

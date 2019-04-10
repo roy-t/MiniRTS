@@ -7,6 +7,7 @@ using MiniEngine.Controllers;
 using MiniEngine.Input;
 using MiniEngine.Pipeline.Lights.Factories;
 using MiniEngine.Pipeline.Models.Factories;
+using MiniEngine.Pipeline.Projectors.Factories;
 using MiniEngine.Primitives.Cameras;
 using MiniEngine.Rendering;
 using MiniEngine.Systems;
@@ -24,7 +25,7 @@ namespace MiniEngine.UI
         private readonly RenderTargetDescriber RenderTargetDescriber;
 
         private readonly UIState UIState;
-        private readonly ImGuiRenderer gui;
+        private readonly ImGuiRenderer Gui;
 
         private KeyboardInput keyboardInput;
         private MouseInput mouseInput;
@@ -44,8 +45,8 @@ namespace MiniEngine.UI
             this.Game = game;
             this.SpriteBatch = spriteBatch;
 
-            this.gui = new ImGuiRenderer(game);
-            this.gui.RebuildFontAtlas();
+            this.Gui = new ImGuiRenderer(game);
+            this.Gui.RebuildFontAtlas();
 
             this.RenderTargetDescriber = renderTargetDescriber;
 
@@ -56,18 +57,23 @@ namespace MiniEngine.UI
 
             var lightsFactory = injector.Resolve<LightsFactory>();
             var outlineFactory = injector.Resolve<OutlineFactory>();
+            var projectorFactory = injector.Resolve<ProjectorFactory>();
+
+            var texture = game.Content.Load<Texture2D>("Debug");
 
             this.cameraController = new CameraController(this.keyboardInput, this.mouseInput, camera);
             this.lightsController = new LightsController(entityManager, lightsFactory);
 
             this.UIState = UIState.Deserialize();
+            var editors = new Editors(this.Gui);
+
 
             this.fileMenu = new FileMenu(this.UIState, game, sceneSelector);
             this.entitiesMenu = new EntityMenu(this.UIState, entityManager);
-            this.createMenu = new CreateMenu(this.UIState, entityManager, outlineFactory, this.lightsController, camera);
+            this.createMenu = new CreateMenu(this.UIState, entityManager, outlineFactory, projectorFactory, texture, this.lightsController, camera);
             this.debugMenu = new DebugMenu(this.UIState, renderTargetDescriber, game);
-            this.entityWindow = new EntityWindow(this.UIState, entityManager);
-            this.renderingMenu = new RenderingMenu(this.UIState, renderPipeline);
+            this.entityWindow = new EntityWindow(editors, this.UIState, entityManager);
+            this.renderingMenu = new RenderingMenu(editors, this.UIState, renderPipeline);
 
             camera.Move(this.UIState.EditorState.CameraPosition, this.UIState.EditorState.CameraLookAt);
         }
@@ -159,7 +165,7 @@ namespace MiniEngine.UI
         {
             if (this.UIState.EditorState.ShowGui)
             {
-                this.gui.BeginLayout(gameTime);
+                this.Gui.BeginLayout(gameTime);
                 {
                     if (ImGui.BeginMainMenuBar())
                     {
@@ -179,7 +185,7 @@ namespace MiniEngine.UI
 
                     if (this.UIState.DebugState.ShowDemo) { ImGui.ShowDemoWindow(); }
                 }
-                this.gui.EndLayout();
+                this.Gui.EndLayout();
             }
         }
 

@@ -11,6 +11,9 @@ using MiniEngine.Pipeline.Models.Systems;
 using MiniEngine.Pipeline.Particles;
 using MiniEngine.Pipeline.Particles.Extensions;
 using MiniEngine.Pipeline.Particles.Systems;
+using MiniEngine.Pipeline.Projectors;
+using MiniEngine.Pipeline.Projectors.Extensions;
+using MiniEngine.Pipeline.Projectors.Systems;
 using MiniEngine.Pipeline.Shadows;
 using MiniEngine.Pipeline.Shadows.Extensions;
 using MiniEngine.Pipeline.Shadows.Systems;
@@ -30,6 +33,7 @@ namespace MiniEngine.Rendering
         private readonly ModelSystem ModelSystem;
         private readonly TransparentParticleSystem TransparentParticleSystem;
         private readonly AdditiveParticleSystem AdditiveParticleSystem;
+        private readonly ProjectorSystem ProjectorSystem;
         private readonly CombineEffect CombineEffect;
         private readonly FxaaEffect FxaaEffect;
         private readonly AmbientLightSystem AmbientLightSystem;
@@ -43,7 +47,8 @@ namespace MiniEngine.Rendering
         private readonly ShadowPipeline ShadowPipeline;
         private readonly LightingPipeline LightingPipeline;
         private readonly ModelPipeline ModelPipeline;
-        private readonly ParticlePipeline ParticlePipeline;        
+        private readonly ParticlePipeline ParticlePipeline;
+        private readonly ProjectorPipeline ProjectorPipeline;
 
         private readonly RenderPipeline Pipeline;
         private readonly Pass rootPass;
@@ -54,6 +59,7 @@ namespace MiniEngine.Rendering
             ModelSystem modelSystem,
             TransparentParticleSystem particleSystem,
             AdditiveParticleSystem additiveParticleSystem,
+            ProjectorSystem projectorSystem,
             CombineEffect combineEffect,
             FxaaEffect fxaaEffect,
             AmbientLightSystem ambientLightSystem,
@@ -69,6 +75,7 @@ namespace MiniEngine.Rendering
             this.ModelSystem = modelSystem;
             this.TransparentParticleSystem = particleSystem;
             this.AdditiveParticleSystem = additiveParticleSystem;
+            this.ProjectorSystem = projectorSystem;
             this.CombineEffect = combineEffect;
             this.FxaaEffect = fxaaEffect;
             this.AmbientLightSystem = ambientLightSystem;
@@ -91,6 +98,7 @@ namespace MiniEngine.Rendering
             this.LightingPipeline = LightingPipeline.Create(device, meterRegistry);
             this.ModelPipeline = ModelPipeline.Create(device, meterRegistry);
             this.ParticlePipeline = ParticlePipeline.Create(device, meterRegistry);
+            this.ProjectorPipeline = ProjectorPipeline.Create(device, meterRegistry);
 
             this.Pipeline = RenderPipeline.Create(device, meterRegistry);
             this.rootPass = new Pass(PassType.Opaque, 0);
@@ -104,8 +112,10 @@ namespace MiniEngine.Rendering
         {
             this.ShadowPipeline.Clear();
             this.LightingPipeline.Clear();
-            this.ParticlePipeline.Clear();
             this.ModelPipeline.Clear();
+            this.ParticlePipeline.Clear();
+            this.ProjectorPipeline.Clear();
+
             this.Pipeline.Clear();
 
             this.ShadowPipeline
@@ -120,17 +130,24 @@ namespace MiniEngine.Rendering
                 .EnableIf(ls.EnableShadowCastingLights, x => x.RenderShadowCastingLights(this.ShadowCastingLightSystem))
                 .EnableIf(ls.EnableSunLights, x => x.RenderSunlights(this.SunlightSystem));
 
+            if (this.Settings.EnableProjectors)
+            {
+                this.ProjectorPipeline             
+                    .RenderProjectors(this.ProjectorSystem);
+            }
+
             this.ModelPipeline
                 .ClearModelRenderTargets()
                 .RenderModelBatch()
+                .RenderProjectors(this.ProjectorPipeline)
                 .RenderLights(this.LightingPipeline)
                 .CombineDiffuseWithLighting(this.CombineEffect)
-                .AntiAlias(this.FxaaEffect, this.Settings.ModelSettings.FxaaFactor);
+                .AntiAlias(this.FxaaEffect, this.Settings.ModelSettings.FxaaFactor);            
 
             this.ParticlePipeline
                 .ClearParticleRenderTargets()
                 .RenderTransparentParticles(this.TransparentParticleSystem)
-                .RenderAdditiveParticles(this.AdditiveParticleSystem);
+                .RenderAdditiveParticles(this.AdditiveParticleSystem);            
 
             this.Pipeline
                 .ClearRenderTargetSet()
@@ -139,7 +156,7 @@ namespace MiniEngine.Rendering
                 .UpdateSystem(this.AdditiveParticleSystem)
                 .EnableIf(this.Settings.EnableShadows, x => x.RenderShadows(this.ShadowPipeline))
                 .EnableIf(this.Settings.EnableModels, x => x.RenderModels(this.ModelSystem, this.ModelPipeline))
-                .EnableIf(this.Settings.EnableParticles, x => x.RenderParticles(this.ParticlePipeline))
+                .EnableIf(this.Settings.EnableParticles, x => x.RenderParticles(this.ParticlePipeline))                
                 .EnableIf(this.Settings.Enable3DOutlines, x => x.Render3DOutline(this.OutlineSystem))
                 .EnableIf(this.Settings.Enable2DOutlines, x => x.Render2DOutline(this.OutlineSystem));
         }

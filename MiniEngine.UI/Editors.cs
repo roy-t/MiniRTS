@@ -1,5 +1,6 @@
 ﻿using ImGuiNET;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Primitives;
 using MiniEngine.Systems.Components;
 using MiniEngine.Units;
@@ -8,15 +9,38 @@ using Num = System.Numerics;
 
 namespace MiniEngine.UI
 {
-    public static class Editors
+    public sealed class Editors
     {
         private const float DragSpeed = 0.01f;
 
-        public static void CreateEditor(string label, object value, MinMaxDescription minMax, Action<object> setter)
-        {                        
+        private readonly ImGuiRenderer GuiRenderer;
+
+        public Editors(ImGuiRenderer guiRenderer)
+        {
+            this.GuiRenderer = guiRenderer;
+        }
+
+        public void Create(string label, object value, MinMaxDescription minMax, Action<object> setter)
+        {
             if (setter == null)
             {
-                ImGui.LabelText(label, value.ToString());
+                switch (value)
+                {
+                    case Texture2D texture:
+                        ImGui.Text(label);
+                        var id = this.GuiRenderer.BindTexture(texture);
+                        var scale = Math.Min(1.0f, 256.0f / texture.Width);
+                        ImGui.Text($"Bounds: {texture.Bounds}");
+                        ImGui.Text($"Format: {texture.Format}");
+                        ImGui.Text($"Levels: {texture.LevelCount}");
+                        ImGui.Image(id, new Num.Vector2(scale * texture.Width, scale * texture.Height));
+
+                        break;
+
+                    default:
+                        ImGui.Text($"{label}: {value.ToString()}");
+                        break;
+                }
                 return;
             }
 
@@ -79,7 +103,7 @@ namespace MiniEngine.UI
                     }
                     break;
                 default:
-                    ImGui.LabelText(label + "*", value.ToString());
+                    ImGui.Text($"{label}: {value.ToString()}*");
                     return;
             }
         }

@@ -151,6 +151,10 @@
       <Project>{373867c7-7717-4ccc-a049-f0e174f5f5a4}</Project>
       <Name>MiniEngine.Pipeline.Particles</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MiniEngine.Pipeline.Projectors\MiniEngine.Pipeline.Projectors.csproj">
+      <Project>{89ae0ff0-f607-44d8-ae81-0301334bd53f}</Project>
+      <Name>MiniEngine.Pipeline.Projectors</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MiniEngine.Pipeline.Shadows\MiniEngine.Pipeline.Shadows.csproj">
       <Project>{3c8f3fc4-9e92-475e-a9bd-ac687dc13963}</Project>
       <Name>MiniEngine.Pipeline.Shadows</Name>

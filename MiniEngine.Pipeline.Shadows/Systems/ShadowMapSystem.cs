@@ -6,7 +6,6 @@ using MiniEngine.Pipeline.Models.Systems;
 using MiniEngine.Pipeline.Particles.Systems;
 using MiniEngine.Pipeline.Shadows.Components;
 using MiniEngine.Primitives;
-using MiniEngine.Primitives.Cameras;
 using MiniEngine.Systems;
 using MiniEngine.Telemetry;
 using System.Collections.Generic;
@@ -47,19 +46,7 @@ namespace MiniEngine.Pipeline.Shadows.Systems
             this.MeterRegistry.CreateGauge(ShadowMapTotal);
             this.MeterRegistry.CreateGauge(ShadowMapStep, "step");
         }
-
-        public bool Contains(Entity entity) => false;
-
-        public string Describe(Entity entity) => "";
-
-        public void Remove(Entity entity) => this.EntityLinker.RemoveComponents<ShadowMap>(entity);
-
-        public void Add(Entity entity, IViewPoint viewPoint, int resolution = DefaultResolution)
-            => this.EntityLinker.AddComponent(entity, new ShadowMap(this.Device, resolution, viewPoint));
-
-        public void Add(Entity entity, RenderTarget2D depthMapArray, RenderTarget2D colorMapArray, int index, IViewPoint viewPoint)
-            => this.EntityLinker.AddComponent(entity, new ShadowMap(depthMapArray, colorMapArray, index, viewPoint));
-
+        
         public void RenderShadowMaps(GBuffer gBuffer)
         {
             this.MeterRegistry.SetGauge(ShadowMapCounter, this.ShadowMaps.Count);

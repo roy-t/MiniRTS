@@ -6,7 +6,7 @@ namespace MiniEngine.Pipeline.Lights
 {
     public sealed class LightingPipeline : APipeline<LightingPipelineInput>
     {
-        public LightingPipeline(GraphicsDevice device, IMeterRegistry meterRegistry)
+        private LightingPipeline(GraphicsDevice device, IMeterRegistry meterRegistry)
             : base(device, meterRegistry, "lighting_pipeline")
         {
         }
