@@ -24,7 +24,6 @@ namespace MiniEngine.Scenes
         private Entity planeEntity;
         private Entity planeEntity2;
         private Entity particleEntity;
-        private Entity particleEntity3;
         private Model sponza;
         private Model plane;
         private Texture2D explosion;
@@ -83,17 +82,17 @@ namespace MiniEngine.Scenes
             var particleSpawn = new Vector3(-60.5f, 6.0f, 20.0f);
 
             this.particleEntity = this.EntityCreator.CreateEntity();
-            this.EmitterFactory.ConstructAveragedEmitter(this.particleEntity, particleSpawn, this.smoke, 1, 1, 2.0f);
 
-            //this.particleEntity3 = this.EntityCreator.CreateEntity();
-            //this.EmitterFactory.Construct(this.particleEntity3, particleSpawn, this.explosion2, 1, 1, 1.5f);
-            
-            this.particleEntity3 = this.EntityCreator.CreateEntity();
-            this.EmitterFactory.ConstructAdditiveEmitter(this.particleEntity3, particleSpawn, this.explosion2, 1, 1, 1.0f);
+            this.EmitterFactory.ConstructAveragedEmitter(this.particleEntity, particleSpawn, this.smoke, 1, 1, 2.0f);            
+            this.EmitterFactory.ConstructAdditiveEmitter(this.particleEntity, particleSpawn, this.explosion2, 1, 1, 1.0f);            
+            var emitter = this.EmitterFactory.ConstructAdditiveEmitter(this.particleEntity, particleSpawn, this.explosion, 8, 8, 0.075f);
+            emitter.SpawnInterval = 0;
+            emitter.Spread = 0.75f;
+            emitter.TimeToLive = 2.25f;
 
             this.LightsFactory.PointLightFactory.Construct(this.particleEntity, particleSpawn, Color.IndianRed, 20.0f, 1.0f);
-            var light = particleSpawn + (Vector3.Up * 3);
-            this.LightsFactory.ShadowCastingLightFactory.Construct(this.particleEntity, light, light + Vector3.Up + (Vector3.Left * 0.001f), Color.IndianRed);
+            //var light = particleSpawn + (Vector3.Up * 3);
+            //this.LightsFactory.ShadowCastingLightFactory.Construct(this.particleEntity, light, light + Vector3.Up + (Vector3.Left * 0.001f), Color.IndianRed);
         }
 
         public static Pose CreateScaleRotationTranslation(float scale, float rotX, float rotY, float rotZ, Vector3 translation) 

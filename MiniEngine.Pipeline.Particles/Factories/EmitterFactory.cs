@@ -11,16 +11,20 @@ namespace MiniEngine.Pipeline.Particles.Factories
         public EmitterFactory(GraphicsDevice device, EntityLinker linker)
             : base(device, linker) { }
 
-        public void ConstructAveragedEmitter(Entity entity, Vector3 position, Texture2D texture, int rows, int columns, float scale)
+        public AveragedEmitter ConstructAveragedEmitter(Entity entity, Vector3 position, Texture2D texture, int rows, int columns, float scale)
         {
             var emitter = new AveragedEmitter(position, texture, rows, columns, scale);
             this.Linker.AddComponent(entity, emitter);
+
+            return emitter;
         }
 
-        public void ConstructAdditiveEmitter(Entity entity, Vector3 position, Texture2D texture, int rows, int columns, float scale)
+        public AdditiveEmitter ConstructAdditiveEmitter(Entity entity, Vector3 position, Texture2D texture, int rows, int columns, float scale)
         {
             var emitter = new AdditiveEmitter(position, texture, rows, columns, scale);
             this.Linker.AddComponent(entity, emitter);
+
+            return emitter;
         }
     }
 }

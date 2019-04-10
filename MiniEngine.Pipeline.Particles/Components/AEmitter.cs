@@ -13,6 +13,7 @@ namespace MiniEngine.Pipeline.Particles.Components
         private static readonly Random Random = new Random();
 
         private Seconds timeToSpawn;
+        private Vector4 tint;
 
         public AEmitter(Vector3 position, Texture2D texture, int rows, int columns, float scale)
         {
@@ -32,6 +33,7 @@ namespace MiniEngine.Pipeline.Particles.Components
             this.Spread = 0.5f;
             this.TimeToLive = 2.0f;
             this.TimePerFrame = 0.125f;
+            this.Tint = Color.White;
         }
 
         public Vector3 Position { get; set; }
@@ -49,6 +51,11 @@ namespace MiniEngine.Pipeline.Particles.Components
         public Seconds TimeToLive { get; set; }
         public Seconds TimePerFrame { get; set; }
 
+        public Color Tint
+        {
+            get => new Color(this.tint);
+            set => this.tint = value.ToVector4();
+        }
 
         public void Update(Seconds elapsed)
         {
@@ -67,7 +74,7 @@ namespace MiniEngine.Pipeline.Particles.Components
 
                     var progress = particle.LifeTime / this.TimeToLive;
                     var lifeTimeRatio = 1.0f - Easings.ExponentialEaseIn(progress);
-                    particle.Tint = new Color(lifeTimeRatio, lifeTimeRatio, lifeTimeRatio, lifeTimeRatio);
+                    particle.Tint = new Color(this.tint.X * lifeTimeRatio, this.tint.Y * lifeTimeRatio, this.tint.Z * lifeTimeRatio, this.tint.W * lifeTimeRatio);
                 }
             }
 
@@ -98,6 +105,7 @@ namespace MiniEngine.Pipeline.Particles.Components
             description.AddProperty("Spread", this.Spread, x => this.Spread = x, MinMaxDescription.ZeroToOne);
             description.AddProperty("Time to live", this.TimeToLive, x => this.TimeToLive = x, MinMaxDescription.ZeroToInfinity);
             description.AddProperty("Time per frame", this.TimePerFrame, x => this.TimePerFrame = x, MinMaxDescription.ZeroToInfinity);
+            description.AddProperty("Tint", this.Tint, t => this.Tint = t, MinMaxDescription.ZeroToOne);
             description.AddLabel("Particles", this.Particles.Count);
         }
 
