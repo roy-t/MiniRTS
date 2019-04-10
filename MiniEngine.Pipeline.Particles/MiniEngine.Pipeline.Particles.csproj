@@ -48,8 +48,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Batches\ParticleBatchList.cs" />
-    <Compile Include="Batches\ParticleRenderBatch.cs" />
     <Compile Include="Components\AdditiveEmitter.cs" />
     <Compile Include="Components\AveragedEmitter.cs" />
     <Compile Include="Components\AEmitter.cs" />

@@ -21,7 +21,7 @@ namespace MiniEngine.Pipeline.Particles.Systems
         private readonly List<ParticlePose> Particles;
 
         private readonly FullScreenTriangle FullScreenTriangle;
-        private readonly Quad Quad;
+        private readonly FullScreenQuad Quad;
 
         public TransparentParticleSystem(
             GraphicsDevice device,
@@ -41,7 +41,7 @@ namespace MiniEngine.Pipeline.Particles.Systems
             this.Particles = new List<ParticlePose>();
 
             this.FullScreenTriangle = new FullScreenTriangle();
-            this.Quad = new Quad(device);
+            this.Quad = new FullScreenQuad(device);
         }
 
         public void RenderParticleWeights(PerspectiveCamera camera, GBuffer gBuffer)

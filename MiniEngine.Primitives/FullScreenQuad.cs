@@ -4,13 +4,13 @@ using MiniEngine.Primitives.VertexTypes;
 
 namespace MiniEngine.Primitives
 {
-    public sealed class Quad
+    public sealed class FullScreenQuad
     {
         private readonly GraphicsDevice Device;
         private readonly short[] Indices;
         private readonly GBufferVertex[] Vertices;
 
-        public Quad(GraphicsDevice device)
+        public FullScreenQuad(GraphicsDevice device)
         {
             this.Device = device;
             this.Vertices = new[]

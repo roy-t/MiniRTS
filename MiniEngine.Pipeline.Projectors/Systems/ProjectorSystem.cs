@@ -6,7 +6,6 @@ using MiniEngine.Systems;
 using MiniEngine.Effects.DeviceStates;
 using System.Collections.Generic;
 using MiniEngine.Effects;
-using Microsoft.Xna.Framework;
 
 namespace MiniEngine.Pipeline.Projectors.Systems
 {
@@ -39,23 +38,26 @@ namespace MiniEngine.Pipeline.Projectors.Systems
             {
                 foreach(var projector in this.Projectors)
                 {
-                    //G-Buffer input
-                    this.Effect.DepthMap = gBuffer.DepthTarget;
+                    if (projector.ViewPoint.Frustum.Intersects(perspectiveCamera.Frustum))
+                    {
+                        //G-Buffer input
+                        this.Effect.DepthMap = gBuffer.DepthTarget;
 
-                    // Projector properties
-                    this.Effect.ProjectorMap = projector.Texture;
-                    this.Effect.ProjectorViewProjection = projector.ViewPoint.ViewProjection;
-                    this.Effect.MaxDistance = projector.MaxDistance;
-                    this.Effect.ProjectorPosition = projector.ViewPoint.Position;
-                    this.Effect.ProjectorForward = projector.ViewPoint.Forward;
-                    this.Effect.Tint = projector.Tint;
+                        // Projector properties
+                        this.Effect.ProjectorMap = projector.Texture;
+                        this.Effect.ProjectorViewProjection = projector.ViewPoint.ViewProjection;
+                        this.Effect.MaxDistance = projector.MaxDistance;
+                        this.Effect.ProjectorPosition = projector.ViewPoint.Position;
+                        this.Effect.ProjectorForward = projector.ViewPoint.Forward;
+                        this.Effect.Tint = projector.Tint;
 
-                    // Camera properties
-                    this.Effect.InverseViewProjection = perspectiveCamera.InverseViewProjection;
+                        // Camera properties
+                        this.Effect.InverseViewProjection = perspectiveCamera.InverseViewProjection;
 
-                    this.Effect.Apply();
+                        this.Effect.Apply();
 
-                    this.FullScreenTriangle.Render(this.Device);
+                        this.FullScreenTriangle.Render(this.Device);
+                    }
                 }
             }
         }
