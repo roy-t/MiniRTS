@@ -46,23 +46,24 @@ namespace MiniEngine.Pipeline.Particles.Systems
 
             ParticleHelper.GatherParticles(this.Emitters, camera, this.Particles);
 
-            using (this.Device.AdditiveParticleState())
+            this.Device.AdditiveParticleState();
+
+            for (var i = 0; i < this.Particles.Count; i++)
             {
-                foreach (var particle in this.Particles)
-                {
-                    this.AdditiveParticlesEffect.World = particle.Pose;
-                    this.AdditiveParticlesEffect.View = camera.View;
-                    this.AdditiveParticlesEffect.Projection = camera.Projection;
-                    this.AdditiveParticlesEffect.DiffuseMap = particle.Texture;
-                    this.AdditiveParticlesEffect.Tint = particle.Tint.ToVector4();
-                    this.AdditiveParticlesEffect.DepthMap = gBuffer.DepthTarget;
-                    this.AdditiveParticlesEffect.InverseViewProjection = camera.InverseViewProjection;
+                var particle = this.Particles[i];
 
-                    this.AdditiveParticlesEffect.Apply();
+                this.AdditiveParticlesEffect.World = particle.Pose;
+                this.AdditiveParticlesEffect.View = camera.View;
+                this.AdditiveParticlesEffect.Projection = camera.Projection;
+                this.AdditiveParticlesEffect.DiffuseMap = particle.Texture;
+                this.AdditiveParticlesEffect.Tint = particle.Tint.ToVector4();
+                this.AdditiveParticlesEffect.DepthMap = gBuffer.DepthTarget;
+                this.AdditiveParticlesEffect.InverseViewProjection = camera.InverseViewProjection;
 
-                    this.Quad.SetTextureCoordinates(particle.MinUv, particle.MaxUv);
-                    this.Quad.Render();
-                }
+                this.AdditiveParticlesEffect.Apply();
+
+                this.Quad.SetTextureCoordinates(particle.MinUv, particle.MaxUv);
+                this.Quad.Render();
             }
         }
 
@@ -71,9 +72,9 @@ namespace MiniEngine.Pipeline.Particles.Systems
             this.Emitters.Clear();
             this.Linker.GetComponents(this.Emitters);
 
-            foreach (var emitter in this.Emitters)
+            for (var i = 0; i < this.Emitters.Count; i++)
             {
-                emitter.Update(elapsed);
+                this.Emitters[i].Update(elapsed);
             }
         }
     }

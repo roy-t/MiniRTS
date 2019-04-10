@@ -65,26 +65,25 @@ namespace MiniEngine.Pipeline.Lights.Systems
         {
             var ambientLight = this.ComputeAmbientLightZeroAlpha();
 
-            using (this.Device.ShadowCastingLightState())
-            {
-                // G-Buffer input
-                this.Effect.NormalMap = normalTarget;
-                this.Effect.DepthMap = depthTarget;
-                this.Effect.FilteredDepthMap = depthTarget;
-                this.Effect.NoiseMap = this.NoiseMap;
+            this.Device.ShadowCastingLightState();
 
-                // Light properties
-                this.Effect.Color = ambientLight;
-                this.Effect.Kernel = this.Kernel;
+            // G-Buffer input
+            this.Effect.NormalMap = normalTarget;
+            this.Effect.DepthMap = depthTarget;
+            this.Effect.FilteredDepthMap = depthTarget;
+            this.Effect.NoiseMap = this.NoiseMap;
 
-                // Camera properties
-                this.Effect.View = camera.View;
-                this.Effect.Projection = camera.Projection;
-                this.Effect.InverseViewProjection = camera.InverseViewProjection;
+            // Light properties
+            this.Effect.Color = ambientLight;
+            this.Effect.Kernel = this.Kernel;
 
-                this.Effect.Apply();
-                this.FullScreenTriangle.Render(this.Device);
-            }
+            // Camera properties
+            this.Effect.View = camera.View;
+            this.Effect.Projection = camera.Projection;
+            this.Effect.InverseViewProjection = camera.InverseViewProjection;
+
+            this.Effect.Apply();
+            this.FullScreenTriangle.Render(this.Device);
         }
 
         public void RenderFlat()
@@ -95,17 +94,16 @@ namespace MiniEngine.Pipeline.Lights.Systems
 
         public void Blur(PerspectiveCamera camera, RenderTarget2D sourceTarget, RenderTarget2D depthTarget)
         {
-            using (this.Device.ShadowCastingLightState())
-            {
-                // G-Buffer input
-                this.BlurEffect.DepthMap = depthTarget;
+            this.Device.ShadowCastingLightState();
 
-                this.BlurEffect.SourceMap = sourceTarget;
-                this.BlurEffect.MaxDistance = camera.FarPlane;
+            // G-Buffer input
+            this.BlurEffect.DepthMap = depthTarget;
 
-                this.BlurEffect.Apply();
-                this.FullScreenTriangle.Render(this.Device);
-            }
+            this.BlurEffect.SourceMap = sourceTarget;
+            this.BlurEffect.MaxDistance = camera.FarPlane;
+
+            this.BlurEffect.Apply();
+            this.FullScreenTriangle.Render(this.Device);
         }
 
         private Color ComputeAmbientLightZeroAlpha()
@@ -114,8 +112,10 @@ namespace MiniEngine.Pipeline.Lights.Systems
             this.EntityLinker.GetComponents(this.Lights);
 
             var accumulate = Color.TransparentBlack;
-            foreach (var light in this.Lights)
+            for (var i = 0; i < this.Lights.Count; i++)
             {
+                var light = this.Lights[i];
+
                 accumulate.R += light.Color.R;
                 accumulate.G += light.Color.G;
                 accumulate.B += light.Color.B;

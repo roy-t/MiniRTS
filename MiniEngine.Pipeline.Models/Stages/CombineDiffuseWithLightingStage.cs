@@ -21,15 +21,14 @@ namespace MiniEngine.Pipeline.Models.Stages
         public void Execute(ModelPipelineInput input)
         {
             this.Device.SetRenderTarget(input.GBuffer.CombineTarget);
-            using (this.Device.PostProcessState())
-            {
-                this.Effect.DiffuseMap = input.GBuffer.DiffuseTarget;
-                this.Effect.LightMap = input.GBuffer.LightTarget;
+            this.Device.PostProcessState();
 
-                this.Effect.Apply();
+            this.Effect.DiffuseMap = input.GBuffer.DiffuseTarget;
+            this.Effect.LightMap = input.GBuffer.LightTarget;
 
-                this.FullScreenTriangle.Render(this.Device);
-            }
+            this.Effect.Apply();
+
+            this.FullScreenTriangle.Render(this.Device);
         }
     }
 }

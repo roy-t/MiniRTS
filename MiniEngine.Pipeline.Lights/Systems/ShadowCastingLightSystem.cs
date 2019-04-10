@@ -43,32 +43,33 @@ namespace MiniEngine.Pipeline.Lights.Systems
             this.Lights.Clear();
             this.EntityLinker.GetComponents(this.Lights);
 
-            using (this.Device.ShadowCastingLightState())
+            this.Device.ShadowCastingLightState();
+
+            for (var i = 0; i < this.Lights.Count; i++)
             {
-                foreach (var light in this.Lights)
-                {
-                    // G-Buffer input                    
-                    this.Effect.NormalMap = gBuffer.NormalTarget;
-                    this.Effect.DepthMap = gBuffer.DepthTarget;
+                var light = this.Lights[i];
 
-                    // Light properties                    
-                    this.Effect.LightDirection = light.ViewPoint.Forward;
-                    this.Effect.LightPosition = light.ViewPoint.Position;
-                    this.Effect.Color = light.Color;
+                // G-Buffer input                    
+                this.Effect.NormalMap = gBuffer.NormalTarget;
+                this.Effect.DepthMap = gBuffer.DepthTarget;
 
-                    // Camera properties for specular reflections
-                    this.Effect.CameraPosition = perspectiveCamera.Position;
-                    this.Effect.InverseViewProjection = perspectiveCamera.InverseViewProjection;
+                // Light properties                    
+                this.Effect.LightDirection = light.ViewPoint.Forward;
+                this.Effect.LightPosition = light.ViewPoint.Position;
+                this.Effect.Color = light.Color;
 
-                    // Shadow properties
-                    this.Effect.ShadowMap = light.ShadowMap.DepthMap;
-                    this.Effect.ColorMap = light.ShadowMap.ColorMap;
-                    this.Effect.LightViewProjection = light.ViewPoint.ViewProjection;
+                // Camera properties for specular reflections
+                this.Effect.CameraPosition = perspectiveCamera.Position;
+                this.Effect.InverseViewProjection = perspectiveCamera.InverseViewProjection;
 
-                    this.Effect.Apply();
+                // Shadow properties
+                this.Effect.ShadowMap = light.ShadowMap.DepthMap;
+                this.Effect.ColorMap = light.ShadowMap.ColorMap;
+                this.Effect.LightViewProjection = light.ViewPoint.ViewProjection;
 
-                    this.FullScreenTriangle.Render(this.Device);
-                }
+                this.Effect.Apply();
+
+                this.FullScreenTriangle.Render(this.Device);
             }
         }
     }

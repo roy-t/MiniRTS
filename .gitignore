@@ -7,6 +7,9 @@
 [Pp]rometheus/
 [Gg]rafana/
 
+# Ignore stored diagnostic sessions
+[Dd]iagnosticSessions/
+
 # Ignore blender temporary files
 *.blend1
 

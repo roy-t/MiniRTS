@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using MiniEngine.Pipeline.Particles.Components;
 using MiniEngine.Primitives.Cameras;
-using MiniEngine.Units;
 using System.Collections.Generic;
 
 namespace MiniEngine.Pipeline.Particles.Systems
@@ -11,10 +10,12 @@ namespace MiniEngine.Pipeline.Particles.Systems
         public static void GatherParticles<T>(List<T> emitters, IViewPoint viewPoint, List<ParticlePose> particlesOut)
             where T : AEmitter
         {
-            foreach (var emitter in emitters)
+            for (var iEmitter = 0; iEmitter < emitters.Count; iEmitter++)
             {
-                foreach (var particle in emitter.Particles)
+                var emitter = emitters[iEmitter];
+                for (var iParticle = 0; iParticle < emitter.Particles.Count; iParticle++)
                 {
+                    var particle = emitter.Particles[iParticle];
                     var particlePose = ComputePose(viewPoint, emitter, particle);
                     particlesOut.Add(particlePose);
                 }

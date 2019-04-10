@@ -86,31 +86,31 @@ namespace MiniEngine.Pipeline.Models.Systems
             this.RenderEffect.World = Matrix.Identity;
             this.RenderEffect.View = viewPoint.View;
             this.RenderEffect.Projection = viewPoint.Projection;
-            
-            using (this.Device.WireFrameState())
-            {                
-                foreach (var outline in this.Outlines)
+
+            this.Device.WireFrameState();
+
+            for (var iOutline = 0; iOutline < this.Outlines.Count; iOutline++)
+            {
+                var outline = this.Outlines[iOutline];
+                if (outline.Color3D.A > 0)
                 {
-                    if (outline.Color3D.A > 0)
+                    var corners = outline.Model.BoundingBox.GetCorners();
+                    for (var iCorner = 0; iCorner < corners.Length; iCorner++)
                     {
-                        var corners = outline.Model.BoundingBox.GetCorners();
-                        for (var i = 0; i < corners.Length; i++)
-                        {
-                            this.Vertices[i].Position = new Vector4(corners[i], 1);
-                        }
-
-                        this.RenderEffect.DiffuseMap = GetTexture(outline.Color3D);
-                        this.RenderEffect.Apply(RenderEffectTechniques.Textured);
-
-                        this.Device.DrawUserIndexedPrimitives(
-                            PrimitiveType.LineList,
-                            this.Vertices,
-                            0,
-                            this.Vertices.Length,
-                            this.Indices,
-                            0,
-                            12);
+                        this.Vertices[iCorner].Position = new Vector4(corners[iCorner], 1);
                     }
+
+                    this.RenderEffect.DiffuseMap = GetTexture(outline.Color3D);
+                    this.RenderEffect.Apply(RenderEffectTechniques.Textured);
+
+                    this.Device.DrawUserIndexedPrimitives(
+                        PrimitiveType.LineList,
+                        this.Vertices,
+                        0,
+                        this.Vertices.Length,
+                        this.Indices,
+                        0,
+                        12);
                 }
             }
         }
@@ -122,34 +122,35 @@ namespace MiniEngine.Pipeline.Models.Systems
 
             this.RenderEffect.World = Matrix.Identity;
             this.RenderEffect.View = Matrix.Identity;
-            this.RenderEffect.Projection = Matrix.Identity;            
+            this.RenderEffect.Projection = Matrix.Identity;
 
-            using (this.Device.PostProcessState())
+            this.Device.PostProcessState();
+
+            for (var iOutline = 0; iOutline < this.Outlines.Count; iOutline++)
             {
-                foreach (var outline in this.Outlines)
+                var outline = this.Outlines[iOutline];
+
+                if (outline.Color2D.A > 0)
                 {
-                    if (outline.Color2D.A > 0)
+                    var rect = BoundingRectangle.CreateFromProjectedBoundingBox(outline.Model.BoundingBox, viewPoint.Frustum.Matrix);
+                    var projectedCorners = rect.GetCorners();
+
+                    for (var iCorner = 0; iCorner < projectedCorners.Length; iCorner++)
                     {
-                        var rect = BoundingRectangle.CreateFromProjectedBoundingBox(outline.Model.BoundingBox, viewPoint.Frustum.Matrix);
-                        var projectedCorners = rect.GetCorners();
-
-                        for (var i = 0; i < projectedCorners.Length; i++)
-                        {
-                            this.Vertices[i].Position = new Vector4(projectedCorners[i].X, projectedCorners[i].Y, 0, 1);
-                        }
-
-                        this.RenderEffect.DiffuseMap = GetTexture(outline.Color2D);
-                        this.RenderEffect.Apply(RenderEffectTechniques.Textured);
-
-                        this.Device.DrawUserIndexedPrimitives(
-                            PrimitiveType.LineList,
-                            this.Vertices,
-                            0,
-                            4,
-                            this.Indices,
-                            0,
-                            4);
+                        this.Vertices[iCorner].Position = new Vector4(projectedCorners[iCorner].X, projectedCorners[iCorner].Y, 0, 1);
                     }
+
+                    this.RenderEffect.DiffuseMap = GetTexture(outline.Color2D);
+                    this.RenderEffect.Apply(RenderEffectTechniques.Textured);
+
+                    this.Device.DrawUserIndexedPrimitives(
+                        PrimitiveType.LineList,
+                        this.Vertices,
+                        0,
+                        4,
+                        this.Indices,
+                        0,
+                        4);
                 }
             }
         }

@@ -28,9 +28,9 @@ namespace MiniEngine.Systems
         public void GetComponents(Entity entity, IList<IComponent> output)
         {
             var components = this.LookUp.Search(entity);
-            foreach (var component in components)
+            for (var i = 0; i < components.Count; i++)
             {
-                output.Add(component.Component);
+                output.Add(components[i].Component);
             }
         }
 
@@ -38,11 +38,11 @@ namespace MiniEngine.Systems
             where T : IComponent
         {
             var components = this.LookUp.Search(entity);
-            foreach (var component in components)
+            for (var i = 0; i < components.Count; i++)
             {
-                if (typeof(T).IsAssignableFrom(component.Component.GetType()))
+                if (typeof(T).IsAssignableFrom(components[i].Component.GetType()))
                 {
-                    output.Add((T)component.Component);
+                    output.Add((T)components[i].Component);
                 }
             }
         }
@@ -51,11 +51,11 @@ namespace MiniEngine.Systems
             where T : IComponent
         {            
             var components = this.LookUp.Search(entity);
-            foreach (var component in components)
+            for (var i = 0; i < components.Count; i++)
             {
-                if (typeof(T).IsAssignableFrom(component.Component.GetType()))
+                if (typeof(T).IsAssignableFrom(components[i].Component.GetType()))
                 {
-                    return (T)component.Component;
+                    return (T)components[i].Component;
                 }
             }
 
@@ -66,9 +66,9 @@ namespace MiniEngine.Systems
             where T : IComponent
         {
             var components = this.LookUp.Search(typeof(T));
-            foreach (var component in components)
+            for (var i = 0; i < components.Count; i++)
             {
-                output.Add((T)component.Component);
+                output.Add((T)components[i].Component);
             }
         }
 
@@ -76,9 +76,9 @@ namespace MiniEngine.Systems
             where T : IComponent
         {
             var components = this.LookUp.Search(entity);
-            foreach (var component in components)
+            for (var i = 0; i < components.Count; i++)
             {
-                if (typeof(T).IsAssignableFrom(component.Component.GetType()))
+                if (typeof(T).IsAssignableFrom(components[i].Component.GetType()))
                 {
                     return true;
                 }
@@ -90,9 +90,9 @@ namespace MiniEngine.Systems
             where T : IComponent
         {
             var components = this.LookUp.Search(typeof(T));
-            foreach(var component in components)
+            for (var i = 0; i < components.Count; i++)
             {
-                output.Add(component.Entity);
+                output.Add(components[i].Entity);
             }
         }        
     }

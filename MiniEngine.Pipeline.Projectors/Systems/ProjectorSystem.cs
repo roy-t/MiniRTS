@@ -34,30 +34,30 @@ namespace MiniEngine.Pipeline.Projectors.Systems
             this.Projectors.Clear();
             this.EntityLinker.GetComponents(this.Projectors);
 
-            using (this.Device.PostProcessState())
+            this.Device.PostProcessState();
+
+            for (var i = 0; i < this.Projectors.Count; i++)
             {
-                foreach(var projector in this.Projectors)
+                var projector = this.Projectors[i];
+                if (projector.ViewPoint.Frustum.Intersects(perspectiveCamera.Frustum))
                 {
-                    if (projector.ViewPoint.Frustum.Intersects(perspectiveCamera.Frustum))
-                    {
-                        //G-Buffer input
-                        this.Effect.DepthMap = gBuffer.DepthTarget;
+                    //G-Buffer input
+                    this.Effect.DepthMap = gBuffer.DepthTarget;
 
-                        // Projector properties
-                        this.Effect.ProjectorMap = projector.Texture;
-                        this.Effect.ProjectorViewProjection = projector.ViewPoint.ViewProjection;
-                        this.Effect.MaxDistance = projector.MaxDistance;
-                        this.Effect.ProjectorPosition = projector.ViewPoint.Position;
-                        this.Effect.ProjectorForward = projector.ViewPoint.Forward;
-                        this.Effect.Tint = projector.Tint;
+                    // Projector properties
+                    this.Effect.ProjectorMap = projector.Texture;
+                    this.Effect.ProjectorViewProjection = projector.ViewPoint.ViewProjection;
+                    this.Effect.MaxDistance = projector.MaxDistance;
+                    this.Effect.ProjectorPosition = projector.ViewPoint.Position;
+                    this.Effect.ProjectorForward = projector.ViewPoint.Forward;
+                    this.Effect.Tint = projector.Tint;
 
-                        // Camera properties
-                        this.Effect.InverseViewProjection = perspectiveCamera.InverseViewProjection;
+                    // Camera properties
+                    this.Effect.InverseViewProjection = perspectiveCamera.InverseViewProjection;
 
-                        this.Effect.Apply();
+                    this.Effect.Apply();
 
-                        this.FullScreenTriangle.Render(this.Device);
-                    }
+                    this.FullScreenTriangle.Render(this.Device);
                 }
             }
         }

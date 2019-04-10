@@ -24,18 +24,17 @@ namespace MiniEngine.Pipeline.Models.Stages
         public void Execute(ModelPipelineInput input)
         {
             this.Device.SetRenderTarget(input.GBuffer.FinalTarget);
-            using (this.Device.PostProcessState())
-            {
-                this.Effect.ScaleX = 1.0f / input.GBuffer.CombineTarget.Width;
-                this.Effect.ScaleY = 1.0f / input.GBuffer.CombineTarget.Height;
-                this.Effect.DiffuseMap = input.GBuffer.CombineTarget;
-                this.Effect.NormalMap = input.GBuffer.NormalTarget;
-                this.Effect.Strength = this.Strength;
+            this.Device.PostProcessState();
 
-                this.Effect.Apply();
+            this.Effect.ScaleX = 1.0f / input.GBuffer.CombineTarget.Width;
+            this.Effect.ScaleY = 1.0f / input.GBuffer.CombineTarget.Height;
+            this.Effect.DiffuseMap = input.GBuffer.CombineTarget;
+            this.Effect.NormalMap = input.GBuffer.NormalTarget;
+            this.Effect.Strength = this.Strength;
 
-                this.FullScreenTriangle.Render(this.Device);
-            }
+            this.Effect.Apply();
+
+            this.FullScreenTriangle.Render(this.Device);
         }
     }
 }

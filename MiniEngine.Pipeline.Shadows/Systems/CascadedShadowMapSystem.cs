@@ -35,8 +35,10 @@ namespace MiniEngine.Pipeline.Shadows.Systems
             this.ShadowMaps.Clear();
             this.Linker.GetComponents(this.ShadowMaps);
 
-            foreach (var shadowMapCascade in this.ShadowMaps)
+            for (var i = 0; i < this.ShadowMaps.Count; i++)
             {
+                var shadowMapCascade = this.ShadowMaps[i];
+
                 this.Frustum.ResetToViewVolume();
                 this.Frustum.Transform(perspectiveCamera.InverseViewProjection);
                 shadowMapCascade.GlobalShadowMatrix = CreateGlobalShadowMatrix(shadowMapCascade.SurfaceToLightVector, this.Frustum);

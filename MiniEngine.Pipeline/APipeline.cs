@@ -31,8 +31,10 @@ namespace MiniEngine.Pipeline
 
         public void Execute(T input, string label)
         {
-            foreach(var stage in this.Stages)
+            for (var i = 0; i < this.Stages.Count; i++)
             {
+                var stage = this.Stages[i];
+
                 this.MeterRegistry.StartGauge(this.StageGauge);
                 stage.Execute(input);
                 this.MeterRegistry.StopGauge(this.StageGauge, stage.GetType().Name, label);

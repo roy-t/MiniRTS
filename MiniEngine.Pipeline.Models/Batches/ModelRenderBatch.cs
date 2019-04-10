@@ -25,8 +25,9 @@ namespace MiniEngine.Pipeline.Models.Batches
 
         public void Draw(RenderEffectTechniques technique)
         {
-            foreach (var modelPose in this.Models)
+            for (var i = 0; i < this.Models.Count; i++)
             {
+                var modelPose = this.Models[i];
                 this.DrawModel(technique, modelPose.Model, modelPose.Pose.Matrix, this.ViewPoint);
             }
         }
@@ -41,10 +42,13 @@ namespace MiniEngine.Pipeline.Models.Batches
 
             model.CopyAbsoluteBoneTransformsTo(SharedBoneMatrix);
 
-            foreach (var mesh in model.Meshes)
+            for (var iMesh = 0; iMesh < model.Meshes.Count; iMesh++)
             {
-                foreach (var effect in mesh.Effects)
+                var mesh = model.Meshes[iMesh];
+
+                for (var iEffect = 0; iEffect < mesh.Effects.Count; iEffect++)
                 {
+                    var effect = mesh.Effects[iEffect];
                     this.Effect.Wrap(effect);
 
                     this.Effect.World = SharedBoneMatrix[mesh.ParentBone.Index] * world;

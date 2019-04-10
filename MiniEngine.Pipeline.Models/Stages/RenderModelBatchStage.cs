@@ -19,10 +19,9 @@ namespace MiniEngine.Pipeline.Models.Stages
                 input.GBuffer.DiffuseTarget,
                 input.GBuffer.NormalTarget,
                 input.GBuffer.DepthTarget);
-            using (this.Device.GeometryState())
-            {
-                input.Batch.Draw(RenderEffectTechniques.Deferred);
-            }
+
+            this.Device.GeometryState();
+            input.Batch.Draw(RenderEffectTechniques.Deferred);
         }
     }
 }

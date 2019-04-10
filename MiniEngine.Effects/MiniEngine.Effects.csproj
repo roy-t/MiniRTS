@@ -51,7 +51,6 @@
     <Compile Include="AmbientLightEffect.cs" />
     <Compile Include="AverageParticlesEffect.cs" />
     <Compile Include="CombineEffect.cs" />
-    <Compile Include="DeviceStates\DeviceState.cs" />
     <Compile Include="DirectionalLightEffect.cs" />
     <Compile Include="EffectWrapper.cs" />
     <Compile Include="BlurEffect.cs" />

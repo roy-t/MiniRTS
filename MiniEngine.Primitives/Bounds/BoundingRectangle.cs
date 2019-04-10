@@ -73,8 +73,9 @@ namespace MiniEngine.Primitives.Bounds
 
             var corners = box.GetCorners();
 
-            foreach (var corner in corners)
+            for (var i = 0; i < corners.Length; i++)
             {
+                var corner = corners[i];
                 var projectedCorner = WorldToView(corner, matrix);
 
                 minX = Math.Min(minX, projectedCorner.X);

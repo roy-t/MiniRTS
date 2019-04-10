@@ -33,50 +33,54 @@ namespace MiniEngine.Pipeline.Lights.Systems
             this.Lights.Clear();
             this.EntityLinker.GetComponents(this.Lights);
 
-            using (this.Device.LightState())
+            this.Device.LightState();
+
+            for (var iLight = 0; iLight < this.Lights.Count; iLight++)
             {
-                foreach (var light in this.Lights)
+                var light = this.Lights[iLight];
+
+                // G-Buffer input                        
+                this.Effect.NormalMap = gBuffer.NormalTarget;
+                this.Effect.DepthMap = gBuffer.DepthTarget;
+
+                // Light properties
+                var sphereWorldMatrix = Matrix.CreateScale(light.Radius) * Matrix.CreateTranslation(light.Position);
+                this.Effect.World = sphereWorldMatrix;
+                this.Effect.LightPosition = light.Position;
+                this.Effect.Color = light.Color;
+                this.Effect.Radius = light.Radius;
+                this.Effect.Intensity = light.Intensity;
+
+                // Camera properties for specular reflections
+                this.Effect.View = perspectiveCamera.View;
+                this.Effect.Projection = perspectiveCamera.Projection;
+                this.Effect.InverseViewProjection = perspectiveCamera.InverseViewProjection;
+                this.Effect.CameraPosition = perspectiveCamera.Position;
+
+                // If the camera is inside the light's radius we invert the cull direction
+                // otherwise the camera's sphere model is clipped
+                var inside = Vector3.Distance(perspectiveCamera.Position, light.Position) < light.Radius;
+                this.Device.RasterizerState = inside
+                    ? RasterizerState.CullClockwise
+                    : RasterizerState.CullCounterClockwise;
+
+                this.Effect.Apply();
+
+                for (var iMesh = 0; iMesh < this.Sphere.Meshes.Count; iMesh++)
                 {
-                    // G-Buffer input                        
-                    this.Effect.NormalMap = gBuffer.NormalTarget;
-                    this.Effect.DepthMap = gBuffer.DepthTarget;
-
-                    // Light properties
-                    var sphereWorldMatrix = Matrix.CreateScale(light.Radius) * Matrix.CreateTranslation(light.Position);
-                    this.Effect.World = sphereWorldMatrix;
-                    this.Effect.LightPosition = light.Position;
-                    this.Effect.Color = light.Color;
-                    this.Effect.Radius = light.Radius;
-                    this.Effect.Intensity = light.Intensity;
-
-                    // Camera properties for specular reflections
-                    this.Effect.View = perspectiveCamera.View;
-                    this.Effect.Projection = perspectiveCamera.Projection;
-                    this.Effect.InverseViewProjection = perspectiveCamera.InverseViewProjection;
-                    this.Effect.CameraPosition = perspectiveCamera.Position;
-
-                    // If the camera is inside the light's radius we invert the cull direction
-                    // otherwise the camera's sphere model is clipped
-                    var inside = Vector3.Distance(perspectiveCamera.Position, light.Position) < light.Radius;
-                    this.Device.RasterizerState = inside
-                        ? RasterizerState.CullClockwise
-                        : RasterizerState.CullCounterClockwise;
-
-                    this.Effect.Apply();
-
-                    foreach (var mesh in this.Sphere.Meshes)
+                    var mesh = this.Sphere.Meshes[iMesh];
+                    for (var iPart = 0; iPart < mesh.MeshParts.Count; iPart++)
                     {
-                        foreach (var meshPart in mesh.MeshParts)
-                        {
-                            this.Device.Indices = meshPart.IndexBuffer;
-                            this.Device.SetVertexBuffer(meshPart.VertexBuffer);
+                        var meshPart = mesh.MeshParts[iPart];
 
-                            this.Device.DrawIndexedPrimitives(
-                                PrimitiveType.TriangleList,
-                                0,
-                                meshPart.StartIndex,
-                                meshPart.PrimitiveCount);
-                        }
+                        this.Device.Indices = meshPart.IndexBuffer;
+                        this.Device.SetVertexBuffer(meshPart.VertexBuffer);
+
+                        this.Device.DrawIndexedPrimitives(
+                            PrimitiveType.TriangleList,
+                            0,
+                            meshPart.StartIndex,
+                            meshPart.PrimitiveCount);
                     }
                 }
             }

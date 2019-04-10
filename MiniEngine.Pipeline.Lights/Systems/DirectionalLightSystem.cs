@@ -32,26 +32,27 @@ namespace MiniEngine.Pipeline.Lights.Systems
             this.Lights.Clear();
             this.EntityLinker.GetComponents(this.Lights);
 
-            using (this.Device.LightState())
+            this.Device.LightState();
+
+            for (var i = 0; i < this.Lights.Count; i++)
             {
-                foreach (var light in this.Lights)
-                {
-                    // G-Buffer input                        
-                    this.Effect.NormalMap = gBuffer.NormalTarget;
-                    this.Effect.DepthMap = gBuffer.DepthTarget;
+                var light = this.Lights[i];
 
-                    // Light properties
-                    this.Effect.LightDirection = light.Direction;
-                    this.Effect.Color = light.Color;
+                // G-Buffer input                        
+                this.Effect.NormalMap = gBuffer.NormalTarget;
+                this.Effect.DepthMap = gBuffer.DepthTarget;
 
-                    // Camera properties for specular reflections
-                    this.Effect.CameraPosition = perspectiveCamera.Position;
-                    this.Effect.InverseViewProjection = perspectiveCamera.InverseViewProjection;
+                // Light properties
+                this.Effect.LightDirection = light.Direction;
+                this.Effect.Color = light.Color;
 
-                    this.Effect.Apply();
+                // Camera properties for specular reflections
+                this.Effect.CameraPosition = perspectiveCamera.Position;
+                this.Effect.InverseViewProjection = perspectiveCamera.InverseViewProjection;
 
-                    this.FullScreenTriangle.Render(this.Device);
-                }
+                this.Effect.Apply();
+
+                this.FullScreenTriangle.Render(this.Device);
             }
         }
     }

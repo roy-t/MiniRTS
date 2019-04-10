@@ -33,21 +33,23 @@ namespace MiniEngine.Pipeline.Models.Systems
 
             var transparentModels = SortBackToFront(this.TransparentModels, viewPoint);
             var batches = ComputeBatches(transparentModels, viewPoint);
-            foreach (var batch in batches)
+            for (var i = 0; i < batches.Count; i++)
             {
-                transparentBatches.Add(new ModelRenderBatch(batch, viewPoint));
+                transparentBatches.Add(new ModelRenderBatch(batches[i], viewPoint));
             }
 
             return new ModelBatchList(new ModelRenderBatch(this.OpaqueModels, viewPoint), transparentBatches);
         }
 
-        private static IEnumerable<AModel> SortBackToFront(IEnumerable<TransparentModel> models, IViewPoint viewPoint)
+        private static List<AModel> SortBackToFront(List<TransparentModel> models, IViewPoint viewPoint)
         {
             var modeList = new List<AModel>();
             var distanceList = new List<float>();
 
-            foreach (var model in models)
+            for (var i = 0; i < models.Count; i++)
             {
+                var model = models[i];
+
                 if (viewPoint.Frustum.Intersects(model.BoundingSphere))
                 {
                     var viewPosition = Vector4.Transform(model.BoundingSphere.Center, viewPoint.Frustum.Matrix);
@@ -61,16 +63,17 @@ namespace MiniEngine.Pipeline.Models.Systems
             return modeList;
         }
 
-        private static IReadOnlyList<List<AModel>> ComputeBatches(
-            IEnumerable<AModel> models,
-            IViewPoint viewPoint)
+        private static IReadOnlyList<List<AModel>> ComputeBatches(List<AModel> models, IViewPoint viewPoint)
         {
             var batches = new List<List<AModel>>();
 
             var currentBatch = new List<AModel>();
             var currentBounds = new BoundingRectangle();
-            foreach (var model in models)
+
+            for (var i = 0; i < models.Count; i++)
             {
+                var model = models[i];
+
                 var bounds = BoundingRectangle.CreateFromProjectedBoundingBox(
                     model.BoundingBox,
                     viewPoint.Frustum.Matrix);

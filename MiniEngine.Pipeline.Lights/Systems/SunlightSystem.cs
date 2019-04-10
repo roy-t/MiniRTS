@@ -39,36 +39,37 @@ namespace MiniEngine.Pipeline.Lights.Systems
             this.Lights.Clear();
             this.EntityLinker.GetComponents(this.Lights);
 
-            using (this.Device.ShadowCastingLightState())
+            this.Device.ShadowCastingLightState();
+
+            for (var i = 0; i < this.Lights.Count; i++)
             {
-                foreach (var light in this.Lights)
-                {
-                    var shadowMapCascades = light.ShadowMapCascades;
+                var light = this.Lights[i];
 
-                    // G-Buffer input     
-                    this.Effect.NormalMap = gBuffer.NormalTarget;
-                    this.Effect.DepthMap = gBuffer.DepthTarget;
+                var shadowMapCascades = light.ShadowMapCascades;
 
-                    // Light properties
-                    this.Effect.SurfaceToLightVector = shadowMapCascades.SurfaceToLightVector;
-                    this.Effect.LightColor = light.Color;
+                // G-Buffer input     
+                this.Effect.NormalMap = gBuffer.NormalTarget;
+                this.Effect.DepthMap = gBuffer.DepthTarget;
 
-                    // Camera properties for specular reflections, and rebuilding world positions
-                    this.Effect.CameraPosition = perspectiveCamera.Position;
-                    this.Effect.InverseViewProjection = perspectiveCamera.InverseViewProjection;
+                // Light properties
+                this.Effect.SurfaceToLightVector = shadowMapCascades.SurfaceToLightVector;
+                this.Effect.LightColor = light.Color;
 
-                    // Shadow properties
-                    this.Effect.ShadowMap = shadowMapCascades.DepthMapArray;
-                    this.Effect.ColorMap = shadowMapCascades.ColorMapArray;
-                    this.Effect.ShadowMatrix = shadowMapCascades.GlobalShadowMatrix;
-                    this.Effect.CascadeSplits = shadowMapCascades.CascadeSplits;
-                    this.Effect.CascadeOffsets = shadowMapCascades.CascadeOffsets;
-                    this.Effect.CascadeScales = shadowMapCascades.CascadeScales;
+                // Camera properties for specular reflections, and rebuilding world positions
+                this.Effect.CameraPosition = perspectiveCamera.Position;
+                this.Effect.InverseViewProjection = perspectiveCamera.InverseViewProjection;
 
-                    this.Effect.Apply();
+                // Shadow properties
+                this.Effect.ShadowMap = shadowMapCascades.DepthMapArray;
+                this.Effect.ColorMap = shadowMapCascades.ColorMapArray;
+                this.Effect.ShadowMatrix = shadowMapCascades.GlobalShadowMatrix;
+                this.Effect.CascadeSplits = shadowMapCascades.CascadeSplits;
+                this.Effect.CascadeOffsets = shadowMapCascades.CascadeOffsets;
+                this.Effect.CascadeScales = shadowMapCascades.CascadeScales;
 
-                    this.FullScreenTriangle.Render(this.Device);
-                }
+                this.Effect.Apply();
+
+                this.FullScreenTriangle.Render(this.Device);
             }
         }
     }

@@ -342,9 +342,9 @@ namespace MiniEngine.UI
 
                     var effect = this.UpdateEffect(this.LoadedTextures[drawCmd.TextureId]);
 
-                    foreach (var pass in effect.CurrentTechnique.Passes)
+                    for(var i = 0; i < effect.CurrentTechnique.Passes.Count; i++)                                   
                     {
-                        pass.Apply();
+                        effect.CurrentTechnique.Passes[i].Apply();
                         this.GraphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, vtxOffset, idxOffset, (int)drawCmd.ElemCount / 3);
                     }
 

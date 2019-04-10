@@ -55,8 +55,9 @@ namespace MiniEngine.Pipeline.Shadows.Systems
             this.ShadowMaps.Clear();
             this.EntityLinker.GetComponents(this.ShadowMaps);
 
-            foreach (var shadowMap in this.ShadowMaps)
+            for (var iMap = 0; iMap < this.ShadowMaps.Count; iMap++)
             {
+                var shadowMap = this.ShadowMaps[iMap];
                 var modelBatchList = this.ModelSystem.ComputeBatches(shadowMap.ViewPoint);
 
                 this.MeterRegistry.StartGauge(ShadowMapStep);
@@ -65,10 +66,10 @@ namespace MiniEngine.Pipeline.Shadows.Systems
                     this.Device.SetRenderTarget(shadowMap.DepthMap, shadowMap.Index);
                     this.Device.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.White, 1.0f, 0);
 
-                    using (this.Device.ShadowMapState())
-                    {
-                        modelBatchList.OpaqueBatch.Draw(RenderEffectTechniques.ShadowMap);
-                    }
+                    this.Device.ShadowMapState();
+
+                    modelBatchList.OpaqueBatch.Draw(RenderEffectTechniques.ShadowMap);
+
                 }
                 this.MeterRegistry.StopGauge(ShadowMapStep, "opaque");
 
@@ -90,14 +91,13 @@ namespace MiniEngine.Pipeline.Shadows.Systems
                     this.Device.SetRenderTarget(shadowMap.ColorMap, shadowMap.Index);
                     this.Device.Clear(ClearOptions.Target, Color.White, 1.0f, 0);
 
-                    using (this.Device.AlphaBlendOccluderState())
-                    {
-                        foreach (var batch in modelBatchList.TransparentBatches)
-                        {
-                            batch.Draw(RenderEffectTechniques.Textured);
-                        }
-                    }
+                    this.Device.AlphaBlendOccluderState();
 
+                    for (var iBatch = 0; iBatch < modelBatchList.TransparentBatches.Count; iBatch++)
+                    {
+                        var batch = modelBatchList.TransparentBatches[iBatch];
+                        batch.Draw(RenderEffectTechniques.Textured);
+                    }
                 }
                 this.MeterRegistry.StopGauge(ShadowMapStep, "transparent");
 

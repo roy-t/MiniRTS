@@ -1,7 +1,6 @@
 ﻿using MiniEngine.Systems.Components;
 using MiniEngine.Systems.Factories;
 using System.Collections.Generic;
-using System.Text;
 
 namespace MiniEngine.Systems
 {
@@ -28,34 +27,32 @@ namespace MiniEngine.Systems
 
         public void DestroyEntities(Entity[] entities)
         {
-            foreach (var entity in entities)
+            for (var i = 0; i < entities.Length; i++)
             {
-                this.DestroyEntity(entity);
+                this.DestroyEntity(entities[i]);
             }
         }
 
         public void DestroyAllEntities()
         {
             var entities = this.Creator.GetAllEntities();
-            foreach (var entity in entities)
+            for (var i = 0; i < entities.Count; i++)
             {
-                this.DestroyEntity(entity);
+                this.DestroyEntity(entities[i]);
             }
         }         
 
         public List<EntityDescription> DescribeAllEntities()
         {
-            var entities = new List<EntityDescription>();
-            var builder = new StringBuilder();
+            var descriptions = new List<EntityDescription>();
 
-            foreach (var entity in this.Creator.GetAllEntities())
+            var entities = this.Creator.GetAllEntities();
+            for (var i = 0; i < entities.Count; i++)
             {
-                builder.Clear();
-
-                entities.Add(new EntityDescription(entity, this.DescribeEntity(entity)));
+                descriptions.Add(new EntityDescription(entities[i], this.DescribeEntity(entities[i])));
             }
 
-            return entities;
+            return descriptions;
         }
 
         private List<ComponentDescription> DescribeEntity(Entity entity)
@@ -64,9 +61,9 @@ namespace MiniEngine.Systems
             var descriptions = new List<ComponentDescription>();
             this.EntityLinker.GetComponents(entity, components);
 
-            foreach (var component in components)
+            for (var i = 0; i < components.Count; i++)
             {
-                descriptions.Add(component.Describe());
+                descriptions.Add(components[i].Describe());
             }
 
             return descriptions;
@@ -74,9 +71,9 @@ namespace MiniEngine.Systems
 
         private void RemoveEntityFromSystems(Entity entity)
         {
-            foreach (var factory in this.Factories)
+            for (var i = 0; i < this.Factories.Count; i++)
             {
-                factory.Deconstruct(entity);
+                this.Factories[i].Deconstruct(entity);
             }
         }
     }

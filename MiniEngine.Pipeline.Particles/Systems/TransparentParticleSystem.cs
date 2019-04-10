@@ -52,47 +52,47 @@ namespace MiniEngine.Pipeline.Particles.Systems
 
             ParticleHelper.GatherParticles(this.Emitters, camera, this.Particles);
 
-            using (this.Device.WeightedParticlesState())
+            this.Device.WeightedParticlesState();
+
+            for (var i = 0; i < this.Particles.Count; i++)
             {
-                foreach (var particle in this.Particles)
-                {
-                    this.WeightedParticlesEffect.World = particle.Pose;
-                    this.WeightedParticlesEffect.View = camera.View;
-                    this.WeightedParticlesEffect.Projection = camera.Projection;
-                    this.WeightedParticlesEffect.DiffuseMap = particle.Texture;
-                    this.WeightedParticlesEffect.Tint = particle.Tint.ToVector4();
-                    this.WeightedParticlesEffect.DepthMap = gBuffer.DepthTarget;
-                    this.WeightedParticlesEffect.InverseViewProjection = camera.InverseViewProjection;
+                var particle = this.Particles[i];
 
-                    this.WeightedParticlesEffect.Apply();
+                this.WeightedParticlesEffect.World = particle.Pose;
+                this.WeightedParticlesEffect.View = camera.View;
+                this.WeightedParticlesEffect.Projection = camera.Projection;
+                this.WeightedParticlesEffect.DiffuseMap = particle.Texture;
+                this.WeightedParticlesEffect.Tint = particle.Tint.ToVector4();
+                this.WeightedParticlesEffect.DepthMap = gBuffer.DepthTarget;
+                this.WeightedParticlesEffect.InverseViewProjection = camera.InverseViewProjection;
 
-                    this.Quad.SetTextureCoordinates(particle.MinUv, particle.MaxUv);
-                    this.Quad.Render();
-                }
+                this.WeightedParticlesEffect.Apply();
+
+                this.Quad.SetTextureCoordinates(particle.MinUv, particle.MaxUv);
+                this.Quad.Render();
             }
         }
 
         public void AverageParticles(RenderTarget2D colorMap, RenderTarget2D weightMap)
         {
-            using (this.Device.AdditiveParticleState())
-            {
-                this.AverageParticlesEffect.ColorMap = colorMap;
-                this.AverageParticlesEffect.WeightMap = weightMap;
+            this.Device.AdditiveParticleState();
 
-                this.AverageParticlesEffect.Apply();
+            this.AverageParticlesEffect.ColorMap = colorMap;
+            this.AverageParticlesEffect.WeightMap = weightMap;
 
-                this.FullScreenTriangle.Render(this.Device);
-            }           
-        }
+            this.AverageParticlesEffect.Apply();
+
+            this.FullScreenTriangle.Render(this.Device);
+        }    
       
         public void Update(PerspectiveCamera camera, Seconds elapsed)
         {
             this.Emitters.Clear();
             this.Linker.GetComponents(this.Emitters);
 
-            foreach (var emitter in this.Emitters)
+            for (var i = 0; i < this.Emitters.Count; i++)
             {
-                emitter.Update(elapsed);
+                this.Emitters[i].Update(elapsed);
             }
         }        
     }

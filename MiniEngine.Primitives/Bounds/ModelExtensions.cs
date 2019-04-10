@@ -28,12 +28,14 @@ namespace MiniEngine.Primitives.Bounds
             model.CopyAbsoluteBoneTransformsTo(absoluteBoneTransforms);
 
             // For each mesh of the model
-            foreach (var mesh in model.Meshes)
+            for (var iMesh = 0; iMesh < model.Meshes.Count; iMesh++)
             {
+                var mesh = model.Meshes[iMesh];
                 var localWorldTransform = absoluteBoneTransforms[mesh.ParentBone.Index] * worldTransform;
 
-                foreach (var meshPart in mesh.MeshParts)
+                for (var iPart = 0; iPart < mesh.MeshParts.Count; iPart++)
                 {
+                    var meshPart = mesh.MeshParts[iPart];
                     // Vertex buffer parameters
                     var vertexStride = meshPart.VertexBuffer.VertexDeclaration.VertexStride;
                     var vertexBufferSize = meshPart.NumVertices * vertexStride;
