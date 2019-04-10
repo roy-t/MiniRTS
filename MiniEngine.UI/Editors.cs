@@ -69,6 +69,7 @@ namespace MiniEngine.UI
                     break;
 
                 case Color color:
+                    // TODO: colors are pre-multiplied, handle that better
                     var c = ToNum(color.ToVector4());
                     if (ImGui.ColorEdit4(label, ref c))
                     {
@@ -81,6 +82,13 @@ namespace MiniEngine.UI
                     if (CreateFloat(label, ref fs, minMax))                    
                     {
                         setter(new Seconds(fs));
+                    }
+                    break;
+                case Meters m:
+                    var fm = m.Value;
+                    if (CreateFloat(label, ref fm, minMax))
+                    {
+                        setter(new Meters(fm));
                     }
                     break;
                 case float f:

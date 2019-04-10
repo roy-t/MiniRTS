@@ -52,6 +52,8 @@ namespace MiniEngine.Configuration
             this.RegisterEffect<ShadowCastingLightEffect>("ShadowCastingLightEffect");
             this.RegisterEffect<SunlightEffect>("SunlightEffect");
 
+            this.RegisterEffect<ProjectorEffect>("ProjectorEffect");
+
             // Textures
             this.RegisterContent<Texture2D>("NeutralMask", "neutralMask");
             this.RegisterContent<Texture2D>("NeutralNormal", "neutralNormal");

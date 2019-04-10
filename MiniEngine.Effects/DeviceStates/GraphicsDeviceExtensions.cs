@@ -184,7 +184,7 @@ namespace MiniEngine.Effects.DeviceStates
                 BlendState.Additive,
                 DepthStencilState.None,
                 RasterizerState.CullNone);
-        }      
+        }              
 
         /// <summary>
         /// Graphics device state for rendering everything as wireframes

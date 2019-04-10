@@ -58,6 +58,7 @@
     <Compile Include="FxaaEffect.cs" />
     <Compile Include="DeviceStates\GraphicsDeviceExtensions.cs" />
     <Compile Include="PointLightEffect.cs" />
+    <Compile Include="ProjectorEffect.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RenderEffect.cs" />
     <Compile Include="ShadowCastingLightEffect.cs" />

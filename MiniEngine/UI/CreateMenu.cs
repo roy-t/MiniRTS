@@ -1,4 +1,5 @@
 ﻿using ImGuiNET;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Controllers;
 using MiniEngine.Pipeline.Models.Components;
@@ -90,7 +91,7 @@ namespace MiniEngine.UI
 
                 if (ImGui.MenuItem("Projector"))
                 {
-                    this.ProjectorFactory.Construct(this.State.SelectedEntity, this.Texture, this.Camera.Position, this.Camera.LookAt);                    
+                    this.ProjectorFactory.Construct(this.State.SelectedEntity, this.Texture, Color.White * 0.5f, 100.0f, this.Camera.Position, this.Camera.LookAt);                    
                 }
 
                 ImGui.EndMenu();

@@ -74,6 +74,12 @@
 /processorParam:DebugMode=Auto
 /build:Effects/PointLightEffect.fx
 
+#begin Effects/ProjectorEffect.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Effects/ProjectorEffect.fx
+
 #begin Effects/RenderEffect.fx
 /importer:EffectImporter
 /processor:EffectProcessor

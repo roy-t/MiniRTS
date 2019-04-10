@@ -16,7 +16,7 @@ namespace MiniEngine.Pipeline.Projectors.Extensions
 
         public static ProjectorPipeline RenderProjectors(this ProjectorPipeline pipeline, ProjectorSystem projectorSystem)
         {
-            var stage = new RenderProjectorsInternalStage(projectorSystem);
+            var stage = new RenderProjectorsInternalStage(pipeline.Device, projectorSystem);
             pipeline.Add(stage);
 
             return pipeline;

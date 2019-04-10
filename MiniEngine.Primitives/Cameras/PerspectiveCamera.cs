@@ -5,20 +5,22 @@ namespace MiniEngine.Primitives.Cameras
 {
     public sealed class PerspectiveCamera : IMovableViewPoint
     {
+        private const float Epsilon = 0.001f;
+
         public PerspectiveCamera(Viewport viewport)
         {
             this.NearPlane = 0.1f;
             this.FarPlane = 250.0f;
-            this.AspectRatio = viewport.AspectRatio;
-            this.FieldOfView = MathHelper.PiOver2;
+            this.AspectRatio = viewport.AspectRatio;            
 
             this.Move(Vector3.Backward * 10, Vector3.Zero);
+            this.SetFieldOfView(MathHelper.PiOver2);
         }
 
         public float NearPlane { get; }
         public float FarPlane { get; }
         public float AspectRatio { get; }
-        public float FieldOfView { get; }
+        public float FieldOfView { get; private set;}
         public Vector3 LookAt { get; private set; }
         public Matrix ViewProjection { get; private set; }
 
@@ -36,20 +38,31 @@ namespace MiniEngine.Primitives.Cameras
         {
             this.Position = position;
             this.LookAt = lookAt;
-
             this.Forward = Vector3.Normalize(lookAt - position);
 
-            this.View = Matrix.CreateLookAt(this.Position, this.LookAt, Vector3.Up);
-            this.Projection = Matrix.CreatePerspectiveFieldOfView(
-                this.FieldOfView,
-                this.AspectRatio,
-                this.NearPlane,
-                this.FarPlane);
-            this.ViewProjection = this.View * this.Projection;
+            this.View = Matrix.CreateLookAt(this.Position, this.LookAt, Vector3.Up);           
 
-            this.Frustum = new BoundingFrustum(this.ViewProjection);
-
-            this.InverseViewProjection = Matrix.Invert(this.ViewProjection);
+            this.ComputeMatrices();            
         }
+
+        public void SetFieldOfView(float fieldOfView)
+        {
+            this.FieldOfView = MathHelper.Clamp(fieldOfView, Epsilon, MathHelper.Pi - Epsilon);
+
+            this.Projection = Matrix.CreatePerspectiveFieldOfView(
+               this.FieldOfView,
+               this.AspectRatio,
+               this.NearPlane,
+               this.FarPlane);
+
+            this.ComputeMatrices();
+        }
+
+        private void ComputeMatrices()
+        {
+            this.ViewProjection = this.View * this.Projection;
+            this.Frustum = new BoundingFrustum(this.ViewProjection);
+            this.InverseViewProjection = Matrix.Invert(this.ViewProjection);
+        }       
     }
 }

@@ -1,5 +1,6 @@
 # Worklist
 ## TODO
+- Add icons for where a projector/light/... is
 
 ### Misc
 - Allow scenes to share code or inherit
@@ -17,8 +18,14 @@
 - Clean up code
 - Make batch processing work like particles
 
+### Projectors
+- Maybe we can also project onto the Normal target to get interesting light effects from decals?
+- Move ColorMap effect to projector system for both models and textures, removing the costs from shadow casting lights and sunlights
+  only projecting colors when we want to
+
 ### General
 - Find bottlenecks and optimize
+- Add outlines for cameras, and lights (that often use cameras internally).
 
 ## Interesting
 - Reflections

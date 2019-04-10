@@ -25,7 +25,7 @@ namespace MiniEngine.Pipeline.Models.Stages
             if (input.Pass.Type == PassType.Opaque)
             {
                 this.Device.SetRenderTarget(input.GBuffer.DepthTarget);
-                this.Device.Clear(Color.TransparentBlack);
+                this.Device.Clear(Color.White); // clear to max distance
             }
 
             this.Device.SetRenderTarget(input.GBuffer.CombineTarget);
