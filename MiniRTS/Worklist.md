@@ -42,6 +42,7 @@
 ## Known Issues
 - Sometimes transparency effects from the sunlight disappear when zooming in. Possibly due to the camera for that cascade not seeing the object anymore, even though backface culling and z-culling are disabled. This can usually be prevented by tweaking the cascade distances.
 - SSAO: tiling effect for flat surfaces that have no normal map
+- Projectors also project on the back of objects, maybe check that via the normal map so it wont happen? Not a real problem for now
 
 ## Known Issues in dependencies
 - The IMGUI.net NuGet package does not automatically copy cimgui.dll to the output directory on build. See https://github.com/mellinoe/ImGui.NET/issues/83 because of this I've added it the the UI project (as a link). But this might break when updating the library! Or when redistributing the engine

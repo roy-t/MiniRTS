@@ -19,6 +19,7 @@ namespace MiniEngine.Pipeline.Projectors.Factories
         {
             var viewPoint = new PerspectiveCamera(new Viewport(0, 0, texture.Width, texture.Height));
             viewPoint.Move(position, lookAt);
+            viewPoint.SetPlanes(1.0f, maxDistance);
 
             var projector = new Projector(texture, tint, maxDistance, viewPoint);
             this.Linker.AddComponent(entity, projector);

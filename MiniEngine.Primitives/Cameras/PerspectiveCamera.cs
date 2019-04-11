@@ -17,8 +17,8 @@ namespace MiniEngine.Primitives.Cameras
             this.SetFieldOfView(MathHelper.PiOver2);
         }
 
-        public float NearPlane { get; }
-        public float FarPlane { get; }
+        public float NearPlane { get; private set; }
+        public float FarPlane { get; private set; }
         public float AspectRatio { get; }
         public float FieldOfView { get; private set;}
         public Vector3 LookAt { get; private set; }
@@ -54,6 +54,20 @@ namespace MiniEngine.Primitives.Cameras
                this.AspectRatio,
                this.NearPlane,
                this.FarPlane);
+
+            this.ComputeMatrices();
+        }
+
+        public void SetPlanes(float near, float far)
+        {
+            this.NearPlane = near;
+            this.FarPlane = far;
+
+            this.Projection = Matrix.CreatePerspectiveFieldOfView(
+              this.FieldOfView,
+              this.AspectRatio,
+              this.NearPlane,
+              this.FarPlane);
 
             this.ComputeMatrices();
         }
