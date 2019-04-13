@@ -5,6 +5,7 @@ using MiniEngine.Primitives;
 using MiniEngine.Systems.Components;
 using MiniEngine.Units;
 using System;
+using System.Linq;
 using Num = System.Numerics;
 
 namespace MiniEngine.UI
@@ -12,7 +13,7 @@ namespace MiniEngine.UI
     public sealed class Editors
     {
         private const float DragSpeed = 0.01f;
-
+        private const int SliderDragThreshold = 10;
         private readonly ImGuiRenderer GuiRenderer;
 
         public Editors(ImGuiRenderer guiRenderer)
@@ -110,6 +111,15 @@ namespace MiniEngine.UI
                         setter(b);
                     }
                     break;
+
+                case Enum e:
+                    var items = Enum.GetNames(e.GetType()).ToList();
+                    var ei = items.IndexOf(Enum.GetName(e.GetType(), e));
+                    if (ImGui.Combo(label, ref ei, items.ToArray(), items.Count))
+                    {
+                        setter(Enum.Parse(e.GetType(), items[ei]));
+                    }
+                    break;
                 default:
                     ImGui.Text($"{label}: {value.ToString()}*");
                     return;
@@ -128,10 +138,14 @@ namespace MiniEngine.UI
                     return ImGui.SliderFloat3(label, ref v, -1, 1);
 
                 case MinMaxDescriptionType.ZeroToInfinity:
-                    return ImGui.DragFloat3(label, ref v, DragSpeed, 0);
+                    return ImGui.DragFloat3(label, ref v, DragSpeed, 0, float.MaxValue);
 
                 case MinMaxDescriptionType.Custom:
-                    return ImGui.SliderFloat3(label, ref v, minMax.Min, minMax.Max);
+                    if ((minMax.Max - minMax.Min) < SliderDragThreshold)
+                    {
+                        return ImGui.SliderFloat3(label, ref v, minMax.Min, minMax.Max);
+                    }
+                    return ImGui.DragFloat3(label, ref v, DragSpeed, minMax.Min, minMax.Max);
 
                 case MinMaxDescriptionType.MinusInfinityToInfinity:
                 default:
@@ -150,10 +164,14 @@ namespace MiniEngine.UI
                     return ImGui.SliderFloat(label, ref v, -1, 1);
 
                 case MinMaxDescriptionType.ZeroToInfinity:
-                    return ImGui.DragFloat(label, ref v, DragSpeed, 0);
+                    return ImGui.DragFloat(label, ref v, DragSpeed, 0, float.MaxValue);
 
                 case MinMaxDescriptionType.Custom:
-                    return ImGui.SliderFloat(label, ref v, minMax.Min, minMax.Max);
+                    if((minMax.Max - minMax.Min) < SliderDragThreshold)
+                    {
+                        return ImGui.SliderFloat(label, ref v, minMax.Min, minMax.Max);
+                    }                    
+                    return ImGui.DragFloat(label, ref v, DragSpeed, minMax.Min, minMax.Max);
 
                 default:
                 case MinMaxDescriptionType.MinusInfinityToInfinity:
@@ -175,7 +193,11 @@ namespace MiniEngine.UI
                     return ImGui.DragInt(label, ref v, DragSpeed, 0);
 
                 case MinMaxDescriptionType.Custom:
-                    return ImGui.SliderInt(label, ref v, (int)Math.Round(minMax.Min), (int)Math.Round(minMax.Max));
+                    if ((minMax.Max - minMax.Min) < SliderDragThreshold)
+                    {
+                        return ImGui.SliderInt(label, ref v, (int)Math.Round(minMax.Min), (int)Math.Round(minMax.Max));
+                    }
+                    return ImGui.DragInt(label, ref v, DragSpeed, (int)Math.Round(minMax.Min), (int)Math.Round(minMax.Max));
 
                 default:
                 case MinMaxDescriptionType.MinusInfinityToInfinity:

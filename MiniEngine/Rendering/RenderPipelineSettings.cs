@@ -1,4 +1,6 @@
-﻿namespace MiniEngine.Rendering
+﻿using MiniEngine.Effects.Techniques;
+
+namespace MiniEngine.Rendering
 {
     public sealed class RenderPipelineSettings
     {
@@ -23,6 +25,8 @@
         public bool EnableParticles { get; set; }
         public bool Enable3DOutlines { get; set; }
         public bool Enable2DOutlines { get; set; }
+
         public bool EnableProjectors { get; set; }
+        public ProjectorEffectTechniques ProjectorTechnique { get; set; }
     }
 }

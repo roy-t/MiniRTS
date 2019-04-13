@@ -1,5 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MiniEngine.Effects.Techniques;
+using System;
 
 namespace MiniEngine.Effects
 {
@@ -54,6 +56,21 @@ namespace MiniEngine.Effects
             set => this.effect.Parameters["ProjectorViewProjection"].SetValue(value);
         }
 
-        public void Apply() => this.ApplyPass();
+        public void Apply(ProjectorEffectTechniques technique)
+        {
+            switch (technique)
+            {
+                case ProjectorEffectTechniques.Projector:
+                    this.effect.CurrentTechnique = this.effect.Techniques["ProjectorEffect"];
+                    break;
+                case ProjectorEffectTechniques.ProjectorOverdraw:
+                    this.effect.CurrentTechnique = this.effect.Techniques["ProjectorOverdrawEffect"];
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(technique), technique, null);
+            }
+
+            this.ApplyPass();
+        }
     }
 }

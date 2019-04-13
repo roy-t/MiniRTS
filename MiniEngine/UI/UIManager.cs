@@ -65,8 +65,17 @@ namespace MiniEngine.UI
             this.lightsController = new LightsController(entityManager, lightsFactory);
 
             this.UIState = UIState.Deserialize();
-            var editors = new Editors(this.Gui);
 
+            // After loading the selected entity might have disappeared
+            var selectedEntity = this.UIState.EntityState.SelectedEntity;
+            var allEntities = entityManager.Creator.GetAllEntities();
+            if (!allEntities.Contains(selectedEntity))
+            {
+                this.UIState.EntityState.SelectedEntity = allEntities.FirstOrDefault();
+
+            }
+
+            var editors = new Editors(this.Gui);
 
             this.fileMenu = new FileMenu(this.UIState, game, sceneSelector);
             this.entitiesMenu = new EntityMenu(this.UIState, entityManager);

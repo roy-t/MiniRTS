@@ -68,12 +68,20 @@ namespace MiniEngine.Primitives
                 2);
         }
 
-        public void Render(Vector3 v0, Vector3 v1, Vector3 v2, Vector3 v3)
+        public void Render(Vector3 v0, Vector3 v1, Vector3 v2, Vector3 v3,
+            Vector2 uv0, Vector2 uv1, Vector2 uv2, Vector2 uv3)
         {
             this.Vertices[0].Position = new Vector4(v0, 1);
+            this.Vertices[0].TextureCoordinate = uv0;
+
             this.Vertices[1].Position = new Vector4(v1, 1);
+            this.Vertices[1].TextureCoordinate = uv1;
+
             this.Vertices[2].Position = new Vector4(v2, 1);
+            this.Vertices[2].TextureCoordinate = uv2;
+
             this.Vertices[3].Position = new Vector4(v3, 1);
+            this.Vertices[3].TextureCoordinate = uv3;
 
             this.Render();
         }

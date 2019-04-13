@@ -1,10 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Pipeline.Projectors.Components;
-using MiniEngine.Primitives.Cameras;
 using MiniEngine.Systems;
 using MiniEngine.Systems.Factories;
-using MiniEngine.Units;
 
 namespace MiniEngine.Pipeline.Projectors.Factories
 {
@@ -15,13 +13,9 @@ namespace MiniEngine.Pipeline.Projectors.Factories
         {
         }
 
-        public Projector Construct(Entity entity, Texture2D texture, Color tint, Meters maxDistance, Vector3 position, Vector3 lookAt)
+        public Projector Construct(Entity entity, Texture2D texture, Color tint, Vector3 position, Vector3 lookAt)
         {
-            var viewPoint = new PerspectiveCamera(new Viewport(0, 0, texture.Width, texture.Height));
-            viewPoint.Move(position, lookAt);
-            viewPoint.SetPlanes(1.0f, maxDistance);
-
-            var projector = new Projector(texture, tint, maxDistance, viewPoint);
+            var projector = new Projector(texture, tint, position, lookAt, 1.0f, 25.0f);
             this.Linker.AddComponent(entity, projector);
 
             return projector;

@@ -62,6 +62,7 @@
     <Compile Include="RenderEffect.cs" />
     <Compile Include="ShadowCastingLightEffect.cs" />
     <Compile Include="SunlightEffect.cs" />
+    <Compile Include="Techniques\ProjectorEffectTechniques.cs" />
     <Compile Include="Techniques\RenderEffectTechniques.cs" />
     <Compile Include="AdditiveParticlesEffect.cs" />
     <Compile Include="WeightedParticlesEffect.cs" />

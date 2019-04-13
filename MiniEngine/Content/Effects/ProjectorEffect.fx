@@ -70,7 +70,38 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
         return tex2D(projectorSampler, projectorMapCoordinates) * Tint;        
     }
     
-    return float4(1.0f, 0.0f, 0.0f, 0.0f);
+    return float4(0, 0, 0, 0);
+}
+
+// Copied MainPS that displays texture coordinates when out of projector space
+float4 OverdrawPS(VertexShaderOutput input) : COLOR0
+{
+    float2 texCoord = input.TexCoord;
+    float4 position = ReadWorldPosition(texCoord, InverseViewProjection);
+
+    // Move from world position to the reference frame of the projector
+    float4 positionInProjectorReferenceFrame = mul(position, ProjectorViewProjection);
+
+    // Figure out where on the projector map the current pixel is
+    float2 projectorMapCoordinates = ToTextureCoordinates(positionInProjectorReferenceFrame.xy, positionInProjectorReferenceFrame.w);
+
+    // Distance between pixel and projector
+    float dist = distance(ProjectorPosition, position.xyz);
+
+    // Angle between pixel and projector, dir > 0 means the pixel is in fron of the projector
+    // while dir < 0 means its behind it.
+    float3 direction = normalize(position.xyz - ProjectorPosition);
+    float dir = dot(ProjectorForward, direction);
+
+    // Only apply the projector if the it is inside the bounds of the projector texture, close enough, and in front of the projector
+    if (dir > 0 && dist < MaxDistance &&
+        projectorMapCoordinates.x >= 0.0f && projectorMapCoordinates.x <= 1.0f &&
+        projectorMapCoordinates.y >= 0.0f && projectorMapCoordinates.y <= 1.0f)
+    {
+        return tex2D(projectorSampler, projectorMapCoordinates) * Tint;
+    }
+
+    return float4(texCoord.x, texCoord.y, 0.0f, 0.0f);    
 }
 
 technique ProjectorEffect
@@ -79,5 +110,14 @@ technique ProjectorEffect
     {
         VertexShader = compile VS_SHADERMODEL MainVS();
         PixelShader = compile PS_SHADERMODEL MainPS();
+    }
+}
+
+technique ProjectorOverdrawEffect
+{
+    pass Pass0
+    {
+        VertexShader = compile VS_SHADERMODEL MainVS();
+        PixelShader = compile PS_SHADERMODEL OverdrawPS();
     }
 }

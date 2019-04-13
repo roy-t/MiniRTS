@@ -134,6 +134,8 @@ namespace MiniEngine.Rendering
             {
                 this.ProjectorPipeline             
                     .RenderProjectors(this.ProjectorSystem);
+
+                this.ProjectorSystem.Technique = this.Settings.ProjectorTechnique;
             }
 
             this.ModelPipeline

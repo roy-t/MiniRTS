@@ -7,15 +7,18 @@ namespace MiniEngine.Primitives.Cameras
     {
         private const float Epsilon = 0.001f;
 
-        public PerspectiveCamera(Viewport viewport)
+        public PerspectiveCamera(float aspectRatio)
         {
             this.NearPlane = 0.1f;
             this.FarPlane = 250.0f;
-            this.AspectRatio = viewport.AspectRatio;            
+            this.AspectRatio = aspectRatio;
 
             this.Move(Vector3.Backward * 10, Vector3.Zero);
             this.SetFieldOfView(MathHelper.PiOver2);
         }
+
+        public PerspectiveCamera(Viewport viewport)
+            : this(viewport.AspectRatio) { }
 
         public float NearPlane { get; private set; }
         public float FarPlane { get; private set; }
@@ -60,8 +63,8 @@ namespace MiniEngine.Primitives.Cameras
 
         public void SetPlanes(float near, float far)
         {
-            this.NearPlane = near;
-            this.FarPlane = far;
+            this.NearPlane = MathHelper.Clamp(near, Epsilon, float.MaxValue);
+            this.FarPlane = MathHelper.Clamp(far, this.NearPlane + Epsilon, float.MaxValue);
 
             this.Projection = Matrix.CreatePerspectiveFieldOfView(
               this.FieldOfView,
