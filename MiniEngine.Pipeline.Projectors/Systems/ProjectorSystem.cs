@@ -113,21 +113,22 @@ namespace MiniEngine.Pipeline.Projectors.Systems
 
                     // Camera properties
                     this.Effect.InverseViewProjection = perspectiveCamera.InverseViewProjection;
-
-                    var bounds = BoundingBox.CreateFromPoints(projector.ViewPoint.Frustum.GetCorners());
-                    this.Quad.WrapOnScreen(bounds, perspectiveCamera);
+                    
+                    this.Quad.WrapOnScreen(projector.ViewPoint.Frustum, perspectiveCamera);
 
                     this.Effect.Apply(this.Technique);
                     this.Quad.Render();
+
                     
-                    this.DrawBoundingBox(bounds, projector.Texture, perspectiveCamera);
+                    this.DrawBoundingBox(projector.ViewPoint.Frustum, projector.Texture, perspectiveCamera);
                 }
             }
         }
 
-
-        private void DrawBoundingBox(BoundingBox bounds, Texture2D texture, PerspectiveCamera camera)
+        // TODO: move the outline system and make sure it can draw projectors as well so that we don't need this code!
+        private void DrawBoundingBox(BoundingFrustum frustum, Texture2D texture, PerspectiveCamera camera)
         {
+            var bounds = BoundingBox.CreateFromPoints(frustum.GetCorners());
             var corners = bounds.GetCorners();
             for (var iCorner = 0; iCorner < corners.Length; iCorner++)
             {

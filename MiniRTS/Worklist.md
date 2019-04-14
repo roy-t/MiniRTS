@@ -22,6 +22,8 @@
 - Maybe we can also project onto the Normal target to get interesting light effects from decals?
 - Move ColorMap effect to projector system for both models and textures, removing the costs from shadow casting lights and sunlights
   only projecting colors when we want to
+- WrappableQuad creates a full screen quad so the projector optimization doesn't break special case. Is there anything we can do to
+  fix those special cases more optimal?
 
 ### General
 - Find bottlenecks and optimize

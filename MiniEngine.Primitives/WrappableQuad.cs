@@ -51,40 +51,14 @@ namespace MiniEngine.Primitives
         public void WrapOnScreen(BoundingBox bounds, PerspectiveCamera camera)
         {
             bounds.GetCorners(this.Corners);
-
-            for(var i = 0; i < this.Corners.Length; i++)
-            {
-                var corner = this.Corners[i];
-
-                // If one of the corners is behind the camera the computed 2D space 
-                // is wrong so cover the entire screen.
-                if (IsBehindCamera(corner, camera))
-                {
-                    this.Reset();
-                    return;
-                }
-            }
-
             this.WrapOnScreen(this.Corners, camera);
-        }        
+        }
 
-        //public void WrapOnScreen(BoundingFrustum frustum, Vector3 cameraPosition, Matrix viewProjection)
-        //{
-        //    // If the camera is inside the bounds of the wrappable objects the screen coordinates are invalid
-        //    // so in that case just create a full screen quad.
-        //    if (frustum.Contains(cameraPosition) == ContainmentType.Contains)
-        //    {
-        //        this.Reset();
-        //    }
-        //    else
-        //    {
-        //        frustum.GetCorners(this.Corners);
-        //        var bounds = BoundingBox.CreateFromPoints(this.Corners);
-        //        bounds.GetCorners(this.Corners);
-
-        //        this.WrapOnScreen(this.Corners, viewProjection);
-        //    }
-        //}
+        public void WrapOnScreen(BoundingFrustum frustum, PerspectiveCamera camera)
+        {
+            frustum.GetCorners(this.Corners);
+            this.WrapOnScreen(this.Corners, camera);
+        }
 
         public void Reset()
         {
@@ -107,13 +81,27 @@ namespace MiniEngine.Primitives
             this.Vertices[3].TextureCoordinate = ProjectionMath.ToUv(this.maxX, this.maxY);
         }
 
-
         /// <summary>
         /// Computes the projected coordinates of the corners and then wraps
         /// the quad around them on screen. Scales the UV coordinates accordingly
         /// </summary>
         public void WrapOnScreen(Vector3[] corners, PerspectiveCamera camera)
         {
+            for (var i = 0; i < corners.Length; i++)
+            {
+                var corner = corners[i];
+
+                // TODO: can't we compute the corner as if it is on the camera's near plane (max size)
+                // instead of doing this???
+                // If one of the corners is behind the camera the computed 2D space 
+                // is wrong so cover the entire screen.
+                if (IsBehindCamera(corner, camera))
+                {
+                    this.Reset();
+                    return;
+                }
+            }
+
             this.minX = float.MaxValue;
             this.maxX = float.MinValue;
 
@@ -148,9 +136,10 @@ namespace MiniEngine.Primitives
 
         private static bool IsBehindCamera(Vector3 corner, PerspectiveCamera camera)
         {
-            var transformed = Vector3.Transform(corner, camera.ViewProjection);
-
-            return transformed.Z < 0;
+            var cornerDirection = Vector3.Normalize(corner - camera.Position );
+            var dot = Vector3.Dot(camera.Forward, cornerDirection);
+           
+            return dot < 0;
         }
        
         public void Render() 
