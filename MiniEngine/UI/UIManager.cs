@@ -19,6 +19,9 @@ namespace MiniEngine.UI
 {
     public sealed class UIManager
     {
+        private const float SlowDragSpeed = 0.01f;
+        private const float FastDragSpeed = 0.05f;
+
         private readonly Game Game;
         private readonly SpriteBatch SpriteBatch;
 
@@ -27,18 +30,20 @@ namespace MiniEngine.UI
         private readonly UIState UIState;
         private readonly ImGuiRenderer Gui;
 
-        private KeyboardInput keyboardInput;
-        private MouseInput mouseInput;
+        private readonly Editors Editors;
 
-        private CameraController cameraController;
-        private LightsController lightsController;
+        private readonly KeyboardInput KeyboardInput;
+        private readonly MouseInput MouseInput;
 
-        private FileMenu fileMenu;
-        private EntityMenu entitiesMenu;
-        private CreateMenu createMenu;
-        private RenderingMenu renderingMenu;
-        private DebugMenu debugMenu;
-        private EntityWindow entityWindow;
+        private readonly CameraController CameraController;
+        private readonly LightsController LightsController;
+
+        private readonly FileMenu FileMenu;
+        private readonly EntityMenu EntitiesMenu;
+        private readonly CreateMenu CreateMenu;
+        private readonly RenderingMenu RenderingMenu;
+        private readonly DebugMenu DebugMenu;
+        private readonly EntityWindow EntityWindow;
 
         public UIManager(Game game, SpriteBatch spriteBatch, RenderTargetDescriber renderTargetDescriber, DeferredRenderPipeline renderPipeline, PerspectiveCamera camera, SceneSelector sceneSelector, Injector injector)
         {
@@ -48,10 +53,12 @@ namespace MiniEngine.UI
             this.Gui = new ImGuiRenderer(game);
             this.Gui.RebuildFontAtlas();
 
+            this.Editors = new Editors(this.Gui);
+
             this.RenderTargetDescriber = renderTargetDescriber;
 
-            this.keyboardInput = injector.Resolve<KeyboardInput>();
-            this.mouseInput = injector.Resolve<MouseInput>();
+            this.KeyboardInput = injector.Resolve<KeyboardInput>();
+            this.MouseInput = injector.Resolve<MouseInput>();
 
             var entityManager = injector.Resolve<EntityManager>();
 
@@ -61,8 +68,8 @@ namespace MiniEngine.UI
 
             var texture = game.Content.Load<Texture2D>("Debug");
 
-            this.cameraController = new CameraController(this.keyboardInput, this.mouseInput, camera);
-            this.lightsController = new LightsController(entityManager, lightsFactory);
+            this.CameraController = new CameraController(this.KeyboardInput, this.MouseInput, camera);
+            this.LightsController = new LightsController(entityManager, lightsFactory);
 
             this.UIState = UIState.Deserialize();
 
@@ -73,16 +80,14 @@ namespace MiniEngine.UI
             {
                 this.UIState.EntityState.SelectedEntity = allEntities.FirstOrDefault();
 
-            }
+            }            
 
-            var editors = new Editors(this.Gui);
-
-            this.fileMenu = new FileMenu(this.UIState, game, sceneSelector);
-            this.entitiesMenu = new EntityMenu(this.UIState, entityManager);
-            this.createMenu = new CreateMenu(this.UIState, entityManager, outlineFactory, projectorFactory, texture, this.lightsController, camera);
-            this.debugMenu = new DebugMenu(this.UIState, renderTargetDescriber, game);
-            this.entityWindow = new EntityWindow(editors, this.UIState, entityManager);
-            this.renderingMenu = new RenderingMenu(editors, this.UIState, renderPipeline);
+            this.FileMenu = new FileMenu(this.UIState, game, sceneSelector);
+            this.EntitiesMenu = new EntityMenu(this.UIState, entityManager);
+            this.CreateMenu = new CreateMenu(this.UIState, entityManager, outlineFactory, projectorFactory, texture, this.LightsController, camera);
+            this.DebugMenu = new DebugMenu(this.UIState, renderTargetDescriber, game);
+            this.EntityWindow = new EntityWindow(this.Editors, this.UIState, entityManager);
+            this.RenderingMenu = new RenderingMenu(this.Editors, this.UIState, renderPipeline);
 
             camera.Move(this.UIState.EditorState.CameraPosition, this.UIState.EditorState.CameraLookAt);
         }
@@ -97,17 +102,17 @@ namespace MiniEngine.UI
 
             var elapsed = (Seconds)gameTime.ElapsedGameTime;
 
-            this.keyboardInput.Update();
-            this.mouseInput.Update();
+            this.KeyboardInput.Update();
+            this.MouseInput.Update();            
 
-            this.cameraController.Update(elapsed);
+            this.CameraController.Update(elapsed);
 
-            if (this.keyboardInput.Click(Keys.F12))
+            if (this.KeyboardInput.Click(Keys.F12))
             {
                 this.UIState.EditorState.ShowGui = !this.UIState.EditorState.ShowGui;
             }
 
-            if (this.keyboardInput.Click(Keys.Escape))
+            if (this.KeyboardInput.Click(Keys.Escape))
             {
                 this.Game.Exit();
             }
@@ -174,22 +179,31 @@ namespace MiniEngine.UI
         {
             if (this.UIState.EditorState.ShowGui)
             {
+                if (this.KeyboardInput.Hold(Keys.LeftShift))
+                {
+                    this.Editors.DragSpeed = FastDragSpeed;
+                }
+                else
+                {
+                    this.Editors.DragSpeed = SlowDragSpeed;
+                }
+
                 this.Gui.BeginLayout(gameTime);
                 {
                     if (ImGui.BeginMainMenuBar())
                     {
-                        this.fileMenu.Render();
-                        this.entitiesMenu.Render();
-                        this.createMenu.Render();
-                        this.renderingMenu.Render();
-                        this.debugMenu.Render();
+                        this.FileMenu.Render();
+                        this.EntitiesMenu.Render();
+                        this.CreateMenu.Render();
+                        this.RenderingMenu.Render();
+                        this.DebugMenu.Render();
 
                         ImGui.EndMainMenuBar();
                     }
 
                     if (this.UIState.EntityState.ShowEntityWindow)
                     {
-                        this.entityWindow.Render();
+                        this.EntityWindow.Render();
                     }
 
                     if (this.UIState.DebugState.ShowDemo) { ImGui.ShowDemoWindow(); }

@@ -7,17 +7,20 @@ using MiniEngine.Units;
 namespace MiniEngine.Pipeline.Projectors.Components
 {
     public sealed class Projector : IComponent
-    {        
+    {
+        private const float Epsilon = 0.001f;
+
         public Projector(Texture2D texture, Color tint, Vector3 position, Vector3 lookAt, Meters minDistance, Meters maxDistance)
         {            
             this.Texture = texture;            
             this.Tint = tint;
-            this.MinDistance = minDistance;
-            this.MaxDistance = maxDistance;
-            this.ViewPoint = new PerspectiveCamera(1);
 
+            this.ViewPoint = new PerspectiveCamera(1);
             this.ViewPoint.Move(position, lookAt);
-            this.ViewPoint.SetPlanes(minDistance, maxDistance);
+
+            this.SetMinDistance(minDistance);
+            this.SetMaxDistance(maxDistance);
+
         }
         
         public Texture2D Texture { get; }             
@@ -41,16 +44,20 @@ namespace MiniEngine.Pipeline.Projectors.Components
             return description;
         }
 
-        private void SetMaxDistance(float m)
+        private void SetMinDistance(float distance)
         {
-            this.MaxDistance = m;
+            distance = MathHelper.Clamp(distance, Epsilon, this.MaxDistance - Epsilon);
+
+            this.MinDistance = distance;
             this.ViewPoint.SetPlanes(this.MinDistance, this.MaxDistance);
         }
 
-        private void SetMinDistance(float m)
+        private void SetMaxDistance(float distance)
         {
-            this.MinDistance = m;
+            distance = MathHelper.Clamp(distance, this.MinDistance + Epsilon, float.MaxValue);
+
+            this.MaxDistance = distance;
             this.ViewPoint.SetPlanes(this.MinDistance, this.MaxDistance);
-        }
+        }        
     }
 }
