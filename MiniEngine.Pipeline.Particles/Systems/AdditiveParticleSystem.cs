@@ -19,7 +19,7 @@ namespace MiniEngine.Pipeline.Particles.Systems
         private readonly List<AdditiveEmitter> Emitters;
         private readonly List<ParticlePose> Particles;
 
-        private readonly FullScreenQuad Quad;
+        private readonly UnitQuad Quad;
 
         public AdditiveParticleSystem(
             GraphicsDevice device,
@@ -35,7 +35,7 @@ namespace MiniEngine.Pipeline.Particles.Systems
 
             this.Particles = new List<ParticlePose>();
 
-            this.Quad = new FullScreenQuad(device);
+            this.Quad = new UnitQuad(device);
         }
 
         public void RenderAdditiveParticles(PerspectiveCamera camera, GBuffer gBuffer)

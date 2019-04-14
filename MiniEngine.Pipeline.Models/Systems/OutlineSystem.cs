@@ -1,14 +1,14 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Effects;
 using MiniEngine.Effects.DeviceStates;
 using MiniEngine.Effects.Techniques;
 using MiniEngine.Pipeline.Models.Components;
-using MiniEngine.Primitives.Bounds;
+using MiniEngine.Primitives;
 using MiniEngine.Primitives.Cameras;
 using MiniEngine.Primitives.VertexTypes;
 using MiniEngine.Systems;
-using System.Collections.Generic;
 
 namespace MiniEngine.Pipeline.Models.Systems
 {
@@ -23,6 +23,7 @@ namespace MiniEngine.Pipeline.Models.Systems
         private readonly short[] Indices;
         private readonly GBufferVertex[] Vertices;
         private readonly RenderEffect RenderEffect;
+        private readonly WrappableQuad Quad;
 
         public OutlineSystem(GraphicsDevice device, RenderEffect effect, EntityLinker entityLinker)
         {
@@ -76,6 +77,8 @@ namespace MiniEngine.Pipeline.Models.Systems
                 3,
                 7
             };
+
+            this.Quad = new WrappableQuad(device);
         }
 
         public void Render3DOverlay(IViewPoint viewPoint)
@@ -124,34 +127,17 @@ namespace MiniEngine.Pipeline.Models.Systems
             this.RenderEffect.View = Matrix.Identity;
             this.RenderEffect.Projection = Matrix.Identity;
 
-            this.Device.PostProcessState();
+            this.Device.WireFrameState();
 
             for (var iOutline = 0; iOutline < this.Outlines.Count; iOutline++)
             {
                 var outline = this.Outlines[iOutline];
 
-                if (outline.Color2D.A > 0)
-                {
-                    var rect = BoundingRectangle.CreateFromProjectedBoundingBox(outline.Model.BoundingBox, viewPoint.Frustum.Matrix);
-                    var projectedCorners = rect.GetCorners();
+                this.Quad.WrapOnScreen(outline.Model.BoundingBox, viewPoint.Frustum.Matrix);
+                this.RenderEffect.DiffuseMap = GetTexture(outline.Color2D);
+                this.RenderEffect.Apply(RenderEffectTechniques.Textured);
 
-                    for (var iCorner = 0; iCorner < projectedCorners.Length; iCorner++)
-                    {
-                        this.Vertices[iCorner].Position = new Vector4(projectedCorners[iCorner].X, projectedCorners[iCorner].Y, 0, 1);
-                    }
-
-                    this.RenderEffect.DiffuseMap = GetTexture(outline.Color2D);
-                    this.RenderEffect.Apply(RenderEffectTechniques.Textured);
-
-                    this.Device.DrawUserIndexedPrimitives(
-                        PrimitiveType.LineList,
-                        this.Vertices,
-                        0,
-                        4,
-                        this.Indices,
-                        0,
-                        4);
-                }
+                this.Quad.RenderOutline();
             }
         }
 

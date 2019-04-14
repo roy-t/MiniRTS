@@ -1,22 +1,20 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using System.Collections.Generic;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using MiniEngine.Effects;
+using MiniEngine.Effects.DeviceStates;
+using MiniEngine.Effects.Techniques;
 using MiniEngine.Pipeline.Projectors.Components;
 using MiniEngine.Primitives;
 using MiniEngine.Primitives.Cameras;
 using MiniEngine.Systems;
-using MiniEngine.Effects.DeviceStates;
-using System.Collections.Generic;
-using MiniEngine.Effects;
-using Microsoft.Xna.Framework;
-using MiniEngine.Primitives.Bounds;
-using System;
-using MiniEngine.Effects.Techniques;
 
 namespace MiniEngine.Pipeline.Projectors.Systems
 {
     public sealed class ProjectorSystem : ISystem
     {
         private readonly GraphicsDevice Device;
-        private readonly FullScreenQuad Quad;
+        private readonly WrappableQuad Quad;
 
         private readonly EntityLinker EntityLinker;
         private readonly ProjectorEffect Effect;
@@ -30,7 +28,7 @@ namespace MiniEngine.Pipeline.Projectors.Systems
             this.EntityLinker = entityLinker;
             this.Effect = effect;
 
-            this.Quad = new FullScreenQuad(device);
+            this.Quad = new WrappableQuad(device);
             this.Technique = ProjectorEffectTechniques.Projector;
 
             this.Projectors = new List<Projector>();
@@ -66,39 +64,11 @@ namespace MiniEngine.Pipeline.Projectors.Systems
                     // Camera properties
                     this.Effect.InverseViewProjection = perspectiveCamera.InverseViewProjection;
 
-                    
-                    // TODO: the below code works, but is super inefficient, OPTIMIZE!
-                    // It is probably also possible to use the trick below for all lights
-                    // so we might want to separate it and built it into the Quad (which is then always used for these kind of effects
-                    // like shadow casting lights, and sunlights, which is nice because those are the most expensive ones)
-                    // Create a scene to test if it is actually faster and if it is possible to do without creating a million garbage
 
-                    // TODO: maybe we can even do this work in the vertex shader?
-                    projector.ViewPoint.Frustum.GetCorners(this.FrustumCorners);
-
-                    var bounds = BoundingBox.CreateFromPoints(this.FrustumCorners);
-                    var rect = BoundingRectangle.CreateFromProjectedBoundingBox(bounds, perspectiveCamera.ViewProjection);
-
-                    var projectedCorners = rect.GetCorners();
-
-                    var vertices = new Vector3[projectedCorners.Length];
-                    for (var iCorner = 0; iCorner < projectedCorners.Length; iCorner++)
-                    {
-                        vertices[iCorner] = new Vector3(projectedCorners[iCorner].X, projectedCorners[iCorner].Y, 0);
-                    }
-
-
-                    var uv = new Vector2[4];                    
-
-                    uv[0] = ToUv(vertices[0]);
-                    uv[1] = ToUv(vertices[1]);
-                    uv[2] = ToUv(vertices[2]);
-                    uv[3] = ToUv(vertices[3]);
-
+                    this.Quad.WrapOnScreen(projector.ViewPoint.Frustum, perspectiveCamera.ViewProjection);
 
                     this.Effect.Apply(this.Technique);
-                    this.Quad.Render(vertices[0], vertices[1], vertices[2], vertices[3],
-                        uv[0], uv[1], uv[2], uv[3]);                   
+                    this.Quad.Render();                    
                 }
             }
         }
