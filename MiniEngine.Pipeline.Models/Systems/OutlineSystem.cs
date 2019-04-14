@@ -103,7 +103,7 @@ namespace MiniEngine.Pipeline.Models.Systems
                         this.Vertices[iCorner].Position = new Vector4(corners[iCorner], 1);
                     }
 
-                    this.RenderEffect.DiffuseMap = GetTexture(outline.Color3D);
+                    this.RenderEffect.DiffuseMap = this.GetTexture(outline.Color3D);
                     this.RenderEffect.Apply(RenderEffectTechniques.Textured);
 
                     this.Device.DrawUserIndexedPrimitives(
@@ -133,8 +133,8 @@ namespace MiniEngine.Pipeline.Models.Systems
             {
                 var outline = this.Outlines[iOutline];
 
-                this.Quad.WrapOnScreen(outline.Model.BoundingBox, viewPoint.Frustum.Matrix);
-                this.RenderEffect.DiffuseMap = GetTexture(outline.Color2D);
+                this.Quad.WrapOnScreen(outline.Model.BoundingBox, viewPoint.Position, viewPoint.Frustum.Matrix);
+                this.RenderEffect.DiffuseMap = this.GetTexture(outline.Color2D);
                 this.RenderEffect.Apply(RenderEffectTechniques.Textured);
 
                 this.Quad.RenderOutline();

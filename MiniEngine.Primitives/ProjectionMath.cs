@@ -37,6 +37,6 @@ namespace MiniEngine.Primitives
             y = y / w;
 
             return new Vector2(x, y);
-        }
+        }        
     }
 }

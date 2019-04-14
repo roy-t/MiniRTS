@@ -47,17 +47,57 @@ namespace MiniEngine.Primitives
             this.Corners = new Vector3[BoundingBox.CornerCount];
         }
 
-        public void WrapOnScreen(BoundingBox bounds, Matrix viewProjection)
+        public void WrapOnScreen(BoundingBox bounds, Vector3 cameraPosition, Matrix viewProjection)
         {
-            bounds.GetCorners(this.Corners);
-            this.WrapOnScreen(this.Corners, viewProjection);
+            // If the camera is inside the bounds of the wrappable objects the screen coordinates are invalid
+            // so in that case just create a full screen quad.
+            if (bounds.Contains(cameraPosition) == ContainmentType.Contains)
+            {
+                this.Reset();
+            }
+            else
+            {
+                bounds.GetCorners(this.Corners);
+                this.WrapOnScreen(this.Corners, viewProjection);
+            }
         }
 
-        public void WrapOnScreen(BoundingFrustum frustum, Matrix viewProjection)
+        public void WrapOnScreen(BoundingFrustum frustum, Vector3 cameraPosition, Matrix viewProjection)
         {
-            frustum.GetCorners(this.Corners);
-            this.WrapOnScreen(this.Corners, viewProjection);
+            // If the camera is inside the bounds of the wrappable objects the screen coordinates are invalid
+            // so in that case just create a full screen quad.
+            if (frustum.Contains(cameraPosition) == ContainmentType.Contains)
+            {
+                this.Reset();
+            }
+            else
+            {
+                frustum.GetCorners(this.Corners);
+                this.WrapOnScreen(this.Corners, viewProjection);
+            }
         }
+
+        public void Reset()
+        {
+            this.minX = -1.0f;
+            this.maxX = 1.0f;
+
+            this.minY = -1.0f;
+            this.maxY = 1.0f;
+
+            this.Vertices[0].Position = new Vector4(this.minX, this.minY, 0, 1);
+            this.Vertices[0].TextureCoordinate = ProjectionMath.ToUv(this.minX, this.minY);
+
+            this.Vertices[1].Position = new Vector4(this.minX, this.maxY, 0, 1);
+            this.Vertices[1].TextureCoordinate = ProjectionMath.ToUv(this.minX, this.maxY);
+
+            this.Vertices[2].Position = new Vector4(this.maxX, this.minY, 0, 1);
+            this.Vertices[2].TextureCoordinate = ProjectionMath.ToUv(this.maxX, this.minY);
+
+            this.Vertices[3].Position = new Vector4(this.maxX, this.maxY, 0, 1);
+            this.Vertices[3].TextureCoordinate = ProjectionMath.ToUv(this.maxX, this.maxY);
+        }
+
 
         /// <summary>
         /// Computes the projected coordinates of the corners and then wraps

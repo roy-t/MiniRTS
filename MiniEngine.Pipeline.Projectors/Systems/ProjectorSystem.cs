@@ -65,7 +65,7 @@ namespace MiniEngine.Pipeline.Projectors.Systems
                     this.Effect.InverseViewProjection = perspectiveCamera.InverseViewProjection;
 
 
-                    this.Quad.WrapOnScreen(projector.ViewPoint.Frustum, perspectiveCamera.ViewProjection);
+                    this.Quad.WrapOnScreen(projector.ViewPoint.Frustum, perspectiveCamera.Position, perspectiveCamera.ViewProjection);
 
                     this.Effect.Apply(this.Technique);
                     this.Quad.Render();                    
