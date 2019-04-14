@@ -1,10 +1,10 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using MiniEngine.Pipeline.Models.Batches;
 using MiniEngine.Pipeline.Models.Components;
 using MiniEngine.Primitives.Bounds;
 using MiniEngine.Primitives.Cameras;
 using MiniEngine.Systems;
-using System.Collections.Generic;
 
 namespace MiniEngine.Pipeline.Models.Systems
 {
@@ -76,7 +76,7 @@ namespace MiniEngine.Pipeline.Models.Systems
 
                 var bounds = BoundingRectangle.CreateFromProjectedBoundingBox(
                     model.BoundingBox,
-                    viewPoint.Frustum.Matrix);
+                    viewPoint);
 
                 if (currentBatch.Count == 0)
                 {

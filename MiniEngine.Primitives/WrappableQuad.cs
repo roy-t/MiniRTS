@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MiniEngine.Primitives.Cameras;
 using MiniEngine.Primitives.VertexTypes;
 
 namespace MiniEngine.Primitives
@@ -47,35 +48,43 @@ namespace MiniEngine.Primitives
             this.Corners = new Vector3[BoundingBox.CornerCount];
         }
 
-        public void WrapOnScreen(BoundingBox bounds, Vector3 cameraPosition, Matrix viewProjection)
+        public void WrapOnScreen(BoundingBox bounds, PerspectiveCamera camera)
         {
-            // If the camera is inside the bounds of the wrappable objects the screen coordinates are invalid
-            // so in that case just create a full screen quad.
-            if (bounds.Contains(cameraPosition) == ContainmentType.Contains)
-            {
-                this.Reset();
-            }
-            else
-            {
-                bounds.GetCorners(this.Corners);
-                this.WrapOnScreen(this.Corners, viewProjection);
-            }
-        }
+            bounds.GetCorners(this.Corners);
 
-        public void WrapOnScreen(BoundingFrustum frustum, Vector3 cameraPosition, Matrix viewProjection)
-        {
-            // If the camera is inside the bounds of the wrappable objects the screen coordinates are invalid
-            // so in that case just create a full screen quad.
-            if (frustum.Contains(cameraPosition) == ContainmentType.Contains)
+            for(var i = 0; i < this.Corners.Length; i++)
             {
-                this.Reset();
+                var corner = this.Corners[i];
+
+                // If one of the corners is behind the camera the computed 2D space 
+                // is wrong so cover the entire screen.
+                if (IsBehindCamera(corner, camera))
+                {
+                    this.Reset();
+                    return;
+                }
             }
-            else
-            {
-                frustum.GetCorners(this.Corners);
-                this.WrapOnScreen(this.Corners, viewProjection);
-            }
-        }
+
+            this.WrapOnScreen(this.Corners, camera);
+        }        
+
+        //public void WrapOnScreen(BoundingFrustum frustum, Vector3 cameraPosition, Matrix viewProjection)
+        //{
+        //    // If the camera is inside the bounds of the wrappable objects the screen coordinates are invalid
+        //    // so in that case just create a full screen quad.
+        //    if (frustum.Contains(cameraPosition) == ContainmentType.Contains)
+        //    {
+        //        this.Reset();
+        //    }
+        //    else
+        //    {
+        //        frustum.GetCorners(this.Corners);
+        //        var bounds = BoundingBox.CreateFromPoints(this.Corners);
+        //        bounds.GetCorners(this.Corners);
+
+        //        this.WrapOnScreen(this.Corners, viewProjection);
+        //    }
+        //}
 
         public void Reset()
         {
@@ -103,7 +112,7 @@ namespace MiniEngine.Primitives
         /// Computes the projected coordinates of the corners and then wraps
         /// the quad around them on screen. Scales the UV coordinates accordingly
         /// </summary>
-        public void WrapOnScreen(Vector3[] corners, Matrix viewProjection)
+        public void WrapOnScreen(Vector3[] corners, PerspectiveCamera camera)
         {
             this.minX = float.MaxValue;
             this.maxX = float.MinValue;
@@ -114,7 +123,8 @@ namespace MiniEngine.Primitives
             for (var i = 0; i < corners.Length; i++)
             {
                 var corner = corners[i];
-                var projectedCorner = ProjectionMath.WorldToView(corner, viewProjection);
+                
+                var projectedCorner = ProjectionMath.WorldToView(corner, camera.Position, camera.Forward, camera.ViewProjection);
 
                 this.minX = Math.Min(this.minX, projectedCorner.X);
                 this.maxX = Math.Max(this.maxX, projectedCorner.X);
@@ -134,8 +144,15 @@ namespace MiniEngine.Primitives
 
             this.Vertices[3].Position = new Vector4(this.maxX, this.maxY, 0, 1);
             this.Vertices[3].TextureCoordinate = ProjectionMath.ToUv(this.maxX, this.maxY);
-        }        
+        }
 
+        private static bool IsBehindCamera(Vector3 corner, PerspectiveCamera camera)
+        {
+            var transformed = Vector3.Transform(corner, camera.ViewProjection);
+
+            return transformed.Z < 0;
+        }
+       
         public void Render() 
             => this.Device.DrawUserIndexedPrimitives(PrimitiveType.TriangleStrip, this.Vertices, 0, 4, this.Indices, 0, 2);
 

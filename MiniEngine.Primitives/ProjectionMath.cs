@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 
 namespace MiniEngine.Primitives
 {
@@ -15,7 +14,7 @@ namespace MiniEngine.Primitives
         /// <summary>
         /// Converts a world position to a position on screen
         /// </summary>
-        public static Vector2 WorldToView(Vector3 worldPosition, Matrix viewProjection)
+        public static Vector2 WorldToView(Vector3 worldPosition, Vector3 cameraPosition, Vector3 cameraForward, Matrix viewProjection)
         {
             var x = (worldPosition.X * viewProjection.M11) + (worldPosition.Y * viewProjection.M21)
                                                            + (worldPosition.Z * viewProjection.M31)
@@ -29,14 +28,24 @@ namespace MiniEngine.Primitives
                                                            + (worldPosition.Z * viewProjection.M34)
                                                            + viewProjection.M44;
 
-            // w is negative when the camera has zoomed beyond the world position in which case
-            // it needs to be negated to be able to compute the correct screen position
-            w = Math.Abs(w);
-
-            x = x / w;
-            y = y / w;
+            //w = Math.Abs(w);
+            if (!WithinEpsilon(w, 1.0f))
+            {
+                x = x / w;
+                y = y / w;
+            }
 
             return new Vector2(x, y);
-        }        
+        }
+
+        private static bool WithinEpsilon(float a, float b)
+        {
+            float num = a - b;
+            if (-1.401298E-45f <= num)
+            {
+                return num <= 1.401298E-45f;
+            }
+            return false;
+        }
     }
 }

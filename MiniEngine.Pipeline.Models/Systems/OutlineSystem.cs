@@ -81,7 +81,7 @@ namespace MiniEngine.Pipeline.Models.Systems
             this.Quad = new WrappableQuad(device);
         }
 
-        public void Render3DOverlay(IViewPoint viewPoint)
+        public void Render3DOverlay(PerspectiveCamera viewPoint)
         {
             this.Outlines.Clear();
             this.Linker.GetComponents(this.Outlines);
@@ -118,7 +118,7 @@ namespace MiniEngine.Pipeline.Models.Systems
             }
         }
 
-        public void Render2DOverlay(IViewPoint viewPoint)
+        public void Render2DOverlay(PerspectiveCamera viewPoint)
         {
             this.Outlines.Clear();
             this.Linker.GetComponents(this.Outlines);
@@ -133,7 +133,7 @@ namespace MiniEngine.Pipeline.Models.Systems
             {
                 var outline = this.Outlines[iOutline];
 
-                this.Quad.WrapOnScreen(outline.Model.BoundingBox, viewPoint.Position, viewPoint.Frustum.Matrix);
+                this.Quad.WrapOnScreen(outline.Model.BoundingBox, viewPoint);
                 this.RenderEffect.DiffuseMap = this.GetTexture(outline.Color2D);
                 this.RenderEffect.Apply(RenderEffectTechniques.Textured);
 

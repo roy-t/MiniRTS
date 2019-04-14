@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
+using MiniEngine.Primitives.Cameras;
 
 namespace MiniEngine.Primitives.Bounds
 {
@@ -52,7 +53,7 @@ namespace MiniEngine.Primitives.Bounds
             return new BoundingRectangle(minX, maxX, minY, maxY);
         }
 
-        public static BoundingRectangle CreateFromProjectedBoundingBox(BoundingBox box, Matrix matrix)
+        public static BoundingRectangle CreateFromProjectedBoundingBox(BoundingBox box, IViewPoint viewPoint)
         {
             var minX = float.MaxValue;
             var maxX = float.MinValue;
@@ -65,7 +66,7 @@ namespace MiniEngine.Primitives.Bounds
             for (var i = 0; i < corners.Length; i++)
             {
                 var corner = corners[i];
-                var projectedCorner = ProjectionMath.WorldToView(corner, matrix);
+                var projectedCorner = ProjectionMath.WorldToView(corner, viewPoint.Position, viewPoint.Forward, viewPoint.View * viewPoint.Projection);
 
                 minX = Math.Min(minX, projectedCorner.X);
                 maxX = Math.Max(maxX, projectedCorner.X);

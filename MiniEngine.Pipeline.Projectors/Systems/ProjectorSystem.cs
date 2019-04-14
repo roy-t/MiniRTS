@@ -7,6 +7,7 @@ using MiniEngine.Effects.Techniques;
 using MiniEngine.Pipeline.Projectors.Components;
 using MiniEngine.Primitives;
 using MiniEngine.Primitives.Cameras;
+using MiniEngine.Primitives.VertexTypes;
 using MiniEngine.Systems;
 
 namespace MiniEngine.Pipeline.Projectors.Systems
@@ -18,15 +19,20 @@ namespace MiniEngine.Pipeline.Projectors.Systems
 
         private readonly EntityLinker EntityLinker;
         private readonly ProjectorEffect Effect;
+        private readonly RenderEffect RenderEffect;
         private readonly List<Projector> Projectors;
 
-        private readonly Vector3[] FrustumCorners;        
+        private readonly Vector3[] FrustumCorners;
 
-        public ProjectorSystem(GraphicsDevice device, EntityLinker entityLinker, ProjectorEffect effect)
+        private readonly short[] Indices;
+        private readonly GBufferVertex[] Vertices;
+
+        public ProjectorSystem(GraphicsDevice device, EntityLinker entityLinker, ProjectorEffect effect, RenderEffect renderEffect)
         {
             this.Device = device;
             this.EntityLinker = entityLinker;
             this.Effect = effect;
+            this.RenderEffect = renderEffect;
 
             this.Quad = new WrappableQuad(device);
             this.Technique = ProjectorEffectTechniques.Projector;
@@ -34,6 +40,50 @@ namespace MiniEngine.Pipeline.Projectors.Systems
             this.Projectors = new List<Projector>();
 
             this.FrustumCorners = new Vector3[8];
+
+
+            this.Vertices = new[]
+            {
+                // front
+                new GBufferVertex(new Vector3(-1, 1, -1)), // tl
+                new GBufferVertex(new Vector3(1, 1, -1)), // tr
+                new GBufferVertex(new Vector3(-1, -1, -1)), // br
+                new GBufferVertex(new Vector3(1, -1, -1)), // bl
+
+                // back
+                new GBufferVertex(new Vector3(-1, 1, 1)), // tl
+                new GBufferVertex(new Vector3(1, 1, 1)), // tr
+                new GBufferVertex(new Vector3(-1, -1, 1)), // br
+                new GBufferVertex(new Vector3(1, -1, 1)) // bl
+            };
+
+            this.Indices = new short[]
+            {
+                0,
+                1,
+                1,
+                2,
+                2,
+                3,
+                3,
+                0,
+                4,
+                5,
+                5,
+                6,
+                6,
+                7,
+                7,
+                4,
+                0,
+                4,
+                1,
+                5,
+                2,
+                6,
+                3,
+                7
+            };
         }
 
         public ProjectorEffectTechniques Technique { get; set; }
@@ -64,13 +114,40 @@ namespace MiniEngine.Pipeline.Projectors.Systems
                     // Camera properties
                     this.Effect.InverseViewProjection = perspectiveCamera.InverseViewProjection;
 
-
-                    this.Quad.WrapOnScreen(projector.ViewPoint.Frustum, perspectiveCamera.Position, perspectiveCamera.ViewProjection);
+                    var bounds = BoundingBox.CreateFromPoints(projector.ViewPoint.Frustum.GetCorners());
+                    this.Quad.WrapOnScreen(bounds, perspectiveCamera);
 
                     this.Effect.Apply(this.Technique);
-                    this.Quad.Render();                    
+                    this.Quad.Render();
+                    
+                    this.DrawBoundingBox(bounds, projector.Texture, perspectiveCamera);
                 }
             }
+        }
+
+
+        private void DrawBoundingBox(BoundingBox bounds, Texture2D texture, PerspectiveCamera camera)
+        {
+            var corners = bounds.GetCorners();
+            for (var iCorner = 0; iCorner < corners.Length; iCorner++)
+            {
+                this.Vertices[iCorner].Position = new Vector4(corners[iCorner], 1);
+            }
+
+            this.RenderEffect.World = Matrix.Identity;
+            this.RenderEffect.View = camera.View;
+            this.RenderEffect.Projection = camera.Projection;
+            this.RenderEffect.DiffuseMap = texture;
+            this.RenderEffect.Apply(RenderEffectTechniques.Textured);
+
+            this.Device.DrawUserIndexedPrimitives(
+                PrimitiveType.LineList,
+                this.Vertices,
+                0,
+                this.Vertices.Length,
+                this.Indices,
+                0,
+                12);
         }
 
         private static readonly Matrix TexScaleTransform = Matrix.CreateScale(0.5f, -0.5f, 1.0f) * Matrix.CreateTranslation(0.5f, 0.5f, 0.0f);
