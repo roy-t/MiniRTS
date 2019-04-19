@@ -102,12 +102,11 @@ namespace MiniEngine.Primitives
                 
                 var projectedCorner = ProjectionMath.WorldToView(corner, camera.ViewProjection);
 
-                //if(IsBehindCamera(corner, camera))
-                //{
-                //    // TODO: So close, but the perspective still throws me off
-                //    projectedCorner.X = -projectedCorner.X;
-                //    projectedCorner.Y = -projectedCorner.Y;
-                //}
+                if (IsBehindCamera(corner, camera))
+                {                    
+                    projectedCorner.X = -projectedCorner.X;
+                    projectedCorner.Y = -projectedCorner.Y;
+                }
 
                 this.minX = Math.Min(this.minX, projectedCorner.X);
                 this.maxX = Math.Max(this.maxX, projectedCorner.X);

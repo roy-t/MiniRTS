@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using MiniEngine.Primitives.Cameras;
 
 namespace MiniEngine.Primitives
 {
@@ -28,7 +29,6 @@ namespace MiniEngine.Primitives
                                                            + (worldPosition.Z * viewProjection.M34)
                                                            + viewProjection.M44;
 
-            //w = Math.Abs(w);
             if (!WithinEpsilon(w, 1.0f))
             {
                 x = x / w;
@@ -46,6 +46,22 @@ namespace MiniEngine.Primitives
                 return num <= 1.401298E-45f;
             }
             return false;
+        }
+
+        public static bool IsInFrontOffCamera(Vector3 point, IViewPoint viewPoint)
+        {
+            var cornerDirection = Vector3.Normalize(point - viewPoint.Position);
+            var dot = Vector3.Dot(viewPoint.Forward, cornerDirection);
+
+            return dot > 0;
+        }
+
+        public static bool IsBehindCamera(Vector3 point, IViewPoint viewPoint)
+        {
+            var cornerDirection = Vector3.Normalize(point - viewPoint.Position);
+            var dot = Vector3.Dot(viewPoint.Forward, cornerDirection);
+
+            return dot < 0;            
         }
     }
 }

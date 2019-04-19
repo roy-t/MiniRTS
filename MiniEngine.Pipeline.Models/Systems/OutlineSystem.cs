@@ -133,11 +133,14 @@ namespace MiniEngine.Pipeline.Models.Systems
             {
                 var outline = this.Outlines[iOutline];
 
-                this.Quad.WrapOnScreen(outline.Model.BoundingBox, viewPoint);
-                this.RenderEffect.DiffuseMap = this.GetTexture(outline.Color2D);
-                this.RenderEffect.Apply(RenderEffectTechniques.Textured);
+                if (ProjectionMath.IsInFrontOffCamera(outline.Model.BoundingSphere.Center, viewPoint))
+                {
+                    this.Quad.WrapOnScreen(outline.Model.BoundingBox, viewPoint);
+                    this.RenderEffect.DiffuseMap = this.GetTexture(outline.Color2D);
+                    this.RenderEffect.Apply(RenderEffectTechniques.Textured);
 
-                this.Quad.RenderOutline();
+                    this.Quad.RenderOutline();
+                }
             }
         }
 
