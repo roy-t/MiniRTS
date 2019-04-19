@@ -66,7 +66,7 @@ namespace MiniEngine.Primitives.Bounds
             for (var i = 0; i < corners.Length; i++)
             {
                 var corner = corners[i];
-                var projectedCorner = ProjectionMath.WorldToView(corner, viewPoint.Position, viewPoint.Forward, viewPoint.View * viewPoint.Projection);
+                var projectedCorner = ProjectionMath.WorldToView(corner, viewPoint.View * viewPoint.Projection);
 
                 minX = Math.Min(minX, projectedCorner.X);
                 maxX = Math.Max(maxX, projectedCorner.X);

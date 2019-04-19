@@ -23,29 +23,30 @@ sampler projectorSampler = sampler_state
 
 struct VertexShaderInput
 {
-    float3 Position : POSITION0;
-    float2 TexCoord : TEXCOORD0;
+    float3 Position : POSITION0;    
 };
 
 struct VertexShaderOutput
 {
-    float4 Position : POSITION0;
-    float2 TexCoord : TEXCOORD0;
+    float4 Position : POSITION0;    
+    float4 ScreenPosition : TEXCOORD0;
 };
 
 VertexShaderOutput MainVS(in VertexShaderInput input)
 {
     VertexShaderOutput output = (VertexShaderOutput)0;
 
-    output.Position = float4(input.Position, 1);
-    output.TexCoord = input.TexCoord;
+    float4 worldPosition = mul(float4(input.Position.xyz, 1), World);
+    float4 viewPosition = mul(worldPosition, View);
+    output.Position = mul(viewPosition, Projection);    
+    output.ScreenPosition = output.Position;
 
     return output;
 }
 
 float4 MainPS(VertexShaderOutput input) : COLOR0
 {
-    float2 texCoord = input.TexCoord;    
+    float2 texCoord = ToTextureCoordinates(input.ScreenPosition.xy, input.ScreenPosition.w);
     float4 position = ReadWorldPosition(texCoord, InverseViewProjection);
 
     // Move from world position to the reference frame of the projector
@@ -76,7 +77,7 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
 // Copied MainPS that displays texture coordinates when out of projector space
 float4 OverdrawPS(VertexShaderOutput input) : COLOR0
 {
-    float2 texCoord = input.TexCoord;
+    float2 texCoord = ToTextureCoordinates(input.ScreenPosition.xy, input.ScreenPosition.w);
     float4 position = ReadWorldPosition(texCoord, InverseViewProjection);
 
     // Move from world position to the reference frame of the projector

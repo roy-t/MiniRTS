@@ -1,7 +1,7 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Effects.Techniques;
-using System;
 
 namespace MiniEngine.Effects
 {
@@ -49,6 +49,21 @@ namespace MiniEngine.Effects
         public Texture2D ProjectorMap
         {
             set => this.effect.Parameters["ProjectorMap"].SetValue(value);
+        }
+
+        public Matrix World
+        {
+            set => this.effect.Parameters["World"].SetValue(value);
+        }
+
+        public Matrix View
+        {
+            set => this.effect.Parameters["View"].SetValue(value);
+        }
+
+        public Matrix Projection
+        {
+            set => this.effect.Parameters["Projection"].SetValue(value);
         }
 
         public Matrix ProjectorViewProjection
