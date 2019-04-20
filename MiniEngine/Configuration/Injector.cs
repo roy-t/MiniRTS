@@ -4,14 +4,14 @@ using System.Reflection;
 using LightInject;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using MiniEngine.Input;
-using MiniEngine.Rendering;
 using MiniEngine.Effects;
+using MiniEngine.Input;
+using MiniEngine.Pipeline.Lights.Factories;
+using MiniEngine.Rendering;
 using MiniEngine.Scenes;
 using MiniEngine.Systems;
-using MiniEngine.Telemetry;
 using MiniEngine.Systems.Factories;
-using MiniEngine.Pipeline.Lights.Factories;
+using MiniEngine.Telemetry;
 
 namespace MiniEngine.Configuration
 {
@@ -45,6 +45,7 @@ namespace MiniEngine.Configuration
             this.RegisterEffect<WeightedParticlesEffect>("WeightedParticlesEffect");
             this.RegisterEffect<AverageParticlesEffect>("AverageParticlesEffect");
             this.RegisterEffect<AdditiveParticlesEffect>("AdditiveParticlesEffect");
+            this.RegisterEffect<ColorEffect>("ColorEffect");
 
             this.RegisterEffect<AmbientLightEffect>("AmbientLightEffect");
             this.RegisterEffect<DirectionalLightEffect>("DirectionalLightEffect");

@@ -2,7 +2,6 @@
 #include "Includes/Matrices.hlsl"
 #include "Includes/GBuffer.hlsl"
 #include "Includes/Helpers.hlsl"
-#include "Includes/Light.hlsl"
 
 float4x4 ProjectorViewProjection;
 float4 Tint;
@@ -58,10 +57,12 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
     // Distance between pixel and projector
     float dist = distance(ProjectorPosition, position.xyz);
 
-    // Angle between pixel and projector, dir > 0 means the pixel is in fron of the projector
+    // Angle between pixel and projector, dir > 0 means the pixel is in front of the projector
     // while dir < 0 means its behind it.
     float3 direction = normalize(position.xyz - ProjectorPosition);
     float dir = dot(ProjectorForward, direction);
+
+    // TODO: also read the normal map and check that direction?
 
     // Only apply the projector if the it is inside the bounds of the projector texture, close enough, and in front of the projector
     if (dir > 0 && dist < MaxDistance &&
@@ -89,10 +90,12 @@ float4 OverdrawPS(VertexShaderOutput input) : COLOR0
     // Distance between pixel and projector
     float dist = distance(ProjectorPosition, position.xyz);
 
-    // Angle between pixel and projector, dir > 0 means the pixel is in fron of the projector
+    // Angle between pixel and projector, dir > 0 means the pixel is in front of the projector
     // while dir < 0 means its behind it.
     float3 direction = normalize(position.xyz - ProjectorPosition);
     float dir = dot(ProjectorForward, direction);
+
+    // TODO: also read the normal map and check that direction?
 
     // Only apply the projector if the it is inside the bounds of the projector texture, close enough, and in front of the projector
     if (dir > 0 && dist < MaxDistance &&

@@ -54,8 +54,9 @@
     <Compile Include="FullScreenTriangle.cs" />
     <Compile Include="GBuffer.cs" />
     <Compile Include="Pose.cs" />
+    <Compile Include="BoundsDrawer3D.cs" />
     <Compile Include="ProjectionMath.cs" />
-    <Compile Include="WrappableQuad.cs" />
+    <Compile Include="BoundsDrawer2D.cs" />
     <Compile Include="VertexTypes\GBufferVertex.cs" />
     <Compile Include="Cameras\IMovableViewPoint.cs" />
     <Compile Include="Cameras\IViewPoint.cs" />
