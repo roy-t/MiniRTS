@@ -18,7 +18,8 @@ namespace MiniEngine.Scenes
         private readonly OpaqueModelFactory OpaqueModelFactory;
         private readonly TransparentModelFactory TransparentModelFactory;
         private readonly ProjectorFactory ProjectorFactory;
-        private readonly EmitterFactory EmitterFactory;
+        private readonly AdditiveEmitterFactory AdditiveEmitterFactory;
+        private readonly AveragedEmitterFactory AveragedEmitterFactory;
         private readonly OutlineFactory OutlineFactory;
 
         private Model sponza;
@@ -34,7 +35,8 @@ namespace MiniEngine.Scenes
             OpaqueModelFactory opaqueModelFactory,
             TransparentModelFactory transparentModelFactory,            
             ProjectorFactory projectorFactory,
-            EmitterFactory emitterFactory,
+            AdditiveEmitterFactory additiveEmitterFactory,
+            AveragedEmitterFactory averagedEmitterFactory,
             OutlineFactory outlineFactory)
         {
             this.EntityManager = entityManager;
@@ -42,7 +44,8 @@ namespace MiniEngine.Scenes
             this.OpaqueModelFactory = opaqueModelFactory;
             this.TransparentModelFactory = transparentModelFactory;
             this.ProjectorFactory = projectorFactory;
-            this.EmitterFactory = emitterFactory;
+            this.AdditiveEmitterFactory = additiveEmitterFactory;
+            this.AveragedEmitterFactory = averagedEmitterFactory;
             this.OutlineFactory = outlineFactory;
         }
 
@@ -102,9 +105,9 @@ namespace MiniEngine.Scenes
 
             var particleSpawn = new Vector3(-60.5f, 6.0f, 20.0f);
 
-            this.EmitterFactory.ConstructAveragedEmitter(entity, particleSpawn, this.smoke, 1, 1, 2.0f);
-            this.EmitterFactory.ConstructAdditiveEmitter(entity, particleSpawn, this.explosion2, 1, 1, 1.0f);
-            var emitter = this.EmitterFactory.ConstructAdditiveEmitter(entity, particleSpawn, this.explosion, 8, 8, 0.075f);
+            this.AveragedEmitterFactory.ConstructAveragedEmitter(entity, particleSpawn, this.smoke, 1, 1, 2.0f);
+            this.AdditiveEmitterFactory.ConstructAdditiveEmitter(entity, particleSpawn, this.explosion2, 1, 1, 1.0f);
+            var emitter = this.AdditiveEmitterFactory.ConstructAdditiveEmitter(entity, particleSpawn, this.explosion, 8, 8, 0.075f);
             emitter.SpawnInterval = 0;
             emitter.Spread = 0.75f;
             emitter.TimeToLive = 2.25f;

@@ -1,9 +1,9 @@
-﻿using Microsoft.Xna.Framework.Content;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Microsoft.Xna.Framework.Content;
 using MiniEngine.Configuration;
 using MiniEngine.Scenes;
 using MiniEngine.Systems;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace MiniEngine
 {
@@ -22,9 +22,7 @@ namespace MiniEngine
             foreach (var scene in this.Scenes)
             {
                 scene.LoadContent(content);
-            }
-
-            this.SwitchScenes(this.Scenes.First());
+            }            
         }
 
         public IReadOnlyList<IScene> Scenes { get; private set; }

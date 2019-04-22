@@ -57,7 +57,8 @@
     <Compile Include="Extensions\RenderAdditiveParticlesStageExtensions.cs" />
     <Compile Include="Extensions\RenderTransparentParticlesStageExtensions.cs" />
     <Compile Include="Extensions\RenderParticlesStageExtensions.cs" />
-    <Compile Include="Factories\EmitterFactory.cs" />
+    <Compile Include="Factories\AveragedEmitterFactory.cs" />
+    <Compile Include="Factories\AdditiveEmitterFactory.cs" />
     <Compile Include="ParticlePipeline.cs" />
     <Compile Include="ParticlePipelineInput.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

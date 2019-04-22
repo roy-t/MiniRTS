@@ -84,7 +84,7 @@ namespace MiniEngine.UI
             if(!string.IsNullOrEmpty(this.UIState.EditorState.Scene))
             {
                 var scene = sceneSelector.Scenes.FirstOrDefault(s => s.Name.Equals(this.UIState.EditorState.Scene, System.StringComparison.OrdinalIgnoreCase));
-                if(scene != null)
+                if(scene != null && sceneSelector.CurrentScene != scene)
                 {
                     sceneSelector.SwitchScenes(scene);
                 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using System.Collections.Generic;
+using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Effects;
 using MiniEngine.Effects.DeviceStates;
 using MiniEngine.Pipeline.Particles.Components;
@@ -6,7 +7,6 @@ using MiniEngine.Primitives;
 using MiniEngine.Primitives.Cameras;
 using MiniEngine.Systems;
 using MiniEngine.Units;
-using System.Collections.Generic;
 
 namespace MiniEngine.Pipeline.Particles.Systems
 {

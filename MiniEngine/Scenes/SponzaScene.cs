@@ -17,7 +17,7 @@ namespace MiniEngine.Scenes
         private readonly LightsFactory LightsFactory;
         private readonly OpaqueModelFactory OpaqueModelFactory;
         private readonly TransparentModelFactory TransparentModelFactory;
-        private readonly EmitterFactory EmitterFactory;
+        private readonly AdditiveEmitterFactory EmitterFactory;
         private readonly EntityLinker Linker;
         private readonly OutlineFactory OutlineFactory;  
 
@@ -28,7 +28,7 @@ namespace MiniEngine.Scenes
             OpaqueModelFactory opaqueModelFactory,
             TransparentModelFactory transparentModelFactory,
             OutlineFactory outlineFactory,
-            EmitterFactory emitterFactory,
+            AdditiveEmitterFactory emitterFactory,
             EntityLinker linker)
         {
             this.EntityCreator = entityCreator;
@@ -47,8 +47,8 @@ namespace MiniEngine.Scenes
         public string Name => "Sponza";
 
         public void Set()
-        {            
-            this.SceneBuilder.BuildSponzaLit(new Pose(Vector3.Zero, 0.05f));            
+        {
+            this.SceneBuilder.BuildSponzaLit(new Pose(Vector3.Zero, 0.05f));
             this.SceneBuilder.BuildStainedGlass();
             this.SceneBuilder.BuildFirePlace();
             this.SceneBuilder.BuildBulletHoles();
