@@ -1,10 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MiniEngine.Pipeline.Debug.Components;
 using MiniEngine.Pipeline.Models.Components;
 using MiniEngine.Systems;
 using MiniEngine.Systems.Factories;
 
-namespace MiniEngine.Pipeline.Models.Factories
+namespace MiniEngine.Pipeline.Debug.Factories
 {
     public sealed class OutlineFactory : AComponentFactory<Outline>
     {

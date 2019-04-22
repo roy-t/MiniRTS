@@ -139,6 +139,10 @@
       <Project>{2bb9181f-a31d-4da2-93d2-64f5a56cf4f5}</Project>
       <Name>MiniEngine.Effects</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MiniEngine.Pipeline.Debug\MiniEngine.Pipeline.Debug.csproj">
+      <Project>{1f48156e-ddc9-4332-8084-6fe15ea6a41b}</Project>
+      <Name>MiniEngine.Pipeline.Debug</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MiniEngine.Pipeline.Lights\MiniEngine.Pipeline.Lights.csproj">
       <Project>{54491aeb-e0a7-4556-890e-7c49908952bc}</Project>
       <Name>MiniEngine.Pipeline.Lights</Name>

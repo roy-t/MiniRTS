@@ -1,7 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
+using MiniEngine.Pipeline.Models.Components;
 using MiniEngine.Systems.Components;
 
-namespace MiniEngine.Pipeline.Models.Components
+namespace MiniEngine.Pipeline.Debug.Components
 {
     public sealed class Outline : IComponent
     {

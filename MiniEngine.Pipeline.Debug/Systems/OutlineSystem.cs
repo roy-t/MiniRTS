@@ -3,12 +3,12 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Effects;
 using MiniEngine.Effects.DeviceStates;
-using MiniEngine.Pipeline.Models.Components;
+using MiniEngine.Pipeline.Debug.Components;
 using MiniEngine.Primitives;
 using MiniEngine.Primitives.Cameras;
 using MiniEngine.Systems;
 
-namespace MiniEngine.Pipeline.Models.Systems
+namespace MiniEngine.Pipeline.Debug.Systems
 {
     public sealed class OutlineSystem : ISystem
     {

@@ -1,18 +1,18 @@
-﻿using ImGuiNET;
+﻿using System.Linq;
+using ImGuiNET;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MiniEngine.Configuration;
 using MiniEngine.Controllers;
 using MiniEngine.Input;
+using MiniEngine.Pipeline.Debug.Factories;
 using MiniEngine.Pipeline.Lights.Factories;
-using MiniEngine.Pipeline.Models.Factories;
 using MiniEngine.Pipeline.Projectors.Factories;
 using MiniEngine.Primitives.Cameras;
 using MiniEngine.Rendering;
 using MiniEngine.Systems;
 using MiniEngine.Units;
-using System.Linq;
 using KeyboardInput = MiniEngine.Input.KeyboardInput;
 
 namespace MiniEngine.UI

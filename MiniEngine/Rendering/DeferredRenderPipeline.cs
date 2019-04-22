@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Effects;
 using MiniEngine.Pipeline;
+using MiniEngine.Pipeline.Debug.Extensions;
+using MiniEngine.Pipeline.Debug.Systems;
 using MiniEngine.Pipeline.Extensions;
 using MiniEngine.Pipeline.Lights;
 using MiniEngine.Pipeline.Lights.Extensions;

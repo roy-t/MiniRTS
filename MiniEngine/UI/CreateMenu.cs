@@ -2,8 +2,9 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Controllers;
+using MiniEngine.Pipeline.Debug.Components;
+using MiniEngine.Pipeline.Debug.Factories;
 using MiniEngine.Pipeline.Models.Components;
-using MiniEngine.Pipeline.Models.Factories;
 using MiniEngine.Pipeline.Projectors.Factories;
 using MiniEngine.Primitives.Cameras;
 using MiniEngine.Systems;

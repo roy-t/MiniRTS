@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
-using MiniEngine.Pipeline.Models.Systems;
+using MiniEngine.Pipeline.Debug.Systems;
 
-namespace MiniEngine.Pipeline.Models.Stages
+namespace MiniEngine.Pipeline.Debug.Stages
 {
     public sealed class Render3DOutlineStage : IPipelineStage<RenderPipelineInput>
     {

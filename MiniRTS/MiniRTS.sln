@@ -36,6 +36,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiniEngine.UI", "..\MiniEng
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiniEngine.Pipeline.Projectors", "..\MiniEngine.Pipeline.Projectors\MiniEngine.Pipeline.Projectors.csproj", "{89AE0FF0-F607-44D8-AE81-0301334BD53F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiniEngine.Pipeline.Debug", "..\MiniEngine.Pipeline.Debug\MiniEngine.Pipeline.Debug.csproj", "{1F48156E-DDC9-4332-8084-6FE15EA6A41B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -212,6 +214,18 @@ Global
 		{89AE0FF0-F607-44D8-AE81-0301334BD53F}.Release|x64.Build.0 = Release|Any CPU
 		{89AE0FF0-F607-44D8-AE81-0301334BD53F}.Release|x86.ActiveCfg = Release|Any CPU
 		{89AE0FF0-F607-44D8-AE81-0301334BD53F}.Release|x86.Build.0 = Release|Any CPU
+		{1F48156E-DDC9-4332-8084-6FE15EA6A41B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F48156E-DDC9-4332-8084-6FE15EA6A41B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F48156E-DDC9-4332-8084-6FE15EA6A41B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{1F48156E-DDC9-4332-8084-6FE15EA6A41B}.Debug|x64.Build.0 = Debug|Any CPU
+		{1F48156E-DDC9-4332-8084-6FE15EA6A41B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{1F48156E-DDC9-4332-8084-6FE15EA6A41B}.Debug|x86.Build.0 = Debug|Any CPU
+		{1F48156E-DDC9-4332-8084-6FE15EA6A41B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F48156E-DDC9-4332-8084-6FE15EA6A41B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1F48156E-DDC9-4332-8084-6FE15EA6A41B}.Release|x64.ActiveCfg = Release|Any CPU
+		{1F48156E-DDC9-4332-8084-6FE15EA6A41B}.Release|x64.Build.0 = Release|Any CPU
+		{1F48156E-DDC9-4332-8084-6FE15EA6A41B}.Release|x86.ActiveCfg = Release|Any CPU
+		{1F48156E-DDC9-4332-8084-6FE15EA6A41B}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

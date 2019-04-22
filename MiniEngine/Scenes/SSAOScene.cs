@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using MiniEngine.Pipeline.Debug.Factories;
 using MiniEngine.Pipeline.Lights.Factories;
 using MiniEngine.Pipeline.Models.Factories;
 using MiniEngine.Pipeline.Particles.Factories;
