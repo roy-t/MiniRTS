@@ -44,7 +44,7 @@ namespace MiniEngine.Pipeline.Projectors.Components
             return description;
         }
 
-        private void SetMinDistance(float distance)
+        public void SetMinDistance(float distance)
         {
             distance = MathHelper.Clamp(distance, Epsilon, this.MaxDistance - Epsilon);
 
@@ -52,7 +52,7 @@ namespace MiniEngine.Pipeline.Projectors.Components
             this.ViewPoint.SetPlanes(this.MinDistance, this.MaxDistance);
         }
 
-        private void SetMaxDistance(float distance)
+        public void SetMaxDistance(float distance)
         {
             distance = MathHelper.Clamp(distance, this.MinDistance + Epsilon, float.MaxValue);
 

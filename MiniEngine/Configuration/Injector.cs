@@ -82,6 +82,7 @@ namespace MiniEngine.Configuration
             this.Container.Register<EntityManager>();
 
             // Scenes
+            this.Container.Register<SceneBuilder>();
             this.RegisterAllOf<IScene>();
 
             // Telemetry

@@ -1,8 +1,9 @@
-﻿using ImGuiNET;
-using MiniEngine.Systems;
-using MiniEngine.Systems.Components;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using ImGuiNET;
+using MiniEngine.Systems;
+using MiniEngine.Systems.Components;
 
 namespace MiniEngine.UI
 {
@@ -11,6 +12,8 @@ namespace MiniEngine.UI
         private readonly Editors Editors;
         private readonly EntityState EntityState;
         private readonly EntityManager EntityManager;
+
+        private readonly Dictionary<Type, int> ComponentCounter;
         
         
         public EntityWindow(Editors editors, UIState ui, EntityManager entityManager)
@@ -18,6 +21,8 @@ namespace MiniEngine.UI
             this.Editors = editors;
             this.EntityState = ui.EntityState;            
             this.EntityManager = entityManager;
+
+            this.ComponentCounter = new Dictionary<Type, int>();
         }
         
         public void Render()
@@ -26,13 +31,19 @@ namespace MiniEngine.UI
             {
                 ImGui.Text($"{this.EntityState.SelectedEntity}");
 
+                this.ComponentCounter.Clear();
+
                 var components = new List<IComponent>();
                 this.EntityManager.Linker.GetComponents(this.EntityState.SelectedEntity, components);
 
                 foreach (var component in components)
                 {
+                    // ImGui requires a unique name for every node, so for each component we add
+                    // check how many of that component we've already added and use that in the name
+                    var count = this.Count(component);
+
                     var description = component.Describe();
-                    if (ImGui.TreeNode(description.Name + " #" + component.GetHashCode().ToString("00").Substring(0, 2)))
+                    if (ImGui.TreeNode(description.Name + " #" + count.ToString("00")))
                     {
                         foreach (var property in description.Properties)
                         {
@@ -60,6 +71,21 @@ namespace MiniEngine.UI
 
                 ImGui.End();
             }
+        }
+
+        private int Count(IComponent component)
+        {
+            if (this.ComponentCounter.ContainsKey(component.GetType()))
+            {
+                this.ComponentCounter[component.GetType()] += 1;
+            }
+            else
+            {
+                this.ComponentCounter.Add(component.GetType(), 0);
+            }
+
+            var id = this.ComponentCounter[component.GetType()];
+            return id;
         }
     }
 }

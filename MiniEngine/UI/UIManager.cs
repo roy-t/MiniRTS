@@ -79,8 +79,16 @@ namespace MiniEngine.UI
             if (!allEntities.Contains(selectedEntity))
             {
                 this.UIState.EntityState.SelectedEntity = allEntities.FirstOrDefault();
-
             }            
+
+            if(!string.IsNullOrEmpty(this.UIState.EditorState.Scene))
+            {
+                var scene = sceneSelector.Scenes.FirstOrDefault(s => s.Name.Equals(this.UIState.EditorState.Scene, System.StringComparison.OrdinalIgnoreCase));
+                if(scene != null)
+                {
+                    sceneSelector.SwitchScenes(scene);
+                }
+            }
 
             this.FileMenu = new FileMenu(this.UIState, game, sceneSelector);
             this.EntitiesMenu = new EntityMenu(this.UIState, entityManager);

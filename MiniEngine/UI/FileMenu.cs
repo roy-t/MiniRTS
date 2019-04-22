@@ -27,6 +27,7 @@ namespace MiniEngine.UI
                         if (ImGui.MenuItem(scene.Name, null, scene == this.SceneSelector.CurrentScene))
                         {
                             this.SceneSelector.SwitchScenes(scene);
+                            this.State.Scene = scene.Name;
                         }
                     }
                     ImGui.EndMenu();

@@ -15,7 +15,7 @@ namespace MiniEngine.Primitives
             this.Matrix = Recompute(position, scale, yaw, pitch, roll);
         }
 
-        public Pose(Vector3 position, float scale, float yaw, float pitch, float roll)
+        public Pose(Vector3 position, float scale = 1.0f, float yaw = 0.0f, float pitch = 0.0f, float roll = 0.0f)
             : this(position, Vector3.One * scale, yaw, pitch, roll) { }
 
         public Matrix Matrix { get; private set; }
@@ -55,6 +55,6 @@ namespace MiniEngine.Primitives
             var translation = Matrix.CreateTranslation(position);
 
             return size * rotation * translation;
-        }
+        }        
     }
 }

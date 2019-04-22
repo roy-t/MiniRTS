@@ -47,7 +47,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
     <Compile Include="Components\Outline.cs" />
     <Compile Include="Extensions\Render2DOutlineStageExtensions.cs" />
     <Compile Include="Extensions\Render3DOutlineStageExtensions.cs" />
