@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Effects;
 using MiniEngine.Input;
+using MiniEngine.Pipeline.Debug;
 using MiniEngine.Pipeline.Lights.Factories;
 using MiniEngine.Rendering;
 using MiniEngine.Scenes;
@@ -19,7 +20,7 @@ namespace MiniEngine.Configuration
     {
         private readonly ServiceContainer Container;
         private readonly ContentManager Content;
-        private readonly GraphicsDevice Device;
+        private readonly GraphicsDevice Device;        
 
         public Injector(GraphicsDevice device, ContentManager content)
         {
@@ -46,6 +47,7 @@ namespace MiniEngine.Configuration
             this.RegisterEffect<AverageParticlesEffect>("AverageParticlesEffect");
             this.RegisterEffect<AdditiveParticlesEffect>("AdditiveParticlesEffect");
             this.RegisterEffect<ColorEffect>("ColorEffect");
+            this.RegisterEffect<TextureEffect>("TextureEffect");
 
             this.RegisterEffect<AmbientLightEffect>("AmbientLightEffect");
             this.RegisterEffect<DirectionalLightEffect>("DirectionalLightEffect");
@@ -53,12 +55,7 @@ namespace MiniEngine.Configuration
             this.RegisterEffect<ShadowCastingLightEffect>("ShadowCastingLightEffect");
             this.RegisterEffect<SunlightEffect>("SunlightEffect");
 
-            this.RegisterEffect<ProjectorEffect>("ProjectorEffect");
-
-            // Textures
-            this.RegisterContent<Texture2D>("NeutralMask", "neutralMask");
-            this.RegisterContent<Texture2D>("NeutralNormal", "neutralNormal");
-            this.RegisterContent<Texture2D>("NeutralSpecular", "neutralSpecular");
+            this.RegisterEffect<ProjectorEffect>("ProjectorEffect");           
 
             // Primitives
             this.RegisterContent<Model>("sphere", "sphere", "Effects");
@@ -74,6 +71,7 @@ namespace MiniEngine.Configuration
             // UI
             this.Container.Register<KeyboardInput>();
             this.Container.Register<MouseInput>();
+            this.Container.RegisterInstance(typeof(IconLibrary), new IconLibrary(this.Content, this.Device));
 
             // Entities
             this.Container.Register<EntityCreator>();

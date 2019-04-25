@@ -17,10 +17,12 @@ namespace MiniEngine.Pipeline.Models.Components
 
         public Model Model { get; }
 
-        [Editor(nameof(Pose), nameof(Pose), nameof(SetPose))]
+        [Editor(nameof(Pose), nameof(SetPose))]
         public Pose Pose { get; private set; }
 
         public BoundingSphere BoundingSphere { get; private set; }
+
+        [Boundary(BoundaryType.BoundingBox)]
         public BoundingBox BoundingBox { get; private set; }           
 
         public void SetPose(Pose pose)

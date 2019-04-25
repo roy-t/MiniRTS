@@ -19,7 +19,7 @@ namespace MiniEngine.Scenes
         private readonly TransparentModelFactory TransparentModelFactory;
         private readonly AdditiveEmitterFactory EmitterFactory;
         private readonly EntityLinker Linker;
-        private readonly OutlineFactory OutlineFactory;  
+        private readonly DebugInfoFactory OutlineFactory;  
 
         public SponzaScene(
             EntityCreator entityCreator,
@@ -27,7 +27,7 @@ namespace MiniEngine.Scenes
             LightsFactory lightsFactory,
             OpaqueModelFactory opaqueModelFactory,
             TransparentModelFactory transparentModelFactory,
-            OutlineFactory outlineFactory,
+            DebugInfoFactory outlineFactory,
             AdditiveEmitterFactory emitterFactory,
             EntityLinker linker)
         {

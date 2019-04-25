@@ -16,12 +16,12 @@ namespace MiniEngine.Pipeline.Lights.Components
             this.Color = color;
         }
 
-        [Editor(nameof(ViewPoint), nameof(ViewPoint))]
+        [Editor(nameof(ViewPoint))]
         public PerspectiveCamera ViewPoint { get; set; }
         
         public ShadowMap ShadowMap { get; }
 
-        [Editor(nameof(Color), nameof(Color))]
+        [Editor(nameof(Color))]
         public Color Color { get; set; }       
     }
 }

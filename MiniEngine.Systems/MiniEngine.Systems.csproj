@@ -48,8 +48,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Annotations\BoundaryType.cs" />
+    <Compile Include="Annotations\BoundaryAttribute.cs" />
     <Compile Include="Annotations\EditorAttribute.cs" />
+    <Compile Include="Annotations\IconType.cs" />
     <Compile Include="Annotations\LabelAttribute.cs" />
+    <Compile Include="Annotations\IconAttribute.cs" />
     <Compile Include="Components\ComponentLookup.cs" />
     <Compile Include="Components\ComponentProperty.cs" />
     <Compile Include="Components\EntityComponentRecord.cs" />

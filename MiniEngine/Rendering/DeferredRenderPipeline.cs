@@ -44,8 +44,8 @@ namespace MiniEngine.Rendering
         private readonly CascadedShadowMapSystem CascadedShadowMapSystem;
         private readonly ShadowCastingLightSystem ShadowCastingLightSystem;
         private readonly SunlightSystem SunlightSystem;
-        private readonly OutlineSystem OutlineSystem;        
-
+        private readonly BoundarySystem BoundarySystem;
+        private readonly IconSystem IconSystem;   
         private readonly ShadowPipeline ShadowPipeline;
         private readonly LightingPipeline LightingPipeline;
         private readonly ModelPipeline ModelPipeline;
@@ -70,26 +70,28 @@ namespace MiniEngine.Rendering
             CascadedShadowMapSystem cascadedShadowMapSystem,
             ShadowCastingLightSystem shadowCastingLightSystem,
             SunlightSystem sunlightSystem,
-            OutlineSystem outlineSystem,
+            BoundarySystem boundarySystem,
+            IconSystem iconSystem,
             IMeterRegistry meterRegistry)
         {
-            this.ShadowMapSystem = shadowMapSystem;
-            this.ModelSystem = modelSystem;
+            this.ShadowMapSystem           = shadowMapSystem;
+            this.ModelSystem               = modelSystem;
             this.TransparentParticleSystem = particleSystem;
-            this.AdditiveParticleSystem = additiveParticleSystem;
-            this.ProjectorSystem = projectorSystem;
-            this.CombineEffect = combineEffect;
-            this.FxaaEffect = fxaaEffect;
-            this.AmbientLightSystem = ambientLightSystem;
-            this.DirectionalLightSystem = directionalLightSystem;
-            this.PointLightSystem = pointLightSystem;
-            this.CascadedShadowMapSystem = cascadedShadowMapSystem;
-            this.ShadowCastingLightSystem = shadowCastingLightSystem;
-            this.SunlightSystem = sunlightSystem;
-            this.OutlineSystem = outlineSystem;
+            this.AdditiveParticleSystem    = additiveParticleSystem;
+            this.ProjectorSystem           = projectorSystem;
+            this.CombineEffect             = combineEffect;
+            this.FxaaEffect                = fxaaEffect;
+            this.AmbientLightSystem        = ambientLightSystem;
+            this.DirectionalLightSystem    = directionalLightSystem;
+            this.PointLightSystem          = pointLightSystem;
+            this.CascadedShadowMapSystem   = cascadedShadowMapSystem;
+            this.ShadowCastingLightSystem  = shadowCastingLightSystem;
+            this.SunlightSystem            = sunlightSystem;            
+            this.BoundarySystem            = boundarySystem;
+            this.IconSystem                = iconSystem;
 
-            var width = device.PresentationParameters.BackBufferWidth;
-            var height = device.PresentationParameters.BackBufferHeight;
+            var width    = device.PresentationParameters.BackBufferWidth;
+            var height   = device.PresentationParameters.BackBufferHeight;
             this.GBuffer = new GBuffer(device, width, height);
 
             this.Input = new RenderPipelineInput();
@@ -151,7 +153,7 @@ namespace MiniEngine.Rendering
             this.ParticlePipeline
                 .ClearParticleRenderTargets()
                 .RenderTransparentParticles(this.TransparentParticleSystem)
-                .RenderAdditiveParticles(this.AdditiveParticleSystem);            
+                .RenderAdditiveParticles(this.AdditiveParticleSystem);
 
             this.Pipeline
                 .ClearRenderTargetSet()
@@ -160,9 +162,10 @@ namespace MiniEngine.Rendering
                 .UpdateSystem(this.AdditiveParticleSystem)
                 .EnableIf(this.Settings.EnableShadows, x => x.RenderShadows(this.ShadowPipeline))
                 .EnableIf(this.Settings.EnableModels, x => x.RenderModels(this.ModelSystem, this.ModelPipeline))
-                .EnableIf(this.Settings.EnableParticles, x => x.RenderParticles(this.ParticlePipeline))                
-                .EnableIf(this.Settings.Enable3DOutlines, x => x.Render3DOutline(this.OutlineSystem))
-                .EnableIf(this.Settings.Enable2DOutlines, x => x.Render2DOutline(this.OutlineSystem));
+                .EnableIf(this.Settings.EnableParticles, x => x.RenderParticles(this.ParticlePipeline))
+                .EnableIf(this.Settings.Enable3DOutlines, x => x.Render3DOutline(this.BoundarySystem))
+                .EnableIf(this.Settings.Enable2DOutlines, x => x.Render2DOutline(this.BoundarySystem))
+                .EnableIf(this.Settings.EnableIcons, x => x.RenderIcons(this.IconSystem));
         }
       
         public RenderTarget2D Render(PerspectiveCamera camera, Seconds elapsed)

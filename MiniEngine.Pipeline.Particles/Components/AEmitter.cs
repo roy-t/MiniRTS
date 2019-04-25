@@ -37,7 +37,7 @@ namespace MiniEngine.Pipeline.Particles.Components
             this.Tint = Color.White;
         }
 
-        [Editor(nameof(Position), nameof(Position))]
+        [Editor(nameof(Position))]
         public Vector3 Position { get; set; }
 
         public Texture2D Texture { get; }

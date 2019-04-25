@@ -18,15 +18,13 @@ namespace MiniEngine.Pipeline.Projectors.Systems
 
         private readonly EntityLinker EntityLinker;
         private readonly ProjectorEffect Effect;
-        private readonly ColorEffect ColorEffect;
         private readonly List<Projector> Projectors;
 
-        public ProjectorSystem(GraphicsDevice device, EntityLinker entityLinker, ProjectorEffect effect, ColorEffect colorEffect)
+        public ProjectorSystem(GraphicsDevice device, EntityLinker entityLinker, ProjectorEffect effect)
         {
             this.Device = device;
             this.EntityLinker = entityLinker;
             this.Effect = effect;
-            this.ColorEffect = colorEffect;
 
             this.FrustumDrawer = new BoundsDrawer3D(device);
             this.Technique = ProjectorEffectTechniques.Projector;
@@ -68,22 +66,8 @@ namespace MiniEngine.Pipeline.Projectors.Systems
                     this.Effect.Apply(this.Technique);                    
 
                     this.FrustumDrawer.Render(projector.ViewPoint.Frustum);                    
-                    this.DrawBoundingBox(projector.ViewPoint.Frustum, perspectiveCamera);
                 }
             }
-        }
-
-        // TODO: move the outline system and make sure it can draw projectors as well so that we don't need this code!
-        private void DrawBoundingBox(BoundingFrustum frustum, PerspectiveCamera camera)
-        {
-            this.ColorEffect.World = Matrix.Identity;
-            this.ColorEffect.View = camera.View;
-            this.ColorEffect.Projection = camera.Projection;
-            this.ColorEffect.Color = Color.Purple;
-
-            this.ColorEffect.Apply();
-            
-            this.FrustumDrawer.RenderOutline(frustum);          
-        }        
+        }      
     }
 }

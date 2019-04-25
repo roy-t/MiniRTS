@@ -51,7 +51,7 @@ namespace MiniEngine.Pipeline.Shadows.Components
             this.Move(position, lookAt);
         }
 
-        [Editor(nameof(Cascades), nameof(Cascades))]
+        [Editor(nameof(Cascades))]
         public int Cascades => this.CascadeSplits.Length;
 
         public RenderTarget2D DepthMapArray { get; }
@@ -64,10 +64,10 @@ namespace MiniEngine.Pipeline.Shadows.Components
         public Vector4[] CascadeScales { get; }
         public Matrix GlobalShadowMatrix { get; set; }
 
-        [Editor(nameof(Position), nameof(Position))]
+        [Editor(nameof(Position))]
         public Vector3 Position { get; private set; }
 
-        [Editor(nameof(LookAt), nameof(LookAt))]
+        [Editor(nameof(LookAt))]
         public Vector3 LookAt { get; private set; }
 
         public Vector3 SurfaceToLightVector { get; private set; }

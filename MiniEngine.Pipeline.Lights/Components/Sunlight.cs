@@ -16,13 +16,13 @@ namespace MiniEngine.Pipeline.Lights.Components
 
         public CascadedShadowMap ShadowMapCascades { get; }
 
-        [Editor(nameof(Color), nameof(Color))]
+        [Editor(nameof(Color))]
         public Color Color { get; set; }
 
-        [Editor(nameof(Position), nameof(Position), nameof(SetPosition), float.MinValue, float.MaxValue)]
+        [Editor(nameof(Position), nameof(SetPosition), float.MinValue, float.MaxValue)]
         public Vector3 Position => this.ShadowMapCascades.Position;
 
-        [Editor(nameof(LookAt), nameof(LookAt), nameof(SetLookAt), float.MinValue, float.MaxValue)]
+        [Editor(nameof(LookAt), nameof(SetLookAt), float.MinValue, float.MaxValue)]
         public Vector3 LookAt => this.ShadowMapCascades.LookAt;        
 
         public void Move(Vector3 position, Vector3 lookAt) => this.ShadowMapCascades.Move(position, lookAt);

@@ -9,11 +9,12 @@ namespace MiniEngine.Rendering
             this.LightSettings = new LightPipelineSettings();
             this.ModelSettings = new ModelPipelineSettings();
 
-            this.EnableShadows = true;
-            this.EnableModels = true;
-            this.EnableParticles = true;
+            this.EnableShadows    = true;
+            this.EnableModels     = true;
+            this.EnableParticles  = true;
             this.Enable3DOutlines = true;
             this.Enable2DOutlines = true;
+            this.EnableIcons      = true;
             this.EnableProjectors = true;
         }
 
@@ -25,6 +26,7 @@ namespace MiniEngine.Rendering
         public bool EnableParticles { get; set; }
         public bool Enable3DOutlines { get; set; }
         public bool Enable2DOutlines { get; set; }
+        public bool EnableIcons { get; set; }
 
         public bool EnableProjectors { get; set; }
         public ProjectorEffectTechniques ProjectorTechnique { get; set; }

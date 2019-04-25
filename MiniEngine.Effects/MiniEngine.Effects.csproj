@@ -50,6 +50,7 @@
   <ItemGroup>
     <Compile Include="AmbientLightEffect.cs" />
     <Compile Include="AverageParticlesEffect.cs" />
+    <Compile Include="TextureEffect.cs" />
     <Compile Include="CombineEffect.cs" />
     <Compile Include="DirectionalLightEffect.cs" />
     <Compile Include="EffectWrapper.cs" />

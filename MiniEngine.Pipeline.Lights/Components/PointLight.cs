@@ -15,10 +15,10 @@ namespace MiniEngine.Pipeline.Lights.Components
             this.Intensity = intensity;
         }
 
-        [Editor(nameof(Position), nameof(Position))]
+        [Editor(nameof(Position))]
         public Vector3 Position { get; set; }
 
-        [Editor(nameof(Color), nameof(Color))]
+        [Editor(nameof(Color))]
         public Color Color { get; set; }
 
         [Editor(nameof(Radius), nameof(Radius), 0, float.MaxValue)]

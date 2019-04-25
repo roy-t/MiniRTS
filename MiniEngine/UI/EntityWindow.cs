@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using ImGuiNET;
 using MiniEngine.Systems;
 using MiniEngine.Systems.Annotations;
@@ -75,17 +76,16 @@ namespace MiniEngine.UI
         {
             var componentType = component.GetType();
 
-            var attributes = componentType.GetProperties()
-                .SelectMany(p => p.GetCustomAttributes(typeof(EditorAttribute), false))
-                .Cast<EditorAttribute>();
-
-            foreach (var attribute in attributes)
+            foreach(var property in componentType.GetProperties())
             {
-                var getter = GetGetter(attribute.Getter, component, componentType);
-                var setter = GetSetter(attribute.Setter, component, componentType);                
+                foreach(var attribute in property.GetCustomAttributes(typeof(EditorAttribute), false).Cast<EditorAttribute>())
+                {
+                    var getter = GetGetter(property, component, componentType);
+                    var setter = GetSetter(attribute.Setter, component, componentType) ?? GetSetter(property, component, componentType);
 
-                this.Editors.Create(attribute.Name, getter(), attribute.MinMax, setter);
-            }
+                    this.Editors.Create(attribute.Name, getter(), attribute.MinMax, setter);
+                }
+            }            
         }
 
         private static string GetLabel(IComponent component)
@@ -95,9 +95,8 @@ namespace MiniEngine.UI
                 .FirstOrDefault();
         }
 
-        private static Func<object> GetGetter(string name, IComponent component, Type componentType)
-        {
-            var property = componentType.GetProperty(name);
+        private static Func<object> GetGetter(PropertyInfo property, IComponent component, Type componentType)
+        {            
             if (property != null)
             {
                 return () => property.GetGetMethod().Invoke(component, null);
@@ -112,17 +111,21 @@ namespace MiniEngine.UI
             {
                 return null;
             }
-
-            var property = componentType.GetProperty(name);
-            if (property != null && property.GetSetMethod() != null)
-            {
-                return o => property.GetSetMethod().Invoke(component, new object[] { o });
-            }
-
+           
             var method = componentType.GetMethod(name);
             if(method != null)
             {
                 return o => method.Invoke(component, new object[] { o });
+            }
+
+            return null;
+        }
+
+        private static Action<object> GetSetter(PropertyInfo property, IComponent component, Type componentType)
+        {
+            if(property != null && property.GetSetMethod() != null)
+            {
+                return o => property.GetSetMethod().Invoke(component, new object[] { o });
             }
 
             return null;

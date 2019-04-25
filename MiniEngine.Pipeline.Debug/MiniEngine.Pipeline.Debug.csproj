@@ -47,14 +47,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Components\Outline.cs" />
-    <Compile Include="Extensions\Render2DOutlineStageExtensions.cs" />
-    <Compile Include="Extensions\Render3DOutlineStageExtensions.cs" />
-    <Compile Include="Factories\OutlineFactory.cs" />
+    <Compile Include="Components\DebugInfo.cs" />
+    <Compile Include="Extensions\Render2DBoundariesStageExtensions.cs" />
+    <Compile Include="Extensions\Render3DBoundariesStageExtensions.cs" />
+    <Compile Include="Extensions\RenderIconsStageExtensions.cs" />
+    <Compile Include="Factories\DebugInfoFactory.cs" />
+    <Compile Include="IconLibrary.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Stages\Render2DOutlineStage.cs" />
-    <Compile Include="Stages\Render3DOutlineStage.cs" />
-    <Compile Include="Systems\OutlineSystem.cs" />
+    <Compile Include="Stages\Render2DBoundariesStage.cs" />
+    <Compile Include="Stages\Render3DBoundariesStage.cs" />
+    <Compile Include="Stages\RenderIconsStage.cs" />
+    <Compile Include="Systems\BoundarySystem.cs" />
+    <Compile Include="Systems\DebugSystem.cs" />
+    <Compile Include="Systems\IconSystem.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MiniEngine.Effects\MiniEngine.Effects.csproj">

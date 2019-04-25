@@ -16,7 +16,7 @@ namespace MiniEngine.Pipeline.Lights.Components
         [Editor(nameof(Direction), nameof(Direction), -1, 1)]
         public Vector3 Direction { get; set; }
 
-        [Editor(nameof(Color), nameof(Color))]
+        [Editor(nameof(Color))]
         public Color Color { get; set; }        
     }
 }

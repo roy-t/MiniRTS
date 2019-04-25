@@ -3,12 +3,12 @@ using MiniEngine.Pipeline.Debug.Systems;
 
 namespace MiniEngine.Pipeline.Debug.Stages
 {
-    public sealed class Render3DOutlineStage : IPipelineStage<RenderPipelineInput>
+    public sealed class Render3DBoundariesStage : IPipelineStage<RenderPipelineInput>
     {
-        private readonly OutlineSystem OutlineSystem;
+        private readonly BoundarySystem OutlineSystem;
         private readonly GraphicsDevice Device;
 
-        public Render3DOutlineStage(OutlineSystem outlineSystem, GraphicsDevice device)
+        public Render3DBoundariesStage(BoundarySystem outlineSystem, GraphicsDevice device)
         {
             this.OutlineSystem = outlineSystem;
             this.Device = device;

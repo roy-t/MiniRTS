@@ -12,7 +12,7 @@ namespace MiniEngine.Pipeline.Lights.Components
             this.Color = color;
         }
 
-        [Editor(nameof(Color), nameof(Color))]
+        [Editor(nameof(Color))]
         public Color Color { get; set; }        
     }
 }

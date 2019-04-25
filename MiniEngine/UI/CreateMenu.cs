@@ -2,9 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Controllers;
-using MiniEngine.Pipeline.Debug.Components;
 using MiniEngine.Pipeline.Debug.Factories;
-using MiniEngine.Pipeline.Models.Components;
 using MiniEngine.Pipeline.Projectors.Factories;
 using MiniEngine.Primitives.Cameras;
 using MiniEngine.Systems;
@@ -14,13 +12,13 @@ namespace MiniEngine.UI
     public sealed class CreateMenu
     {
         private readonly EntityManager EntityManager;
-        private readonly OutlineFactory OutlineFactory;
+        private readonly DebugInfoFactory OutlineFactory;
         private readonly ProjectorFactory ProjectorFactory;
         private readonly Texture2D Texture;
         private readonly LightsController LightsController;
         private readonly PerspectiveCamera Camera;
 
-        public CreateMenu(UIState ui, EntityManager entityManager, OutlineFactory outLineFactory,
+        public CreateMenu(UIState ui, EntityManager entityManager, DebugInfoFactory outLineFactory,
             ProjectorFactory projectorFactory, Texture2D texture, LightsController lightsController, PerspectiveCamera camera)
         {
             this.EntityManager = entityManager;
@@ -77,22 +75,18 @@ namespace MiniEngine.UI
                     this.LightsController.RemoveAllLights();
                 }
 
-                ImGui.Separator();
-
-                var enableOutline = this.EntityManager.Linker.HasComponent<AModel>(this.State.SelectedEntity) && !this.EntityManager.Linker.HasComponent<Outline>(this.State.SelectedEntity);
-                if (enableOutline)
-                {
-                    if (ImGui.MenuItem("Outline", enableOutline))
-                    {
-                        this.OutlineFactory.Construct(this.State.SelectedEntity);
-                    }
-
-                    ImGui.Separator();
-                }
+                ImGui.Separator();                               
 
                 if (ImGui.MenuItem("Projector"))
                 {
                     this.ProjectorFactory.Construct(this.State.SelectedEntity, this.Texture, Color.White * 0.5f, this.Camera.Position, this.Camera.LookAt);                    
+                }
+
+                ImGui.Separator();
+
+                if (ImGui.MenuItem("Debug info"))
+                {
+                    this.OutlineFactory.Construct(this.State.SelectedEntity);
                 }
 
                 ImGui.EndMenu();

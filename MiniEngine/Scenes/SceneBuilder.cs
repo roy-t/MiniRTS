@@ -20,7 +20,7 @@ namespace MiniEngine.Scenes
         private readonly ProjectorFactory ProjectorFactory;
         private readonly AdditiveEmitterFactory AdditiveEmitterFactory;
         private readonly AveragedEmitterFactory AveragedEmitterFactory;
-        private readonly OutlineFactory OutlineFactory;
+        private readonly DebugInfoFactory OutlineFactory;
 
         private Model sponza;
         private Model plane;
@@ -37,7 +37,7 @@ namespace MiniEngine.Scenes
             ProjectorFactory projectorFactory,
             AdditiveEmitterFactory additiveEmitterFactory,
             AveragedEmitterFactory averagedEmitterFactory,
-            OutlineFactory outlineFactory)
+            DebugInfoFactory outlineFactory)
         {
             this.EntityManager = entityManager;
             this.LightsFactory = lightsFactory;

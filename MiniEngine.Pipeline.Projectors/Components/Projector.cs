@@ -22,22 +22,30 @@ namespace MiniEngine.Pipeline.Projectors.Components
 
             this.SetMinDistance(minDistance);
             this.SetMaxDistance(maxDistance);
-
         }
         
         public Texture2D Texture { get; }         
         
-        [Editor(nameof(Tint), nameof(Tint))]
+        [Editor(nameof(Tint))]
         public Color Tint { get; set; }        
 
-        [Editor(nameof(MinDistance), nameof(MinDistance), nameof(SetMinDistance), Epsilon, float.MaxValue)]
+        [Editor(nameof(MinDistance), nameof(SetMinDistance), Epsilon, float.MaxValue)]
         public float MinDistance { get; private set; }
 
-        [Editor(nameof(MaxDistance), nameof(MaxDistance), nameof(SetMaxDistance), Epsilon, float.MaxValue)]
+        [Editor(nameof(MaxDistance), nameof(SetMaxDistance), Epsilon, float.MaxValue)]
         public float MaxDistance { get; private set; }
 
-        [Editor(nameof(ViewPoint), nameof(ViewPoint))]
-        public PerspectiveCamera ViewPoint { get; set; }       
+        [Editor(nameof(ViewPoint))]
+        public PerspectiveCamera ViewPoint { get; set; }
+
+        [Boundary(BoundaryType.Frustum)]
+        public BoundingFrustum Bounds => this.ViewPoint.Frustum;
+
+        [Icon(IconType.Camera)]
+        public Vector3 Position => this.ViewPoint.Position;
+
+        [Icon(IconType.LookAt)]
+        public Vector3 LookAt => this.ViewPoint.LookAt;
 
         public void SetMinDistance(float distance)
         {

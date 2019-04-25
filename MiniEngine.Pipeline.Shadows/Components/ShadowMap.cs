@@ -44,16 +44,16 @@ namespace MiniEngine.Pipeline.Shadows.Components
             this.Index = 0;
         }
 
-        [Editor(nameof(Width), nameof(Width))]
+        [Editor(nameof(Width))]
         public int Width => this.DepthMap.Width;
 
-        [Editor(nameof(Height), nameof(Height))]
+        [Editor(nameof(Height))]
         public int Height => this.DepthMap.Height;
 
         public RenderTarget2D DepthMap { get; }
         public RenderTarget2D ColorMap { get; }
 
-        [Editor(nameof(Index), nameof(Index))]
+        [Editor(nameof(Index))]
         public int Index { get; }
 
         public IViewPoint ViewPoint { get; }        

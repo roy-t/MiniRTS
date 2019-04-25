@@ -63,7 +63,7 @@ namespace MiniEngine.UI
             var entityManager = injector.Resolve<EntityManager>();
 
             var lightsFactory = injector.Resolve<LightsFactory>();
-            var outlineFactory = injector.Resolve<OutlineFactory>();
+            var outlineFactory = injector.Resolve<DebugInfoFactory>();
             var projectorFactory = injector.Resolve<ProjectorFactory>();
 
             var texture = game.Content.Load<Texture2D>("Debug");
