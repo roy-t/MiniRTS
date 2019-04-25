@@ -74,8 +74,11 @@ namespace MiniEngine.Effects
                     this.effect.CurrentTechnique = this.effect.Techniques["TextureEffect"];
                     break;
 
-                case TextureEffectTechniques.TextureWithDepthTest:
-                    this.effect.CurrentTechnique = this.effect.Techniques["TextureEffectWithDepthTest"];
+                case TextureEffectTechniques.TextureGeometryDepthTest:
+                    this.effect.CurrentTechnique = this.effect.Techniques["TextureGeometryDepthTestEffect"];
+                    break;
+                case TextureEffectTechniques.TexturePointDepthTest:
+                    this.effect.CurrentTechnique = this.effect.Techniques["TexturePointDepthTestEffect"];
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(technique), technique, null);

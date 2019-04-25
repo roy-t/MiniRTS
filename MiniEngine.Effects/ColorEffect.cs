@@ -14,7 +14,12 @@ namespace MiniEngine.Effects
         public ColorEffect(Effect effect)
         {
             this.Wrap(effect);
-        }        
+        }
+
+        public Vector3 WorldPosition
+        {
+            set => this.effect.Parameters["WorldPosition"].SetValue(value);
+        }
 
         public Vector3 CameraPosition
         {
@@ -69,8 +74,11 @@ namespace MiniEngine.Effects
                     this.effect.CurrentTechnique = this.effect.Techniques["ColorEffect"];
                     break;
 
-                case ColorEffectTechniques.ColorWithDepthTest:
-                    this.effect.CurrentTechnique = this.effect.Techniques["ColorEffectWithDepthTest"];
+                case ColorEffectTechniques.ColorGeometryDepthTest:
+                    this.effect.CurrentTechnique = this.effect.Techniques["ColorGeometryDepthTestEffect"];
+                    break;
+                case ColorEffectTechniques.ColorPointDepthTest:
+                    this.effect.CurrentTechnique = this.effect.Techniques["ColorPointDepthTestEffect"];
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(technique), technique, null);

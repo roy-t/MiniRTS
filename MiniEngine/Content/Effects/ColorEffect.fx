@@ -59,6 +59,22 @@ float4 DepthPS(VertexShaderOutput input) : COLOR0
     return Color * VisibleTint;
 }
 
+float4 PointDepthPS(VertexShaderOutput input) : COLOR0
+{
+    float2 sampleCoord = ToTextureCoordinates(input.UVPosition.xy, input.UVPosition.w);
+    float4 pixelWorldPosition = ReadWorldPosition(sampleCoord, InverseViewProjection);
+    
+    float pixelDistance = distance(CameraPosition, pixelWorldPosition.xyz);
+    float worldDistance = distance(CameraPosition, WorldPosition);
+
+    if (worldDistance > pixelDistance)
+    {
+        return Color * ClippedTint;
+    }
+
+    return Color * VisibleTint;
+}
+
 
 technique ColorEffect
 {
@@ -69,11 +85,20 @@ technique ColorEffect
     }
 }
 
-technique ColorEffectWithDepthTest
+technique ColorGeometryDepthTestEffect
 {
     pass Pass0
     {
         VertexShader = compile VS_SHADERMODEL MainVS();
         PixelShader = compile PS_SHADERMODEL DepthPS();
+    }
+}
+
+technique ColorPointDepthTestEffect
+{
+    pass Pass0
+    {
+        VertexShader = compile VS_SHADERMODEL MainVS();
+        PixelShader = compile PS_SHADERMODEL PointDepthPS();
     }
 }

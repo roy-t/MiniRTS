@@ -53,7 +53,7 @@ namespace MiniEngine.Pipeline.Debug.Systems
                     this.Effect.VisibleTint           = info.VisibileIconTint;
                     this.Effect.ClippedTint           = info.ClippedIconTint;
 
-                    this.Effect.Apply(TextureEffectTechniques.TextureWithDepthTest);
+                    this.Effect.Apply(TextureEffectTechniques.TexturePointDepthTest);
 
                     this.Quad.Render();
                 }                

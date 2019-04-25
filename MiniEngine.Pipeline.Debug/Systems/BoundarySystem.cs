@@ -33,19 +33,20 @@ namespace MiniEngine.Pipeline.Debug.Systems
             this.Effect.World      = Matrix.Identity;
             this.Effect.View       = viewPoint.View;
             this.Effect.Projection = viewPoint.Projection;
-            this.Effect.DepthMap   = gBuffer.DepthTarget;
+
+            this.Effect.DepthMap              = gBuffer.DepthTarget;
+            this.Effect.CameraPosition        = viewPoint.Position;
+            this.Effect.InverseViewProjection = viewPoint.InverseViewProjection;
 
             this.Device.PostProcessState();
 
             foreach ((var entity, var component, var info, var property, var attribute) in this.EnumerateAttributes<BoundaryAttribute>())
             {
-                this.Effect.Color                 = info.Color3D;
-                this.Effect.CameraPosition        = viewPoint.Position;
-                this.Effect.InverseViewProjection = viewPoint.InverseViewProjection;
+                this.Effect.Color                 = info.Color3D;                
                 this.Effect.VisibleTint           = info.VisibileIconTint;
                 this.Effect.ClippedTint           = info.ClippedIconTint;
 
-                this.Effect.Apply(ColorEffectTechniques.ColorWithDepthTest);
+                this.Effect.Apply(ColorEffectTechniques.ColorGeometryDepthTest);
 
                 var boundary = property.GetGetMethod().Invoke(component, null);
                 switch (attribute.Type)
@@ -68,26 +69,33 @@ namespace MiniEngine.Pipeline.Debug.Systems
             }
         }
 
-        public void Render2DOverlay(PerspectiveCamera viewPoint)
+        public void Render2DOverlay(PerspectiveCamera viewPoint, GBuffer gBuffer)
         {
             this.Effect.World      = Matrix.Identity;
             this.Effect.View       = Matrix.Identity;
             this.Effect.Projection = Matrix.Identity;
+
+            this.Effect.DepthMap              = gBuffer.DepthTarget;
+            this.Effect.CameraPosition        = viewPoint.Position;
+            this.Effect.InverseViewProjection = viewPoint.InverseViewProjection;
 
             this.Device.PostProcessState();
 
             foreach ((var entity, var component, var info, var property, var attribute) in this.EnumerateAttributes<BoundaryAttribute>())
             {
                 this.Effect.Color = info.Color2D;
-                this.Effect.Apply(ColorEffectTechniques.Color);
+                this.Effect.VisibleTint = info.VisibileIconTint;
+                this.Effect.ClippedTint = info.ClippedIconTint;
 
                 var boundary = property.GetGetMethod().Invoke(component, null);
                 switch (attribute.Type)
                 {
                     case BoundaryType.Frustum:
-                        var frustum = (BoundingFrustum)boundary;
+                        var frustum = (BoundingFrustum)boundary;                        
                         if (viewPoint.Frustum.Intersects(frustum))
                         {
+                            this.Effect.WorldPosition = BoundingSphere.CreateFromFrustum(frustum).Center;
+                            this.Effect.Apply(ColorEffectTechniques.ColorPointDepthTest);
                             this.Quad.RenderOutline(frustum, viewPoint);
                         }
                         break;
@@ -95,6 +103,8 @@ namespace MiniEngine.Pipeline.Debug.Systems
                         var boundingBox = (BoundingBox)boundary;
                         if (viewPoint.Frustum.Intersects(boundingBox))
                         {
+                            this.Effect.WorldPosition = BoundingSphere.CreateFromBoundingBox(boundingBox).Center;
+                            this.Effect.Apply(ColorEffectTechniques.ColorPointDepthTest);
                             this.Quad.RenderOutline(boundingBox, viewPoint);
                         }
                         break;
