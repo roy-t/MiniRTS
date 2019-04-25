@@ -100,7 +100,7 @@ namespace MiniEngine.UI
                 case Color color:
                     // TODO: colors are pre-multiplied, handle that better
                     var c = ToNum(color.ToVector4());
-                    if (ImGui.ColorEdit4(label, ref c))
+                    if (ImGui.ColorEdit4(label, ref c, ImGuiColorEditFlags.AlphaBar))
                     {
                         setter(new Color(ToXna(c)));
                     }

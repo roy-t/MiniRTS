@@ -13,7 +13,7 @@ namespace MiniEngine.Pipeline.Debug.Factories
 
         public void Construct(Entity entity)
         {
-            var outline = new DebugInfo(Color.Blue * 0.5f, Color.Red * 0.5f);
+            var outline = new DebugInfo(Color.Blue * 0.5f, Color.Red * 0.5f, Color.White, Color.TransparentBlack);
             this.Linker.AddComponent(entity, outline);
         }
     }

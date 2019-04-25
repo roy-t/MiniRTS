@@ -1,5 +1,7 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MiniEngine.Effects.Techniques;
 
 namespace MiniEngine.Effects
 {
@@ -12,8 +14,33 @@ namespace MiniEngine.Effects
         public ColorEffect(Effect effect)
         {
             this.Wrap(effect);
+        }        
+
+        public Vector3 CameraPosition
+        {
+            set => this.effect.Parameters["CameraPosition"].SetValue(value);
         }
-        
+
+        public Matrix InverseViewProjection
+        {
+            set => this.effect.Parameters["InverseViewProjection"].SetValue(value);
+        }
+
+        public Color VisibleTint
+        {
+            set => this.effect.Parameters["VisibleTint"].SetValue(value.ToVector4());
+        }
+
+        public Color ClippedTint
+        {
+            set => this.effect.Parameters["ClippedTint"].SetValue(value.ToVector4());
+        }
+
+        public Texture2D DepthMap
+        {
+            set => this.effect.Parameters["DepthMap"].SetValue(value);
+        }
+
         public Color Color
         {
             set => this.effect.Parameters["Color"].SetValue(value.ToVector4());
@@ -34,6 +61,22 @@ namespace MiniEngine.Effects
             set => this.effect.Parameters["Projection"].SetValue(value);
         }
 
-        public void Apply() => this.ApplyPass();
+        public void Apply(ColorEffectTechniques technique)
+        {
+            switch (technique)
+            {
+                case ColorEffectTechniques.Color:
+                    this.effect.CurrentTechnique = this.effect.Techniques["ColorEffect"];
+                    break;
+
+                case ColorEffectTechniques.ColorWithDepthTest:
+                    this.effect.CurrentTechnique = this.effect.Techniques["ColorEffectWithDepthTest"];
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(technique), technique, null);
+            }
+
+            this.ApplyPass();
+        }
     }
 }

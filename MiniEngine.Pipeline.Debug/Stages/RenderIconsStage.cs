@@ -17,7 +17,7 @@ namespace MiniEngine.Pipeline.Debug.Stages
         public void Execute(RenderPipelineInput input)
         {
             this.Device.SetRenderTarget(input.GBuffer.FinalTarget);
-            this.IconSystem.RenderIcons(input.Camera);
+            this.IconSystem.RenderIcons(input.Camera, input.GBuffer);
         }
     }
 }

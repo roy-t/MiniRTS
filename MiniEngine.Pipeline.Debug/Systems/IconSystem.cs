@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Effects;
 using MiniEngine.Effects.DeviceStates;
+using MiniEngine.Effects.Techniques;
 using MiniEngine.Primitives;
 using MiniEngine.Primitives.Cameras;
 using MiniEngine.Systems;
@@ -27,11 +28,12 @@ namespace MiniEngine.Pipeline.Debug.Systems
             this.Quad = new UnitQuad(device);
         }
 
-        public void RenderIcons(PerspectiveCamera viewPoint)
+        public void RenderIcons(PerspectiveCamera viewPoint, GBuffer gBuffer)
         {
             this.Effect.World      = Matrix.Identity;
             this.Effect.View       = Matrix.Identity;
             this.Effect.Projection = Matrix.Identity;
+            this.Effect.DepthMap   = gBuffer.DepthTarget;            
 
             this.Device.PostProcessState();
 
@@ -43,9 +45,15 @@ namespace MiniEngine.Pipeline.Debug.Systems
                 {
                     var screenPosition = ProjectionMath.WorldToView(position, viewPoint.ViewProjection);
 
-                    this.Effect.World = Matrix.CreateScale(new Vector3(Scale / viewPoint.AspectRatio, Scale, Scale)) * Matrix.CreateTranslation(new Vector3(screenPosition, 0));
-                    this.Effect.Texture = this.Library.GetIcon(attribute.Type);
-                    this.Effect.Apply();
+                    this.Effect.World                 = Matrix.CreateScale(new Vector3(Scale / viewPoint.AspectRatio, Scale, Scale)) * Matrix.CreateTranslation(new Vector3(screenPosition, 0));
+                    this.Effect.Texture               = this.Library.GetIcon(attribute.Type);
+                    this.Effect.WorldPosition         = position;
+                    this.Effect.CameraPosition        = viewPoint.Position;
+                    this.Effect.InverseViewProjection = viewPoint.InverseViewProjection;
+                    this.Effect.VisibleTint           = info.VisibileIconTint;
+                    this.Effect.ClippedTint           = info.ClippedIconTint;
+
+                    this.Effect.Apply(TextureEffectTechniques.TextureWithDepthTest);
 
                     this.Quad.Render();
                 }                

@@ -53,10 +53,7 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
     float worldDepth = ReadDepth(screenCoord);    
 
     // Manual depth test with the z-buffer
-    if (depth > worldDepth)
-    {
-        clip(-1);
-    }
+    clip(worldDepth - depth);
     
     float4 particleWorld = ReadWorldPosition(screenCoord, depth, InverseViewProjection);
     float4 depthWorld = ReadWorldPosition(screenCoord, worldDepth, InverseViewProjection);

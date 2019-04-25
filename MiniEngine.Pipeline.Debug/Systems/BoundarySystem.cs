@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Effects;
 using MiniEngine.Effects.DeviceStates;
+using MiniEngine.Effects.Techniques;
 using MiniEngine.Primitives;
 using MiniEngine.Primitives.Cameras;
 using MiniEngine.Systems;
@@ -27,18 +28,24 @@ namespace MiniEngine.Pipeline.Debug.Systems
             this.Quad = new BoundsDrawer2D(device);
         }
 
-        public void Render3DOverlay(PerspectiveCamera viewPoint)
+        public void Render3DOverlay(PerspectiveCamera viewPoint, GBuffer gBuffer)
         {           
             this.Effect.World      = Matrix.Identity;
             this.Effect.View       = viewPoint.View;
             this.Effect.Projection = viewPoint.Projection;
+            this.Effect.DepthMap   = gBuffer.DepthTarget;
 
-            this.Device.WireFrameState();
+            this.Device.PostProcessState();
 
             foreach ((var entity, var component, var info, var property, var attribute) in this.EnumerateAttributes<BoundaryAttribute>())
             {
-                this.Effect.Color = info.Color3D;
-                this.Effect.Apply();
+                this.Effect.Color                 = info.Color3D;
+                this.Effect.CameraPosition        = viewPoint.Position;
+                this.Effect.InverseViewProjection = viewPoint.InverseViewProjection;
+                this.Effect.VisibleTint           = info.VisibileIconTint;
+                this.Effect.ClippedTint           = info.ClippedIconTint;
+
+                this.Effect.Apply(ColorEffectTechniques.ColorWithDepthTest);
 
                 var boundary = property.GetGetMethod().Invoke(component, null);
                 switch (attribute.Type)
@@ -67,12 +74,12 @@ namespace MiniEngine.Pipeline.Debug.Systems
             this.Effect.View       = Matrix.Identity;
             this.Effect.Projection = Matrix.Identity;
 
-            this.Device.WireFrameState();
+            this.Device.PostProcessState();
 
             foreach ((var entity, var component, var info, var property, var attribute) in this.EnumerateAttributes<BoundaryAttribute>())
             {
                 this.Effect.Color = info.Color2D;
-                this.Effect.Apply();
+                this.Effect.Apply(ColorEffectTechniques.Color);
 
                 var boundary = property.GetGetMethod().Invoke(component, null);
                 switch (attribute.Type)

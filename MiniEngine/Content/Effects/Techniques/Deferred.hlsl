@@ -49,21 +49,13 @@ DeferredPixelShaderOutput DeferredMainPS(DeferredVertexShaderOutput input)
 {
     DeferredPixelShaderOutput output = (DeferredPixelShaderOutput)0;
     float2 texCoord = input.TexCoord;
-
+    
     float mask = tex2D(maskSampler, texCoord).r;
-    if (mask <= 0.5f)
-    {
-        clip(-1);
-        return output;
-    }
+    clip(mask - 0.05f);
 
     // Diffuse    
     output.Color = tex2D(diffuseSampler, texCoord);
-    if (output.Color.a <= 0.0f)
-    {
-        clip(-1);
-        return output;
-    }
+    clip(output.Color.a - 0.01f);    
 
     // Normal   
     float3 normal = UnpackNormal(tex2D(normalSampler, texCoord).xyz);
