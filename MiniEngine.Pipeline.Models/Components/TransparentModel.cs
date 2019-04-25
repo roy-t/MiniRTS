@@ -1,24 +1,13 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Primitives;
-using MiniEngine.Systems.Components;
+using MiniEngine.Systems.Annotations;
 
 namespace MiniEngine.Pipeline.Models.Components
 {
+    [Label(nameof(TransparentModel))]
     public sealed class TransparentModel : AModel
     {
-        public TransparentModel(Model model, Pose pose, BoundingSphere boundingSphere, BoundingBox boundingBox)
-            : base(model, pose, boundingSphere, boundingBox) { }
-
-        public override ComponentDescription Describe()
-        {
-            var description = new ComponentDescription("Transparent model");
-            this.Describe(description);
-
-            return description;            
-        }
-
-        public override string ToString() 
-            => $"transparent model, translation: {this.Pose.Translation}, yaw: {this.Pose.Yaw}, pitch: {this.Pose.Pitch}, roll: {this.Pose.Roll}, scale: {this.Pose.Scale}";
+        public TransparentModel(Model model, Pose pose)
+            : base(model, pose) { }        
     }
 }

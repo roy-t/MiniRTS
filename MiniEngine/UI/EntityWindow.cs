@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ImGuiNET;
 using MiniEngine.Systems;
+using MiniEngine.Systems.Annotations;
 using MiniEngine.Systems.Components;
 
 namespace MiniEngine.UI
@@ -42,13 +43,10 @@ namespace MiniEngine.UI
                     // check how many of that component we've already added and use that in the name
                     var count = this.Count(component);
 
-                    var description = component.Describe();
-                    if (ImGui.TreeNode(description.Name + " #" + count.ToString("00")))
+                    var name = GetLabel(component);
+                    if (ImGui.TreeNode(name + " #" + count.ToString("00")))
                     {
-                        foreach (var property in description.Properties)
-                        {
-                            this.Editors.Create(property.Name, property.Value, property.MinMax, property.Setter);
-                        }
+                        this.CreateEditors(component);
 
                         if (ImGui.Button("Remove Component"))
                         {
@@ -64,13 +62,70 @@ namespace MiniEngine.UI
                     {
                         this.EntityManager.Controller.DestroyEntity(this.EntityState.SelectedEntity);
                         this.EntityState.ShowEntityWindow = false;
-                        var entities = this.EntityManager.Controller.DescribeAllEntities();
-                        this.EntityState.SelectedEntity = entities.Any() ? entities.First().Entity : new Entity(-1);
+                        var entities = this.EntityManager.Creator.GetAllEntities();
+                        this.EntityState.SelectedEntity = entities.Any() ? entities.First() : new Entity(-1);
                     }
                 }
 
                 ImGui.End();
             }
+        }
+
+        private void CreateEditors(IComponent component)
+        {
+            var componentType = component.GetType();
+
+            var attributes = componentType.GetProperties()
+                .SelectMany(p => p.GetCustomAttributes(typeof(EditorAttribute), false))
+                .Cast<EditorAttribute>();
+
+            foreach (var attribute in attributes)
+            {
+                var getter = GetGetter(attribute.Getter, component, componentType);
+                var setter = GetSetter(attribute.Setter, component, componentType);                
+
+                this.Editors.Create(attribute.Name, getter(), attribute.MinMax, setter);
+            }
+        }
+
+        private static string GetLabel(IComponent component)
+        {
+            return component.GetType().GetCustomAttributes(typeof(LabelAttribute), false).Cast<LabelAttribute>()
+                .Select(l => l.Label)
+                .FirstOrDefault();
+        }
+
+        private static Func<object> GetGetter(string name, IComponent component, Type componentType)
+        {
+            var property = componentType.GetProperty(name);
+            if (property != null)
+            {
+                return () => property.GetGetMethod().Invoke(component, null);
+            }
+
+            return null;
+        }
+
+        private static Action<object> GetSetter(string name, IComponent component, Type componentType)
+        {
+            if (string.IsNullOrEmpty(name))
+            {
+                return null;
+            }
+
+            var property = componentType.GetProperty(name);
+            if (property != null && property.GetSetMethod() != null)
+            {
+                return o => property.GetSetMethod().Invoke(component, new object[] { o });
+            }
+
+            var method = componentType.GetMethod(name);
+            if(method != null)
+            {
+                return o => method.Invoke(component, new object[] { o });
+            }
+
+            return null;
         }
 
         private int Count(IComponent component)

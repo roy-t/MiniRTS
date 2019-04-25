@@ -1,11 +1,12 @@
-﻿using ImGuiNET;
+﻿using System;
+using System.Linq;
+using ImGuiNET;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Primitives;
+using MiniEngine.Primitives.Cameras;
 using MiniEngine.Systems.Components;
 using MiniEngine.Units;
-using System;
-using System.Linq;
 using Num = System.Numerics;
 
 namespace MiniEngine.UI
@@ -55,20 +56,45 @@ namespace MiniEngine.UI
                     break;
 
                 case Pose pose:
-                    var yaw = pose.Yaw;
-                    var pitch = pose.Pitch;
-                    var roll = pose.Roll;
-                    var translation = ToNum(pose.Translation);
-                    var scale = ToNum(pose.Scale);
+                    {
+                        ImGui.Text(label);
 
-                    var set = false;
-                    set |= this.CreateVector3("Translation", ref translation, minMax);
-                    set |= this.CreateVector3("Scale", ref scale, MinMaxDescription.ZeroToInfinity);
-                    set |= this.CreateFloat("Yaw", ref yaw, MinMaxDescription.MinusPiToPi);
-                    set |= this.CreateFloat("Pitch", ref pitch, MinMaxDescription.MinusPiToPi);
-                    set |= this.CreateFloat("Roll", ref roll, MinMaxDescription.MinusPiToPi);                    
+                        var yaw = pose.Yaw;
+                        var pitch = pose.Pitch;
+                        var roll = pose.Roll;
+                        var translation = ToNum(pose.Translation);
+                        var scale = ToNum(pose.Scale);
 
-                    if (set) { setter(new Pose(ToXna(translation), ToXna(scale), yaw, pitch, roll)); }
+                        var set = false;
+                        set |= this.CreateVector3("Translation", ref translation, MinMaxDescription.MinusInfinityToInfinity);
+                        set |= this.CreateVector3("Scale", ref scale, MinMaxDescription.ZeroToInfinity);
+                        set |= this.CreateFloat("Yaw", ref yaw, MinMaxDescription.MinusPiToPi);
+                        set |= this.CreateFloat("Pitch", ref pitch, MinMaxDescription.MinusPiToPi);
+                        set |= this.CreateFloat("Roll", ref roll, MinMaxDescription.MinusPiToPi);
+
+                        if (set) { setter(new Pose(ToXna(translation), ToXna(scale), yaw, pitch, roll)); }
+                    }
+                    break;
+
+                case PerspectiveCamera camera:
+                    {
+                        ImGui.Text(label);
+
+                        var position = ToNum(camera.Position);
+                        var lookAt = ToNum(camera.LookAt);
+                        var fov = camera.FieldOfView;
+
+                        var set = false;
+                        set |= this.CreateVector3("Position", ref position, MinMaxDescription.MinusInfinityToInfinity);
+                        set |= this.CreateVector3("LookAt", ref lookAt, MinMaxDescription.MinusInfinityToInfinity);
+                        set |= this.CreateFloat("FieldOfView", ref fov, new MinMaxDescription(0, MathHelper.Pi));
+
+                        if(set)
+                        {
+                            camera.Move(ToXna(position), ToXna(lookAt));
+                            camera.SetFieldOfView(fov);
+                        }
+                    }
                     break;
 
                 case Color color:

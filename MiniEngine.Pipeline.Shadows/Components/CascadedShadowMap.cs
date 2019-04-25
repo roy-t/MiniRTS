@@ -1,9 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MiniEngine.Systems.Annotations;
 using MiniEngine.Systems.Components;
 
 namespace MiniEngine.Pipeline.Shadows.Components
 {
+    [Label(nameof(CascadedShadowMap))]
     public sealed class CascadedShadowMap : IComponent
     {
         public CascadedShadowMap(GraphicsDevice device, int resolution, int cascades,
@@ -49,6 +51,7 @@ namespace MiniEngine.Pipeline.Shadows.Components
             this.Move(position, lookAt);
         }
 
+        [Editor(nameof(Cascades), nameof(Cascades))]
         public int Cascades => this.CascadeSplits.Length;
 
         public RenderTarget2D DepthMapArray { get; }
@@ -61,8 +64,12 @@ namespace MiniEngine.Pipeline.Shadows.Components
         public Vector4[] CascadeScales { get; }
         public Matrix GlobalShadowMatrix { get; set; }
 
+        [Editor(nameof(Position), nameof(Position))]
         public Vector3 Position { get; private set; }
+
+        [Editor(nameof(LookAt), nameof(LookAt))]
         public Vector3 LookAt { get; private set; }
+
         public Vector3 SurfaceToLightVector { get; private set; }
 
         public int Resolution { get; }
@@ -73,18 +80,6 @@ namespace MiniEngine.Pipeline.Shadows.Components
             this.Position = position;
             this.LookAt = lookAt;
             this.SurfaceToLightVector = Vector3.Normalize(position - lookAt);
-        }
-
-        public ComponentDescription Describe()
-        {
-            var description = new ComponentDescription("Cascaded shadow map");
-            description.AddLabel("Position", this.Position);
-            description.AddLabel("Look at", this.LookAt);
-            description.AddLabel("Cascades", this.Cascades);
-
-            return description;
-        }
-
-        public override string ToString() => $"cascaded shadow map, position {this.Position}, look at: {this.LookAt}, cascades: {this.Cascades}";
+        }       
     }
 }

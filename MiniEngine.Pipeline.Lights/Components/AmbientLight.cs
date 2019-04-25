@@ -1,8 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
+using MiniEngine.Systems.Annotations;
 using MiniEngine.Systems.Components;
 
 namespace MiniEngine.Pipeline.Lights.Components
 {
+    [Label(nameof(AmbientLight))]
     public sealed class AmbientLight : IComponent
     {
         public AmbientLight(Color color)
@@ -10,16 +12,7 @@ namespace MiniEngine.Pipeline.Lights.Components
             this.Color = color;
         }
 
-        public Color Color { get; set; }
-
-        public ComponentDescription Describe()
-        {
-            var description = new ComponentDescription("Ambient light");
-            description.AddProperty("Color", this.Color, x => this.Color = x, MinMaxDescription.ZeroToOne);
-            return description;
-        }
-
-
-        public override string ToString() => $"ambient light, color: {this.Color}";
+        [Editor(nameof(Color), nameof(Color))]
+        public Color Color { get; set; }        
     }
 }

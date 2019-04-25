@@ -1,6 +1,5 @@
-﻿using MiniEngine.Systems.Components;
+﻿using System.Collections.Generic;
 using MiniEngine.Systems.Factories;
-using System.Collections.Generic;
 
 namespace MiniEngine.Systems
 {
@@ -40,34 +39,7 @@ namespace MiniEngine.Systems
             {
                 this.DestroyEntity(entities[i]);
             }
-        }         
-
-        public List<EntityDescription> DescribeAllEntities()
-        {
-            var descriptions = new List<EntityDescription>();
-
-            var entities = this.Creator.GetAllEntities();
-            for (var i = 0; i < entities.Count; i++)
-            {
-                descriptions.Add(new EntityDescription(entities[i], this.DescribeEntity(entities[i])));
-            }
-
-            return descriptions;
-        }
-
-        private List<ComponentDescription> DescribeEntity(Entity entity)
-        {
-            var components = new List<IComponent>();
-            var descriptions = new List<ComponentDescription>();
-            this.EntityLinker.GetComponents(entity, components);
-
-            for (var i = 0; i < components.Count; i++)
-            {
-                descriptions.Add(components[i].Describe());
-            }
-
-            return descriptions;
-        }
+        }        
 
         private void RemoveEntityFromSystems(Entity entity)
         {

@@ -1,11 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
 using MiniEngine.Pipeline.Models.Components;
+using MiniEngine.Systems.Annotations;
 using MiniEngine.Systems.Components;
 
 namespace MiniEngine.Pipeline.Debug.Components
 {
+    [Label(nameof(Outline))]
     public sealed class Outline : IComponent
-    {
+    {        
         public Outline(AModel model, Color color3D, Color color2d)
         {
             this.Model = model;
@@ -14,19 +16,11 @@ namespace MiniEngine.Pipeline.Debug.Components
         }
 
         public AModel Model { get; }
+
+        [Editor(nameof(Color3D), nameof(Color3D))]
         public Color Color3D { get; set; }
-        public Color Color2D { get; set; }
 
-        public ComponentDescription Describe()
-        {
-            var description = new ComponentDescription("Outline");
-            description.AddProperty("Color 3D", this.Color3D, x => this.Color3D = x, MinMaxDescription.ZeroToOne);
-            description.AddProperty("Color 2D", this.Color2D, x => this.Color2D = x, MinMaxDescription.ZeroToOne);
-
-            return description;
-        }
-
-        public override string ToString()
-            => $"outline, 3D: {this.Color3D}, 2D: {this.Color2D}";
+        [Editor(nameof(Color2D), nameof(Color2D))]
+        public Color Color2D { get; set; }        
     }
 }

@@ -1,8 +1,9 @@
-﻿using ImGuiNET;
-using MiniEngine.Systems;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using ImGuiNET;
+using MiniEngine.Systems;
+using MiniEngine.Systems.Components;
 
 namespace MiniEngine.UI
 {
@@ -10,18 +11,19 @@ namespace MiniEngine.UI
     {
         private readonly EntityManager EntityManager;
         private readonly EntityState State;
+        private readonly List<IComponent> Components;
 
         public EntityMenu(UIState ui, EntityManager entityManager)
         {
             this.EntityManager = entityManager;
             this.State = ui.EntityState;
+            this.Components = new List<IComponent>();
         }        
 
         public void Render()
         {
             if(ImGui.BeginMenu("Entities"))
             {
-                var descriptions = this.EntityManager.Controller.DescribeAllEntities();                
                 if (ImGui.MenuItem("Create entity"))
                 {
                     var entity = this.EntityManager.Creator.CreateEntity();
@@ -29,28 +31,37 @@ namespace MiniEngine.UI
                 }
                 ImGui.Separator();
 
-                var listBoxItem = this.IndexOfEntity(this.State.SelectedEntity, descriptions);                
-                if (ImGui.ListBox(string.Empty, ref listBoxItem, descriptions.Select(x => $"{x.Entity} ({x.ComponentCount} components)").ToArray(), descriptions.Count, 20))
+                var entities = this.EntityManager.Creator.GetAllEntities();
+                
+                var listBoxItem = this.IndexOfEntity(this.State.SelectedEntity, entities);                
+                if (ImGui.ListBox(string.Empty, ref listBoxItem, entities.Select(x => $"{x} ({this.ComponentCount(x)} components)").ToArray(), entities.Count, 20))
                 {
                     if (listBoxItem != -1)
                     {
-                        this.State.SelectedEntity = descriptions[listBoxItem].Entity;
+                        this.State.SelectedEntity = entities[listBoxItem];
                         this.State.ShowEntityWindow = true;
                     }
                 }
 
                 ImGui.Separator();
-                ImGui.TextColored(new Vector4(0.5f, 0.5f, 0.5f, 1.0f), $"Entities: {descriptions.Count}");
-                ImGui.TextColored(new Vector4(0.5f, 0.5f, 0.5f, 1.0f), $"Components: {descriptions.Sum(x => x.ComponentCount)}");                
+                ImGui.TextColored(new Vector4(0.5f, 0.5f, 0.5f, 1.0f), $"Entities: {entities.Count}");
                 ImGui.EndMenu();
             }
         }
 
-        private int IndexOfEntity(Entity entity, List<EntityDescription> descriptions)
+        private int ComponentCount(Entity entity)
         {
-            for (var i = 0; i < descriptions.Count; i++)
+            this.Components.Clear();
+            this.EntityManager.Linker.GetComponents(entity, this.Components);
+
+            return this.Components.Count;
+        }
+
+        private int IndexOfEntity(Entity entity, IReadOnlyList<Entity> enties)
+        {
+            for (var i = 0; i < enties.Count; i++)
             {
-                if(descriptions[i].Entity == entity)
+                if(enties[i] == entity)
                 {
                     return i;
                 }

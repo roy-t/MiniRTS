@@ -1,8 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
+using MiniEngine.Systems.Annotations;
 using MiniEngine.Systems.Components;
 
 namespace MiniEngine.Pipeline.Lights.Components
 {
+    [Label(nameof(PointLight))]
     public sealed class PointLight : IComponent
     {
         public PointLight(Vector3 position, Color color, float radius, float intensity)
@@ -13,22 +15,16 @@ namespace MiniEngine.Pipeline.Lights.Components
             this.Intensity = intensity;
         }
 
+        [Editor(nameof(Position), nameof(Position))]
         public Vector3 Position { get; set; }
+
+        [Editor(nameof(Color), nameof(Color))]
         public Color Color { get; set; }
+
+        [Editor(nameof(Radius), nameof(Radius), 0, float.MaxValue)]
         public float Radius { get; set; }
-        public float Intensity { get; set; }
 
-        public ComponentDescription Describe()
-        {
-            var description = new ComponentDescription("Point light");
-            description.AddProperty("Color", this.Color, x => this.Color = x, MinMaxDescription.ZeroToOne);
-            description.AddProperty("Position", this.Position, x => this.Position = x, MinMaxDescription.MinusInfinityToInfinity);
-            description.AddProperty("Radius", this.Radius, x => this.Radius = x, MinMaxDescription.ZeroToInfinity);
-            description.AddProperty("Intensity", this.Intensity, x => this.Intensity = x, MinMaxDescription.ZeroToOne);
-
-            return description;
-        }
-
-        public override string ToString() => $"point light, position: {this.Position}, color: {this.Color}, radius: {this.Radius}";
+        [Editor(nameof(Intensity), nameof(Intensity), 0, float.MaxValue)]
+        public float Intensity { get; set; }        
     }
 }

@@ -1,11 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Primitives.Cameras;
+using MiniEngine.Systems.Annotations;
 using MiniEngine.Systems.Components;
 using MiniEngine.Units;
 
 namespace MiniEngine.Pipeline.Projectors.Components
 {
+    [Label(nameof(Projector))]
     public sealed class Projector : IComponent
     {
         private const float Epsilon = 0.001f;
@@ -23,26 +25,19 @@ namespace MiniEngine.Pipeline.Projectors.Components
 
         }
         
-        public Texture2D Texture { get; }             
-        public Color Tint { get; private set; }
-        public float MaxDistance { get; private set; }
+        public Texture2D Texture { get; }         
+        
+        [Editor(nameof(Tint), nameof(Tint))]
+        public Color Tint { get; set; }        
+
+        [Editor(nameof(MinDistance), nameof(MinDistance), nameof(SetMinDistance), Epsilon, float.MaxValue)]
         public float MinDistance { get; private set; }
-        public PerspectiveCamera ViewPoint { get; }
 
+        [Editor(nameof(MaxDistance), nameof(MaxDistance), nameof(SetMaxDistance), Epsilon, float.MaxValue)]
+        public float MaxDistance { get; private set; }
 
-        public ComponentDescription Describe()
-        {
-            var description = new ComponentDescription("Projector");
-            description.AddLabel("Texture", this.Texture);
-            description.AddProperty("Tint", this.Tint, t => this.Tint = t, MinMaxDescription.ZeroToOne);
-            description.AddProperty("Min distance", this.MinDistance, m => this.SetMinDistance(m), MinMaxDescription.ZeroToInfinity);
-            description.AddProperty("Max distance", this.MaxDistance, m => this.SetMaxDistance(m), MinMaxDescription.ZeroToInfinity);            
-            description.AddProperty("Position", this.ViewPoint.Position, p => this.ViewPoint.Move(p, this.ViewPoint.LookAt), MinMaxDescription.MinusInfinityToInfinity);
-            description.AddProperty("Look at", this.ViewPoint.LookAt, l => this.ViewPoint.Move(this.ViewPoint.Position, l), MinMaxDescription.MinusInfinityToInfinity);            
-            description.AddProperty("Field of view", this.ViewPoint.FieldOfView, f => this.ViewPoint.SetFieldOfView(f), new MinMaxDescription(0, MathHelper.Pi));
-
-            return description;
-        }
+        [Editor(nameof(ViewPoint), nameof(ViewPoint))]
+        public PerspectiveCamera ViewPoint { get; set; }       
 
         public void SetMinDistance(float distance)
         {

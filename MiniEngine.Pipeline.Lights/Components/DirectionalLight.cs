@@ -1,8 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
+using MiniEngine.Systems.Annotations;
 using MiniEngine.Systems.Components;
 
 namespace MiniEngine.Pipeline.Lights.Components
 {
+    [Label(nameof(DirectionalLight))]
     public sealed class DirectionalLight : IComponent
     {
         public DirectionalLight(Vector3 direction, Color color)
@@ -11,17 +13,10 @@ namespace MiniEngine.Pipeline.Lights.Components
             this.Color = color;
         }
 
+        [Editor(nameof(Direction), nameof(Direction), -1, 1)]
         public Vector3 Direction { get; set; }
-        public Color Color { get; set; }
 
-        public ComponentDescription Describe()
-        {
-            var description = new ComponentDescription("Directional light");
-            description.AddProperty("Direction", this.Direction, x => this.Direction = x, MinMaxDescription.MinusOneToOne);
-            description.AddProperty("Color", this.Color, x => this.Color = x, MinMaxDescription.ZeroToOne);
-            return description;
-        }
-
-        public override string ToString() => $"directional light, direction: {this.Direction}, color: {this.Color}";
+        [Editor(nameof(Color), nameof(Color))]
+        public Color Color { get; set; }        
     }
 }

@@ -1,10 +1,11 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Pipeline.Utilities;
+using MiniEngine.Systems.Annotations;
 using MiniEngine.Systems.Components;
 using MiniEngine.Units;
-using System;
-using System.Collections.Generic;
 
 namespace MiniEngine.Pipeline.Particles.Components
 {
@@ -36,19 +37,33 @@ namespace MiniEngine.Pipeline.Particles.Components
             this.Tint = Color.White;
         }
 
+        [Editor(nameof(Position), nameof(Position))]
         public Vector3 Position { get; set; }
+
         public Texture2D Texture { get; }
         public int Rows { get; }
         public int Columns { get; }
         public List<Particle> Particles { get; }
 
+        [Editor(nameof(SpawnInterval), nameof(SpawnInterval), 0, float.MaxValue)]
         public Seconds SpawnInterval { get; set; }
 
+        [Editor(nameof(Scale), nameof(Scale), 0, float.MaxValue)]
         public float Scale { get; set; }
+
+        [Editor(nameof(Direction), nameof(Direction), -1, 1)]
         public Vector3 Direction { get; set; }
+
+        [Editor(nameof(Speed), nameof(Speed), 0, float.MaxValue)]
         public float Speed { get; set; }
+
+        [Editor(nameof(Spread), nameof(Spread), 0, 1)]
         public float Spread { get; set; }
+
+        [Editor(nameof(TimeToLive), nameof(TimeToLive), 0, float.MaxValue)]
         public Seconds TimeToLive { get; set; }
+
+        [Editor(nameof(TimePerFrame), nameof(TimePerFrame), 0, float.MaxValue)]
         public Seconds TimePerFrame { get; set; }
 
         public Color Tint
@@ -93,22 +108,6 @@ namespace MiniEngine.Pipeline.Particles.Components
             }
         }
 
-        public abstract ComponentDescription Describe();
-
-        protected void Describe(ComponentDescription description)
-        {
-            description.AddProperty("Position", this.Position, x => this.Position = x, MinMaxDescription.MinusInfinityToInfinity);
-            description.AddProperty("Spawn interval", this.SpawnInterval, x => this.SpawnInterval = x, MinMaxDescription.ZeroToInfinity);
-            description.AddProperty("Scale", this.Scale, x => this.Scale = x, MinMaxDescription.ZeroToInfinity);
-            description.AddProperty("Direction", this.Direction, x => this.Direction = x, MinMaxDescription.MinusOneToOne);
-            description.AddProperty("Speed", this.Speed, x => this.Speed = x, MinMaxDescription.ZeroToInfinity);
-            description.AddProperty("Spread", this.Spread, x => this.Spread = x, MinMaxDescription.ZeroToOne);
-            description.AddProperty("Time to live", this.TimeToLive, x => this.TimeToLive = x, MinMaxDescription.ZeroToInfinity);
-            description.AddProperty("Time per frame", this.TimePerFrame, x => this.TimePerFrame = x, MinMaxDescription.ZeroToInfinity);
-            description.AddProperty("Tint", this.Tint, t => this.Tint = t, MinMaxDescription.ZeroToOne);
-            description.AddLabel("Particles", this.Particles.Count);
-        }
-
         private Vector3 GetSpreadVector()
         {
             var x = GetRandomOffset() * this.Spread;
@@ -119,7 +118,5 @@ namespace MiniEngine.Pipeline.Particles.Components
         }
 
         private static float GetRandomOffset() => ((float)Random.NextDouble() * 2.0f) - 1.0f;
-
-        public override string ToString() => $"emitter, position: {this.Position}, particles: {this.Particles.Count}";
     }
 }

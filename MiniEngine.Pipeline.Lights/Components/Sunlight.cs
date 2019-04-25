@@ -1,9 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using MiniEngine.Pipeline.Shadows.Components;
+using MiniEngine.Systems.Annotations;
 using MiniEngine.Systems.Components;
 
 namespace MiniEngine.Pipeline.Lights.Components
 {
+    [Label(nameof(Sunlight))]
     public sealed class Sunlight : IComponent
     {
         public Sunlight(CascadedShadowMap shadowMapCascades, Color color)
@@ -13,18 +15,18 @@ namespace MiniEngine.Pipeline.Lights.Components
         }
 
         public CascadedShadowMap ShadowMapCascades { get; }
+
+        [Editor(nameof(Color), nameof(Color))]
         public Color Color { get; set; }
 
-        public ComponentDescription Describe()
-        {
-            var description = new ComponentDescription("Sun light");
-            description.AddProperty("Color", this.Color, x => this.Color = x, MinMaxDescription.ZeroToOne);
-            description.AddProperty("Position", this.ShadowMapCascades.Position, x => this.ShadowMapCascades.Move(x, this.ShadowMapCascades.LookAt), MinMaxDescription.MinusInfinityToInfinity);
-            description.AddProperty("Look At", this.ShadowMapCascades.LookAt, x => this.ShadowMapCascades.Move(this.ShadowMapCascades.Position, x), MinMaxDescription.MinusInfinityToInfinity);
+        [Editor(nameof(Position), nameof(Position), nameof(SetPosition), float.MinValue, float.MaxValue)]
+        public Vector3 Position => this.ShadowMapCascades.Position;
 
-            return description;
-        }
+        [Editor(nameof(LookAt), nameof(LookAt), nameof(SetLookAt), float.MinValue, float.MaxValue)]
+        public Vector3 LookAt => this.ShadowMapCascades.LookAt;        
 
-        public override string ToString() => $"sun light, color {this.Color}";
+        public void Move(Vector3 position, Vector3 lookAt) => this.ShadowMapCascades.Move(position, lookAt);
+        public void SetPosition(Vector3 position) => this.ShadowMapCascades.Move(position, this.ShadowMapCascades.LookAt);
+        public void SetLookAt(Vector3 lookAt) => this.ShadowMapCascades.Move(this.ShadowMapCascades.Position, lookAt);        
     }
 }
