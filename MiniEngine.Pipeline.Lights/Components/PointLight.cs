@@ -15,6 +15,7 @@ namespace MiniEngine.Pipeline.Lights.Components
             this.Intensity = intensity;
         }
 
+        [Icon(IconType.Light)]
         [Editor(nameof(Position))]
         public Vector3 Position { get; set; }
 

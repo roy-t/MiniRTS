@@ -26,5 +26,11 @@ namespace MiniEngine.Pipeline.Lights.Components
 
         [Boundary(BoundaryType.Frustum)]
         public BoundingFrustum Bounds => this.ViewPoint.Frustum;
+
+        [Icon(IconType.Light)]
+        public Vector3 Position => this.ViewPoint.Position;
+
+        [Icon(IconType.LookAt)]
+        public Vector3 LookAt => this.ViewPoint.LookAt;
     }
 }

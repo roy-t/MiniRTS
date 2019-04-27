@@ -3,6 +3,9 @@
     public enum IconType
     {
         Camera,
-        LookAt                
+        LookAt,
+        Light,
+        Model,
+        Emitter
     }
 }

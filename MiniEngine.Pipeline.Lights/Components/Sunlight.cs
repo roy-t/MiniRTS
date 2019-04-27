@@ -19,9 +19,11 @@ namespace MiniEngine.Pipeline.Lights.Components
         [Editor(nameof(Color))]
         public Color Color { get; set; }
 
+        [Icon(IconType.Light)]
         [Editor(nameof(Position), nameof(SetPosition), float.MinValue, float.MaxValue)]
         public Vector3 Position => this.ShadowMapCascades.Position;
 
+        [Icon(IconType.LookAt)]
         [Editor(nameof(LookAt), nameof(SetLookAt), float.MinValue, float.MaxValue)]
         public Vector3 LookAt => this.ShadowMapCascades.LookAt;        
 

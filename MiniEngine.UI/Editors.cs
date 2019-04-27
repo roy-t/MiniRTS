@@ -126,6 +126,17 @@ namespace MiniEngine.UI
                         setter(f);
                     }
                     break;
+                case float[] floats:
+                    for (var i = 0; i < floats.Length; i++)
+                    {
+                        var fv = floats[i];
+                        if (this.CreateFloat($"{label}:{i}", ref fv, minMax))
+                        {
+                            floats[i] = fv;
+                            setter(floats);
+                        }
+                    }
+                    break;
                 case int i:
                     if (this.CreateInt(label, ref i, minMax))
                     {

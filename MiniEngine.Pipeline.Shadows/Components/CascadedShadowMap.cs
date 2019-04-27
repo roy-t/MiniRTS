@@ -72,8 +72,11 @@ namespace MiniEngine.Pipeline.Shadows.Components
 
         public Vector3 SurfaceToLightVector { get; private set; }
 
+        [Editor(nameof(Resolution))]
         public int Resolution { get; }
-        public float[] CascadeDistances { get; }
+
+        [Editor(nameof(CascadeDistances), nameof(CascadeDistances), 0.0f, float.MaxValue)]
+        public float[] CascadeDistances { get; set;  }
 
         public void Move(Vector3 position, Vector3 lookAt)
         {

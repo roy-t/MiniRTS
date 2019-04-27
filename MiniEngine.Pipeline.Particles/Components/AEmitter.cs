@@ -37,12 +37,19 @@ namespace MiniEngine.Pipeline.Particles.Components
             this.Tint = Color.White;
         }
 
+        [Icon(IconType.Emitter)]
         [Editor(nameof(Position))]
         public Vector3 Position { get; set; }
 
+        [Editor(nameof(Texture))]
         public Texture2D Texture { get; }
+
+        [Editor(nameof(Rows))]
         public int Rows { get; }
+
+        [Editor(nameof(Columns))]
         public int Columns { get; }
+
         public List<Particle> Particles { get; }
 
         [Editor(nameof(SpawnInterval), nameof(SpawnInterval), 0, float.MaxValue)]
@@ -66,6 +73,7 @@ namespace MiniEngine.Pipeline.Particles.Components
         [Editor(nameof(TimePerFrame), nameof(TimePerFrame), 0, float.MaxValue)]
         public Seconds TimePerFrame { get; set; }
 
+        [Editor(nameof(Tint))]
         public Color Tint
         {
             get => new Color(this.tint);
