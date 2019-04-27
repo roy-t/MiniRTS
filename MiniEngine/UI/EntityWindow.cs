@@ -83,7 +83,13 @@ namespace MiniEngine.UI
                     var getter = GetGetter(property, component, componentType);
                     var setter = GetSetter(attribute.Setter, component, componentType) ?? GetSetter(property, component, componentType);
 
-                    this.Editors.Create(attribute.Name, getter(), attribute.MinMax, setter);
+                    var index = 0;
+                    if(!string.IsNullOrEmpty(attribute.IndexProperty))
+                    {
+                        index = (int)component.GetType().GetProperty(attribute.IndexProperty).GetGetMethod().Invoke(component, null);
+                    }
+
+                    this.Editors.Create(attribute.Name, getter(), attribute.MinMax, setter, index);
                 }
             }            
         }

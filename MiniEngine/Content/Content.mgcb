@@ -141,6 +141,12 @@
 /processorParam:DebugMode=Auto
 /build:Effects/TextureEffect.fx
 
+#begin Effects/UIEffect.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Effects/UIEffect.fx
+
 #begin Effects/WeightedParticlesEffect.fx
 /importer:EffectImporter
 /processor:EffectProcessor

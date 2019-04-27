@@ -23,8 +23,8 @@ namespace MiniEngine.UI
         }
 
         public float DragSpeed { get; set; }
-     
-        public void Create(string label, object value, MinMaxDescription minMax, Action<object> setter)
+
+        public void Create(string label, object value, MinMaxDescription minMax, Action<object> setter, int index = 0)
         {
             if (setter == null)
             {
@@ -32,7 +32,7 @@ namespace MiniEngine.UI
                 {
                     case Texture2D texture:
                         ImGui.Text(label);
-                        var id = this.GuiRenderer.BindTexture(texture);
+                        var id = this.GuiRenderer.BindTexture(texture, index);
                         var scale = Math.Min(1.0f, 256.0f / texture.Width);
                         ImGui.Text($"Bounds: {texture.Bounds}");
                         ImGui.Text($"Format: {texture.Format}");

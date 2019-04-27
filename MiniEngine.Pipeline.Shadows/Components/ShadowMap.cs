@@ -50,7 +50,10 @@ namespace MiniEngine.Pipeline.Shadows.Components
         [Editor(nameof(Height))]
         public int Height => this.DepthMap.Height;
 
+        [Editor(nameof(DepthMap), null, nameof(Index))]
         public RenderTarget2D DepthMap { get; }
+
+        [Editor(nameof(ColorMap), null, nameof(Index))]
         public RenderTarget2D ColorMap { get; }
 
         [Editor(nameof(Index))]

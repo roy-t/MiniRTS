@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MiniEngine.Configuration;
 using MiniEngine.Controllers;
+using MiniEngine.Effects;
 using MiniEngine.Input;
 using MiniEngine.Pipeline.Debug.Factories;
 using MiniEngine.Pipeline.Lights.Factories;
@@ -50,7 +51,7 @@ namespace MiniEngine.UI
             this.Game = game;
             this.SpriteBatch = spriteBatch;
 
-            this.Gui = new ImGuiRenderer(game);
+            this.Gui = new ImGuiRenderer(game, injector.Resolve<UIEffect>());
             this.Gui.RebuildFontAtlas();
 
             this.Editors = new Editors(this.Gui);

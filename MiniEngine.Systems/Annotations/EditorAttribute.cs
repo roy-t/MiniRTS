@@ -10,7 +10,13 @@ namespace MiniEngine.Systems.Annotations
 
 
         public EditorAttribute(string name, string setter)
-            : this(name, setter, float.MinValue, float.MaxValue) { }       
+            : this(name, setter, float.MinValue, float.MaxValue) { }
+
+        public EditorAttribute(string name, string setter, string indexProperty)
+            : this(name, setter, float.MinValue, float.MaxValue)
+        {
+            this.IndexProperty = indexProperty;
+        }
 
         public EditorAttribute(string name, string setter, float min, float max)
         {
@@ -22,5 +28,6 @@ namespace MiniEngine.Systems.Annotations
         public string Name { get; }
         public string Setter { get; }
         public MinMaxDescription MinMax { get; }
+        public string IndexProperty { get; }
     }
 }

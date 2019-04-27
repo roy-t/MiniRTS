@@ -22,6 +22,9 @@ namespace MiniEngine.Pipeline.Lights.Components
         public ShadowMap ShadowMap { get; }
 
         [Editor(nameof(Color))]
-        public Color Color { get; set; }       
+        public Color Color { get; set; }
+
+        [Boundary(BoundaryType.Frustum)]
+        public BoundingFrustum Bounds => this.ViewPoint.Frustum;
     }
 }

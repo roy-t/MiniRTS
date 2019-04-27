@@ -1,8 +1,6 @@
 # Worklist
 ## TODO
-- Add icons for where a projector/light/... is
-- The Color and Texture effect do a different kind of depth test (preset depth, vs depth computed in shader)
-make both possible for both effects and make it available for outline effect? Or do clever matrix math so that we can only use the one in the shader!!!
+- Add outlines for cameras, lights, ...
 
 ### Misc
 - Make it cleaner to select or deselect render pipeline features
@@ -28,7 +26,6 @@ make both possible for both effects and make it available for outline effect? Or
 ### General
 - Find bottlenecks and optimize
 - Find allocations and kill them
-- Add outlines for cameras, and lights (that often use cameras internally).
 
 ## Interesting
 - Reflections

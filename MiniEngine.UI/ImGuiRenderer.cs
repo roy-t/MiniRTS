@@ -1,10 +1,11 @@
-﻿using ImGuiNET;
+﻿using System;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
+using ImGuiNET;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
+using MiniEngine.Effects;
 
 namespace MiniEngine.UI
 {
@@ -22,7 +23,7 @@ namespace MiniEngine.UI
         private readonly GraphicsDevice GraphicsDevice;
         private readonly RasterizerState RasterizerState;
 
-        private BasicEffect effect;
+        private readonly UIEffect Effect;
         
         private byte[] vertexData;
         private VertexBuffer vertexBuffer;
@@ -33,7 +34,7 @@ namespace MiniEngine.UI
         private int indexBufferSize;
 
         // Textures
-        private readonly Dictionary<IntPtr, Texture2D> LoadedTextures;
+        private readonly Dictionary<IntPtr, TextureReference> LoadedTextures;
 
         private int textureId;
         private IntPtr? fontTextureId;
@@ -43,15 +44,16 @@ namespace MiniEngine.UI
 
         private List<int> keys = new List<int>();
 
-        public ImGuiRenderer(Game game)
+        public ImGuiRenderer(Game game, UIEffect effect)
         {
             var context = ImGui.CreateContext();
             ImGui.SetCurrentContext(context);
 
-            this.Game = game ?? throw new ArgumentNullException(nameof(game));
+            this.Game = game;
+            this.Effect = effect;
             this.GraphicsDevice = game.GraphicsDevice;
 
-            this.LoadedTextures = new Dictionary<IntPtr, Texture2D>();
+            this.LoadedTextures = new Dictionary<IntPtr, TextureReference>();
 
             this.RasterizerState = new RasterizerState()
             {
@@ -97,11 +99,11 @@ namespace MiniEngine.UI
         /// <summary>
         /// Creates a pointer to a texture, which can be passed through ImGui calls such as <see cref="ImGui.Image" />. That pointer is then used by ImGui to let us know what texture to draw
         /// </summary>
-        public IntPtr BindTexture(Texture2D texture)
+        public IntPtr BindTexture(Texture2D texture, int index = 0)
         {
             var id = new IntPtr(this.textureId++);
 
-            this.LoadedTextures.Add(id, texture);
+            this.LoadedTextures.Add(id, new TextureReference(texture, index));
 
             return id;
         }
@@ -179,24 +181,19 @@ namespace MiniEngine.UI
         /// <summary>
         /// Updates the <see cref="Microsoft.Xna.Framework.Graphics.Effect" /> to the current matrices and texture
         /// </summary>
-        private Effect UpdateEffect(Texture2D texture)
+        private void UpdateEffect(TextureReference textureReference)
         {
-            this.effect = this.effect ?? new BasicEffect(this.GraphicsDevice);
-
             var io = ImGui.GetIO();
 
             // MonoGame-specific //////////////////////
             var offset = 0.0f; // -> Might be 0.5f for the OpenGL version? See: https://github.com/mellinoe/ImGui.NET/issues/97
             ///////////////////////////////////////////
 
-            this.effect.World = Matrix.Identity;
-            this.effect.View = Matrix.Identity;
-            this.effect.Projection = Matrix.CreateOrthographicOffCenter(offset, io.DisplaySize.X + offset, io.DisplaySize.Y + offset, offset, -1f, 1f);
-            this.effect.TextureEnabled = true;
-            this.effect.Texture = texture;
-            this.effect.VertexColorEnabled = true;
-
-            return this.effect;
+            this.Effect.World = Matrix.Identity;
+            this.Effect.View = Matrix.Identity;
+            this.Effect.Projection = Matrix.CreateOrthographicOffCenter(offset, io.DisplaySize.X + offset, io.DisplaySize.Y + offset, offset, -1f, 1f);
+            this.Effect.Texture = textureReference.Texture;
+            this.Effect.Index = textureReference.Index;
         }
 
         /// <summary>
@@ -340,13 +337,9 @@ namespace MiniEngine.UI
                         (int)(drawCmd.ClipRect.W - drawCmd.ClipRect.Y)
                     );
 
-                    var effect = this.UpdateEffect(this.LoadedTextures[drawCmd.TextureId]);
-
-                    for(var i = 0; i < effect.CurrentTechnique.Passes.Count; i++)                                   
-                    {
-                        effect.CurrentTechnique.Passes[i].Apply();
-                        this.GraphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, vtxOffset, idxOffset, (int)drawCmd.ElemCount / 3);
-                    }
+                    this.UpdateEffect(this.LoadedTextures[drawCmd.TextureId]);
+                    this.Effect.Apply();
+                    this.GraphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, vtxOffset, idxOffset, (int)drawCmd.ElemCount / 3);
 
                     idxOffset += (int)drawCmd.ElemCount;
                 }

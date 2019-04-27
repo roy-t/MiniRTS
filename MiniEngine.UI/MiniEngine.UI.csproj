@@ -66,6 +66,7 @@
     <Compile Include="Editors.cs" />
     <Compile Include="ImGuiRenderer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TextureReference.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -80,6 +81,10 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\MiniEngine.Effects\MiniEngine.Effects.csproj">
+      <Project>{2BB9181F-A31D-4DA2-93D2-64F5A56CF4F5}</Project>
+      <Name>MiniEngine.Effects</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MiniEngine.Primitives\MiniEngine.Primitives.csproj">
       <Project>{D02E8240-0178-4792-9C38-2455D1250FA6}</Project>
       <Name>MiniEngine.Primitives</Name>

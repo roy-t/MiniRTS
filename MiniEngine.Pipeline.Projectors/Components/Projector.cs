@@ -24,6 +24,7 @@ namespace MiniEngine.Pipeline.Projectors.Components
             this.SetMaxDistance(maxDistance);
         }
         
+        [Editor(nameof(Texture))]
         public Texture2D Texture { get; }         
         
         [Editor(nameof(Tint))]

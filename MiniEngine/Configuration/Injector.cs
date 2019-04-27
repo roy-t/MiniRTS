@@ -48,6 +48,7 @@ namespace MiniEngine.Configuration
             this.RegisterEffect<AdditiveParticlesEffect>("AdditiveParticlesEffect");
             this.RegisterEffect<ColorEffect>("ColorEffect");
             this.RegisterEffect<TextureEffect>("TextureEffect");
+            this.RegisterEffect<UIEffect>("UIEffect");
 
             this.RegisterEffect<AmbientLightEffect>("AmbientLightEffect");
             this.RegisterEffect<DirectionalLightEffect>("DirectionalLightEffect");

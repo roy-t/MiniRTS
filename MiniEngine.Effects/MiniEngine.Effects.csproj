@@ -52,6 +52,7 @@
     <Compile Include="AverageParticlesEffect.cs" />
     <Compile Include="Techniques\ColorEffectTechniques.cs" />
     <Compile Include="Techniques\TextureEffectTechniques.cs" />
+    <Compile Include="UIEffect.cs" />
     <Compile Include="TextureEffect.cs" />
     <Compile Include="CombineEffect.cs" />
     <Compile Include="DirectionalLightEffect.cs" />
