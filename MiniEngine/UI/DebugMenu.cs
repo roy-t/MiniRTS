@@ -1,18 +1,20 @@
-﻿using ImGuiNET;
+﻿using System;
+using ImGuiNET;
 using Microsoft.Xna.Framework;
-using System;
 
 namespace MiniEngine.UI
 {
     public sealed class DebugMenu
     {
+        private readonly ImGuiRenderer Renderer;
         private readonly RenderTargetDescriber RenderTargetDescriber;        
         private readonly Game Game;
 
         private readonly DebugState State;
 
-        public DebugMenu(UIState ui, RenderTargetDescriber RenderTargetDescriber, Game game)
+        public DebugMenu(ImGuiRenderer renderer, UIState ui, RenderTargetDescriber RenderTargetDescriber, Game game)
         {
+            this.Renderer = renderer;
             this.RenderTargetDescriber = RenderTargetDescriber;
             this.Game = game;
             this.State = ui.DebugState;
@@ -74,6 +76,13 @@ namespace MiniEngine.UI
                         }
                     }
                     ImGui.EndMenu();
+                }
+
+                var textureContrast = this.State.TextureContrast;
+                if(ImGui.SliderFloat("Texture Contrast", ref textureContrast, 1.0f, 100.0f))
+                {
+                    this.State.TextureContrast = textureContrast;
+                    this.Renderer.TextureContrast = textureContrast;
                 }
 
                 if (ImGui.MenuItem("Fixed Timestep", null, this.Game.IsFixedTimeStep))

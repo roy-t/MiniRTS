@@ -94,7 +94,7 @@ namespace MiniEngine.UI
             this.FileMenu = new FileMenu(this.UIState, game, sceneSelector);
             this.EntitiesMenu = new EntityMenu(this.UIState, entityManager);
             this.CreateMenu = new CreateMenu(this.UIState, entityManager, outlineFactory, projectorFactory, texture, this.LightsController, camera);
-            this.DebugMenu = new DebugMenu(this.UIState, renderTargetDescriber, game);
+            this.DebugMenu = new DebugMenu(this.Gui, this.UIState, renderTargetDescriber, game);
             this.EntityWindow = new EntityWindow(this.Editors, this.UIState, entityManager);
             this.RenderingMenu = new RenderingMenu(this.Editors, this.UIState, renderPipeline);
 

@@ -32,11 +32,21 @@ namespace MiniEngine.Effects
         public Matrix Projection
         {
             set => this.effect.Parameters["Projection"].SetValue(value);
-        }
+        }      
 
         public int Index
         {
             set => this.effect.Parameters["Index"].SetValue((float)value);
+        }
+
+        public float Contrast
+        {
+            set => this.effect.Parameters["Contrast"].SetValue(value);
+        }
+
+        public int Channels
+        {
+            set => this.effect.Parameters["Channels"].SetValue((float)value);
         }
 
         public void Apply() => this.ApplyPass();

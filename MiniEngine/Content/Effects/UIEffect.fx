@@ -4,6 +4,8 @@
 #include "Includes/Helpers.hlsl"
 
 float Index;
+float Contrast;
+float Channels;
 
 Texture2DArray Texture;
 sampler textureSampler = sampler_state
@@ -44,11 +46,20 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
 }
 
 float4 MainPS(VertexShaderOutput input) : COLOR0
-{    
-    /*float3 texCoord = float3(input.TexCoord, Index);
-    return tex2D(textureSampler, texCoord) * input.Color;*/
+{   
+    if (Channels == 1)
+    {
+        float color = Texture.Sample(textureSampler, float3(input.TexCoord, Index), 0).r * input.Color;
+        color = pow(color, Contrast);
+        return float4(color, color, color, 1.0f);
+    }
+    
+    float4 colors = Texture.Sample(textureSampler, float3(input.TexCoord, Index), 0) * input.Color;    
+    colors.r = pow(colors.r, Contrast);
+    colors.g = pow(colors.g, Contrast);
+    colors.b = pow(colors.b, Contrast);
 
-    return Texture.Sample(textureSampler, float3(input.TexCoord, Index), 0) * input.Color;
+    return float4(colors);
 }
 
 

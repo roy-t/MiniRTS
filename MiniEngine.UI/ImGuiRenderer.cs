@@ -42,7 +42,7 @@ namespace MiniEngine.UI
         // Input
         private int scrollWheelValue;
 
-        private List<int> keys = new List<int>();
+        private readonly List<int> Keys = new List<int>();        
 
         public ImGuiRenderer(Game game, UIEffect effect)
         {
@@ -65,8 +65,12 @@ namespace MiniEngine.UI
                 SlopeScaleDepthBias = 0
             };
 
+            this.TextureContrast = 1.0f;
+
             this.SetupInput();
         }
+
+        public float TextureContrast { get; set; }
 
         /// <summary>
         /// Creates a texture and loads the font data from ImGui. Should be called when the <see cref="Microsoft.Xna.Framework.Graphics.GraphicsDevice" /> is initialized but before any rendering is done
@@ -101,8 +105,7 @@ namespace MiniEngine.UI
         /// </summary>
         public IntPtr BindTexture(Texture2D texture, int index = 0)
         {
-            var id = new IntPtr(this.textureId++);
-
+            var id = new IntPtr(this.textureId++);            
             this.LoadedTextures.Add(id, new TextureReference(texture, index));
 
             return id;
@@ -145,25 +148,25 @@ namespace MiniEngine.UI
         {
             var io = ImGui.GetIO();
 
-            this.keys.Add(io.KeyMap[(int)ImGuiKey.Tab] = (int)Keys.Tab);
-            this.keys.Add(io.KeyMap[(int)ImGuiKey.LeftArrow] = (int)Keys.Left);
-            this.keys.Add(io.KeyMap[(int)ImGuiKey.RightArrow] = (int)Keys.Right);
-            this.keys.Add(io.KeyMap[(int)ImGuiKey.UpArrow] = (int)Keys.Up);
-            this.keys.Add(io.KeyMap[(int)ImGuiKey.DownArrow] = (int)Keys.Down);
-            this.keys.Add(io.KeyMap[(int)ImGuiKey.PageUp] = (int)Keys.PageUp);
-            this.keys.Add(io.KeyMap[(int)ImGuiKey.PageDown] = (int)Keys.PageDown);
-            this.keys.Add(io.KeyMap[(int)ImGuiKey.Home] = (int)Keys.Home);
-            this.keys.Add(io.KeyMap[(int)ImGuiKey.End] = (int)Keys.End);
-            this.keys.Add(io.KeyMap[(int)ImGuiKey.Delete] = (int)Keys.Delete);
-            this.keys.Add(io.KeyMap[(int)ImGuiKey.Backspace] = (int)Keys.Back);
-            this.keys.Add(io.KeyMap[(int)ImGuiKey.Enter] = (int)Keys.Enter);
-            this.keys.Add(io.KeyMap[(int)ImGuiKey.Escape] = (int)Keys.Escape);
-            this.keys.Add(io.KeyMap[(int)ImGuiKey.A] = (int)Keys.A);
-            this.keys.Add(io.KeyMap[(int)ImGuiKey.C] = (int)Keys.C);
-            this.keys.Add(io.KeyMap[(int)ImGuiKey.V] = (int)Keys.V);
-            this.keys.Add(io.KeyMap[(int)ImGuiKey.X] = (int)Keys.X);
-            this.keys.Add(io.KeyMap[(int)ImGuiKey.Y] = (int)Keys.Y);
-            this.keys.Add(io.KeyMap[(int)ImGuiKey.Z] = (int)Keys.Z);
+            this.Keys.Add(io.KeyMap[(int)ImGuiKey.Tab] = (int)Microsoft.Xna.Framework.Input.Keys.Tab);
+            this.Keys.Add(io.KeyMap[(int)ImGuiKey.LeftArrow] = (int)Microsoft.Xna.Framework.Input.Keys.Left);
+            this.Keys.Add(io.KeyMap[(int)ImGuiKey.RightArrow] = (int)Microsoft.Xna.Framework.Input.Keys.Right);
+            this.Keys.Add(io.KeyMap[(int)ImGuiKey.UpArrow] = (int)Microsoft.Xna.Framework.Input.Keys.Up);
+            this.Keys.Add(io.KeyMap[(int)ImGuiKey.DownArrow] = (int)Microsoft.Xna.Framework.Input.Keys.Down);
+            this.Keys.Add(io.KeyMap[(int)ImGuiKey.PageUp] = (int)Microsoft.Xna.Framework.Input.Keys.PageUp);
+            this.Keys.Add(io.KeyMap[(int)ImGuiKey.PageDown] = (int)Microsoft.Xna.Framework.Input.Keys.PageDown);
+            this.Keys.Add(io.KeyMap[(int)ImGuiKey.Home] = (int)Microsoft.Xna.Framework.Input.Keys.Home);
+            this.Keys.Add(io.KeyMap[(int)ImGuiKey.End] = (int)Microsoft.Xna.Framework.Input.Keys.End);
+            this.Keys.Add(io.KeyMap[(int)ImGuiKey.Delete] = (int)Microsoft.Xna.Framework.Input.Keys.Delete);
+            this.Keys.Add(io.KeyMap[(int)ImGuiKey.Backspace] = (int)Microsoft.Xna.Framework.Input.Keys.Back);
+            this.Keys.Add(io.KeyMap[(int)ImGuiKey.Enter] = (int)Microsoft.Xna.Framework.Input.Keys.Enter);
+            this.Keys.Add(io.KeyMap[(int)ImGuiKey.Escape] = (int)Microsoft.Xna.Framework.Input.Keys.Escape);
+            this.Keys.Add(io.KeyMap[(int)ImGuiKey.A] = (int)Microsoft.Xna.Framework.Input.Keys.A);
+            this.Keys.Add(io.KeyMap[(int)ImGuiKey.C] = (int)Microsoft.Xna.Framework.Input.Keys.C);
+            this.Keys.Add(io.KeyMap[(int)ImGuiKey.V] = (int)Microsoft.Xna.Framework.Input.Keys.V);
+            this.Keys.Add(io.KeyMap[(int)ImGuiKey.X] = (int)Microsoft.Xna.Framework.Input.Keys.X);
+            this.Keys.Add(io.KeyMap[(int)ImGuiKey.Y] = (int)Microsoft.Xna.Framework.Input.Keys.Y);
+            this.Keys.Add(io.KeyMap[(int)ImGuiKey.Z] = (int)Microsoft.Xna.Framework.Input.Keys.Z);
          
             // MonoGame-specific //////////////////////
             this.Game.Window.TextInput += (s, a) =>
@@ -181,9 +184,10 @@ namespace MiniEngine.UI
         /// <summary>
         /// Updates the <see cref="Microsoft.Xna.Framework.Graphics.Effect" /> to the current matrices and texture
         /// </summary>
-        private void UpdateEffect(TextureReference textureReference)
-        {
+        private void UpdateEffect(IntPtr textureId)
+        {            
             var io = ImGui.GetIO();
+            var textureReference = this.LoadedTextures[textureId];
 
             // MonoGame-specific //////////////////////
             var offset = 0.0f; // -> Might be 0.5f for the OpenGL version? See: https://github.com/mellinoe/ImGui.NET/issues/97
@@ -194,6 +198,25 @@ namespace MiniEngine.UI
             this.Effect.Projection = Matrix.CreateOrthographicOffCenter(offset, io.DisplaySize.X + offset, io.DisplaySize.Y + offset, offset, -1f, 1f);
             this.Effect.Texture = textureReference.Texture;
             this.Effect.Index = textureReference.Index;
+
+            if (textureId == this.fontTextureId)
+            {
+                this.Effect.Contrast = 1.0f;
+            }
+            else
+            {
+                this.Effect.Contrast = this.TextureContrast;
+            }
+            
+            if (textureReference.Texture.Format == SurfaceFormat.Single)
+            {
+                
+                this.Effect.Channels = 1;
+            }
+            else
+            {                
+                this.Effect.Channels = 4;
+            }
         }
 
         /// <summary>
@@ -206,15 +229,15 @@ namespace MiniEngine.UI
             var mouse = Mouse.GetState();
             var keyboard = Keyboard.GetState();
 
-            for (int i = 0; i < this.keys.Count; i++)
+            for (int i = 0; i < this.Keys.Count; i++)
             {
-                io.KeysDown[this.keys[i]] = keyboard.IsKeyDown((Keys)this.keys[i]);
+                io.KeysDown[this.Keys[i]] = keyboard.IsKeyDown((Keys)this.Keys[i]);
             }
 
-            io.KeyShift = keyboard.IsKeyDown(Keys.LeftShift) || keyboard.IsKeyDown(Keys.RightShift);
-            io.KeyCtrl = keyboard.IsKeyDown(Keys.LeftControl) || keyboard.IsKeyDown(Keys.RightControl);
-            io.KeyAlt = keyboard.IsKeyDown(Keys.LeftAlt) || keyboard.IsKeyDown(Keys.RightAlt);
-            io.KeySuper = keyboard.IsKeyDown(Keys.LeftWindows) || keyboard.IsKeyDown(Keys.RightWindows);
+            io.KeyShift = keyboard.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftShift) || keyboard.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.RightShift);
+            io.KeyCtrl = keyboard.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftControl) || keyboard.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.RightControl);
+            io.KeyAlt = keyboard.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftAlt) || keyboard.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.RightAlt);
+            io.KeySuper = keyboard.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftWindows) || keyboard.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.RightWindows);
 
             io.DisplaySize = new System.Numerics.Vector2(this.GraphicsDevice.PresentationParameters.BackBufferWidth, this.GraphicsDevice.PresentationParameters.BackBufferHeight);
             io.DisplayFramebufferScale = new System.Numerics.Vector2(1f, 1f);
@@ -337,7 +360,7 @@ namespace MiniEngine.UI
                         (int)(drawCmd.ClipRect.W - drawCmd.ClipRect.Y)
                     );
 
-                    this.UpdateEffect(this.LoadedTextures[drawCmd.TextureId]);
+                    this.UpdateEffect(drawCmd.TextureId);
                     this.Effect.Apply();
                     this.GraphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, vtxOffset, idxOffset, (int)drawCmd.ElemCount / 3);
 

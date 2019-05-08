@@ -32,22 +32,21 @@ sampler colorSampler = sampler_state
 
 struct VertexShaderInput
 {
-    float3 Position : POSITION0;
-    float2 TexCoord : TEXCOORD0;
+    float3 Position : POSITION0;    
 };
 
 struct VertexShaderOutput
 {
     float4 Position : POSITION0;
-    float2 TexCoord : TEXCOORD0;
+    float4 ScreenPosition : TEXCOORD0;
 };
 
 VertexShaderOutput MainVS(in VertexShaderInput input)
 {
     VertexShaderOutput output = (VertexShaderOutput)0;
 
-    output.Position = float4(input.Position, 1);
-    output.TexCoord = input.TexCoord;
+    output.Position = float4(input.Position, 1);    
+    output.ScreenPosition = output.Position;
 
     return output;
 }
@@ -112,11 +111,7 @@ float3 SampleShadowMapPCF(float2 shadowMapCoordinates, float z)
 
 float4 MainPS(VertexShaderOutput input) : COLOR0
 {
-    float2 texCoord = input.TexCoord;
-
-    float3 normal = ReadNormals(texCoord);
-    float shininess = ReadShininess(texCoord);    
-
+    float2 texCoord = ToTextureCoordinates(input.ScreenPosition.xy, input.ScreenPosition.w);    
     float4 position = ReadWorldPosition(texCoord, InverseViewProjection);
 
     // Move from world position to the reference frame of the light
@@ -133,6 +128,9 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
         float3 lightFactor = SampleShadowMapPCF(shadowMapCoordinates, distanceToLightSource - bias);
         
         float3 lightVector = normalize(-LightDirection);
+
+        float3 normal = ReadNormals(texCoord);
+        float shininess = ReadShininess(texCoord);
 
         float3 diffuseLight = ComputeDiffuseLightFactor(lightVector, normal, Color);
         float specularLight = ComputeSpecularLightFactor(lightVector, normal, position, CameraPosition, shininess, SpecularPower);
