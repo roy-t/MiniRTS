@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
 using MiniEngine.Primitives.Cameras;
@@ -6,7 +7,6 @@ using MiniEngine.Rendering;
 using MiniEngine.Telemetry;
 using MiniEngine.UI;
 using MiniEngine.Units;
-using System;
 
 namespace MiniEngine
 {

@@ -71,6 +71,7 @@
     <Compile Include="Controllers\LightsController.cs" />
     <Compile Include="Rendering\LightPipelineSettings.cs" />
     <Compile Include="Rendering\ModelPipelineSettings.cs" />
+    <Compile Include="Rendering\PipelineBuilder.cs" />
     <Compile Include="Rendering\RenderPipelineSettings.cs" />
     <Compile Include="SceneSelector.cs" />
     <Compile Include="Scenes\SceneBuilder.cs" />

@@ -51,6 +51,7 @@ namespace MiniEngine.Rendering
         private readonly ModelPipeline ModelPipeline;
         private readonly ParticlePipeline ParticlePipeline;
         private readonly ProjectorPipeline ProjectorPipeline;
+        private readonly DynamicTextureSystem DynamicTextureSystem;
 
         private readonly RenderPipeline Pipeline;
         private readonly Pass RootPass;
@@ -71,6 +72,7 @@ namespace MiniEngine.Rendering
             ShadowCastingLightSystem shadowCastingLightSystem,
             SunlightSystem sunlightSystem,
             BoundarySystem boundarySystem,
+            DynamicTextureSystem dynamicTextureSystem,
             IconSystem iconSystem,
             IMeterRegistry meterRegistry)
         {
@@ -88,6 +90,7 @@ namespace MiniEngine.Rendering
             this.ShadowCastingLightSystem  = shadowCastingLightSystem;
             this.SunlightSystem            = sunlightSystem;            
             this.BoundarySystem            = boundarySystem;
+            this.DynamicTextureSystem      = dynamicTextureSystem;
             this.IconSystem                = iconSystem;
 
             var width    = device.PresentationParameters.BackBufferWidth;
@@ -160,6 +163,7 @@ namespace MiniEngine.Rendering
                 .UpdateSystem(this.CascadedShadowMapSystem)
                 .UpdateSystem(this.TransparentParticleSystem)
                 .UpdateSystem(this.AdditiveParticleSystem)
+                .UpdateSystem(this.DynamicTextureSystem)
                 .EnableIf(this.Settings.EnableShadows, x => x.RenderShadows(this.ShadowPipeline))
                 .EnableIf(this.Settings.EnableModels, x => x.RenderModels(this.ModelSystem, this.ModelPipeline))
                 .EnableIf(this.Settings.EnableParticles, x => x.RenderParticles(this.ParticlePipeline))

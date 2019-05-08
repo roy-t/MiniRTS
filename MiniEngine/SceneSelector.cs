@@ -22,7 +22,7 @@ namespace MiniEngine
             foreach (var scene in this.Scenes)
             {
                 scene.LoadContent(content);
-            }            
+            }
         }
 
         public IReadOnlyList<IScene> Scenes { get; private set; }

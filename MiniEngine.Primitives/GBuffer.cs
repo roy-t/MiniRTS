@@ -99,6 +99,7 @@ namespace MiniEngine.Primitives
         public RenderTarget2D LightTarget { get; }
         public RenderTarget2D BlurTarget { get; }
         public RenderTarget2D CombineTarget { get; }
-        public RenderTarget2D FinalTarget { get; }        
+        public RenderTarget2D FinalTarget { get; }
+        public float AspectRatio => this.DiffuseTarget.Width / (float)this.DiffuseTarget.Height;
     }
 }

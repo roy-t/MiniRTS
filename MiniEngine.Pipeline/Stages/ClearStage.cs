@@ -31,8 +31,8 @@ namespace MiniEngine.Pipeline.Stages
             this.Device.SetRenderTarget(input.GBuffer.CombineTarget);
             this.Device.Clear(Color.TransparentBlack);
 
-            this.Device.SetRenderTarget(input.GBuffer.FinalTarget);
-            this.Device.Clear(Color.Black);            
+            //this.Device.SetRenderTarget(input.GBuffer.FinalTarget);
+            //this.Device.Clear(Color.Black);            
         }
     }
 }

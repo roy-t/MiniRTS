@@ -49,13 +49,11 @@ namespace MiniEngine.Configuration
             this.RegisterEffect<ColorEffect>("ColorEffect");
             this.RegisterEffect<TextureEffect>("TextureEffect");
             this.RegisterEffect<UIEffect>("UIEffect");
-
             this.RegisterEffect<AmbientLightEffect>("AmbientLightEffect");
             this.RegisterEffect<DirectionalLightEffect>("DirectionalLightEffect");
             this.RegisterEffect<PointLightEffect>("PointLightEffect");
             this.RegisterEffect<ShadowCastingLightEffect>("ShadowCastingLightEffect");
             this.RegisterEffect<SunlightEffect>("SunlightEffect");
-
             this.RegisterEffect<ProjectorEffect>("ProjectorEffect");           
 
             // Primitives
@@ -67,7 +65,8 @@ namespace MiniEngine.Configuration
             this.Container.Register<LightsFactory>();
 
             // Renderer
-            this.Container.Register<DeferredRenderPipeline>();
+            this.Container.Register<PipelineBuilder>();
+            this.Container.Register<DeferredRenderPipeline>();            
 
             // UI
             this.Container.Register<KeyboardInput>();
