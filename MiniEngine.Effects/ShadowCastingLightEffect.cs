@@ -17,6 +17,21 @@ namespace MiniEngine.Effects
             this.Wrap(effect);
         }
 
+        public Matrix World
+        {
+            set => this.effect.Parameters["World"].SetValue(value);
+        }
+
+        public Matrix View
+        {
+            set => this.effect.Parameters["View"].SetValue(value);
+        }
+
+        public Matrix Projection
+        {
+            set => this.effect.Parameters["Projection"].SetValue(value);
+        }
+
         public Texture2D NormalMap
         {
             set => this.effect.Parameters["NormalMap"].SetValue(value);
@@ -66,6 +81,8 @@ namespace MiniEngine.Effects
         {
             set => this.effect.Parameters["LightViewProjection"].SetValue(value);
         }
+
+
 
         public void Apply() => this.ApplyPass();
     }

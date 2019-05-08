@@ -89,7 +89,9 @@ namespace MiniEngine.UI
             if (!allEntities.Contains(selectedEntity))
             {
                 this.UIState.EntityState.SelectedEntity = allEntities.FirstOrDefault();
-            }                        
+            }
+
+            this.Gui.TextureContrast = this.UIState.DebugState.TextureContrast;
 
             this.FileMenu = new FileMenu(this.UIState, game, sceneSelector);
             this.EntitiesMenu = new EntityMenu(this.UIState, entityManager);

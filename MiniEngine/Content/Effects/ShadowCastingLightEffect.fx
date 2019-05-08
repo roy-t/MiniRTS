@@ -45,7 +45,9 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
 {
     VertexShaderOutput output = (VertexShaderOutput)0;
 
-    output.Position = float4(input.Position, 1);    
+    float4 worldPosition = mul(float4(input.Position.xyz, 1), World);
+    float4 viewPosition = mul(worldPosition, View);
+    output.Position = mul(viewPosition, Projection);
     output.ScreenPosition = output.Position;
 
     return output;
@@ -111,15 +113,15 @@ float3 SampleShadowMapPCF(float2 shadowMapCoordinates, float z)
 
 float4 MainPS(VertexShaderOutput input) : COLOR0
 {
-    float2 texCoord = ToTextureCoordinates(input.ScreenPosition.xy, input.ScreenPosition.w);    
-    float4 position = ReadWorldPosition(texCoord, InverseViewProjection);
+    float2 texCoord = ToTextureCoordinates(input.ScreenPosition.xy, input.ScreenPosition.w);
+    float4 position = ReadWorldPosition(texCoord, InverseViewProjection);   
 
     // Move from world position to the reference frame of the light
     float4 positionInLightReferenceFrame = mul(position, LightViewProjection);
 
     // Figure out where on the shadow map the current pixel is
-    float2 shadowMapCoordinates = ToTextureCoordinates(positionInLightReferenceFrame.xy, positionInLightReferenceFrame.w);
-        
+    float2 shadowMapCoordinates = ToTextureCoordinates(positionInLightReferenceFrame.xy, positionInLightReferenceFrame.w);    
+
     // Only if the current pixel is on the shadow map (inside legal texture coordinates) the pixel is seen by the light
     if(shadowMapCoordinates.x >= 0.0f && shadowMapCoordinates.x <= 1.0f &&
         shadowMapCoordinates.y >= 0.0f && shadowMapCoordinates.y <= 1.0f)

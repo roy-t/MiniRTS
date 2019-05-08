@@ -5,6 +5,15 @@ namespace MiniEngine.Primitives
 {
     public static class ProjectionMath
     {
+        public static Matrix ExtendFarPlane(Matrix projectionMatrix, float near, float far, float extension)
+        {
+            far = far + extension;
+            projectionMatrix.M33 = far / (near - far);
+            projectionMatrix.M43 = near * far / (near - far);
+
+            return projectionMatrix;
+        }
+
         /// <summary>
         /// Converts screen-space {X, Y} coordinates to texture coordinates
         /// So from {[-1..1], [-1..1]} to {[0..1], [1..0]}

@@ -60,7 +60,7 @@ namespace MiniEngine.Pipeline.Projectors.Systems
                     // Camera properties
                     this.Effect.World = Matrix.Identity;
                     this.Effect.View = perspectiveCamera.View;
-                    this.Effect.Projection = perspectiveCamera.Projection;
+                    this.Effect.Projection = ProjectionMath.ExtendFarPlane(perspectiveCamera.Projection, perspectiveCamera.NearPlane, perspectiveCamera.FarPlane, projector.ViewPoint.FarPlane * 2);
                     this.Effect.InverseViewProjection = perspectiveCamera.InverseViewProjection;
                                        
                     this.Effect.Apply(this.Technique);                    
