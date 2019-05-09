@@ -66,7 +66,7 @@ namespace MiniEngine.Pipeline.Lights.Systems
                     this.Effect.View = perspectiveCamera.View;
 
                     // Extend the far plane of the camera because otherwise the frustum might be clipped while the things its shadowing are still in view
-                    this.Effect.Projection = ProjectionMath.ExtendFarPlane(perspectiveCamera.Projection, perspectiveCamera.NearPlane, perspectiveCamera.FarPlane, light.ViewPoint.FarPlane * 2);
+                    this.Effect.Projection = ProjectionMath.ComputeProjectionMatrixThatFitsFrustum(perspectiveCamera, light.ViewPoint.Frustum);
                     this.Effect.InverseViewProjection = perspectiveCamera.InverseViewProjection;
 
                     // Shadow properties

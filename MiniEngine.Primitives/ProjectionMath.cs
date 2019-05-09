@@ -1,13 +1,23 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using MiniEngine.Primitives.Cameras;
 
 namespace MiniEngine.Primitives
 {
     public static class ProjectionMath
-    {
-        public static Matrix ExtendFarPlane(Matrix projectionMatrix, float near, float far, float extension)
+    {       
+        public static Matrix ComputeProjectionMatrixThatFitsFrustum(PerspectiveCamera camera, BoundingFrustum frustum, float epsilon = 1.0f)
         {
-            far = far + extension;
+            var corners = frustum.GetCorners();
+            var far = float.MinValue;
+            for(var i = 0; i < BoundingFrustum.CornerCount; i++)
+            {
+                far = Math.Max(far, Vector3.Distance(corners[i], camera.Position));            
+            }
+
+            var near = camera.NearPlane;
+            far += epsilon;
+            var projectionMatrix = camera.Projection;
             projectionMatrix.M33 = far / (near - far);
             projectionMatrix.M43 = near * far / (near - far);
 

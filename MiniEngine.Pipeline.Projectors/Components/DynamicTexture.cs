@@ -24,7 +24,8 @@ namespace MiniEngine.Pipeline.Projectors.Components
         public RenderPipelineInput Input { get; }        
 
         [Editor(nameof(ViewPoint))]
-        public PerspectiveCamera ViewPoint { get; }
+        public PerspectiveCamera ViewPoint { get; set; }
+
         public GBuffer GBuffer { get; }
         public Pass Pass { get; }
         public string Label { get; }
