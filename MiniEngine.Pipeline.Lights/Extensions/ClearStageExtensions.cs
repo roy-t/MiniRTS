@@ -6,8 +6,7 @@ namespace MiniEngine.Pipeline.Lights.Extensions
     {
         public static LightingPipeline ClearLightTargets(this LightingPipeline pipeline)
         {
-            var stage = new ClearStage(pipeline.Device);
-            pipeline.Add(stage);
+            pipeline.Add(new ClearStage());
             return pipeline;
         }
     }

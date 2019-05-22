@@ -65,9 +65,9 @@ namespace MiniEngine.Scenes
             this.SceneBuilder.BuildBulletHoles();
 
             var entity = this.EntityCreator.CreateEntity();
-            var dynamicTexture = this.DynamicTextureFactory.Construct(entity, new Vector3(-60, 8, -25), new Vector3(-60, 8, 24), 1024, 1024, "Firewatcher");
+            var dynamicTexture = this.DynamicTextureFactory.Construct(entity, new Vector3(-60, 8, 0), new Vector3(-60, 8, 24), 1024, 1024, "Firewatcher");
 
-            this.PipelineBuilder.AddAll(dynamicTexture.Pipeline);
+            this.PipelineBuilder.AddParticlePipeline(dynamicTexture.Pipeline);
             this.debugInfoFactory.Construct(entity);
 
             var entity2 = this.EntityCreator.CreateEntity();

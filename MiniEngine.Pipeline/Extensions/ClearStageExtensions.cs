@@ -6,8 +6,7 @@ namespace MiniEngine.Pipeline.Extensions
     {        
         public static RenderPipeline ClearRenderTargetSet(this RenderPipeline pipeline)
         {
-            var stage = new ClearStage(pipeline.Device);
-            pipeline.Add(stage);
+            pipeline.Add(new ClearStage());
             return pipeline;
         }
     }

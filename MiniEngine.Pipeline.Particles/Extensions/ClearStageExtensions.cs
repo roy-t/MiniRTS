@@ -6,8 +6,7 @@ namespace MiniEngine.Pipeline.Particles.Extensions
     {
         public static ParticlePipeline ClearParticleRenderTargets(this ParticlePipeline pipeline)
         {
-            var stage = new ClearStage(pipeline.Device);
-            pipeline.Add(stage);
+            pipeline.Add(new ClearStage());
             return pipeline;
         }
     }

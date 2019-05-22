@@ -64,17 +64,19 @@ namespace MiniEngine.Rendering
 
             this.MeterRegistry = new NullMeterRegistry();
         }
-        
 
-        public void AddFoo(RenderPipeline pipeline)
+        public void AddParticlePipeline(RenderPipeline pipeline)
         {
-            var particlePipeline = ParticlePipeline.Create(this.Device, this.MeterRegistry)
+            var particlePipeline = ParticlePipeline.Create(this.Device, this.MeterRegistry);
+                     
+            particlePipeline
                 .ClearParticleRenderTargets()
-                //.RenderTransparentParticles(this.TransparentParticleSystem)
+                .RenderTransparentParticles(this.TransparentParticleSystem)
                 .RenderAdditiveParticles(this.AdditiveParticleSystem);
 
-            pipeline.ClearRenderTargetSet()
-                    .RenderParticles(particlePipeline);
+            pipeline
+                .ClearRenderTargetSet()
+                .RenderParticles(particlePipeline);
         }
 
         public void AddAll(RenderPipeline pipeline)
