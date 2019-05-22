@@ -7,14 +7,15 @@ using MiniEngine.Units;
 
 namespace MiniEngine.Pipeline.Projectors.Components
 {
-    [Label(nameof(Projector))]
     public sealed class Projector : IComponent
     {
         private const float Epsilon = 0.001f;
 
-        public Projector(Texture2D texture, Color tint, Vector3 position, Vector3 lookAt, Meters minDistance, Meters maxDistance)
+        public Projector(Texture2D texture, Texture2D mask, Color tint, Vector3 position, Vector3 lookAt, Meters minDistance, Meters maxDistance)
         {            
-            this.Texture = texture;            
+            this.Texture = texture;
+            this.Mask = mask;
+
             this.Tint = tint;
 
             this.ViewPoint = new PerspectiveCamera(1);
@@ -25,8 +26,11 @@ namespace MiniEngine.Pipeline.Projectors.Components
         }
         
         [Editor(nameof(Texture))]
-        public Texture2D Texture { get; }         
-        
+        public Texture2D Texture { get; }
+
+        [Editor(nameof(Mask))]
+        public Texture2D Mask { get; }
+
         [Editor(nameof(Tint))]
         public Color Tint { get; set; }        
 

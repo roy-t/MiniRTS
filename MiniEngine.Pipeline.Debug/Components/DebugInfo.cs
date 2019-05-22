@@ -4,7 +4,6 @@ using MiniEngine.Systems.Components;
 
 namespace MiniEngine.Pipeline.Debug.Components
 {
-    [Label(nameof(DebugInfo))]
     public sealed class DebugInfo : IComponent
     {        
         public DebugInfo(Color color3D, Color color2d, Color visibleIconTint, Color clippedIconTint)

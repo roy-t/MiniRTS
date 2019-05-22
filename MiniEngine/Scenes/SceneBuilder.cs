@@ -8,6 +8,7 @@ using MiniEngine.Pipeline.Models.Factories;
 using MiniEngine.Pipeline.Particles.Factories;
 using MiniEngine.Pipeline.Projectors.Factories;
 using MiniEngine.Primitives;
+using MiniEngine.Rendering;
 using MiniEngine.Systems;
 namespace MiniEngine.Scenes
 {
@@ -20,7 +21,9 @@ namespace MiniEngine.Scenes
         private readonly ProjectorFactory ProjectorFactory;
         private readonly AdditiveEmitterFactory AdditiveEmitterFactory;
         private readonly AveragedEmitterFactory AveragedEmitterFactory;
-        private readonly DebugInfoFactory OutlineFactory;
+        private readonly DynamicTextureFactory DynamicTextureFactory;
+        private readonly DebugInfoFactory DebugInfoFactory;
+        private readonly PipelineBuilder PipelineBuilder;
 
         private Model sponza;
         private Model plane;
@@ -29,6 +32,7 @@ namespace MiniEngine.Scenes
         private Texture2D explosion2;
         private Texture2D smoke;
         private Texture2D bulletHole;
+        private Texture2D mask;
 
         public SceneBuilder(EntityManager entityManager,
             LightsFactory lightsFactory,
@@ -37,7 +41,9 @@ namespace MiniEngine.Scenes
             ProjectorFactory projectorFactory,
             AdditiveEmitterFactory additiveEmitterFactory,
             AveragedEmitterFactory averagedEmitterFactory,
-            DebugInfoFactory outlineFactory)
+            DynamicTextureFactory dynamicTextureFactory,
+            DebugInfoFactory debugInfoFactory,
+            PipelineBuilder pipelineBuilder)
         {
             this.EntityManager = entityManager;
             this.LightsFactory = lightsFactory;
@@ -46,7 +52,9 @@ namespace MiniEngine.Scenes
             this.ProjectorFactory = projectorFactory;
             this.AdditiveEmitterFactory = additiveEmitterFactory;
             this.AveragedEmitterFactory = averagedEmitterFactory;
-            this.OutlineFactory = outlineFactory;
+            this.DynamicTextureFactory = dynamicTextureFactory;
+            this.DebugInfoFactory = debugInfoFactory;
+            this.PipelineBuilder = pipelineBuilder;
         }
 
         public void LoadContent(ContentManager content)
@@ -58,6 +66,7 @@ namespace MiniEngine.Scenes
             this.explosion2 = content.Load<Texture2D>(@"Particles\Explosion2");
             this.smoke = content.Load<Texture2D>(@"Particles\Smoke");
             this.bulletHole = content.Load<Texture2D>(@"Decals\BulletHole");
+            this.mask = content.Load<Texture2D>(@"StarMask");
         }
 
         public Entity BuildSponzaLit(Pose pose)
@@ -86,15 +95,13 @@ namespace MiniEngine.Scenes
 
             var position = new Vector3(-40.5f, 30.0f, 3.2f);
             var world = new Pose(position, 4.4f * 0.01f, MathHelper.PiOver2, MathHelper.PiOver2, 0);
-            //var world = CreateScaleRotationTranslation(4.4f * 0.01f, MathHelper.PiOver2, MathHelper.PiOver2, 0, position);
             this.TransparentModelFactory.Construct(entities[0], this.plane, world);
-            this.OutlineFactory.Construct(entities[0]);
+            this.DebugInfoFactory.Construct(entities[0]);
 
             position = new Vector3(-40.5f, 30.0f, -7.2f);
-            //world = CreateScaleRotationTranslation(4.4f * 0.01f, 0, MathHelper.PiOver4, 0, position);
             world = new Pose(position, 4.4f * 0.01f, MathHelper.PiOver4);
             this.TransparentModelFactory.Construct(entities[1], this.plane, world);
-            this.OutlineFactory.Construct(entities[1]);
+            this.DebugInfoFactory.Construct(entities[1]);            
 
             return entities;
         }
@@ -116,6 +123,20 @@ namespace MiniEngine.Scenes
             //var light = particleSpawn + (Vector3.Up * 3);
             //this.LightsFactory.ShadowCastingLightFactory.Construct(this.particleEntity, light, light + Vector3.Up + (Vector3.Left * 0.001f), Color.IndianRed);
 
+
+            var cameraPosition = new Vector3(-60.5f, 8.0f, 20.0f);
+            var projectorPosition = new Vector3(-60.5f, 0.0f, 20.0f);
+            var lookAt = cameraPosition + (new Vector3(0.001f, 1, 0) * 10);
+
+            var lightEntity = this.EntityManager.Creator.CreateEntity();
+            var dynamicTexture = this.DynamicTextureFactory.Construct(lightEntity, cameraPosition,  lookAt, 1024, 1024, "Firewatcher");                        
+            this.PipelineBuilder.AddParticlePipeline(dynamicTexture.Pipeline);
+            this.DebugInfoFactory.Construct(lightEntity);
+
+            var color = Color.White * 0.2f;            
+            var projector = this.ProjectorFactory.Construct(lightEntity, dynamicTexture.FinalTarget, this.mask, color, projectorPosition, lookAt);
+            projector.SetMinDistance(10.0f);
+            projector.SetMaxDistance(30.0f);
             return entity;
         }
 

@@ -44,7 +44,7 @@ namespace MiniEngine.UI
                     // check how many of that component we've already added and use that in the name
                     var count = this.Count(component);
 
-                    var name = GetLabel(component);
+                    var name = GetName(component);
                     if (ImGui.TreeNode(name + " #" + count.ToString("00")))
                     {
                         this.CreateEditors(component);
@@ -94,12 +94,8 @@ namespace MiniEngine.UI
             }            
         }
 
-        private static string GetLabel(IComponent component)
-        {
-            return component.GetType().GetCustomAttributes(typeof(LabelAttribute), false).Cast<LabelAttribute>()
-                .Select(l => l.Label)
-                .FirstOrDefault();
-        }
+        private static string GetName(IComponent component) 
+            => component.GetType().Name;
 
         private static Func<object> GetGetter(PropertyInfo property, IComponent component, Type componentType)
         {            

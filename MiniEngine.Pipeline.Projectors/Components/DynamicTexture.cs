@@ -7,7 +7,6 @@ using MiniEngine.Systems.Components;
 
 namespace MiniEngine.Pipeline.Projectors.Components
 {
-    [Label(nameof(DynamicTexture))]
     public sealed class DynamicTexture : IComponent
     {
         public DynamicTexture(RenderPipeline pipeline, PerspectiveCamera viewPoint, GBuffer gBuffer, Pass pass, string label)
@@ -28,6 +27,8 @@ namespace MiniEngine.Pipeline.Projectors.Components
 
         public GBuffer GBuffer { get; }
         public Pass Pass { get; }
+        
+        [Editor(nameof(Label))]
         public string Label { get; }
 
         [Boundary(BoundaryType.Frustum)]

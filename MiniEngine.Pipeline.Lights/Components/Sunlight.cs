@@ -5,7 +5,6 @@ using MiniEngine.Systems.Components;
 
 namespace MiniEngine.Pipeline.Lights.Components
 {
-    [Label(nameof(Sunlight))]
     public sealed class Sunlight : IComponent
     {
         public Sunlight(CascadedShadowMap shadowMapCascades, Color color)

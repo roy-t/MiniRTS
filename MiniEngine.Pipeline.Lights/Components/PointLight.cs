@@ -4,7 +4,6 @@ using MiniEngine.Systems.Components;
 
 namespace MiniEngine.Pipeline.Lights.Components
 {
-    [Label(nameof(PointLight))]
     public sealed class PointLight : IComponent
     {
         public PointLight(Vector3 position, Color color, float radius, float intensity)

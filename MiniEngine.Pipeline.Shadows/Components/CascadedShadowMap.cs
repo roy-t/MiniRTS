@@ -5,7 +5,6 @@ using MiniEngine.Systems.Components;
 
 namespace MiniEngine.Pipeline.Shadows.Components
 {
-    [Label(nameof(CascadedShadowMap))]
     public sealed class CascadedShadowMap : IComponent
     {
         public CascadedShadowMap(GraphicsDevice device, int resolution, int cascades,

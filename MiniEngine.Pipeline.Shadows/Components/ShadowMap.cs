@@ -5,7 +5,6 @@ using MiniEngine.Systems.Components;
 
 namespace MiniEngine.Pipeline.Shadows.Components
 {
-    [Label(nameof(ShadowMap))]
     public sealed class ShadowMap : IComponent
     {
         public ShadowMap(RenderTarget2D depthMapArray, RenderTarget2D colorMapArray, int index, IViewPoint viewPoint)

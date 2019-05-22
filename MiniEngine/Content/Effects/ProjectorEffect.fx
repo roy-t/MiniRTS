@@ -20,6 +20,17 @@ sampler projectorSampler = sampler_state
     MipFilter = ANISOTROPIC;
 };
 
+Texture2D Mask;
+sampler maskSampler= sampler_state
+{
+    Texture = (Mask);
+    AddressU = CLAMP;
+    AddressV = CLAMP;
+    MinFilter = ANISOTROPIC;
+    MagFilter = ANISOTROPIC;
+    MipFilter = ANISOTROPIC;
+};
+
 struct VertexShaderInput
 {
     float3 Position : POSITION0;    
@@ -69,7 +80,8 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
         projectorMapCoordinates.x >= 0.0f && projectorMapCoordinates.x <= 1.0f &&
         projectorMapCoordinates.y >= 0.0f && projectorMapCoordinates.y <= 1.0f)
     {        		       
-        return tex2D(projectorSampler, projectorMapCoordinates) * Tint;        
+        float mask = tex2D(maskSampler, projectorMapCoordinates).r;
+        return tex2D(projectorSampler, projectorMapCoordinates) * Tint * mask;
     }
     
     return float4(0, 0, 0, 0);
@@ -102,7 +114,8 @@ float4 OverdrawPS(VertexShaderOutput input) : COLOR0
         projectorMapCoordinates.x >= 0.0f && projectorMapCoordinates.x <= 1.0f &&
         projectorMapCoordinates.y >= 0.0f && projectorMapCoordinates.y <= 1.0f)
     {
-        return tex2D(projectorSampler, projectorMapCoordinates) * Tint;
+        float mask = tex2D(maskSampler, projectorMapCoordinates).r;
+        return tex2D(projectorSampler, projectorMapCoordinates) * Tint * float4(1.0f, 1.0f, 1.0f, mask);
     }
 
     return float4(texCoord.x, texCoord.y, 0.0f, 0.0f);    

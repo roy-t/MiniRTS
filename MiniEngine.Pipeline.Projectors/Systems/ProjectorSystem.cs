@@ -51,6 +51,7 @@ namespace MiniEngine.Pipeline.Projectors.Systems
 
                     // Projector properties
                     this.Effect.ProjectorMap = projector.Texture;
+                    this.Effect.Mask = projector.Mask;
                     this.Effect.ProjectorViewProjection = projector.ViewPoint.ViewProjection;
                     this.Effect.MaxDistance = projector.MaxDistance;
                     this.Effect.ProjectorPosition = projector.ViewPoint.Position;

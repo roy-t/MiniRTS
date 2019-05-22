@@ -6,7 +6,6 @@ using MiniEngine.Systems.Components;
 
 namespace MiniEngine.Pipeline.Lights.Components
 {
-    [Label(nameof(ShadowCastingLight))]
     public sealed class ShadowCastingLight : IComponent
     {
         public ShadowCastingLight(PerspectiveCamera viewPoint, ShadowMap shadowMap, Color color)

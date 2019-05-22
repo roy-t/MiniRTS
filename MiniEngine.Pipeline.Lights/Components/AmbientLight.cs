@@ -4,7 +4,6 @@ using MiniEngine.Systems.Components;
 
 namespace MiniEngine.Pipeline.Lights.Components
 {
-    [Label(nameof(AmbientLight))]
     public sealed class AmbientLight : IComponent
     {
         public AmbientLight(Color color)

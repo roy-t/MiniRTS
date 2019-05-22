@@ -4,7 +4,6 @@ using MiniEngine.Systems.Components;
 
 namespace MiniEngine.Pipeline.Lights.Components
 {
-    [Label(nameof(DirectionalLight))]
     public sealed class DirectionalLight : IComponent
     {
         public DirectionalLight(Vector3 direction, Color color)

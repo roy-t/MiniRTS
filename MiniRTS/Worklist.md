@@ -1,6 +1,5 @@
 # Worklist
 ## TODO
-- Add outlines for cameras, lights, ...
 
 ### Misc
 - Make it cleaner to select or deselect render pipeline features

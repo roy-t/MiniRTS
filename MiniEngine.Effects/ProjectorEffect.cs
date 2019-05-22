@@ -51,6 +51,11 @@ namespace MiniEngine.Effects
             set => this.effect.Parameters["ProjectorMap"].SetValue(value);
         }
 
+        public Texture2D Mask
+        {
+            set => this.effect.Parameters["Mask"].SetValue(value);
+        }
+
         public Matrix World
         {
             set => this.effect.Parameters["World"].SetValue(value);
