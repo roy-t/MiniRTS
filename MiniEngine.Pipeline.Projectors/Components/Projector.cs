@@ -40,6 +40,9 @@ namespace MiniEngine.Pipeline.Projectors.Components
         [Editor(nameof(MaxDistance), nameof(SetMaxDistance), Epsilon, float.MaxValue)]
         public float MaxDistance { get; private set; }
 
+        [Editor(nameof(FadeLength), nameof(SetFadeLength), Epsilon, 1.0f - Epsilon)]
+        public float FadeLength { get; private set; }
+
         [Editor(nameof(ViewPoint))]
         public PerspectiveCamera ViewPoint { get; set; }
 
@@ -64,8 +67,16 @@ namespace MiniEngine.Pipeline.Projectors.Components
         {
             distance = MathHelper.Clamp(distance, this.MinDistance + Epsilon, float.MaxValue);
 
-            this.MaxDistance = distance;
+            this.MaxDistance = distance;            
             this.ViewPoint.SetPlanes(this.MinDistance, this.MaxDistance);
+
+            this.SetFadeLength(this.FadeLength);
         }        
+
+        public void SetFadeLength(float distance)
+        {
+            distance = MathHelper.Clamp(distance, Epsilon, 1.0f - Epsilon);
+            this.FadeLength = distance;
+        }
     }
 }

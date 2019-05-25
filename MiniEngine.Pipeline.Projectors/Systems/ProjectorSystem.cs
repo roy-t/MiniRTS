@@ -54,6 +54,7 @@ namespace MiniEngine.Pipeline.Projectors.Systems
                     this.Effect.Mask = projector.Mask;
                     this.Effect.ProjectorViewProjection = projector.ViewPoint.ViewProjection;
                     this.Effect.MaxDistance = projector.MaxDistance;
+                    this.Effect.FadeLength = projector.FadeLength;
                     this.Effect.ProjectorPosition = projector.ViewPoint.Position;
                     this.Effect.ProjectorForward = projector.ViewPoint.Forward;
                     this.Effect.Tint = projector.Tint;

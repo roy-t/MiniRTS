@@ -21,6 +21,11 @@ namespace MiniEngine.Effects
             set => this.effect.Parameters["MaxDistance"].SetValue(value);
         }
 
+        public float FadeLength
+        {
+            set => this.effect.Parameters["FadeLength"].SetValue(value);
+        }
+
         public Color Tint
         {
             set => this.effect.Parameters["Tint"].SetValue(value.ToVector4());

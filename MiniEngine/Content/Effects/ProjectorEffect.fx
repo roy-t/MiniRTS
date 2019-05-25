@@ -8,6 +8,7 @@ float4 Tint;
 float3 ProjectorPosition;
 float3 ProjectorForward;
 float MaxDistance;
+float FadeLength;
 
 Texture2D ProjectorMap;
 sampler projectorSampler = sampler_state
@@ -54,6 +55,16 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
     return output;
 }
 
+// Scalar that indicates how close to an edge a texture coordinate is [0..1]
+static float TextureEdge(float2 uv)
+{
+    // Convert to [-1, 1] domain
+    float2 norm = (uv - 0.5f) * 2.0f;
+    
+    return max(abs(norm.x), abs(norm.y));
+}
+
+
 float4 MainPS(VertexShaderOutput input) : COLOR0
 {
     float2 texCoord = ToTextureCoordinates(input.ScreenPosition.xy, input.ScreenPosition.w);
@@ -73,15 +84,17 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
     float3 direction = normalize(position.xyz - ProjectorPosition);
     float dir = dot(ProjectorForward, direction);
 
-    // TODO: also read the normal map and check that direction?
-
     // Only apply the projector if the it is inside the bounds of the projector texture, close enough, and in front of the projector
     if (dir > 0 && dist < MaxDistance &&
         projectorMapCoordinates.x >= 0.0f && projectorMapCoordinates.x <= 1.0f &&
         projectorMapCoordinates.y >= 0.0f && projectorMapCoordinates.y <= 1.0f)
-    {        		       
+    {   
+        // [0..1] how close the closest boundary is where 1 means the pixel is at the boundary
+        float closestBoundary = max(dist / MaxDistance, TextureEdge(projectorMapCoordinates));
+        float fadeOut = clamp(FadeLength - (1.0f - closestBoundary), 0, FadeLength);                
+
         float mask = tex2D(maskSampler, projectorMapCoordinates).r;
-        return tex2D(projectorSampler, projectorMapCoordinates) * Tint * mask;
+        return tex2D(projectorSampler, projectorMapCoordinates) * Tint * mask * fadeOut;
     }
     
     return float4(0, 0, 0, 0);
@@ -107,15 +120,20 @@ float4 OverdrawPS(VertexShaderOutput input) : COLOR0
     float3 direction = normalize(position.xyz - ProjectorPosition);
     float dir = dot(ProjectorForward, direction);
 
-    // TODO: also read the normal map and check that direction?
 
     // Only apply the projector if the it is inside the bounds of the projector texture, close enough, and in front of the projector
     if (dir > 0 && dist < MaxDistance &&
         projectorMapCoordinates.x >= 0.0f && projectorMapCoordinates.x <= 1.0f &&
         projectorMapCoordinates.y >= 0.0f && projectorMapCoordinates.y <= 1.0f)
     {
+        float nMax = 1.0f - max(dist / MaxDistance, TextureEdge(projectorMapCoordinates));
+
+        float fadeOut = 1.0f - (clamp(FadeLength - nMax, 0, 0.1f) / FadeLength);
+
+        //float fadeOut = clamp(MaxDistance - dist, 0, FadeLength) / FadeLength;
+
         float mask = tex2D(maskSampler, projectorMapCoordinates).r;
-        return tex2D(projectorSampler, projectorMapCoordinates) * Tint * float4(1.0f, 1.0f, 1.0f, mask);
+        return tex2D(projectorSampler, projectorMapCoordinates) * Tint * mask * fadeOut;
     }
 
     return float4(texCoord.x, texCoord.y, 0.0f, 0.0f);    
