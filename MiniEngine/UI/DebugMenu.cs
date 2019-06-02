@@ -1,22 +1,25 @@
 ﻿using System;
 using ImGuiNET;
 using Microsoft.Xna.Framework;
+using MiniEngine.CutScene;
 
 namespace MiniEngine.UI
 {
     public sealed class DebugMenu
     {
         private readonly ImGuiRenderer Renderer;
-        private readonly RenderTargetDescriber RenderTargetDescriber;        
+        private readonly RenderTargetDescriber RenderTargetDescriber;
+        private readonly CutsceneSystem CutsceneSystem;
         private readonly Game Game;
 
         private readonly DebugState State;
 
-        public DebugMenu(ImGuiRenderer renderer, UIState ui, RenderTargetDescriber RenderTargetDescriber, Game game)
+        public DebugMenu(ImGuiRenderer renderer, UIState ui, RenderTargetDescriber RenderTargetDescriber, CutsceneSystem cutsceneSystem, Game game)
         {
             this.Renderer = renderer;
             this.RenderTargetDescriber = RenderTargetDescriber;
-            this.Game = game;
+            this.CutsceneSystem = cutsceneSystem;
+            this.Game = game;            
             this.State = ui.DebugState;
         }        
 
@@ -94,6 +97,11 @@ namespace MiniEngine.UI
                 if (ImGui.MenuItem("Show Demo Window", null, ref showDemo))
                 {
                     this.State.ShowDemo = showDemo;
+                }
+
+                if (ImGui.MenuItem("Start Cutscene", null))
+                {
+                    this.CutsceneSystem.Start();
                 }
 
                 ImGui.EndMenu();

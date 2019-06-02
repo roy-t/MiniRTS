@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using MiniEngine.CutScene;
 using MiniEngine.Pipeline.Debug.Factories;
 using MiniEngine.Pipeline.Lights.Factories;
 using MiniEngine.Pipeline.Models.Factories;
@@ -10,6 +11,8 @@ using MiniEngine.Pipeline.Projectors.Factories;
 using MiniEngine.Primitives;
 using MiniEngine.Rendering;
 using MiniEngine.Systems;
+using MiniEngine.Units;
+
 namespace MiniEngine.Scenes
 {
     public sealed class SceneBuilder
@@ -23,6 +26,7 @@ namespace MiniEngine.Scenes
         private readonly AveragedEmitterFactory AveragedEmitterFactory;
         private readonly DynamicTextureFactory DynamicTextureFactory;
         private readonly DebugInfoFactory DebugInfoFactory;
+        private readonly WaypointFactory WaypointFactory;
         private readonly PipelineBuilder PipelineBuilder;
 
         private Model sponza;
@@ -43,6 +47,7 @@ namespace MiniEngine.Scenes
             AveragedEmitterFactory averagedEmitterFactory,
             DynamicTextureFactory dynamicTextureFactory,
             DebugInfoFactory debugInfoFactory,
+            WaypointFactory waypointFactory,
             PipelineBuilder pipelineBuilder)
         {
             this.EntityManager = entityManager;
@@ -54,6 +59,7 @@ namespace MiniEngine.Scenes
             this.AveragedEmitterFactory = averagedEmitterFactory;
             this.DynamicTextureFactory = dynamicTextureFactory;
             this.DebugInfoFactory = debugInfoFactory;
+            this.WaypointFactory = waypointFactory;
             this.PipelineBuilder = pipelineBuilder;
         }
 
@@ -161,6 +167,19 @@ namespace MiniEngine.Scenes
 
             
 
+            return entity;
+        }
+
+        public Entity BuildCutScene()
+        {
+            var entity = this.EntityManager.Creator.CreateEntity();
+            this.DebugInfoFactory.Construct(entity);
+
+            var speed = new MetersPerSecond(0.5f);
+            this.WaypointFactory.Construct(entity, speed, new Vector3(60, 30, 20));
+            this.WaypointFactory.Construct(entity, speed, new Vector3(60, 30, -20));
+            this.WaypointFactory.Construct(entity, speed, new Vector3(-60, 30, -20));
+            this.WaypointFactory.Construct(entity, speed, new Vector3(-60, 30, 20));
             return entity;
         }
     }

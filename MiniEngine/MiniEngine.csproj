@@ -68,7 +68,11 @@
   <ItemGroup>
     <Compile Include="Configuration\Injector.cs" />
     <Compile Include="Controllers\CameraController.cs" />
+    <Compile Include="Cutscene\CutsceneSystem.cs" />
     <Compile Include="Controllers\LightsController.cs" />
+    <Compile Include="Cutscene\CutsceneState.cs" />
+    <Compile Include="Cutscene\Waypoint.cs" />
+    <Compile Include="Cutscene\WaypointFactory.cs" />
     <Compile Include="Rendering\LightPipelineSettings.cs" />
     <Compile Include="Rendering\ModelPipelineSettings.cs" />
     <Compile Include="Rendering\PipelineBuilder.cs" />
@@ -76,6 +80,7 @@
     <Compile Include="SceneSelector.cs" />
     <Compile Include="Scenes\SceneBuilder.cs" />
     <Compile Include="Scenes\LizardScene.cs" />
+    <Compile Include="Scenes\DemoScene.cs" />
     <Compile Include="UI\CreateMenu.cs" />
     <Compile Include="UI\DebugDisplay.cs" />
     <Compile Include="GameLoop.cs" />

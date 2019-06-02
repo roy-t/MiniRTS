@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MiniEngine.Configuration;
 using MiniEngine.Controllers;
+using MiniEngine.CutScene;
 using MiniEngine.Effects;
 using MiniEngine.Input;
 using MiniEngine.Pipeline.Debug.Factories;
@@ -66,6 +67,8 @@ namespace MiniEngine.UI
             var lightsFactory = injector.Resolve<LightsFactory>();
             var outlineFactory = injector.Resolve<DebugInfoFactory>();
             var projectorFactory = injector.Resolve<ProjectorFactory>();
+            var waypointFactory = injector.Resolve<WaypointFactory>();
+            var cutsceneSystem = injector.Resolve<CutsceneSystem>();
 
             var texture = game.Content.Load<Texture2D>("Debug");
 
@@ -83,20 +86,25 @@ namespace MiniEngine.UI
                 }
             }
 
+            if(sceneSelector.CurrentScene == null)
+            {
+                sceneSelector.SwitchScenes(sceneSelector.Scenes.First());
+            }
+
             // After loading the selected entity might have disappeared
             var selectedEntity = this.UIState.EntityState.SelectedEntity;
             var allEntities = entityManager.Creator.GetAllEntities();
             if (!allEntities.Contains(selectedEntity))
             {
                 this.UIState.EntityState.SelectedEntity = allEntities.FirstOrDefault();
-            }
+            }            
 
             this.Gui.TextureContrast = this.UIState.DebugState.TextureContrast;
 
             this.FileMenu = new FileMenu(this.UIState, game, sceneSelector);
             this.EntitiesMenu = new EntityMenu(this.UIState, entityManager);
-            this.CreateMenu = new CreateMenu(this.UIState, entityManager, outlineFactory, projectorFactory, texture, this.LightsController, camera);
-            this.DebugMenu = new DebugMenu(this.Gui, this.UIState, renderTargetDescriber, game);
+            this.CreateMenu = new CreateMenu(this.UIState, entityManager, outlineFactory, waypointFactory, projectorFactory, texture, this.LightsController, camera);
+            this.DebugMenu = new DebugMenu(this.Gui, this.UIState, renderTargetDescriber, cutsceneSystem, game);
             this.EntityWindow = new EntityWindow(this.Editors, this.UIState, entityManager);
             this.RenderingMenu = new RenderingMenu(this.Editors, this.UIState, renderPipeline);
 

@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Controllers;
+using MiniEngine.CutScene;
 using MiniEngine.Pipeline.Debug.Factories;
 using MiniEngine.Pipeline.Projectors.Factories;
 using MiniEngine.Primitives.Cameras;
@@ -16,13 +17,15 @@ namespace MiniEngine.UI
         private readonly ProjectorFactory ProjectorFactory;
         private readonly Texture2D Texture;
         private readonly LightsController LightsController;
+        private readonly WaypointFactory WaypointFactory;
         private readonly PerspectiveCamera Camera;
 
-        public CreateMenu(UIState ui, EntityManager entityManager, DebugInfoFactory outLineFactory,
+        public CreateMenu(UIState ui, EntityManager entityManager, DebugInfoFactory outLineFactory, WaypointFactory waypointFactory,
             ProjectorFactory projectorFactory, Texture2D texture, LightsController lightsController, PerspectiveCamera camera)
         {
             this.EntityManager = entityManager;
             this.OutlineFactory = outLineFactory;
+            this.WaypointFactory = waypointFactory;
             this.ProjectorFactory = projectorFactory;
             this.Texture = texture;
             this.LightsController = lightsController;
@@ -87,6 +90,13 @@ namespace MiniEngine.UI
                 if (ImGui.MenuItem("Debug info"))
                 {
                     this.OutlineFactory.Construct(this.State.SelectedEntity);
+                }
+
+                ImGui.Separator();
+
+                if(ImGui.MenuItem("Waypoint"))
+                {
+                    this.WaypointFactory.Construct(this.State.SelectedEntity, 1.0f, this.Camera.Position);
                 }
 
                 ImGui.EndMenu();
