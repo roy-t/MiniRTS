@@ -11,10 +11,12 @@ namespace MiniEngine.Pipeline.Models.Factories
         public OpaqueModelFactory(GraphicsDevice device, EntityLinker linker)
             : base(device, linker) { }
 
-        public void Construct(Entity entity, Model model, Pose pose)
+        public OpaqueModel Construct(Entity entity, Model model, Pose pose)
         {           
             var opaqueModel = new OpaqueModel(model, pose);
             this.Linker.AddComponent(entity, opaqueModel);
+
+            return opaqueModel;
         }
     }
 }

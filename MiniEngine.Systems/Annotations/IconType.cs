@@ -6,6 +6,7 @@
         LookAt,
         Light,
         Model,
-        Emitter
+        Emitter,
+        Waypoint
     }
 }

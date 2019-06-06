@@ -213,6 +213,18 @@
 /processorParam:TextureFormat=Color
 /build:Icons/Model.png
 
+#begin Icons/Waypoint.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Icons/Waypoint.png
+
 #begin NeutralMask.tga
 /importer:TextureImporter
 /processor:TextureProcessor

@@ -20,12 +20,14 @@ namespace MiniEngine.Pipeline.Lights.Factories
             this.CascadedShadowMapFactory = cascadedShadowMapFactory;
         }
 
-        public void Construct(Entity entity, Color color, Vector3 position, Vector3 lookAt, int cascades = DefaultCascades, int resolution = DefaultResolution)
+        public Sunlight Construct(Entity entity, Color color, Vector3 position, Vector3 lookAt, int cascades = DefaultCascades, int resolution = DefaultResolution)
         {
             var shadowMap = this.CascadedShadowMapFactory.Construct(entity, position, lookAt, cascades, resolution);
 
             var light = new Sunlight(shadowMap, color);
             this.Linker.AddComponent(entity, light);
+
+            return light;
         }
     }
 }

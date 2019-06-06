@@ -11,10 +11,12 @@ namespace MiniEngine.Pipeline.Lights.Factories
         public AmbientLightFactory(GraphicsDevice device, EntityLinker linker)
             : base(device, linker) { }
 
-        public void Construct(Entity entity, Color color)
+        public AmbientLight Construct(Entity entity, Color color)
         {
             var light = new AmbientLight(color);
             this.Linker.AddComponent(entity, light);
+
+            return light;
         }
     }
 }

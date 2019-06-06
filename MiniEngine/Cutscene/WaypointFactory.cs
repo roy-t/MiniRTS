@@ -11,9 +11,9 @@ namespace MiniEngine.CutScene
         public WaypointFactory(GraphicsDevice device, EntityLinker linker) 
             : base(device, linker) { }
 
-        public void Construct(Entity entity, MetersPerSecond speed, Vector3 position)
+        public void Construct(Entity entity, MetersPerSecond speed, Vector3 position, Vector3 lookAt)
         {
-            var waypoint = new Waypoint(speed, position);
+            var waypoint = new Waypoint(speed, position, lookAt);
             this.Linker.AddComponent(entity, waypoint);
         }
     }

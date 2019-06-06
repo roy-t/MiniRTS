@@ -4,7 +4,9 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.CutScene;
 using MiniEngine.Pipeline.Debug.Factories;
+using MiniEngine.Pipeline.Lights.Components;
 using MiniEngine.Pipeline.Lights.Factories;
+using MiniEngine.Pipeline.Models.Components;
 using MiniEngine.Pipeline.Models.Factories;
 using MiniEngine.Pipeline.Particles.Factories;
 using MiniEngine.Pipeline.Projectors.Factories;
@@ -61,7 +63,7 @@ namespace MiniEngine.Scenes
             this.DebugInfoFactory = debugInfoFactory;
             this.WaypointFactory = waypointFactory;
             this.PipelineBuilder = pipelineBuilder;
-        }
+        }        
 
         public void LoadContent(ContentManager content)
         {
@@ -75,15 +77,23 @@ namespace MiniEngine.Scenes
             this.mask = content.Load<Texture2D>(@"StarMask");
         }
 
-        public Entity BuildSponzaLit(Pose pose)
+
+        public AmbientLight BuildSponzaAmbientLight()
         {
             var entity = this.EntityManager.Creator.CreateEntity();
-            
-            this.LightsFactory.AmbientLightFactory.Construct(entity, Color.White * 0.5f);
-            this.LightsFactory.SunlightFactory.Construct(entity, Color.White, Vector3.Up, (Vector3.Left * 0.75f) + (Vector3.Backward * 0.1f));
-            this.OpaqueModelFactory.Construct(entity, this.sponza, pose);
+            return this.LightsFactory.AmbientLightFactory.Construct(entity, Color.White * 0.5f);
+        }
 
-            return entity;
+        public Sunlight BuildSponzeSunLight()
+        {
+            var entity = this.EntityManager.Creator.CreateEntity();
+            return this.LightsFactory.SunlightFactory.Construct(entity, Color.White, Vector3.Up, (Vector3.Left * 0.75f) + (Vector3.Backward * 0.1f));
+        }
+        
+        public OpaqueModel BuildSponza(Pose pose)
+        {
+            var entity = this.EntityManager.Creator.CreateEntity();
+            return this.OpaqueModelFactory.Construct(entity, this.sponza, pose);
         }
 
         public Entity BuildLizard(Pose pose)
@@ -94,6 +104,26 @@ namespace MiniEngine.Scenes
 
             return entity;
         }
+
+        public ShadowCastingLight BuildPilarLight1()
+        {
+            var entity = this.EntityManager.Creator.CreateEntity();
+            return this.LightsFactory.ShadowCastingLightFactory.Construct(entity, new Vector3(-9, 36, 3), new Vector3(-9, 38, -200), Color.Black);
+        }
+
+        public ShadowCastingLight BuildPilarLight2()
+        {
+            var entity = this.EntityManager.Creator.CreateEntity();
+            return this.LightsFactory.ShadowCastingLightFactory.Construct(entity, new Vector3(23, 36, 3), new Vector3(23, 38, -200), Color.Black);
+        }
+
+        public void BuildSponzaLit(Pose pose)
+        {
+            BuildSponzaAmbientLight();
+            BuildSponzeSunLight();
+            BuildSponza(pose);
+        }
+
 
         public Entity[] BuildStainedGlass()
         {
@@ -175,12 +205,55 @@ namespace MiniEngine.Scenes
             var entity = this.EntityManager.Creator.CreateEntity();
             this.DebugInfoFactory.Construct(entity);
 
-            var speed = new MetersPerSecond(0.5f);
-            this.WaypointFactory.Construct(entity, speed, new Vector3(60, 30, 20));
-            this.WaypointFactory.Construct(entity, speed, new Vector3(60, 30, -20));
-            this.WaypointFactory.Construct(entity, speed, new Vector3(-60, 30, -20));
-            this.WaypointFactory.Construct(entity, speed, new Vector3(-60, 30, 20));
+            var speeds = new MetersPerSecond[]
+            {
+                new MetersPerSecond(15.0f),
+                new MetersPerSecond(15.0f),
+                new MetersPerSecond(15.0f),
+                new MetersPerSecond(6.0f),
+                new MetersPerSecond(15.0f),
+                new MetersPerSecond(15.0f),
+                new MetersPerSecond(15.0f),
+                new MetersPerSecond(5.0f),
+                new MetersPerSecond(5.0f)
+            };
+
+            var positions = new Vector3[]
+            {
+                new Vector3(60, 10, 20), // start position
+                new Vector3(-60, 10, 20), // near fireplace
+                new Vector3(-50, 15, 0), // side stepping column
+                new Vector3(-10, 40, 0),  // center stage
+                new Vector3(-30, 13, -10), // inspect windows
+                new Vector3(-25, 34, -10), // side step to upper row
+                new Vector3(-25, 38, -20), // in upper row
+                new Vector3(20, 38, -20), // in upper row
+                new Vector3(49, 10, -20), // pass lion
+            };
+
+            var lookAts = new Vector3[]
+            {                
+                new Vector3(-60, 10, 20),
+                new Vector3(-60, 0, 20),
+                new Vector3(-60, 30, 20),
+                new Vector3(-40, 0, 20),
+                new Vector3(-50, 30, -10),
+                new Vector3(-10, 40, -20),
+                new Vector3(60, 40, -20),
+                new Vector3(60, 10, 0),
+                new Vector3(60, 10, 0),
+            };
+
+            for (var i = 0; i < positions.Length; i++)
+            {
+                var speed = speeds[i];
+                var position = positions[i];
+                var lookAt = lookAts[i];
+                
+                this.WaypointFactory.Construct(entity, speed, position, lookAt);
+            }
+
             return entity;
-        }
+        }    
     }
 }

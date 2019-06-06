@@ -20,6 +20,7 @@ namespace MiniEngine.Pipeline.Debug
                 { IconType.Light, content.Load<Texture2D>("Icons/Light") },
                 { IconType.Model, content.Load<Texture2D>("Icons/Model") },
                 { IconType.Emitter, content.Load<Texture2D>("Icons/Emitter") },
+                { IconType.Waypoint, content.Load<Texture2D>("Icons/Waypoint") },
             };
 
             this.DefaultTexture = new Texture2D(device, 1, 1);

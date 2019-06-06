@@ -5,6 +5,5 @@
         Stopped,
         Starting,
         Running,
-        Completed
     }
 }

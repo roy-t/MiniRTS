@@ -7,17 +7,23 @@ namespace MiniEngine.CutScene
 {
     public sealed class Waypoint : IComponent
     {
-        public Waypoint(MetersPerSecond speed, Vector3 position)
+        public Waypoint(MetersPerSecond speed, Vector3 position, Vector3 lookAt)
         {
             this.Speed = speed;
             this.Position = position;
+            this.LookAt = lookAt;
         }
 
         [Editor(nameof(Speed))]
         public MetersPerSecond Speed { get; }
 
-        [Icon(IconType.LookAt)]
+        [Icon(IconType.Waypoint)]
         [Editor(nameof(Position))]
-        public Vector3 Position { get; }        
+        public Vector3 Position { get; }
+
+
+        [Icon(IconType.LookAt)]
+        [Editor(nameof(LookAt))]
+        public Vector3 LookAt { get; }
     }
 }

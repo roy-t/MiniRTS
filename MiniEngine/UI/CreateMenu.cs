@@ -96,7 +96,7 @@ namespace MiniEngine.UI
 
                 if(ImGui.MenuItem("Waypoint"))
                 {
-                    this.WaypointFactory.Construct(this.State.SelectedEntity, 1.0f, this.Camera.Position);
+                    this.WaypointFactory.Construct(this.State.SelectedEntity, 1.0f, this.Camera.Position, this.Camera.Position + (this.Camera.Forward * 100));
                 }
 
                 ImGui.EndMenu();

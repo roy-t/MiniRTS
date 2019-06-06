@@ -21,7 +21,7 @@ namespace MiniEngine.Pipeline.Lights.Factories
             this.ShadowMapFactory = shadowMapFactory;
         }
 
-        public void Construct(Entity entity, Vector3 position, Vector3 lookAt, Color color, int resolution = DefaultResolution)
+        public ShadowCastingLight Construct(Entity entity, Vector3 position, Vector3 lookAt, Color color, int resolution = DefaultResolution)
         {
             var viewPoint = new PerspectiveCamera(new Viewport(0, 0, resolution, resolution));
             viewPoint.Move(position, lookAt);
@@ -29,6 +29,8 @@ namespace MiniEngine.Pipeline.Lights.Factories
             var shadowMap = this.ShadowMapFactory.Construct(entity, viewPoint, resolution);
             var light = new ShadowCastingLight(viewPoint, shadowMap, color);
             this.Linker.AddComponent(entity, light);
+
+            return light;
         }
     }
 }
