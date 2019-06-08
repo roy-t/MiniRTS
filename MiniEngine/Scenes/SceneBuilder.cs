@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Media;
 using MiniEngine.CutScene;
 using MiniEngine.Pipeline.Debug.Factories;
 using MiniEngine.Pipeline.Lights.Components;
@@ -39,6 +40,7 @@ namespace MiniEngine.Scenes
         private Texture2D smoke;
         private Texture2D bulletHole;
         private Texture2D mask;
+        private Song song;
 
         public SceneBuilder(EntityManager entityManager,
             LightsFactory lightsFactory,
@@ -75,7 +77,10 @@ namespace MiniEngine.Scenes
             this.smoke = content.Load<Texture2D>(@"Particles\Smoke");
             this.bulletHole = content.Load<Texture2D>(@"Decals\BulletHole");
             this.mask = content.Load<Texture2D>(@"StarMask");
+            this.song = content.Load<Song>(@"Music\Zemdens");
         }
+
+        public Song LoadMusic() => this.song;
 
 
         public AmbientLight BuildSponzaAmbientLight()
@@ -103,18 +108,34 @@ namespace MiniEngine.Scenes
             //this.LightsFactory.PointLightFactory.Construct(entity, new Vector3(55, 8, 20), Color.White, 50.0f, 0.75f);
 
             return entity;
-        }
-
-        public ShadowCastingLight BuildPilarLight1()
+        }     
+        
+        public ShadowCastingLight BuildLionSpotLight()
         {
             var entity = this.EntityManager.Creator.CreateEntity();
-            return this.LightsFactory.ShadowCastingLightFactory.Construct(entity, new Vector3(-9, 36, 3), new Vector3(-9, 38, -200), Color.Black);
+            return this.LightsFactory.ShadowCastingLightFactory.Construct(entity, new Vector3(40, 13, 27), new Vector3(53, 11, 12), Color.White, 2048);
         }
 
-        public ShadowCastingLight BuildPilarLight2()
+        public PointLight[] CreateFestiveLights()
         {
             var entity = this.EntityManager.Creator.CreateEntity();
-            return this.LightsFactory.ShadowCastingLightFactory.Construct(entity, new Vector3(23, 36, 3), new Vector3(23, 38, -200), Color.Black);
+            var count = 20;
+            var lights = new PointLight[count];
+
+            var start = new Vector3(60, 30, 20);
+            var end = new Vector3(-60, 30, 20);
+
+            var distance = Vector3.Distance(start, end);
+            var direction = Vector3.Normalize(end - start);
+            var step = distance / count;
+
+            for (var i = 0; i < count; i++)
+            {
+                var position = start + (direction * step * i);
+                lights[i] = this.LightsFactory.PointLightFactory.Construct(entity, position, Color.White, 10.0f, 1.0f);
+            }
+
+            return lights;
         }
 
         public void BuildSponzaLit(Pose pose)
@@ -142,7 +163,7 @@ namespace MiniEngine.Scenes
             return entities;
         }
 
-        public Entity BuildFirePlace()
+        public PointLight BuildFirePlace()
         {
             var entity = this.EntityManager.Creator.CreateEntity();
 
@@ -155,7 +176,7 @@ namespace MiniEngine.Scenes
             emitter.Spread = 0.75f;
             emitter.TimeToLive = 2.25f;
 
-            this.LightsFactory.PointLightFactory.Construct(entity, particleSpawn, Color.IndianRed, 20.0f, 1.0f);
+            var pointLight = this.LightsFactory.PointLightFactory.Construct(entity, particleSpawn, Color.IndianRed, 20.0f, 1.0f);
             //var light = particleSpawn + (Vector3.Up * 3);
             //this.LightsFactory.ShadowCastingLightFactory.Construct(this.particleEntity, light, light + Vector3.Up + (Vector3.Left * 0.001f), Color.IndianRed);
 
@@ -173,7 +194,8 @@ namespace MiniEngine.Scenes
             var projector = this.ProjectorFactory.Construct(lightEntity, dynamicTexture.FinalTarget, this.mask, color, projectorPosition, lookAt);
             projector.SetMinDistance(10.0f);
             projector.SetMaxDistance(30.0f);
-            return entity;
+
+            return pointLight;
         }
 
         public Entity BuildBulletHoles()
@@ -214,6 +236,7 @@ namespace MiniEngine.Scenes
                 new MetersPerSecond(15.0f),
                 new MetersPerSecond(15.0f),
                 new MetersPerSecond(15.0f),
+                new MetersPerSecond(15.0f),
                 new MetersPerSecond(5.0f),
                 new MetersPerSecond(5.0f)
             };
@@ -226,9 +249,10 @@ namespace MiniEngine.Scenes
                 new Vector3(-10, 40, 0),  // center stage
                 new Vector3(-30, 13, -10), // inspect windows
                 new Vector3(-25, 34, -10), // side step to upper row
-                new Vector3(-25, 38, -20), // in upper row
-                new Vector3(20, 38, -20), // in upper row
-                new Vector3(49, 10, -20), // pass lion
+                new Vector3(-10, 34, -10), // in upper row
+                new Vector3(20, 25, -7), // in upper row
+                new Vector3(49, 10, -7), // pass lion
+                new Vector3(49, 10, 20), // start position
             };
 
             var lookAts = new Vector3[]
@@ -237,11 +261,12 @@ namespace MiniEngine.Scenes
                 new Vector3(-60, 0, 20),
                 new Vector3(-60, 30, 20),
                 new Vector3(-40, 0, 20),
-                new Vector3(-50, 30, -10),
-                new Vector3(-10, 40, -20),
-                new Vector3(60, 40, -20),
+                new Vector3(-50, 30, 10),
+                new Vector3(-10, 40, 20),
+                new Vector3(60, 40, 20),
                 new Vector3(60, 10, 0),
                 new Vector3(60, 10, 0),
+                new Vector3(60, 10, 0)
             };
 
             for (var i = 0; i < positions.Length; i++)

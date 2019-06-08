@@ -225,6 +225,12 @@
 /processorParam:TextureFormat=Color
 /build:Icons/Waypoint.png
 
+#begin Music/Zemdens.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Music/Zemdens.mp3
+
 #begin NeutralMask.tga
 /importer:TextureImporter
 /processor:TextureProcessor

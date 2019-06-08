@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using MiniEngine.Primitives.Cameras;
 using MiniEngine.Systems;
 using MiniEngine.Units;
@@ -25,7 +26,7 @@ namespace MiniEngine.CutScene
         {
             this.Waypoints = new List<Waypoint>();
             this.Linker = linker;
-            this.state = CutsceneState.Starting;
+            this.state = CutsceneState.Stopped;
             this.CameraSpring = new SpringController();
             this.LookAtSpring = new SpringController();
         }
@@ -41,11 +42,20 @@ namespace MiniEngine.CutScene
         }
         
         public void Update(PerspectiveCamera camera, Seconds elapsed)
-        {            
+        {
+            if (this.state == CutsceneState.Stopped && Keyboard.GetState().IsKeyDown(Keys.I))
+            {
+                this.state = CutsceneState.Starting;
+            }
+
             if (this.state != CutsceneState.Stopped)
             {
                 this.Waypoints.Clear();
                 this.Linker.GetComponents(this.Waypoints);
+                if(this.Waypoints.Count < 2)
+                {
+                    return;
+                }
 
                 switch (this.state)
                 {

@@ -13,16 +13,26 @@ namespace MiniEngine.Effects.DeviceStates
         private static readonly RasterizerState WireFrameRasterizerState = CreateWireFrameRasterizerState();
 
 
+        public static bool Override = false;
+
         /// <summary>
         /// Graphics device state for drawing geometry to the G-Buffer
         /// </summary>
         public static void GeometryState(this GraphicsDevice device)
         {
-            SetDeviceState(
-                device,
-                BlendState.Opaque,
-                DepthStencilState.Default,
-                RasterizerState.CullCounterClockwise);
+            if (!Override)
+            {
+
+                SetDeviceState(
+                    device,
+                    BlendState.Opaque,
+                    DepthStencilState.Default,
+                    RasterizerState.CullCounterClockwise);
+            }
+            else
+            {
+                WireFrameState(device);
+            }
         }
 
         /// <summary>
