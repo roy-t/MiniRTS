@@ -1,0 +1,128 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{54491AEB-E0A7-4556-890E-7C49908952BC}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>MiniEngine.Pipeline.Lights</RootNamespace>
+    <AssemblyName>MiniEngine.Pipeline.Lights</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <LangVersion>latest</LangVersion>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <LangVersion>latest</LangVersion>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="MonoGame.Framework, Version=3.7.0.1708, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files (x86)\MonoGame\v3.0\Assemblies\Windows\MonoGame.Framework.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Components\AmbientLight.cs" />
+    <Compile Include="Components\DirectionalLight.cs" />
+    <Compile Include="Components\PointLight.cs" />
+    <Compile Include="Components\ShadowCastingLight.cs" />
+    <Compile Include="Components\Sunlight.cs" />
+    <Compile Include="Extensions\AmbientLightStageExtensions.cs" />
+    <Compile Include="Extensions\ClearStageExtensions.cs" />
+    <Compile Include="Extensions\DirectionalLightStageExtensions.cs" />
+    <Compile Include="Extensions\PointLightStageExtensions.cs" />
+    <Compile Include="Extensions\RenderLightsStageExtensions.cs" />
+    <Compile Include="Extensions\ShadowCastingLightsStageExtensions.cs" />
+    <Compile Include="Extensions\SunlightStageExtensions.cs" />
+    <Compile Include="Factories\AmbientLightFactory.cs" />
+    <Compile Include="Factories\DirectionalLightFactory.cs" />
+    <Compile Include="Factories\LightsFactory.cs" />
+    <Compile Include="Factories\PointLightFactory.cs" />
+    <Compile Include="Factories\ShadowCastingLightFactory.cs" />
+    <Compile Include="Factories\SunlightFactory.cs" />
+    <Compile Include="LightingPipeline.cs" />
+    <Compile Include="LightingPipelineInput.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SimplexNoise.cs" />
+    <Compile Include="Stages\AmbientLightStage.cs" />
+    <Compile Include="Stages\ClearStage.cs" />
+    <Compile Include="Stages\DirectionalLightStage.cs" />
+    <Compile Include="Stages\PointLightStage.cs" />
+    <Compile Include="Stages\RenderLightsStage.cs" />
+    <Compile Include="Stages\ShadowCastingLightStage.cs" />
+    <Compile Include="Stages\SunlightStage.cs" />
+    <Compile Include="Systems\AmbientLightSystem.cs" />
+    <Compile Include="Systems\DirectionalLightSystem.cs" />
+    <Compile Include="Systems\PointLightSystem.cs" />
+    <Compile Include="Systems\ShadowCastingLightSystem.cs" />
+    <Compile Include="Systems\SunlightSystem.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MiniEngine.Effects\MiniEngine.Effects.csproj">
+      <Project>{2bb9181f-a31d-4da2-93d2-64f5a56cf4f5}</Project>
+      <Name>MiniEngine.Effects</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MiniEngine.Pipeline.Debug\MiniEngine.Pipeline.Debug.csproj">
+      <Project>{1F48156E-DDC9-4332-8084-6FE15EA6A41B}</Project>
+      <Name>MiniEngine.Pipeline.Debug</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MiniEngine.Pipeline.Models\MiniEngine.Pipeline.Models.csproj">
+      <Project>{d77598b5-73bf-4cd4-b9a6-d94895058a60}</Project>
+      <Name>MiniEngine.Pipeline.Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MiniEngine.Pipeline.Shadows\MiniEngine.Pipeline.Shadows.csproj">
+      <Project>{3c8f3fc4-9e92-475e-a9bd-ac687dc13963}</Project>
+      <Name>MiniEngine.Pipeline.Shadows</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MiniEngine.Pipeline\MiniEngine.Pipeline.csproj">
+      <Project>{820720c5-666a-4d5e-96ee-f053baa063d9}</Project>
+      <Name>MiniEngine.Pipeline</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MiniEngine.Primitives\MiniEngine.Primitives.csproj">
+      <Project>{d02e8240-0178-4792-9c38-2455d1250fa6}</Project>
+      <Name>MiniEngine.Primitives</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MiniEngine.Systems\MiniEngine.Systems.csproj">
+      <Project>{c1db1986-23b4-4293-a6ea-527da1adc78f}</Project>
+      <Name>MiniEngine.Systems</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MiniEngine.Telemetry\MiniEngine.Telemetry.csproj">
+      <Project>{FE2DE91D-CA69-4844-8D5F-10A664F4E17D}</Project>
+      <Name>MiniEngine.Telemetry</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MiniEngine.Units\MiniEngine.Units.csproj">
+      <Project>{051e397d-4c6c-4f8f-8f40-cce916a45c5e}</Project>
+      <Name>MiniEngine.Units</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
