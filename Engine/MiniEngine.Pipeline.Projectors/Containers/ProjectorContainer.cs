@@ -1,27 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using MiniEngine.Pipeline.Projectors.Components;
-using MiniEngine.Systems;
+﻿using MiniEngine.Pipeline.Projectors.Components;
+using MiniEngine.Systems.Containers;
 
 namespace MiniEngine.Pipeline.Projectors.Containers
 {
-    public sealed class ProjectorContainer
+    public sealed class ProjectorContainer : AComponentList<Projector>
     {
-        private readonly List<Projector> Projectors;
-        private readonly List<Tuple<Entity, int>> Owners;
-
-
-        public ProjectorContainer()
-        {
-            this.Projectors = new List<Projector>();
-            this.Owners = new List<Tuple<Entity, int>>();
-        }
-
-        public void Add(Entity owner, Projector component)
-        {
-            var index = this.Projectors.Count;
-            this.Projectors.Insert(index, component);
-            
-        }
+        public ProjectorContainer() { }
     }
 }

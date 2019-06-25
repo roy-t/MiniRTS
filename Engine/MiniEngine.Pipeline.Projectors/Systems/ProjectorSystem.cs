@@ -8,6 +8,7 @@ using MiniEngine.Pipeline.Projectors.Components;
 using MiniEngine.Primitives;
 using MiniEngine.Primitives.Cameras;
 using MiniEngine.Systems;
+using MiniEngine.Systems.Containers;
 
 namespace MiniEngine.Pipeline.Projectors.Systems
 {
@@ -17,33 +18,35 @@ namespace MiniEngine.Pipeline.Projectors.Systems
         private readonly BoundsDrawer3D FrustumDrawer;
 
         private readonly EntityLinker EntityLinker;
+        private readonly IComponentContainer<Projector> Container;
         private readonly ProjectorEffect Effect;
-        private readonly List<Projector> Projectors;
+        //private readonly List<Projector> Projectors;
 
-        public ProjectorSystem(GraphicsDevice device, EntityLinker entityLinker, ProjectorEffect effect)
+        public ProjectorSystem(GraphicsDevice device, EntityLinker entityLinker, IComponentContainer<Projector> container, ProjectorEffect effect)
         {
             this.Device = device;
             this.EntityLinker = entityLinker;
+            this.Container = container;
             this.Effect = effect;
 
             this.FrustumDrawer = new BoundsDrawer3D(device);
             this.Technique = ProjectorEffectTechniques.Projector;
 
-            this.Projectors = new List<Projector>();
+            //this.Projectors = new List<Projector>();
         }
 
         public ProjectorEffectTechniques Technique { get; set; }
 
         public void RenderProjectors(PerspectiveCamera perspectiveCamera, GBuffer gBuffer)
         {
-            this.Projectors.Clear();
-            this.EntityLinker.GetComponents(this.Projectors);
+            //this.Projectors.Clear();
+            //this.EntityLinker.GetComponents(this.Projectors);
 
             this.Device.PostProcessState();
 
-            for (var i = 0; i < this.Projectors.Count; i++)
+            for (var i = 0; i < this.Container.Count; i++)
             {
-                var projector = this.Projectors[i];
+                var projector = this.Container[i];
                 if (projector.ViewPoint.Frustum.Intersects(perspectiveCamera.Frustum))
                 {
                     //G-Buffer input

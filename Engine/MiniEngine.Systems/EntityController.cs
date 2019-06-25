@@ -24,14 +24,6 @@ namespace MiniEngine.Systems
             this.RemoveEntityFromSystems(entity);
         }
 
-        public void DestroyEntities(Entity[] entities)
-        {
-            for (var i = 0; i < entities.Length; i++)
-            {
-                this.DestroyEntity(entities[i]);
-            }
-        }
-
         public void DestroyAllEntities()
         {
             var entities = this.Creator.GetAllEntities();

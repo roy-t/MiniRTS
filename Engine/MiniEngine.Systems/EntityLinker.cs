@@ -1,6 +1,6 @@
-﻿using MiniEngine.Systems.Components;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using MiniEngine.Systems.Components;
 
 namespace MiniEngine.Systems
 {
@@ -32,20 +32,7 @@ namespace MiniEngine.Systems
             {
                 output.Add(components[i].Component);
             }
-        }
-
-        public void GetComponents<T>(Entity entity, IList<T> output)
-            where T : IComponent
-        {
-            var components = this.LookUp.Search(entity);
-            for (var i = 0; i < components.Count; i++)
-            {
-                if (typeof(T).IsAssignableFrom(components[i].Component.GetType()))
-                {
-                    output.Add((T)components[i].Component);
-                }
-            }
-        }
+        }       
 
         public T GetComponent<T>(Entity entity)
             where T : IComponent
@@ -70,21 +57,7 @@ namespace MiniEngine.Systems
             {
                 output.Add((T)components[i].Component);
             }
-        }
-
-        public bool HasComponent<T>(Entity entity)
-            where T : IComponent
-        {
-            var components = this.LookUp.Search(entity);
-            for (var i = 0; i < components.Count; i++)
-            {
-                if (typeof(T).IsAssignableFrom(components[i].Component.GetType()))
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
+        }        
 
         public void GetEntities<T>(IList<Entity> output)
             where T : IComponent

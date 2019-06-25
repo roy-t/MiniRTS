@@ -2,15 +2,19 @@
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Pipeline.Projectors.Components;
 using MiniEngine.Systems;
+using MiniEngine.Systems.Containers;
 using MiniEngine.Systems.Factories;
 
 namespace MiniEngine.Pipeline.Projectors.Factories
 {
     public sealed class ProjectorFactory : AComponentFactory<Projector>
     {
-        public ProjectorFactory(GraphicsDevice device, EntityLinker linker) 
+        private readonly IComponentContainer<Projector> Container;
+
+        public ProjectorFactory(GraphicsDevice device, EntityLinker linker, IComponentContainer<Projector> container) 
             : base(device, linker)
         {
+            this.Container = container;
         }
 
         public Projector Construct(Entity entity, Texture2D texture, Color tint, Vector3 position, Vector3 lookAt)
@@ -25,6 +29,8 @@ namespace MiniEngine.Pipeline.Projectors.Factories
         {
             var projector = new Projector(entity, texture, mask, tint, position, lookAt, 1.0f, 25.0f);
             this.Linker.AddComponent(entity, projector);
+
+            this.Container.Add(projector);
 
             return projector;
         }
