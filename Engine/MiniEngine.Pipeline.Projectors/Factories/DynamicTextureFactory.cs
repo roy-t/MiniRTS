@@ -25,7 +25,7 @@ namespace MiniEngine.Pipeline.Projectors.Factories
             viewPoint.Move(position, lookAt);
             var pass = new Pass(type, 0);
 
-            var dynamicTexture = new DynamicTexture(pipeline, viewPoint, gBuffer, pass, label);
+            var dynamicTexture = new DynamicTexture(entity, pipeline, viewPoint, gBuffer, pass, label);
             this.Linker.AddComponent(entity, dynamicTexture);
 
             return dynamicTexture;

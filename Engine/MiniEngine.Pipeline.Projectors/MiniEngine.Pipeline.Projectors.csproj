@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="Components\DynamicTexture.cs" />
     <Compile Include="Components\Projector.cs" />
+    <Compile Include="Containers\ProjectorContainer.cs" />
     <Compile Include="Extensions\PipelineExtensions.cs" />
     <Compile Include="Factories\DynamicTextureFactory.cs" />
     <Compile Include="Factories\ProjectorFactory.cs" />

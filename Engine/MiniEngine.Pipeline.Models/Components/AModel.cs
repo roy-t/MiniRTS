@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Primitives;
 using MiniEngine.Primitives.Bounds;
+using MiniEngine.Systems;
 using MiniEngine.Systems.Annotations;
 using MiniEngine.Systems.Components;
 
@@ -9,11 +10,14 @@ namespace MiniEngine.Pipeline.Models.Components
 {
     public abstract class AModel : IComponent
     {
-        protected AModel(Model model, Pose pose)
+        protected AModel(Entity entity, Model model, Pose pose)
         {
+            this.Entity = entity;
             this.Model = model;
             this.SetPose(pose);
         }
+
+        public Entity Entity { get; }
 
         public Model Model { get; }
 

@@ -13,7 +13,7 @@ namespace MiniEngine.Pipeline.Lights.Factories
 
         public PointLight Construct(Entity entity, Vector3 position, Color color, float radius, float intensity)
         {
-            var light = new PointLight(position, color, radius, intensity);
+            var light = new PointLight(entity, position, color, radius, intensity);
             this.Linker.AddComponent(entity, light);
 
             return light;

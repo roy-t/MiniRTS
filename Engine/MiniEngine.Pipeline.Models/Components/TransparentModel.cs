@@ -1,11 +1,12 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Primitives;
+using MiniEngine.Systems;
 
 namespace MiniEngine.Pipeline.Models.Components
 {
     public sealed class TransparentModel : AModel
     {
-        public TransparentModel(Model model, Pose pose)
-            : base(model, pose) { }        
+        public TransparentModel(Entity entity, Model model, Pose pose)
+            : base(entity, model, pose) { }        
     }
 }

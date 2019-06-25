@@ -13,7 +13,7 @@ namespace MiniEngine.Pipeline.Models.Factories
 
         public void Construct(Entity entity, Model model, Pose pose)
         {
-            var transparentModel = new TransparentModel(model, pose);
+            var transparentModel = new TransparentModel(entity, model, pose);
             this.Linker.AddComponent(entity, transparentModel);
         }
     }

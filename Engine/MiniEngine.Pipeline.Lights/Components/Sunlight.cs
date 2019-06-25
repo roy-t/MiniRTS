@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using MiniEngine.Pipeline.Shadows.Components;
+using MiniEngine.Systems;
 using MiniEngine.Systems.Annotations;
 using MiniEngine.Systems.Components;
 
@@ -7,11 +8,14 @@ namespace MiniEngine.Pipeline.Lights.Components
 {
     public sealed class Sunlight : IComponent
     {
-        public Sunlight(CascadedShadowMap shadowMapCascades, Color color)
+        public Sunlight(Entity entity, CascadedShadowMap shadowMapCascades, Color color)
         {
+            this.Entity = entity;
             this.ShadowMapCascades = shadowMapCascades;
             this.Color = color;
         }
+
+        public Entity Entity { get; }
 
         public CascadedShadowMap ShadowMapCascades { get; }
 

@@ -27,7 +27,7 @@ namespace MiniEngine.Pipeline.Lights.Factories
             viewPoint.Move(position, lookAt);
 
             var shadowMap = this.ShadowMapFactory.Construct(entity, viewPoint, resolution);
-            var light = new ShadowCastingLight(viewPoint, shadowMap, color);
+            var light = new ShadowCastingLight(entity, viewPoint, shadowMap, color);
             this.Linker.AddComponent(entity, light);
 
             return light;

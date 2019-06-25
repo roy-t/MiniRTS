@@ -13,7 +13,7 @@ namespace MiniEngine.CutScene
 
         public void Construct(Entity entity, MetersPerSecond speed, Vector3 position, Vector3 lookAt)
         {
-            var waypoint = new Waypoint(speed, position, lookAt);
+            var waypoint = new Waypoint(entity, speed, position, lookAt);
             this.Linker.AddComponent(entity, waypoint);
         }
     }

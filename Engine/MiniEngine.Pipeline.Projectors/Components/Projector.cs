@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Primitives.Cameras;
+using MiniEngine.Systems;
 using MiniEngine.Systems.Annotations;
 using MiniEngine.Systems.Components;
 using MiniEngine.Units;
@@ -11,8 +12,9 @@ namespace MiniEngine.Pipeline.Projectors.Components
     {
         private const float Epsilon = 0.001f;
 
-        public Projector(Texture2D texture, Texture2D mask, Color tint, Vector3 position, Vector3 lookAt, Meters minDistance, Meters maxDistance)
-        {            
+        public Projector(Entity entity, Texture2D texture, Texture2D mask, Color tint, Vector3 position, Vector3 lookAt, Meters minDistance, Meters maxDistance)
+        {
+            this.Entity = entity;
             this.Texture = texture;
             this.Mask = mask;
 
@@ -24,7 +26,9 @@ namespace MiniEngine.Pipeline.Projectors.Components
             this.SetMinDistance(minDistance);
             this.SetMaxDistance(maxDistance);
         }
-        
+
+        public Entity Entity { get; }
+
         [Editor(nameof(Texture))]
         public Texture2D Texture { get; }
 

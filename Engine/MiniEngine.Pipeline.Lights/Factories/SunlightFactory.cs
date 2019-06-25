@@ -24,7 +24,7 @@ namespace MiniEngine.Pipeline.Lights.Factories
         {
             var shadowMap = this.CascadedShadowMapFactory.Construct(entity, position, lookAt, cascades, resolution);
 
-            var light = new Sunlight(shadowMap, color);
+            var light = new Sunlight(entity, shadowMap, color);
             this.Linker.AddComponent(entity, light);
 
             return light;

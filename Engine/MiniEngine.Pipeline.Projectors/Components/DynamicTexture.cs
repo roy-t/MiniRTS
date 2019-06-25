@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Primitives;
 using MiniEngine.Primitives.Cameras;
+using MiniEngine.Systems;
 using MiniEngine.Systems.Annotations;
 using MiniEngine.Systems.Components;
 
@@ -9,8 +10,9 @@ namespace MiniEngine.Pipeline.Projectors.Components
 {
     public sealed class DynamicTexture : IComponent
     {
-        public DynamicTexture(RenderPipeline pipeline, PerspectiveCamera viewPoint, GBuffer gBuffer, Pass pass, string label)
+        public DynamicTexture(Entity entity, RenderPipeline pipeline, PerspectiveCamera viewPoint, GBuffer gBuffer, Pass pass, string label)
         {
+            this.Entity = entity;
             this.Pipeline = pipeline;            
             this.ViewPoint = viewPoint;
             this.GBuffer = gBuffer;
@@ -18,6 +20,8 @@ namespace MiniEngine.Pipeline.Projectors.Components
             this.Label = label;
             this.Input = new RenderPipelineInput();            
         }
+
+        public Entity Entity { get; }
 
         public RenderPipeline Pipeline { get; }
         public RenderPipelineInput Input { get; }        

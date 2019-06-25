@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MiniEngine.Systems;
 using MiniEngine.Systems.Annotations;
 using MiniEngine.Systems.Components;
 
@@ -7,9 +8,11 @@ namespace MiniEngine.Pipeline.Shadows.Components
 {
     public sealed class CascadedShadowMap : IComponent
     {
-        public CascadedShadowMap(GraphicsDevice device, int resolution, int cascades,
+        public CascadedShadowMap(Entity entity, GraphicsDevice device, int resolution, int cascades,
             Vector3 position, Vector3 lookAt, float[] cascadeDistances)
         {
+            this.Entity = entity;
+
             this.DepthMapArray = new RenderTarget2D(
                 device,
                 resolution,
@@ -49,6 +52,8 @@ namespace MiniEngine.Pipeline.Shadows.Components
 
             this.Move(position, lookAt);
         }
+
+        public Entity Entity { get; }
 
         [Editor(nameof(Cascades))]
         public int Cascades => this.CascadeSplits.Length;

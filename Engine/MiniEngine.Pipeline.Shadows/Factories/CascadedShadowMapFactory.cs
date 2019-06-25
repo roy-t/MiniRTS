@@ -29,7 +29,7 @@ namespace MiniEngine.Pipeline.Shadows.Factories
         public CascadedShadowMap Construct(Entity entity, Vector3 position, Vector3 lookAt,
             int cascades, int resolution, float[] cascadeDistances)
         {
-            var cascadedShadowMap = new CascadedShadowMap(this.Device, resolution, cascades, position, lookAt, cascadeDistances);
+            var cascadedShadowMap = new CascadedShadowMap(entity, this.Device, resolution, cascades, position, lookAt, cascadeDistances);
             this.Linker.AddComponent(entity, cascadedShadowMap);
 
             for (var i = 0; i < cascades; i++)

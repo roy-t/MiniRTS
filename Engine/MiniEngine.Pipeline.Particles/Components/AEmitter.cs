@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Pipeline.Utilities;
+using MiniEngine.Systems;
 using MiniEngine.Systems.Annotations;
 using MiniEngine.Systems.Components;
 using MiniEngine.Units;
@@ -16,8 +17,9 @@ namespace MiniEngine.Pipeline.Particles.Components
         private Seconds timeToSpawn;
         private Vector4 tint;
 
-        public AEmitter(Vector3 position, Texture2D texture, int rows, int columns, float scale)
+        public AEmitter(Entity entity,  Vector3 position, Texture2D texture, int rows, int columns, float scale)
         {
+            this.Entity = entity;
             this.Position = position;
             this.Texture = texture;
             this.Rows = rows;
@@ -36,6 +38,8 @@ namespace MiniEngine.Pipeline.Particles.Components
             this.TimePerFrame = 0.125f;
             this.Tint = Color.White;
         }
+
+        public Entity Entity { get; }
 
         [Icon(IconType.Emitter)]
         [Editor(nameof(Position))]

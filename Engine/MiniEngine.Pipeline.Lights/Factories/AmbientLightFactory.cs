@@ -13,7 +13,7 @@ namespace MiniEngine.Pipeline.Lights.Factories
 
         public AmbientLight Construct(Entity entity, Color color)
         {
-            var light = new AmbientLight(color);
+            var light = new AmbientLight(entity, color);
             this.Linker.AddComponent(entity, light);
 
             return light;

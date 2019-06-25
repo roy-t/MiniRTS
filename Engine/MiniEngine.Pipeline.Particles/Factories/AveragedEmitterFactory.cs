@@ -13,7 +13,7 @@ namespace MiniEngine.Pipeline.Particles.Factories
 
         public AveragedEmitter ConstructAveragedEmitter(Entity entity, Vector3 position, Texture2D texture, int rows, int columns, float scale)
         {
-            var emitter = new AveragedEmitter(position, texture, rows, columns, scale);
+            var emitter = new AveragedEmitter(entity, position, texture, rows, columns, scale);
             this.Linker.AddComponent(entity, emitter);
 
             return emitter;

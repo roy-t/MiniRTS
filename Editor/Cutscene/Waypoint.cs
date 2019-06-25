@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using MiniEngine.Systems;
 using MiniEngine.Systems.Annotations;
 using MiniEngine.Systems.Components;
 using MiniEngine.Units;
@@ -7,12 +8,15 @@ namespace MiniEngine.CutScene
 {
     public sealed class Waypoint : IComponent
     {
-        public Waypoint(MetersPerSecond speed, Vector3 position, Vector3 lookAt)
+        public Waypoint(Entity entity, MetersPerSecond speed, Vector3 position, Vector3 lookAt)
         {
+            this.Entity = entity;
             this.Speed = speed;
             this.Position = position;
             this.LookAt = lookAt;
         }
+
+        public Entity Entity { get; }
 
         [Editor(nameof(Speed))]
         public MetersPerSecond Speed { get; }
@@ -24,6 +28,6 @@ namespace MiniEngine.CutScene
 
         [Icon(IconType.LookAt)]
         [Editor(nameof(LookAt))]
-        public Vector3 LookAt { get; }
+        public Vector3 LookAt { get; }        
     }
 }

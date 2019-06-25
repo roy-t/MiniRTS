@@ -13,7 +13,7 @@ namespace MiniEngine.Pipeline.Models.Factories
 
         public OpaqueModel Construct(Entity entity, Model model, Pose pose)
         {           
-            var opaqueModel = new OpaqueModel(model, pose);
+            var opaqueModel = new OpaqueModel(entity, model, pose);
             this.Linker.AddComponent(entity, opaqueModel);
 
             return opaqueModel;

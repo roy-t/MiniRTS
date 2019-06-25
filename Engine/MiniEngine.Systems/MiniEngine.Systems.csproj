@@ -59,6 +59,7 @@
     <Compile Include="Components\ComponentProperty.cs" />
     <Compile Include="Components\EntityComponentRecord.cs" />
     <Compile Include="Components\MinMaxDescription.cs" />
+    <Compile Include="Containers\AComponentList.cs" />
     <Compile Include="EntityManager.cs" />
     <Compile Include="Factories\AComponentFactory.cs" />
     <Compile Include="Entity.cs" />
