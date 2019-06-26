@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Components\DebugInfo.cs" />
+    <Compile Include="DebugCompositionRoot.cs" />
     <Compile Include="Extensions\Render2DBoundariesStageExtensions.cs" />
     <Compile Include="Extensions\Render3DBoundariesStageExtensions.cs" />
     <Compile Include="Extensions\RenderIconsStageExtensions.cs" />
@@ -85,6 +86,10 @@
       <Name>MiniEngine.Systems</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <PackageReference Include="LightInject">
+      <Version>5.5.0</Version>
+    </PackageReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

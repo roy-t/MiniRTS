@@ -46,6 +46,7 @@
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Configuration\EditorCompositionRoot.cs" />
     <Compile Include="Configuration\Injector.cs" />
     <Compile Include="Controllers\CameraController.cs" />
     <Compile Include="Cutscene\CutsceneSystem.cs" />
@@ -70,22 +71,23 @@
     <Compile Include="Input\MouseInput.cs" />
     <Compile Include="Rendering\DeferredRenderPipeline.cs" />
     <Compile Include="UI\DebugMenu.cs" />
-    <Compile Include="UI\DebugState.cs" />
-    <Compile Include="UI\EditorState.cs" />
+    <Compile Include="UI\State\DebugState.cs" />
+    <Compile Include="UI\State\EditorState.cs" />
     <Compile Include="UI\EntityMenu.cs" />
-    <Compile Include="UI\EntityState.cs" />
+    <Compile Include="UI\State\EntityState.cs" />
     <Compile Include="UI\EntityWindow.cs" />
     <Compile Include="UI\FileMenu.cs" />
     <Compile Include="UI\RenderingMenu.cs" />
-    <Compile Include="UI\RenderTargetDescriber.cs" />
-    <Compile Include="UI\RenderTargetDescription.cs" />
+    <Compile Include="UI\Utilities\ComponentSearcher.cs" />
+    <Compile Include="UI\Utilities\RenderTargetDescriber.cs" />
+    <Compile Include="UI\Utilities\RenderTargetDescription.cs" />
     <Compile Include="UI\UIManager.cs" />
-    <Compile Include="UI\UIState.cs" />
+    <Compile Include="UI\State\UIState.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scenes\IScene.cs" />
     <Compile Include="Scenes\SponzaScene.cs" />
-    <Compile Include="UI\XmlExtensions.cs" />
+    <Compile Include="UI\Utilities\XmlExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework, Version=3.6.0.1625, Culture=neutral, processorArchitecture=MSIL">

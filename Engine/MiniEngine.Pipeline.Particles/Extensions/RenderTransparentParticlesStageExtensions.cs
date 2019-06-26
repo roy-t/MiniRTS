@@ -7,7 +7,7 @@ namespace MiniEngine.Pipeline.Particles.Extensions
     {
         public static ParticlePipeline RenderTransparentParticles(
             this ParticlePipeline pipeline,
-            TransparentParticleSystem particleSystem)
+            AveragedParticleSystem particleSystem)
         {
             var stage = new RenderTransparentParticlesStage(pipeline.Device, particleSystem);
             pipeline.Add(stage);

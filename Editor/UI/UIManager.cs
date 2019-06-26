@@ -14,6 +14,8 @@ using MiniEngine.Pipeline.Projectors.Factories;
 using MiniEngine.Primitives.Cameras;
 using MiniEngine.Rendering;
 using MiniEngine.Systems;
+using MiniEngine.UI.State;
+using MiniEngine.UI.Utilities;
 using MiniEngine.Units;
 using KeyboardInput = MiniEngine.Input.KeyboardInput;
 
@@ -69,6 +71,7 @@ namespace MiniEngine.UI
             var projectorFactory = injector.Resolve<ProjectorFactory>();
             var waypointFactory = injector.Resolve<WaypointFactory>();
             var cutsceneSystem = injector.Resolve<CutsceneSystem>();
+            var componentSearcher = injector.Resolve<ComponentSearcher>();
 
             var texture = game.Content.Load<Texture2D>("Debug");
 
@@ -105,7 +108,7 @@ namespace MiniEngine.UI
             this.EntitiesMenu = new EntityMenu(this.UIState, entityManager);
             this.CreateMenu = new CreateMenu(this.UIState, entityManager, outlineFactory, waypointFactory, projectorFactory, texture, this.LightsController, camera);
             this.DebugMenu = new DebugMenu(this.Gui, this.UIState, renderTargetDescriber, cutsceneSystem, game);
-            this.EntityWindow = new EntityWindow(this.Editors, this.UIState, entityManager);
+            this.EntityWindow = new EntityWindow(this.Editors, this.UIState, entityManager, componentSearcher);
             this.RenderingMenu = new RenderingMenu(this.Editors, this.UIState, renderPipeline);
 
             camera.Move(this.UIState.EditorState.CameraPosition, this.UIState.EditorState.CameraLookAt);

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Effects;
 using MiniEngine.Effects.DeviceStates;
@@ -20,7 +19,6 @@ namespace MiniEngine.Pipeline.Projectors.Systems
         private readonly EntityLinker EntityLinker;
         private readonly IComponentContainer<Projector> Container;
         private readonly ProjectorEffect Effect;
-        //private readonly List<Projector> Projectors;
 
         public ProjectorSystem(GraphicsDevice device, EntityLinker entityLinker, IComponentContainer<Projector> container, ProjectorEffect effect)
         {
@@ -31,17 +29,12 @@ namespace MiniEngine.Pipeline.Projectors.Systems
 
             this.FrustumDrawer = new BoundsDrawer3D(device);
             this.Technique = ProjectorEffectTechniques.Projector;
-
-            //this.Projectors = new List<Projector>();
         }
 
         public ProjectorEffectTechniques Technique { get; set; }
 
         public void RenderProjectors(PerspectiveCamera perspectiveCamera, GBuffer gBuffer)
         {
-            //this.Projectors.Clear();
-            //this.EntityLinker.GetComponents(this.Projectors);
-
             this.Device.PostProcessState();
 
             for (var i = 0; i < this.Container.Count; i++)

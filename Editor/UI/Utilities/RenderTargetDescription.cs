@@ -1,7 +1,7 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using System;
+﻿using System;
+using Microsoft.Xna.Framework.Graphics;
 
-namespace MiniEngine.UI
+namespace MiniEngine.UI.Utilities
 {
     public sealed class RenderTargetDescription : IComparable<RenderTargetDescription>
     {

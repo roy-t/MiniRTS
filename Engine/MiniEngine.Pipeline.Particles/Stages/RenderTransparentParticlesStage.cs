@@ -6,9 +6,9 @@ namespace MiniEngine.Pipeline.Particles.Stages
     public sealed class RenderTransparentParticlesStage : IPipelineStage<ParticlePipelineInput>
     {
         private readonly GraphicsDevice Device;
-        private readonly TransparentParticleSystem ParticleSystem;
+        private readonly AveragedParticleSystem ParticleSystem;
 
-        public RenderTransparentParticlesStage(GraphicsDevice device, TransparentParticleSystem particleSystem)
+        public RenderTransparentParticlesStage(GraphicsDevice device, AveragedParticleSystem particleSystem)
         {
             this.Device = device;
             this.ParticleSystem = particleSystem;

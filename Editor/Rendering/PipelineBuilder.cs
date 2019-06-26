@@ -27,7 +27,7 @@ namespace MiniEngine.Rendering
         private readonly GraphicsDevice Device;
         private readonly ShadowMapSystem ShadowMapSystem;
         private readonly ModelSystem ModelSystem;
-        private readonly TransparentParticleSystem TransparentParticleSystem;
+        private readonly AveragedParticleSystem TransparentParticleSystem;
         private readonly AdditiveParticleSystem AdditiveParticleSystem;
         private readonly ProjectorSystem ProjectorSystem;
         private readonly CombineEffect CombineEffect;
@@ -43,7 +43,7 @@ namespace MiniEngine.Rendering
         private readonly IMeterRegistry MeterRegistry;
 
 
-        public PipelineBuilder(GraphicsDevice device, ShadowMapSystem shadowMapSystem, ModelSystem modelSystem, TransparentParticleSystem transparentParticleSystem, AdditiveParticleSystem additiveParticleSystem, ProjectorSystem projectorSystem, CombineEffect combineEffect, FxaaEffect fxaaEffect, AmbientLightSystem ambientLightSystem, DirectionalLightSystem directionalLightSystem, PointLightSystem pointLightSystem, CascadedShadowMapSystem cascadedShadowMapSystem, ShadowCastingLightSystem shadowCastingLightSystem, SunlightSystem sunlightSystem, BoundarySystem boundarySystem, IconSystem iconSystem)
+        public PipelineBuilder(GraphicsDevice device, ShadowMapSystem shadowMapSystem, ModelSystem modelSystem, AveragedParticleSystem transparentParticleSystem, AdditiveParticleSystem additiveParticleSystem, ProjectorSystem projectorSystem, CombineEffect combineEffect, FxaaEffect fxaaEffect, AmbientLightSystem ambientLightSystem, DirectionalLightSystem directionalLightSystem, PointLightSystem pointLightSystem, CascadedShadowMapSystem cascadedShadowMapSystem, ShadowCastingLightSystem shadowCastingLightSystem, SunlightSystem sunlightSystem, BoundarySystem boundarySystem, IconSystem iconSystem)
         {
             this.Device = device;
             this.ShadowMapSystem           = shadowMapSystem;

@@ -1,18 +1,15 @@
 ﻿using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
 using LightInject;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Effects;
-using MiniEngine.Input;
 using MiniEngine.Pipeline.Debug;
-using MiniEngine.Pipeline.Lights.Factories;
-using MiniEngine.Rendering;
-using MiniEngine.Scenes;
+using MiniEngine.Pipeline.Lights;
+using MiniEngine.Pipeline.Models;
+using MiniEngine.Pipeline.Particles;
+using MiniEngine.Pipeline.Projectors;
+using MiniEngine.Pipeline.Shadows;
 using MiniEngine.Systems;
-using MiniEngine.Systems.Containers;
-using MiniEngine.Systems.Factories;
 using MiniEngine.Telemetry;
 
 namespace MiniEngine.Configuration
@@ -35,64 +32,87 @@ namespace MiniEngine.Configuration
         }
 
         public void Compose()
-        {            
-            // Services
+        {
             this.Container.RegisterInstance(this.Device);
+            this.Container.RegisterInstance(this.Content);
 
-            // Effects            
-            this.RegisterEffect<RenderEffect>("RenderEffect");
-            this.RegisterEffect<CombineEffect>("CombineEffect");
-            this.RegisterEffect<FxaaEffect>("FxaaEffect");
-            this.RegisterEffect<BlurEffect>("BlurEffect");
-            this.RegisterEffect<WeightedParticlesEffect>("WeightedParticlesEffect");
-            this.RegisterEffect<AverageParticlesEffect>("AverageParticlesEffect");
-            this.RegisterEffect<AdditiveParticlesEffect>("AdditiveParticlesEffect");
-            this.RegisterEffect<ColorEffect>("ColorEffect");
-            this.RegisterEffect<TextureEffect>("TextureEffect");
-            this.RegisterEffect<UIEffect>("UIEffect");
-            this.RegisterEffect<AmbientLightEffect>("AmbientLightEffect");
-            this.RegisterEffect<DirectionalLightEffect>("DirectionalLightEffect");
-            this.RegisterEffect<PointLightEffect>("PointLightEffect");
-            this.RegisterEffect<ShadowCastingLightEffect>("ShadowCastingLightEffect");
-            this.RegisterEffect<SunlightEffect>("SunlightEffect");
-            this.RegisterEffect<ProjectorEffect>("ProjectorEffect");           
+            EffectCompositionRoot.Content = this.Content;
+            this.Container.RegisterFrom<EffectCompositionRoot>();
+            this.Container.RegisterFrom<DebugCompositionRoot>();
 
-            // Primitives
-            this.RegisterContent<Model>("sphere", "sphere", "Effects");
+            LightsCompositionRoot.Content = this.Content;
+            this.Container.RegisterFrom<LightsCompositionRoot>();
 
-            // Systems
-            this.RegisterAllOf<ISystem>();
-            this.RegisterAllOf<IComponentContainer>();
-            this.RegisterAllOf<IComponentFactory>();
-            this.Container.Register<LightsFactory>();
+            this.Container.RegisterFrom<ModelsCompositionRoot>();
+            this.Container.RegisterFrom<ParticlesCompositionRoot>();
+            this.Container.RegisterFrom<ProjectorsCompositionRoot>();
+            this.Container.RegisterFrom<ShadowsCompositionRoot>();
+            this.Container.RegisterFrom<TelemetryCompositionRoot>();
+            this.Container.RegisterFrom<SystemsCompositionRoot>();
 
-            // Renderer
-            this.Container.Register<PipelineBuilder>();
-            this.Container.Register<DeferredRenderPipeline>();            
+            EditorCompositionRoot.Content = this.Content;
+            EditorCompositionRoot.Device = this.Device;
+            this.Container.RegisterFrom<EditorCompositionRoot>();
 
-            // UI
-            this.Container.Register<KeyboardInput>();
-            this.Container.Register<MouseInput>();
-            this.Container.RegisterInstance(typeof(IconLibrary), new IconLibrary(this.Content, this.Device));
 
-            // Entities
-            this.Container.Register<EntityCreator>();
-            this.Container.Register<EntityLinker>();
-            this.Container.Register<EntityController>();
-            this.Container.Register<EntityManager>();
+            // Services
+            
 
-            // Scenes
-            this.Container.Register<SceneBuilder>();
-            this.RegisterAllOf<IScene>();
+//            // Effects            
+//            //this.RegisterEffect<RenderEffect>("RenderEffect");
+//            //this.RegisterEffect<CombineEffect>("CombineEffect");
+//            //this.RegisterEffect<FxaaEffect>("FxaaEffect");
+//            //this.RegisterEffect<BlurEffect>("BlurEffect");
+//            //this.RegisterEffect<WeightedParticlesEffect>("WeightedParticlesEffect");
+//            //this.RegisterEffect<AverageParticlesEffect>("AverageParticlesEffect");
+//            //this.RegisterEffect<AdditiveParticlesEffect>("AdditiveParticlesEffect");
+//            //this.RegisterEffect<ColorEffect>("ColorEffect");
+//            //this.RegisterEffect<TextureEffect>("TextureEffect");
+//            //this.RegisterEffect<UIEffect>("UIEffect");
+//            //this.RegisterEffect<AmbientLightEffect>("AmbientLightEffect");
+//            //this.RegisterEffect<DirectionalLightEffect>("DirectionalLightEffect");
+//            //this.RegisterEffect<PointLightEffect>("PointLightEffect");
+//            //this.RegisterEffect<ShadowCastingLightEffect>("ShadowCastingLightEffect");
+//            //this.RegisterEffect<SunlightEffect>("SunlightEffect");
+//            //this.RegisterEffect<ProjectorEffect>("ProjectorEffect");           
 
-            // Telemetry
-#if TRACE
-            this.Container.Register<IMetricServer, PrometheusMetricServer>();
-            this.Container.Register<IMeterRegistry, PrometheusMeterRegistry>();
-#else
-            this.Container.Register<IMetricServer, NullMetricServer>();
-            this.Container.Register<IMeterRegistry, NullMeterRegistry>();
-#endif
+//            // Primitives
+//            this.RegisterContent<Model>("sphere", "sphere", "Effects");
+
+//            // Systems
+//            this.RegisterAllOf<ISystem>();
+//            //this.RegisterAllOf<IComponentContainer>();
+//            this.RegisterAllOf<IComponentFactory>();
+//            this.Container.Register<LightsFactory>();
+
+//            // Renderer
+//            this.Container.Register<PipelineBuilder>();
+//            this.Container.Register<DeferredRenderPipeline>();            
+
+//            // UI
+//            this.Container.Register<KeyboardInput>();
+//            this.Container.Register<MouseInput>();
+//            this.Container.RegisterInstance(typeof(IconLibrary), new IconLibrary(this.Content, this.Device));
+//            this.Container.Register<ComponentSearcher>();
+
+//            // Entities
+//            this.Container.Register<EntityCreator>();
+//            this.Container.Register<EntityLinker>();
+//            this.Container.Register<EntityController>();
+//            this.Container.Register<EntityManager>();
+
+//            // Scenes
+//            this.Container.Register<SceneBuilder>();
+//            this.RegisterAllOf<IScene>();
+
+//            // Telemetry
+//#if TRACE
+//            this.Container.Register<IMetricServer, PrometheusMetricServer>();
+//            this.Container.Register<IMeterRegistry, PrometheusMeterRegistry>();
+//#else
+//            this.Container.Register<IMetricServer, NullMetricServer>();
+//            this.Container.Register<IMeterRegistry, NullMeterRegistry>();
+//#endif
         }
 
         public T Resolve<T>() => this.Container.GetInstance<T>();
@@ -101,43 +121,44 @@ namespace MiniEngine.Configuration
 
         public IEnumerable<T> ResolveAll<T>() => this.Container.GetAllInstances<T>();
 
-        private void RegisterContent<T>(string contentName, string named, string folder = "")
-        {
-            var content = this.Content.Load<T>(Path.Combine(folder, contentName));
-            this.Container.RegisterInstance(typeof(T), content, named);
-        }
+        //private void RegisterContent<T>(string contentName, string named, string folder = "")
+        //{
+        //    var content = this.Content.Load<T>(Path.Combine(folder, contentName));
+        //    this.Container.RegisterInstance(typeof(T), content, named);
+        //}
 
-        private void RegisterEffect<T>(string name, string folder = "Effects")
-            where T : EffectWrapper, new()
-        {
-            this.Container.Register(
-                i =>
-                {
-                    var wrapper = new T();
-                    wrapper.Wrap(this.Content.Load<Effect>(Path.Combine(folder, name)));
-                    return wrapper;
-                },
-                new PerRequestLifeTime());
-        }
+        //private void RegisterEffect<T>(string name, string folder = "Effects")
+        //    where T : EffectWrapper, new()
+        //{
+        //    this.Container.Register(
+        //        i =>
+        //        {
+        //            var wrapper = new T();
+        //            wrapper.Wrap(this.Content.Load<Effect>(Path.Combine(folder, name)));
+        //            return wrapper;
+        //        },
+        //        new PerRequestLifeTime());
+        //}        
 
-        private void RegisterAllOf<T>()
-            where T : class
-        {
-            // TODO: use proper injection here for each referenced assembly instead of looking it up like this
+        //private void RegisterAllOf<T>()
+        //    where T : class
+        //{
+        //    // TODO: use proper injection here for each referenced assembly instead of looking it up like this
 
-            var assemblies = new List<Assembly>();
-            var root = Assembly.GetExecutingAssembly();
-            assemblies.Add(root);
-            foreach (var assemblyName in Assembly.GetExecutingAssembly().GetReferencedAssemblies()) {
-                assemblies.Add(Assembly.Load(assemblyName));
-            }            
+        //    var assemblies = new List<Assembly>();
+        //    var root = Assembly.GetExecutingAssembly();
+        //    assemblies.Add(root);
+        //    foreach (var assemblyName in Assembly.GetExecutingAssembly().GetReferencedAssemblies())
+        //    {
+        //        assemblies.Add(Assembly.Load(assemblyName));
+        //    }
 
-            foreach(var assembly in assemblies)
-            {
-                this.Container.RegisterAssembly(
-                assembly,
-                (s, _) => typeof(T).IsAssignableFrom(s) && s != typeof(T));
-            }
-        }
+        //    foreach (var assembly in assemblies)
+        //    {
+        //        this.Container.RegisterAssembly(
+        //        assembly,
+        //        (s, _) => typeof(T).IsAssignableFrom(s) && s != typeof(T));
+        //    }
+        //}
     }
 }

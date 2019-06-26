@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Xml;
 
-namespace MiniEngine.UI
+namespace MiniEngine.UI.Utilities
 {
     public static class XmlExtensions
     {

@@ -6,6 +6,7 @@ using MiniEngine.Primitives.Cameras;
 using MiniEngine.Rendering;
 using MiniEngine.Telemetry;
 using MiniEngine.UI;
+using MiniEngine.UI.Utilities;
 using MiniEngine.Units;
 
 namespace MiniEngine
@@ -48,8 +49,7 @@ namespace MiniEngine
             this.injector = new Injector(this.GraphicsDevice, this.Content);
 
             this.renderPipeline = this.injector.Resolve<DeferredRenderPipeline>();
-
-            this.sceneSelector = new SceneSelector(this.Content, this.injector);
+            this.sceneSelector = this.injector.Resolve<SceneSelector>();
 
             var renderTargetDescriber = new RenderTargetDescriber(this.renderPipeline.GetGBuffer());
             this.uiManager = new UIManager(this, this.spriteBatch, renderTargetDescriber, this.renderPipeline, this.camera, this.sceneSelector, this.injector);

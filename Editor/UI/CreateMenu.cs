@@ -7,6 +7,7 @@ using MiniEngine.Pipeline.Debug.Factories;
 using MiniEngine.Pipeline.Projectors.Factories;
 using MiniEngine.Primitives.Cameras;
 using MiniEngine.Systems;
+using MiniEngine.UI.State;
 
 namespace MiniEngine.UI
 {

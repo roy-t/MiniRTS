@@ -10,7 +10,7 @@ using System.Collections.Generic;
 
 namespace MiniEngine.Pipeline.Particles.Systems
 {
-    public class TransparentParticleSystem : IUpdatableSystem
+    public class AveragedParticleSystem : IUpdatableSystem
     {
         private readonly GraphicsDevice Device;
         private readonly WeightedParticlesEffect WeightedParticlesEffect;
@@ -23,7 +23,7 @@ namespace MiniEngine.Pipeline.Particles.Systems
         private readonly FullScreenTriangle FullScreenTriangle;
         private readonly UnitQuad Quad;
 
-        public TransparentParticleSystem(
+        public AveragedParticleSystem(
             GraphicsDevice device,
             WeightedParticlesEffect weightedParticlesEffect,
             AverageParticlesEffect averageParticlesEffect,

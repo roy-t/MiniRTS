@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Pipeline.Projectors.Components;
 using MiniEngine.Primitives.Cameras;
 using MiniEngine.Systems;
+using MiniEngine.Systems.Containers;
 using MiniEngine.Units;
 
 namespace MiniEngine.Pipeline.Projectors.Systems
@@ -12,23 +12,21 @@ namespace MiniEngine.Pipeline.Projectors.Systems
         private readonly GraphicsDevice Device;
         private readonly EntityLinker EntityLinker;
 
-        private readonly List<DynamicTexture> DynamicTextures;
+        private readonly IComponentContainer<DynamicTexture> Container;
 
-        public DynamicTextureSystem(GraphicsDevice device, EntityLinker entityLinker)
+        public DynamicTextureSystem(GraphicsDevice device, EntityLinker entityLinker, IComponentContainer<DynamicTexture> container)
         {
             this.Device = device;
             this.EntityLinker = entityLinker;
-            this.DynamicTextures = new List<DynamicTexture>();
+            this.Container = container;
         }
 
         public void Update(PerspectiveCamera perspectiveCamera, Seconds elapsed)
         {
-            this.DynamicTextures.Clear();
-            this.EntityLinker.GetComponents(this.DynamicTextures);
-
-            for(var i = 0; i < this.DynamicTextures.Count; i++)
+            for(var i = 0; i < this.Container.Count; i++)
             {
-                var dynamicTexture = this.DynamicTextures[i];
+                var dynamicTexture = this.Container[i];
+
                 var input = dynamicTexture.Input;
                 input.Update(dynamicTexture.ViewPoint, elapsed, dynamicTexture.GBuffer, dynamicTexture.Pass);
                 dynamicTexture.Pipeline.Execute(input, dynamicTexture.Label);

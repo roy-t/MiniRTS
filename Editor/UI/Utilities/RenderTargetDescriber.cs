@@ -1,10 +1,10 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using MiniEngine.Primitives;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Xna.Framework.Graphics;
+using MiniEngine.Primitives;
 
-namespace MiniEngine.UI
+namespace MiniEngine.UI.Utilities
 {
     public sealed class RenderTargetDescriber
     {        

@@ -2,6 +2,8 @@
 using ImGuiNET;
 using Microsoft.Xna.Framework;
 using MiniEngine.CutScene;
+using MiniEngine.UI.State;
+using MiniEngine.UI.Utilities;
 
 namespace MiniEngine.UI
 {

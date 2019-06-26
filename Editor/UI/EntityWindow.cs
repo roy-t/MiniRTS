@@ -6,6 +6,8 @@ using ImGuiNET;
 using MiniEngine.Systems;
 using MiniEngine.Systems.Annotations;
 using MiniEngine.Systems.Components;
+using MiniEngine.UI.State;
+using MiniEngine.UI.Utilities;
 
 namespace MiniEngine.UI
 {
@@ -14,17 +16,20 @@ namespace MiniEngine.UI
         private readonly Editors Editors;
         private readonly EntityState EntityState;
         private readonly EntityManager EntityManager;
-
+        private readonly ComponentSearcher ComponentSearcher;
         private readonly Dictionary<Type, int> ComponentCounter;
-        
-        
-        public EntityWindow(Editors editors, UIState ui, EntityManager entityManager)
+
+        private readonly List<IComponent> Components;
+
+
+        public EntityWindow(Editors editors, UIState ui, EntityManager entityManager, ComponentSearcher componentSearcher)
         {
             this.Editors = editors;
             this.EntityState = ui.EntityState;            
             this.EntityManager = entityManager;
-
+            this.ComponentSearcher = componentSearcher;
             this.ComponentCounter = new Dictionary<Type, int>();
+            this.Components = new List<IComponent>();
         }
         
         public void Render()
@@ -35,11 +40,14 @@ namespace MiniEngine.UI
 
                 this.ComponentCounter.Clear();
 
-                var components = new List<IComponent>();
-                this.EntityManager.Linker.GetComponents(this.EntityState.SelectedEntity, components);
 
-                foreach (var component in components)
+                //this.EntityManager.Linker.GetComponents(this.EntityState.SelectedEntity, components);
+                this.Components.Clear();
+                this.ComponentSearcher.GetComponents(this.EntityState.SelectedEntity, this.Components);
+
+                for (var i = 0; i < this.Components.Count; i++)
                 {
+                    var component = this.Components[i];
                     // ImGui requires a unique name for every node, so for each component we add
                     // check how many of that component we've already added and use that in the name
                     var count = this.Count(component);
@@ -76,20 +84,27 @@ namespace MiniEngine.UI
         {
             var componentType = component.GetType();
 
-            foreach(var property in componentType.GetProperties())
+            var properties = componentType.GetProperties();
+            for (var i = 0; i < properties.Length; i++)
             {
-                foreach(var attribute in property.GetCustomAttributes(typeof(EditorAttribute), false).Cast<EditorAttribute>())
+                var property = properties[i];
+
+                var attributes = property.GetCustomAttributes(typeof(EditorAttribute), false);
+                for (var a = 0; a < attributes.Length; a++)
                 {
-                    var getter = GetGetter(property, component, componentType);
-                    var setter = GetSetter(attribute.Setter, component, componentType) ?? GetSetter(property, component, componentType);
-
-                    var index = 0;
-                    if(!string.IsNullOrEmpty(attribute.IndexProperty))
+                    if (attributes[a] is EditorAttribute attribute)
                     {
-                        index = (int)component.GetType().GetProperty(attribute.IndexProperty).GetGetMethod().Invoke(component, null);
-                    }
+                        var getter = GetGetter(property, component, componentType);
+                        var setter = GetSetter(attribute.Setter, component, componentType) ?? GetSetter(property, component, componentType);
 
-                    this.Editors.Create(attribute.Name, getter(), attribute.MinMax, setter, index);
+                        var index = 0;
+                        if (!string.IsNullOrEmpty(attribute.IndexProperty))
+                        {
+                            index = (int)component.GetType().GetProperty(attribute.IndexProperty).GetGetMethod().Invoke(component, null);
+                        }
+
+                        this.Editors.Create(attribute.Name, getter(), attribute.MinMax, setter, index);
+                    }
                 }
             }            
         }

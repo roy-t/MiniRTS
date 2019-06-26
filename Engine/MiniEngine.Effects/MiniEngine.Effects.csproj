@@ -52,6 +52,7 @@
   <ItemGroup>
     <Compile Include="AmbientLightEffect.cs" />
     <Compile Include="AverageParticlesEffect.cs" />
+    <Compile Include="EffectCompositionRoot.cs" />
     <Compile Include="Techniques\ColorEffectTechniques.cs" />
     <Compile Include="Techniques\TextureEffectTechniques.cs" />
     <Compile Include="UIEffect.cs" />
@@ -73,6 +74,11 @@
     <Compile Include="Techniques\RenderEffectTechniques.cs" />
     <Compile Include="AdditiveParticlesEffect.cs" />
     <Compile Include="WeightedParticlesEffect.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="LightInject">
+      <Version>5.5.0</Version>
+    </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

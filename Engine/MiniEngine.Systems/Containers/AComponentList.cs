@@ -14,11 +14,12 @@ namespace MiniEngine.Systems.Containers
             this.Components = new List<T>();
         }
 
-        public void Add(T item) => this.Components.Add(item);
-        public T this[int index] => this.Components[index];
+        public void Add(T item) => this.Components.Add(item);        
         public bool Remove(T item) => this.Components.Remove(item);
-
         public int Count => this.Components.Count;
+
+        public T this[int index] => this.Components[index];
+        IComponent IComponentContainer.this[int index] => this.Components[index];
 
         public void RemoveAllOwnedBy(Entity entity)
         {

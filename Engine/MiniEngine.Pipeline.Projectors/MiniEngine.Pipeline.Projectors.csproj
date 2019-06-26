@@ -51,6 +51,8 @@
   <ItemGroup>
     <Compile Include="Components\DynamicTexture.cs" />
     <Compile Include="Components\Projector.cs" />
+    <Compile Include="ProjectorsCompositionRoot.cs" />
+    <Compile Include="Containers\DynamicTextureContainer.cs" />
     <Compile Include="Containers\ProjectorContainer.cs" />
     <Compile Include="Extensions\PipelineExtensions.cs" />
     <Compile Include="Factories\DynamicTextureFactory.cs" />
@@ -96,6 +98,11 @@
       <Project>{051e397d-4c6c-4f8f-8f40-cce916a45c5e}</Project>
       <Name>MiniEngine.Units</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="LightInject">
+      <Version>5.5.0</Version>
+    </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

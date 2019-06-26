@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 
-namespace MiniEngine.UI
+namespace MiniEngine.UI.State
 {
     public sealed class EditorState
     {

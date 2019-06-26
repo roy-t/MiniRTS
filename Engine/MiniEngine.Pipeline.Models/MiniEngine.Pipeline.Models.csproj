@@ -64,6 +64,7 @@
     <Compile Include="Factories\OpaqueModelFactory.cs" />
     <Compile Include="ModelPipeline.cs" />
     <Compile Include="ModelPipelineInput.cs" />
+    <Compile Include="ModelsCompositionRoot.cs" />
     <Compile Include="Stages\ClearStage.cs" />
     <Compile Include="Systems\ModelSystem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -98,6 +99,10 @@
       <Name>MiniEngine.Units</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <PackageReference Include="LightInject">
+      <Version>5.5.0</Version>
+    </PackageReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

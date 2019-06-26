@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace MiniEngine.UI
+namespace MiniEngine.UI.State
 {
     public sealed class DebugState
     {

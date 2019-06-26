@@ -34,7 +34,7 @@ namespace MiniEngine.Rendering
         
         private readonly ShadowMapSystem ShadowMapSystem;
         private readonly ModelSystem ModelSystem;
-        private readonly TransparentParticleSystem TransparentParticleSystem;
+        private readonly AveragedParticleSystem TransparentParticleSystem;
         private readonly AdditiveParticleSystem AdditiveParticleSystem;
         private readonly ProjectorSystem ProjectorSystem;
         private readonly CombineEffect CombineEffect;
@@ -62,7 +62,7 @@ namespace MiniEngine.Rendering
             GraphicsDevice device,
             ShadowMapSystem shadowMapSystem,
             ModelSystem modelSystem,
-            TransparentParticleSystem particleSystem,
+            AveragedParticleSystem particleSystem,
             AdditiveParticleSystem additiveParticleSystem,
             ProjectorSystem projectorSystem,
             CombineEffect combineEffect,

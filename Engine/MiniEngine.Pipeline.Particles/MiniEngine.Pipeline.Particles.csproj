@@ -61,6 +61,7 @@
     <Compile Include="Extensions\RenderParticlesStageExtensions.cs" />
     <Compile Include="Factories\AveragedEmitterFactory.cs" />
     <Compile Include="Factories\AdditiveEmitterFactory.cs" />
+    <Compile Include="ParticlesCompositionRoot.cs" />
     <Compile Include="ParticlePipeline.cs" />
     <Compile Include="ParticlePipelineInput.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -70,7 +71,7 @@
     <Compile Include="Stages\RenderTransparentParticlesStage.cs" />
     <Compile Include="Systems\AdditiveParticleSystem.cs" />
     <Compile Include="Systems\ParticleHelper.cs" />
-    <Compile Include="Systems\TransparentParticleSystem.cs" />
+    <Compile Include="Systems\AveragedParticleSystem.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MiniEngine.Effects\MiniEngine.Effects.csproj">
@@ -97,6 +98,11 @@
       <Project>{051e397d-4c6c-4f8f-8f40-cce916a45c5e}</Project>
       <Name>MiniEngine.Units</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="LightInject">
+      <Version>5.5.0</Version>
+    </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

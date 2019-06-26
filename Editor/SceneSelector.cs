@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using Microsoft.Xna.Framework.Content;
-using MiniEngine.Configuration;
 using MiniEngine.Scenes;
 using MiniEngine.Systems;
 
@@ -11,13 +9,10 @@ namespace MiniEngine
     {
         private readonly EntityManager EntityManager;
 
-        public SceneSelector(ContentManager content, Injector injector)
+        public SceneSelector(IList<IScene> scenes, ContentManager content, EntityManager entityManager)
         {
-            this.Scenes = injector.ResolveAll<IScene>()
-                              .ToList()
-                              .AsReadOnly();
-
-            this.EntityManager = injector.Resolve<EntityManager>();
+            this.Scenes = scenes;
+            this.EntityManager = entityManager;
 
             foreach (var scene in this.Scenes)
             {
@@ -25,7 +20,7 @@ namespace MiniEngine
             }
         }
 
-        public IReadOnlyList<IScene> Scenes { get; private set; }
+        public IList<IScene> Scenes { get; }
         public IScene CurrentScene { get; private set; }
 
         public void SwitchScenes(IScene scene)
