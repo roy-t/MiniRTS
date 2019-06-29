@@ -1,11 +1,13 @@
 ﻿using LightInject;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using MiniEngine.Controllers;
 using MiniEngine.CutScene;
 using MiniEngine.Input;
 using MiniEngine.Pipeline.Debug;
 using MiniEngine.Rendering;
 using MiniEngine.Scenes;
+using MiniEngine.Systems.Containers;
 using MiniEngine.UI.Utilities;
 
 namespace MiniEngine.Configuration
@@ -17,8 +19,10 @@ namespace MiniEngine.Configuration
 
         public void Compose(IServiceRegistry serviceRegistry)
         {
+            serviceRegistry.Register<IComponentContainer<Waypoint>, ComponentList<Waypoint>>();
             serviceRegistry.Register<WaypointFactory>();
             serviceRegistry.Register<CutsceneSystem>();
+            serviceRegistry.Register<LightsController>();
 
             // Renderer
             serviceRegistry.Register<PipelineBuilder>();

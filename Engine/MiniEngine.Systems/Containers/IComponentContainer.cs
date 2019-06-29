@@ -7,8 +7,11 @@ namespace MiniEngine.Systems.Containers
     {
         int Count { get; }
         void RemoveAllOwnedBy(Entity entity);
+        void Clear();
         Type GetComponentType();
         IComponent this[int index] { get; }
+
+        bool Remove(IComponent component);
     }
 
     public interface IComponentContainer<T> : IComponentContainer

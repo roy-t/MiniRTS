@@ -6,7 +6,7 @@ using MiniEngine.Pipeline.Shadows.Factories;
 using MiniEngine.Primitives;
 using MiniEngine.Primitives.Cameras;
 using MiniEngine.Systems;
-using System.Collections.Generic;
+using MiniEngine.Systems.Containers;
 
 namespace MiniEngine.Pipeline.Lights.Systems
 {
@@ -16,29 +16,23 @@ namespace MiniEngine.Pipeline.Lights.Systems
         private readonly Frustum Frustum;
         private readonly FullScreenTriangle FullScreenTriangle;
 
-        private readonly EntityLinker EntityLinker;
         private readonly SunlightEffect Effect;
 
-        private readonly List<Sunlight> Lights;
+        private readonly IComponentContainer<Sunlight> Lights;
 
-        public SunlightSystem(GraphicsDevice device, SunlightEffect effect, EntityLinker entityLinker,
+        public SunlightSystem(GraphicsDevice device, SunlightEffect effect, IComponentContainer<Sunlight> Lights,
             CascadedShadowMapFactory cascadedShadowMapFactory)
         {
             this.Device = device;
             this.Effect = effect;
-            this.EntityLinker = entityLinker;
+            this.Lights = Lights;
 
             this.FullScreenTriangle = new FullScreenTriangle();
             this.Frustum = new Frustum();
-
-            this.Lights = new List<Sunlight>(1);
         }
 
         public void RenderLights(PerspectiveCamera perspectiveCamera, GBuffer gBuffer)
         {
-            this.Lights.Clear();
-            this.EntityLinker.GetComponents(this.Lights);
-
             this.Device.ShadowCastingLightState();
 
             for (var i = 0; i < this.Lights.Count; i++)

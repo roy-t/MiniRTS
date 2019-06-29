@@ -6,7 +6,7 @@ using MiniEngine.Pipeline.Lights.Components;
 using MiniEngine.Primitives;
 using MiniEngine.Primitives.Cameras;
 using MiniEngine.Systems;
-using System.Collections.Generic;
+using MiniEngine.Systems.Containers;
 
 namespace MiniEngine.Pipeline.Lights.Systems
 {
@@ -15,24 +15,19 @@ namespace MiniEngine.Pipeline.Lights.Systems
         private readonly GraphicsDevice Device;
         private readonly PointLightEffect Effect;
 
-        private readonly List<PointLight> Lights;
+        private readonly IComponentContainer<PointLight> Lights;
         private readonly Model Sphere;
-        private readonly EntityLinker EntityLinker;
 
-        public PointLightSystem(GraphicsDevice device, PointLightEffect effect, Model sphere, EntityLinker entityLinker)
+        public PointLightSystem(GraphicsDevice device, PointLightEffect effect, Model sphere, IComponentContainer<PointLight> lights)
         {
             this.Device = device;
             this.Effect = effect;
             this.Sphere = sphere;
-            this.EntityLinker = entityLinker;
-            this.Lights = new List<PointLight>();
+            this.Lights = lights;
         }
 
         public void Render(PerspectiveCamera perspectiveCamera, GBuffer gBuffer)
         {
-            this.Lights.Clear();
-            this.EntityLinker.GetComponents(this.Lights);
-
             this.Device.LightState();
 
             for (var iLight = 0; iLight < this.Lights.Count; iLight++)

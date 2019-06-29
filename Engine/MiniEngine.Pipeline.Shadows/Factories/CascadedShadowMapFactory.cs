@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Pipeline.Shadows.Components;
 using MiniEngine.Systems;
+using MiniEngine.Systems.Containers;
 using MiniEngine.Systems.Factories;
 
 namespace MiniEngine.Pipeline.Shadows.Factories
@@ -20,8 +21,8 @@ namespace MiniEngine.Pipeline.Shadows.Factories
 
         private readonly ShadowMapFactory ShadowMapFactory;
 
-        public CascadedShadowMapFactory(GraphicsDevice device, ShadowMapFactory shadowMapFactory, EntityLinker linker)
-            : base(device, linker)
+        public CascadedShadowMapFactory(GraphicsDevice device, ShadowMapFactory shadowMapFactory, IComponentContainer<CascadedShadowMap> cascadedShadowMapContainer)
+            : base(device, cascadedShadowMapContainer)
         {
             this.ShadowMapFactory = shadowMapFactory;
         }
@@ -30,7 +31,7 @@ namespace MiniEngine.Pipeline.Shadows.Factories
             int cascades, int resolution, float[] cascadeDistances)
         {
             var cascadedShadowMap = new CascadedShadowMap(entity, this.Device, resolution, cascades, position, lookAt, cascadeDistances);
-            this.Linker.AddComponent(entity, cascadedShadowMap);
+            this.Container.Add(cascadedShadowMap);
 
             for (var i = 0; i < cascades; i++)
             {
@@ -45,8 +46,8 @@ namespace MiniEngine.Pipeline.Shadows.Factories
 
         public override void Deconstruct(Entity entity)
         {
-            this.Linker.RemoveComponents<CascadedShadowMap>(entity);
-            this.Linker.RemoveComponents<ShadowMap>(entity);
+            this.ShadowMapFactory.Deconstruct(entity);
+            base.Deconstruct(entity);
         }
     }
 }

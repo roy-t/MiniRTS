@@ -5,6 +5,7 @@ using ImGuiNET;
 using MiniEngine.Systems;
 using MiniEngine.Systems.Components;
 using MiniEngine.UI.State;
+using MiniEngine.UI.Utilities;
 
 namespace MiniEngine.UI
 {
@@ -12,13 +13,15 @@ namespace MiniEngine.UI
     {
         private readonly EntityManager EntityManager;
         private readonly EntityState State;
-        private readonly List<IComponent> Components;
+        private readonly List<IComponent> ComponentList;
+        private readonly ComponentSearcher ComponentSearcher;
 
-        public EntityMenu(UIState ui, EntityManager entityManager)
+        public EntityMenu(UIState ui, EntityManager entityManager, ComponentSearcher componentSearcher)
         {
             this.EntityManager = entityManager;
             this.State = ui.EntityState;
-            this.Components = new List<IComponent>();
+            this.ComponentList = new List<IComponent>();
+            this.ComponentSearcher = componentSearcher;
         }        
 
         public void Render()
@@ -34,8 +37,9 @@ namespace MiniEngine.UI
 
                 var entities = this.EntityManager.Creator.GetAllEntities();
                 
-                var listBoxItem = this.IndexOfEntity(this.State.SelectedEntity, entities);                
-                if (ImGui.ListBox(string.Empty, ref listBoxItem, entities.Select(x => $"{x} ({this.ComponentCount(x)} components)").ToArray(), entities.Count, 20))
+                var listBoxItem = this.IndexOfEntity(this.State.SelectedEntity, entities);      
+                
+                if (ImGui.ListBox(string.Empty, ref listBoxItem, entities.Select(x => $"{x} ({this.GetComponentCount(x)})").ToArray(), entities.Count, 20))
                 {
                     if (listBoxItem != -1)
                     {
@@ -48,15 +52,7 @@ namespace MiniEngine.UI
                 ImGui.TextColored(new Vector4(0.5f, 0.5f, 0.5f, 1.0f), $"Entities: {entities.Count}");
                 ImGui.EndMenu();
             }
-        }
-
-        private int ComponentCount(Entity entity)
-        {
-            this.Components.Clear();
-            this.EntityManager.Linker.GetComponents(entity, this.Components);
-
-            return this.Components.Count;
-        }
+        }       
 
         private int IndexOfEntity(Entity entity, IReadOnlyList<Entity> enties)
         {
@@ -69,6 +65,14 @@ namespace MiniEngine.UI
             }
 
             return -1;
+        }       
+        
+
+        private int GetComponentCount(Entity entity)
+        {
+            this.ComponentList.Clear();
+            this.ComponentSearcher.GetComponents(entity, this.ComponentList);
+            return this.ComponentList.Count;
         }
     }
 }

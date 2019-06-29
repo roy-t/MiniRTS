@@ -1,8 +1,9 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using MiniEngine.Pipeline.Lights.Components;
 using MiniEngine.Pipeline.Lights.Factories;
 using MiniEngine.Systems;
-using System.Collections.Generic;
+using MiniEngine.Systems.Containers;
 
 namespace MiniEngine.Controllers
 {
@@ -10,13 +11,28 @@ namespace MiniEngine.Controllers
     {
         private readonly EntityManager EntityManager;
         private readonly LightsFactory LightsFactory;
+        private readonly IComponentContainer<PointLight> PointLightContainer;
+        private readonly IComponentContainer<Sunlight> SunlightContainer;
+        private readonly IComponentContainer<DirectionalLight> DirectionalLightContainer;
+        private readonly IComponentContainer<ShadowCastingLight> ShadowCastingLightContainer;
+        private readonly IComponentContainer<AmbientLight> AmbientLightContainer;
 
         private readonly List<Entity> TemporaryEntities;
 
-        public LightsController(EntityManager entityManager, LightsFactory lightsFactory)
+        public LightsController(EntityManager entityManager, LightsFactory lightsFactory,
+            IComponentContainer<PointLight> pointLightContainer,
+            IComponentContainer<Sunlight> sunlightContainer,
+            IComponentContainer<DirectionalLight> directionalLightContainer,
+            IComponentContainer<ShadowCastingLight> shadowCastingLightContainer,
+            IComponentContainer<AmbientLight> ambientLightContainer)
         {
             this.EntityManager = entityManager;
             this.LightsFactory = lightsFactory;
+            this.PointLightContainer = pointLightContainer;
+            this.SunlightContainer = sunlightContainer;
+            this.DirectionalLightContainer = directionalLightContainer;
+            this.ShadowCastingLightContainer = shadowCastingLightContainer;
+            this.AmbientLightContainer = ambientLightContainer;
             this.TemporaryEntities = new List<Entity>();
         }
 
@@ -66,11 +82,11 @@ namespace MiniEngine.Controllers
 
         public void RemoveAllLights()
         {
-            this.EntityManager.Linker.RemoveComponents<PointLight>();
-            this.EntityManager.Linker.RemoveComponents<Sunlight>();
-            this.EntityManager.Linker.RemoveComponents<DirectionalLight>();
-            this.EntityManager.Linker.RemoveComponents<ShadowCastingLight>();
-            this.EntityManager.Linker.RemoveComponents<AmbientLight>();
+            this.PointLightContainer.Clear();
+            this.SunlightContainer.Clear();
+            this.DirectionalLightContainer.Clear();
+            this.ShadowCastingLightContainer.Clear();
+            this.AmbientLightContainer.Clear();
 
             this.RemoveCreatedLights();
         }

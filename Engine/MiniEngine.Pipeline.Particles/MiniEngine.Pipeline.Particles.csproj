@@ -55,6 +55,7 @@
     <Compile Include="Components\AEmitter.cs" />
     <Compile Include="Components\Particle.cs" />
     <Compile Include="Components\ParticlePose.cs" />
+    <Compile Include="DynamicTexture.cs" />
     <Compile Include="Extensions\ClearStageExtensions.cs" />
     <Compile Include="Extensions\RenderAdditiveParticlesStageExtensions.cs" />
     <Compile Include="Extensions\RenderTransparentParticlesStageExtensions.cs" />

@@ -12,13 +12,8 @@ namespace MiniEngine.Pipeline.Projectors.Factories
 {
     public sealed class DynamicTextureFactory : AComponentFactory<DynamicTexture>
     {
-        private readonly IComponentContainer<DynamicTexture> Container;
-
-        public DynamicTextureFactory(GraphicsDevice device, EntityLinker linker, IComponentContainer<DynamicTexture> container)
-            : base(device, linker)
-        {
-            this.Container = container;
-        }
+        public DynamicTextureFactory(GraphicsDevice device, IComponentContainer<DynamicTexture> container)
+            : base(device, container) { }
 
         public DynamicTexture Construct(Entity entity, Vector3 position, Vector3 lookAt, int width, int height, string label, PassType type = PassType.Opaque)
         {
@@ -32,7 +27,6 @@ namespace MiniEngine.Pipeline.Projectors.Factories
             var dynamicTexture = new DynamicTexture(entity, pipeline, viewPoint, gBuffer, pass, label);
 
             this.Container.Add(dynamicTexture);
-            this.Linker.AddComponent(entity, dynamicTexture);
 
             return dynamicTexture;
         }

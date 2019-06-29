@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Effects;
 using MiniEngine.Effects.DeviceStates;
@@ -8,6 +7,7 @@ using MiniEngine.Pipeline.Shadows.Systems;
 using MiniEngine.Primitives;
 using MiniEngine.Primitives.Cameras;
 using MiniEngine.Systems;
+using MiniEngine.Systems.Containers;
 
 namespace MiniEngine.Pipeline.Lights.Systems
 {
@@ -17,33 +17,27 @@ namespace MiniEngine.Pipeline.Lights.Systems
 
         private readonly BoundsDrawer3D FrustumDrawer;
 
-        private readonly List<ShadowCastingLight> Lights;
+        private readonly IComponentContainer<ShadowCastingLight> Lights;
         private readonly ShadowCastingLightEffect Effect;
 
-        private readonly ShadowMapSystem ShadowMapSystem;
-        private readonly EntityLinker EntityLinker;
+        private readonly ShadowMapSystem ShadowMapSystem;        
 
         public ShadowCastingLightSystem(
             GraphicsDevice device,
-            EntityLinker entityLinker,
+            IComponentContainer<ShadowCastingLight> lights,
             ShadowCastingLightEffect effect,
             ShadowMapSystem shadowMapSystem)
         {
             this.Device = device;
             this.Effect = effect;
-            this.EntityLinker = entityLinker;
+            this.Lights = lights;
             this.ShadowMapSystem = shadowMapSystem;
 
             this.FrustumDrawer = new BoundsDrawer3D(device);
-
-            this.Lights = new List<ShadowCastingLight>();
         }
 
         public void RenderLights(PerspectiveCamera perspectiveCamera, GBuffer gBuffer)
         {
-            this.Lights.Clear();
-            this.EntityLinker.GetComponents(this.Lights);
-
             this.Device.ShadowCastingLightState();
 
             for (var i = 0; i < this.Lights.Count; i++)

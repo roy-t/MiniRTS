@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Systems.Components;
+using MiniEngine.Systems.Containers;
 
 namespace MiniEngine.Systems.Factories
 {
@@ -7,15 +8,14 @@ namespace MiniEngine.Systems.Factories
         where T : IComponent
     {
         protected readonly GraphicsDevice Device;
-        protected readonly EntityLinker Linker;
+        protected readonly IComponentContainer<T> Container;
 
-        protected AComponentFactory(GraphicsDevice device, EntityLinker linker)
+        protected AComponentFactory(GraphicsDevice device, IComponentContainer<T> container)
         {
             this.Device = device;
-            this.Linker = linker;
+            this.Container = container;
         }
 
-        public virtual void Deconstruct(Entity entity)
-            => this.Linker.RemoveComponents<T>(entity);
+        public virtual void Deconstruct(Entity entity) => this.Container.RemoveAllOwnedBy(entity);
     }
 }

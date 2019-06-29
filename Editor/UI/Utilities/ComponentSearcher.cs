@@ -30,5 +30,20 @@ namespace MiniEngine.UI.Utilities
                 }
             }
         }
+
+        public IComponentContainer GetContainer(IComponent component)
+        {
+            for(var i = 0; i < this.Containers.Count; i++)
+            {
+                var container = this.Containers[i];
+                
+                if(container.GetComponentType() == component.GetType())
+                {
+                    return container;
+                }
+            }
+
+            throw new KeyNotFoundException($"Could not find container for type: {component.GetType().Name}");
+        }
     }
 }

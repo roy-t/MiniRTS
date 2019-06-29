@@ -5,30 +5,26 @@ using MiniEngine.Pipeline.Models.Components;
 using MiniEngine.Primitives.Bounds;
 using MiniEngine.Primitives.Cameras;
 using MiniEngine.Systems;
+using MiniEngine.Systems.Containers;
 
 namespace MiniEngine.Pipeline.Models.Systems
 {
     public sealed class ModelSystem : ISystem
     {
-        private readonly List<OpaqueModel> OpaqueModels;
-        private readonly List<TransparentModel> TransparentModels;
-        private readonly EntityLinker Linker;
+        private readonly IComponentContainer<OpaqueModel> OpaqueModels;
+        private readonly IComponentContainer<TransparentModel> TransparentModels;
+        private readonly List<OpaqueModel> OpaqueModelBatchList;
 
-        public ModelSystem(EntityLinker linker)
+        public ModelSystem(IComponentContainer<OpaqueModel> opaqueModels, IComponentContainer<TransparentModel> transparentModels)
         {
-            this.OpaqueModels = new List<OpaqueModel>();
-            this.TransparentModels = new List<TransparentModel>();
-            this.Linker = linker;
+            this.OpaqueModels = opaqueModels;
+            this.TransparentModels = transparentModels;
+
+            this.OpaqueModelBatchList = new List<OpaqueModel>();
         }
 
         public ModelBatchList ComputeBatches(IViewPoint viewPoint)
         {
-            this.TransparentModels.Clear();
-            this.Linker.GetComponents(this.TransparentModels);
-
-            this.OpaqueModels.Clear();
-            this.Linker.GetComponents(this.OpaqueModels);
-
             var transparentBatches = new List<ModelRenderBatch>(this.TransparentModels.Count);
 
             var transparentModels = SortBackToFront(this.TransparentModels, viewPoint);
@@ -38,10 +34,16 @@ namespace MiniEngine.Pipeline.Models.Systems
                 transparentBatches.Add(new ModelRenderBatch(batches[i], viewPoint));
             }
 
-            return new ModelBatchList(new ModelRenderBatch(this.OpaqueModels, viewPoint), transparentBatches);
+            this.OpaqueModelBatchList.Clear();
+            for(var i = 0; i < this.OpaqueModels.Count; i++)
+            {
+                this.OpaqueModelBatchList.Add(this.OpaqueModels[i]);
+            }
+
+            return new ModelBatchList(new ModelRenderBatch(this.OpaqueModelBatchList, viewPoint), transparentBatches);
         }
 
-        private static List<AModel> SortBackToFront(List<TransparentModel> models, IViewPoint viewPoint)
+        private static List<AModel> SortBackToFront(IComponentContainer<TransparentModel> models, IViewPoint viewPoint)
         {
             var modeList = new List<AModel>();
             var distanceList = new List<float>();

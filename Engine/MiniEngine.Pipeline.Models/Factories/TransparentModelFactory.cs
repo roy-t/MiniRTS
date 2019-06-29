@@ -2,19 +2,20 @@
 using MiniEngine.Pipeline.Models.Components;
 using MiniEngine.Primitives;
 using MiniEngine.Systems;
+using MiniEngine.Systems.Containers;
 using MiniEngine.Systems.Factories;
 
 namespace MiniEngine.Pipeline.Models.Factories
 {
     public sealed class TransparentModelFactory : AComponentFactory<TransparentModel>
     {
-        public TransparentModelFactory(GraphicsDevice device, EntityLinker linker)
-            : base(device, linker) { }
+        public TransparentModelFactory(GraphicsDevice device, IComponentContainer<TransparentModel> container)
+            : base(device, container) { }
 
         public void Construct(Entity entity, Model model, Pose pose)
         {
             var transparentModel = new TransparentModel(entity, model, pose);
-            this.Linker.AddComponent(entity, transparentModel);
+            this.Container.Add(transparentModel);
         }
     }
 }

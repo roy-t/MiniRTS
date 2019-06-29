@@ -4,6 +4,7 @@ using MiniEngine.Pipeline.Lights.Components;
 using MiniEngine.Pipeline.Shadows.Factories;
 using MiniEngine.Primitives.Cameras;
 using MiniEngine.Systems;
+using MiniEngine.Systems.Containers;
 using MiniEngine.Systems.Factories;
 
 namespace MiniEngine.Pipeline.Lights.Factories
@@ -15,8 +16,8 @@ namespace MiniEngine.Pipeline.Lights.Factories
 
         private readonly ShadowMapFactory ShadowMapFactory;
 
-        public ShadowCastingLightFactory(GraphicsDevice device, EntityLinker linker, ShadowMapFactory shadowMapFactory)
-            : base(device, linker)
+        public ShadowCastingLightFactory(GraphicsDevice device, IComponentContainer<ShadowCastingLight> container, ShadowMapFactory shadowMapFactory)
+            : base(device, container)
         {
             this.ShadowMapFactory = shadowMapFactory;
         }
@@ -28,7 +29,7 @@ namespace MiniEngine.Pipeline.Lights.Factories
 
             var shadowMap = this.ShadowMapFactory.Construct(entity, viewPoint, resolution);
             var light = new ShadowCastingLight(entity, viewPoint, shadowMap, color);
-            this.Linker.AddComponent(entity, light);
+            this.Container.Add(light);
 
             return light;
         }

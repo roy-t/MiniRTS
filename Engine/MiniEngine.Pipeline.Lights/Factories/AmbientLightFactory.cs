@@ -2,19 +2,20 @@
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Pipeline.Lights.Components;
 using MiniEngine.Systems;
+using MiniEngine.Systems.Containers;
 using MiniEngine.Systems.Factories;
 
 namespace MiniEngine.Pipeline.Lights.Factories
 {
     public sealed class AmbientLightFactory : AComponentFactory<AmbientLight>
     {
-        public AmbientLightFactory(GraphicsDevice device, EntityLinker linker)
-            : base(device, linker) { }
+        public AmbientLightFactory(GraphicsDevice device, IComponentContainer<AmbientLight> container)
+            : base(device, container) { }
 
         public AmbientLight Construct(Entity entity, Color color)
         {
             var light = new AmbientLight(entity, color);
-            this.Linker.AddComponent(entity, light);
+            this.Container.Add(light);
 
             return light;
         }

@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Pipeline.Lights.Components;
 using MiniEngine.Pipeline.Shadows.Factories;
 using MiniEngine.Systems;
+using MiniEngine.Systems.Containers;
 using MiniEngine.Systems.Factories;
 
 namespace MiniEngine.Pipeline.Lights.Factories
@@ -14,8 +15,8 @@ namespace MiniEngine.Pipeline.Lights.Factories
 
         private readonly CascadedShadowMapFactory CascadedShadowMapFactory;
 
-        public SunlightFactory(GraphicsDevice device, EntityLinker linker, CascadedShadowMapFactory cascadedShadowMapFactory)
-            : base(device, linker)
+        public SunlightFactory(GraphicsDevice device, IComponentContainer<Sunlight> container, CascadedShadowMapFactory cascadedShadowMapFactory)
+            : base(device, container)
         {
             this.CascadedShadowMapFactory = cascadedShadowMapFactory;
         }
@@ -25,7 +26,7 @@ namespace MiniEngine.Pipeline.Lights.Factories
             var shadowMap = this.CascadedShadowMapFactory.Construct(entity, position, lookAt, cascades, resolution);
 
             var light = new Sunlight(entity, shadowMap, color);
-            this.Linker.AddComponent(entity, light);
+            this.Container.Add(light);
 
             return light;
         }

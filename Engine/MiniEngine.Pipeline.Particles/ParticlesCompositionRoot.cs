@@ -1,6 +1,8 @@
 ﻿using LightInject;
+using MiniEngine.Pipeline.Particles.Components;
 using MiniEngine.Pipeline.Particles.Factories;
 using MiniEngine.Pipeline.Particles.Systems;
+using MiniEngine.Systems.Containers;
 
 namespace MiniEngine.Pipeline.Particles
 {
@@ -8,6 +10,9 @@ namespace MiniEngine.Pipeline.Particles
     {
         public void Compose(IServiceRegistry serviceRegistry)
         {
+            serviceRegistry.Register<IComponentContainer<AdditiveEmitter>, ComponentList<AdditiveEmitter>>();
+            serviceRegistry.Register<IComponentContainer<AveragedEmitter>, ComponentList<AveragedEmitter>>();
+
             serviceRegistry.Register<AdditiveEmitterFactory>();
             serviceRegistry.Register<AveragedEmitterFactory>();
 

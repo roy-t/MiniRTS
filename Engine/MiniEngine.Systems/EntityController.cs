@@ -6,14 +6,12 @@ namespace MiniEngine.Systems
     public sealed class EntityController
     {
         private readonly EntityCreator Creator;
-        private readonly EntityLinker EntityLinker;
         private readonly IReadOnlyList<ISystem> Systems;
         private readonly IReadOnlyList<IComponentFactory> Factories;
 
-        public EntityController(EntityCreator creator, EntityLinker entityLinker, IEnumerable<ISystem> systems, IEnumerable<IComponentFactory> factories)
+        public EntityController(EntityCreator creator, IEnumerable<ISystem> systems, IEnumerable<IComponentFactory> factories)
         {
             this.Creator = creator;
-            this.EntityLinker = entityLinker;
             this.Systems = new List<ISystem>(systems).AsReadOnly();
             this.Factories = new List<IComponentFactory>(factories).AsReadOnly();
         }

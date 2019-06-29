@@ -1,12 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Pipeline.Shadows.Components;
-using MiniEngine.Pipeline.Shadows.Factories;
 using MiniEngine.Primitives;
 using MiniEngine.Primitives.Cameras;
 using MiniEngine.Systems;
+using MiniEngine.Systems.Containers;
 using MiniEngine.Units;
-using System.Collections.Generic;
 
 namespace MiniEngine.Pipeline.Shadows.Systems
 {
@@ -15,26 +14,19 @@ namespace MiniEngine.Pipeline.Shadows.Systems
         private static readonly Matrix TexScaleTransform = Matrix.CreateScale(0.5f, -0.5f, 1.0f) * Matrix.CreateTranslation(0.5f, 0.5f, 0.0f);
 
         private readonly GraphicsDevice Device;
-        private readonly EntityLinker Linker;
-        private readonly CascadedShadowMapFactory ComponentFactory;
-        private readonly List<CascadedShadowMap> ShadowMaps;
+        private readonly IComponentContainer<CascadedShadowMap> ShadowMaps;
         private readonly Frustum Frustum;
+        
 
-        public CascadedShadowMapSystem(GraphicsDevice device, EntityLinker linker, CascadedShadowMapFactory componentFactory)
+        public CascadedShadowMapSystem(GraphicsDevice device, IComponentContainer<CascadedShadowMap> shadowMaps)
         {
             this.Device = device;
-            this.Linker = linker;
-            this.ComponentFactory = componentFactory;
-
-            this.ShadowMaps = new List<CascadedShadowMap>();
+            this.ShadowMaps = shadowMaps; 
             this.Frustum = new Frustum();
         }
 
         public void Update(PerspectiveCamera perspectiveCamera, Seconds elapsed)
         {
-            this.ShadowMaps.Clear();
-            this.Linker.GetComponents(this.ShadowMaps);
-
             for (var i = 0; i < this.ShadowMaps.Count; i++)
             {
                 var shadowMapCascade = this.ShadowMaps[i];

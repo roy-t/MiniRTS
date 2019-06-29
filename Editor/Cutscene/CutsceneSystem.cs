@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using MiniEngine.Primitives.Cameras;
 using MiniEngine.Systems;
+using MiniEngine.Systems.Containers;
 using MiniEngine.Units;
 
 namespace MiniEngine.CutScene
@@ -10,8 +10,7 @@ namespace MiniEngine.CutScene
     // TODO: move to own project
     public sealed class CutsceneSystem : IUpdatableSystem
     {        
-        private readonly List<Waypoint> Waypoints;
-        private readonly EntityLinker Linker;
+        private readonly IComponentContainer<Waypoint> Waypoints;
         private readonly SpringController CameraSpring;
         private readonly SpringController LookAtSpring;
 
@@ -22,10 +21,9 @@ namespace MiniEngine.CutScene
 
         private CutsceneState state;
 
-        public CutsceneSystem(EntityLinker linker)
+        public CutsceneSystem(IComponentContainer<Waypoint> waypoints)
         {
-            this.Waypoints = new List<Waypoint>();
-            this.Linker = linker;
+            this.Waypoints = waypoints;
             this.state = CutsceneState.Stopped;
             this.CameraSpring = new SpringController();
             this.LookAtSpring = new SpringController();
@@ -50,8 +48,6 @@ namespace MiniEngine.CutScene
 
             if (this.state != CutsceneState.Stopped)
             {
-                this.Waypoints.Clear();
-                this.Linker.GetComponents(this.Waypoints);
                 if(this.Waypoints.Count < 2)
                 {
                     return;

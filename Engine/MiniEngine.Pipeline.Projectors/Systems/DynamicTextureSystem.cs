@@ -10,22 +10,20 @@ namespace MiniEngine.Pipeline.Projectors.Systems
     public sealed class DynamicTextureSystem : IUpdatableSystem
     {
         private readonly GraphicsDevice Device;
-        private readonly EntityLinker EntityLinker;
 
-        private readonly IComponentContainer<DynamicTexture> Container;
+        private readonly IComponentContainer<DynamicTexture> DynamicTextures;
 
-        public DynamicTextureSystem(GraphicsDevice device, EntityLinker entityLinker, IComponentContainer<DynamicTexture> container)
+        public DynamicTextureSystem(GraphicsDevice device, IComponentContainer<DynamicTexture> dynamicTexture)
         {
             this.Device = device;
-            this.EntityLinker = entityLinker;
-            this.Container = container;
+            this.DynamicTextures = dynamicTexture;
         }
 
         public void Update(PerspectiveCamera perspectiveCamera, Seconds elapsed)
         {
-            for(var i = 0; i < this.Container.Count; i++)
+            for(var i = 0; i < this.DynamicTextures.Count; i++)
             {
-                var dynamicTexture = this.Container[i];
+                var dynamicTexture = this.DynamicTextures[i];
 
                 var input = dynamicTexture.Input;
                 input.Update(dynamicTexture.ViewPoint, elapsed, dynamicTexture.GBuffer, dynamicTexture.Pass);

@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Effects;
 using MiniEngine.Effects.DeviceStates;
@@ -6,8 +7,7 @@ using MiniEngine.Pipeline.Lights.Components;
 using MiniEngine.Primitives;
 using MiniEngine.Primitives.Cameras;
 using MiniEngine.Systems;
-using System;
-using System.Collections.Generic;
+using MiniEngine.Systems.Containers;
 
 namespace MiniEngine.Pipeline.Lights.Systems
 {
@@ -18,20 +18,18 @@ namespace MiniEngine.Pipeline.Lights.Systems
         private readonly GraphicsDevice Device;
         private readonly AmbientLightEffect Effect;
         private readonly BlurEffect BlurEffect;
-        private readonly EntityLinker EntityLinker;
         private readonly FullScreenTriangle FullScreenTriangle;
-        private readonly List<AmbientLight> Lights;
+        private readonly IComponentContainer<AmbientLight> Lights;
         private readonly Vector3[] Kernel;
         private readonly Texture2D NoiseMap;
 
-        public AmbientLightSystem(GraphicsDevice device, AmbientLightEffect effect, BlurEffect blurEffect, EntityLinker entityLinker)
+        public AmbientLightSystem(GraphicsDevice device, AmbientLightEffect effect, BlurEffect blurEffect, IComponentContainer<AmbientLight> lights)
         {
             this.Device = device;
             this.Effect = effect;
             this.BlurEffect = blurEffect;
-            this.EntityLinker = entityLinker;
+            this.Lights = lights;
             this.FullScreenTriangle = new FullScreenTriangle();
-            this.Lights = new List<AmbientLight>();
 
             this.Kernel = this.GenerateKernel();
             
@@ -108,9 +106,6 @@ namespace MiniEngine.Pipeline.Lights.Systems
 
         private Color ComputeAmbientLightZeroAlpha()
         {
-            this.Lights.Clear();
-            this.EntityLinker.GetComponents(this.Lights);
-
             var accumulate = Color.TransparentBlack;
             for (var i = 0; i < this.Lights.Count; i++)
             {

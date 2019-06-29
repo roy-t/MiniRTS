@@ -1,12 +1,14 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Effects;
 using MiniEngine.Effects.DeviceStates;
 using MiniEngine.Effects.Techniques;
+using MiniEngine.Pipeline.Debug.Components;
 using MiniEngine.Primitives;
 using MiniEngine.Primitives.Cameras;
-using MiniEngine.Systems;
 using MiniEngine.Systems.Annotations;
+using MiniEngine.Systems.Containers;
 
 namespace MiniEngine.Pipeline.Debug.Systems
 {
@@ -18,8 +20,8 @@ namespace MiniEngine.Pipeline.Debug.Systems
         private readonly BoundsDrawer2D Quad;
         private readonly BoundsDrawer3D Bounds;
 
-        public BoundarySystem(GraphicsDevice device, ColorEffect effect, EntityLinker entityLinker)
-            : base(entityLinker)
+        public BoundarySystem(GraphicsDevice device, ColorEffect effect, IComponentContainer<DebugInfo> debugInfos, IList<IComponentContainer> containers)
+            : base(debugInfos, containers)
         {
             this.Device = device;
             this.Effect = effect;

@@ -1,6 +1,5 @@
 ﻿using LightInject;
 using MiniEngine.Pipeline.Projectors.Components;
-using MiniEngine.Pipeline.Projectors.Containers;
 using MiniEngine.Pipeline.Projectors.Factories;
 using MiniEngine.Pipeline.Projectors.Systems;
 using MiniEngine.Systems.Containers;
@@ -11,8 +10,8 @@ namespace MiniEngine.Pipeline.Projectors
     {
         public void Compose(IServiceRegistry serviceRegistry)
         {
-            serviceRegistry.Register<IComponentContainer<DynamicTexture>, DynamicTextureContainer>();
-            serviceRegistry.Register<IComponentContainer<Projector>, ProjectorContainer>();
+            serviceRegistry.Register<IComponentContainer<DynamicTexture>, ComponentList<DynamicTexture>>();
+            serviceRegistry.Register<IComponentContainer<Projector>, ComponentList<Projector>>();
 
             serviceRegistry.Register<DynamicTextureFactory>();
             serviceRegistry.Register<ProjectorFactory>();

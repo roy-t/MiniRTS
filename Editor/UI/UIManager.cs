@@ -9,7 +9,6 @@ using MiniEngine.CutScene;
 using MiniEngine.Effects;
 using MiniEngine.Input;
 using MiniEngine.Pipeline.Debug.Factories;
-using MiniEngine.Pipeline.Lights.Factories;
 using MiniEngine.Pipeline.Projectors.Factories;
 using MiniEngine.Primitives.Cameras;
 using MiniEngine.Rendering;
@@ -66,7 +65,6 @@ namespace MiniEngine.UI
 
             var entityManager = injector.Resolve<EntityManager>();
 
-            var lightsFactory = injector.Resolve<LightsFactory>();
             var outlineFactory = injector.Resolve<DebugInfoFactory>();
             var projectorFactory = injector.Resolve<ProjectorFactory>();
             var waypointFactory = injector.Resolve<WaypointFactory>();
@@ -76,7 +74,7 @@ namespace MiniEngine.UI
             var texture = game.Content.Load<Texture2D>("Debug");
 
             this.CameraController = new CameraController(this.KeyboardInput, this.MouseInput, camera);
-            this.LightsController = new LightsController(entityManager, lightsFactory);
+            this.LightsController = injector.Resolve<LightsController>();
 
             this.UIState = UIState.Deserialize();
 
@@ -105,7 +103,7 @@ namespace MiniEngine.UI
             this.Gui.TextureContrast = this.UIState.DebugState.TextureContrast;
 
             this.FileMenu = new FileMenu(this.UIState, game, sceneSelector);
-            this.EntitiesMenu = new EntityMenu(this.UIState, entityManager);
+            this.EntitiesMenu = new EntityMenu(this.UIState, entityManager, componentSearcher);
             this.CreateMenu = new CreateMenu(this.UIState, entityManager, outlineFactory, waypointFactory, projectorFactory, texture, this.LightsController, camera);
             this.DebugMenu = new DebugMenu(this.Gui, this.UIState, renderTargetDescriber, cutsceneSystem, game);
             this.EntityWindow = new EntityWindow(this.Editors, this.UIState, entityManager, componentSearcher);

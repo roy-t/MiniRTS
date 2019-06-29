@@ -4,7 +4,7 @@ using MiniEngine.Effects.DeviceStates;
 using MiniEngine.Primitives;
 using MiniEngine.Primitives.Cameras;
 using MiniEngine.Systems;
-using System.Collections.Generic;
+using MiniEngine.Systems.Containers;
 using DirectionalLight = MiniEngine.Pipeline.Lights.Components.DirectionalLight;
 
 namespace MiniEngine.Pipeline.Lights.Systems
@@ -13,25 +13,21 @@ namespace MiniEngine.Pipeline.Lights.Systems
     {
         private readonly GraphicsDevice Device;
         private readonly DirectionalLightEffect Effect;
-        private readonly EntityLinker EntityLinker;
         private readonly FullScreenTriangle FullScreenTriangle;
 
-        private readonly List<DirectionalLight> Lights;
+        private readonly IComponentContainer<DirectionalLight> Lights;
 
-        public DirectionalLightSystem(GraphicsDevice device, DirectionalLightEffect effect, EntityLinker entityLinker)
+        public DirectionalLightSystem(GraphicsDevice device, DirectionalLightEffect effect, IComponentContainer<DirectionalLight> lights)
         {
             this.Device = device;
             this.Effect = effect;
-            this.EntityLinker = entityLinker;
+            this.Lights = lights;
             this.FullScreenTriangle = new FullScreenTriangle();
-            this.Lights = new List<DirectionalLight>();
+            
         }
 
         public void Render(PerspectiveCamera perspectiveCamera, GBuffer gBuffer)
         {
-            this.Lights.Clear();
-            this.EntityLinker.GetComponents(this.Lights);
-
             this.Device.LightState();
 
             for (var i = 0; i < this.Lights.Count; i++)

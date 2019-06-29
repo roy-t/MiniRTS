@@ -1,13 +1,14 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using MiniEngine.Pipeline.Particles.Components;
 using MiniEngine.Primitives.Cameras;
-using System.Collections.Generic;
+using MiniEngine.Systems.Containers;
 
 namespace MiniEngine.Pipeline.Particles.Systems
 {
     public static class ParticleHelper
     {        
-        public static void GatherParticles<T>(List<T> emitters, IViewPoint viewPoint, List<ParticlePose> particlesOut)
+        public static void GatherParticles<T>(IComponentContainer<T> emitters, IViewPoint viewPoint, List<ParticlePose> particlesOut)
             where T : AEmitter
         {
             for (var iEmitter = 0; iEmitter < emitters.Count; iEmitter++)

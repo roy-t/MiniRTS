@@ -59,7 +59,8 @@ namespace MiniEngine.UI
 
                         if (ImGui.Button("Remove Component"))
                         {
-                            this.EntityManager.Linker.RemoveComponent(this.EntityState.SelectedEntity, component);
+                            var container = this.ComponentSearcher.GetContainer(component);
+                            container.Remove(component);
                         }
                         ImGui.TreePop();
                     }

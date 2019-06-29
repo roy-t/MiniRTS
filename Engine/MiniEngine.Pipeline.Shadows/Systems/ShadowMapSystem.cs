@@ -7,8 +7,8 @@ using MiniEngine.Pipeline.Particles.Systems;
 using MiniEngine.Pipeline.Shadows.Components;
 using MiniEngine.Primitives;
 using MiniEngine.Systems;
+using MiniEngine.Systems.Containers;
 using MiniEngine.Telemetry;
-using System.Collections.Generic;
 
 namespace MiniEngine.Pipeline.Shadows.Systems
 {
@@ -21,26 +21,23 @@ namespace MiniEngine.Pipeline.Shadows.Systems
         private const int DefaultResolution = 1024;
 
         private readonly GraphicsDevice Device;
-        private readonly EntityLinker EntityLinker;
         private readonly ModelSystem ModelSystem;
         private readonly AveragedParticleSystem ParticleSystem;
-        private readonly List<ShadowMap> ShadowMaps;
+        private readonly IComponentContainer<ShadowMap> ShadowMaps;
         private readonly IMeterRegistry MeterRegistry;
 
         public ShadowMapSystem(
             GraphicsDevice device,
-            EntityLinker entityLinker,
+            IComponentContainer<ShadowMap> shadowMaps,
             ModelSystem modelSystem,
             AveragedParticleSystem particleSystem,
             IMeterRegistry meterRegistry)
         {
             this.Device = device;
-            this.EntityLinker = entityLinker;
+            this.ShadowMaps = shadowMaps;
             this.ModelSystem = modelSystem;
             this.ParticleSystem = particleSystem;
             this.MeterRegistry = meterRegistry;
-
-            this.ShadowMaps = new List<ShadowMap>();
 
             this.MeterRegistry.CreateGauge(ShadowMapCounter);
             this.MeterRegistry.CreateGauge(ShadowMapTotal);
@@ -51,9 +48,6 @@ namespace MiniEngine.Pipeline.Shadows.Systems
         {
             this.MeterRegistry.SetGauge(ShadowMapCounter, this.ShadowMaps.Count);
             this.MeterRegistry.StartGauge(ShadowMapTotal);
-
-            this.ShadowMaps.Clear();
-            this.EntityLinker.GetComponents(this.ShadowMaps);
 
             for (var iMap = 0; iMap < this.ShadowMaps.Count; iMap++)
             {
@@ -72,8 +66,6 @@ namespace MiniEngine.Pipeline.Shadows.Systems
 
                 }
                 this.MeterRegistry.StopGauge(ShadowMapStep, "opaque");
-
-
 
                 // TODO: Color maps need to be redone
                 // - If an occluder is between the light and the transparent object, it will also get the transparent object painted on it
@@ -99,22 +91,7 @@ namespace MiniEngine.Pipeline.Shadows.Systems
                         batch.Draw(RenderEffectTechniques.Textured);
                     }
                 }
-                this.MeterRegistry.StopGauge(ShadowMapStep, "transparent");
-
-                // TODO: this will not clear the diffuse target so it will bug
-                //this.MeterRegistry.StartGauge(ShadowMapStep);
-                //{
-                //    // Read the depth buffer and render occluding particles
-                //    this.Device.SetRenderTargets(gBuffer.DiffuseTarget, gBuffer.ParticleTarget);
-                //    this.ParticleSystem.RenderWeights(shadowMap.ViewPoint);
-
-                //    this.Device.SetRenderTarget(shadowMap.ColorMap, shadowMap.Index);
-                //    this.ParticleSystem.RenderParticles(gBuffer.DiffuseTarget, gBuffer.ParticleTarget);
-                //}
-                //this.MeterRegistry.StopGauge(ShadowMapStep, "particles");
-
-                // TODO: if a particle is behind a stained glass window
-                // it will shadow as if its in front of it. 
+                this.MeterRegistry.StopGauge(ShadowMapStep, "transparent");                
             }
 
             this.MeterRegistry.StopGauge(ShadowMapTotal);

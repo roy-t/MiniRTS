@@ -2,6 +2,7 @@
 using MiniEngine.Pipeline.Shadows.Components;
 using MiniEngine.Primitives.Cameras;
 using MiniEngine.Systems;
+using MiniEngine.Systems.Containers;
 using MiniEngine.Systems.Factories;
 
 namespace MiniEngine.Pipeline.Shadows.Factories
@@ -10,8 +11,8 @@ namespace MiniEngine.Pipeline.Shadows.Factories
     {
         private const int DefaultResolution = 1024;
 
-        public ShadowMapFactory(GraphicsDevice device, EntityLinker linker)
-            : base(device, linker) { }
+        public ShadowMapFactory(GraphicsDevice device, IComponentContainer<ShadowMap> container)
+            : base(device, container) { }
 
         public ShadowMap Construct(Entity entity, IViewPoint viewPoint, int resolution = DefaultResolution)
         {
@@ -39,7 +40,7 @@ namespace MiniEngine.Pipeline.Shadows.Factories
 
 
             var shadowMap = new ShadowMap(entity, depthMap, colorMap, 0, viewPoint);
-            this.Linker.AddComponent(entity, shadowMap);
+            this.Container.Add(shadowMap);
 
             return shadowMap;
         }
@@ -47,7 +48,7 @@ namespace MiniEngine.Pipeline.Shadows.Factories
         internal ShadowMap Construct(Entity entity, RenderTarget2D depthMapArray, RenderTarget2D colorMapArray, int index, IViewPoint viewPoint)
         {
             var shadowMap = new ShadowMap(entity, depthMapArray, colorMapArray, index, viewPoint);
-            this.Linker.AddComponent(entity, shadowMap);
+            this.Container.Add(shadowMap);
 
             return shadowMap;
         }

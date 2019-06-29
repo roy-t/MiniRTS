@@ -16,15 +16,13 @@ namespace MiniEngine.Pipeline.Projectors.Systems
         private readonly GraphicsDevice Device;
         private readonly BoundsDrawer3D FrustumDrawer;
 
-        private readonly EntityLinker EntityLinker;
-        private readonly IComponentContainer<Projector> Container;
+        private readonly IComponentContainer<Projector> Projectors;
         private readonly ProjectorEffect Effect;
 
-        public ProjectorSystem(GraphicsDevice device, EntityLinker entityLinker, IComponentContainer<Projector> container, ProjectorEffect effect)
+        public ProjectorSystem(GraphicsDevice device, IComponentContainer<Projector> projectors, ProjectorEffect effect)
         {
-            this.Device = device;
-            this.EntityLinker = entityLinker;
-            this.Container = container;
+            this.Device = device;            
+            this.Projectors = projectors;
             this.Effect = effect;
 
             this.FrustumDrawer = new BoundsDrawer3D(device);
@@ -37,9 +35,9 @@ namespace MiniEngine.Pipeline.Projectors.Systems
         {
             this.Device.PostProcessState();
 
-            for (var i = 0; i < this.Container.Count; i++)
+            for (var i = 0; i < this.Projectors.Count; i++)
             {
-                var projector = this.Container[i];
+                var projector = this.Projectors[i];
                 if (projector.ViewPoint.Frustum.Intersects(perspectiveCamera.Frustum))
                 {
                     //G-Buffer input

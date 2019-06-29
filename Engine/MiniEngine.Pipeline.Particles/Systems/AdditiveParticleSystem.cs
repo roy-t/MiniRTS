@@ -6,6 +6,7 @@ using MiniEngine.Pipeline.Particles.Components;
 using MiniEngine.Primitives;
 using MiniEngine.Primitives.Cameras;
 using MiniEngine.Systems;
+using MiniEngine.Systems.Containers;
 using MiniEngine.Units;
 
 namespace MiniEngine.Pipeline.Particles.Systems
@@ -15,8 +16,7 @@ namespace MiniEngine.Pipeline.Particles.Systems
         private readonly GraphicsDevice Device;
         private readonly AdditiveParticlesEffect AdditiveParticlesEffect;
 
-        private readonly EntityLinker Linker;
-        private readonly List<AdditiveEmitter> Emitters;
+        private readonly IComponentContainer<AdditiveEmitter> Emitters;
         private readonly List<ParticlePose> Particles;
 
         private readonly UnitQuad Quad;
@@ -24,25 +24,20 @@ namespace MiniEngine.Pipeline.Particles.Systems
         public AdditiveParticleSystem(
             GraphicsDevice device,
             AdditiveParticlesEffect additiveParticlesEffect,
-            EntityLinker linker)
+            IComponentContainer<AdditiveEmitter> emitters)
         {
             this.Device = device;
 
             this.AdditiveParticlesEffect = additiveParticlesEffect;
-
-            this.Linker = linker;
-            this.Emitters = new List<AdditiveEmitter>();
+            this.Emitters = emitters;
 
             this.Particles = new List<ParticlePose>();
-
             this.Quad = new UnitQuad(device);
         }
 
         public void RenderAdditiveParticles(PerspectiveCamera camera, GBuffer gBuffer)
         {
             this.Particles.Clear();
-            this.Emitters.Clear();
-            this.Linker.GetComponents(this.Emitters);
 
             ParticleHelper.GatherParticles(this.Emitters, camera, this.Particles);
 
@@ -69,9 +64,6 @@ namespace MiniEngine.Pipeline.Particles.Systems
 
         public void Update(PerspectiveCamera camera, Seconds elapsed)
         {
-            this.Emitters.Clear();
-            this.Linker.GetComponents(this.Emitters);
-
             for (var i = 0; i < this.Emitters.Count; i++)
             {
                 this.Emitters[i].Update(elapsed);

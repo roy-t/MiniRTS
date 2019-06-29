@@ -1,12 +1,13 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using System.Collections.Generic;
+using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Effects;
 using MiniEngine.Effects.DeviceStates;
 using MiniEngine.Pipeline.Particles.Components;
 using MiniEngine.Primitives;
 using MiniEngine.Primitives.Cameras;
 using MiniEngine.Systems;
+using MiniEngine.Systems.Containers;
 using MiniEngine.Units;
-using System.Collections.Generic;
 
 namespace MiniEngine.Pipeline.Particles.Systems
 {
@@ -16,8 +17,7 @@ namespace MiniEngine.Pipeline.Particles.Systems
         private readonly WeightedParticlesEffect WeightedParticlesEffect;
         private readonly AverageParticlesEffect AverageParticlesEffect;
 
-        private readonly EntityLinker Linker;
-        private readonly List<AveragedEmitter> Emitters;
+        private readonly IComponentContainer<AveragedEmitter> Emitters;
         private readonly List<ParticlePose> Particles;
 
         private readonly FullScreenTriangle FullScreenTriangle;
@@ -27,16 +27,12 @@ namespace MiniEngine.Pipeline.Particles.Systems
             GraphicsDevice device,
             WeightedParticlesEffect weightedParticlesEffect,
             AverageParticlesEffect averageParticlesEffect,
-            EntityLinker linker)
+            IComponentContainer<AveragedEmitter> emitters)
         {
             this.Device = device;
-
             this.WeightedParticlesEffect = weightedParticlesEffect;
             this.AverageParticlesEffect = averageParticlesEffect;
-
-            this.Linker = linker;
-
-            this.Emitters = new List<AveragedEmitter>();
+            this.Emitters = emitters;
 
             this.Particles = new List<ParticlePose>();
 
@@ -47,8 +43,6 @@ namespace MiniEngine.Pipeline.Particles.Systems
         public void RenderParticleWeights(PerspectiveCamera camera, GBuffer gBuffer)
         {
             this.Particles.Clear();
-            this.Emitters.Clear();
-            this.Linker.GetComponents(this.Emitters);
 
             ParticleHelper.GatherParticles(this.Emitters, camera, this.Particles);
 
@@ -87,9 +81,6 @@ namespace MiniEngine.Pipeline.Particles.Systems
       
         public void Update(PerspectiveCamera camera, Seconds elapsed)
         {
-            this.Emitters.Clear();
-            this.Linker.GetComponents(this.Emitters);
-
             for (var i = 0; i < this.Emitters.Count; i++)
             {
                 this.Emitters[i].Update(elapsed);
