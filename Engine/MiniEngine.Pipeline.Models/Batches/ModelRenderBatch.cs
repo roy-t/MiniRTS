@@ -1,10 +1,10 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using MiniEngine.Effects;
 using MiniEngine.Effects.Techniques;
+using MiniEngine.Effects.Wrappers;
 using MiniEngine.Pipeline.Models.Components;
 using MiniEngine.Primitives.Cameras;
-using System.Collections.Generic;
 
 namespace MiniEngine.Pipeline.Models.Batches
 {

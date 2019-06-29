@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Effects;
 using MiniEngine.Effects.DeviceStates;
+using MiniEngine.Effects.Wrappers;
 using MiniEngine.Pipeline.Particles.Components;
 using MiniEngine.Primitives;
 using MiniEngine.Primitives.Cameras;
@@ -23,12 +24,12 @@ namespace MiniEngine.Pipeline.Particles.Systems
 
         public AdditiveParticleSystem(
             GraphicsDevice device,
-            AdditiveParticlesEffect additiveParticlesEffect,
+            EffectFactory effectFactory,
             IComponentContainer<AdditiveEmitter> emitters)
         {
             this.Device = device;
 
-            this.AdditiveParticlesEffect = additiveParticlesEffect;
+            this.AdditiveParticlesEffect = effectFactory.Construct<AdditiveParticlesEffect>();
             this.Emitters = emitters;
 
             this.Particles = new List<ParticlePose>();

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Effects;
 using MiniEngine.Effects.DeviceStates;
+using MiniEngine.Effects.Wrappers;
 using MiniEngine.Primitives;
 using MiniEngine.Primitives.Cameras;
 using MiniEngine.Systems;
@@ -17,10 +18,10 @@ namespace MiniEngine.Pipeline.Lights.Systems
 
         private readonly IComponentContainer<DirectionalLight> Lights;
 
-        public DirectionalLightSystem(GraphicsDevice device, DirectionalLightEffect effect, IComponentContainer<DirectionalLight> lights)
+        public DirectionalLightSystem(GraphicsDevice device, EffectFactory effectFactory, IComponentContainer<DirectionalLight> lights)
         {
             this.Device = device;
-            this.Effect = effect;
+            this.Effect = effectFactory.Construct<DirectionalLightEffect>();
             this.Lights = lights;
             this.FullScreenTriangle = new FullScreenTriangle();
             

@@ -33,26 +33,18 @@ namespace MiniEngine.Configuration
 
         public void Compose()
         {
-            // TODO: register factories so that composition roots do not need static members
             this.Container.RegisterInstance(this.Device);
             this.Container.RegisterInstance(this.Content);
 
-            EffectCompositionRoot.Content = this.Content;
             this.Container.RegisterFrom<EffectCompositionRoot>();
             this.Container.RegisterFrom<DebugCompositionRoot>();
-
-            LightsCompositionRoot.Content = this.Content;
             this.Container.RegisterFrom<LightsCompositionRoot>();
-
             this.Container.RegisterFrom<ModelsCompositionRoot>();
             this.Container.RegisterFrom<ParticlesCompositionRoot>();
             this.Container.RegisterFrom<ProjectorsCompositionRoot>();
             this.Container.RegisterFrom<ShadowsCompositionRoot>();
             this.Container.RegisterFrom<TelemetryCompositionRoot>();
             this.Container.RegisterFrom<SystemsCompositionRoot>();
-
-            EditorCompositionRoot.Content = this.Content;
-            EditorCompositionRoot.Device = this.Device;
             this.Container.RegisterFrom<EditorCompositionRoot>();
         }
 

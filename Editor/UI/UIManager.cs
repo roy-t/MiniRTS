@@ -53,7 +53,7 @@ namespace MiniEngine.UI
             this.Game = game;
             this.SpriteBatch = spriteBatch;
 
-            this.Gui = new ImGuiRenderer(game, injector.Resolve<UIEffect>());
+            this.Gui = new ImGuiRenderer(game, injector.Resolve<EffectFactory>());
             this.Gui.RebuildFontAtlas();
 
             this.Editors = new Editors(this.Gui);

@@ -50,30 +50,31 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AmbientLightEffect.cs" />
-    <Compile Include="AverageParticlesEffect.cs" />
+    <Compile Include="EffectFactory.cs" />
+    <Compile Include="Wrappers\AmbientLightEffect.cs" />
+    <Compile Include="Wrappers\AverageParticlesEffect.cs" />
     <Compile Include="EffectCompositionRoot.cs" />
     <Compile Include="Techniques\ColorEffectTechniques.cs" />
     <Compile Include="Techniques\TextureEffectTechniques.cs" />
-    <Compile Include="UIEffect.cs" />
-    <Compile Include="TextureEffect.cs" />
-    <Compile Include="CombineEffect.cs" />
-    <Compile Include="DirectionalLightEffect.cs" />
+    <Compile Include="Wrappers\UIEffect.cs" />
+    <Compile Include="Wrappers\TextureEffect.cs" />
+    <Compile Include="Wrappers\CombineEffect.cs" />
+    <Compile Include="Wrappers\DirectionalLightEffect.cs" />
     <Compile Include="EffectWrapper.cs" />
-    <Compile Include="BlurEffect.cs" />
-    <Compile Include="FxaaEffect.cs" />
+    <Compile Include="Wrappers\BlurEffect.cs" />
+    <Compile Include="Wrappers\FxaaEffect.cs" />
     <Compile Include="DeviceStates\GraphicsDeviceExtensions.cs" />
-    <Compile Include="PointLightEffect.cs" />
-    <Compile Include="ColorEffect.cs" />
-    <Compile Include="ProjectorEffect.cs" />
+    <Compile Include="Wrappers\PointLightEffect.cs" />
+    <Compile Include="Wrappers\ColorEffect.cs" />
+    <Compile Include="Wrappers\ProjectorEffect.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RenderEffect.cs" />
-    <Compile Include="ShadowCastingLightEffect.cs" />
-    <Compile Include="SunlightEffect.cs" />
+    <Compile Include="Wrappers\RenderEffect.cs" />
+    <Compile Include="Wrappers\ShadowCastingLightEffect.cs" />
+    <Compile Include="Wrappers\SunlightEffect.cs" />
     <Compile Include="Techniques\ProjectorEffectTechniques.cs" />
     <Compile Include="Techniques\RenderEffectTechniques.cs" />
-    <Compile Include="AdditiveParticlesEffect.cs" />
-    <Compile Include="WeightedParticlesEffect.cs" />
+    <Compile Include="Wrappers\AdditiveParticlesEffect.cs" />
+    <Compile Include="Wrappers\WeightedParticlesEffect.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="LightInject">

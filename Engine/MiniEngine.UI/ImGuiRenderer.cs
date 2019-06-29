@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MiniEngine.Effects;
+using MiniEngine.Effects.Wrappers;
 
 namespace MiniEngine.UI
 {
@@ -44,13 +45,13 @@ namespace MiniEngine.UI
 
         private readonly List<int> Keys = new List<int>();        
 
-        public ImGuiRenderer(Game game, UIEffect effect)
+        public ImGuiRenderer(Game game, EffectFactory effectFactory)
         {
             var context = ImGui.CreateContext();
             ImGui.SetCurrentContext(context);
 
             this.Game = game;
-            this.Effect = effect;
+            this.Effect = effectFactory.Construct<UIEffect>();
             this.GraphicsDevice = game.GraphicsDevice;
 
             this.LoadedTextures = new Dictionary<IntPtr, TextureReference>();

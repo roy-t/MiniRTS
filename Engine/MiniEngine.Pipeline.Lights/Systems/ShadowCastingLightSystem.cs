@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Effects;
 using MiniEngine.Effects.DeviceStates;
+using MiniEngine.Effects.Wrappers;
 using MiniEngine.Pipeline.Lights.Components;
 using MiniEngine.Pipeline.Shadows.Systems;
 using MiniEngine.Primitives;
@@ -25,11 +26,11 @@ namespace MiniEngine.Pipeline.Lights.Systems
         public ShadowCastingLightSystem(
             GraphicsDevice device,
             IComponentContainer<ShadowCastingLight> lights,
-            ShadowCastingLightEffect effect,
+            EffectFactory effectFactory,
             ShadowMapSystem shadowMapSystem)
         {
             this.Device = device;
-            this.Effect = effect;
+            this.Effect = effectFactory.Construct<ShadowCastingLightEffect>();
             this.Lights = lights;
             this.ShadowMapSystem = shadowMapSystem;
 

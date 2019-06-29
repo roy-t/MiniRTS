@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Effects;
 using MiniEngine.Effects.DeviceStates;
+using MiniEngine.Effects.Wrappers;
 using MiniEngine.Pipeline.Particles.Components;
 using MiniEngine.Primitives;
 using MiniEngine.Primitives.Cameras;
@@ -25,13 +26,12 @@ namespace MiniEngine.Pipeline.Particles.Systems
 
         public AveragedParticleSystem(
             GraphicsDevice device,
-            WeightedParticlesEffect weightedParticlesEffect,
-            AverageParticlesEffect averageParticlesEffect,
+            EffectFactory effectFactory,            
             IComponentContainer<AveragedEmitter> emitters)
         {
             this.Device = device;
-            this.WeightedParticlesEffect = weightedParticlesEffect;
-            this.AverageParticlesEffect = averageParticlesEffect;
+            this.WeightedParticlesEffect = effectFactory.Construct<WeightedParticlesEffect>();
+            this.AverageParticlesEffect = effectFactory.Construct<AverageParticlesEffect>();
             this.Emitters = emitters;
 
             this.Particles = new List<ParticlePose>();

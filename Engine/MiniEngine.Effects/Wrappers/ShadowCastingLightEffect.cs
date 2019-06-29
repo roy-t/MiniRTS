@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 
 
-namespace MiniEngine.Effects
+namespace MiniEngine.Effects.Wrappers
 {
     public sealed class ShadowCastingLightEffect : EffectWrapper
     {

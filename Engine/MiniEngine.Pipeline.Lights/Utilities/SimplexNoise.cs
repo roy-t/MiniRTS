@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MiniEngine.Pipeline.Lights
+namespace MiniEngine.Pipeline.Lights.Utilities
 {
     /// <summary>
     /// Implementation of the Perlin simplex noise, an improved Perlin noise algorithm.
@@ -55,7 +55,7 @@ namespace MiniEngine.Pipeline.Lights
         static SimplexNoise()
         {
             perm = new byte[permOriginal.Length];
-            Lights.SimplexNoise.permOriginal.CopyTo(perm, 0);
+            permOriginal.CopyTo(perm, 0);
         }
 
         public static int Seed
@@ -66,7 +66,7 @@ namespace MiniEngine.Pipeline.Lights
                 if (value == 0)
                 {
                     perm = new byte[permOriginal.Length];
-                    Lights.SimplexNoise.permOriginal.CopyTo(perm, 0);
+                    permOriginal.CopyTo(perm, 0);
                 }
                 else
                 {

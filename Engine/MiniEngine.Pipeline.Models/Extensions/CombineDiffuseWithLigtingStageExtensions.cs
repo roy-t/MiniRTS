@@ -1,4 +1,4 @@
-﻿using MiniEngine.Effects;
+﻿using MiniEngine.Effects.Wrappers;
 using MiniEngine.Pipeline.Models.Stages;
 
 namespace MiniEngine.Pipeline.Models.Extensions

@@ -1,6 +1,4 @@
 ﻿using LightInject;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Controllers;
 using MiniEngine.CutScene;
 using MiniEngine.Input;
@@ -14,8 +12,6 @@ namespace MiniEngine.Configuration
 {
     public sealed class EditorCompositionRoot : ICompositionRoot
     {
-        public static ContentManager Content;
-        public static GraphicsDevice Device;
 
         public void Compose(IServiceRegistry serviceRegistry)
         {
@@ -31,7 +27,7 @@ namespace MiniEngine.Configuration
             // UI
             serviceRegistry.Register<KeyboardInput>();
             serviceRegistry.Register<MouseInput>();
-            serviceRegistry.RegisterInstance(typeof(IconLibrary), new IconLibrary(Content, Device));
+            serviceRegistry.Register<IconLibrary>();
             serviceRegistry.Register<ComponentSearcher>();
 
             // Scenes

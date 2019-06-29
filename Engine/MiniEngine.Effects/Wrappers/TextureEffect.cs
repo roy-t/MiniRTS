@@ -3,19 +3,19 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Effects.Techniques;
 
-namespace MiniEngine.Effects
+namespace MiniEngine.Effects.Wrappers
 {
-    public sealed class ColorEffect : EffectWrapper
+    public sealed class TextureEffect : EffectWrapper
     {
-        public ColorEffect()
-        {
+        public TextureEffect()
+        {            
         }
 
-        public ColorEffect(Effect effect)
+        public TextureEffect(Effect effect)
         {
-            this.Wrap(effect);
+            this.Wrap(effect);            
         }
-
+        
         public Vector3 WorldPosition
         {
             set => this.effect.Parameters["WorldPosition"].SetValue(value);
@@ -46,9 +46,9 @@ namespace MiniEngine.Effects
             set => this.effect.Parameters["DepthMap"].SetValue(value);
         }
 
-        public Color Color
+        public Texture2D Texture
         {
-            set => this.effect.Parameters["Color"].SetValue(value.ToVector4());
+            set => this.effect.Parameters["Texture"].SetValue(value);
         }        
 
         public Matrix World
@@ -66,19 +66,19 @@ namespace MiniEngine.Effects
             set => this.effect.Parameters["Projection"].SetValue(value);
         }
 
-        public void Apply(ColorEffectTechniques technique)
+        public void Apply(TextureEffectTechniques technique)
         {
             switch (technique)
             {
-                case ColorEffectTechniques.Color:
-                    this.effect.CurrentTechnique = this.effect.Techniques["ColorEffect"];
+                case TextureEffectTechniques.Texture:
+                    this.effect.CurrentTechnique = this.effect.Techniques["TextureEffect"];
                     break;
 
-                case ColorEffectTechniques.ColorGeometryDepthTest:
-                    this.effect.CurrentTechnique = this.effect.Techniques["ColorGeometryDepthTestEffect"];
+                case TextureEffectTechniques.TextureGeometryDepthTest:
+                    this.effect.CurrentTechnique = this.effect.Techniques["TextureGeometryDepthTestEffect"];
                     break;
-                case ColorEffectTechniques.ColorPointDepthTest:
-                    this.effect.CurrentTechnique = this.effect.Techniques["ColorPointDepthTestEffect"];
+                case TextureEffectTechniques.TexturePointDepthTest:
+                    this.effect.CurrentTechnique = this.effect.Techniques["TexturePointDepthTestEffect"];
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(technique), technique, null);

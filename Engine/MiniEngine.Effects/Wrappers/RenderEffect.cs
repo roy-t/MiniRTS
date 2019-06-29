@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Effects.Techniques;
 
-namespace MiniEngine.Effects
+namespace MiniEngine.Effects.Wrappers
 {
     public sealed class RenderEffect : EffectWrapper
     {

@@ -27,7 +27,7 @@ namespace MiniEngine.Systems.Containers
         {
             for (var i = this.Components.Count - 1; i >= 0; i--)
             {
-                if(this.Components[i].Entity == entity)
+                if (this.Components[i].Entity == entity)
                 {
                     this.Components.RemoveAt(i);
                 }

@@ -3,7 +3,9 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Effects;
 using MiniEngine.Effects.DeviceStates;
+using MiniEngine.Effects.Wrappers;
 using MiniEngine.Pipeline.Lights.Components;
+using MiniEngine.Pipeline.Lights.Utilities;
 using MiniEngine.Primitives;
 using MiniEngine.Primitives.Cameras;
 using MiniEngine.Systems;
@@ -23,11 +25,11 @@ namespace MiniEngine.Pipeline.Lights.Systems
         private readonly Vector3[] Kernel;
         private readonly Texture2D NoiseMap;
 
-        public AmbientLightSystem(GraphicsDevice device, AmbientLightEffect effect, BlurEffect blurEffect, IComponentContainer<AmbientLight> lights)
+        public AmbientLightSystem(GraphicsDevice device, EffectFactory effectFactory, IComponentContainer<AmbientLight> lights)
         {
             this.Device = device;
-            this.Effect = effect;
-            this.BlurEffect = blurEffect;
+            this.Effect = effectFactory.Construct<AmbientLightEffect>();
+            this.BlurEffect = effectFactory.Construct<BlurEffect>();
             this.Lights = lights;
             this.FullScreenTriangle = new FullScreenTriangle();
 

@@ -9,6 +9,7 @@ namespace MiniEngine.Pipeline.Lights.Components
     {
         public PointLight(Entity entity, Vector3 position, Color color, float radius, float intensity)
         {
+            this.Entity = entity;
             this.Position = position;
             this.Color = color;
             this.Radius = radius;

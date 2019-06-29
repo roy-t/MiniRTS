@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Effects;
 using MiniEngine.Effects.DeviceStates;
+using MiniEngine.Effects.Wrappers;
 using MiniEngine.Pipeline.Lights.Components;
 using MiniEngine.Pipeline.Shadows.Factories;
 using MiniEngine.Primitives;
@@ -20,11 +21,11 @@ namespace MiniEngine.Pipeline.Lights.Systems
 
         private readonly IComponentContainer<Sunlight> Lights;
 
-        public SunlightSystem(GraphicsDevice device, SunlightEffect effect, IComponentContainer<Sunlight> Lights,
+        public SunlightSystem(GraphicsDevice device, EffectFactory effectFactory, IComponentContainer<Sunlight> Lights,
             CascadedShadowMapFactory cascadedShadowMapFactory)
         {
             this.Device = device;
-            this.Effect = effect;
+            this.Effect = effectFactory.Construct<SunlightEffect>();
             this.Lights = Lights;
 
             this.FullScreenTriangle = new FullScreenTriangle();

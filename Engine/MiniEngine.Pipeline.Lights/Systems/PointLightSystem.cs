@@ -2,7 +2,9 @@
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Effects;
 using MiniEngine.Effects.DeviceStates;
+using MiniEngine.Effects.Wrappers;
 using MiniEngine.Pipeline.Lights.Components;
+using MiniEngine.Pipeline.Lights.Utilities;
 using MiniEngine.Primitives;
 using MiniEngine.Primitives.Cameras;
 using MiniEngine.Systems;
@@ -18,11 +20,11 @@ namespace MiniEngine.Pipeline.Lights.Systems
         private readonly IComponentContainer<PointLight> Lights;
         private readonly Model Sphere;
 
-        public PointLightSystem(GraphicsDevice device, PointLightEffect effect, Model sphere, IComponentContainer<PointLight> lights)
+        public PointLightSystem(GraphicsDevice device, EffectFactory effectFactory, LightPrimitiveLoader lightPrimitiveLoader, IComponentContainer<PointLight> lights)
         {
             this.Device = device;
-            this.Effect = effect;
-            this.Sphere = sphere;
+            this.Effect = effectFactory.Construct<PointLightEffect>();
+            this.Sphere = lightPrimitiveLoader.UnitSphere();
             this.Lights = lights;
         }
 

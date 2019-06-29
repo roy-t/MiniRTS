@@ -48,7 +48,7 @@ namespace MiniEngine.Systems
         public void DestroyAllEntities()
         {
             var entities = this.GetAllEntities();
-            for (var i = 0; i < entities.Count; i++)
+            for (var i = entities.Count - 1; i >= 0; i--)
             {
                 this.DestroyEntity(entities[i]);
             }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Effects;
+using MiniEngine.Effects.Wrappers;
 using MiniEngine.Pipeline;
 using MiniEngine.Pipeline.Debug.Systems;
 using MiniEngine.Pipeline.Extensions;
@@ -43,7 +44,7 @@ namespace MiniEngine.Rendering
         private readonly IMeterRegistry MeterRegistry;
 
 
-        public PipelineBuilder(GraphicsDevice device, ShadowMapSystem shadowMapSystem, ModelSystem modelSystem, AveragedParticleSystem transparentParticleSystem, AdditiveParticleSystem additiveParticleSystem, ProjectorSystem projectorSystem, CombineEffect combineEffect, FxaaEffect fxaaEffect, AmbientLightSystem ambientLightSystem, DirectionalLightSystem directionalLightSystem, PointLightSystem pointLightSystem, CascadedShadowMapSystem cascadedShadowMapSystem, ShadowCastingLightSystem shadowCastingLightSystem, SunlightSystem sunlightSystem, BoundarySystem boundarySystem, IconSystem iconSystem)
+        public PipelineBuilder(GraphicsDevice device, ShadowMapSystem shadowMapSystem, ModelSystem modelSystem, AveragedParticleSystem transparentParticleSystem, AdditiveParticleSystem additiveParticleSystem, ProjectorSystem projectorSystem, EffectFactory effectFactory, AmbientLightSystem ambientLightSystem, DirectionalLightSystem directionalLightSystem, PointLightSystem pointLightSystem, CascadedShadowMapSystem cascadedShadowMapSystem, ShadowCastingLightSystem shadowCastingLightSystem, SunlightSystem sunlightSystem, BoundarySystem boundarySystem, IconSystem iconSystem)
         {
             this.Device = device;
             this.ShadowMapSystem           = shadowMapSystem;
@@ -51,8 +52,8 @@ namespace MiniEngine.Rendering
             this.TransparentParticleSystem = transparentParticleSystem;
             this.AdditiveParticleSystem    = additiveParticleSystem;
             this.ProjectorSystem           = projectorSystem;
-            this.CombineEffect             = combineEffect;
-            this.FxaaEffect                = fxaaEffect;
+            this.CombineEffect             = effectFactory.Construct<CombineEffect>();
+            this.FxaaEffect                = effectFactory.Construct<FxaaEffect>();
             this.AmbientLightSystem        = ambientLightSystem;
             this.DirectionalLightSystem    = directionalLightSystem;
             this.PointLightSystem          = pointLightSystem;

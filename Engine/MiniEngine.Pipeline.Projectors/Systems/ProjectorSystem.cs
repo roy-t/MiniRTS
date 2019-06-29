@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Effects;
 using MiniEngine.Effects.DeviceStates;
 using MiniEngine.Effects.Techniques;
+using MiniEngine.Effects.Wrappers;
 using MiniEngine.Pipeline.Projectors.Components;
 using MiniEngine.Primitives;
 using MiniEngine.Primitives.Cameras;
@@ -19,11 +20,11 @@ namespace MiniEngine.Pipeline.Projectors.Systems
         private readonly IComponentContainer<Projector> Projectors;
         private readonly ProjectorEffect Effect;
 
-        public ProjectorSystem(GraphicsDevice device, IComponentContainer<Projector> projectors, ProjectorEffect effect)
+        public ProjectorSystem(GraphicsDevice device, IComponentContainer<Projector> projectors, EffectFactory effectFactory)
         {
             this.Device = device;            
             this.Projectors = projectors;
-            this.Effect = effect;
+            this.Effect = effectFactory.Construct<ProjectorEffect>();
 
             this.FrustumDrawer = new BoundsDrawer3D(device);
             this.Technique = ProjectorEffectTechniques.Projector;

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.CutScene;
 using MiniEngine.Effects;
+using MiniEngine.Effects.Wrappers;
 using MiniEngine.Pipeline;
 using MiniEngine.Pipeline.Debug.Extensions;
 using MiniEngine.Pipeline.Debug.Systems;
@@ -65,8 +66,7 @@ namespace MiniEngine.Rendering
             AveragedParticleSystem particleSystem,
             AdditiveParticleSystem additiveParticleSystem,
             ProjectorSystem projectorSystem,
-            CombineEffect combineEffect,
-            FxaaEffect fxaaEffect,
+            EffectFactory effectFactory,
             AmbientLightSystem ambientLightSystem,
             DirectionalLightSystem directionalLightSystem,
             PointLightSystem pointLightSystem,
@@ -84,8 +84,8 @@ namespace MiniEngine.Rendering
             this.TransparentParticleSystem = particleSystem;
             this.AdditiveParticleSystem    = additiveParticleSystem;
             this.ProjectorSystem           = projectorSystem;
-            this.CombineEffect             = combineEffect;
-            this.FxaaEffect                = fxaaEffect;
+            this.CombineEffect             = effectFactory.Construct<CombineEffect>();
+            this.FxaaEffect                = effectFactory.Construct<FxaaEffect>();
             this.AmbientLightSystem        = ambientLightSystem;
             this.DirectionalLightSystem    = directionalLightSystem;
             this.PointLightSystem          = pointLightSystem;

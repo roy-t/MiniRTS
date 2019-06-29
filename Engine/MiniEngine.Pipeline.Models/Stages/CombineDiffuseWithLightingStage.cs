@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
-using MiniEngine.Effects;
 using MiniEngine.Effects.DeviceStates;
+using MiniEngine.Effects.Wrappers;
 using MiniEngine.Primitives;
 
 namespace MiniEngine.Pipeline.Models.Stages
