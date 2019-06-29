@@ -5,26 +5,49 @@ namespace MiniEngine.Systems
 {
     public sealed class EntityController
     {
-        private readonly EntityCreator Creator;
+        private int next = 1;
+        private readonly List<Entity> Entities;
+
         private readonly IReadOnlyList<ISystem> Systems;
         private readonly IReadOnlyList<IComponentFactory> Factories;
 
-        public EntityController(EntityCreator creator, IEnumerable<ISystem> systems, IEnumerable<IComponentFactory> factories)
+        public EntityController(IEnumerable<ISystem> systems, IEnumerable<IComponentFactory> factories)
         {
-            this.Creator = creator;
+            this.Entities = new List<Entity>();
             this.Systems = new List<ISystem>(systems).AsReadOnly();
             this.Factories = new List<IComponentFactory>(factories).AsReadOnly();
         }
 
+        public Entity CreateEntity()
+        {
+            var entity = new Entity(this.next++);
+            this.Entities.Add(entity);
+
+            return entity;
+        }
+
+        public Entity[] CreateEntities(int count)
+        {
+            var entities = new Entity[count];
+            for (var i = 0; i < count; i++)
+            {
+                entities[i] = this.CreateEntity();
+            }
+
+            return entities;
+        }
+
+        public IReadOnlyList<Entity> GetAllEntities() => this.Entities.AsReadOnly();
+
         public void DestroyEntity(Entity entity)
         {
-            this.Creator.Remove(entity);
+            this.Entities.Remove(entity);
             this.RemoveEntityFromSystems(entity);
         }
 
         public void DestroyAllEntities()
         {
-            var entities = this.Creator.GetAllEntities();
+            var entities = this.GetAllEntities();
             for (var i = 0; i < entities.Count; i++)
             {
                 this.DestroyEntity(entities[i]);

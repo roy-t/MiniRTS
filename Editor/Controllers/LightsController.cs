@@ -9,7 +9,7 @@ namespace MiniEngine.Controllers
 {
     public sealed class LightsController
     {
-        private readonly EntityManager EntityManager;
+        private readonly EntityController EntityController;
         private readonly LightsFactory LightsFactory;
         private readonly IComponentContainer<PointLight> PointLightContainer;
         private readonly IComponentContainer<Sunlight> SunlightContainer;
@@ -19,14 +19,14 @@ namespace MiniEngine.Controllers
 
         private readonly List<Entity> TemporaryEntities;
 
-        public LightsController(EntityManager entityManager, LightsFactory lightsFactory,
+        public LightsController(EntityController entityController, LightsFactory lightsFactory,
             IComponentContainer<PointLight> pointLightContainer,
             IComponentContainer<Sunlight> sunlightContainer,
             IComponentContainer<DirectionalLight> directionalLightContainer,
             IComponentContainer<ShadowCastingLight> shadowCastingLightContainer,
             IComponentContainer<AmbientLight> ambientLightContainer)
         {
-            this.EntityManager = entityManager;
+            this.EntityController = entityController;
             this.LightsFactory = lightsFactory;
             this.PointLightContainer = pointLightContainer;
             this.SunlightContainer = sunlightContainer;
@@ -75,7 +75,7 @@ namespace MiniEngine.Controllers
         {
             foreach(var entity in this.TemporaryEntities)
             {
-                this.EntityManager.Controller.DestroyEntity(entity);
+                this.EntityController.DestroyEntity(entity);
             }
             this.TemporaryEntities.Clear();
         }
@@ -93,7 +93,7 @@ namespace MiniEngine.Controllers
         
         private Entity CreateTempEntity()
         {
-            var entity = this.EntityManager.Creator.CreateEntity();
+            var entity = this.EntityController.CreateEntity();
             this.TemporaryEntities.Add(entity);
 
             return entity;

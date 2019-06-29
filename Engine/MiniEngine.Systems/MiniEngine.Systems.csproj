@@ -61,11 +61,9 @@
     <Compile Include="Components\MinMaxDescription.cs" />
     <Compile Include="Containers\AComponentList.cs" />
     <Compile Include="Containers\IComponentContainer.cs" />
-    <Compile Include="EntityManager.cs" />
     <Compile Include="Factories\AComponentFactory.cs" />
     <Compile Include="Entity.cs" />
     <Compile Include="EntityController.cs" />
-    <Compile Include="EntityCreator.cs" />
     <Compile Include="Components\IComponent.cs" />
     <Compile Include="Factories\IComponentFactory.cs" />
     <Compile Include="ISystem.cs" />

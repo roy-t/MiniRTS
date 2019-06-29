@@ -15,18 +15,18 @@ namespace MiniEngine.UI
     {
         private readonly Editors Editors;
         private readonly EntityState EntityState;
-        private readonly EntityManager EntityManager;
+        private readonly EntityController EntityController;
         private readonly ComponentSearcher ComponentSearcher;
         private readonly Dictionary<Type, int> ComponentCounter;
 
         private readonly List<IComponent> Components;
 
 
-        public EntityWindow(Editors editors, UIState ui, EntityManager entityManager, ComponentSearcher componentSearcher)
+        public EntityWindow(Editors editors, UIState ui, EntityController entityController, ComponentSearcher componentSearcher)
         {
             this.Editors = editors;
             this.EntityState = ui.EntityState;            
-            this.EntityManager = entityManager;
+            this.EntityController = entityController;
             this.ComponentSearcher = componentSearcher;
             this.ComponentCounter = new Dictionary<Type, int>();
             this.Components = new List<IComponent>();
@@ -40,8 +40,6 @@ namespace MiniEngine.UI
 
                 this.ComponentCounter.Clear();
 
-
-                //this.EntityManager.Linker.GetComponents(this.EntityState.SelectedEntity, components);
                 this.Components.Clear();
                 this.ComponentSearcher.GetComponents(this.EntityState.SelectedEntity, this.Components);
 
@@ -66,13 +64,13 @@ namespace MiniEngine.UI
                     }
                 }
 
-                if (this.EntityManager.Creator.GetAllEntities().Contains(this.EntityState.SelectedEntity))
+                if (this.EntityController.GetAllEntities().Contains(this.EntityState.SelectedEntity))
                 {
                     if (ImGui.Button("Destroy Entity"))
                     {
-                        this.EntityManager.Controller.DestroyEntity(this.EntityState.SelectedEntity);
+                        this.EntityController.DestroyEntity(this.EntityState.SelectedEntity);
                         this.EntityState.ShowEntityWindow = false;
-                        var entities = this.EntityManager.Creator.GetAllEntities();
+                        var entities = this.EntityController.GetAllEntities();
                         this.EntityState.SelectedEntity = entities.Any() ? entities.First() : new Entity(-1);
                     }
                 }

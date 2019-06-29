@@ -63,7 +63,7 @@ namespace MiniEngine.UI
             this.KeyboardInput = injector.Resolve<KeyboardInput>();
             this.MouseInput = injector.Resolve<MouseInput>();
 
-            var entityManager = injector.Resolve<EntityManager>();
+            var entityController = injector.Resolve<EntityController>();
 
             var outlineFactory = injector.Resolve<DebugInfoFactory>();
             var projectorFactory = injector.Resolve<ProjectorFactory>();
@@ -94,7 +94,7 @@ namespace MiniEngine.UI
 
             // After loading the selected entity might have disappeared
             var selectedEntity = this.UIState.EntityState.SelectedEntity;
-            var allEntities = entityManager.Creator.GetAllEntities();
+            var allEntities = entityController.GetAllEntities();
             if (!allEntities.Contains(selectedEntity))
             {
                 this.UIState.EntityState.SelectedEntity = allEntities.FirstOrDefault();
@@ -103,10 +103,10 @@ namespace MiniEngine.UI
             this.Gui.TextureContrast = this.UIState.DebugState.TextureContrast;
 
             this.FileMenu = new FileMenu(this.UIState, game, sceneSelector);
-            this.EntitiesMenu = new EntityMenu(this.UIState, entityManager, componentSearcher);
-            this.CreateMenu = new CreateMenu(this.UIState, entityManager, outlineFactory, waypointFactory, projectorFactory, texture, this.LightsController, camera);
+            this.EntitiesMenu = new EntityMenu(this.UIState, entityController, componentSearcher);
+            this.CreateMenu = new CreateMenu(this.UIState, outlineFactory, waypointFactory, projectorFactory, texture, this.LightsController, camera);
             this.DebugMenu = new DebugMenu(this.Gui, this.UIState, renderTargetDescriber, cutsceneSystem, game);
-            this.EntityWindow = new EntityWindow(this.Editors, this.UIState, entityManager, componentSearcher);
+            this.EntityWindow = new EntityWindow(this.Editors, this.UIState, entityController, componentSearcher);
             this.RenderingMenu = new RenderingMenu(this.Editors, this.UIState, renderPipeline);
 
             camera.Move(this.UIState.EditorState.CameraPosition, this.UIState.EditorState.CameraLookAt);

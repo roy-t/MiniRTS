@@ -6,14 +6,12 @@ using MiniEngine.CutScene;
 using MiniEngine.Pipeline.Debug.Factories;
 using MiniEngine.Pipeline.Projectors.Factories;
 using MiniEngine.Primitives.Cameras;
-using MiniEngine.Systems;
 using MiniEngine.UI.State;
 
 namespace MiniEngine.UI
 {
     public sealed class CreateMenu
     {
-        private readonly EntityManager EntityManager;
         private readonly DebugInfoFactory OutlineFactory;
         private readonly ProjectorFactory ProjectorFactory;
         private readonly Texture2D Texture;
@@ -21,10 +19,9 @@ namespace MiniEngine.UI
         private readonly WaypointFactory WaypointFactory;
         private readonly PerspectiveCamera Camera;
 
-        public CreateMenu(UIState ui, EntityManager entityManager, DebugInfoFactory outLineFactory, WaypointFactory waypointFactory,
+        public CreateMenu(UIState ui, DebugInfoFactory outLineFactory, WaypointFactory waypointFactory,
             ProjectorFactory projectorFactory, Texture2D texture, LightsController lightsController, PerspectiveCamera camera)
         {
-            this.EntityManager = entityManager;
             this.OutlineFactory = outLineFactory;
             this.WaypointFactory = waypointFactory;
             this.ProjectorFactory = projectorFactory;

@@ -20,7 +20,7 @@ namespace MiniEngine.Scenes
 {
     public sealed class SceneBuilder
     {
-        private readonly EntityManager EntityManager;
+        private readonly EntityController EntityController;
         private readonly LightsFactory LightsFactory;
         private readonly OpaqueModelFactory OpaqueModelFactory;
         private readonly TransparentModelFactory TransparentModelFactory;
@@ -42,7 +42,7 @@ namespace MiniEngine.Scenes
         private Texture2D mask;
         private Song song;
 
-        public SceneBuilder(EntityManager entityManager,
+        public SceneBuilder(EntityController entityController,
             LightsFactory lightsFactory,
             OpaqueModelFactory opaqueModelFactory,
             TransparentModelFactory transparentModelFactory,            
@@ -54,7 +54,7 @@ namespace MiniEngine.Scenes
             WaypointFactory waypointFactory,
             PipelineBuilder pipelineBuilder)
         {
-            this.EntityManager = entityManager;
+            this.EntityController = entityController;
             this.LightsFactory = lightsFactory;
             this.OpaqueModelFactory = opaqueModelFactory;
             this.TransparentModelFactory = transparentModelFactory;
@@ -85,25 +85,25 @@ namespace MiniEngine.Scenes
 
         public AmbientLight BuildSponzaAmbientLight()
         {
-            var entity = this.EntityManager.Creator.CreateEntity();
+            var entity = this.EntityController.CreateEntity();
             return this.LightsFactory.AmbientLightFactory.Construct(entity, Color.White * 0.5f);
         }
 
         public Sunlight BuildSponzeSunLight()
         {
-            var entity = this.EntityManager.Creator.CreateEntity();
+            var entity = this.EntityController.CreateEntity();
             return this.LightsFactory.SunlightFactory.Construct(entity, Color.White, Vector3.Up, (Vector3.Left * 0.75f) + (Vector3.Backward * 0.1f));
         }
         
         public OpaqueModel BuildSponza(Pose pose)
         {
-            var entity = this.EntityManager.Creator.CreateEntity();
+            var entity = this.EntityController.CreateEntity();
             return this.OpaqueModelFactory.Construct(entity, this.sponza, pose);
         }
 
         public Entity BuildLizard(Pose pose)
         {
-            var entity = this.EntityManager.Creator.CreateEntity();
+            var entity = this.EntityController.CreateEntity();
             this.OpaqueModelFactory.Construct(entity, this.lizard, pose);
             //this.LightsFactory.PointLightFactory.Construct(entity, new Vector3(55, 8, 20), Color.White, 50.0f, 0.75f);
 
@@ -112,13 +112,13 @@ namespace MiniEngine.Scenes
         
         public ShadowCastingLight BuildLionSpotLight()
         {
-            var entity = this.EntityManager.Creator.CreateEntity();
+            var entity = this.EntityController.CreateEntity();
             return this.LightsFactory.ShadowCastingLightFactory.Construct(entity, new Vector3(40, 13, 27), new Vector3(53, 11, 12), Color.White, 2048);
         }
 
         public PointLight[] CreateFestiveLights()
         {
-            var entity = this.EntityManager.Creator.CreateEntity();
+            var entity = this.EntityController.CreateEntity();
             var count = 20;
             var lights = new PointLight[count];
 
@@ -148,7 +148,7 @@ namespace MiniEngine.Scenes
 
         public Entity[] BuildStainedGlass()
         {
-            var entities = this.EntityManager.Creator.CreateEntities(2);
+            var entities = this.EntityController.CreateEntities(2);
 
             var position = new Vector3(-40.5f, 30.0f, 3.2f);
             var world = new Pose(position, 4.4f * 0.01f, MathHelper.PiOver2, MathHelper.PiOver2, 0);
@@ -165,7 +165,7 @@ namespace MiniEngine.Scenes
 
         public PointLight BuildFirePlace()
         {
-            var entity = this.EntityManager.Creator.CreateEntity();
+            var entity = this.EntityController.CreateEntity();
 
             var particleSpawn = new Vector3(-60.5f, 6.0f, 20.0f);
 
@@ -185,7 +185,7 @@ namespace MiniEngine.Scenes
             var projectorPosition = new Vector3(-60.5f, 0.0f, 20.0f);
             var lookAt = cameraPosition + (new Vector3(0.001f, 1, 0) * 10);
 
-            var lightEntity = this.EntityManager.Creator.CreateEntity();
+            var lightEntity = this.EntityController.CreateEntity();
             var dynamicTexture = this.DynamicTextureFactory.Construct(lightEntity, cameraPosition,  lookAt, 1024, 1024, "Firewatcher");                        
             this.PipelineBuilder.AddParticlePipeline(dynamicTexture.Pipeline);
             this.DebugInfoFactory.Construct(lightEntity);
@@ -200,7 +200,7 @@ namespace MiniEngine.Scenes
 
         public Entity BuildBulletHoles()
         {
-            var entity = this.EntityManager.Creator.CreateEntity();
+            var entity = this.EntityController.CreateEntity();
 
             var random = new Random(12345);
 
@@ -224,7 +224,7 @@ namespace MiniEngine.Scenes
 
         public Entity BuildCutScene()
         {
-            var entity = this.EntityManager.Creator.CreateEntity();
+            var entity = this.EntityController.CreateEntity();
             this.DebugInfoFactory.Construct(entity);
 
             var speeds = new MetersPerSecond[]

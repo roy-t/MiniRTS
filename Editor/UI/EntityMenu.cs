@@ -11,14 +11,14 @@ namespace MiniEngine.UI
 {
     public sealed class EntityMenu
     {
-        private readonly EntityManager EntityManager;
+        private readonly EntityController EntityController;
         private readonly EntityState State;
         private readonly List<IComponent> ComponentList;
         private readonly ComponentSearcher ComponentSearcher;
 
-        public EntityMenu(UIState ui, EntityManager entityManager, ComponentSearcher componentSearcher)
+        public EntityMenu(UIState ui, EntityController entityController, ComponentSearcher componentSearcher)
         {
-            this.EntityManager = entityManager;
+            this.EntityController = entityController;
             this.State = ui.EntityState;
             this.ComponentList = new List<IComponent>();
             this.ComponentSearcher = componentSearcher;
@@ -30,12 +30,12 @@ namespace MiniEngine.UI
             {
                 if (ImGui.MenuItem("Create entity"))
                 {
-                    var entity = this.EntityManager.Creator.CreateEntity();
+                    var entity = this.EntityController.CreateEntity();
                     this.State.SelectedEntity = entity;
                 }
                 ImGui.Separator();
 
-                var entities = this.EntityManager.Creator.GetAllEntities();
+                var entities = this.EntityController.GetAllEntities();
                 
                 var listBoxItem = this.IndexOfEntity(this.State.SelectedEntity, entities);      
                 
