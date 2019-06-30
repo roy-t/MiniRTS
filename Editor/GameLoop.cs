@@ -6,7 +6,6 @@ using MiniEngine.Primitives.Cameras;
 using MiniEngine.Rendering;
 using MiniEngine.Telemetry;
 using MiniEngine.UI;
-using MiniEngine.UI.Utilities;
 using MiniEngine.Units;
 
 namespace MiniEngine
@@ -42,18 +41,15 @@ namespace MiniEngine
         }        
 
         protected override void LoadContent()
-        {            
-            this.spriteBatch = new SpriteBatch(this.GraphicsDevice);
+        {                        
             this.camera = new PerspectiveCamera(this.GraphicsDevice.Viewport);
+            this.injector = new Injector(this);
 
-            this.injector = new Injector(this.GraphicsDevice, this.Content);
-
+            this.spriteBatch = this.injector.Resolve<SpriteBatch>();
             this.renderPipeline = this.injector.Resolve<DeferredRenderPipeline>();
-            this.sceneSelector = this.injector.Resolve<SceneSelector>();
+            this.sceneSelector = this.injector.Resolve<SceneSelector>();            
+            this.uiManager = this.injector.Resolve<UIManager>();
 
-            var renderTargetDescriber = new RenderTargetDescriber(this.renderPipeline.GetGBuffer());
-            this.uiManager = new UIManager(this, this.spriteBatch, renderTargetDescriber, this.renderPipeline, this.camera, this.sceneSelector, this.injector);
-          
             this.metricServer = this.injector.Resolve<IMetricServer>();
             this.metricServer.Start(7070);
         }       
@@ -95,7 +91,7 @@ namespace MiniEngine
             
             this.spriteBatch.End();
 
-            this.uiManager.Render(this.GraphicsDevice.Viewport, gameTime);
+            this.uiManager.Render(this.camera, this.GraphicsDevice.Viewport, gameTime);
 
             base.Draw(gameTime);
         }

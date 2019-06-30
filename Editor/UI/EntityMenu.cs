@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Numerics;
 using ImGuiNET;
+using MiniEngine.Primitives.Cameras;
 using MiniEngine.Systems;
 using MiniEngine.Systems.Components;
 using MiniEngine.UI.State;
@@ -9,42 +10,46 @@ using MiniEngine.UI.Utilities;
 
 namespace MiniEngine.UI
 {
-    public sealed class EntityMenu
+    public sealed class EntityMenu : IMenu
     {
         private readonly EntityController EntityController;
-        private readonly EntityState State;
+        
         private readonly List<IComponent> ComponentList;
         private readonly ComponentSearcher ComponentSearcher;
 
-        public EntityMenu(UIState ui, EntityController entityController, ComponentSearcher componentSearcher)
+        public EntityMenu(EntityController entityController, ComponentSearcher componentSearcher)
         {
-            this.EntityController = entityController;
-            this.State = ui.EntityState;
+            this.EntityController = entityController;            
             this.ComponentList = new List<IComponent>();
             this.ComponentSearcher = componentSearcher;
+
+            this.State = new UIState();
         }        
 
-        public void Render()
+        public UIState State { get; set; }
+        public EntityState EntityState => this.State.EntityState;
+
+        public void Render(PerspectiveCamera camera)
         {
             if(ImGui.BeginMenu("Entities"))
             {
                 if (ImGui.MenuItem("Create entity"))
                 {
                     var entity = this.EntityController.CreateEntity();
-                    this.State.SelectedEntity = entity;
+                    this.EntityState.SelectedEntity = entity;
                 }
                 ImGui.Separator();
 
                 var entities = this.EntityController.GetAllEntities();
                 
-                var listBoxItem = this.IndexOfEntity(this.State.SelectedEntity, entities);      
+                var listBoxItem = this.IndexOfEntity(this.EntityState.SelectedEntity, entities);      
                 
                 if (ImGui.ListBox(string.Empty, ref listBoxItem, entities.Select(x => $"{x} ({this.GetComponentCount(x)})").ToArray(), entities.Count, 20))
                 {
                     if (listBoxItem != -1)
                     {
-                        this.State.SelectedEntity = entities[listBoxItem];
-                        this.State.ShowEntityWindow = true;
+                        this.EntityState.SelectedEntity = entities[listBoxItem];
+                        this.EntityState.ShowEntityWindow = true;
                     }
                 }
 

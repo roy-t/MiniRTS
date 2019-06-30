@@ -1,5 +1,6 @@
 ﻿using ImGuiNET;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Controllers;
 using MiniEngine.CutScene;
@@ -10,62 +11,61 @@ using MiniEngine.UI.State;
 
 namespace MiniEngine.UI
 {
-    public sealed class CreateMenu
+    public sealed class CreateMenu : IMenu
     {
         private readonly DebugInfoFactory OutlineFactory;
         private readonly ProjectorFactory ProjectorFactory;
         private readonly Texture2D Texture;
         private readonly LightsController LightsController;
         private readonly WaypointFactory WaypointFactory;
-        private readonly PerspectiveCamera Camera;
 
-        public CreateMenu(UIState ui, DebugInfoFactory outLineFactory, WaypointFactory waypointFactory,
-            ProjectorFactory projectorFactory, Texture2D texture, LightsController lightsController, PerspectiveCamera camera)
+        public CreateMenu(DebugInfoFactory outLineFactory, WaypointFactory waypointFactory,
+            ProjectorFactory projectorFactory, ContentManager content, LightsController lightsController)
         {
             this.OutlineFactory = outLineFactory;
             this.WaypointFactory = waypointFactory;
             this.ProjectorFactory = projectorFactory;
-            this.Texture = texture;
+            this.Texture = content.Load<Texture2D>("Debug");
             this.LightsController = lightsController;
-            this.Camera = camera;
-            this.State = ui.EntityState;
+            this.State = new UIState();
         }
 
-        public EntityState State { get; }
+        public UIState State { get; set; }
+        public EntityState EntityState => this.State.EntityState;
 
-        public void Render()
+        public void Render(PerspectiveCamera camera)
         {
             if (ImGui.BeginMenu("Create"))
             {
                 if (ImGui.MenuItem("Ambient Light"))
                 {
                     var entity = this.LightsController.CreateAmbientLight();
-                    this.State.SelectedEntity = entity;
-                    this.State.ShowEntityWindow = true;
+                    this.EntityState.SelectedEntity = entity;
+                    this.EntityState.ShowEntityWindow = true;
                 }
                 if (ImGui.MenuItem("Directional Light"))
                 {
-                    var entity = this.LightsController.CreateDirectionalLight(this.Camera.Position, this.Camera.LookAt);
-                    this.State.SelectedEntity = entity;
-                    this.State.ShowEntityWindow = true;
+                    var entity = this.LightsController.CreateDirectionalLight(camera.Position, camera.LookAt);
+                    this.EntityState.SelectedEntity = entity;
+                    this.EntityState.ShowEntityWindow = true;
                 }
                 if (ImGui.MenuItem("Point Light"))
                 {
-                    var entity = this.LightsController.CreatePointLight(this.Camera.Position);
-                    this.State.SelectedEntity = entity;
-                    this.State.ShowEntityWindow = true;
+                    var entity = this.LightsController.CreatePointLight(camera.Position);
+                    this.EntityState.SelectedEntity = entity;
+                    this.EntityState.ShowEntityWindow = true;
                 }
                 if (ImGui.MenuItem("Shadow Casting Light"))
                 {
-                    var entity = this.LightsController.CreateShadowCastingLight(this.Camera.Position, this.Camera.LookAt);
-                    this.State.SelectedEntity = entity;
-                    this.State.ShowEntityWindow = true;
+                    var entity = this.LightsController.CreateShadowCastingLight(camera.Position, camera.LookAt);
+                    this.EntityState.SelectedEntity = entity;
+                    this.EntityState.ShowEntityWindow = true;
                 }
                 if (ImGui.MenuItem("Sun Light"))
                 {
-                    var entity = this.LightsController.CreateSunLight(this.Camera.Position, this.Camera.LookAt);
-                    this.State.SelectedEntity = entity;
-                    this.State.ShowEntityWindow = true;
+                    var entity = this.LightsController.CreateSunLight(camera.Position, camera.LookAt);
+                    this.EntityState.SelectedEntity = entity;
+                    this.EntityState.ShowEntityWindow = true;
                 }
                 if (ImGui.MenuItem("Remove created lights"))
                 {
@@ -80,21 +80,21 @@ namespace MiniEngine.UI
 
                 if (ImGui.MenuItem("Projector"))
                 {
-                    this.ProjectorFactory.Construct(this.State.SelectedEntity, this.Texture, Color.White * 0.5f, this.Camera.Position, this.Camera.LookAt);                    
+                    this.ProjectorFactory.Construct(this.EntityState.SelectedEntity, this.Texture, Color.White * 0.5f, camera.Position, camera.LookAt);                    
                 }
 
                 ImGui.Separator();
 
                 if (ImGui.MenuItem("Debug info"))
                 {
-                    this.OutlineFactory.Construct(this.State.SelectedEntity);
+                    this.OutlineFactory.Construct(this.EntityState.SelectedEntity);
                 }
 
                 ImGui.Separator();
 
                 if(ImGui.MenuItem("Waypoint"))
                 {
-                    this.WaypointFactory.Construct(this.State.SelectedEntity, 1.0f, this.Camera.Position, this.Camera.Position + (this.Camera.Forward * 100));
+                    this.WaypointFactory.Construct(this.EntityState.SelectedEntity, 1.0f, camera.Position, camera.Position + (camera.Forward * 100));
                 }
 
                 ImGui.EndMenu();

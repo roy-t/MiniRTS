@@ -1,18 +1,12 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using ImGuiNET;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using MiniEngine.Configuration;
 using MiniEngine.Controllers;
-using MiniEngine.CutScene;
-using MiniEngine.Effects;
 using MiniEngine.Input;
-using MiniEngine.Pipeline.Debug.Factories;
-using MiniEngine.Pipeline.Projectors.Factories;
 using MiniEngine.Primitives.Cameras;
-using MiniEngine.Rendering;
-using MiniEngine.Systems;
 using MiniEngine.UI.State;
 using MiniEngine.UI.Utilities;
 using MiniEngine.Units;
@@ -25,12 +19,12 @@ namespace MiniEngine.UI
         private const float SlowDragSpeed = 0.01f;
         private const float FastDragSpeed = 0.05f;
 
-        private readonly Game Game;
+        private readonly Game GameLoop;
         private readonly SpriteBatch SpriteBatch;
 
         private readonly RenderTargetDescriber RenderTargetDescriber;
 
-        private readonly UIState UIState;
+        private readonly UIState State;
         private readonly ImGuiRenderer Gui;
 
         private readonly Editors Editors;
@@ -39,83 +33,60 @@ namespace MiniEngine.UI
         private readonly MouseInput MouseInput;
 
         private readonly CameraController CameraController;
-        private readonly LightsController LightsController;
 
-        private readonly FileMenu FileMenu;
-        private readonly EntityMenu EntitiesMenu;
-        private readonly CreateMenu CreateMenu;
-        private readonly RenderingMenu RenderingMenu;
-        private readonly DebugMenu DebugMenu;
+        private readonly IList<IMenu> Menus;
         private readonly EntityWindow EntityWindow;
 
-        public UIManager(Game game, SpriteBatch spriteBatch, RenderTargetDescriber renderTargetDescriber, DeferredRenderPipeline renderPipeline, PerspectiveCamera camera, SceneSelector sceneSelector, Injector injector)
+        private bool setCamera;
+
+        public UIManager(Game game, SpriteBatch spriteBatch, ImGuiRenderer gui, RenderTargetDescriber renderTargetDescriber, SceneSelector sceneSelector, CameraController cameraController, Editors editors, IList<IMenu> menus, EntityWindow entityWindow, KeyboardInput keyboardInput, MouseInput mouseInput)
         {
-            this.Game = game;
+            this.Gui = gui;
+            this.KeyboardInput = keyboardInput;
+            this.MouseInput = mouseInput;
+            this.GameLoop = game;
             this.SpriteBatch = spriteBatch;
-
-            this.Gui = new ImGuiRenderer(game, injector.Resolve<EffectFactory>());
-            this.Gui.RebuildFontAtlas();
-
-            this.Editors = new Editors(this.Gui);
-
+            this.CameraController = cameraController;
             this.RenderTargetDescriber = renderTargetDescriber;
 
-            this.KeyboardInput = injector.Resolve<KeyboardInput>();
-            this.MouseInput = injector.Resolve<MouseInput>();
+            this.Menus = menus;
+            this.EntityWindow = entityWindow;
+            this.Editors = editors;
 
-            var entityController = injector.Resolve<EntityController>();
+            this.State = UIState.Deserialize();
 
-            var outlineFactory = injector.Resolve<DebugInfoFactory>();
-            var projectorFactory = injector.Resolve<ProjectorFactory>();
-            var waypointFactory = injector.Resolve<WaypointFactory>();
-            var cutsceneSystem = injector.Resolve<CutsceneSystem>();
-            var componentSearcher = injector.Resolve<ComponentSearcher>();
-
-            var texture = game.Content.Load<Texture2D>("Debug");
-
-            this.CameraController = new CameraController(this.KeyboardInput, this.MouseInput, camera);
-            this.LightsController = injector.Resolve<LightsController>();
-
-            this.UIState = UIState.Deserialize();
-
-            if (!string.IsNullOrEmpty(this.UIState.EditorState.Scene))
+            if (!string.IsNullOrEmpty(this.State.EditorState.Scene))
             {
-                var scene = sceneSelector.Scenes.FirstOrDefault(s => s.Name.Equals(this.UIState.EditorState.Scene, System.StringComparison.OrdinalIgnoreCase));
+                var scene = sceneSelector.Scenes.FirstOrDefault(s => s.Name.Equals(this.State.EditorState.Scene, System.StringComparison.OrdinalIgnoreCase));
                 if (scene != null && sceneSelector.CurrentScene != scene)
                 {
                     sceneSelector.SwitchScenes(scene);
                 }
             }
 
-            if(sceneSelector.CurrentScene == null)
+            if (sceneSelector.CurrentScene == null)
             {
                 sceneSelector.SwitchScenes(sceneSelector.Scenes.First());
+                this.setCamera = true;
             }
 
-            // After loading the selected entity might have disappeared
-            var selectedEntity = this.UIState.EntityState.SelectedEntity;
-            var allEntities = entityController.GetAllEntities();
-            if (!allEntities.Contains(selectedEntity))
+            for(var i = 0; i < this.Menus.Count; i++)
             {
-                this.UIState.EntityState.SelectedEntity = allEntities.FirstOrDefault();
-            }            
+                this.Menus[i].State = this.State;
+            }
+            this.EntityWindow.State = this.State;
+        }        
 
-            this.Gui.TextureContrast = this.UIState.DebugState.TextureContrast;
+        public void Render(PerspectiveCamera camera, Viewport viewport, GameTime gameTime)
+        {
+            if (this.setCamera)
+            {
+                camera.Move(this.State.EditorState.CameraPosition, this.State.EditorState.CameraLookAt);
+                this.setCamera = false;
+            }
 
-            this.FileMenu = new FileMenu(this.UIState, game, sceneSelector);
-            this.EntitiesMenu = new EntityMenu(this.UIState, entityController, componentSearcher);
-            this.CreateMenu = new CreateMenu(this.UIState, outlineFactory, waypointFactory, projectorFactory, texture, this.LightsController, camera);
-            this.DebugMenu = new DebugMenu(this.Gui, this.UIState, renderTargetDescriber, cutsceneSystem, game);
-            this.EntityWindow = new EntityWindow(this.Editors, this.UIState, entityController, componentSearcher);
-            this.RenderingMenu = new RenderingMenu(this.Editors, this.UIState, renderPipeline);
-
-            camera.Move(this.UIState.EditorState.CameraPosition, this.UIState.EditorState.CameraLookAt);
-        }
-
-        public void Render(Viewport viewport, GameTime gameTime)
-        {                        
             // Do not handle input if game window is not activated
-            if (!this.Game.IsActive)
+            if (!this.GameLoop.IsActive)
             {
                 return;
             }
@@ -125,20 +96,20 @@ namespace MiniEngine.UI
             this.KeyboardInput.Update();
             this.MouseInput.Update();            
 
-            this.CameraController.Update(elapsed);
+            this.CameraController.Update(camera, elapsed);
 
             if (this.KeyboardInput.Click(Keys.F12))
             {
-                this.UIState.EditorState.ShowGui = !this.UIState.EditorState.ShowGui;
+                this.State.EditorState.ShowGui = !this.State.EditorState.ShowGui;
             }
 
             if (this.KeyboardInput.Click(Keys.Escape))
             {
-                this.Game.Exit();
+                this.GameLoop.Exit();
             }
 
             this.RenderOverlay(viewport);
-            this.RenderUI(gameTime);
+            this.RenderUI(camera, gameTime);
         }
 
         private void RenderOverlay(Viewport viewport)
@@ -150,14 +121,13 @@ namespace MiniEngine.UI
               DepthStencilState.None,
               RasterizerState.CullCounterClockwise);
 
-
-            switch (this.UIState.DebugState.DebugDisplay)
+            switch (this.State.DebugState.DebugDisplay)
             {
                 case DebugDisplay.None:
                     break;
                 case DebugDisplay.Single:
                     this.SpriteBatch.Draw(
-                        this.RenderTargetDescriber.GetRenderTarget(this.UIState.DebugState.SelectedRenderTarget),
+                        this.RenderTargetDescriber.GetRenderTarget(this.State.DebugState.SelectedRenderTarget),
                            new Vector2(0, 0),
                            null,
                            Color.White,
@@ -168,23 +138,23 @@ namespace MiniEngine.UI
                            0);
                     break;
                 case DebugDisplay.Combined:
-                    if (this.UIState.DebugState.SelectedRenderTargets.Any())
+                    if (this.State.DebugState.SelectedRenderTargets.Any())
                     {
-                        var count = this.UIState.DebugState.SelectedRenderTargets.Count;
-                        var xStep = viewport.Width / this.UIState.DebugState.Columns;
+                        var count = this.State.DebugState.SelectedRenderTargets.Count;
+                        var xStep = viewport.Width / this.State.DebugState.Columns;
                         var yStep = xStep / viewport.AspectRatio;
 
-                        var renderTargets = this.RenderTargetDescriber.GetRenderTargets(this.UIState.DebugState.SelectedRenderTargets);
+                        var renderTargets = this.RenderTargetDescriber.GetRenderTargets(this.State.DebugState.SelectedRenderTargets);
                         for (var i = 0; i < renderTargets.Count; i++)
                         {
                             this.SpriteBatch.Draw(
                                 renderTargets[i],
-                                new Vector2(xStep * (i % this.UIState.DebugState.Columns), yStep * (i / this.UIState.DebugState.Columns)),
+                                new Vector2(xStep * (i % this.State.DebugState.Columns), yStep * (i / this.State.DebugState.Columns)),
                                 null,
                                 Color.White,
                                 0.0f,
                                 Vector2.Zero,
-                                1.0f / this.UIState.DebugState.Columns,
+                                1.0f / this.State.DebugState.Columns,
                                 SpriteEffects.None,
                                 0);
                         }
@@ -195,9 +165,9 @@ namespace MiniEngine.UI
             this.SpriteBatch.End();
         }
 
-        private void RenderUI(GameTime gameTime)
+        private void RenderUI(PerspectiveCamera camera, GameTime gameTime)
         {
-            if (this.UIState.EditorState.ShowGui)
+            if (this.State.EditorState.ShowGui)
             {
                 if (this.KeyboardInput.Hold(Keys.LeftShift))
                 {
@@ -212,27 +182,26 @@ namespace MiniEngine.UI
                 {
                     if (ImGui.BeginMainMenuBar())
                     {
-                        this.FileMenu.Render();
-                        this.EntitiesMenu.Render();
-                        this.CreateMenu.Render();
-                        this.RenderingMenu.Render();
-                        this.DebugMenu.Render();
+                        for (var i = 0; i < this.Menus.Count; i++)
+                        {
+                            this.Menus[i].Render(camera);
+                        }
 
                         ImGui.EndMainMenuBar();
                     }
 
-                    if (this.UIState.EntityState.ShowEntityWindow)
+                    if (this.State.EntityState.ShowEntityWindow)
                     {
                         this.EntityWindow.Render();
                     }
 
-                    if (this.UIState.DebugState.ShowDemo) { ImGui.ShowDemoWindow(); }
+                    if (this.State.DebugState.ShowDemo) { ImGui.ShowDemoWindow(); }
                 }
                 this.Gui.EndLayout();
             }
         }
 
         public void Close(IViewPoint viewPoint) 
-            => this.UIState.Serialize(viewPoint.Position, viewPoint.Position + viewPoint.Forward);
+            => this.State.Serialize(viewPoint.Position, viewPoint.Position + viewPoint.Forward);
     }
 }

@@ -2,14 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework.Graphics;
-using MiniEngine.Primitives;
+using MiniEngine.Rendering;
 
 namespace MiniEngine.UI.Utilities
 {
     public sealed class RenderTargetDescriber
     {        
-        public RenderTargetDescriber(GBuffer gBuffer)
+        public RenderTargetDescriber(DeferredRenderPipeline renderPipeline)
         {
+            var gBuffer = renderPipeline.GetGBuffer();
+
             this.RenderTargets = new List<RenderTargetDescription>()
             {
                 new RenderTargetDescription(gBuffer.DiffuseTarget, "diffuse", 0),

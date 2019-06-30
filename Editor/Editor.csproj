@@ -71,6 +71,7 @@
     <Compile Include="Input\MouseInput.cs" />
     <Compile Include="Rendering\DeferredRenderPipeline.cs" />
     <Compile Include="UI\DebugMenu.cs" />
+    <Compile Include="UI\IMenu.cs" />
     <Compile Include="UI\State\DebugState.cs" />
     <Compile Include="UI\State\EditorState.cs" />
     <Compile Include="UI\EntityMenu.cs" />

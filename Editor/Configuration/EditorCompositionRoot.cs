@@ -6,6 +6,7 @@ using MiniEngine.Pipeline.Debug;
 using MiniEngine.Rendering;
 using MiniEngine.Scenes;
 using MiniEngine.Systems.Containers;
+using MiniEngine.UI;
 using MiniEngine.UI.Utilities;
 
 namespace MiniEngine.Configuration
@@ -18,17 +19,28 @@ namespace MiniEngine.Configuration
             serviceRegistry.Register<IComponentContainer<Waypoint>, ComponentList<Waypoint>>();
             serviceRegistry.Register<WaypointFactory>();
             serviceRegistry.Register<CutsceneSystem>();
+            serviceRegistry.Register<CameraController>();
             serviceRegistry.Register<LightsController>();
 
             // Renderer
             serviceRegistry.Register<PipelineBuilder>();
             serviceRegistry.Register<DeferredRenderPipeline>();
+            serviceRegistry.Register<RenderTargetDescriber>();
 
             // UI
             serviceRegistry.Register<KeyboardInput>();
             serviceRegistry.Register<MouseInput>();
             serviceRegistry.Register<IconLibrary>();
             serviceRegistry.Register<ComponentSearcher>();
+
+            // Menus
+            serviceRegistry.Register<UIManager>();
+            serviceRegistry.Register<IMenu, FileMenu>("0");
+            serviceRegistry.Register<IMenu, EntityMenu>("1");
+            serviceRegistry.Register<IMenu, CreateMenu>("2");
+            serviceRegistry.Register<IMenu, RenderingMenu>("3");
+            serviceRegistry.Register<IMenu, DebugMenu>("4");
+            serviceRegistry.Register<EntityWindow>();
 
             // Scenes
             serviceRegistry.Register<SceneBuilder>();

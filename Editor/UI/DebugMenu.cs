@@ -2,66 +2,69 @@
 using ImGuiNET;
 using Microsoft.Xna.Framework;
 using MiniEngine.CutScene;
+using MiniEngine.Primitives.Cameras;
 using MiniEngine.UI.State;
 using MiniEngine.UI.Utilities;
 
 namespace MiniEngine.UI
 {
-    public sealed class DebugMenu
+    public sealed class DebugMenu : IMenu
     {
         private readonly ImGuiRenderer Renderer;
         private readonly RenderTargetDescriber RenderTargetDescriber;
         private readonly CutsceneSystem CutsceneSystem;
         private readonly Game Game;
 
-        private readonly DebugState State;
 
-        public DebugMenu(ImGuiRenderer renderer, UIState ui, RenderTargetDescriber RenderTargetDescriber, CutsceneSystem cutsceneSystem, Game game)
+        public DebugMenu(ImGuiRenderer renderer, RenderTargetDescriber RenderTargetDescriber, CutsceneSystem cutsceneSystem, Game game)
         {
             this.Renderer = renderer;
             this.RenderTargetDescriber = RenderTargetDescriber;
             this.CutsceneSystem = cutsceneSystem;
-            this.Game = game;            
-            this.State = ui.DebugState;
+            this.Game = game;
+            this.State = new UIState();
         }        
 
-        public void Render()
+        public UIState State { get; set; }
+        public DebugState DebugState => State.DebugState;
+
+        public void Render(PerspectiveCamera camera)
         {
             if (ImGui.BeginMenu("Debug"))
             {
-                if (ImGui.MenuItem(DebugDisplay.None.ToString(), null, this.State.DebugDisplay == DebugDisplay.None))
+                if (ImGui.MenuItem(DebugDisplay.None.ToString(), null, this.DebugState.DebugDisplay == DebugDisplay.None))
                 {
-                    this.State.DebugDisplay = DebugDisplay.None;
+                    this.DebugState.DebugDisplay = DebugDisplay.None;
                 }
 
                 if (ImGui.BeginMenu(DebugDisplay.Combined.ToString()))
                 {
                     var descriptions = this.RenderTargetDescriber.RenderTargets;
-                    var columns = this.State.Columns;
+                    var columns = this.DebugState.Columns;
                     if (ImGui.SliderInt("Columns", ref columns, 1, Math.Max(5, descriptions.Count)))
                     {
-                        this.State.Columns = columns;
+                        this.DebugState.Columns = columns;
                     }
 
                     ImGui.Separator();
 
                     foreach (var target in descriptions)
                     {
-                        var selected = this.State.SelectedRenderTargets.Contains(target.Name);
+                        var selected = this.DebugState.SelectedRenderTargets.Contains(target.Name);
                         if (ImGui.Checkbox(target.Name, ref selected))
                         {
                             if (selected)
                             {
-                                this.State.SelectedRenderTargets.Add(target.Name);
+                                this.DebugState.SelectedRenderTargets.Add(target.Name);
                             }
                             else
                             {
-                                this.State.SelectedRenderTargets.Remove(target.Name);
+                                this.DebugState.SelectedRenderTargets.Remove(target.Name);
 
                             }
 
-                            this.State.SelectedRenderTargets.Sort();
-                            this.State.DebugDisplay = DebugDisplay.Combined;
+                            this.DebugState.SelectedRenderTargets.Sort();
+                            this.DebugState.DebugDisplay = DebugDisplay.Combined;
                         }
                     }
 
@@ -73,20 +76,20 @@ namespace MiniEngine.UI
                     var descriptions = this.RenderTargetDescriber.RenderTargets;
                     foreach (var target in descriptions)
                     {
-                        var selected = this.State.SelectedRenderTarget == target.Name;
+                        var selected = this.DebugState.SelectedRenderTarget == target.Name;
                         if (ImGui.MenuItem(target.Name, null, selected))
                         {
-                            this.State.SelectedRenderTarget = target.Name;
-                            this.State.DebugDisplay = DebugDisplay.Single;
+                            this.DebugState.SelectedRenderTarget = target.Name;
+                            this.DebugState.DebugDisplay = DebugDisplay.Single;
                         }
                     }
                     ImGui.EndMenu();
                 }
 
-                var textureContrast = this.State.TextureContrast;
+                var textureContrast = this.DebugState.TextureContrast;
                 if(ImGui.SliderFloat("Texture Contrast", ref textureContrast, 1.0f, 100.0f))
                 {
-                    this.State.TextureContrast = textureContrast;
+                    this.DebugState.TextureContrast = textureContrast;
                     this.Renderer.TextureContrast = textureContrast;
                 }
 
@@ -95,10 +98,10 @@ namespace MiniEngine.UI
                     this.Game.IsFixedTimeStep = !this.Game.IsFixedTimeStep;
                 }
 
-                var showDemo = this.State.ShowDemo;
+                var showDemo = this.DebugState.ShowDemo;
                 if (ImGui.MenuItem("Show Demo Window", null, ref showDemo))
                 {
-                    this.State.ShowDemo = showDemo;
+                    this.DebugState.ShowDemo = showDemo;
                 }
 
                 if (ImGui.MenuItem("Start Cutscene", null))

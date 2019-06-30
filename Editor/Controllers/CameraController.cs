@@ -15,17 +15,15 @@ namespace MiniEngine.Controllers
         private static readonly Radians RotateFactor = Radians.Pi* 0.002f;
 
         private readonly KeyboardInput Keyboard;
-        private readonly MouseInput Mouse;
-        private readonly PerspectiveCamera PerspectiveCamera;
+        private readonly MouseInput Mouse;        
 
         private Vector3 forward;
         private Vector3 left;
         private Vector3 up;
 
-        public CameraController(KeyboardInput keyboard, MouseInput mouse, PerspectiveCamera perspectiveCamera)
+        public CameraController(KeyboardInput keyboard, MouseInput mouse)
         {
             this.Keyboard = keyboard;
-            this.PerspectiveCamera = perspectiveCamera;
             this.Mouse = mouse;
 
             this.forward = Vector3.Forward;
@@ -33,10 +31,10 @@ namespace MiniEngine.Controllers
             this.up = Vector3.Up;
         }
 
-        public void Update(Seconds elapsed)
+        public void Update(PerspectiveCamera camera, Seconds elapsed)
         {
-            var position = this.PerspectiveCamera.Position;
-            this.forward = Vector3.Normalize(this.PerspectiveCamera.LookAt - this.PerspectiveCamera.Position);
+            var position = camera.Position;
+            this.forward = Vector3.Normalize(camera.LookAt - camera.Position);
 
             var translate = TranslateSpeed * elapsed;
 
@@ -85,7 +83,7 @@ namespace MiniEngine.Controllers
                 this.up = Vector3.Up;
             }
             
-            this.PerspectiveCamera.Move(position, position + this.forward);
+            camera.Move(position, position + this.forward);
         }
     }
 }

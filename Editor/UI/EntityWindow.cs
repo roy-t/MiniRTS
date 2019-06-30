@@ -14,7 +14,6 @@ namespace MiniEngine.UI
     public sealed class EntityWindow
     {
         private readonly Editors Editors;
-        private readonly EntityState EntityState;
         private readonly EntityController EntityController;
         private readonly ComponentSearcher ComponentSearcher;
         private readonly Dictionary<Type, int> ComponentCounter;
@@ -22,15 +21,17 @@ namespace MiniEngine.UI
         private readonly List<IComponent> Components;
 
 
-        public EntityWindow(Editors editors, UIState ui, EntityController entityController, ComponentSearcher componentSearcher)
+        public EntityWindow(Editors editors, EntityController entityController, ComponentSearcher componentSearcher)
         {
             this.Editors = editors;
-            this.EntityState = ui.EntityState;            
             this.EntityController = entityController;
             this.ComponentSearcher = componentSearcher;
             this.ComponentCounter = new Dictionary<Type, int>();
             this.Components = new List<IComponent>();
         }
+
+        public UIState State { get; set; }
+        public EntityState EntityState => this.State.EntityState;
         
         public void Render()
         {

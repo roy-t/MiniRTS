@@ -69,6 +69,7 @@ namespace MiniEngine.UI
             this.TextureContrast = 1.0f;
 
             this.SetupInput();
+            this.RebuildFontAtlas();
         }
 
         public float TextureContrast { get; set; }
@@ -76,7 +77,7 @@ namespace MiniEngine.UI
         /// <summary>
         /// Creates a texture and loads the font data from ImGui. Should be called when the <see cref="Microsoft.Xna.Framework.Graphics.GraphicsDevice" /> is initialized but before any rendering is done
         /// </summary>
-        public unsafe void RebuildFontAtlas()
+        private unsafe void RebuildFontAtlas()
         {
             // Get font texture from ImGui
             var io = ImGui.GetIO();

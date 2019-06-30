@@ -1,23 +1,26 @@
 ﻿using ImGuiNET;
 using MiniEngine.Effects.Techniques;
+using MiniEngine.Primitives.Cameras;
 using MiniEngine.Rendering;
 using MiniEngine.Systems.Components;
 using MiniEngine.UI.State;
 
 namespace MiniEngine.UI
 {
-    public sealed class RenderingMenu
+    public sealed class RenderingMenu : IMenu
     {
         private readonly DeferredRenderPipeline RenderPipeline;
         private readonly Editors Editors;
 
-        public RenderingMenu(Editors editors, UIState ui, DeferredRenderPipeline renderPipeline)
+        public RenderingMenu(Editors editors, DeferredRenderPipeline renderPipeline)
         {
             this.Editors = editors;
             this.RenderPipeline = renderPipeline;
         }
 
-        public void Render()
+        public UIState State { get; set; }
+
+        public void Render(PerspectiveCamera camera)
         {
             // TODO: enabling features in the deferred render pipeline is overly simplistic now, maybe style it as a true options menu
             // that serializes/deserializes settings from a file, and make it so that the a class can cosntruct the deferred renderpipeline from that file
