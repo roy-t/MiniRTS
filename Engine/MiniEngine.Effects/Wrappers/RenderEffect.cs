@@ -58,9 +58,6 @@ namespace MiniEngine.Effects.Wrappers
                 case RenderEffectTechniques.ShadowMap:
                     this.effect.CurrentTechnique = this.effect.Techniques["ShadowMap"];
                     break;
-                case RenderEffectTechniques.GrayScale:
-                    this.effect.CurrentTechnique = this.effect.Techniques["GrayScale"];
-                    break;
                 case RenderEffectTechniques.Textured:
                     this.effect.CurrentTechnique = this.effect.Techniques["Textured"];
                     break;

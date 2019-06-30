@@ -54,8 +54,7 @@ sampler maskSampler = sampler_state
 };
 
 #include "Techniques/ShadowMap.hlsl"
-#include "Techniques/GrayScale.hlsl"
 #include "Techniques/Textured.hlsl"
 #include "Techniques/Deferred.hlsl"
 
-// The Effect Compiler doesn't like files without an empty new line
+// The Effect Compiler doesn't like files without an empty new line at the end.

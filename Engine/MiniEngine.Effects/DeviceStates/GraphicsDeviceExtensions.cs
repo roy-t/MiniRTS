@@ -2,6 +2,9 @@
 
 namespace MiniEngine.Effects.DeviceStates
 {
+    /// <summary>
+    /// Extension methods to set the sampler, blend, depth, and rasterizer states of the graphics device
+    /// </summary>
     public static class GraphicsDeviceExtensions
     {
         private static readonly BlendState WeighedParticleBlendState = CreateWeightedParticleBlendState();
@@ -12,27 +15,16 @@ namespace MiniEngine.Effects.DeviceStates
         private static readonly RasterizerState ShadowMapRasterizerState = CreateShadowMapRasterizerState();
         private static readonly RasterizerState WireFrameRasterizerState = CreateWireFrameRasterizerState();
 
-
-        public static bool Override = false;
-
         /// <summary>
         /// Graphics device state for drawing geometry to the G-Buffer
         /// </summary>
         public static void GeometryState(this GraphicsDevice device)
         {
-            if (!Override)
-            {
-
-                SetDeviceState(
-                    device,
-                    BlendState.Opaque,
-                    DepthStencilState.Default,
-                    RasterizerState.CullCounterClockwise);
-            }
-            else
-            {
-                WireFrameState(device);
-            }
+            SetDeviceState(
+                device,
+                BlendState.Opaque,
+                DepthStencilState.Default,
+                RasterizerState.CullCounterClockwise);
         }
 
         /// <summary>

@@ -2,9 +2,19 @@
 {
     public enum RenderEffectTechniques
     {
+        /// <summary>
+        /// Renders the depth
+        /// </summary>
         ShadowMap,
-        GrayScale,
+
+        /// <summary>
+        /// Renders diffuse textures
+        /// </summary>
         Textured,
+
+        /// <summary>
+        /// Renders all material properties for deferred rendering
+        /// </summary>
         Deferred
     }
 }

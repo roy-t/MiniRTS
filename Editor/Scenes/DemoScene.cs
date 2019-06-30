@@ -3,7 +3,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
-using MiniEngine.Effects.DeviceStates;
 using MiniEngine.Pipeline.Lights.Components;
 using MiniEngine.Primitives;
 using MiniEngine.Units;
@@ -95,21 +94,6 @@ namespace MiniEngine.Scenes
                 var off = MathHelper.Clamp(since / 23.0f, 0f, 0.4f);
                 this.ambientLight.Color = new Color(off, off, off);
             }
-
-
-            var wireStateOn = new Seconds(21);
-            if(this.accumulator > wireStateOn)
-            {
-                GraphicsDeviceExtensions.Override = true;
-            }
-
-            var wireStateOff = new Seconds(24);
-            if (this.accumulator > wireStateOff)
-            {
-                GraphicsDeviceExtensions.Override = false;
-            }
-
-
 
             var secondState = new Seconds(26);
             if(this.accumulator > secondState)
