@@ -21,6 +21,7 @@ class ProceduralGenerationPanel(bpy.types.Panel):
         col.label("Scripts:")
         col.operator("mesh.make_tetrahedron", text="Add Tetrahedron")
         col.operator("mesh.make_turret", text="Add Turret")
+        col.operator("mesh.iterate_turret", text="Iterate Turret")
 
         col2 = layout.column(align=True)
         col2.label("Properties:")
@@ -41,6 +42,25 @@ class NewSeed(bpy.types.Operator):
     # end invoke
 
 # end NewSeed
+
+
+class IterateTurret(bpy.types.Operator):
+    bl_idname = "mesh.iterate_turret"
+    bl_label = "Iterate Turret"
+    bl_options = {"UNDO"}
+
+    def invoke(self, context, event):
+        for b in bpy.data.objects:
+            if b.name.startswith("TURRET_"):
+                self.report({"INFO"}, "Removing {0}".format(b.name))
+                bpy.data.objects.remove(b)
+
+        NewSeed.invoke(self, context, event)
+        MakeTurret.invoke(self, context, event)
+        return {"FINISHED"}
+    # end invoke
+
+# end IterateTurret
 
 
 class MakeTetrahedron(bpy.types.Operator):
@@ -65,14 +85,21 @@ class MakeTurret(bpy.types.Operator):
     def invoke(self, context, event):
         self.report({'INFO'}, "Building turret with seed: {0}"
                     .format(context.scene.seed))
-        primitives.createTurret(context.scene.seed)        
+        primitives.createTurret("TURRET_", context.scene.seed)
         return {"FINISHED"}
     # end invoke
 
 # end MakeTetrahedron
 
 
-classes = {ProceduralGenerationPanel, NewSeed, MakeTetrahedron, MakeTurret}
+classes = {
+    ProceduralGenerationPanel,
+    NewSeed,
+    MakeTetrahedron,
+    MakeTurret,
+    IterateTurret
+}
+
 dependencies = {primitives}
 
 
