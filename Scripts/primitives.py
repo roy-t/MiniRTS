@@ -9,6 +9,8 @@ def applyBoolean(operation, name, a, b):
     modifier = a.modifiers.new(type="BOOLEAN", name=name)
     modifier.object = b
     modifier.operation = operation
+
+    bpy.context.scene.objects.active = a
     bpy.ops.object.modifier_apply(modifier=name, apply_as="DATA")
 
     bpy.data.objects.remove(b)
@@ -37,19 +39,19 @@ def randomFloat(fMin, fMax):
 
 
 def createBody(prefix, builder):
-    minHeight = 0.5
-    maxHeight = 2
+    minHeight = 3
+    maxHeight = 4
     height = randomFloat(minHeight, maxHeight)
 
-    minBotRadius = 0.5
+    minBotRadius = 2.25
     maxBotRadius = 3
     botRadius = randomFloat(minBotRadius, maxBotRadius)
 
-    minTopRadius = botRadius * 0.5
-    maxTopRadius = botRadius * 1.25
+    minTopRadius = botRadius * 0.75
+    maxTopRadius = botRadius * 1.1
     topRadius = randomFloat(minTopRadius, maxTopRadius)
 
-    minVertices = 3
+    minVertices = 4
     maxVertices = 12
     vertices = random.randint(minVertices, maxVertices)
 
@@ -60,9 +62,31 @@ def createBody(prefix, builder):
         vertices=vertices,
         depth=height
     )
-
+    
     body = bpy.context.object
     body.name = "{0}body".format(prefix)
+
+    minBaseRadius = min(topRadius, botRadius)
+    minMountWidth = minBaseRadius * (0.4)
+    maxMountWidth = minBaseRadius * (0.9)
+    mountWidth = randomFloat(minMountWidth, maxMountWidth)
+
+    minMountHeight = height * 0.2
+    maxMountHeight = height * 0.8
+    mountHeight = randomFloat(minMountHeight, maxMountHeight)
+
+    offset = max(botRadius, topRadius)
+
+    builder.primitive_cube_add(
+        location=(-offset, 0, 0)
+    )
+    mount = bpy.context.object
+    mount.name = "{0}mount".format(prefix)
+    mount.scale[0] = max(botRadius, topRadius)
+    mount.scale[1] = mountWidth
+    mount.scale[2] = mountHeight * 0.5  # Z is up
+
+    applyBoolean("DIFFERENCE", "diff_body_mount", body, mount)
 
 
 def createTurret(prefix, seed):
@@ -78,8 +102,6 @@ def createTurret(prefix, seed):
     # height = randomFloat(minHeight, maxHeight)
     # radius = randomFloat(minRadius, maxRadius)
     # radiusBase = randomFloat(radius, radius + 2.0)
-
-    # bpy.ops.mesh_primitive_
 
     # bpy.ops.mesh.primitive_cylinder_add(
     #     radius=radiusBase,
