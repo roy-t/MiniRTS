@@ -5,7 +5,7 @@ import random
 
 
 def applyBoolean(operation, name, a, b):
-    """UNION, DIFFERENCE, or INTERSECT"""
+    """For operation use either UNION, DIFFERENCE, or INTERSECT"""
     modifier = a.modifiers.new(type="BOOLEAN", name=name)
     modifier.object = b
     modifier.operation = operation
@@ -53,7 +53,7 @@ def createTurret(seed):
         location=(0, 0, 0)
     )
 
-    base = bpy.data.objects['Cylinder']
+    base = bpy.context.object
     base.name = "Base"
 
     bpy.ops.mesh.primitive_cylinder_add(
@@ -62,7 +62,7 @@ def createTurret(seed):
         location=(0, 0, 0)
     )
 
-    torso = bpy.data.objects['Cylinder']
+    torso = bpy.context.object
     torso.name = "Torso"
 
     applyBoolean("DIFFERENCE", "diff_base_torso", torso, base)
