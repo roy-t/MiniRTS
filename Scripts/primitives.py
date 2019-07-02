@@ -4,16 +4,27 @@ import mathutils
 import random
 
 
+def setActive(activate):
+    bpy.context.scene.objects.active = activate
+    activate.select = True
+
+
 def applyBoolean(operation, name, a, b):
     """For operation use either UNION, DIFFERENCE, or INTERSECT"""
     modifier = a.modifiers.new(type="BOOLEAN", name=name)
     modifier.object = b
     modifier.operation = operation
 
-    bpy.context.scene.objects.active = a
+    setActive(a)
     bpy.ops.object.modifier_apply(modifier=name, apply_as="DATA")
 
     bpy.data.objects.remove(b)
+
+
+def placeOnGroundPlane(model):
+    setActive(model)
+    bpy.ops.object.origin_set(type="GEOMETRY_ORIGIN", center="BOUNDS")
+    model.location[2] = model.dimensions[2] / 2.0
 
 
 def createTetrahdron():
@@ -38,6 +49,12 @@ def randomFloat(fMin, fMax):
     return random.random() * (fMax - fMin) + fMin
 
 
+def randomRatio(value, minFactor, maxFactor):
+    fMin = value * minFactor
+    fMax = value * maxFactor
+    return randomFloat(fMin, fMax)
+
+
 def createBody(prefix, builder):
     minHeight = 3
     maxHeight = 4
@@ -53,7 +70,7 @@ def createBody(prefix, builder):
 
     minVertices = 4
     maxVertices = 12
-    vertices = random.randint(minVertices, maxVertices)
+    vertices = random.randrange(minVertices, maxVertices, 2)
 
     builder.primitive_cone_add(
         location=(0, 0, 0),
@@ -62,9 +79,12 @@ def createBody(prefix, builder):
         vertices=vertices,
         depth=height
     )
-    
+
     body = bpy.context.object
     body.name = "{0}body".format(prefix)
+
+    rotation = math.pi / vertices
+    body.rotation_euler[2] = rotation * random.randint(0, 1)
 
     minBaseRadius = min(topRadius, botRadius)
     minMountWidth = minBaseRadius * (0.4)
@@ -88,36 +108,45 @@ def createBody(prefix, builder):
 
     applyBoolean("DIFFERENCE", "diff_body_mount", body, mount)
 
+    return body
+
+
+def createNeck(prefix, builder, body):
+    bodyRadius = min(body.dimensions[0], body.dimensions[1]) / 2.0
+    neckRadius = randomRatio(bodyRadius, 0.5, 0.8)
+
+    height = randomRatio(body.dimensions[2], 0.3, 0.6)
+
+    vertices = random.randrange(4, 12, 2)
+
+    builder.primitive_cone_add(
+        location=(0, 0, -height / 2.0),
+        depth=height,
+        radius1=neckRadius,
+        radius2=neckRadius,
+        vertices=vertices
+    )
+
+    neck = bpy.context.object
+    neck.name = "{0}neck".format(prefix)
+
+    rotation = math.pi / vertices
+    neck.rotation_euler[2] = rotation * random.randint(0, 1)
+
+    return neck
+
 
 def createTurret(prefix, seed):
     random.seed(seed)
-
     builder = bpy.ops.mesh
-    createBody(prefix, builder)
-    # maxHeight = 10.0
-    # minHeight = 6.0
-    # minRadius = 1.0
-    # maxRadius = 4.0
 
-    # height = randomFloat(minHeight, maxHeight)
-    # radius = randomFloat(minRadius, maxRadius)
-    # radiusBase = randomFloat(radius, radius + 2.0)
+    # We build the turret from top to bottom, always placing the part
+    # that was just build with its base on the ground plane
 
-    # bpy.ops.mesh.primitive_cylinder_add(
-    #     radius=radiusBase,
-    #     location=(0, 0, 0)
-    # )
+    body = createBody(prefix, builder)
+    placeOnGroundPlane(body)
 
-    # base = bpy.context.object
-    # base.name = "Base"
+    neck = createNeck(prefix, builder, body)
+    applyBoolean("UNION", "union_body_neck", body, neck)
 
-    # bpy.ops.mesh.primitive_cylinder_add(
-    #     radius=radius,
-    #     depth=height,
-    #     location=(0, 0, 0)
-    # )
-
-    # torso = bpy.context.object
-    # torso.name = "Torso"
-
-    # applyBoolean("DIFFERENCE", "diff_base_torso", torso, base)
+    placeOnGroundPlane(body)
