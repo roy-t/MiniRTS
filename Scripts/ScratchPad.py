@@ -12,16 +12,21 @@ from colorsys import hls_to_rgb
 
 # Inspired by: https://github.com/a1studmuffin/SpaceshipGenerator
 
+# Get all faces connected to the given face
+def get_connected_faces(face):
+    connected_faces = []
+    for edge in face.edges:
+        for connected_face in edge.link_faces:
+            if connected_face != face:
+                connected_faces.append(connected_face)
 
-# Extrudes a face along its normal by length units.
-# Returns the new face, and optionally fills out faces_list
-# with all the additional side faces created from the extrusion.
-def extrude_face(bm, face, length, faces_list=None):
+    return connected_faces        
+
+
+# Extrudes a face along its normal by length units, returns the new face
+def extrude_face(bm, face, length):
     result = bmesh.ops.extrude_discrete_faces(bm, faces=[face])
-    new_faces = result['faces']
-    if(faces_list != None):
-        faces_list += new_faces[:]
-    
+    new_faces = result['faces']        
     new_face = new_faces[0]
     bmesh.ops.translate(bm, vec=new_face.normal * length, verts=new_face.verts)
     return new_face
@@ -40,6 +45,15 @@ def ribbed_extrude_face(bm, face, length, rib_count=3, rib_scale=0.9):
         scale_face(bm, new_face, 1 / rib_scale, 1 / rib_scale, 1 / rib_scale)
         new_face = extrude_face(bm, new_face, rib_length * 0.25)
     return new_face
+
+# Returns the rough length and width of a quad face.
+# Assumes a perfect rectangle, but close enough.
+def get_face_width_and_height(face):
+    if not face.is_valid or len(face.verts[:]) < 4:
+        return -1, -1
+    width = (face.verts[2].co - face.verts[1].co).length
+    height = (face.verts[0].co - face.verts[1].co).length
+    return width, height
 
 
 # Scales a face in local face space
@@ -87,7 +101,7 @@ def generate_base(bm, top_face):
     for i in segment_range:                
         segment_length = uniform(0.2, 0.6)
         
-        if random() > 0.25:  
+        if random() > 0.45:  
             top_face = extrude_face(bm, top_face, segment_length)
             
             segment_scale = uniform(0.6, 1.4)
@@ -109,12 +123,51 @@ def generate_bearings(bm, top_face):
     
     return (top_face, bearing_scale)
 
+
 def generate_top(bm, top_face, bearing_scale):
     inv = 1.0 / bearing_scale
     top_face = extrude_face(bm, top_face, 0)
     scale_face(bm, top_face, inv, inv, 1)
-    top_face = extrude_face(bm, top_face, 1)
-    return top_face
+    
+    top_face = extrude_face(bm, top_face, uniform(0.5, 1.25))
+    faces_list = get_connected_faces(top_face)
+    return (top_face, faces_list)
+
+def add_nozzle(bm, face):
+    face_width, face_height = get_face_width_and_height(face)
+    nozzle_size = uniform(0.1, 0.25) * min(face_width, face_height)
+    nozzle_depth = uniform(0.5, 1.0)
+    
+    segments = randrange(1, 3)
+    segment_range = range(segments)
+    for i in segment_range:                
+        segment_length = uniform(0.1, 0.5)
+        
+        if random() > 0.45:  
+            face = extrude_face(bm, face, segment_length)
+            
+            segment_scale = nozzle_size * 2 * uniform(2.0, 3.5)
+            scale_face(bm, face, segment_scale, segment_scale, 1)
+        else:
+            rib_scale = uniform(0.75, 0.95)
+            rib_count = randint(2, 4)
+            face = ribbed_extrude_face(bm, face, segment_length, rib_count, rib_scale)
+        
+
+    sphere_matrix = get_face_matrix(face,
+                                    face.calc_center_bounds() + face.normal * nozzle_depth * 0.5)
+
+    result = bmesh.ops.create_cone(bm,
+                                   cap_ends = False,
+                                   segments = 12,
+                                   diameter1 = nozzle_size,
+                                   diameter2 = uniform(0.7, 1.3) * nozzle_size,
+                                   depth = nozzle_depth,
+                                   matrix = sphere_matrix)
+     
+    result                                
+    return face
+    
 
 def generate():
     current_seed = randint(0, pow(2, 31))
@@ -149,7 +202,11 @@ def generate():
     
     top_face = generate_base(bm, top_face)
     (top_face, bearing_scale) = generate_bearings(bm, top_face)
-    top_face = generate_top(bm, top_face, bearing_scale)
+    (top_face, side_faces) = generate_top(bm, top_face, bearing_scale)
+    
+    for face in side_faces[:]:
+        if face.normal.x > 0.75:
+            add_nozzle(bm, face)
                     
     # Finish up, write the bmesh into a new mesh
     mesh = bpy.data.meshes.new('Mesh')
@@ -177,6 +234,9 @@ def generate():
     bevel_modifier.segments = 2
     bevel_modifier.profile = uniform(0.0, 0.5)
     bevel_modifier.limit_method ='NONE'
+    
+    solidify_modifier = ob.modifiers.new('Solidify', 'SOLIDIFY')
+    solidify_modifier.thickness = 0.03
 #    bpy.ops.object.modifier_apply(modifier='Bevel', apply_as="DATA")
 
 
