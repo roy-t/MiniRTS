@@ -28,7 +28,7 @@ def placeOnGroundPlane(model):
     model.location[2] = model.dimensions[2] / 2.0
 
 
-def createTetrahdron(): 
+def createTetrahdron():
     Vertices = \
         [
             Vector((0, -1 / math.sqrt(3), 0)),
