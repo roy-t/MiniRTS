@@ -82,12 +82,18 @@ DeferredPixelShaderOutput DeferredMainPS(DeferredVertexShaderOutput input)
 
     // Shininess is stored in textures with black is most shiney, and white is non-shiney
     // make 1.0f most shiney here
-    output.Normal.a = 1.0f - specularPower;
+    float shiney = 1.0f - specularPower;
+    output.Normal.a = shiney;
 
     output.Depth = (input.Depth.x / input.Depth.y);
 
     // Reflections
-    output.Color = SampleReflection(input.ScreenPosition, output.Depth, normal);
+
+    output.Color.rgb = (output.Color.rgb * (1.0f - shiney)) + (SampleReflection(input.ScreenPosition, output.Depth, normal).rgb * shiney);
+
+
+    //output.Color.rgba += SampleReflection(input.ScreenPosition, output.Depth, normal).rgba * (1.0f - specularPower);
+    //output.Color.rgb = shiney;
 
     return output;
 }

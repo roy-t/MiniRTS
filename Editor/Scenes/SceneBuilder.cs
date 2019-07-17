@@ -21,6 +21,8 @@ namespace MiniEngine.Scenes
     public sealed class SceneBuilder
     {
         private readonly EntityController EntityController;
+        private readonly SkyboxBuilder SkyboxBuilder;
+
         private readonly LightsFactory LightsFactory;
         private readonly OpaqueModelFactory OpaqueModelFactory;
         private readonly TransparentModelFactory TransparentModelFactory;
@@ -44,6 +46,7 @@ namespace MiniEngine.Scenes
 
         public SceneBuilder(GraphicsDevice device,
             EntityController entityController,
+            SkyboxBuilder skyboxBuilder,
             LightsFactory lightsFactory,
             OpaqueModelFactory opaqueModelFactory,
             TransparentModelFactory transparentModelFactory,            
@@ -56,6 +59,7 @@ namespace MiniEngine.Scenes
             PipelineBuilder pipelineBuilder)
         {
             this.EntityController = entityController;
+            this.SkyboxBuilder = skyboxBuilder;
             this.LightsFactory = lightsFactory;
             this.OpaqueModelFactory = opaqueModelFactory;
             this.TransparentModelFactory = transparentModelFactory;
@@ -65,19 +69,7 @@ namespace MiniEngine.Scenes
             this.DynamicTextureFactory = dynamicTextureFactory;
             this.DebugInfoFactory = debugInfoFactory;
             this.WaypointFactory = waypointFactory;
-            this.PipelineBuilder = pipelineBuilder;
-
-            this.NullSkybox = new TextureCube(device, 1, false, SurfaceFormat.Color);
-            this.NullSkybox.SetData(CubeMapFace.PositiveX, new Color[] { Color.Black });
-            this.NullSkybox.SetData(CubeMapFace.NegativeX, new Color[] { Color.Black });
-            this.NullSkybox.SetData(CubeMapFace.PositiveY, new Color[] { Color.Black });
-            this.NullSkybox.SetData(CubeMapFace.NegativeY, new Color[] { Color.Black });
-            this.NullSkybox.SetData(CubeMapFace.PositiveZ, new Color[] { Color.Black });
-            this.NullSkybox.SetData(CubeMapFace.NegativeZ, new Color[] { Color.Black });
-
-
-
-            this.SponzaSkybox = new TextureCube(device, 512, false, SurfaceFormat.Color);
+            this.PipelineBuilder = pipelineBuilder;           
         }        
 
         public void LoadContent(ContentManager content)
@@ -93,6 +85,8 @@ namespace MiniEngine.Scenes
             this.song = content.Load<Song>(@"Music\Zemdens");
 
 
+            this.NullSkybox = this.SkyboxBuilder.BuildSkyBox(Color.Black);
+
             var back = content.Load<Texture2D>(@"Scenes\Sponza\Skybox\back");
             var down = content.Load<Texture2D>(@"Scenes\Sponza\Skybox\down");
             var front = content.Load<Texture2D>(@"Scenes\Sponza\Skybox\front");
@@ -100,24 +94,13 @@ namespace MiniEngine.Scenes
             var right = content.Load<Texture2D>(@"Scenes\Sponza\Skybox\right");
             var up = content.Load<Texture2D>(@"Scenes\Sponza\Skybox\up");
 
-            this.SetData(this.SponzaSkybox, CubeMapFace.PositiveZ, back);
-            this.SetData(this.SponzaSkybox, CubeMapFace.NegativeY, down);
-            this.SetData(this.SponzaSkybox, CubeMapFace.NegativeZ, front);
-            this.SetData(this.SponzaSkybox, CubeMapFace.NegativeX, left);
-            this.SetData(this.SponzaSkybox, CubeMapFace.PositiveX, right);
-            this.SetData(this.SponzaSkybox, CubeMapFace.PositiveY, up);
+            this.SponzaSkybox = this.SkyboxBuilder.BuildSkyBox(back, down, front, left, right, up);
         }
-
-        private void SetData(TextureCube cube, CubeMapFace face, Texture2D data)
-        {
-            var colors = new Color[data.Width * data.Height];
-            data.GetData(colors);
-            cube.SetData(face, colors);
-        }
+       
 
         public Song LoadMusic() => this.song;
 
-        public TextureCube NullSkybox { get; }
+        public TextureCube NullSkybox { get; private set;}
 
         public TextureCube SponzaSkybox { get; private set; }
 
