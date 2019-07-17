@@ -53,6 +53,7 @@ namespace ModelExtension
             {
                 // Look up all materials and link them to the model
                 MaterialLinker.Bind(
+                    context,
                     input,
                     Path.GetFullPath(this.NormalMapFallback),
                     Path.GetFullPath(this.SpecularMapFallback),

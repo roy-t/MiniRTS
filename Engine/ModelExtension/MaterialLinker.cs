@@ -5,12 +5,14 @@ namespace ModelExtension
 {
     public static class MaterialLinker
     {
-        public static void Bind(NodeContent node, string defaultNormalTexture, string defaultSpecularTexture, string defaultMaskTexture, string defaultReflectionTexture)
+        public static void Bind(ContentProcessorContext context, NodeContent node, string defaultNormalTexture, string defaultSpecularTexture, string defaultMaskTexture, string defaultReflectionTexture)
         {
             if (node is MeshContent mesh)
-            {
+            {                
                 var modelPath = mesh.Identity.SourceFilename;
                 var lookup = new MaterialDescriptionFile(modelPath);
+
+                context.AddDependency(lookup.File);
 
                 foreach (var geometry in mesh.Geometry)
                 {
@@ -58,7 +60,7 @@ namespace ModelExtension
 
             foreach (var child in node.Children)
             {
-                Bind(child, defaultNormalTexture, defaultSpecularTexture, defaultMaskTexture, defaultReflectionTexture);
+                Bind(context, child, defaultNormalTexture, defaultSpecularTexture, defaultMaskTexture, defaultReflectionTexture);
             }
         }
     }
