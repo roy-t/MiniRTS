@@ -35,7 +35,7 @@ namespace MiniEngine.Pipeline.Models.Batches
             for (var i = 0; i < this.Models.Count; i++)
             {
                 var modelPose = this.Models[i];
-                this.DrawModel(technique, modelPose.Model, modelPose.Pose.Matrix, this.ViewPoint);
+                this.DrawModel(technique, modelPose.Model, modelPose.WorldMatrix, this.ViewPoint);
             }
         }
 

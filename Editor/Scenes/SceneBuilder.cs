@@ -37,6 +37,7 @@ namespace MiniEngine.Scenes
         private Model sponza;
         private Model plane;
         private Model lizard;
+        private Model cube;
         private Texture2D explosion;
         private Texture2D explosion2;
         private Texture2D smoke;
@@ -75,6 +76,7 @@ namespace MiniEngine.Scenes
         public void LoadContent(ContentManager content)
         {
             this.sponza = content.Load<Model>(@"Scenes\Sponza\Sponza");
+            this.cube = content.Load<Model>(@"Scenes\Primitives\Cube");
             this.plane = content.Load<Model>(@"Scenes\Sponza\Plane");
             this.lizard = content.Load<Model>(@"Scenes\Zima\Lizard\lizard");
             this.explosion = content.Load<Texture2D>(@"Particles\Explosion");
@@ -131,6 +133,14 @@ namespace MiniEngine.Scenes
 
             return entity;
         }     
+
+        public OpaqueModel BuildCube(Pose pose)
+        {
+            var entity = this.EntityController.CreateEntity();
+            var model = this.OpaqueModelFactory.Construct(entity, this.cube, pose);
+
+            return model;
+        }
         
         public ShadowCastingLight BuildLionSpotLight()
         {

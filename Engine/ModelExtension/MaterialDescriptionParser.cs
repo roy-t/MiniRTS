@@ -1,8 +1,8 @@
-﻿using IniParser;
-using IniParser.Model;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using IniParser;
+using IniParser.Model;
 
 namespace ModelExtension
 {
@@ -58,7 +58,13 @@ namespace ModelExtension
                     mask = Path.GetFullPath(Path.Combine(this.BasePath, config.RelativePath, maskLookuUp));
                 }
 
-                dictionary.Add(diffuse, new MaterialDescription(diffuse, normal, specular, mask));
+                string reflection = null;
+                if(lookup.TryGet(MaterialType.Reflection, tuple.Value, out var reflectionLookup))
+                {
+                    reflection = Path.GetFullPath(Path.Combine(this.BasePath, config.RelativePath, reflectionLookup));
+                }
+
+                dictionary.Add(diffuse, new MaterialDescription(diffuse, normal, specular, mask, reflection));
             }
 
             return dictionary;
@@ -118,6 +124,7 @@ namespace ModelExtension
                         MaterialType.Normal,
                         MaterialType.Specular,
                         MaterialType.Mask,
+                        MaterialType.Reflection,
                     };
 
                     return new ParserConfiguration(relativePath, values);
@@ -165,7 +172,8 @@ namespace ModelExtension
             Diffuse,
             Normal,
             Specular,
-            Mask
+            Mask,
+            Reflection
         }
     }
 }

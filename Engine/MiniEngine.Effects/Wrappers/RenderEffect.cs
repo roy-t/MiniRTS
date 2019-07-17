@@ -56,6 +56,11 @@ namespace MiniEngine.Effects.Wrappers
             set => this.effect.Parameters["NormalMap"].SetValue(value);
         }
 
+        public Texture2D ReflectionMap
+        {
+            set => this.effect.Parameters["ReflectionMap"].SetValue(value);
+        }
+
         public Texture2D Mask
         {
             set => this.effect.Parameters["Mask"].SetValue(value);

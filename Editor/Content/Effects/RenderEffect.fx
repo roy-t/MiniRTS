@@ -42,6 +42,18 @@ sampler normalSampler = sampler_state
     AddressV = Wrap;
 };
 
+texture ReflectionMap;
+sampler reflectionSampler = sampler_state
+{
+    Texture = (ReflectionMap);
+    MinFilter = ANISOTROPIC;
+    MagFilter = ANISOTROPIC;
+    MipFilter = LINEAR;
+    MaxAnisotropy = 16;
+    AddressU = Wrap;
+    AddressV = Wrap;
+};
+
 texture Mask;
 sampler maskSampler = sampler_state
 {

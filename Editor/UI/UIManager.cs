@@ -66,11 +66,12 @@ namespace MiniEngine.UI
 
             if (sceneSelector.CurrentScene == null)
             {
-                sceneSelector.SwitchScenes(sceneSelector.Scenes.First());
-                this.setCamera = true;
+                sceneSelector.SwitchScenes(sceneSelector.Scenes.First());                
             }
 
-            for(var i = 0; i < this.Menus.Count; i++)
+            this.setCamera = true;
+
+            for (var i = 0; i < this.Menus.Count; i++)
             {
                 this.Menus[i].State = this.State;
             }

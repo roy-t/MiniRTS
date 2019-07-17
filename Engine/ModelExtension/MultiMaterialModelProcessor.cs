@@ -1,11 +1,11 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content.Pipeline;
-using Microsoft.Xna.Framework.Content.Pipeline.Graphics;
-using Microsoft.Xna.Framework.Content.Pipeline.Processors;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content.Pipeline;
+using Microsoft.Xna.Framework.Content.Pipeline.Graphics;
+using Microsoft.Xna.Framework.Content.Pipeline.Processors;
 
 namespace ModelExtension
 {
@@ -22,7 +22,7 @@ namespace ModelExtension
             };
 
         [DisplayName("Process Textures")]
-        [Description("Searches for a Material Description file (.mat) and processes the related textures")]
+        [Description("Searches for a Material Description file (.ini) and processes the related textures")]
         [DefaultValue(true)]
         public virtual bool ProcessTextures { get; set; } = true;
 
@@ -34,6 +34,9 @@ namespace ModelExtension
 
         [DisplayName("Mask Fallback")]
         public string MaskFallback { get; set; } = "NeutralMask.tga";
+
+        [DisplayName("Reflection Fallback")]
+        public string ReflectionFallback { get; set; } = "NeutralReflection.tga";
 
         [DisplayName("Effect File")]
         [Description("The effect file which shaders to apply to the model")]
@@ -53,7 +56,8 @@ namespace ModelExtension
                     input,
                     Path.GetFullPath(this.NormalMapFallback),
                     Path.GetFullPath(this.SpecularMapFallback),
-                    Path.GetFullPath(this.MaskFallback));
+                    Path.GetFullPath(this.MaskFallback),
+                    Path.GetFullPath(this.ReflectionFallback));
             }
 
             return base.Process(input, context);
@@ -98,13 +102,14 @@ namespace ModelExtension
             var deferredShadingMaterial =
                 new EffectMaterialContent { Effect = new ExternalReference<EffectContent>(this.EffectFile) };
 
-            // Copy the textures in the original material to the new normal mapping
+            // Copy the textures in the original material to the new
             // material, if they are relevant to our renderer. 
             foreach (var texture
                 in material.Textures)
             {
                 if (texture.Key == "Texture" ||
                     texture.Key == "NormalMap" ||
+                    texture.Key == "ReflectionMap" ||
                     texture.Key == "SpecularMap" ||
                     texture.Key == "Mask")
                 {

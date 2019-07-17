@@ -10,7 +10,7 @@
 
 #-------------------------------- References --------------------------------#
 
-/reference:..\..\Engine\ModelExtension\bin\x64\Release\ModelExtension.dll
+/reference:..\..\Engine\ModelExtension\bin\x64\Debug\ModelExtension.dll
 
 #---------------------------------- Content ---------------------------------#
 
@@ -247,13 +247,25 @@
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
+/processorParam:ColorKeyEnabled=False
 /processorParam:GenerateMipmaps=False
 /processorParam:PremultiplyAlpha=True
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:NeutralNormal.tga
+
+#begin NeutralReflection.tga
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:NeutralReflection.tga
 
 #begin NeutralSpecular.tga
 /importer:TextureImporter
@@ -310,6 +322,7 @@
 /processorParam:SpecularMapFallback=NeutralSpecular.tga
 /processorParam:NormalMapFallback=NeutralNormal.tga
 /processorParam:MaskFallback=NeutralMask.tga
+/processorParam:ReflectionFallback=NeutralReflection.tga
 /processorParam:EffectFile=Effects/RenderEffect.fx
 /processorParam:GenerateTangentFrames=True
 /processorParam:ColorKeyColor=255,0,255,255
@@ -334,6 +347,7 @@
 /processorParam:SpecularMapFallback=NeutralSpecular.tga
 /processorParam:NormalMapFallback=NeutralNormal.tga
 /processorParam:MaskFallback=NeutralMask.tga
+/processorParam:ReflectionFallback=NeutralReflection.tga
 /processorParam:EffectFile=Effects/RenderEffect.fx
 /processorParam:GenerateTangentFrames=True
 /processorParam:ColorKeyColor=255,0,255,255
@@ -358,6 +372,7 @@
 /processorParam:SpecularMapFallback=NeutralSpecular.tga
 /processorParam:NormalMapFallback=NeutralNormal.tga
 /processorParam:MaskFallback=NeutralMask.tga
+/processorParam:ReflectionFallback=NeutralReflection.tga
 /processorParam:EffectFile=Effects/RenderEffect.fx
 /processorParam:GenerateTangentFrames=True
 /processorParam:ColorKeyColor=255,0,255,255
@@ -382,6 +397,7 @@
 /processorParam:SpecularMapFallback=NeutralSpecular.tga
 /processorParam:NormalMapFallback=NeutralNormal.tga
 /processorParam:MaskFallback=NeutralMask.tga
+/processorParam:ReflectionFallback=NeutralReflection.tga
 /processorParam:EffectFile=Effects/RenderEffect.fx
 /processorParam:GenerateTangentFrames=True
 /processorParam:ColorKeyColor=255,0,255,255
@@ -478,6 +494,7 @@
 /processorParam:SpecularMapFallback=NeutralSpecular.tga
 /processorParam:NormalMapFallback=NeutralNormal.tga
 /processorParam:MaskFallback=NeutralMask.tga
+/processorParam:ReflectionFallback=NeutralReflection.tga
 /processorParam:EffectFile=Effects/RenderEffect.fx
 /processorParam:GenerateTangentFrames=True
 /processorParam:ColorKeyColor=255,0,255,255
@@ -502,6 +519,7 @@
 /processorParam:SpecularMapFallback=NeutralSpecular.tga
 /processorParam:NormalMapFallback=NeutralNormal.tga
 /processorParam:MaskFallback=NeutralMask.tga
+/processorParam:ReflectionFallback=NeutralReflection.tga
 /processorParam:EffectFile=Effects/RenderEffect.fx
 /processorParam:GenerateTangentFrames=True
 /processorParam:ColorKeyColor=255,0,255,255
@@ -526,6 +544,7 @@
 /processorParam:SpecularMapFallback=NeutralSpecular.tga
 /processorParam:NormalMapFallback=NeutralNormal.tga
 /processorParam:MaskFallback=NeutralMask.tga
+/processorParam:ReflectionFallback=NeutralReflection.tga
 /processorParam:EffectFile=Effects/RenderEffect.fx
 /processorParam:GenerateTangentFrames=True
 /processorParam:ColorKeyColor=255,0,255,255
@@ -550,6 +569,7 @@
 /processorParam:SpecularMapFallback=NeutralSpecular.tga
 /processorParam:NormalMapFallback=NeutralNormal.tga
 /processorParam:MaskFallback=NeutralMask.tga
+/processorParam:ReflectionFallback=NeutralReflection.tga
 /processorParam:EffectFile=Effects/RenderEffect.fx
 /processorParam:GenerateTangentFrames=True
 /processorParam:ColorKeyColor=255,0,255,255
@@ -574,6 +594,7 @@
 /processorParam:SpecularMapFallback=NeutralSpecular.tga
 /processorParam:NormalMapFallback=NeutralNormal.tga
 /processorParam:MaskFallback=NeutralMask.tga
+/processorParam:ReflectionFallback=NeutralReflection.tga
 /processorParam:EffectFile=Effects/RenderEffect.fx
 /processorParam:GenerateTangentFrames=True
 /processorParam:ColorKeyColor=255,0,255,255

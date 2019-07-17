@@ -47,7 +47,6 @@ struct DeferredPixelShaderOutput
     float Depth : COLOR2;
 };
 
-
 float4 SampleReflection(float4 screenPosition, float depth, float3 normal)
 {
     float2 texCoord = ToTextureCoordinates(screenPosition.xy, screenPosition.w);
@@ -63,37 +62,38 @@ DeferredPixelShaderOutput DeferredMainPS(DeferredVertexShaderOutput input)
 {
     DeferredPixelShaderOutput output = (DeferredPixelShaderOutput)0;
     float2 texCoord = input.TexCoord;
-    
+
     float mask = tex2D(maskSampler, texCoord).r;
     clip(mask - 0.05f);
 
     // Diffuse    
     output.Color = tex2D(diffuseSampler, texCoord);
-    clip(output.Color.a - 0.01f);    
-   
+    clip(output.Color.a - 0.01f);
+
 
     // Normal   
     float3 normal = UnpackNormal(tex2D(normalSampler, texCoord).xyz);
     normal = normalize(mul(normal, input.tangentToWorld));
     output.Normal.rgb = PackNormal(normal);
-    
+
     // Specular
     float specularPower = tex2D(specularSampler, texCoord).r;
 
     // Shininess is stored in textures with black is most shiney, and white is non-shiney
-    // make 1.0f most shiney here
-    float shiney = 1.0f - specularPower;
-    output.Normal.a = shiney;
+    // make 1.0f most shiney here   
+    output.Normal.a = 1.0f - specularPower;
 
     output.Depth = (input.Depth.x / input.Depth.y);
 
     // Reflections
-
-    output.Color.rgb = (output.Color.rgb * (1.0f - shiney)) + (SampleReflection(input.ScreenPosition, output.Depth, normal).rgb * shiney);
-
-
-    //output.Color.rgba += SampleReflection(input.ScreenPosition, output.Depth, normal).rgba * (1.0f - specularPower);
-    //output.Color.rgb = shiney;
+    float3 reflectionFactor = tex2D(reflectionSampler, texCoord).rgb;
+    float l = saturate(length(reflectionFactor) > 0);
+    if (l > 0)
+    {
+        // The more reflective this part is, the bigger part of its color will be the reflection color
+        float3 reflection = SampleReflection(input.ScreenPosition, output.Depth, normal).rgb;
+        output.Color.rgb = lerp(output.Color.rgb, reflectionFactor * reflection, l);
+    }
 
     return output;
 }

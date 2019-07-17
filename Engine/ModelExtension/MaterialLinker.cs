@@ -5,7 +5,7 @@ namespace ModelExtension
 {
     public static class MaterialLinker
     {
-        public static void Bind(NodeContent node, string defaultNormalTexture, string defaultSpecularTexture, string defaultMaskTexture)
+        public static void Bind(NodeContent node, string defaultNormalTexture, string defaultSpecularTexture, string defaultMaskTexture, string defaultReflectionTexture)
         {
             if (node is MeshContent mesh)
             {
@@ -41,6 +41,12 @@ namespace ModelExtension
                                 string.IsNullOrEmpty(description.Mask)
                                     ? new ExternalReference<TextureContent>(defaultMaskTexture)
                                     : new ExternalReference<TextureContent>(description.Mask));
+
+                            geometry.Material.Textures.Add(
+                                "ReflectionMap",
+                                string.IsNullOrEmpty(description.Reflection)
+                                    ? new ExternalReference<TextureContent>(defaultReflectionTexture)
+                                    : new ExternalReference<TextureContent>(description.Reflection));
                         }
                     }
                     else
@@ -52,7 +58,7 @@ namespace ModelExtension
 
             foreach (var child in node.Children)
             {
-                Bind(child, defaultNormalTexture, defaultSpecularTexture, defaultMaskTexture);
+                Bind(child, defaultNormalTexture, defaultSpecularTexture, defaultMaskTexture, defaultReflectionTexture);
             }
         }
     }

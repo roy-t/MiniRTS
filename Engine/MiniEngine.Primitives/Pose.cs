@@ -40,13 +40,13 @@ namespace MiniEngine.Primitives
             this.Matrix = Recompute(this.Translation, this.Scale, this.Yaw, this.Pitch, this.Roll);
         }
 
-        public void Resize(Vector3 scale)
+        public void SetScale(Vector3 scale)
         {
             this.Scale = scale;
             this.Matrix = Recompute(this.Translation, this.Scale, this.Yaw, this.Pitch, this.Roll);
         }
 
-        public void Resize(float scale) => this.Resize(Vector3.One * scale);
+        public void SetScale(float scale) => this.SetScale(Vector3.One * scale);
 
         private static Matrix Recompute(Vector3 position, Vector3 scale, float yaw, float pitch, float roll)
         {
