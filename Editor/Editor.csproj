@@ -54,7 +54,6 @@
     <Compile Include="Cutscene\CutsceneState.cs" />
     <Compile Include="Cutscene\Waypoint.cs" />
     <Compile Include="Cutscene\WaypointFactory.cs" />
-    <Compile Include="Generators\TurretGenerator.cs" />
     <Compile Include="Rendering\LightPipelineSettings.cs" />
     <Compile Include="Rendering\ModelPipelineSettings.cs" />
     <Compile Include="Rendering\PipelineBuilder.cs" />
@@ -72,7 +71,6 @@
     <Compile Include="Input\MouseInput.cs" />
     <Compile Include="Rendering\DeferredRenderPipeline.cs" />
     <Compile Include="UI\DebugMenu.cs" />
-    <Compile Include="UI\GenerateMenu.cs" />
     <Compile Include="UI\IMenu.cs" />
     <Compile Include="UI\State\DebugState.cs" />
     <Compile Include="UI\State\EditorState.cs" />

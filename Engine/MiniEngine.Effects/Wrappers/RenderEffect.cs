@@ -31,6 +31,16 @@ namespace MiniEngine.Effects.Wrappers
             set => this.effect.Parameters["Projection"].SetValue(value);
         }
 
+        public Matrix InverseViewProjection
+        {
+            set => this.effect.Parameters["InverseViewProjection"].SetValue(value);
+        }
+
+        public Vector3 CameraPosition
+        {
+            set => this.effect.Parameters["CameraPosition"].SetValue(value);
+        }
+
         public Texture2D DiffuseMap
         {
             set => this.effect.Parameters["Texture"].SetValue(value);
@@ -49,6 +59,11 @@ namespace MiniEngine.Effects.Wrappers
         public Texture2D Mask
         {
             set => this.effect.Parameters["Mask"].SetValue(value);
+        }
+
+        public TextureCube Skybox
+        {
+            set => this.effect.Parameters["Skybox"].SetValue(value);
         }
 
         public void Apply(RenderEffectTechniques technique)

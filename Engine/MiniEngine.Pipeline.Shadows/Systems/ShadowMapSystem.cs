@@ -26,6 +26,8 @@ namespace MiniEngine.Pipeline.Shadows.Systems
         private readonly IComponentContainer<ShadowMap> ShadowMaps;
         private readonly IMeterRegistry MeterRegistry;
 
+        private readonly TextureCube NullSkybox;
+
         public ShadowMapSystem(
             GraphicsDevice device,
             IComponentContainer<ShadowMap> shadowMaps,
@@ -42,6 +44,14 @@ namespace MiniEngine.Pipeline.Shadows.Systems
             this.MeterRegistry.CreateGauge(ShadowMapCounter);
             this.MeterRegistry.CreateGauge(ShadowMapTotal);
             this.MeterRegistry.CreateGauge(ShadowMapStep, "step");
+
+            this.NullSkybox = new TextureCube(device, 1, false, SurfaceFormat.Color);
+            this.NullSkybox.SetData(CubeMapFace.PositiveX, new Color[] { Color.White });
+            this.NullSkybox.SetData(CubeMapFace.NegativeX, new Color[] { Color.White });
+            this.NullSkybox.SetData(CubeMapFace.PositiveY, new Color[] { Color.White });
+            this.NullSkybox.SetData(CubeMapFace.NegativeY, new Color[] { Color.White });
+            this.NullSkybox.SetData(CubeMapFace.PositiveZ, new Color[] { Color.White });
+            this.NullSkybox.SetData(CubeMapFace.NegativeZ, new Color[] { Color.White });
         }
         
         public void RenderShadowMaps(GBuffer gBuffer)
@@ -52,7 +62,7 @@ namespace MiniEngine.Pipeline.Shadows.Systems
             for (var iMap = 0; iMap < this.ShadowMaps.Count; iMap++)
             {
                 var shadowMap = this.ShadowMaps[iMap];
-                var modelBatchList = this.ModelSystem.ComputeBatches(shadowMap.ViewPoint);
+                var modelBatchList = this.ModelSystem.ComputeBatches(shadowMap.ViewPoint, this.NullSkybox);
 
                 this.MeterRegistry.StartGauge(ShadowMapStep);
                 {

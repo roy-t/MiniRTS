@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace MiniEngine.Primitives.Cameras
 {
-    public sealed class PerspectiveCamera : IMovableViewPoint
+    public sealed class PerspectiveCamera : IViewPoint
     {
         private const float Epsilon = 0.001f;
 

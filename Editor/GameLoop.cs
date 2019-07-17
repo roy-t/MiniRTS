@@ -71,7 +71,9 @@ namespace MiniEngine
             this.Window.Title +=
                 $" Camera ({this.camera.Position.X:F2}, {this.camera.Position.Y:F2}, {this.camera.Position.Z:F2})";
 
-            var result = this.renderPipeline.Render(this.camera, (float)gameTime.ElapsedGameTime.TotalSeconds);
+
+            var skybox = this.sceneSelector.CurrentScene.Skybox;
+            var result = this.renderPipeline.Render(this.camera, (float)gameTime.ElapsedGameTime.TotalSeconds, skybox);
 
             this.GraphicsDevice.SetRenderTarget(null);
             this.GraphicsDevice.Clear(Color.CornflowerBlue);

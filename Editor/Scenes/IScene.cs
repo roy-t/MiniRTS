@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Units;
 
 namespace MiniEngine.Scenes
@@ -9,5 +10,7 @@ namespace MiniEngine.Scenes
         void LoadContent(ContentManager content);
         void Set();
         void Update(Seconds elapsed);
+
+        TextureCube Skybox { get; }
     }
 }

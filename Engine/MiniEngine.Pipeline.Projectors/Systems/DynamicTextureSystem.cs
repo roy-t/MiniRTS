@@ -24,9 +24,9 @@ namespace MiniEngine.Pipeline.Projectors.Systems
             for(var i = 0; i < this.DynamicTextures.Count; i++)
             {
                 var dynamicTexture = this.DynamicTextures[i];
-
+                
                 var input = dynamicTexture.Input;
-                input.Update(dynamicTexture.ViewPoint, elapsed, dynamicTexture.GBuffer, dynamicTexture.Pass);
+                input.Update(dynamicTexture.ViewPoint, elapsed, dynamicTexture.GBuffer, dynamicTexture.Pass, dynamicTexture.Skybox);
                 dynamicTexture.Pipeline.Execute(input, dynamicTexture.Label);
             }
         }

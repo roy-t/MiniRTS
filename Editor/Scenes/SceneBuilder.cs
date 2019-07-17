@@ -31,7 +31,7 @@ namespace MiniEngine.Scenes
         private readonly DebugInfoFactory DebugInfoFactory;
         private readonly WaypointFactory WaypointFactory;
         private readonly PipelineBuilder PipelineBuilder;
-
+        
         private Model sponza;
         private Model plane;
         private Model lizard;
@@ -42,7 +42,8 @@ namespace MiniEngine.Scenes
         private Texture2D mask;
         private Song song;
 
-        public SceneBuilder(EntityController entityController,
+        public SceneBuilder(GraphicsDevice device,
+            EntityController entityController,
             LightsFactory lightsFactory,
             OpaqueModelFactory opaqueModelFactory,
             TransparentModelFactory transparentModelFactory,            
@@ -65,6 +66,18 @@ namespace MiniEngine.Scenes
             this.DebugInfoFactory = debugInfoFactory;
             this.WaypointFactory = waypointFactory;
             this.PipelineBuilder = pipelineBuilder;
+
+            this.NullSkybox = new TextureCube(device, 1, false, SurfaceFormat.Color);
+            this.NullSkybox.SetData(CubeMapFace.PositiveX, new Color[] { Color.Black });
+            this.NullSkybox.SetData(CubeMapFace.NegativeX, new Color[] { Color.Black });
+            this.NullSkybox.SetData(CubeMapFace.PositiveY, new Color[] { Color.Black });
+            this.NullSkybox.SetData(CubeMapFace.NegativeY, new Color[] { Color.Black });
+            this.NullSkybox.SetData(CubeMapFace.PositiveZ, new Color[] { Color.Black });
+            this.NullSkybox.SetData(CubeMapFace.NegativeZ, new Color[] { Color.Black });
+
+
+
+            this.SponzaSkybox = new TextureCube(device, 512, false, SurfaceFormat.Color);
         }        
 
         public void LoadContent(ContentManager content)
@@ -78,9 +91,35 @@ namespace MiniEngine.Scenes
             this.bulletHole = content.Load<Texture2D>(@"Decals\BulletHole");
             this.mask = content.Load<Texture2D>(@"StarMask");
             this.song = content.Load<Song>(@"Music\Zemdens");
+
+
+            var back = content.Load<Texture2D>(@"Scenes\Sponza\Skybox\back");
+            var down = content.Load<Texture2D>(@"Scenes\Sponza\Skybox\down");
+            var front = content.Load<Texture2D>(@"Scenes\Sponza\Skybox\front");
+            var left = content.Load<Texture2D>(@"Scenes\Sponza\Skybox\left");
+            var right = content.Load<Texture2D>(@"Scenes\Sponza\Skybox\right");
+            var up = content.Load<Texture2D>(@"Scenes\Sponza\Skybox\up");
+
+            this.SetData(this.SponzaSkybox, CubeMapFace.PositiveZ, back);
+            this.SetData(this.SponzaSkybox, CubeMapFace.NegativeY, down);
+            this.SetData(this.SponzaSkybox, CubeMapFace.NegativeZ, front);
+            this.SetData(this.SponzaSkybox, CubeMapFace.NegativeX, left);
+            this.SetData(this.SponzaSkybox, CubeMapFace.PositiveX, right);
+            this.SetData(this.SponzaSkybox, CubeMapFace.PositiveY, up);
+        }
+
+        private void SetData(TextureCube cube, CubeMapFace face, Texture2D data)
+        {
+            var colors = new Color[data.Width * data.Height];
+            data.GetData(colors);
+            cube.SetData(face, colors);
         }
 
         public Song LoadMusic() => this.song;
+
+        public TextureCube NullSkybox { get; }
+
+        public TextureCube SponzaSkybox { get; private set; }
 
 
         public AmbientLight BuildSponzaAmbientLight()
@@ -186,7 +225,7 @@ namespace MiniEngine.Scenes
             var lookAt = cameraPosition + (new Vector3(0.001f, 1, 0) * 10);
 
             var lightEntity = this.EntityController.CreateEntity();
-            var dynamicTexture = this.DynamicTextureFactory.Construct(lightEntity, cameraPosition,  lookAt, 1024, 1024, "Firewatcher");                        
+            var dynamicTexture = this.DynamicTextureFactory.Construct(lightEntity, cameraPosition,  lookAt, 1024, 1024, this.NullSkybox, "Firewatcher");                        
             this.PipelineBuilder.AddParticlePipeline(dynamicTexture.Pipeline);
             this.DebugInfoFactory.Construct(lightEntity);
 

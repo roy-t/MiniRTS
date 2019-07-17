@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using MiniEngine.Pipeline.Lights.Components;
@@ -33,11 +34,12 @@ namespace MiniEngine.Scenes
 
         public string Name => "Demo";
 
+        public TextureCube Skybox { get; private set; }
+
         public void Set()
         {
             this.SceneBuilder.BuildSponza(new Pose(Vector3.Zero, 0.05f));
-
-           
+            this.Skybox = this.SceneBuilder.NullSkybox;           
         }
 
         public static Pose CreateScaleRotationTranslation(float scale, float rotX, float rotY, float rotZ, Vector3 translation) 

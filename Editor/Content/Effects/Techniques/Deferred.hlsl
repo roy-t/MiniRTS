@@ -1,5 +1,5 @@
 // Stores the color, normal and depth information in three separate render targets
-// to construct a geometry-buffer.
+// to construct a geometry-buffer. Also samples the skybox for reflections
 
 struct DeferredVertexShaderInput
 {
@@ -15,7 +15,8 @@ struct DeferredVertexShaderOutput
     float4 Position : POSITION0;
     float2 TexCoord : TEXCOORD0;
     float2 Depth : TEXCOORD1;
-    float3x3 tangentToWorld : TEXCOORD2;
+    float4 ScreenPosition : TEXCOORD2;
+    float3x3 tangentToWorld : TEXCOORD3;    
 };
 
 DeferredVertexShaderOutput DeferredMainVS(in DeferredVertexShaderInput input)
@@ -35,6 +36,7 @@ DeferredVertexShaderOutput DeferredMainVS(in DeferredVertexShaderInput input)
     output.tangentToWorld[1] = mul(float4(input.Binormal, 0), World).xyz;
     output.tangentToWorld[2] = mul(float4(input.Normal, 0), World).xyz;
 
+    output.ScreenPosition = output.Position;
     return output;
 }
 
@@ -44,6 +46,18 @@ struct DeferredPixelShaderOutput
     float4 Normal : COLOR1;
     float Depth : COLOR2;
 };
+
+
+float4 SampleReflection(float4 screenPosition, float depth, float3 normal)
+{
+    float2 texCoord = ToTextureCoordinates(screenPosition.xy, screenPosition.w);
+    float4 position = ReadWorldPosition(texCoord, depth, InverseViewProjection);
+
+    float3 viewDirection = CameraPosition - position.xyz;
+
+    float3 reflection = reflect(-normalize(viewDirection), normal);
+    return texCUBE(skyboxSampler, normalize(reflection));    
+}
 
 DeferredPixelShaderOutput DeferredMainPS(DeferredVertexShaderOutput input)
 {
@@ -56,12 +70,13 @@ DeferredPixelShaderOutput DeferredMainPS(DeferredVertexShaderOutput input)
     // Diffuse    
     output.Color = tex2D(diffuseSampler, texCoord);
     clip(output.Color.a - 0.01f);    
+   
 
     // Normal   
     float3 normal = UnpackNormal(tex2D(normalSampler, texCoord).xyz);
     normal = normalize(mul(normal, input.tangentToWorld));
     output.Normal.rgb = PackNormal(normal);
-
+    
     // Specular
     float specularPower = tex2D(specularSampler, texCoord).r;
 
@@ -70,6 +85,9 @@ DeferredPixelShaderOutput DeferredMainPS(DeferredVertexShaderOutput input)
     output.Normal.a = 1.0f - specularPower;
 
     output.Depth = (input.Depth.x / input.Depth.y);
+
+    // Reflections
+    output.Color = SampleReflection(input.ScreenPosition, output.Depth, normal);
 
     return output;
 }

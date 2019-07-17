@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Pipeline.Models.Batches;
 using MiniEngine.Pipeline.Models.Components;
 using MiniEngine.Primitives.Bounds;
@@ -23,7 +24,7 @@ namespace MiniEngine.Pipeline.Models.Systems
             this.OpaqueModelBatchList = new List<OpaqueModel>();
         }
 
-        public ModelBatchList ComputeBatches(IViewPoint viewPoint)
+        public ModelBatchList ComputeBatches(IViewPoint viewPoint, TextureCube skybox)
         {
             var transparentBatches = new List<ModelRenderBatch>(this.TransparentModels.Count);
 
@@ -31,7 +32,7 @@ namespace MiniEngine.Pipeline.Models.Systems
             var batches = ComputeBatches(transparentModels, viewPoint);
             for (var i = 0; i < batches.Count; i++)
             {
-                transparentBatches.Add(new ModelRenderBatch(batches[i], viewPoint));
+                transparentBatches.Add(new ModelRenderBatch(batches[i], viewPoint, skybox));
             }
 
             this.OpaqueModelBatchList.Clear();
@@ -40,7 +41,7 @@ namespace MiniEngine.Pipeline.Models.Systems
                 this.OpaqueModelBatchList.Add(this.OpaqueModels[i]);
             }
 
-            return new ModelBatchList(new ModelRenderBatch(this.OpaqueModelBatchList, viewPoint), transparentBatches);
+            return new ModelBatchList(new ModelRenderBatch(this.OpaqueModelBatchList, viewPoint, skybox), transparentBatches);
         }
 
         private static List<AModel> SortBackToFront(IComponentContainer<TransparentModel> models, IViewPoint viewPoint)

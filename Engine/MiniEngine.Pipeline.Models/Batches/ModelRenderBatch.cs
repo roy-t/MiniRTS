@@ -15,12 +15,19 @@ namespace MiniEngine.Pipeline.Models.Batches
 
         private readonly IReadOnlyList<AModel> Models;
         private readonly IViewPoint ViewPoint;
+        private readonly TextureCube Skybox;
 
-        public ModelRenderBatch(IReadOnlyList<AModel> models, IViewPoint viewPoint)
+        private readonly Matrix InverseViewProjection;
+
+        public ModelRenderBatch(IReadOnlyList<AModel> models, IViewPoint viewPoint, TextureCube skybox)
         {
             this.Models = models;
             this.ViewPoint = viewPoint;
+            this.Skybox = skybox;
             this.Effect = new RenderEffect();
+
+            var viewProjection = viewPoint.View * viewPoint.Projection;
+            this.InverseViewProjection = Matrix.Invert(viewProjection);
         }
 
         public void Draw(RenderEffectTechniques technique)
@@ -54,6 +61,9 @@ namespace MiniEngine.Pipeline.Models.Batches
                     this.Effect.World = SharedBoneMatrix[mesh.ParentBone.Index] * world;
                     this.Effect.View = viewPoint.View;
                     this.Effect.Projection = viewPoint.Projection;
+                    this.Effect.InverseViewProjection = InverseViewProjection;
+                    this.Effect.Skybox = this.Skybox;
+                    this.Effect.CameraPosition = viewPoint.Position;
 
                     this.Effect.Apply(technique);
                 }

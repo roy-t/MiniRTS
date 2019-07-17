@@ -177,9 +177,9 @@ namespace MiniEngine.Rendering
                 .EnableIf(this.Settings.EnableIcons, x => x.RenderIcons(this.IconSystem));
         }
       
-        public RenderTarget2D Render(PerspectiveCamera camera, Seconds elapsed)
+        public RenderTarget2D Render(PerspectiveCamera camera, Seconds elapsed, TextureCube skybox)
         {
-            this.Input.Update(camera, elapsed, this.GBuffer, this.RootPass);
+            this.Input.Update(camera, elapsed, this.GBuffer, this.RootPass, skybox);
             this.Pipeline.Execute(this.Input, "root");
             return this.GBuffer.FinalTarget;
         }

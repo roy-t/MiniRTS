@@ -19,7 +19,7 @@ namespace MiniEngine.Pipeline.Models.Stages
 
         public void Execute(RenderPipelineInput input)
         {
-            var modelBatchList = this.ModelSystem.ComputeBatches(input.Camera);
+            var modelBatchList = this.ModelSystem.ComputeBatches(input.Camera, input.Skybox);
 
             this.Input.Update(input.Camera, modelBatchList.OpaqueBatch, input.GBuffer, input.Pass);
             this.ModelPipeline.Execute(this.Input, "models");

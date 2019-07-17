@@ -10,7 +10,7 @@ namespace MiniEngine.Pipeline.Projectors.Components
 {
     public sealed class DynamicTexture : IComponent
     {
-        public DynamicTexture(Entity entity, RenderPipeline pipeline, PerspectiveCamera viewPoint, GBuffer gBuffer, Pass pass, string label)
+        public DynamicTexture(Entity entity, RenderPipeline pipeline, PerspectiveCamera viewPoint, GBuffer gBuffer, TextureCube skybox, Pass pass, string label)
         {
             this.Entity = entity;
             this.Pipeline = pipeline;            
@@ -18,6 +18,7 @@ namespace MiniEngine.Pipeline.Projectors.Components
             this.GBuffer = gBuffer;
             this.Pass = pass;
             this.Label = label;
+            this.Skybox = skybox;
             this.Input = new RenderPipelineInput();            
         }
 
@@ -33,7 +34,7 @@ namespace MiniEngine.Pipeline.Projectors.Components
         public Pass Pass { get; }
         
         [Editor(nameof(Label))]
-        public string Label { get; }
+        public string Label { get; }        
 
         [Boundary(BoundaryType.Frustum)]
         public BoundingFrustum Bounds => this.ViewPoint.Frustum;
@@ -67,5 +68,8 @@ namespace MiniEngine.Pipeline.Projectors.Components
 
         [Editor(nameof(FinalTarget))]
         public Texture2D FinalTarget => this.GBuffer.FinalTarget;
+
+        [Editor(nameof(Skybox))]
+        public TextureCube Skybox { get; }
     }
 }

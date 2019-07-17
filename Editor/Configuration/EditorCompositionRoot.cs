@@ -1,7 +1,6 @@
 ﻿using LightInject;
 using MiniEngine.Controllers;
 using MiniEngine.CutScene;
-using MiniEngine.Generators;
 using MiniEngine.Input;
 using MiniEngine.Pipeline.Debug;
 using MiniEngine.Rendering;
@@ -22,7 +21,6 @@ namespace MiniEngine.Configuration
             serviceRegistry.Register<CutsceneSystem>();
             serviceRegistry.Register<CameraController>();
             serviceRegistry.Register<LightsController>();
-            serviceRegistry.Register<TurretGenerator>();
 
             // Renderer
             serviceRegistry.Register<PipelineBuilder>();
@@ -40,7 +38,6 @@ namespace MiniEngine.Configuration
             serviceRegistry.Register<IMenu, FileMenu>("0");
             serviceRegistry.Register<IMenu, EntityMenu>("1");
             serviceRegistry.Register<IMenu, CreateMenu>("2");
-            serviceRegistry.Register<IMenu, GenerateMenu>("3");
             serviceRegistry.Register<IMenu, RenderingMenu>("4");
             serviceRegistry.Register<IMenu, DebugMenu>("5");
             serviceRegistry.Register<EntityWindow>();

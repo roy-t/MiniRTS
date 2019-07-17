@@ -3,6 +3,7 @@
 
 #include "Includes/Defines.hlsl"
 #include "Includes/Matrices.hlsl"
+#include "Includes/Helpers.hlsl"
 #include "Includes/Pack.hlsl"
 
 texture Texture;
@@ -52,6 +53,19 @@ sampler maskSampler = sampler_state
     AddressU = Wrap;
     AddressV = Wrap;
 };
+
+texture Skybox;
+samplerCUBE skyboxSampler = sampler_state
+{
+    Texture = (Skybox);
+    MinFilter = LINEAR;
+    MagFilter = LINEAR;
+    MipFilter = LINEAR;
+    AddressU = Mirror;
+    AddressV = Mirror;
+};
+
+float3 CameraPosition;
 
 #include "Techniques/ShadowMap.hlsl"
 #include "Techniques/Textured.hlsl"

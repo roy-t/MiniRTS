@@ -15,7 +15,7 @@ namespace MiniEngine.Pipeline.Projectors.Factories
         public DynamicTextureFactory(GraphicsDevice device, IComponentContainer<DynamicTexture> container)
             : base(device, container) { }
 
-        public DynamicTexture Construct(Entity entity, Vector3 position, Vector3 lookAt, int width, int height, string label, PassType type = PassType.Opaque)
+        public DynamicTexture Construct(Entity entity, Vector3 position, Vector3 lookAt, int width, int height, TextureCube skybox, string label, PassType type = PassType.Opaque)
         {
             var pipeline = new RenderPipeline(this.Device, new NullMeterRegistry());
 
@@ -24,7 +24,7 @@ namespace MiniEngine.Pipeline.Projectors.Factories
             viewPoint.Move(position, lookAt);
             var pass = new Pass(type, 0);
 
-            var dynamicTexture = new DynamicTexture(entity, pipeline, viewPoint, gBuffer, pass, label);
+            var dynamicTexture = new DynamicTexture(entity, pipeline, viewPoint, gBuffer, skybox, pass, label);
 
             this.Container.Add(dynamicTexture);
 
