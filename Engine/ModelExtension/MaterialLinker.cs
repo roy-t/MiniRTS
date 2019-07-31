@@ -50,10 +50,15 @@ namespace ModelExtension
                                     ? new ExternalReference<TextureContent>(defaultReflectionTexture)
                                     : new ExternalReference<TextureContent>(description.Reflection));
                         }
+                        else
+                        {
+                            context.Logger.LogWarning("", node.Identity, $"Could not find texture {fileName} in lookup");
+                        }
                     }
                     else
                     {
                         geometry.Material.Textures.Clear();
+                        context.Logger.LogWarning("", node.Identity, $"Could not find Texture reference in model");
                     }
                 }
             }

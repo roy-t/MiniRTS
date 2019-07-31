@@ -27,6 +27,7 @@ namespace MiniEngine.Scenes
 
         public void Set()
         {
+            this.SceneBuilder.BuildGear(new Pose(Vector3.Up * 6, 0.1f));
             this.SceneBuilder.BuildSponzaLit(new Pose(Vector3.Zero, 0.05f));
             this.SceneBuilder.BuildStainedGlass();
             this.SceneBuilder.BuildFirePlace();
