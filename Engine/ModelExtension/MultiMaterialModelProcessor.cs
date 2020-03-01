@@ -72,14 +72,11 @@ namespace ModelExtension
 
             if (this.ProcessArmature)
             {
-                // TODO: should we flatten everything?
                 var skeleton = MeshHelper.FindSkeleton(input);
                 if (skeleton == null)
                 {
                     throw new InvalidContentException("Input armature not found");
                 }
-
-                FlattenTransforms(input, skeleton);
 
                 var bones = MeshHelper.FlattenSkeleton(skeleton);
                 if (bones.Count > Constants.MaxBones)
