@@ -7,7 +7,7 @@
 
 
 ### Particles
-- Particles need a lot more configurable parameters to look gooed
+- Particles need a lot more configurable parameters to look good
 - Move Easings.cs to a separate projects
 
 ### Models

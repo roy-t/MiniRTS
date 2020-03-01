@@ -315,10 +315,37 @@
 /processorParam:TextureFormat=Color
 /build:Particles/Smoke.png
 
+#begin Scenes/Primitives/car_textured.fbx
+/importer:FbxImporter
+/processor:MultiMaterialModelProcessor
+/processorParam:ProcessTextures=True
+/processorParam:ProcessArmature=True
+/processorParam:SpecularMapFallback=NeutralSpecular.tga
+/processorParam:NormalMapFallback=NeutralNormal.tga
+/processorParam:MaskFallback=NeutralMask.tga
+/processorParam:ReflectionFallback=NeutralReflection.tga
+/processorParam:EffectFile=Effects/RenderEffect.fx
+/processorParam:GenerateTangentFrames=True
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=False
+/processorParam:DefaultEffect=BasicEffect
+/processorParam:GenerateMipmaps=True
+/processorParam:PremultiplyTextureAlpha=True
+/processorParam:PremultiplyVertexColors=True
+/processorParam:ResizeTexturesToPowerOfTwo=False
+/processorParam:TextureFormat=Compressed
+/processorParam:RotationX=0
+/processorParam:RotationY=0
+/processorParam:RotationZ=0
+/processorParam:Scale=1
+/processorParam:SwapWindingOrder=False
+/build:Scenes/Primitives/car_textured.fbx
+
 #begin Scenes/Primitives/cube.fbx
 /importer:FbxImporter
 /processor:MultiMaterialModelProcessor
 /processorParam:ProcessTextures=True
+/processorParam:ProcessArmature=False
 /processorParam:SpecularMapFallback=NeutralSpecular.tga
 /processorParam:NormalMapFallback=NeutralNormal.tga
 /processorParam:MaskFallback=NeutralMask.tga
@@ -344,6 +371,7 @@
 /importer:FbxImporter
 /processor:MultiMaterialModelProcessor
 /processorParam:ProcessTextures=True
+/processorParam:ProcessArmature=False
 /processorParam:SpecularMapFallback=NeutralSpecular.tga
 /processorParam:NormalMapFallback=NeutralNormal.tga
 /processorParam:MaskFallback=NeutralMask.tga
@@ -369,6 +397,7 @@
 /importer:FbxImporter
 /processor:MultiMaterialModelProcessor
 /processorParam:ProcessTextures=True
+/processorParam:ProcessArmature=False
 /processorParam:SpecularMapFallback=NeutralSpecular.tga
 /processorParam:NormalMapFallback=NeutralNormal.tga
 /processorParam:MaskFallback=NeutralMask.tga
@@ -394,6 +423,7 @@
 /importer:FbxImporter
 /processor:MultiMaterialModelProcessor
 /processorParam:ProcessTextures=True
+/processorParam:ProcessArmature=False
 /processorParam:SpecularMapFallback=NeutralSpecular.tga
 /processorParam:NormalMapFallback=NeutralNormal.tga
 /processorParam:MaskFallback=NeutralMask.tga
@@ -419,6 +449,7 @@
 /importer:FbxImporter
 /processor:MultiMaterialModelProcessor
 /processorParam:ProcessTextures=True
+/processorParam:ProcessArmature=False
 /processorParam:SpecularMapFallback=NeutralSpecular.tga
 /processorParam:NormalMapFallback=NeutralNormal.tga
 /processorParam:MaskFallback=NeutralMask.tga
@@ -516,6 +547,7 @@
 /importer:OpenAssetImporter
 /processor:MultiMaterialModelProcessor
 /processorParam:ProcessTextures=True
+/processorParam:ProcessArmature=False
 /processorParam:SpecularMapFallback=NeutralSpecular.tga
 /processorParam:NormalMapFallback=NeutralNormal.tga
 /processorParam:MaskFallback=NeutralMask.tga
@@ -541,6 +573,7 @@
 /importer:FbxImporter
 /processor:MultiMaterialModelProcessor
 /processorParam:ProcessTextures=True
+/processorParam:ProcessArmature=False
 /processorParam:SpecularMapFallback=NeutralSpecular.tga
 /processorParam:NormalMapFallback=NeutralNormal.tga
 /processorParam:MaskFallback=NeutralMask.tga
@@ -566,6 +599,7 @@
 /importer:FbxImporter
 /processor:MultiMaterialModelProcessor
 /processorParam:ProcessTextures=True
+/processorParam:ProcessArmature=False
 /processorParam:SpecularMapFallback=NeutralSpecular.tga
 /processorParam:NormalMapFallback=NeutralNormal.tga
 /processorParam:MaskFallback=NeutralMask.tga
@@ -591,6 +625,7 @@
 /importer:FbxImporter
 /processor:MultiMaterialModelProcessor
 /processorParam:ProcessTextures=True
+/processorParam:ProcessArmature=False
 /processorParam:SpecularMapFallback=NeutralSpecular.tga
 /processorParam:NormalMapFallback=NeutralNormal.tga
 /processorParam:MaskFallback=NeutralMask.tga
@@ -616,6 +651,7 @@
 /importer:FbxImporter
 /processor:MultiMaterialModelProcessor
 /processorParam:ProcessTextures=True
+/processorParam:ProcessArmature=False
 /processorParam:SpecularMapFallback=NeutralSpecular.tga
 /processorParam:NormalMapFallback=NeutralNormal.tga
 /processorParam:MaskFallback=NeutralMask.tga

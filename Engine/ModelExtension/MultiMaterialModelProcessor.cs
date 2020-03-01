@@ -19,12 +19,20 @@ namespace ModelExtension
                 VertexChannelNames.Normal(0),
                 VertexChannelNames.Binormal(0),
                 VertexChannelNames.Tangent(0),
+                VertexChannelNames.Weights(0),
+                VertexChannelNames.EncodeName("BlendIndices", 0),
+                VertexChannelNames.EncodeName("BlendWeight", 0),
             };
 
         [DisplayName("Process Textures")]
         [Description("Searches for a Material Description file (.ini) and processes the related textures")]
         [DefaultValue(true)]
         public virtual bool ProcessTextures { get; set; } = true;
+
+        [DisplayName("Process Armature")]
+        [Description("Process an armature/bones")]
+        [DefaultValue(false)]
+        public virtual bool ProcessArmature { get; set; } = false;
 
         [DisplayName("Specular Map Fallback")]
         public string SpecularMapFallback { get; set; } = "NeutralSpecular.tga";
@@ -61,7 +69,46 @@ namespace ModelExtension
                     Path.GetFullPath(this.ReflectionFallback));
             }
 
-            return base.Process(input, context);
+
+            if (this.ProcessArmature)
+            {
+                // TODO: should we flatten everything?
+                var skeleton = MeshHelper.FindSkeleton(input);
+                if (skeleton == null)
+                {
+                    throw new InvalidContentException("Input armature not found");
+                }
+
+                FlattenTransforms(input, skeleton);
+
+                var bones = MeshHelper.FlattenSkeleton(skeleton);
+                if (bones.Count > Constants.MaxBones)
+                {
+                    throw new InvalidContentException($"Skeleton has {bones.Count} bones, but the maximum supported is {Constants.MaxBones}");
+                }
+
+                var bindPose = new List<Matrix>();
+                var inverseBindPose = new List<Matrix>();
+                var skeletonHierarchy = new List<int>();
+                var boneNames = new List<string>();
+
+                foreach (var bone in bones)
+                {
+                    bindPose.Add(bone.Transform);
+                    inverseBindPose.Add(Matrix.Invert(bone.AbsoluteTransform));
+                    skeletonHierarchy.Add(bones.IndexOf(bone.Parent as BoneContent));
+                    boneNames.Add(bone.Name);
+                }
+
+                var model = base.Process(input, context);
+                model.Tag = new SkinningData(bindPose, inverseBindPose, skeletonHierarchy, boneNames);
+
+                return model;
+            }
+            else
+            {
+                return base.Process(input, context);
+            }
         }
 
         protected override void ProcessVertexChannel(
@@ -121,6 +168,30 @@ namespace ModelExtension
             return context.Convert<MaterialContent, MaterialContent>(
                 deferredShadingMaterial,
                 typeof(MaterialProcessor).Name, parameters);
+        }
+
+        /// <summary>
+        /// Bakes unwanted transforms into the model geometry,
+        /// so everything ends up in the same coordinate system.
+        /// </summary>
+        private static void FlattenTransforms(NodeContent node, BoneContent skeleton)
+        {
+            foreach (var child in node.Children)
+            {
+                // Don't process the skeleton, because that is special.
+                if (child != skeleton)
+                {
+                    // Bake the local transform into the actual geometry.
+                    MeshHelper.TransformScene(child, child.Transform);
+
+                    // Having baked it, we can now set the local
+                    // coordinate system back to identity.
+                    child.Transform = Matrix.Identity;
+
+                    // Recurse.
+                    FlattenTransforms(child, skeleton);
+                }
+            }
         }
 
         #region Hide irrelevant model processor properties

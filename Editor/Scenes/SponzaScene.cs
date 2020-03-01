@@ -16,7 +16,7 @@ namespace MiniEngine.Scenes
             this.SceneBuilder = sceneBuilder;
         }
 
-        public void LoadContent(ContentManager content) 
+        public void LoadContent(ContentManager content)
             => this.SceneBuilder.LoadContent(content);
 
         public string Name => "Sponza";
@@ -27,7 +27,7 @@ namespace MiniEngine.Scenes
 
         public void Set()
         {
-            this.SceneBuilder.BuildGear(new Pose(Vector3.Up * 6, 0.1f));
+            this.SceneBuilder.BuildCar(new Pose(Vector3.Up * 6, 0.01f));
             this.SceneBuilder.BuildSponzaLit(new Pose(Vector3.Zero, 0.05f));
             this.SceneBuilder.BuildStainedGlass();
             this.SceneBuilder.BuildFirePlace();
@@ -37,15 +37,15 @@ namespace MiniEngine.Scenes
             this.Skybox = this.SceneBuilder.SponzaSkybox;
         }
 
-        public static Pose CreateScaleRotationTranslation(float scale, float rotX, float rotY, float rotZ, Vector3 translation) 
+        public static Pose CreateScaleRotationTranslation(float scale, float rotX, float rotY, float rotZ, Vector3 translation)
             => new Pose(translation, scale, rotY, rotX, rotZ);
 
         public void Update(Seconds elapsed)
         {
             var speed = (elapsed * MathHelper.TwoPi) / 10;
-            this.model.Yaw += speed;
-            this.model.Pitch += speed;
-            this.model.Roll += speed;            
+            //this.model.Yaw += speed;
+            //this.model.Pitch += speed;
+            //this.model.Roll += speed;
         }
     }
 }

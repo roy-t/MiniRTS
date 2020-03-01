@@ -33,7 +33,8 @@ namespace MiniEngine.Scenes
         private readonly DebugInfoFactory DebugInfoFactory;
         private readonly WaypointFactory WaypointFactory;
         private readonly PipelineBuilder PipelineBuilder;
-        
+
+        private Model car;
         private Model sponza;
         private Model plane;
         private Model lizard;
@@ -51,7 +52,7 @@ namespace MiniEngine.Scenes
             SkyboxBuilder skyboxBuilder,
             LightsFactory lightsFactory,
             OpaqueModelFactory opaqueModelFactory,
-            TransparentModelFactory transparentModelFactory,            
+            TransparentModelFactory transparentModelFactory,
             ProjectorFactory projectorFactory,
             AdditiveEmitterFactory additiveEmitterFactory,
             AveragedEmitterFactory averagedEmitterFactory,
@@ -71,11 +72,13 @@ namespace MiniEngine.Scenes
             this.DynamicTextureFactory = dynamicTextureFactory;
             this.DebugInfoFactory = debugInfoFactory;
             this.WaypointFactory = waypointFactory;
-            this.PipelineBuilder = pipelineBuilder;           
-        }        
+            this.PipelineBuilder = pipelineBuilder;
+        }
 
         public void LoadContent(ContentManager content)
         {
+
+            this.car = content.Load<Model>(@"Scenes\Primitives\car_textured");
             this.sponza = content.Load<Model>(@"Scenes\Sponza\Sponza");
             this.cube = content.Load<Model>(@"Scenes\Primitives\Cube");
             this.gear = content.Load<Model>(@"Scenes\Primitives\Gear");
@@ -100,11 +103,11 @@ namespace MiniEngine.Scenes
 
             this.SponzaSkybox = this.SkyboxBuilder.BuildSkyBox(back, down, front, left, right, up);
         }
-       
+
 
         public Song LoadMusic() => this.song;
 
-        public TextureCube NullSkybox { get; private set;}
+        public TextureCube NullSkybox { get; private set; }
 
         public TextureCube SponzaSkybox { get; private set; }
 
@@ -120,7 +123,7 @@ namespace MiniEngine.Scenes
             var entity = this.EntityController.CreateEntity();
             return this.LightsFactory.SunlightFactory.Construct(entity, Color.White, Vector3.Up, (Vector3.Left * 0.75f) + (Vector3.Backward * 0.1f));
         }
-        
+
         public OpaqueModel BuildSponza(Pose pose)
         {
             var entity = this.EntityController.CreateEntity();
@@ -134,7 +137,7 @@ namespace MiniEngine.Scenes
             //this.LightsFactory.PointLightFactory.Construct(entity, new Vector3(55, 8, 20), Color.White, 50.0f, 0.75f);
 
             return entity;
-        }     
+        }
 
         public OpaqueModel BuildCube(Pose pose)
         {
@@ -143,7 +146,7 @@ namespace MiniEngine.Scenes
 
             return model;
         }
-        
+
         public ShadowCastingLight BuildLionSpotLight()
         {
             var entity = this.EntityController.CreateEntity();
@@ -186,6 +189,13 @@ namespace MiniEngine.Scenes
             this.DebugInfoFactory.Construct(entity);
         }
 
+        public void BuildCar(Pose pose)
+        {
+            var entity = this.EntityController.CreateEntity();
+            this.OpaqueModelFactory.Construct(entity, this.car, pose);
+            this.DebugInfoFactory.Construct(entity);
+        }
+
 
         public Entity[] BuildStainedGlass()
         {
@@ -199,7 +209,7 @@ namespace MiniEngine.Scenes
             position = new Vector3(-40.5f, 30.0f, -7.2f);
             world = new Pose(position, 4.4f * 0.01f, MathHelper.PiOver4);
             this.TransparentModelFactory.Construct(entities[1], this.plane, world);
-            this.DebugInfoFactory.Construct(entities[1]);            
+            this.DebugInfoFactory.Construct(entities[1]);
 
             return entities;
         }
@@ -227,11 +237,11 @@ namespace MiniEngine.Scenes
             var lookAt = cameraPosition + (new Vector3(0.001f, 1, 0) * 10);
 
             var lightEntity = this.EntityController.CreateEntity();
-            var dynamicTexture = this.DynamicTextureFactory.Construct(lightEntity, cameraPosition,  lookAt, 1024, 1024, this.NullSkybox, "Firewatcher");                        
+            var dynamicTexture = this.DynamicTextureFactory.Construct(lightEntity, cameraPosition, lookAt, 1024, 1024, this.NullSkybox, "Firewatcher");
             this.PipelineBuilder.AddParticlePipeline(dynamicTexture.Pipeline);
             this.DebugInfoFactory.Construct(lightEntity);
 
-            var color = Color.White * 0.2f;            
+            var color = Color.White * 0.2f;
             var projector = this.ProjectorFactory.Construct(lightEntity, dynamicTexture.FinalTarget, this.mask, color, projectorPosition, lookAt);
             projector.SetMinDistance(10.0f);
             projector.SetMaxDistance(30.0f);
@@ -248,7 +258,7 @@ namespace MiniEngine.Scenes
             var center = new Vector3(-71.2f, 10, -25);
             var forward = Vector3.Left;
 
-            for(var i = 0; i < 110; i++)
+            for (var i = 0; i < 110; i++)
             {
                 var u = (float)(random.NextDouble() * 15) - 7.5f;
                 var v = (float)(random.NextDouble() * 15) - 7.5f;
@@ -258,7 +268,7 @@ namespace MiniEngine.Scenes
                 projector.SetMaxDistance(1.0f);
             }
 
-            
+
 
             return entity;
         }
@@ -297,7 +307,7 @@ namespace MiniEngine.Scenes
             };
 
             var lookAts = new Vector3[]
-            {                
+            {
                 new Vector3(-60, 10, 20),
                 new Vector3(-60, 0, 20),
                 new Vector3(-60, 30, 20),
@@ -315,11 +325,11 @@ namespace MiniEngine.Scenes
                 var speed = speeds[i];
                 var position = positions[i];
                 var lookAt = lookAts[i];
-                
+
                 this.WaypointFactory.Construct(entity, speed, position, lookAt);
             }
 
             return entity;
-        }    
+        }
     }
 }

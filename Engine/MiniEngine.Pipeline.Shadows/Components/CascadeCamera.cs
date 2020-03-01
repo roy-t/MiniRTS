@@ -1,7 +1,7 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using MiniEngine.Primitives;
 using MiniEngine.Primitives.Cameras;
-using System;
 
 namespace MiniEngine.Pipeline.Shadows.Components
 {
@@ -27,9 +27,6 @@ namespace MiniEngine.Pipeline.Shadows.Components
             // shimmering is reduced when the angle the shadow is seen at changes
 
             var bounds = frustum.ComputeBounds();
-
-            // WARNING: This might cause problems when moving the shadow caster around in that case use
-            // var radius = (float)Math.Ceiling(bounds.Radius * 16.0f) / 16.0f;
             var radius = (float)Math.Ceiling(bounds.Radius);
 
             this.Position = bounds.Center + (surfaceToLightVector * radius);

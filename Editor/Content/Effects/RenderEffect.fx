@@ -82,5 +82,6 @@ float3 CameraPosition;
 #include "Techniques/ShadowMap.hlsl"
 #include "Techniques/Textured.hlsl"
 #include "Techniques/Deferred.hlsl"
+#include "Techniques/DeferredSkinned.hlsl"
 
 // The Effect Compiler doesn't like files without an empty new line at the end.

@@ -63,6 +63,7 @@
     <Compile Include="Scenes\LizardScene.cs" />
     <Compile Include="Scenes\DemoScene.cs" />
     <Compile Include="Scenes\SkyboxBuilder.cs" />
+    <Compile Include="Scenes\CarScene.cs" />
     <Compile Include="UI\CreateMenu.cs" />
     <Compile Include="UI\DebugDisplay.cs" />
     <Compile Include="GameLoop.cs" />

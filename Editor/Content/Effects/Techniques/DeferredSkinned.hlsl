@@ -1,28 +1,54 @@
 // Stores the color, normal and depth information in three separate render targets
 // to construct a geometry-buffer. Also samples the skybox for reflections
 
-struct DeferredVertexShaderInput
+struct DeferredSkinnedVertexShaderInput
 {
     float4 Position : POSITION0;
     float3 Normal : NORMAL0;
     float2 TexCoord : TEXCOORD0;
     float3 Binormal : BINORMAL0;
     float3 Tangent : TANGENT0;
+    uint4  Indices : BLENDINDICES0;
+    float4 Weights : BLENDWEIGHT0;
 };
 
-struct DeferredVertexShaderOutput
+struct DeferredSkinnedVertexShaderOutput
 {
     float4 Position : POSITION0;
     float2 TexCoord : TEXCOORD0;
     float2 Depth : TEXCOORD1;
     float4 ScreenPosition : TEXCOORD2;
     float3x3 tangentToWorld : TEXCOORD3;    
+    float4 Color : POSITION1;
 };
 
-DeferredVertexShaderOutput DeferredMainVS(in DeferredVertexShaderInput input)
-{
-    DeferredVertexShaderOutput output = (DeferredVertexShaderOutput)0;
+float4x4 BoneTransforms[16];
 
+void Skin(inout DeferredSkinnedVertexShaderInput vin)
+{
+    float4x4 skinning = 0;
+
+    [unroll]
+    for (int i = 0; i < 4; i++)
+    {
+        skinning += BoneTransforms[vin.Indices[i]] * vin.Weights[i];
+    }
+
+    vin.Position.xyz = mul(float4(vin.Position.xyz, 1), skinning);
+    vin.Normal = mul(vin.Normal, (float3x3)skinning);
+    vin.Binormal = mul(vin.Binormal, (float3x3)skinning);
+    vin.Tangent = mul(vin.Tangent, (float3x3)skinning);
+}
+
+
+DeferredSkinnedVertexShaderOutput DeferredSkinnedMainVS(in DeferredSkinnedVertexShaderInput input)
+{
+    DeferredSkinnedVertexShaderOutput output = (DeferredSkinnedVertexShaderOutput)0;
+
+    Skin(input);
+
+    //float3 skinPosition = mul(float4(input.Position.xyz, 1), Foo).xyz;
+    //float4 worldPosition = mul(float4(skinPosition, 1), World);
     float4 worldPosition = mul(float4(input.Position.xyz, 1), World);
     float4 viewPosition = mul(worldPosition, View);
     output.Position = mul(viewPosition, Projection);
@@ -37,25 +63,26 @@ DeferredVertexShaderOutput DeferredMainVS(in DeferredVertexShaderInput input)
     output.tangentToWorld[2] = mul(float4(input.Normal, 0), World).xyz;
 
     output.ScreenPosition = output.Position;
+
     return output;
 }
 
-struct DeferredPixelShaderOutput
+struct DeferredSkinnedPixelShaderOutput
 {
     float4 Color : COLOR0;
     float4 Normal : COLOR1;
     float Depth : COLOR2;
 };
 
-DeferredPixelShaderOutput DeferredMainPS(DeferredVertexShaderOutput input)
+DeferredSkinnedPixelShaderOutput DeferredSkinnedMainPS(DeferredSkinnedVertexShaderOutput input)
 {
-    DeferredPixelShaderOutput output = (DeferredPixelShaderOutput)0;
+    DeferredSkinnedPixelShaderOutput output = (DeferredSkinnedPixelShaderOutput)0;
     float2 texCoord = input.TexCoord;
 
     float mask = tex2D(maskSampler, texCoord).r;
     clip(mask - 0.05f);
 
-    // Diffuse    
+    // Diffuse        
     output.Color = tex2D(diffuseSampler, texCoord);
     clip(output.Color.a - 0.01f);
 
@@ -87,11 +114,11 @@ DeferredPixelShaderOutput DeferredMainPS(DeferredVertexShaderOutput input)
     return output;
 }
 
-technique Deferred
+technique DeferredSkinned
 {
     pass P0
     {
-        VertexShader = compile VS_SHADERMODEL DeferredMainVS();
-        PixelShader = compile PS_SHADERMODEL DeferredMainPS();
+        VertexShader = compile VS_SHADERMODEL DeferredSkinnedMainVS();
+        PixelShader = compile PS_SHADERMODEL DeferredSkinnedMainPS();
     }
 }

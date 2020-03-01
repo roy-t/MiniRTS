@@ -98,6 +98,10 @@
       <Project>{051e397d-4c6c-4f8f-8f40-cce916a45c5e}</Project>
       <Name>MiniEngine.Units</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ModelExtension\ModelExtension.csproj">
+      <Project>{E939D1A8-2A0D-4605-8704-9F41275C2CF6}</Project>
+      <Name>ModelExtension</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="LightInject">

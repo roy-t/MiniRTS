@@ -23,3 +23,14 @@ float4 ReadWorldPosition(float2 texCoord, float depth, float4x4 inverseViewProje
 
     return position;
 }
+
+float4 SampleSkybox(samplerCUBE skyboxSampler, float3 cameraPosition, float4 screenPosition, float4x4 inverseViewProjection, float depth, float3 normal)
+{
+    float2 texCoord = ToTextureCoordinates(screenPosition.xy, screenPosition.w);
+    float4 position = ReadWorldPosition(texCoord, depth, inverseViewProjection);
+
+    float3 viewDirection = cameraPosition - position.xyz;
+
+    float3 reflection = reflect(-normalize(viewDirection), normal);
+    return texCUBE(skyboxSampler, normalize(reflection));
+}

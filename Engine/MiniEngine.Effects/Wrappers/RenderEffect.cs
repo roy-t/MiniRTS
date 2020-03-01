@@ -71,6 +71,11 @@ namespace MiniEngine.Effects.Wrappers
             set => this.effect.Parameters["Skybox"].SetValue(value);
         }
 
+        public Matrix[] BoneTransforms
+        {
+            set => this.effect.Parameters["BoneTransforms"].SetValue(value);
+        }
+
         public void Apply(RenderEffectTechniques technique)
         {
             switch (technique)
@@ -83,6 +88,9 @@ namespace MiniEngine.Effects.Wrappers
                     break;
                 case RenderEffectTechniques.Deferred:
                     this.effect.CurrentTechnique = this.effect.Techniques["Deferred"];
+                    break;
+                case RenderEffectTechniques.DeferredSkinned:
+                    this.effect.CurrentTechnique = this.effect.Techniques["DeferredSkinned"];
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(technique), technique, null);

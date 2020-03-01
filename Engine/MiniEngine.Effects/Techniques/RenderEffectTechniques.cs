@@ -15,6 +15,8 @@
         /// <summary>
         /// Renders all material properties for deferred rendering
         /// </summary>
-        Deferred
+        Deferred,
+
+        DeferredSkinned
     }
 }

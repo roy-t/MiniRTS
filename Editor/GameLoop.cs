@@ -11,13 +11,13 @@ using MiniEngine.Units;
 namespace MiniEngine
 {
     public sealed class GameLoop : Game
-    {        
-        private readonly GraphicsDeviceManager Graphics;        
+    {
+        private readonly GraphicsDeviceManager Graphics;
         private Injector injector;
-                
+
         private PerspectiveCamera camera;
-        private SpriteBatch spriteBatch;        
-                
+        private SpriteBatch spriteBatch;
+
         private DeferredRenderPipeline renderPipeline;
 
         private IMetricServer metricServer;
@@ -37,22 +37,22 @@ namespace MiniEngine
             };
 
             this.Content.RootDirectory = "Content";
-            this.IsMouseVisible = true;         
-        }        
+            this.IsMouseVisible = true;
+        }
 
         protected override void LoadContent()
-        {                        
+        {
             this.camera = new PerspectiveCamera(this.GraphicsDevice.Viewport);
             this.injector = new Injector(this);
 
             this.spriteBatch = this.injector.Resolve<SpriteBatch>();
             this.renderPipeline = this.injector.Resolve<DeferredRenderPipeline>();
-            this.sceneSelector = this.injector.Resolve<SceneSelector>();            
+            this.sceneSelector = this.injector.Resolve<SceneSelector>();
             this.uiManager = this.injector.Resolve<UIManager>();
 
             this.metricServer = this.injector.Resolve<IMetricServer>();
             this.metricServer.Start(7070);
-        }       
+        }
 
         protected override void OnExiting(object sender, EventArgs args)
             => this.uiManager.Close(this.camera);
@@ -61,7 +61,7 @@ namespace MiniEngine
         {
             var elapsed = (Seconds)gameTime.ElapsedGameTime;
             this.sceneSelector.CurrentScene.Update(elapsed);
-                       
+
             base.Update(gameTime);
         }
 
@@ -90,7 +90,7 @@ namespace MiniEngine
                 new Rectangle(0, 0, this.GraphicsDevice.Viewport.Width, this.GraphicsDevice.Viewport.Height),
                 null,
                 Color.White);
-            
+
             this.spriteBatch.End();
 
             this.uiManager.Render(this.camera, this.GraphicsDevice.Viewport, gameTime);
