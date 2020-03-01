@@ -45,6 +45,8 @@ namespace MiniEngine.Scenes.Animations
         public void Update(Seconds elapsed)
         {
             this.accumulator += elapsed;
+
+            // Y axis as this is in the space of the wheel, not the world
             var wheelMatrix = Matrix.CreateRotationY(MathHelper.TwoPi * this.accumulator * 0.25f);
 
             this.skinningData.BindPose.CopyTo(this.boneTransforms);
