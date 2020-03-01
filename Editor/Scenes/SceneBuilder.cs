@@ -13,6 +13,7 @@ using MiniEngine.Pipeline.Particles.Factories;
 using MiniEngine.Pipeline.Projectors.Factories;
 using MiniEngine.Primitives;
 using MiniEngine.Rendering;
+using MiniEngine.Scenes.Animations;
 using MiniEngine.Systems;
 using MiniEngine.Units;
 
@@ -189,11 +190,15 @@ namespace MiniEngine.Scenes
             this.DebugInfoFactory.Construct(entity);
         }
 
-        public void BuildCar(Pose pose)
+        public CarAnimation BuildCar(Pose pose)
         {
             var entity = this.EntityController.CreateEntity();
-            this.OpaqueModelFactory.Construct(entity, this.car, pose);
+            var animation = new CarAnimation();
+            this.OpaqueModelFactory.Construct(entity, this.car, pose, animation);
+
             this.DebugInfoFactory.Construct(entity);
+
+            return animation;
         }
 
 

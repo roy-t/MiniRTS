@@ -13,8 +13,15 @@ namespace MiniEngine.Pipeline.Models.Factories
             : base(device, container) { }
 
         public void Construct(Entity entity, Model model, Pose pose)
+            => this.Construct(entity, model, pose, new IdentityAnimation());
+
+        public void Construct(Entity entity, Model model, Pose pose, AAnimation animation)
         {
             var transparentModel = new TransparentModel(entity, model, pose);
+
+            animation.SetTarget(transparentModel);
+            transparentModel.Animation = animation;
+
             this.Container.Add(transparentModel);
         }
     }

@@ -5,6 +5,7 @@ using MiniEngine.Primitives.Bounds;
 using MiniEngine.Systems;
 using MiniEngine.Systems.Annotations;
 using MiniEngine.Systems.Components;
+using ModelExtension;
 
 namespace MiniEngine.Pipeline.Models.Components
 {
@@ -17,6 +18,7 @@ namespace MiniEngine.Pipeline.Models.Components
             this.Entity = entity;
             this.Model = model;
             this.pose = pose;
+            this.Animation = new IdentityAnimation();
 
             this.ComputeBounds();
         }
@@ -24,6 +26,8 @@ namespace MiniEngine.Pipeline.Models.Components
         public Entity Entity { get; }
 
         public Model Model { get; }
+
+        public AAnimation Animation { get; set; }
 
         public BoundingSphere BoundingSphere { get; private set; }
 
@@ -33,6 +37,7 @@ namespace MiniEngine.Pipeline.Models.Components
         [Icon(IconType.Model)]
         public Vector3 Position => this.pose.Translation;
 
+        public bool HasAnimations => this.Model.Tag is SkinningData;
 
         [Editor(nameof(Yaw))]
         public float Yaw { get => this.pose.Yaw; set => this.Rotate(value, this.pose.Pitch, this.pose.Roll); }

@@ -59,6 +59,7 @@
     <Compile Include="Rendering\PipelineBuilder.cs" />
     <Compile Include="Rendering\RenderPipelineSettings.cs" />
     <Compile Include="SceneSelector.cs" />
+    <Compile Include="Scenes\Animations\CarAnimation.cs" />
     <Compile Include="Scenes\SceneBuilder.cs" />
     <Compile Include="Scenes\LizardScene.cs" />
     <Compile Include="Scenes\DemoScene.cs" />

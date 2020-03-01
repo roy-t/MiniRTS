@@ -7,6 +7,6 @@ namespace MiniEngine.Pipeline.Models.Components
     public sealed class OpaqueModel : AModel
     {
         public OpaqueModel(Entity entity, Model model, Pose pose)
-            : base(entity, model, pose) { }       
+            : base(entity, model, pose) { }
     }
 }

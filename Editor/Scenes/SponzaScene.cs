@@ -27,7 +27,10 @@ namespace MiniEngine.Scenes
 
         public void Set()
         {
-            this.SceneBuilder.BuildCar(new Pose(Vector3.Up * 6, 0.01f));
+            var animation = this.SceneBuilder.BuildCar(new Pose(Vector3.Up * 6, 0.01f));
+
+            animation.Update();
+
             this.SceneBuilder.BuildSponzaLit(new Pose(Vector3.Zero, 0.05f));
             this.SceneBuilder.BuildStainedGlass();
             this.SceneBuilder.BuildFirePlace();

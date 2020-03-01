@@ -5,7 +5,6 @@ using MiniEngine.Effects.Techniques;
 using MiniEngine.Effects.Wrappers;
 using MiniEngine.Pipeline.Models.Components;
 using MiniEngine.Primitives.Cameras;
-using ModelExtension;
 
 namespace MiniEngine.Pipeline.Models.Batches
 {
@@ -36,12 +35,13 @@ namespace MiniEngine.Pipeline.Models.Batches
             for (var i = 0; i < this.Models.Count; i++)
             {
                 var modelPose = this.Models[i];
-                this.DrawModel(technique, modelPose.Model, modelPose.WorldMatrix, this.ViewPoint);
+                this.DrawModel(technique, modelPose, modelPose.WorldMatrix, this.ViewPoint);
             }
         }
 
-        private void DrawModel(RenderEffectTechniques technique, Model model, Matrix world, IViewPoint viewPoint)
+        private void DrawModel(RenderEffectTechniques technique, AModel modelPose, Matrix world, IViewPoint viewPoint)
         {
+            var model = modelPose.Model;
             var bones = model.Bones.Count;
             if (SharedBoneMatrix is null || SharedBoneMatrix.Length < bones)
             {
@@ -59,26 +59,10 @@ namespace MiniEngine.Pipeline.Models.Batches
                     var effect = mesh.Effects[iEffect];
                     this.Effect.Wrap(effect);
 
-
-                    if (model.Tag is SkinningData skinningData && RenderEffect.TechniqueSupportsSkinning(technique))
+                    if (modelPose.HasAnimations && RenderEffect.TechniqueSupportsSkinning(technique))
                     {
                         technique = RenderEffect.GetSkinnedTechnique(technique);
-
-                        var transforms = new Matrix[Constants.MaxBones];
-                        var skinTransforms = Skin(skinningData);
-                        for (var i = 0; i < transforms.Length; i++)
-                        {
-                            if (i < skinTransforms.Length)
-                            {
-                                transforms[i] = skinTransforms[i];
-                            }
-                            else
-                            {
-                                transforms[i] = Matrix.Identity;
-                            }
-                        }
-
-                        this.Effect.BoneTransforms = transforms;
+                        this.Effect.BoneTransforms = modelPose.Animation.GetBoneTransforms();
                     }
 
                     this.Effect.World = SharedBoneMatrix[mesh.ParentBone.Index] * world;
@@ -95,42 +79,6 @@ namespace MiniEngine.Pipeline.Models.Batches
             }
         }
 
-        private static Matrix[] Skin(SkinningData skinningData)
-        {
-            var boneTransforms = new Matrix[skinningData.BindPose.Count];
-            var worldTransforms = new Matrix[skinningData.BindPose.Count];
-            var skinTransforms = new Matrix[skinningData.BindPose.Count];
 
-            skinningData.BindPose.CopyTo(boneTransforms);
-
-            worldTransforms[0] = boneTransforms[0] * Matrix.Identity;
-
-            for (var bone = 1; bone < worldTransforms.Length; bone++)
-            {
-                var parentBone = skinningData.SkeletonHierarchy[bone];
-
-
-                var fl = skinningData.GetIndex("Bone_FL");
-                if (bone == fl)
-                {
-                    worldTransforms[bone] = Matrix.CreateTranslation(-100, 0, 0) * boneTransforms[bone] * worldTransforms[parentBone];
-                }
-                else
-                {
-                    worldTransforms[bone] = boneTransforms[bone] * worldTransforms[parentBone];
-                }
-            }
-
-            for (int bone = 0; bone < skinTransforms.Length; bone++)
-            {
-                skinTransforms[bone] = skinningData.InverseBindPose[bone] *
-                                            worldTransforms[bone];
-            }
-
-
-
-
-            return skinTransforms;
-        }
     }
 }
