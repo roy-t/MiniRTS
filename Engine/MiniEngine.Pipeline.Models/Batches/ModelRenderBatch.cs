@@ -59,10 +59,10 @@ namespace MiniEngine.Pipeline.Models.Batches
                     var effect = mesh.Effects[iEffect];
                     this.Effect.Wrap(effect);
 
-                    if (model.Tag is SkinningData skinningData &&
-                        (technique == RenderEffectTechniques.Deferred || technique == RenderEffectTechniques.DeferredSkinned))
+
+                    if (model.Tag is SkinningData skinningData && RenderEffect.TechniqueSupportsSkinning(technique))
                     {
-                        technique = RenderEffectTechniques.DeferredSkinned;
+                        technique = RenderEffect.GetSkinnedTechnique(technique);
 
                         var transforms = new Matrix[Constants.MaxBones];
                         var skinTransforms = Skin(skinningData);

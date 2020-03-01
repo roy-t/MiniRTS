@@ -7,6 +7,8 @@
         /// </summary>
         ShadowMap,
 
+        ShadowMapSkinned,
+
         /// <summary>
         /// Renders diffuse textures
         /// </summary>

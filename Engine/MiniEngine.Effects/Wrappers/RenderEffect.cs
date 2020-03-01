@@ -83,6 +83,9 @@ namespace MiniEngine.Effects.Wrappers
                 case RenderEffectTechniques.ShadowMap:
                     this.effect.CurrentTechnique = this.effect.Techniques["ShadowMap"];
                     break;
+                case RenderEffectTechniques.ShadowMapSkinned:
+                    this.effect.CurrentTechnique = this.effect.Techniques["ShadowMapSkinned"];
+                    break;
                 case RenderEffectTechniques.Textured:
                     this.effect.CurrentTechnique = this.effect.Techniques["Textured"];
                     break;
@@ -97,6 +100,33 @@ namespace MiniEngine.Effects.Wrappers
             }
 
             this.ApplyPass();
+        }
+
+        public static bool TechniqueSupportsSkinning(RenderEffectTechniques technique)
+        {
+            switch (technique)
+            {
+                case RenderEffectTechniques.ShadowMap:
+                case RenderEffectTechniques.ShadowMapSkinned:
+                case RenderEffectTechniques.Deferred:
+                case RenderEffectTechniques.DeferredSkinned:
+                    return true;
+            }
+
+            return false;
+        }
+
+        public static RenderEffectTechniques GetSkinnedTechnique(RenderEffectTechniques technique)
+        {
+            switch (technique)
+            {
+                case RenderEffectTechniques.ShadowMap:
+                    return RenderEffectTechniques.ShadowMapSkinned;
+                case RenderEffectTechniques.Deferred:
+                    return RenderEffectTechniques.DeferredSkinned;
+            }
+
+            return technique;
         }
     }
 }

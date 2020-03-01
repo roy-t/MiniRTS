@@ -10,6 +10,17 @@ struct DeferredVertexShaderInput
     float3 Tangent : TANGENT0;
 };
 
+struct DeferredSkinnedVertexShaderInput
+{
+    float4 Position : POSITION0;
+    float3 Normal : NORMAL0;
+    float2 TexCoord : TEXCOORD0;
+    float3 Binormal : BINORMAL0;
+    float3 Tangent : TANGENT0;
+    uint4  Indices : BLENDINDICES0;
+    float4 Weights : BLENDWEIGHT0;
+};
+
 struct DeferredVertexShaderOutput
 {
     float4 Position : POSITION0;
@@ -18,6 +29,22 @@ struct DeferredVertexShaderOutput
     float4 ScreenPosition : TEXCOORD2;
     float3x3 tangentToWorld : TEXCOORD3;    
 };
+
+void Skin(inout DeferredSkinnedVertexShaderInput vin)
+{
+    float4x4 skinning = 0;
+
+    [unroll]
+    for (int i = 0; i < 4; i++)
+    {
+        skinning += BoneTransforms[vin.Indices[i]] * vin.Weights[i];
+    }
+
+    vin.Position.xyz = mul(float4(vin.Position.xyz, 1), skinning).xyz;
+    vin.Normal = mul(vin.Normal, (float3x3)skinning);
+    vin.Binormal = mul(vin.Binormal, (float3x3)skinning);
+    vin.Tangent = mul(vin.Tangent, (float3x3)skinning);
+}
 
 DeferredVertexShaderOutput DeferredMainVS(in DeferredVertexShaderInput input)
 {
@@ -38,6 +65,21 @@ DeferredVertexShaderOutput DeferredMainVS(in DeferredVertexShaderInput input)
 
     output.ScreenPosition = output.Position;
     return output;
+}
+
+DeferredVertexShaderOutput DeferredSkinnedMainVS(in DeferredSkinnedVertexShaderInput input)
+{
+    DeferredVertexShaderInput output = (DeferredVertexShaderInput)0;
+
+    Skin(input);
+
+    output.Position = input.Position;
+    output.Normal = input.Normal;
+    output.TexCoord = input.TexCoord;
+    output.Binormal = input.Binormal;
+    output.Tangent = input.Tangent;
+
+    return DeferredMainVS(output);
 }
 
 struct DeferredPixelShaderOutput
@@ -95,3 +137,13 @@ technique Deferred
         PixelShader = compile PS_SHADERMODEL DeferredMainPS();
     }
 }
+
+technique DeferredSkinned
+{
+    pass P0
+    {
+        VertexShader = compile VS_SHADERMODEL DeferredSkinnedMainVS();
+        PixelShader = compile PS_SHADERMODEL DeferredMainPS();
+    }
+}
+
