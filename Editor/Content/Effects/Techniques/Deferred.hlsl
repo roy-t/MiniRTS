@@ -27,7 +27,10 @@ struct DeferredVertexShaderOutput
     float2 TexCoord : TEXCOORD0;
     float2 Depth : TEXCOORD1;
     float4 ScreenPosition : TEXCOORD2;
-    float3x3 tangentToWorld : TEXCOORD3;    
+    //float3x3 tangentToWorld : TEXCOORD3;    
+    float3 Tangent : TEXCOORD3;
+    float3 Binormal : TEXCOORD4;
+    float3 Normal : TEXCOORD5;
 };
 
 void Skin(inout DeferredSkinnedVertexShaderInput vin)
@@ -59,9 +62,13 @@ DeferredVertexShaderOutput DeferredMainVS(in DeferredVertexShaderInput input)
 
     // calculate tangent space to world space matrix using the world space tangent,
     // binormal, and normal as basis vectors
-    output.tangentToWorld[0] = mul(float4(input.Tangent, 0), World).xyz;
+    /*output.tangentToWorld[0] = mul(float4(input.Tangent, 0), World).xyz;
     output.tangentToWorld[1] = mul(float4(input.Binormal, 0), World).xyz;
-    output.tangentToWorld[2] = mul(float4(input.Normal, 0), World).xyz;
+    output.tangentToWorld[2] = mul(float4(input.Normal, 0), World).xyz;*/
+
+    output.Normal = normalize(mul(input.Normal, (float3x3)World));
+    output.Tangent = normalize(mul(input.Tangent, (float3x3)World));
+    output.Binormal = normalize(mul(input.Binormal, (float3x3)World));
 
     output.ScreenPosition = output.Position;
     return output;
@@ -101,10 +108,10 @@ DeferredPixelShaderOutput DeferredMainPS(DeferredVertexShaderOutput input)
     output.Color = tex2D(diffuseSampler, texCoord);
     clip(output.Color.a - 0.01f);
 
-
     // Normal   
-    float3 normal = normalize(UnpackNormal(tex2D(normalSampler, texCoord).xyz));
-    normal = normalize(mul(normal, input.tangentToWorld));
+    float3x3 tbn = float3x3(normalize(input.Tangent), normalize(input.Binormal), normalize(input.Normal));
+    float3 normal = UnpackNormal(tex2D(normalSampler, texCoord).xyz);
+    normal = normalize(mul(normal, tbn));
     output.Normal.rgb = PackNormal(normal);
 
     // Specular
