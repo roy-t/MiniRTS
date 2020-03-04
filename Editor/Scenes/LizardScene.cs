@@ -15,7 +15,7 @@ namespace MiniEngine.Scenes
             this.SceneBuilder = sceneBuilder;
         }
 
-        public void LoadContent(ContentManager content) 
+        public void LoadContent(ContentManager content)
             => this.SceneBuilder.LoadContent(content);
 
         public string Name => "Lizard";
@@ -29,9 +29,10 @@ namespace MiniEngine.Scenes
             this.Skybox = this.SceneBuilder.NullSkybox;
         }
 
-        public static Pose CreateScaleRotationTranslation(float scale, float rotX, float rotY, float rotZ, Vector3 translation) 
+        public static Pose CreateScaleRotationTranslation(float scale, float rotX, float rotY, float rotZ, Vector3 translation)
             => new Pose(translation, scale, rotY, rotX, rotZ);
 
+        public void RenderUI() { }
         public void Update(Seconds elapsed)
         {
 

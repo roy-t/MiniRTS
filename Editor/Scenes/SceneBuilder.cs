@@ -191,15 +191,15 @@ namespace MiniEngine.Scenes
             this.DebugInfoFactory.Construct(entity);
         }
 
-        public CarAnimation BuildCar(Pose pose)
+        public AModel BuildCar(Pose pose)
         {
             var entity = this.EntityController.CreateEntity();
             var animation = new CarAnimation();
-            this.OpaqueModelFactory.Construct(entity, this.car, pose, animation);
+            var model = this.OpaqueModelFactory.Construct(entity, this.car, pose, animation);
 
             this.DebugInfoFactory.Construct(entity);
 
-            return animation;
+            return model;
         }
 
         public AModel BuildTerrain(Pose pose)

@@ -29,7 +29,7 @@ namespace MiniEngine.Scenes
             this.accumulator = 0.0f;
         }
 
-        public void LoadContent(ContentManager content) 
+        public void LoadContent(ContentManager content)
             => this.SceneBuilder.LoadContent(content);
 
         public string Name => "Demo";
@@ -39,25 +39,27 @@ namespace MiniEngine.Scenes
         public void Set()
         {
             this.SceneBuilder.BuildSponza(new Pose(Vector3.Zero, 0.05f));
-            this.Skybox = this.SceneBuilder.NullSkybox;           
+            this.Skybox = this.SceneBuilder.NullSkybox;
         }
 
-        public static Pose CreateScaleRotationTranslation(float scale, float rotX, float rotY, float rotZ, Vector3 translation) 
+        public static Pose CreateScaleRotationTranslation(float scale, float rotX, float rotY, float rotZ, Vector3 translation)
             => new Pose(translation, scale, rotY, rotX, rotZ);
+
+        public void RenderUI() { }
 
         private float off2;
         public void Update(Seconds elapsed)
-        {   
-            if(this.started == false)
+        {
+            if (this.started == false)
             {
-                if(Keyboard.GetState().IsKeyDown(Keys.I))
+                if (Keyboard.GetState().IsKeyDown(Keys.I))
                 {
                     this.started = true;
                 }
                 return;
             }
-                        
-            if(this.accumulator == 0)
+
+            if (this.accumulator == 0)
             {
                 this.ambientLight = this.SceneBuilder.BuildSponzaAmbientLight();
                 this.sunlight = this.SceneBuilder.BuildSponzeSunLight();
@@ -77,7 +79,7 @@ namespace MiniEngine.Scenes
                 MediaPlayer.Play(this.song);
             }
 
-            if(this.accumulator < new Seconds(1))
+            if (this.accumulator < new Seconds(1))
             {
                 this.PointLight.Color = Color.IndianRed * this.accumulator;
             }
@@ -85,7 +87,7 @@ namespace MiniEngine.Scenes
             this.accumulator += elapsed;
 
             var warmup = new Seconds(7);
-            if(this.accumulator > warmup)
+            if (this.accumulator > warmup)
             {
                 var since = this.accumulator - warmup;
 
@@ -98,20 +100,20 @@ namespace MiniEngine.Scenes
             }
 
             var secondState = new Seconds(26);
-            if(this.accumulator > secondState)
+            if (this.accumulator > secondState)
             {
-                if(this.shadowCastingLight == null)
+                if (this.shadowCastingLight == null)
                 {
                     this.shadowCastingLight = this.SceneBuilder.BuildLionSpotLight();
                 }
 
                 var since = this.accumulator - secondState;
                 var off = MathHelper.Clamp(since / 2.0f, 0f, 0.8f);
-                this.shadowCastingLight.Color = Color.White * off;                
+                this.shadowCastingLight.Color = Color.White * off;
             }
 
-            var fadeOut = new Seconds(28);            
-            if(this.accumulator > fadeOut)
+            var fadeOut = new Seconds(28);
+            if (this.accumulator > fadeOut)
             {
                 var left = MathHelper.Clamp((this.accumulator - fadeOut) / 3.0f, 0, 1);
                 MediaPlayer.Volume = 1.0f - left;

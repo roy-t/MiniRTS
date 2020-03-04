@@ -93,7 +93,7 @@ namespace MiniEngine
 
             this.spriteBatch.End();
 
-            this.uiManager.Render(this.camera, this.GraphicsDevice.Viewport, gameTime);
+            this.uiManager.Render(this.sceneSelector.CurrentScene, this.camera, this.GraphicsDevice.Viewport, gameTime);
 
             base.Draw(gameTime);
         }

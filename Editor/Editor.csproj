@@ -167,6 +167,10 @@
       <Project>{e939d1a8-2a0d-4605-8704-9f41275c2cf6}</Project>
       <Name>ModelExtension</Name>
     </ProjectReference>
+    <ProjectReference Include="..\GameLogic\GameLogic.csproj">
+      <Project>{f3bb1367-1e76-44cc-8604-038c9161f130}</Project>
+      <Name>GameLogic</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="LightInject">

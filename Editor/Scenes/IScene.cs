@@ -11,6 +11,8 @@ namespace MiniEngine.Scenes
         void Set();
         void Update(Seconds elapsed);
 
+        void RenderUI();
+
         TextureCube Skybox { get; }
     }
 }

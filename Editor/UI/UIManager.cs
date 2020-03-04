@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework.Input;
 using MiniEngine.Controllers;
 using MiniEngine.Input;
 using MiniEngine.Primitives.Cameras;
+using MiniEngine.Scenes;
 using MiniEngine.UI.State;
 using MiniEngine.UI.Utilities;
 using MiniEngine.Units;
@@ -66,7 +67,7 @@ namespace MiniEngine.UI
 
             if (sceneSelector.CurrentScene == null)
             {
-                sceneSelector.SwitchScenes(sceneSelector.Scenes.First());                
+                sceneSelector.SwitchScenes(sceneSelector.Scenes.First());
             }
 
             this.setCamera = true;
@@ -76,9 +77,9 @@ namespace MiniEngine.UI
                 this.Menus[i].State = this.State;
             }
             this.EntityWindow.State = this.State;
-        }        
+        }
 
-        public void Render(PerspectiveCamera camera, Viewport viewport, GameTime gameTime)
+        public void Render(IScene currentScene, PerspectiveCamera camera, Viewport viewport, GameTime gameTime)
         {
             if (this.setCamera)
             {
@@ -95,7 +96,7 @@ namespace MiniEngine.UI
             var elapsed = (Seconds)gameTime.ElapsedGameTime;
 
             this.KeyboardInput.Update();
-            this.MouseInput.Update();            
+            this.MouseInput.Update();
 
             this.CameraController.Update(camera, elapsed);
 
@@ -110,7 +111,7 @@ namespace MiniEngine.UI
             }
 
             this.RenderOverlay(viewport);
-            this.RenderUI(camera, gameTime);
+            this.RenderUI(currentScene, camera, gameTime);
         }
 
         private void RenderOverlay(Viewport viewport)
@@ -166,7 +167,7 @@ namespace MiniEngine.UI
             this.SpriteBatch.End();
         }
 
-        private void RenderUI(PerspectiveCamera camera, GameTime gameTime)
+        private void RenderUI(IScene currentScene, PerspectiveCamera camera, GameTime gameTime)
         {
             if (this.State.EditorState.ShowGui)
             {
@@ -188,6 +189,8 @@ namespace MiniEngine.UI
                             this.Menus[i].Render(camera);
                         }
 
+                        currentScene.RenderUI();
+
                         ImGui.EndMainMenuBar();
                     }
 
@@ -202,7 +205,7 @@ namespace MiniEngine.UI
             }
         }
 
-        public void Close(IViewPoint viewPoint) 
+        public void Close(IViewPoint viewPoint)
             => this.State.Serialize(viewPoint.Position, viewPoint.Position + viewPoint.Forward);
     }
 }
