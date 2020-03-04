@@ -76,6 +76,11 @@ namespace MiniEngine.Effects.Wrappers
             set => this.effect.Parameters["BoneTransforms"].SetValue(value);
         }
 
+        public Vector2 TextureScale
+        {
+            set => this.effect.Parameters["TextureScale"].SetValue(value);
+        }
+
         public void Apply(RenderEffectTechniques technique)
         {
             switch (technique)

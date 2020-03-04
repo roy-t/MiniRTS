@@ -7,7 +7,7 @@ using MiniEngine.Rendering;
 namespace MiniEngine.UI.Utilities
 {
     public sealed class RenderTargetDescriber
-    {        
+    {
         public RenderTargetDescriber(DeferredRenderPipeline renderPipeline)
         {
             var gBuffer = renderPipeline.GetGBuffer();
@@ -29,19 +29,35 @@ namespace MiniEngine.UI.Utilities
 
         public RenderTarget2D GetRenderTarget(string name)
         {
-            return this.RenderTargets
-                .Where(x => name.Equals(x.Name, StringComparison.OrdinalIgnoreCase))
-                .Select(x => x.RenderTarget)
-                .FirstOrDefault();
+            for (var i = 0; i < this.RenderTargets.Count; i++)
+            {
+                if (this.RenderTargets[i].Name.Equals(name, StringComparison.OrdinalIgnoreCase))
+                {
+                    return this.RenderTargets[i].RenderTarget;
+                }
+            }
+
+            throw new Exception($"Could not find render target with name {name}");
         }
 
-        public IList<RenderTarget2D> GetRenderTargets(IEnumerable<string> names)
+        public IList<RenderTarget2D> GetRenderTargets(IReadOnlyList<string> names)
         {
-            return this.RenderTargets
-                .OrderBy(x => x.Order)
-                .Where(x => names.Contains(x.Name, StringComparer.OrdinalIgnoreCase))
-                .Select(x => x.RenderTarget)
-                .ToList();
+            var list = new RenderTarget2D[names.Count];
+            var insertIndex = 0;
+            for (var i = 0; i < this.RenderTargets.Count && insertIndex < names.Count; i++)
+            {
+                if (names.Contains(this.RenderTargets[i].Name, StringComparer.OrdinalIgnoreCase))
+                {
+                    list[insertIndex++] = this.RenderTargets[i].RenderTarget;
+                }
+            }
+
+            if (insertIndex != names.Count)
+            {
+                throw new Exception($"Could not find all render targets");
+            }
+
+            return list;
         }
     }
 }

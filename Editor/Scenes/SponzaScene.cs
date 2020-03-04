@@ -27,14 +27,14 @@ namespace MiniEngine.Scenes
 
         public void Set()
         {
-            this.animation = this.SceneBuilder.BuildCar(new Pose(Vector3.Up * 6, 0.01f));
+            this.animation = this.SceneBuilder.BuildCar(new Pose(Vector3.Up * 6));
 
             this.SceneBuilder.BuildSponzaLit(new Pose(Vector3.Zero, 0.05f));
             this.SceneBuilder.BuildStainedGlass();
             this.SceneBuilder.BuildFirePlace();
             this.SceneBuilder.BuildBulletHoles();
-            this.SceneBuilder.BuildCube(new Pose(new Vector3(20, 10, 0), 0.035f));
-            this.SceneBuilder.BuildCube(new Pose(new Vector3(20, 20, 0), 0.035f));
+            this.SceneBuilder.BuildCube(new Pose(new Vector3(20, 10, 0), 0.01f));
+            this.SceneBuilder.BuildCube(new Pose(new Vector3(20, 20, 0), 0.01f));
 
             this.Skybox = this.SceneBuilder.SponzaSkybox;
         }

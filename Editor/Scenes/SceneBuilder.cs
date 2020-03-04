@@ -35,6 +35,7 @@ namespace MiniEngine.Scenes
         private readonly WaypointFactory WaypointFactory;
         private readonly PipelineBuilder PipelineBuilder;
 
+        private Model terrain;
         private Model car;
         private Model sponza;
         private Model plane;
@@ -78,7 +79,7 @@ namespace MiniEngine.Scenes
 
         public void LoadContent(ContentManager content)
         {
-
+            this.terrain = content.Load<Model>(@"Scenes\Primitives\terrain");
             this.car = content.Load<Model>(@"Scenes\Primitives\car_textured");
             this.sponza = content.Load<Model>(@"Scenes\Sponza\Sponza");
             this.cube = content.Load<Model>(@"Scenes\Primitives\Cube");
@@ -199,6 +200,16 @@ namespace MiniEngine.Scenes
             this.DebugInfoFactory.Construct(entity);
 
             return animation;
+        }
+
+        public AModel BuildTerrain(Pose pose)
+        {
+            var entity = this.EntityController.CreateEntity();
+            var model = this.OpaqueModelFactory.Construct(entity, this.terrain, pose);
+            model.TextureScale = Vector2.One * 8;
+            this.DebugInfoFactory.Construct(entity);
+
+            return model;
         }
 
 

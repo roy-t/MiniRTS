@@ -19,13 +19,16 @@ namespace MiniEngine.Pipeline.Models.Components
             this.Model = model;
             this.pose = pose;
             this.Animation = new IdentityAnimation();
-
+            this.TextureScale = Vector2.One;
             this.ComputeBounds();
         }
 
         public Entity Entity { get; }
 
         public Model Model { get; }
+
+        [Editor(nameof(TextureScale))]
+        public Vector2 TextureScale { get; set; }
 
         public AAnimation Animation { get; set; }
 

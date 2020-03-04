@@ -92,7 +92,7 @@ struct DeferredPixelShaderOutput
 DeferredPixelShaderOutput DeferredMainPS(DeferredVertexShaderOutput input)
 {
     DeferredPixelShaderOutput output = (DeferredPixelShaderOutput)0;
-    float2 texCoord = input.TexCoord;
+    float2 texCoord = input.TexCoord * TextureScale;
 
     float mask = tex2D(maskSampler, texCoord).r;
     clip(mask - 0.05f);
@@ -103,7 +103,7 @@ DeferredPixelShaderOutput DeferredMainPS(DeferredVertexShaderOutput input)
 
 
     // Normal   
-    float3 normal = UnpackNormal(tex2D(normalSampler, texCoord).xyz);
+    float3 normal = normalize(UnpackNormal(tex2D(normalSampler, texCoord).xyz));
     normal = normalize(mul(normal, input.tangentToWorld));
     output.Normal.rgb = PackNormal(normal);
 

@@ -12,7 +12,7 @@ using Num = System.Numerics;
 namespace MiniEngine.UI
 {
     public sealed class Editors
-    {        
+    {
         private const int SliderDragThreshold = 10;
         private readonly ImGuiRenderer GuiRenderer;
 
@@ -54,7 +54,10 @@ namespace MiniEngine.UI
                     var v = ToNum(vector);
                     if (this.CreateVector3(label, ref v, minMax)) { setter(ToXna(v)); }
                     break;
-
+                case Vector2 vector2:
+                    var v2 = ToNum(vector2);
+                    if (this.CreateVector2(label, ref v2, minMax)) { setter(ToXna(v2)); }
+                    break;
                 case Pose pose:
                     {
                         ImGui.Text(label);
@@ -89,7 +92,7 @@ namespace MiniEngine.UI
                         set |= this.CreateVector3("LookAt", ref lookAt, MinMaxDescription.MinusInfinityToInfinity);
                         set |= this.CreateFloat("FieldOfView", ref fov, new MinMaxDescription(0, MathHelper.Pi));
 
-                        if(set)
+                        if (set)
                         {
                             camera.Move(ToXna(position), ToXna(lookAt));
                             camera.SetFieldOfView(fov);
@@ -108,7 +111,7 @@ namespace MiniEngine.UI
 
                 case Seconds s:
                     var fs = s.Value;
-                    if (this.CreateFloat(label, ref fs, minMax))                    
+                    if (this.CreateFloat(label, ref fs, minMax))
                     {
                         setter(new Seconds(fs));
                     }
@@ -192,6 +195,32 @@ namespace MiniEngine.UI
             }
         }
 
+        private bool CreateVector2(string label, ref Num.Vector2 v, MinMaxDescription minMax)
+        {
+            switch (minMax.Type)
+            {
+                case MinMaxDescriptionType.ZeroToOne:
+                    return ImGui.SliderFloat2(label, ref v, 0, 1);
+
+                case MinMaxDescriptionType.MinusOneToOne:
+                    return ImGui.SliderFloat2(label, ref v, -1, 1);
+
+                case MinMaxDescriptionType.ZeroToInfinity:
+                    return ImGui.DragFloat2(label, ref v, this.DragSpeed, 0, float.MaxValue);
+
+                case MinMaxDescriptionType.Custom:
+                    if ((minMax.Max - minMax.Min) < SliderDragThreshold)
+                    {
+                        return ImGui.SliderFloat2(label, ref v, minMax.Min, minMax.Max);
+                    }
+                    return ImGui.DragFloat2(label, ref v, this.DragSpeed, minMax.Min, minMax.Max);
+
+                case MinMaxDescriptionType.MinusInfinityToInfinity:
+                default:
+                    return ImGui.DragFloat2(label, ref v, this.DragSpeed);
+            }
+        }
+
         private bool CreateFloat(string label, ref float v, MinMaxDescription minMax)
         {
             switch (minMax.Type)
@@ -206,10 +235,10 @@ namespace MiniEngine.UI
                     return ImGui.DragFloat(label, ref v, this.DragSpeed, 0, float.MaxValue);
 
                 case MinMaxDescriptionType.Custom:
-                    if((minMax.Max - minMax.Min) < SliderDragThreshold)
+                    if ((minMax.Max - minMax.Min) < SliderDragThreshold)
                     {
                         return ImGui.SliderFloat(label, ref v, minMax.Min, minMax.Max);
-                    }                    
+                    }
                     return ImGui.DragFloat(label, ref v, this.DragSpeed, minMax.Min, minMax.Max);
 
                 default:
@@ -244,6 +273,8 @@ namespace MiniEngine.UI
             }
         }
 
+        private static Num.Vector2 ToNum(Vector2 v) => new Num.Vector2(v.X, v.Y);
+        private static Vector2 ToXna(Num.Vector2 v) => new Vector2(v.X, v.Y);
         private static Num.Vector3 ToNum(Vector3 v) => new Num.Vector3(v.X, v.Y, v.Z);
         private static Vector3 ToXna(Num.Vector3 v) => new Vector3(v.X, v.Y, v.Z);
 

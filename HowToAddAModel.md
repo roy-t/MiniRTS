@@ -9,11 +9,16 @@
 5. Add a material, in the node view set the Base Color to reference the texture file you've just created by clicking the little dot next to it
 7. Verify the material works by pressing z (while in object mode in the viewport) and select LookDev
 8. Export the file as FBX store it in the same folder as you've stored the model so all relative paths are preserved. Make sure to disable "Add end-bones" in the export armature settings (for performance)
+    - Make sure to set the scale in the exporter from 1.00 to 0.01. (Blender works in meters and assumes FBX works with centimeters)
 9. Copy the model to the content directory, copy the texture to `/path/to/model/in/content/directory/textures`.
 10. Create the file `<modelname>.ini` and fill it with the material description (see other files for an example)
 11. Add the model to MonoGame's content tool and set the processor to the multi-material model processor.
 12. You can now use the model in game!
 
+
+## Scale
+Note that a model exported by blender with dimensions 1x1x1 will show up in the game as having dimensions 100x100x100, so apply a scale matrix of 0.01 over all dimensions to get the original proportions. 
+I'm not sure why this happens, must be something in Blender's FBX exporter or MonoGame's model importer.
 
 ## Tips
 - Rigging: https://continuebreak.com/articles/how-rig-vehicle-blender-28-ue4/

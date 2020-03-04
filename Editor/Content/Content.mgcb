@@ -445,6 +445,32 @@
 /processorParam:SwapWindingOrder=False
 /build:Scenes/Primitives/sphere.fbx
 
+#begin Scenes/Primitives/terrain.obj
+/importer:OpenAssetImporter
+/processor:MultiMaterialModelProcessor
+/processorParam:ProcessTextures=True
+/processorParam:ProcessArmature=False
+/processorParam:SpecularMapFallback=NeutralSpecular.tga
+/processorParam:NormalMapFallback=NeutralNormal.tga
+/processorParam:MaskFallback=NeutralMask.tga
+/processorParam:ReflectionFallback=NeutralReflection.tga
+/processorParam:EffectFile=Effects/RenderEffect.fx
+/processorParam:GenerateTangentFrames=True
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=False
+/processorParam:DefaultEffect=BasicEffect
+/processorParam:GenerateMipmaps=True
+/processorParam:PremultiplyTextureAlpha=True
+/processorParam:PremultiplyVertexColors=True
+/processorParam:ResizeTexturesToPowerOfTwo=False
+/processorParam:TextureFormat=Compressed
+/processorParam:RotationX=0
+/processorParam:RotationY=0
+/processorParam:RotationZ=0
+/processorParam:Scale=1
+/processorParam:SwapWindingOrder=False
+/build:Scenes/Primitives/terrain.obj
+
 #begin Scenes/Sponza/plane.fbx
 /importer:FbxImporter
 /processor:MultiMaterialModelProcessor

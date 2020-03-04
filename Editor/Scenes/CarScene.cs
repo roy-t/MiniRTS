@@ -24,8 +24,10 @@ namespace MiniEngine.Scenes
 
         public void Set()
         {
-            this.SceneBuilder.BuildCar(new Pose(Vector3.Up * 6, .01f));
+            this.SceneBuilder.BuildCar(new Pose(Vector3.Zero));
+            this.SceneBuilder.BuildTerrain(new Pose(Vector3.Zero));
             this.SceneBuilder.BuildSponzaAmbientLight();
+            this.SceneBuilder.BuildSponzeSunLight();
             this.Skybox = this.SceneBuilder.SponzaSkybox;
         }
 

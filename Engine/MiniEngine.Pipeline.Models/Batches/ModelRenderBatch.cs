@@ -71,6 +71,7 @@ namespace MiniEngine.Pipeline.Models.Batches
                     this.Effect.InverseViewProjection = this.InverseViewProjection;
                     this.Effect.Skybox = this.Skybox;
                     this.Effect.CameraPosition = viewPoint.Position;
+                    this.Effect.TextureScale = modelPose.TextureScale;
 
                     this.Effect.Apply(technique);
                 }
