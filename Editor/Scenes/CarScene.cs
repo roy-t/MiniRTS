@@ -55,7 +55,7 @@ namespace MiniEngine.Scenes
         {
             if (ImGui.BeginMenu("Car Scene"))
             {
-                ImGui.SliderFloat2("Target", ref this.endPosition, 0, 19);
+                ImGui.SliderFloat2("Target", ref this.endPosition, 0, 39);
 
                 if (ImGui.MenuItem("Move"))
                 {
@@ -69,12 +69,14 @@ namespace MiniEngine.Scenes
 
         public void Update(Seconds elapsed)
         {
+            const float period = 0.15f;
+
             if (this.checkpoints.Count > 0)
             {
                 this.aggregator += elapsed;
-                if (this.aggregator > 0.5f)
+                if (this.aggregator > period)
                 {
-                    this.aggregator -= 1.0f;
+                    this.aggregator -= period;
                     this.pathIndex = (this.pathIndex + 1) % this.checkpoints.Count;
                     var current = this.checkpoints[this.pathIndex];
 

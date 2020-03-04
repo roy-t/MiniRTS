@@ -10,7 +10,7 @@ namespace MiniEngine.GameLogic
     {
         private readonly Grid Grid;
         private readonly PathFinder PathFinder;
-        private readonly GridSize GridSize = new GridSize(20, 20);
+        private readonly GridSize GridSize = new GridSize(40, 40);
         private readonly Size CellSize = new Size(Distance.FromMeters(1), Distance.FromMeters(1));
         private readonly Vector2 Offset;
 
@@ -28,8 +28,7 @@ namespace MiniEngine.GameLogic
 
         public List<Vector2> PlanPath(int x0, int y0, int x1, int y1)
         {
-            var pathFinder = new PathFinder();
-            var path = pathFinder.FindPath(new GridPosition(x0, y0), new GridPosition(x1, y1), this.Grid);
+            var path = this.PathFinder.FindPath(new GridPosition(x0, y0), new GridPosition(x1, y1), this.Grid);
 
             var checkpoints = new List<Vector2>();
 
