@@ -61,7 +61,6 @@
     <Compile Include="Stages\Render3DBoundariesStage.cs" />
     <Compile Include="Stages\RenderIconsStage.cs" />
     <Compile Include="Systems\BoundarySystem.cs" />
-    <Compile Include="Systems\DebugSystem.cs" />
     <Compile Include="Systems\IconSystem.cs" />
   </ItemGroup>
   <ItemGroup>

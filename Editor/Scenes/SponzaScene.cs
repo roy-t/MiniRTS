@@ -47,7 +47,8 @@ namespace MiniEngine.Scenes
 
         public void Update(Seconds elapsed)
         {
-            (carModel.Animation as CarAnimation).Update(elapsed);
+            (this.carModel.Animation as CarAnimation).Update(elapsed);
+            return;
         }
     }
 }

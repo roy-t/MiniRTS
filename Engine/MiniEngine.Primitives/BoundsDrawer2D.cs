@@ -13,9 +13,9 @@ namespace MiniEngine.Primitives
         private readonly GraphicsDevice Device;
         private readonly Vector3[] Corners;
 
-        private readonly VertexPosition[] Vertices;        
-        private readonly short[] Indices;  
-                
+        private readonly VertexPosition[] Vertices;
+        private readonly short[] Indices;
+
         private float minX;
         private float maxX;
         private float minY;
@@ -25,8 +25,15 @@ namespace MiniEngine.Primitives
         {
             this.Device = device;
             this.Corners = new Vector3[BoundingBox.CornerCount];
-            this.Vertices = new VertexPosition[4];            
-            this.Indices = new short[] { 0, 1, 3, 2, 0 };            
+            this.Vertices = new VertexPosition[4];
+            this.Indices = new short[] { 0, 1, 3, 2, 0 };
+        }
+
+        public void RenderOutline(Vector3[] corners, PerspectiveCamera camera)
+        {
+            corners.CopyTo(this.Corners, 0);
+            this.Wrap(this.Corners, camera);
+            this.RenderOutline();
         }
 
         public void RenderOutline(BoundingBox bounds, PerspectiveCamera camera)
@@ -41,10 +48,10 @@ namespace MiniEngine.Primitives
             frustum.GetCorners(this.Corners);
             this.Wrap(this.Corners, camera);
             this.RenderOutline();
-        }      
-        
+        }
+
         private void Wrap(Vector3[] corners, PerspectiveCamera camera)
-        {         
+        {
             this.minX = float.MaxValue;
             this.maxX = float.MinValue;
 
@@ -54,11 +61,11 @@ namespace MiniEngine.Primitives
             for (var i = 0; i < BoundingBox.CornerCount; i++)
             {
                 var corner = corners[i];
-                
+
                 var projectedCorner = ProjectionMath.WorldToView(corner, camera.ViewProjection);
 
                 if (ProjectionMath.IsBehindCamera(corner, camera))
-                {                    
+                {
                     projectedCorner.X = -projectedCorner.X;
                     projectedCorner.Y = -projectedCorner.Y;
                 }
@@ -75,8 +82,8 @@ namespace MiniEngine.Primitives
             this.Vertices[2].Position = new Vector3(this.maxX, this.minY, 0);
             this.Vertices[3].Position = new Vector3(this.maxX, this.maxY, 0);
         }
-               
+
         private void RenderOutline()
-            => this.Device.DrawUserIndexedPrimitives(PrimitiveType.LineStrip, this.Vertices, 0, 4, this.Indices, 0, 4);        
+            => this.Device.DrawUserIndexedPrimitives(PrimitiveType.LineStrip, this.Vertices, 0, 4, this.Indices, 0, 4);
     }
 }

@@ -10,7 +10,6 @@ namespace MiniEngine.Primitives
     {
         private const int CornerCount = 8;
         private const int TriangleCount = 12;
-        private const int LineCount = 12;
 
         private readonly GraphicsDevice Device;
         private readonly Vector3[] Corners;
@@ -78,6 +77,12 @@ namespace MiniEngine.Primitives
         {
             frustum.GetCorners(this.Corners);
             this.Render();
+        }
+
+        public void RenderOutline(Vector3[] corners)
+        {
+            corners.CopyTo(this.Corners, 0);
+            this.RenderOutline();
         }
 
         public void RenderOutline(BoundingFrustum frustum)

@@ -12,10 +12,10 @@ namespace MiniEngine.Pipeline.Models.Factories
         public TransparentModelFactory(GraphicsDevice device, IComponentContainer<TransparentModel> container)
             : base(device, container) { }
 
-        public void Construct(Entity entity, Model model, Pose pose)
+        public TransparentModel Construct(Entity entity, Model model, Pose pose)
             => this.Construct(entity, model, pose, new IdentityAnimation());
 
-        public void Construct(Entity entity, Model model, Pose pose, AAnimation animation)
+        public TransparentModel Construct(Entity entity, Model model, Pose pose, AAnimation animation)
         {
             var transparentModel = new TransparentModel(entity, model, pose);
 
@@ -23,6 +23,8 @@ namespace MiniEngine.Pipeline.Models.Factories
             transparentModel.Animation = animation;
 
             this.Container.Add(transparentModel);
+
+            return transparentModel;
         }
     }
 }

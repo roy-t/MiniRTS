@@ -13,36 +13,35 @@ namespace MiniEngine.Pipeline.Projectors.Components
         public DynamicTexture(Entity entity, RenderPipeline pipeline, PerspectiveCamera viewPoint, GBuffer gBuffer, TextureCube skybox, Pass pass, string label)
         {
             this.Entity = entity;
-            this.Pipeline = pipeline;            
+            this.Pipeline = pipeline;
             this.ViewPoint = viewPoint;
             this.GBuffer = gBuffer;
             this.Pass = pass;
             this.Label = label;
             this.Skybox = skybox;
-            this.Input = new RenderPipelineInput();            
+            this.Input = new RenderPipelineInput();
         }
 
         public Entity Entity { get; }
 
         public RenderPipeline Pipeline { get; }
-        public RenderPipelineInput Input { get; }        
+        public RenderPipelineInput Input { get; }
 
         [Editor(nameof(ViewPoint))]
         public PerspectiveCamera ViewPoint { get; set; }
 
         public GBuffer GBuffer { get; }
         public Pass Pass { get; }
-        
+
         [Editor(nameof(Label))]
-        public string Label { get; }        
+        public string Label { get; }
 
-        [Boundary(BoundaryType.Frustum)]
-        public BoundingFrustum Bounds => this.ViewPoint.Frustum;
+        public Vector3[] Corners => this.ViewPoint.Frustum.GetCorners();
 
-        [Icon(IconType.Camera)]
+        public IconType Icon => IconType.Camera;
+
         public Vector3 Position => this.ViewPoint.Position;
 
-        [Icon(IconType.LookAt)]
         public Vector3 LookAt => this.ViewPoint.LookAt;
 
         [Editor(nameof(DiffuseTarget))]

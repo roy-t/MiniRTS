@@ -1,4 +1,5 @@
-﻿using ImGuiNET;
+﻿using System.Collections.Generic;
+using ImGuiNET;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -7,27 +8,35 @@ using MiniEngine.CutScene;
 using MiniEngine.Pipeline.Debug.Factories;
 using MiniEngine.Pipeline.Projectors.Factories;
 using MiniEngine.Primitives.Cameras;
+using MiniEngine.Systems.Components;
 using MiniEngine.UI.State;
+using MiniEngine.UI.Utilities;
 
 namespace MiniEngine.UI
 {
     public sealed class CreateMenu : IMenu
     {
-        private readonly DebugInfoFactory OutlineFactory;
+        private readonly DebugInfoFactory DebugInfoFactory;
         private readonly ProjectorFactory ProjectorFactory;
         private readonly Texture2D Texture;
         private readonly LightsController LightsController;
         private readonly WaypointFactory WaypointFactory;
+        private readonly ComponentSearcher ComponentSearcher;
+        private readonly List<IComponent> Components;
+
 
         public CreateMenu(DebugInfoFactory outLineFactory, WaypointFactory waypointFactory,
-            ProjectorFactory projectorFactory, ContentManager content, LightsController lightsController)
+            ProjectorFactory projectorFactory, ContentManager content, LightsController lightsController, ComponentSearcher componentSearcher)
         {
-            this.OutlineFactory = outLineFactory;
+            this.DebugInfoFactory = outLineFactory;
             this.WaypointFactory = waypointFactory;
             this.ProjectorFactory = projectorFactory;
             this.Texture = content.Load<Texture2D>("Debug");
             this.LightsController = lightsController;
+            this.ComponentSearcher = componentSearcher;
+
             this.State = new UIState();
+            this.Components = new List<IComponent>();
         }
 
         public UIState State { get; set; }
@@ -76,23 +85,32 @@ namespace MiniEngine.UI
                     this.LightsController.RemoveAllLights();
                 }
 
-                ImGui.Separator();                               
+                ImGui.Separator();
 
                 if (ImGui.MenuItem("Projector"))
                 {
-                    this.ProjectorFactory.Construct(this.EntityState.SelectedEntity, this.Texture, Color.White * 0.5f, camera.Position, camera.LookAt);                    
+                    this.ProjectorFactory.Construct(this.EntityState.SelectedEntity, this.Texture, Color.White * 0.5f, camera.Position, camera.LookAt);
                 }
 
                 ImGui.Separator();
 
                 if (ImGui.MenuItem("Debug info"))
                 {
-                    this.OutlineFactory.Construct(this.EntityState.SelectedEntity);
+                    this.Components.Clear();
+                    this.ComponentSearcher.GetComponents(this.EntityState.SelectedEntity, this.Components);
+
+                    for (var i = 0; i < this.Components.Count; i++)
+                    {
+                        if (this.Components[i] is IPhysicalComponent component)
+                        {
+                            this.DebugInfoFactory.Construct(this.EntityState.SelectedEntity, component);
+                        }
+                    }
                 }
 
                 ImGui.Separator();
 
-                if(ImGui.MenuItem("Waypoint"))
+                if (ImGui.MenuItem("Waypoint"))
                 {
                     this.WaypointFactory.Construct(this.EntityState.SelectedEntity, 1.0f, camera.Position, camera.Position + (camera.Forward * 100));
                 }

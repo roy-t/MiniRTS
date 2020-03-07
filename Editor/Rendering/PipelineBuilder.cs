@@ -39,29 +39,27 @@ namespace MiniEngine.Rendering
         private readonly CascadedShadowMapSystem CascadedShadowMapSystem;
         private readonly ShadowCastingLightSystem ShadowCastingLightSystem;
         private readonly SunlightSystem SunlightSystem;
-        private readonly BoundarySystem BoundarySystem;
         private readonly IconSystem IconSystem;
         private readonly IMeterRegistry MeterRegistry;
 
 
-        public PipelineBuilder(GraphicsDevice device, ShadowMapSystem shadowMapSystem, ModelSystem modelSystem, AveragedParticleSystem transparentParticleSystem, AdditiveParticleSystem additiveParticleSystem, ProjectorSystem projectorSystem, EffectFactory effectFactory, AmbientLightSystem ambientLightSystem, DirectionalLightSystem directionalLightSystem, PointLightSystem pointLightSystem, CascadedShadowMapSystem cascadedShadowMapSystem, ShadowCastingLightSystem shadowCastingLightSystem, SunlightSystem sunlightSystem, BoundarySystem boundarySystem, IconSystem iconSystem)
+        public PipelineBuilder(GraphicsDevice device, ShadowMapSystem shadowMapSystem, ModelSystem modelSystem, AveragedParticleSystem transparentParticleSystem, AdditiveParticleSystem additiveParticleSystem, ProjectorSystem projectorSystem, EffectFactory effectFactory, AmbientLightSystem ambientLightSystem, DirectionalLightSystem directionalLightSystem, PointLightSystem pointLightSystem, CascadedShadowMapSystem cascadedShadowMapSystem, ShadowCastingLightSystem shadowCastingLightSystem, SunlightSystem sunlightSystem, IconSystem iconSystem)
         {
             this.Device = device;
-            this.ShadowMapSystem           = shadowMapSystem;
-            this.ModelSystem               = modelSystem;
+            this.ShadowMapSystem = shadowMapSystem;
+            this.ModelSystem = modelSystem;
             this.TransparentParticleSystem = transparentParticleSystem;
-            this.AdditiveParticleSystem    = additiveParticleSystem;
-            this.ProjectorSystem           = projectorSystem;
-            this.CombineEffect             = effectFactory.Construct<CombineEffect>();
-            this.FxaaEffect                = effectFactory.Construct<FxaaEffect>();
-            this.AmbientLightSystem        = ambientLightSystem;
-            this.DirectionalLightSystem    = directionalLightSystem;
-            this.PointLightSystem          = pointLightSystem;
-            this.CascadedShadowMapSystem   = cascadedShadowMapSystem;
-            this.ShadowCastingLightSystem  = shadowCastingLightSystem;
-            this.SunlightSystem            = sunlightSystem;
-            this.BoundarySystem            = boundarySystem;
-            this.IconSystem                = iconSystem;
+            this.AdditiveParticleSystem = additiveParticleSystem;
+            this.ProjectorSystem = projectorSystem;
+            this.CombineEffect = effectFactory.Construct<CombineEffect>();
+            this.FxaaEffect = effectFactory.Construct<FxaaEffect>();
+            this.AmbientLightSystem = ambientLightSystem;
+            this.DirectionalLightSystem = directionalLightSystem;
+            this.PointLightSystem = pointLightSystem;
+            this.CascadedShadowMapSystem = cascadedShadowMapSystem;
+            this.ShadowCastingLightSystem = shadowCastingLightSystem;
+            this.SunlightSystem = sunlightSystem;
+            this.IconSystem = iconSystem;
 
             this.MeterRegistry = new NullMeterRegistry();
         }
@@ -69,7 +67,7 @@ namespace MiniEngine.Rendering
         public void AddParticlePipeline(RenderPipeline pipeline)
         {
             var particlePipeline = ParticlePipeline.Create(this.Device, this.MeterRegistry);
-                     
+
             particlePipeline
                 .ClearParticleRenderTargets()
                 .RenderTransparentParticles(this.TransparentParticleSystem)
@@ -82,12 +80,12 @@ namespace MiniEngine.Rendering
 
         public void AddAll(RenderPipeline pipeline)
         {
-            var shadowPipeline    = ShadowPipeline.Create(this.Device, this.MeterRegistry);
-            var lightingPipeline  = LightingPipeline.Create(this.Device, this.MeterRegistry);
-            var modelPipeline     = ModelPipeline.Create(this.Device, this.MeterRegistry);
-            var particlePipeline  = ParticlePipeline.Create(this.Device, this.MeterRegistry);
+            var shadowPipeline = ShadowPipeline.Create(this.Device, this.MeterRegistry);
+            var lightingPipeline = LightingPipeline.Create(this.Device, this.MeterRegistry);
+            var modelPipeline = ModelPipeline.Create(this.Device, this.MeterRegistry);
+            var particlePipeline = ParticlePipeline.Create(this.Device, this.MeterRegistry);
             var projectorPipeline = ProjectorPipeline.Create(this.Device, this.MeterRegistry);
-           
+
 
             shadowPipeline
                 .RenderShadowMaps(this.ShadowMapSystem);
@@ -121,7 +119,7 @@ namespace MiniEngine.Rendering
                 .ClearRenderTargetSet()
                 .RenderShadows(shadowPipeline)
                 .RenderModels(this.ModelSystem, modelPipeline)
-                .RenderParticles(particlePipeline);                
+                .RenderParticles(particlePipeline);
         }
-    }  
+    }
 }

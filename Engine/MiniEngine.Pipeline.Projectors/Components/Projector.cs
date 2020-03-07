@@ -36,7 +36,7 @@ namespace MiniEngine.Pipeline.Projectors.Components
         public Texture2D Mask { get; }
 
         [Editor(nameof(Tint))]
-        public Color Tint { get; set; }        
+        public Color Tint { get; set; }
 
         [Editor(nameof(MinDistance), nameof(SetMinDistance), Epsilon, float.MaxValue)]
         public float MinDistance { get; private set; }
@@ -47,13 +47,12 @@ namespace MiniEngine.Pipeline.Projectors.Components
         [Editor(nameof(ViewPoint))]
         public PerspectiveCamera ViewPoint { get; set; }
 
-        [Boundary(BoundaryType.Frustum)]
-        public BoundingFrustum Bounds => this.ViewPoint.Frustum;
+        public Vector3[] Corners => this.ViewPoint.Frustum.GetCorners();
 
-        [Icon(IconType.Camera)]
+        public IconType Icon => IconType.Camera;
+
         public Vector3 Position => this.ViewPoint.Position;
 
-        [Icon(IconType.LookAt)]
         public Vector3 LookAt => this.ViewPoint.LookAt;
 
         public void SetMinDistance(float distance)
@@ -70,6 +69,6 @@ namespace MiniEngine.Pipeline.Projectors.Components
 
             this.MaxDistance = distance;
             this.ViewPoint.SetPlanes(this.MinDistance, this.MaxDistance);
-        }        
+        }
     }
 }

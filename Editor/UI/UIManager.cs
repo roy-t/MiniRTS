@@ -142,7 +142,6 @@ namespace MiniEngine.UI
                 case DebugDisplay.Combined:
                     if (this.State.DebugState.SelectedRenderTargets.Any())
                     {
-                        var count = this.State.DebugState.SelectedRenderTargets.Count;
                         var xStep = viewport.Width / this.State.DebugState.Columns;
                         var yStep = xStep / viewport.AspectRatio;
 

@@ -83,27 +83,15 @@ namespace MiniEngine.Effects.Wrappers
 
         public void Apply(RenderEffectTechniques technique)
         {
-            switch (technique)
+            this.effect.CurrentTechnique = technique switch
             {
-                case RenderEffectTechniques.ShadowMap:
-                    this.effect.CurrentTechnique = this.effect.Techniques["ShadowMap"];
-                    break;
-                case RenderEffectTechniques.ShadowMapSkinned:
-                    this.effect.CurrentTechnique = this.effect.Techniques["ShadowMapSkinned"];
-                    break;
-                case RenderEffectTechniques.Textured:
-                    this.effect.CurrentTechnique = this.effect.Techniques["Textured"];
-                    break;
-                case RenderEffectTechniques.Deferred:
-                    this.effect.CurrentTechnique = this.effect.Techniques["Deferred"];
-                    break;
-                case RenderEffectTechniques.DeferredSkinned:
-                    this.effect.CurrentTechnique = this.effect.Techniques["DeferredSkinned"];
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(technique), technique, null);
-            }
-
+                RenderEffectTechniques.ShadowMap => this.effect.Techniques["ShadowMap"],
+                RenderEffectTechniques.ShadowMapSkinned => this.effect.Techniques["ShadowMapSkinned"],
+                RenderEffectTechniques.Textured => this.effect.Techniques["Textured"],
+                RenderEffectTechniques.Deferred => this.effect.Techniques["Deferred"],
+                RenderEffectTechniques.DeferredSkinned => this.effect.Techniques["DeferredSkinned"],
+                _ => throw new ArgumentOutOfRangeException(nameof(technique), technique, null),
+            };
             this.ApplyPass();
         }
 
@@ -123,15 +111,13 @@ namespace MiniEngine.Effects.Wrappers
 
         public static RenderEffectTechniques GetSkinnedTechnique(RenderEffectTechniques technique)
         {
-            switch (technique)
+            return technique switch
             {
-                case RenderEffectTechniques.ShadowMap:
-                    return RenderEffectTechniques.ShadowMapSkinned;
-                case RenderEffectTechniques.Deferred:
-                    return RenderEffectTechniques.DeferredSkinned;
-            }
+                RenderEffectTechniques.ShadowMap => RenderEffectTechniques.ShadowMapSkinned,
+                RenderEffectTechniques.Deferred => RenderEffectTechniques.DeferredSkinned,
 
-            return technique;
+                _ => technique,
+            };
         }
     }
 }

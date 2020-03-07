@@ -10,14 +10,14 @@ using MiniEngine.Units;
 
 namespace MiniEngine.Pipeline.Particles.Components
 {
-    public abstract class AEmitter : IComponent
+    public abstract class AEmitter : IPhysicalComponent
     {
         private static readonly Random Random = new Random();
 
         private Seconds timeToSpawn;
         private Vector4 tint;
 
-        public AEmitter(Entity entity,  Vector3 position, Texture2D texture, int rows, int columns, float scale)
+        public AEmitter(Entity entity, Vector3 position, Texture2D texture, int rows, int columns, float scale)
         {
             this.Entity = entity;
             this.Position = position;
@@ -41,9 +41,12 @@ namespace MiniEngine.Pipeline.Particles.Components
 
         public Entity Entity { get; }
 
-        [Icon(IconType.Emitter)]
         [Editor(nameof(Position))]
         public Vector3 Position { get; set; }
+
+        public IconType Icon => IconType.Emitter;
+
+        public Vector3[] Corners => new Vector3[] { this.Position, this.Position, this.Position, this.Position, this.Position, this.Position, this.Position, this.Position };
 
         [Editor(nameof(Texture))]
         public Texture2D Texture { get; }

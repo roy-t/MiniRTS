@@ -8,16 +8,16 @@ namespace MiniEngine.Pipeline.Debug.Stages
         private readonly BoundarySystem OutlineSystem;
         private readonly GraphicsDevice Device;
 
-        public Render3DBoundariesStage(BoundarySystem outlineSystem, GraphicsDevice device)
+        public Render3DBoundariesStage(BoundarySystem boundarySystem, GraphicsDevice device)
         {
-            this.OutlineSystem = outlineSystem;
+            this.OutlineSystem = boundarySystem;
             this.Device = device;
         }
 
         public void Execute(RenderPipelineInput input)
         {
             this.Device.SetRenderTarget(input.GBuffer.FinalTarget);
-            this.OutlineSystem.Render3DOverlay(input.Camera, input.GBuffer);
+            this.OutlineSystem.Render3DBounds(input.Camera, input.GBuffer);
         }
     }
 }

@@ -3,9 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Effects.DeviceStates;
 using MiniEngine.Effects.Techniques;
 using MiniEngine.Pipeline.Models.Systems;
-using MiniEngine.Pipeline.Particles.Systems;
 using MiniEngine.Pipeline.Shadows.Components;
-using MiniEngine.Primitives;
 using MiniEngine.Systems;
 using MiniEngine.Systems.Containers;
 using MiniEngine.Telemetry;
@@ -18,11 +16,8 @@ namespace MiniEngine.Pipeline.Shadows.Systems
         private const string ShadowMapTotal = "shadow_pipeline_total_render_time";
         private const string ShadowMapStep = "shadow_pipeline_step_render_time";
 
-        private const int DefaultResolution = 1024;
-
         private readonly GraphicsDevice Device;
         private readonly ModelSystem ModelSystem;
-        private readonly AveragedParticleSystem ParticleSystem;
         private readonly IComponentContainer<ShadowMap> ShadowMaps;
         private readonly IMeterRegistry MeterRegistry;
 
@@ -32,13 +27,11 @@ namespace MiniEngine.Pipeline.Shadows.Systems
             GraphicsDevice device,
             IComponentContainer<ShadowMap> shadowMaps,
             ModelSystem modelSystem,
-            AveragedParticleSystem particleSystem,
             IMeterRegistry meterRegistry)
         {
             this.Device = device;
             this.ShadowMaps = shadowMaps;
             this.ModelSystem = modelSystem;
-            this.ParticleSystem = particleSystem;
             this.MeterRegistry = meterRegistry;
 
             this.MeterRegistry.CreateGauge(ShadowMapCounter);
@@ -53,8 +46,8 @@ namespace MiniEngine.Pipeline.Shadows.Systems
             this.NullSkybox.SetData(CubeMapFace.PositiveZ, new Color[] { Color.White });
             this.NullSkybox.SetData(CubeMapFace.NegativeZ, new Color[] { Color.White });
         }
-        
-        public void RenderShadowMaps(GBuffer gBuffer)
+
+        public void RenderShadowMaps()
         {
             this.MeterRegistry.SetGauge(ShadowMapCounter, this.ShadowMaps.Count);
             this.MeterRegistry.StartGauge(ShadowMapTotal);
@@ -101,7 +94,7 @@ namespace MiniEngine.Pipeline.Shadows.Systems
                         batch.Draw(RenderEffectTechniques.Textured);
                     }
                 }
-                this.MeterRegistry.StopGauge(ShadowMapStep, "transparent");                
+                this.MeterRegistry.StopGauge(ShadowMapStep, "transparent");
             }
 
             this.MeterRegistry.StopGauge(ShadowMapTotal);

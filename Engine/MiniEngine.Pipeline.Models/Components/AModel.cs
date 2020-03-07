@@ -9,7 +9,7 @@ using ModelExtension;
 
 namespace MiniEngine.Pipeline.Models.Components
 {
-    public abstract class AModel : IComponent
+    public abstract class AModel : IPhysicalComponent
     {
         private Pose pose;
 
@@ -34,10 +34,12 @@ namespace MiniEngine.Pipeline.Models.Components
 
         public BoundingSphere BoundingSphere { get; private set; }
 
-        [Boundary(BoundaryType.BoundingBox)]
         public BoundingBox BoundingBox { get; private set; }
 
-        [Icon(IconType.Model)]
+        public Vector3[] Corners => this.BoundingBox.GetCorners();
+
+        public IconType Icon => IconType.Model;
+
         public Vector3 Position => this.pose.Translation;
 
         public bool HasAnimations => this.Model.Tag is SkinningData;

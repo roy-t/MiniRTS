@@ -17,7 +17,7 @@ namespace MiniEngine.Pipeline.Debug.Stages
         public void Execute(RenderPipelineInput input)
         {
             this.Device.SetRenderTarget(input.GBuffer.FinalTarget);
-            this.OutlineSystem.Render2DOverlay(input.Camera, input.GBuffer);
+            this.OutlineSystem.Render2DBounds(input.Camera, input.GBuffer);
         }
     }
 }

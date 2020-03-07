@@ -49,8 +49,7 @@ namespace MiniEngine.Scenes
         private Texture2D mask;
         private Song song;
 
-        public SceneBuilder(GraphicsDevice device,
-            EntityController entityController,
+        public SceneBuilder(EntityController entityController,
             SkyboxBuilder skyboxBuilder,
             LightsFactory lightsFactory,
             OpaqueModelFactory opaqueModelFactory,
@@ -179,16 +178,16 @@ namespace MiniEngine.Scenes
 
         public void BuildSponzaLit(Pose pose)
         {
-            BuildSponzaAmbientLight();
-            BuildSponzeSunLight();
-            BuildSponza(pose);
+            this.BuildSponzaAmbientLight();
+            this.BuildSponzeSunLight();
+            this.BuildSponza(pose);
         }
 
         public void BuildGear(Pose pose)
         {
             var entity = this.EntityController.CreateEntity();
-            this.OpaqueModelFactory.Construct(entity, this.gear, pose);
-            this.DebugInfoFactory.Construct(entity);
+            var model = this.OpaqueModelFactory.Construct(entity, this.gear, pose);
+            this.DebugInfoFactory.Construct(entity, model);
         }
 
         public AModel BuildCar(Pose pose)
@@ -197,19 +196,27 @@ namespace MiniEngine.Scenes
             var animation = new CarAnimation();
             var model = this.OpaqueModelFactory.Construct(entity, this.car, pose, animation);
 
-            this.DebugInfoFactory.Construct(entity);
+            this.DebugInfoFactory.Construct(entity, model);
 
             return model;
         }
 
-        public AModel BuildTerrain(Pose pose)
+        public void BuildTerrain(int rows, int columns, Pose offset)
         {
             var entity = this.EntityController.CreateEntity();
-            var model = this.OpaqueModelFactory.Construct(entity, this.terrain, pose);
-            model.TextureScale = Vector2.One * 8;
-            this.DebugInfoFactory.Construct(entity);
+            for (var x = 0; x < columns; x++)
+            {
+                for (var y = 0; y < rows; y++)
+                {
+                    var v3 = new Vector3(x, 0, y);
+                    var position = new Pose(v3 + offset.Translation, 1.0f / 40.0f);
 
-            return model;
+                    var model = this.OpaqueModelFactory.Construct(entity, this.terrain, position);
+                    //model.TextureScale = Vector2.One * 8;
+                    this.DebugInfoFactory.Construct(entity, model);
+                    //this.DebugInfoFactory.Construct(entity);
+                }
+            }
         }
 
 
@@ -219,13 +226,13 @@ namespace MiniEngine.Scenes
 
             var position = new Vector3(-40.5f, 30.0f, 3.2f);
             var world = new Pose(position, 4.4f * 0.01f, MathHelper.PiOver2, MathHelper.PiOver2, 0);
-            this.TransparentModelFactory.Construct(entities[0], this.plane, world);
-            this.DebugInfoFactory.Construct(entities[0]);
+            var model1 = this.TransparentModelFactory.Construct(entities[0], this.plane, world);
+            this.DebugInfoFactory.Construct(entities[0], model1);
 
             position = new Vector3(-40.5f, 30.0f, -7.2f);
             world = new Pose(position, 4.4f * 0.01f, MathHelper.PiOver4);
-            this.TransparentModelFactory.Construct(entities[1], this.plane, world);
-            this.DebugInfoFactory.Construct(entities[1]);
+            var model2 = this.TransparentModelFactory.Construct(entities[1], this.plane, world);
+            this.DebugInfoFactory.Construct(entities[1], model2);
 
             return entities;
         }
@@ -255,7 +262,6 @@ namespace MiniEngine.Scenes
             var lightEntity = this.EntityController.CreateEntity();
             var dynamicTexture = this.DynamicTextureFactory.Construct(lightEntity, cameraPosition, lookAt, 1024, 1024, this.NullSkybox, "Firewatcher");
             this.PipelineBuilder.AddParticlePipeline(dynamicTexture.Pipeline);
-            this.DebugInfoFactory.Construct(lightEntity);
 
             var color = Color.White * 0.2f;
             var projector = this.ProjectorFactory.Construct(lightEntity, dynamicTexture.FinalTarget, this.mask, color, projectorPosition, lookAt);
@@ -292,7 +298,6 @@ namespace MiniEngine.Scenes
         public Entity BuildCutScene()
         {
             var entity = this.EntityController.CreateEntity();
-            this.DebugInfoFactory.Construct(entity);
 
             var speeds = new MetersPerSecond[]
             {

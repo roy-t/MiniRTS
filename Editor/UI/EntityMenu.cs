@@ -44,7 +44,7 @@ namespace MiniEngine.UI
 
                 var listBoxItem = this.IndexOfEntity(this.EntityState.SelectedEntity, entities);
 
-                if (ImGui.ListBox(string.Empty, ref listBoxItem, GetListOfEntityNames(entities), entities.Count, 20))
+                if (ImGui.ListBox(string.Empty, ref listBoxItem, this.GetListOfEntityNames(entities), entities.Count, 20))
                 {
                     if (listBoxItem != -1)
                     {

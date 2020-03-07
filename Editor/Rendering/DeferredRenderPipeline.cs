@@ -32,7 +32,7 @@ namespace MiniEngine.Rendering
     {
         private readonly GBuffer GBuffer;
         private readonly RenderPipelineInput Input;
-        
+
         private readonly ShadowMapSystem ShadowMapSystem;
         private readonly ModelSystem ModelSystem;
         private readonly AveragedParticleSystem TransparentParticleSystem;
@@ -47,7 +47,7 @@ namespace MiniEngine.Rendering
         private readonly ShadowCastingLightSystem ShadowCastingLightSystem;
         private readonly SunlightSystem SunlightSystem;
         private readonly BoundarySystem BoundarySystem;
-        private readonly IconSystem IconSystem;   
+        private readonly IconSystem IconSystem;
         private readonly ShadowPipeline ShadowPipeline;
         private readonly LightingPipeline LightingPipeline;
         private readonly ModelPipeline ModelPipeline;
@@ -79,26 +79,26 @@ namespace MiniEngine.Rendering
             CutsceneSystem cutsceneSystem,
             IMeterRegistry meterRegistry)
         {
-            this.ShadowMapSystem           = shadowMapSystem;
-            this.ModelSystem               = modelSystem;
+            this.ShadowMapSystem = shadowMapSystem;
+            this.ModelSystem = modelSystem;
             this.TransparentParticleSystem = particleSystem;
-            this.AdditiveParticleSystem    = additiveParticleSystem;
-            this.ProjectorSystem           = projectorSystem;
-            this.CombineEffect             = effectFactory.Construct<CombineEffect>();
-            this.FxaaEffect                = effectFactory.Construct<FxaaEffect>();
-            this.AmbientLightSystem        = ambientLightSystem;
-            this.DirectionalLightSystem    = directionalLightSystem;
-            this.PointLightSystem          = pointLightSystem;
-            this.CascadedShadowMapSystem   = cascadedShadowMapSystem;
-            this.ShadowCastingLightSystem  = shadowCastingLightSystem;
-            this.SunlightSystem            = sunlightSystem;            
-            this.BoundarySystem            = boundarySystem;
-            this.DynamicTextureSystem      = dynamicTextureSystem;
-            this.CutsceneSystem            = cutsceneSystem;
-            this.IconSystem                = iconSystem;
+            this.AdditiveParticleSystem = additiveParticleSystem;
+            this.ProjectorSystem = projectorSystem;
+            this.CombineEffect = effectFactory.Construct<CombineEffect>();
+            this.FxaaEffect = effectFactory.Construct<FxaaEffect>();
+            this.AmbientLightSystem = ambientLightSystem;
+            this.DirectionalLightSystem = directionalLightSystem;
+            this.PointLightSystem = pointLightSystem;
+            this.CascadedShadowMapSystem = cascadedShadowMapSystem;
+            this.ShadowCastingLightSystem = shadowCastingLightSystem;
+            this.SunlightSystem = sunlightSystem;
+            this.BoundarySystem = boundarySystem;
+            this.DynamicTextureSystem = dynamicTextureSystem;
+            this.CutsceneSystem = cutsceneSystem;
+            this.IconSystem = iconSystem;
 
-            var width    = device.PresentationParameters.BackBufferWidth;
-            var height   = device.PresentationParameters.BackBufferHeight;
+            var width = device.PresentationParameters.BackBufferWidth;
+            var height = device.PresentationParameters.BackBufferHeight;
             this.GBuffer = new GBuffer(device, width, height);
 
             this.Input = new RenderPipelineInput();
@@ -131,7 +131,7 @@ namespace MiniEngine.Rendering
 
             this.ShadowPipeline
                 .RenderShadowMaps(this.ShadowMapSystem);
-            
+
             var ls = this.Settings.LightSettings;
             this.LightingPipeline
                 .ClearLightTargets()
@@ -143,7 +143,7 @@ namespace MiniEngine.Rendering
 
             if (this.Settings.EnableProjectors)
             {
-                this.ProjectorPipeline             
+                this.ProjectorPipeline
                     .RenderProjectors(this.ProjectorSystem);
 
                 this.ProjectorSystem.Technique = this.Settings.ProjectorTechnique;
@@ -155,7 +155,7 @@ namespace MiniEngine.Rendering
                 .RenderProjectors(this.ProjectorPipeline)
                 .RenderLights(this.LightingPipeline)
                 .CombineDiffuseWithLighting(this.CombineEffect)
-                .AntiAlias(this.FxaaEffect, this.Settings.ModelSettings.FxaaFactor);            
+                .AntiAlias(this.FxaaEffect, this.Settings.ModelSettings.FxaaFactor);
 
             this.ParticlePipeline
                 .ClearParticleRenderTargets()
@@ -176,7 +176,7 @@ namespace MiniEngine.Rendering
                 .EnableIf(this.Settings.Enable2DOutlines, x => x.Render2DOutline(this.BoundarySystem))
                 .EnableIf(this.Settings.EnableIcons, x => x.RenderIcons(this.IconSystem));
         }
-      
+
         public RenderTarget2D Render(PerspectiveCamera camera, Seconds elapsed, TextureCube skybox)
         {
             this.Input.Update(camera, elapsed, this.GBuffer, this.RootPass, skybox);
