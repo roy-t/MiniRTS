@@ -3,7 +3,7 @@
 namespace MiniEngine.Primitives
 {
     public struct Pose
-    {        
+    {
         public Pose(Vector3 position, Vector3 scale, float yaw, float pitch, float roll)
         {
             this.Translation = position;
@@ -25,7 +25,13 @@ namespace MiniEngine.Primitives
 
         public Vector3 Translation { get; private set; }
         public Vector3 Scale { get; private set; }
-                    
+
+        public Vector3 GetForward()
+        {
+            var rotation = Matrix.CreateRotationY(this.Yaw);
+            return Vector3.Transform(Vector3.Forward, rotation);
+        }
+
         public void Rotate(float yaw, float pitch, float roll)
         {
             this.Yaw = yaw;
@@ -55,6 +61,6 @@ namespace MiniEngine.Primitives
             var translation = Matrix.CreateTranslation(position);
 
             return size * rotation * translation;
-        }        
+        }
     }
 }

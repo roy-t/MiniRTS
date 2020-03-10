@@ -14,14 +14,17 @@ namespace MiniEngine.Scenes
     {
         private readonly SceneBuilder SceneBuilder;
         private readonly DumbMovementLogic MovementLogic;
+        private readonly DumbFollowLogic FollowLogic;
 
         private AModel carModel;
+
 
         public CarScene(SceneBuilder sceneBuilder)
         {
             this.SceneBuilder = sceneBuilder;
             this.MovementLogic = new DumbMovementLogic();
-            this.checkpoints = new List<Vector2>();
+            this.FollowLogic = new DumbFollowLogic();
+            this.checkpoints = new List<Vector2>(0);
         }
 
         public void LoadContent(ContentManager content)
@@ -35,8 +38,9 @@ namespace MiniEngine.Scenes
 
         public void Set()
         {
-            this.carModel = this.SceneBuilder.BuildCar(new Pose(Vector3.Zero));
-            this.SceneBuilder.BuildTerrain(40, 40, new Pose(Vector3.Zero));
+            this.carModel = this.SceneBuilder.BuildCar(new Pose(Vector3.Zero, 1.0f / 10.0f));
+
+            this.SceneBuilder.BuildTerrain(40, 40, new Pose(new Vector3(-20, 0, -20)));
             this.SceneBuilder.BuildSponzaAmbientLight();
             this.SceneBuilder.BuildSponzeSunLight();
             this.Skybox = this.SceneBuilder.SponzaSkybox;
@@ -59,8 +63,8 @@ namespace MiniEngine.Scenes
 
                 if (ImGui.MenuItem("Move"))
                 {
-                    this.pathIndex = 0;
-                    this.checkpoints = this.MovementLogic.PlanPath(0, 0, (int)this.endPosition.X, (int)this.endPosition.Y);
+                    var path = this.MovementLogic.PlanPath(0, 0, (int)this.endPosition.X, (int)this.endPosition.Y);
+                    this.FollowLogic.Start(this.carModel, path, new MetersPerSecond(1.0f));
                 }
 
                 ImGui.EndMenu();
@@ -69,21 +73,7 @@ namespace MiniEngine.Scenes
 
         public void Update(Seconds elapsed)
         {
-            const float period = 0.15f;
-
-            if (this.checkpoints.Count > 0)
-            {
-                this.aggregator += elapsed;
-                if (this.aggregator > period)
-                {
-                    this.aggregator -= period;
-                    this.pathIndex = (this.pathIndex + 1) % this.checkpoints.Count;
-                    var current = this.checkpoints[this.pathIndex];
-
-                    var pose = new Pose(new Vector3(current.X, 0, current.Y));
-                    this.carModel.SetPose(pose);
-                }
-            }
+            this.FollowLogic.Update(elapsed);
         }
     }
 }

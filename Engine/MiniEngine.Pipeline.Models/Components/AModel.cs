@@ -63,10 +63,14 @@ namespace MiniEngine.Pipeline.Models.Components
         public Matrix WorldMatrix => this.pose.Matrix;
 
 
-        public void SetPose(Pose pose)
+        public Pose Pose
         {
-            this.pose = pose;
-            this.ComputeBounds();
+            get => this.pose;
+            set
+            {
+                this.pose = value;
+                this.ComputeBounds();
+            }
         }
 
         public void Rotate(float yaw, float pitch, float roll)

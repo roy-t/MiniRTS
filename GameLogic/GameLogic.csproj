@@ -47,12 +47,31 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DumbMovementLogic.cs" />
+    <Compile Include="DumbFollowLogic.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="RoyT.AStar">
       <Version>3.0.1</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Engine\MiniEngine.Pipeline.Models\MiniEngine.Pipeline.Models.csproj">
+      <Project>{D77598B5-73BF-4CD4-B9A6-D94895058A60}</Project>
+      <Name>MiniEngine.Pipeline.Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Engine\MiniEngine.Pipeline\MiniEngine.Pipeline.csproj">
+      <Project>{820720C5-666A-4D5E-96EE-F053BAA063D9}</Project>
+      <Name>MiniEngine.Pipeline</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Engine\MiniEngine.Primitives\MiniEngine.Primitives.csproj">
+      <Project>{D02E8240-0178-4792-9C38-2455D1250FA6}</Project>
+      <Name>MiniEngine.Primitives</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Engine\MiniEngine.Units\MiniEngine.Units.csproj">
+      <Project>{051E397D-4C6C-4F8F-8F40-CCE916A45C5E}</Project>
+      <Name>MiniEngine.Units</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

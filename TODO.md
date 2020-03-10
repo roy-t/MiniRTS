@@ -1,5 +1,18 @@
 # Worklist
 ## TODO
+- What if we create a server (that's either directly addressable locally, or via tcp/udp remotely) that manages all state changes
+    - making the games simple viewers
+    - how would that work with lock-step?
+    - How can we even make sure the game stays speedy even if one computer lags
+    - Check how factorio does it?
+
+- What kind of path finding do we want? 
+    - Grid
+    - Graph
+    - Reserve roads, try to go around when a road block is locked for a long time (keep track of seconds semi-locked per edge?)
+
+- Job/Threading system for tasks that take more than one frame
+    - Systems that are receive the processed output should have a thread-safe queue or something to process incoming events?
 
 ### Misc
 - Make it cleaner to select or deselect render pipeline features
@@ -42,4 +55,4 @@
 
 ## Known Issues
 - Sometimes transparency effects from the sunlight disappear when zooming in. Possibly due to the camera for that cascade not seeing the object anymore, even though backface culling and z-culling are disabled. This can usually be prevented by tweaking the cascade distances.
-- SSAO: tiling effect for flat surfaces that have no normal map
+- SSAO: tiling/shimmiring/banding effect for flat surfaces visibile in light/blur render target
