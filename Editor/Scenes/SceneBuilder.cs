@@ -13,7 +13,6 @@ using MiniEngine.Pipeline.Particles.Factories;
 using MiniEngine.Pipeline.Projectors.Factories;
 using MiniEngine.Primitives;
 using MiniEngine.Rendering;
-using MiniEngine.Scenes.Animations;
 using MiniEngine.Systems;
 using MiniEngine.Units;
 

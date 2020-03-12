@@ -3,7 +3,6 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Pipeline.Models.Components;
 using MiniEngine.Primitives;
-using MiniEngine.Scenes.Animations;
 using MiniEngine.Units;
 
 namespace MiniEngine.Scenes

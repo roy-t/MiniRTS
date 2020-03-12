@@ -84,6 +84,7 @@ namespace MiniEngine.UI
             if (this.setCamera)
             {
                 camera.Move(this.State.EditorState.CameraPosition, this.State.EditorState.CameraLookAt);
+                this.CameraController.TranslateSpeed = this.State.EditorState.CameraSpeed;
                 this.setCamera = false;
             }
 
@@ -189,6 +190,11 @@ namespace MiniEngine.UI
                         }
 
                         currentScene.RenderUI();
+
+                        var speed = this.CameraController.TranslateSpeed.Value;
+                        ImGui.SliderFloat("Movement Speed", ref speed, CameraController.MinTranslateSpeed, CameraController.MaxTranslateSpeed);
+                        this.CameraController.TranslateSpeed = speed;
+                        this.State.EditorState.CameraSpeed = speed;
 
                         ImGui.EndMainMenuBar();
                     }

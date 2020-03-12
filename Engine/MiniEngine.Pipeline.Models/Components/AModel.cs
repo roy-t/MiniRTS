@@ -21,6 +21,8 @@ namespace MiniEngine.Pipeline.Models.Components
             this.Animation = new IdentityAnimation();
             this.TextureScale = Vector2.One;
             this.ComputeBounds();
+
+            this.HasAnimations = this.Model.Tag is SkinningData;
         }
 
         public Entity Entity { get; }
@@ -42,7 +44,7 @@ namespace MiniEngine.Pipeline.Models.Components
 
         public Vector3 Position => this.pose.Translation;
 
-        public bool HasAnimations => this.Model.Tag is SkinningData;
+        public bool HasAnimations { get; }
 
         [Editor(nameof(Yaw))]
         public float Yaw { get => this.pose.Yaw; set => this.Rotate(value, this.pose.Pitch, this.pose.Roll); }

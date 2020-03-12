@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using ImGuiNET;
+﻿using ImGuiNET;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -17,6 +16,8 @@ namespace MiniEngine.Scenes
         private readonly DumbFollowLogic FollowLogic;
 
         private AModel carModel;
+        private CarAnimation carAnimation;
+        private AModel indicatorLeft;
 
 
         public CarScene(SceneBuilder sceneBuilder)
@@ -24,7 +25,6 @@ namespace MiniEngine.Scenes
             this.SceneBuilder = sceneBuilder;
             this.MovementLogic = new DumbMovementLogic();
             this.FollowLogic = new DumbFollowLogic();
-            this.checkpoints = new List<Vector2>(0);
         }
 
         public void LoadContent(ContentManager content)
@@ -40,10 +40,20 @@ namespace MiniEngine.Scenes
         {
             this.carModel = this.SceneBuilder.BuildCar(new Pose(Vector3.Zero, 1.0f / 10.0f));
 
+            this.carAnimation = new CarAnimation();
+            this.carModel.Animation = this.carAnimation;
+            this.carAnimation.SetTarget(this.carModel);
+
+            this.indicatorLeft = this.SceneBuilder.BuildCube(new Pose(Vector3.Zero, 0.0002f));
+
             this.SceneBuilder.BuildTerrain(40, 40, new Pose(new Vector3(-20, 0, -20)));
             this.SceneBuilder.BuildSponzaAmbientLight();
             this.SceneBuilder.BuildSponzeSunLight();
             this.Skybox = this.SceneBuilder.SponzaSkybox;
+
+
+            var path = this.MovementLogic.PlanPath(0, 0, (int)this.endPosition.X, (int)this.endPosition.Y);
+            this.FollowLogic.Start(this.carModel, path, new MetersPerSecond(1.0f));
         }
 
         public static Pose CreateScaleRotationTranslation(float scale, float rotX, float rotY, float rotZ, Vector3 translation)
@@ -51,9 +61,6 @@ namespace MiniEngine.Scenes
 
 
         private System.Numerics.Vector2 endPosition;
-        private int pathIndex;
-        private Seconds aggregator;
-        private List<Vector2> checkpoints;
 
         public void RenderUI()
         {
@@ -73,7 +80,14 @@ namespace MiniEngine.Scenes
 
         public void Update(Seconds elapsed)
         {
-            this.FollowLogic.Update(elapsed);
+            //this.FollowLogic.Update(elapsed);
+
+            this.carAnimation.Update(elapsed);
+            var mat = Matrix.CreateScale(0.01f) * this.carAnimation.GetTo("Bone_RR") * this.carModel.WorldMatrix;
+            //var leftWheel = this.FollowLogic.GetWorldPosition("Bone_RR");
+            //this.indicatorLeft.Move(leftWheel);
+
+            this.indicatorLeft.Pose = new Pose(mat);
         }
     }
 }

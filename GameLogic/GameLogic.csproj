@@ -72,6 +72,10 @@
       <Project>{051E397D-4C6C-4F8F-8F40-CCE916A45C5E}</Project>
       <Name>MiniEngine.Units</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Engine\ModelExtension\ModelExtension.csproj">
+      <Project>{E939D1A8-2A0D-4605-8704-9F41275C2CF6}</Project>
+      <Name>ModelExtension</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

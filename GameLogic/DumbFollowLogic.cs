@@ -8,6 +8,8 @@ namespace MiniEngine.GameLogic
 {
     public sealed class DumbFollowLogic
     {
+        private CarAnimation carAnimation;
+
         private AModel target;
         private List<Vector2> path;
         private float length;
@@ -39,11 +41,16 @@ namespace MiniEngine.GameLogic
             }
 
             this.length = length;
+
+            this.carAnimation = this.target.Animation as CarAnimation;
         }
 
 
         public void Update(Seconds elapsed)
         {
+            // TODO: wheels should point so that they cross the vector going from the center of the front axis to the lookAt.
+            // TODO: where to place the pivot of the car? At the back axis I assume?
+
             if (this.distanceCovered >= this.length)
                 return;
 
@@ -60,6 +67,16 @@ namespace MiniEngine.GameLogic
                 var yaw = (float)Math.Atan2(n.X, n.Z) - MathHelper.PiOver2;
                 this.target.Yaw = yaw;
             }
+
+
+            var fl = GetWorldPosition("Bone_FL");
+            var fr = GetWorldPosition("Bone_FR");
+
+            var frontAxisCenter = Vector3.Lerp(fl, fr, 0.5f);
+
+            var axisForward = Vector3.Normalize(lookAt - frontAxisCenter);
+
+            var wheelYaw = (float)Math.Atan2(axisForward.X, axisForward.Z);
         }
 
         private Vector3 GetPositionAfter(float distanceCovered)
@@ -82,6 +99,24 @@ namespace MiniEngine.GameLogic
             }
 
             return this.GetPosition(this.path.Count - 1);
+        }
+
+        public Vector3 GetWorldPosition(string boneName)
+        {
+            //var skinningData = this.target.Model.Tag as SkinningData;
+
+            //var index = skinningData.BoneNames.IndexOf(boneName);
+            //var matrix = skinningData.BindPose[index] * this.target.Pose.Matrix;
+
+            //return Vector3.Transform(Vector3.Zero, matrix);
+
+            //this.CarAnimation.Update(0);
+            var matrix = this.carAnimation.GetTo(boneName) * this.target.Pose.Matrix;
+
+            //var index = this.CarAnimation.GetBoneIndex(boneName);
+            //var matrix = this.CarAnimation.GetBoneTransforms()[index] * this.target.Pose.Matrix;
+
+            return Vector3.Transform(Vector3.Zero, matrix);
         }
 
         private Vector3 GetPosition(int index)

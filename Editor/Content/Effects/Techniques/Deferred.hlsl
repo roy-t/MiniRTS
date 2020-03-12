@@ -27,7 +27,6 @@ struct DeferredVertexShaderOutput
     float2 TexCoord : TEXCOORD0;
     float2 Depth : TEXCOORD1;
     float4 ScreenPosition : TEXCOORD2;
-    //float3x3 tangentToWorld : TEXCOORD3;    
     float3 Tangent : TEXCOORD3;
     float3 Binormal : TEXCOORD4;
     float3 Normal : TEXCOORD5;
@@ -59,12 +58,6 @@ DeferredVertexShaderOutput DeferredMainVS(in DeferredVertexShaderInput input)
     output.TexCoord = input.TexCoord;
     output.Depth.x = output.Position.z;
     output.Depth.y = output.Position.w;
-
-    // calculate tangent space to world space matrix using the world space tangent,
-    // binormal, and normal as basis vectors
-    /*output.tangentToWorld[0] = mul(float4(input.Tangent, 0), World).xyz;
-    output.tangentToWorld[1] = mul(float4(input.Binormal, 0), World).xyz;
-    output.tangentToWorld[2] = mul(float4(input.Normal, 0), World).xyz;*/
 
     output.Normal = normalize(mul(input.Normal, (float3x3)World));
     output.Tangent = normalize(mul(input.Tangent, (float3x3)World));

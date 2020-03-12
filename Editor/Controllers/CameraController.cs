@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using MiniEngine.Input;
 using MiniEngine.Primitives.Cameras;
@@ -9,13 +10,16 @@ namespace MiniEngine.Controllers
 {
     public sealed class CameraController
     {
-        private static readonly MetersPerSecond TranslateSpeed = 10.0f;
-        
+
+        public static readonly MetersPerSecond MinTranslateSpeed = 1.0f;
+        public static readonly MetersPerSecond MaxTranslateSpeed = 20.0f;
+
+
         // percentage to rotate the camera per pixel the mouse moved
-        private static readonly Radians RotateFactor = Radians.Pi* 0.002f;
+        private static readonly Radians RotateFactor = Radians.Pi * 0.002f;
 
         private readonly KeyboardInput Keyboard;
-        private readonly MouseInput Mouse;        
+        private readonly MouseInput Mouse;
 
         private Vector3 forward;
         private Vector3 left;
@@ -29,7 +33,11 @@ namespace MiniEngine.Controllers
             this.forward = Vector3.Forward;
             this.left = Vector3.Left;
             this.up = Vector3.Up;
+
+            this.TranslateSpeed = 10.0f;
         }
+
+        public MetersPerSecond TranslateSpeed { get; set; }
 
         public void Update(PerspectiveCamera camera, Seconds elapsed)
         {
@@ -82,7 +90,16 @@ namespace MiniEngine.Controllers
                 this.left = Vector3.Left;
                 this.up = Vector3.Up;
             }
-            
+
+            if (this.Mouse.ScrolledUp)
+            {
+                this.TranslateSpeed = Math.Min(this.TranslateSpeed + 1, MaxTranslateSpeed);
+            }
+            else if (this.Mouse.ScrolledDown)
+            {
+                this.TranslateSpeed = Math.Max(this.TranslateSpeed - 1, MinTranslateSpeed);
+            }
+
             camera.Move(position, position + this.forward);
         }
     }

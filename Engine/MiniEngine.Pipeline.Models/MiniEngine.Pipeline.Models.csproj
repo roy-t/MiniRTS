@@ -54,6 +54,7 @@
     <Compile Include="Batches\ModelRenderBatch.cs" />
     <Compile Include="Components\AModel.cs" />
     <Compile Include="Components\AAnimation.cs" />
+    <Compile Include="Components\CarAnimation.cs" />
     <Compile Include="Components\IdentityAnimation.cs" />
     <Compile Include="Components\TransparentModel.cs" />
     <Compile Include="Components\OpaqueModel.cs" />

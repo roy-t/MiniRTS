@@ -1,8 +1,8 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 
 namespace MiniEngine.Input
 {
@@ -11,7 +11,10 @@ namespace MiniEngine.Input
         private readonly MouseButtons[] Buttons;
         private readonly Dictionary<MouseButtons, InputState> ButtonStates;
 
+        private float scrollWheelValue;
+
         private Point lastPosition;
+        private ScrollDirection scrollDirection;
 
         public MouseInput()
         {
@@ -32,6 +35,21 @@ namespace MiniEngine.Input
 
             this.Movement = current.Position - this.lastPosition;
             this.lastPosition = current.Position;
+
+            if (current.ScrollWheelValue > this.scrollWheelValue)
+            {
+                this.scrollDirection = ScrollDirection.Up;
+            }
+            else if (current.ScrollWheelValue < this.scrollWheelValue)
+            {
+                this.scrollDirection = ScrollDirection.Down;
+            }
+            else
+            {
+                this.scrollDirection = ScrollDirection.None;
+            }
+
+            this.scrollWheelValue = current.ScrollWheelValue;
 
             foreach (var button in this.Buttons)
             {
@@ -82,6 +100,9 @@ namespace MiniEngine.Input
         public Point Movement { get; private set; }
 
         public bool Click(MouseButtons button) => this.ButtonStates[button] == InputState.JustPressed;
+
+        public bool ScrolledUp => this.scrollDirection == ScrollDirection.Up;
+        public bool ScrolledDown => this.scrollDirection == ScrollDirection.Down;
 
         public bool Hold(MouseButtons button)
         {

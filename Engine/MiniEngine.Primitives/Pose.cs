@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 
 namespace MiniEngine.Primitives
 {
@@ -17,6 +18,21 @@ namespace MiniEngine.Primitives
 
         public Pose(Vector3 position, float scale = 1.0f, float yaw = 0.0f, float pitch = 0.0f, float roll = 0.0f)
             : this(position, Vector3.One * scale, yaw, pitch, roll) { }
+
+        public Pose(Matrix matrix)
+        {
+            matrix.Decompose(out var scale, out var q, out var translation);
+
+            // TODO: verify this is 100% correct
+            this.Pitch = (float)Math.Atan2(2.0 * ((q.Y * q.Z) + (q.W * q.X)), (q.W * q.W) - (q.X * q.X) - (q.Y * q.Y) + (q.Z * q.Z));
+            this.Yaw = (float)Math.Asin(-2.0 * ((q.X * q.Z) - (q.W * q.Y)));
+            this.Roll = (float)Math.Atan2(2.0 * ((q.X * q.Y) + (q.W * q.Z)), (q.W * q.W) + (q.X * q.X) - (q.Y * q.Y) - (q.Z * q.Z));
+
+            this.Translation = translation;
+            this.Scale = scale;
+
+            this.Matrix = matrix;
+        }
 
         public Matrix Matrix { get; private set; }
         public float Yaw { get; private set; }

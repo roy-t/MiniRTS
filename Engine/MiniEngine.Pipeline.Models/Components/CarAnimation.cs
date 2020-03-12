@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using MiniEngine.Pipeline.Models.Components;
 using MiniEngine.Units;
 using ModelExtension;
 
-namespace MiniEngine.Scenes.Animations
+namespace MiniEngine.Pipeline.Models.Components
 {
     public class CarAnimation : AAnimation
     {
@@ -55,7 +54,7 @@ namespace MiniEngine.Scenes.Animations
             for (var bone = 1; bone < this.worldTransforms.Length; bone++)
             {
                 var parentBone = this.skinningData.SkeletonHierarchy[bone];
-                if (this.IsWheel(bone))
+                if (bone == 2/*this.IsWheel(bone)*/)
                 {
                     this.worldTransforms[bone] = wheelMatrix * this.boneTransforms[bone] * this.worldTransforms[parentBone];
                 }
@@ -72,6 +71,29 @@ namespace MiniEngine.Scenes.Animations
             }
 
             Array.Copy(this.skinTransforms, 0, this.BoneTransforms, 0, this.skinTransforms.Length);
+        }
+
+        public int GetBoneIndex(string boneName) => this.skinningData.BoneNames.IndexOf(boneName);
+
+        public Matrix GetTo(string boneName)
+        {
+            // TODO: see DrawModel how we should combine BoneTransforms to get the the real to!
+            //    this.Effect.World = SharedBoneMatrix[mesh.ParentBone.Index] * world;
+            // maybe we should incorporate those absolute bone transforms into the animation??
+
+
+            // TODO: the root bone of the mesh gets the wheel in the right place
+            // while the skinning bone makes it possible to animate it
+            // To get the world: toWorldBonePosition = bone[x] * modelWorld
+
+            // TODO: figure out how to identify the 'mesh bone' of skeletal bone
+            var bones = new Matrix[this.Target.Model.Bones.Count];
+            this.Target.Model.CopyAbsoluteBoneTransformsTo(bones);
+
+
+            var index = GetBoneIndex(boneName);
+            return bones[5];// * this.worldTransforms[index];
+            //return this.skinningData.BindPose[index];
         }
 
         private bool IsWheel(int bone) =>

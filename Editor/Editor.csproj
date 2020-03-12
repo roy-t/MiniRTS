@@ -54,12 +54,12 @@
     <Compile Include="Cutscene\CutsceneState.cs" />
     <Compile Include="Cutscene\Waypoint.cs" />
     <Compile Include="Cutscene\WaypointFactory.cs" />
+    <Compile Include="Input\ScrollDirection.cs" />
     <Compile Include="Rendering\LightPipelineSettings.cs" />
     <Compile Include="Rendering\ModelPipelineSettings.cs" />
     <Compile Include="Rendering\PipelineBuilder.cs" />
     <Compile Include="Rendering\RenderPipelineSettings.cs" />
     <Compile Include="SceneSelector.cs" />
-    <Compile Include="Scenes\Animations\CarAnimation.cs" />
     <Compile Include="Scenes\SceneBuilder.cs" />
     <Compile Include="Scenes\LizardScene.cs" />
     <Compile Include="Scenes\DemoScene.cs" />
@@ -176,6 +176,9 @@
     <PackageReference Include="LightInject">
       <Version>5.5.0</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Scenes\Animations\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Content.Builder.targets" />
