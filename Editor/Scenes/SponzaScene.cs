@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using MiniEngine.GameLogic;
 using MiniEngine.Pipeline.Models.Components;
 using MiniEngine.Primitives;
 using MiniEngine.Units;

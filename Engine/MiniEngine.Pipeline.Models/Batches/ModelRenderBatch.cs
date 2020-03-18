@@ -62,7 +62,7 @@ namespace MiniEngine.Pipeline.Models.Batches
                     if (modelPose.HasAnimations && RenderEffect.TechniqueSupportsSkinning(technique))
                     {
                         technique = RenderEffect.GetSkinnedTechnique(technique);
-                        this.Effect.BoneTransforms = modelPose.Animation.GetBoneTransforms();
+                        this.Effect.BoneTransforms = modelPose.Animation.GetSkinTransforms();
                     }
 
                     this.Effect.World = SharedBoneMatrix[mesh.ParentBone.Index] * world;

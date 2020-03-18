@@ -15,9 +15,10 @@ namespace MiniEngine.Scenes
         private readonly DumbMovementLogic MovementLogic;
         private readonly DumbFollowLogic FollowLogic;
 
+        private Car car;
         private AModel carModel;
         private CarAnimation carAnimation;
-        private AModel indicatorLeft;
+        private AModel indicator;
 
 
         public CarScene(SceneBuilder sceneBuilder)
@@ -44,21 +45,18 @@ namespace MiniEngine.Scenes
             this.carModel.Animation = this.carAnimation;
             this.carAnimation.SetTarget(this.carModel);
 
-            this.indicatorLeft = this.SceneBuilder.BuildCube(new Pose(Vector3.Zero, 0.0002f));
+            this.car = new Car(this.carModel);
+
+            this.indicator = this.SceneBuilder.BuildCube(new Pose(Vector3.Zero, 0.0002f));
 
             this.SceneBuilder.BuildTerrain(40, 40, new Pose(new Vector3(-20, 0, -20)));
             this.SceneBuilder.BuildSponzaAmbientLight();
             this.SceneBuilder.BuildSponzeSunLight();
             this.Skybox = this.SceneBuilder.SponzaSkybox;
 
-
             var path = this.MovementLogic.PlanPath(0, 0, (int)this.endPosition.X, (int)this.endPosition.Y);
             this.FollowLogic.Start(this.carModel, path, new MetersPerSecond(1.0f));
         }
-
-        public static Pose CreateScaleRotationTranslation(float scale, float rotX, float rotY, float rotZ, Vector3 translation)
-            => new Pose(translation, scale, rotY, rotX, rotZ);
-
 
         private System.Numerics.Vector2 endPosition;
 
@@ -80,14 +78,13 @@ namespace MiniEngine.Scenes
 
         public void Update(Seconds elapsed)
         {
-            //this.FollowLogic.Update(elapsed);
-
             this.carAnimation.Update(elapsed);
-            var mat = Matrix.CreateScale(0.01f) * this.carAnimation.GetTo("Bone_RR") * this.carModel.WorldMatrix;
-            //var leftWheel = this.FollowLogic.GetWorldPosition("Bone_RR");
-            //this.indicatorLeft.Move(leftWheel);
+            this.FollowLogic.Update(elapsed);
 
-            this.indicatorLeft.Pose = new Pose(mat);
+            var scale = Matrix.CreateScale(0.00025f);
+
+            var mat = scale * Matrix.CreateTranslation(car.GetWheelPosition(WheelPosition.FrontLeft));
+            this.indicator.Pose = new Pose(mat);
         }
     }
 }

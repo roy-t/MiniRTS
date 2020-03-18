@@ -69,14 +69,14 @@ namespace MiniEngine.GameLogic
             }
 
 
-            var fl = GetWorldPosition("Bone_FL");
-            var fr = GetWorldPosition("Bone_FR");
+            //var fl = GetWorldPosition("Bone_FL");
+            //var fr = GetWorldPosition("Bone_FR");
 
-            var frontAxisCenter = Vector3.Lerp(fl, fr, 0.5f);
+            //var frontAxisCenter = Vector3.Lerp(fl, fr, 0.5f);
 
-            var axisForward = Vector3.Normalize(lookAt - frontAxisCenter);
+            //var axisForward = Vector3.Normalize(lookAt - frontAxisCenter);
 
-            var wheelYaw = (float)Math.Atan2(axisForward.X, axisForward.Z);
+            //var wheelYaw = (float)Math.Atan2(axisForward.X, axisForward.Z);
         }
 
         private Vector3 GetPositionAfter(float distanceCovered)
@@ -99,24 +99,6 @@ namespace MiniEngine.GameLogic
             }
 
             return this.GetPosition(this.path.Count - 1);
-        }
-
-        public Vector3 GetWorldPosition(string boneName)
-        {
-            //var skinningData = this.target.Model.Tag as SkinningData;
-
-            //var index = skinningData.BoneNames.IndexOf(boneName);
-            //var matrix = skinningData.BindPose[index] * this.target.Pose.Matrix;
-
-            //return Vector3.Transform(Vector3.Zero, matrix);
-
-            //this.CarAnimation.Update(0);
-            var matrix = this.carAnimation.GetTo(boneName) * this.target.Pose.Matrix;
-
-            //var index = this.CarAnimation.GetBoneIndex(boneName);
-            //var matrix = this.CarAnimation.GetBoneTransforms()[index] * this.target.Pose.Matrix;
-
-            return Vector3.Transform(Vector3.Zero, matrix);
         }
 
         private Vector3 GetPosition(int index)

@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
 using MiniEngine.CutScene;
+using MiniEngine.GameLogic;
 using MiniEngine.Pipeline.Debug.Factories;
 using MiniEngine.Pipeline.Lights.Components;
 using MiniEngine.Pipeline.Lights.Factories;

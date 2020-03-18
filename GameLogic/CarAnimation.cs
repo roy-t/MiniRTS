@@ -1,21 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using MiniEngine.Pipeline.Models.Components;
 using MiniEngine.Units;
 using ModelExtension;
 
-namespace MiniEngine.Pipeline.Models.Components
+namespace MiniEngine.GameLogic
 {
     public class CarAnimation : AAnimation
     {
-        private static readonly IReadOnlyList<string> Wheels = new List<string>
-        {
-            "Bone_FL",
-            "Bone_FR",
-            "Bone_RL",
-            "Bone_RR"
-        };
-
         private SkinningData skinningData;
         private Matrix[] boneTransforms;
         private Matrix[] worldTransforms;
@@ -54,7 +46,7 @@ namespace MiniEngine.Pipeline.Models.Components
             for (var bone = 1; bone < this.worldTransforms.Length; bone++)
             {
                 var parentBone = this.skinningData.SkeletonHierarchy[bone];
-                if (bone == 2/*this.IsWheel(bone)*/)
+                if (this.IsRearRightWheel(bone))
                 {
                     this.worldTransforms[bone] = wheelMatrix * this.boneTransforms[bone] * this.worldTransforms[parentBone];
                 }
@@ -70,30 +62,7 @@ namespace MiniEngine.Pipeline.Models.Components
                                             this.worldTransforms[bone];
             }
 
-            Array.Copy(this.skinTransforms, 0, this.BoneTransforms, 0, this.skinTransforms.Length);
-        }
-
-        public int GetBoneIndex(string boneName) => this.skinningData.BoneNames.IndexOf(boneName);
-
-        public Matrix GetTo(string boneName)
-        {
-            // TODO: see DrawModel how we should combine BoneTransforms to get the the real to!
-            //    this.Effect.World = SharedBoneMatrix[mesh.ParentBone.Index] * world;
-            // maybe we should incorporate those absolute bone transforms into the animation??
-
-
-            // TODO: the root bone of the mesh gets the wheel in the right place
-            // while the skinning bone makes it possible to animate it
-            // To get the world: toWorldBonePosition = bone[x] * modelWorld
-
-            // TODO: figure out how to identify the 'mesh bone' of skeletal bone
-            var bones = new Matrix[this.Target.Model.Bones.Count];
-            this.Target.Model.CopyAbsoluteBoneTransformsTo(bones);
-
-
-            var index = GetBoneIndex(boneName);
-            return bones[5];// * this.worldTransforms[index];
-            //return this.skinningData.BindPose[index];
+            Array.Copy(this.skinTransforms, 0, this.SkinTransforms, 0, this.skinTransforms.Length);
         }
 
         private bool IsWheel(int bone) =>
@@ -102,9 +71,9 @@ namespace MiniEngine.Pipeline.Models.Components
             this.IsRearLeftWheel(bone) ||
             this.IsRearRightWheel(bone);
 
-        private bool IsFrontLeftWheel(int bone) => this.skinningData.BoneNames[bone] == Wheels[0];
-        private bool IsFrontRightWheel(int bone) => this.skinningData.BoneNames[bone] == Wheels[1];
-        private bool IsRearLeftWheel(int bone) => this.skinningData.BoneNames[bone] == Wheels[2];
-        private bool IsRearRightWheel(int bone) => this.skinningData.BoneNames[bone] == Wheels[3];
+        private bool IsFrontLeftWheel(int bone) => this.skinningData.BoneNames[bone].Equals(WheelNameLookUp.GetCarWheelSkinBoneName(WheelPosition.FrontLeft), StringComparison.OrdinalIgnoreCase);
+        private bool IsFrontRightWheel(int bone) => this.skinningData.BoneNames[bone].Equals(WheelNameLookUp.GetCarWheelSkinBoneName(WheelPosition.FrontRight), StringComparison.OrdinalIgnoreCase);
+        private bool IsRearLeftWheel(int bone) => this.skinningData.BoneNames[bone].Equals(WheelNameLookUp.GetCarWheelSkinBoneName(WheelPosition.RearLeft), StringComparison.OrdinalIgnoreCase);
+        private bool IsRearRightWheel(int bone) => this.skinningData.BoneNames[bone].Equals(WheelNameLookUp.GetCarWheelSkinBoneName(WheelPosition.RearRight), StringComparison.OrdinalIgnoreCase);
     }
 }
