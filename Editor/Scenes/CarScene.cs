@@ -48,6 +48,7 @@ namespace MiniEngine.Scenes
         public void Set()
         {
             this.carModel = this.SceneBuilder.BuildCar(new Pose(Vector3.Zero, 0.1f));
+            //this.carModel.Origin = new Vector3(-0.075f, 0, 0); // TODO: should we take scaling into account in offset?
 
             this.carAnimation = new CarAnimation();
             this.carModel.Animation = this.carAnimation;
@@ -80,7 +81,7 @@ namespace MiniEngine.Scenes
                 {
                     var path = this.MovementLogic.PlanPath(0, 0, (int)this.endPosition.X, (int)this.endPosition.Y);
                     this.pathLine.Positions = path.Select(x => new Vector3(x.X, 0, x.Y)).ToList();
-                    this.FollowLogic.Start(this.carModel, path, new MetersPerSecond(0.02f));
+                    this.FollowLogic.Start(this.carModel, path, new MetersPerSecond(0.1f));
                 }
 
                 ImGui.EndMenu();

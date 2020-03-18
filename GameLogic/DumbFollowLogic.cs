@@ -17,6 +17,9 @@ namespace MiniEngine.GameLogic
 
         private float distanceCovered;
         private MetersPerSecond speed;
+        private float axleDistance;
+        private Vector3 rearWheelPosition;
+        private Vector3 frontWheelPosition;
 
         public DumbFollowLogic()
         {
@@ -27,10 +30,16 @@ namespace MiniEngine.GameLogic
         public void Start(AModel target, List<Vector2> path, MetersPerSecond speed)
         {
             this.target = target;
+            this.carAnimation = this.target.Animation as CarAnimation;
             this.car = new Car(target);
+
             this.path = path;
             this.speed = speed;
-            this.distanceCovered = 0.0f;
+
+            this.axleDistance = Vector3.Distance(this.car.GetRearAxlePosition(), this.car.GetFrontAxlePosition());
+            this.distanceCovered = this.axleDistance;
+            this.rearWheelPosition = this.GetPositionAfter(0);
+            this.frontWheelPosition = this.GetPositionAfter(this.distanceCovered);
 
             var length = 0.0f;
             for (var i = 1; i < this.path.Count; i++)
@@ -43,14 +52,11 @@ namespace MiniEngine.GameLogic
             }
 
             this.length = length;
-
-            this.carAnimation = this.target.Animation as CarAnimation;
         }
 
 
         public void Update(Seconds elapsed)
         {
-            // TODO: can we get rid of a lot of the minus signs here?
             if (this.distanceCovered >= this.length)
             {
                 this.path.Reverse();
@@ -58,23 +64,35 @@ namespace MiniEngine.GameLogic
             }
 
             this.distanceCovered += elapsed * this.speed;
-            var position = this.GetPositionAfter(this.distanceCovered);
-            var lookAt = this.GetLookAt(0.2f);
+
+            this.frontWheelPosition = this.GetPositionAfter(this.distanceCovered);
+            var normal = Vector3.Normalize(this.frontWheelPosition - this.rearWheelPosition);
+            this.rearWheelPosition = this.frontWheelPosition - (normal * this.axleDistance);
+
+            var position = Vector3.Lerp(this.frontWheelPosition, this.rearWheelPosition, 0.5f);
 
             this.target.Move(position);
 
-            var n = Vector3.Normalize(lookAt - position);
-            if (n.LengthSquared() > 0)
+            if (normal.LengthSquared() > 0)
             {
-                var yaw = -(float)Math.Atan2(n.Z, n.X);
+                // TODO: why -Atan2?
+                var yaw = -(float)Math.Atan2(normal.Z, normal.X);
                 this.target.Yaw = yaw;
             }
 
+            this.AngleFrontWheelAlongPath();
+        }
+
+        private void AngleFrontWheelAlongPath()
+        {
+            // TODO: make wheel movement more realistic
+
             var frontAxle = this.car.GetFrontAxlePosition();
 
-            var wheelTarget = this.GetLookAt(0.3f);
+            var wheelTarget = this.GetLookAt(0.03f);
             var axleToTarget = Vector3.Normalize(wheelTarget - frontAxle);
 
+            // TODO: why - Atan2?
             var angleToTarget = -(float)Math.Atan2(axleToTarget.Z, axleToTarget.X);
 
             var angleDifference = this.target.Yaw - angleToTarget;
@@ -82,6 +100,23 @@ namespace MiniEngine.GameLogic
 
             this.carAnimation.FrontLeftWheelYaw = wheelYaw;
             this.carAnimation.FrontRightWheelYaw = wheelYaw;
+        }
+
+        private Vector3 FindPositionWithLengthTo(float searchMax, Vector3 measurePosition, float length)
+        {
+            var step = 0.01f;
+            while (searchMax > 0)
+            {
+                searchMax -= step;
+                var position = this.GetPositionAfter(searchMax);
+                var distance = Vector3.Distance(measurePosition, position);
+                if (distance >= length)
+                {
+                    return position;
+                }
+            }
+
+            return this.GetPositionAfter(0);
         }
 
         public Vector3 GetLookAt(float lookAhead) => this.GetPositionAfter(this.distanceCovered + lookAhead);
