@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
 using MiniEngine.CutScene;
 using MiniEngine.GameLogic;
+using MiniEngine.Pipeline.Debug.Components;
 using MiniEngine.Pipeline.Debug.Factories;
 using MiniEngine.Pipeline.Lights.Components;
 using MiniEngine.Pipeline.Lights.Factories;
@@ -32,6 +34,7 @@ namespace MiniEngine.Scenes
         private readonly AveragedEmitterFactory AveragedEmitterFactory;
         private readonly DynamicTextureFactory DynamicTextureFactory;
         private readonly DebugInfoFactory DebugInfoFactory;
+        private readonly DebugLineFactory DebugLineFactory;
         private readonly WaypointFactory WaypointFactory;
         private readonly PipelineBuilder PipelineBuilder;
 
@@ -59,6 +62,7 @@ namespace MiniEngine.Scenes
             AveragedEmitterFactory averagedEmitterFactory,
             DynamicTextureFactory dynamicTextureFactory,
             DebugInfoFactory debugInfoFactory,
+            DebugLineFactory debugLineFactory,
             WaypointFactory waypointFactory,
             PipelineBuilder pipelineBuilder)
         {
@@ -72,6 +76,7 @@ namespace MiniEngine.Scenes
             this.AveragedEmitterFactory = averagedEmitterFactory;
             this.DynamicTextureFactory = dynamicTextureFactory;
             this.DebugInfoFactory = debugInfoFactory;
+            this.DebugLineFactory = debugLineFactory;
             this.WaypointFactory = waypointFactory;
             this.PipelineBuilder = pipelineBuilder;
         }
@@ -112,6 +117,11 @@ namespace MiniEngine.Scenes
 
         public TextureCube SponzaSkybox { get; private set; }
 
+        public DebugLine CreateDebugLine(IReadOnlyList<Vector3> linePositions, Color color)
+        {
+            var entity = this.EntityController.CreateEntity();
+            return this.DebugLineFactory.Construct(entity, linePositions, color);
+        }
 
         public AmbientLight BuildSponzaAmbientLight()
         {

@@ -46,6 +46,9 @@ namespace MiniEngine.Pipeline.Models.Components
 
         public bool HasAnimations { get; }
 
+        [Editor(nameof(Origin))]
+        public Vector3 Origin { get => this.pose.Origin; set => this.pose.SetOrigin(value); }
+
         [Editor(nameof(Yaw))]
         public float Yaw { get => this.pose.Yaw; set => this.Rotate(value, this.pose.Pitch, this.pose.Roll); }
 

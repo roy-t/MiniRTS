@@ -48,6 +48,17 @@ namespace MiniEngine.GameLogic
             return Vector3.Transform(Vector3.Zero, matrix);
         }
 
+        public Vector3 GetFrontAxlePosition()
+        {
+            var toFrontLeft = this.GetToWheelConnection(WheelPosition.FrontLeft);
+            var toFrontRight = this.GetToWheelConnection(WheelPosition.FrontRight);
+
+            var a = Vector3.Transform(Vector3.Zero, toFrontLeft);
+            var b = Vector3.Transform(Vector3.Zero, toFrontRight);
+
+            return Vector3.Lerp(a, b, 0.5f);
+        }
+
         public Vector3 GetRearAxlePosition()
         {
             var toRearLeft = this.GetToWheelConnection(WheelPosition.RearLeft);

@@ -77,7 +77,5 @@ namespace MiniEngine.Pipeline.Debug.Systems
                 this.Quad.RenderOutline(component.BoundarySource.Corners, viewPoint);
             }
         }
-
-
     }
 }

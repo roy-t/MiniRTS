@@ -47,6 +47,7 @@ namespace MiniEngine.Rendering
         private readonly ShadowCastingLightSystem ShadowCastingLightSystem;
         private readonly SunlightSystem SunlightSystem;
         private readonly BoundarySystem BoundarySystem;
+        private readonly LineSystem LineSystem;
         private readonly IconSystem IconSystem;
         private readonly ShadowPipeline ShadowPipeline;
         private readonly LightingPipeline LightingPipeline;
@@ -74,6 +75,7 @@ namespace MiniEngine.Rendering
             ShadowCastingLightSystem shadowCastingLightSystem,
             SunlightSystem sunlightSystem,
             BoundarySystem boundarySystem,
+            LineSystem lineSystem,
             DynamicTextureSystem dynamicTextureSystem,
             IconSystem iconSystem,
             CutsceneSystem cutsceneSystem,
@@ -93,6 +95,7 @@ namespace MiniEngine.Rendering
             this.ShadowCastingLightSystem = shadowCastingLightSystem;
             this.SunlightSystem = sunlightSystem;
             this.BoundarySystem = boundarySystem;
+            this.LineSystem = lineSystem;
             this.DynamicTextureSystem = dynamicTextureSystem;
             this.CutsceneSystem = cutsceneSystem;
             this.IconSystem = iconSystem;
@@ -172,6 +175,7 @@ namespace MiniEngine.Rendering
                 .EnableIf(this.Settings.EnableShadows, x => x.RenderShadows(this.ShadowPipeline))
                 .EnableIf(this.Settings.EnableModels, x => x.RenderModels(this.ModelSystem, this.ModelPipeline))
                 .EnableIf(this.Settings.EnableParticles, x => x.RenderParticles(this.ParticlePipeline))
+                .EnableIf(this.Settings.EnableDebugLines, x => x.RenderDebugLines(this.LineSystem))
                 .EnableIf(this.Settings.Enable3DOutlines, x => x.Render3DOutline(this.BoundarySystem))
                 .EnableIf(this.Settings.Enable2DOutlines, x => x.Render2DOutline(this.BoundarySystem))
                 .EnableIf(this.Settings.EnableIcons, x => x.RenderIcons(this.IconSystem));

@@ -17,6 +17,19 @@ namespace MiniEngine.GameLogic
         public DumbMovementLogic()
         {
             this.Grid = Grid.CreateGridWithLateralAndDiagonalConnections(this.GridSize, this.CellSize, Velocity.FromKilometersPerHour(50));
+
+            this.Grid.DisconnectNode(new GridPosition(1, 0));
+            this.Grid.DisconnectNode(new GridPosition(1, 1));
+            this.Grid.DisconnectNode(new GridPosition(1, 2));
+            this.Grid.DisconnectNode(new GridPosition(0, 4));
+            this.Grid.DisconnectNode(new GridPosition(1, 4));
+            this.Grid.DisconnectNode(new GridPosition(2, 4));
+            this.Grid.DisconnectNode(new GridPosition(3, 4));
+            this.Grid.DisconnectNode(new GridPosition(4, 4));
+            this.Grid.DisconnectNode(new GridPosition(4, 3));
+            this.Grid.DisconnectNode(new GridPosition(4, 2));
+
+
             this.PathFinder = new PathFinder();
 
             this.Offset = new Vector2

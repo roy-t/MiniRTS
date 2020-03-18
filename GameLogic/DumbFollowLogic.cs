@@ -10,6 +10,7 @@ namespace MiniEngine.GameLogic
     {
         private CarAnimation carAnimation;
 
+        private Car car;
         private AModel target;
         private List<Vector2> path;
         private float length;
@@ -26,6 +27,7 @@ namespace MiniEngine.GameLogic
         public void Start(AModel target, List<Vector2> path, MetersPerSecond speed)
         {
             this.target = target;
+            this.car = new Car(target);
             this.path = path;
             this.speed = speed;
             this.distanceCovered = 0.0f;
@@ -48,36 +50,41 @@ namespace MiniEngine.GameLogic
 
         public void Update(Seconds elapsed)
         {
-            // TODO: wheels should point so that they cross the vector going from the center of the front axis to the lookAt.
-            // TODO: where to place the pivot of the car? At the back axis I assume?
-
+            // TODO: can we get rid of a lot of the minus signs here?
             if (this.distanceCovered >= this.length)
-                return;
+            {
+                this.path.Reverse();
+                this.distanceCovered = 0.0f;
+            }
 
             this.distanceCovered += elapsed * this.speed;
             var position = this.GetPositionAfter(this.distanceCovered);
-            var lookAt = this.GetPositionAfter(this.distanceCovered + 0.2f);
+            var lookAt = this.GetLookAt(0.2f);
 
             this.target.Move(position);
-
 
             var n = Vector3.Normalize(lookAt - position);
             if (n.LengthSquared() > 0)
             {
-                var yaw = (float)Math.Atan2(n.X, n.Z) - MathHelper.PiOver2;
+                var yaw = -(float)Math.Atan2(n.Z, n.X);
                 this.target.Yaw = yaw;
             }
 
+            var frontAxle = this.car.GetFrontAxlePosition();
 
-            //var fl = GetWorldPosition("Bone_FL");
-            //var fr = GetWorldPosition("Bone_FR");
+            var wheelTarget = this.GetLookAt(0.3f);
+            var axleToTarget = Vector3.Normalize(wheelTarget - frontAxle);
 
-            //var frontAxisCenter = Vector3.Lerp(fl, fr, 0.5f);
+            var angleToTarget = -(float)Math.Atan2(axleToTarget.Z, axleToTarget.X);
 
-            //var axisForward = Vector3.Normalize(lookAt - frontAxisCenter);
+            var angleDifference = this.target.Yaw - angleToTarget;
+            var wheelYaw = -angleDifference;
 
-            //var wheelYaw = (float)Math.Atan2(axisForward.X, axisForward.Z);
+            this.carAnimation.FrontLeftWheelYaw = wheelYaw;
+            this.carAnimation.FrontRightWheelYaw = wheelYaw;
         }
+
+        public Vector3 GetLookAt(float lookAhead) => this.GetPositionAfter(this.distanceCovered + lookAhead);
 
         private Vector3 GetPositionAfter(float distanceCovered)
         {

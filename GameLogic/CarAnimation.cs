@@ -37,23 +37,36 @@ namespace MiniEngine.GameLogic
         {
             this.accumulator += elapsed;
 
-            // Y axis as this is in the space of the wheel, not the world
-            var wheelMatrix = Matrix.CreateRotationY(MathHelper.TwoPi * this.accumulator * 0.25f);
-
             this.skinningData.BindPose.CopyTo(this.boneTransforms);
             this.worldTransforms[0] = this.boneTransforms[0] * Matrix.Identity;
 
             for (var bone = 1; bone < this.worldTransforms.Length; bone++)
             {
                 var parentBone = this.skinningData.SkeletonHierarchy[bone];
-                if (this.IsRearRightWheel(bone))
+                var worldTransform = this.boneTransforms[bone] * this.worldTransforms[parentBone];
+
+                if (this.IsFrontLeftWheel(bone))
                 {
-                    this.worldTransforms[bone] = wheelMatrix * this.boneTransforms[bone] * this.worldTransforms[parentBone];
+                    var wheelMatrix = Matrix.CreateRotationZ(this.FrontLeftWheelYaw);
+                    worldTransform = wheelMatrix * worldTransform;
                 }
-                else
+                else if (this.IsFrontRightWheel(bone))
                 {
-                    this.worldTransforms[bone] = this.boneTransforms[bone] * this.worldTransforms[parentBone];
+                    var wheelMatrix = Matrix.CreateRotationZ(this.FrontRightWheelYaw);
+                    worldTransform = wheelMatrix * worldTransform;
                 }
+                else if (this.IsRearLeftWheel(bone))
+                {
+                    // Y axis as this is in the space of the wheel, not the world
+                    var wheelMatrix = Matrix.CreateRotationY(MathHelper.TwoPi * this.accumulator * 0.25f);
+                    worldTransform = wheelMatrix * worldTransform;
+                }
+                else if (this.IsRearRightWheel(bone))
+                {
+
+                }
+
+                this.worldTransforms[bone] = worldTransform;
             }
 
             for (var bone = 0; bone < this.skinTransforms.Length; bone++)
@@ -64,6 +77,10 @@ namespace MiniEngine.GameLogic
 
             Array.Copy(this.skinTransforms, 0, this.SkinTransforms, 0, this.skinTransforms.Length);
         }
+
+
+        public float FrontLeftWheelYaw { get; set; }
+        public float FrontRightWheelYaw { get; set; }
 
         private bool IsWheel(int bone) =>
             this.IsFrontLeftWheel(bone) ||

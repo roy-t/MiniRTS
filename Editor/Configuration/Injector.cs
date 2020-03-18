@@ -18,16 +18,16 @@ namespace MiniEngine.Configuration
     public sealed class Injector
     {
         private readonly ServiceContainer Container;
-        private readonly GameLoop GameLoop;       
+        private readonly GameLoop GameLoop;
 
         public Injector(GameLoop gameLoop)
         {
-            this.GameLoop = gameLoop;            
+            this.GameLoop = gameLoop;
 
             this.Container = new ServiceContainer(ContainerOptions.Default);
             this.Container.SetDefaultLifetime<PerContainerLifetime>();
 
-            this.Compose();            
+            this.Compose();
         }
 
         public void Compose()
@@ -36,6 +36,7 @@ namespace MiniEngine.Configuration
             this.Container.RegisterInstance(new SpriteBatch(this.GameLoop.GraphicsDevice));
             this.Container.RegisterInstance(this.GameLoop.GraphicsDevice);
             this.Container.RegisterInstance(this.GameLoop.Content);
+            this.Container.RegisterInstance(this.GameLoop.Camera);
 
             this.Container.RegisterFrom<EffectCompositionRoot>();
             this.Container.RegisterFrom<DebugCompositionRoot>();
@@ -47,13 +48,13 @@ namespace MiniEngine.Configuration
             this.Container.RegisterFrom<TelemetryCompositionRoot>();
             this.Container.RegisterFrom<SystemsCompositionRoot>();
             this.Container.RegisterFrom<UICompositionRoot>();
-            this.Container.RegisterFrom<EditorCompositionRoot>();            
+            this.Container.RegisterFrom<EditorCompositionRoot>();
         }
 
         public T Resolve<T>() => this.Container.GetInstance<T>();
 
         public T Resolve<T>(string name) => this.Container.GetInstance<T>(name);
 
-        public IEnumerable<T> ResolveAll<T>() => this.Container.GetAllInstances<T>();       
+        public IEnumerable<T> ResolveAll<T>() => this.Container.GetAllInstances<T>();
     }
 }

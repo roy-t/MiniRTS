@@ -11,11 +11,15 @@ namespace MiniEngine.Pipeline.Debug
         public void Compose(IServiceRegistry serviceRegistry)
         {
             serviceRegistry.Register<IComponentContainer<DebugInfo>, ComponentList<DebugInfo>>();
+            serviceRegistry.Register<IComponentContainer<DebugLine>, ComponentList<DebugLine>>();
 
             serviceRegistry.Register<DebugInfoFactory>();
+            serviceRegistry.Register<DebugLineFactory>();
+
 
             serviceRegistry.Register<BoundarySystem>();
             serviceRegistry.Register<IconSystem>();
+            serviceRegistry.Register<LineSystem>();
         }
     }
 }
