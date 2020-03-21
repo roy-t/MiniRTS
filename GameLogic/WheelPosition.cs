@@ -2,9 +2,9 @@
 {
     public enum WheelPosition
     {
-        FrontLeft,
-        FrontRight,
-        RearLeft,
-        RearRight
+        FrontLeft = 0,
+        FrontRight = 1,
+        RearLeft = 2,
+        RearRight = 3
     }
 }

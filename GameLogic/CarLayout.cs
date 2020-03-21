@@ -1,16 +1,17 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Pipeline.Models.Components;
 using ModelExtension;
 
 namespace MiniEngine.GameLogic
 {
-    public sealed class Car
+    public sealed class CarLayout
     {
         private readonly AModel Model;
         private readonly Matrix[] Bones;
 
-        public Car(AModel model)
+        public CarLayout(AModel model)
         {
             this.Model = model;
             this.Bones = new Matrix[model.Model.Bones.Count];
@@ -40,6 +41,14 @@ namespace MiniEngine.GameLogic
             var skinBoneMatrix = this.GetSkinBoneMatrix(skinBoneName);
 
             return skinBoneMatrix * toWheelMesh;
+        }
+
+        public float GetWheelRadius(WheelPosition wheel)
+        {
+            var name = WheelNameLookUp.GetCarWheelMeshName(wheel);
+            var mesh = this.GetMesh(name);
+
+            return mesh.BoundingSphere.Radius * this.Model.Scale.X;
         }
 
         public Vector3 GetWheelPosition(WheelPosition wheel)
@@ -72,16 +81,22 @@ namespace MiniEngine.GameLogic
 
         private Matrix GetMeshMatrix(string meshName)
         {
+            var mesh = this.GetMesh(meshName);
+            return this.Bones[mesh.ParentBone.Index];
+        }
+
+        private ModelMesh GetMesh(string meshName)
+        {
             for (var i = 0; i < this.Model.Model.Meshes.Count; i++)
             {
                 var mesh = this.Model.Model.Meshes[i];
                 if (mesh.Name.Equals(meshName, StringComparison.OrdinalIgnoreCase))
                 {
-                    return this.Bones[mesh.ParentBone.Index];
+                    return mesh;
                 }
             }
 
-            return Matrix.Identity;
+            throw new Exception($"Mesh {meshName} not found");
         }
 
         private Matrix GetSkinBoneMatrix(string boneName)

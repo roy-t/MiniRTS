@@ -46,8 +46,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Car.cs" />
+    <Compile Include="CarLayout.cs" />
     <Compile Include="CarAnimation.cs" />
+    <Compile Include="CarDynamics.cs" />
+    <Compile Include="PathInterpolator.cs" />
     <Compile Include="WheelPosition.cs" />
     <Compile Include="DumbMovementLogic.cs" />
     <Compile Include="DumbFollowLogic.cs" />

@@ -19,7 +19,6 @@ namespace MiniEngine.Scenes
         private readonly DumbMovementLogic MovementLogic;
         private readonly DumbFollowLogic FollowLogic;
 
-        private Car car;
         private AModel carModel;
         private CarAnimation carAnimation;
         private AModel indicator;
@@ -41,8 +40,6 @@ namespace MiniEngine.Scenes
 
         public string Name => "Car";
 
-
-
         public TextureCube Skybox { get; private set; }
 
         public void Set()
@@ -54,7 +51,6 @@ namespace MiniEngine.Scenes
             this.carModel.Animation = this.carAnimation;
             this.carAnimation.SetTarget(this.carModel);
 
-            this.car = new Car(this.carModel);
 
             this.indicator = this.SceneBuilder.BuildCube(new Pose(Vector3.Zero, 0.0002f));
 
@@ -68,8 +64,6 @@ namespace MiniEngine.Scenes
 
             this.pathLine = this.SceneBuilder.CreateDebugLine(path.Select(x => new Vector3(x.X, 0, x.Y)).ToList(), Color.White);
         }
-
-
 
         public void RenderUI()
         {
@@ -95,8 +89,7 @@ namespace MiniEngine.Scenes
 
             var scale = Matrix.CreateScale(0.00025f);
 
-            //var mat = scale * Matrix.CreateTranslation(car.GetWheelPosition(WheelPosition.FrontLeft));
-            var mat = scale * Matrix.CreateTranslation(this.FollowLogic.GetLookAt(0.3f));
+            var mat = scale * Matrix.CreateTranslation(this.FollowLogic.GetPositionAfter(this.FollowLogic.DistanceCovered + 0.3f));
             this.indicator.Pose = new Pose(mat);
         }
     }

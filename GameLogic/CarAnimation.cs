@@ -13,8 +13,6 @@ namespace MiniEngine.GameLogic
         private Matrix[] worldTransforms;
         private Matrix[] skinTransforms;
 
-        private float accumulator;
-
         public CarAnimation() : base() { }
 
         public override void SetTarget(AModel target)
@@ -30,13 +28,14 @@ namespace MiniEngine.GameLogic
             this.worldTransforms = new Matrix[this.skinningData.BindPose.Count];
             this.skinTransforms = new Matrix[this.skinningData.BindPose.Count];
 
+            this.WheelRoll = new float[4];
+            this.WheelYaw = new float[4];
+
             base.SetTarget(target);
         }
 
         public void Update(Seconds elapsed)
         {
-            this.accumulator += elapsed;
-
             this.skinningData.BindPose.CopyTo(this.boneTransforms);
             this.worldTransforms[0] = this.boneTransforms[0] * Matrix.Identity;
 
@@ -45,25 +44,11 @@ namespace MiniEngine.GameLogic
                 var parentBone = this.skinningData.SkeletonHierarchy[bone];
                 var worldTransform = this.boneTransforms[bone] * this.worldTransforms[parentBone];
 
-                if (this.IsFrontLeftWheel(bone))
+                if (this.IsWheel(bone))
                 {
-                    var wheelMatrix = Matrix.CreateRotationZ(this.FrontLeftWheelYaw);
+                    var wheelIndex = GetWheelIndex(bone);
+                    var wheelMatrix = Matrix.CreateRotationY(this.WheelRoll[wheelIndex]) * Matrix.CreateRotationZ(this.WheelYaw[wheelIndex]);
                     worldTransform = wheelMatrix * worldTransform;
-                }
-                else if (this.IsFrontRightWheel(bone))
-                {
-                    var wheelMatrix = Matrix.CreateRotationZ(this.FrontRightWheelYaw);
-                    worldTransform = wheelMatrix * worldTransform;
-                }
-                else if (this.IsRearLeftWheel(bone))
-                {
-                    // Y axis as this is in the space of the wheel, not the world
-                    var wheelMatrix = Matrix.CreateRotationY(MathHelper.TwoPi * this.accumulator * 0.25f);
-                    worldTransform = wheelMatrix * worldTransform;
-                }
-                else if (this.IsRearRightWheel(bone))
-                {
-
                 }
 
                 this.worldTransforms[bone] = worldTransform;
@@ -71,16 +56,39 @@ namespace MiniEngine.GameLogic
 
             for (var bone = 0; bone < this.skinTransforms.Length; bone++)
             {
-                this.skinTransforms[bone] = this.skinningData.InverseBindPose[bone] *
-                                            this.worldTransforms[bone];
+                this.skinTransforms[bone] = this.skinningData.InverseBindPose[bone] * this.worldTransforms[bone];
             }
 
             Array.Copy(this.skinTransforms, 0, this.SkinTransforms, 0, this.skinTransforms.Length);
         }
 
+        private int GetWheelIndex(int bone)
+        {
+            if (this.IsFrontLeftWheel(bone))
+            {
+                return (int)WheelPosition.FrontLeft;
+            }
 
-        public float FrontLeftWheelYaw { get; set; }
-        public float FrontRightWheelYaw { get; set; }
+            if (this.IsFrontRightWheel(bone))
+            {
+                return (int)WheelPosition.FrontRight;
+            }
+
+            if (this.IsRearLeftWheel(bone))
+            {
+                return (int)WheelPosition.RearLeft;
+            }
+
+            if (this.IsRearRightWheel(bone))
+            {
+                return (int)WheelPosition.RearRight;
+            }
+
+            throw new Exception($"Could not find wheel index for bone {bone}");
+        }
+
+        public float[] WheelRoll { get; set; }
+        public float[] WheelYaw { get; set; }
 
         private bool IsWheel(int bone) =>
             this.IsFrontLeftWheel(bone) ||
