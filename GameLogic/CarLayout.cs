@@ -48,6 +48,7 @@ namespace MiniEngine.GameLogic
             var name = WheelNameLookUp.GetCarWheelMeshName(wheel);
             var mesh = this.GetMesh(name);
 
+            // TODO: this should probably also take into account the scale in the absolutebone transforms
             return mesh.BoundingSphere.Radius * this.Model.Scale.X;
         }
 

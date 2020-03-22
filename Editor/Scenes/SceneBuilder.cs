@@ -211,7 +211,7 @@ namespace MiniEngine.Scenes
             return model;
         }
 
-        public void BuildTerrain(int rows, int columns, Pose offset)
+        public void BuildTerrainInParts(int rows, int columns, Pose offset)
         {
             var entity = this.EntityController.CreateEntity();
             for (var x = 0; x < columns; x++)
@@ -222,11 +222,18 @@ namespace MiniEngine.Scenes
                     var position = new Pose(v3 + offset.Translation, 1.0f / 40.0f);
 
                     var model = this.OpaqueModelFactory.Construct(entity, this.terrain, position);
-                    //model.TextureScale = Vector2.One * 8;
                     this.DebugInfoFactory.Construct(entity, model);
-                    //this.DebugInfoFactory.Construct(entity);
                 }
             }
+        }
+
+        public void BuildTerrain(int width, int depth)
+        {
+            var entity = this.EntityController.CreateEntity();
+            var pose = new Pose(Vector3.Zero);
+            var model = this.OpaqueModelFactory.Construct(entity, this.terrain, pose);
+
+            model.TextureScale = new Vector2(width, depth);
         }
 
 

@@ -40,7 +40,7 @@ namespace MiniEngine.GameLogic
             this.PushWheelPositions();
             for (var i = 0; i < Wheels; i++)
             {
-                this.CurrentWheelPositions[i] = Car.GetWheelPosition((WheelPosition)i);
+                this.CurrentWheelPositions[i] = this.Car.GetWheelPosition((WheelPosition)i);
             }
         }
 
@@ -51,7 +51,6 @@ namespace MiniEngine.GameLogic
             var before = this.LastWheelPositions[index];
             var after = this.CurrentWheelPositions[index];
             var distance = Vector3.Distance(before, after);
-
             var circumference = this.WheelCircumferences[index];
 
             return (distance / circumference) * MathHelper.TwoPi;

@@ -1,5 +1,9 @@
 # Worklist
 ## TODO
+Threading:
+- Make a ThreadSafe IComponentCollection that overrides the add and remove methods and stores the component to add or remove in a seperate list and syncs with the main thread once every frame, on that sync it allows the stuff to be added or removed. In this way  most threading stuff will work out OK as long as things are not too tightly coupled?
+
+
 - What if we create a server (that's either directly addressable locally, or via tcp/udp remotely) that manages all state changes
     - making the games simple viewers
     - how would that work with lock-step?

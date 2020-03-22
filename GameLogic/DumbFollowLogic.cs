@@ -1,42 +1,32 @@
 ﻿using System;
-using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using MiniEngine.Pipeline.Models.Components;
 using MiniEngine.Units;
 
 namespace MiniEngine.GameLogic
 {
-    // TODO: move all path related methods to a Path class
     public sealed class DumbFollowLogic
     {
-        private CarDynamics carDynamics;
-        private CarAnimation carAnimation;
+        private readonly CarDynamics CarDynamics;
+        private readonly CarAnimation CarAnimation;
 
-        private AModel target;
-        private List<Vector2> path;
-        private float length;
+        private readonly AModel Target;
+        private readonly Path Path;
 
-        public DumbFollowLogic()
+        public DumbFollowLogic(AModel target, Path path, MetersPerSecond speed)
         {
-            this.length = 0.0f;
             this.DistanceCovered = 0.0f;
-        }
+            this.Target = target;
+            this.CarAnimation = this.Target.Animation as CarAnimation;
+            this.CarDynamics = new CarDynamics(new CarLayout(target));
 
-        public void Start(AModel target, List<Vector2> path, MetersPerSecond speed)
-        {
-            this.target = target;
-            this.carAnimation = this.target.Animation as CarAnimation;
-            this.carDynamics = new CarDynamics(new CarLayout(target));
-
-            this.path = path;
+            this.Path = path;
             this.Speed = speed;
 
-            this.DistanceCovered = this.carDynamics.AxleDistance;
-            var back = this.GetPositionAfter(0);
-            var front = this.GetPositionAfter(this.DistanceCovered);
-            this.carDynamics.BringAxlesInLine(front, back);
-
-            this.ComputePathLength();
+            this.DistanceCovered = this.CarDynamics.AxleDistance;
+            var back = this.Path.GetPositionAfter(0);
+            var front = this.Path.GetPositionAfter(this.DistanceCovered);
+            this.CarDynamics.BringAxlesInLine(front, back);
         }
 
         public MetersPerSecond Speed { get; set; }
@@ -45,9 +35,9 @@ namespace MiniEngine.GameLogic
 
         public void Update(Seconds elapsed)
         {
-            if (this.DistanceCovered < this.length)
+            if (this.DistanceCovered < this.Path.Length)
             {
-                this.DistanceCovered = Math.Min(this.DistanceCovered + (elapsed * this.Speed), this.length);
+                this.DistanceCovered = Math.Min(this.DistanceCovered + (elapsed * this.Speed), this.Path.Length);
 
                 this.ComputeCarMovement();
                 this.ComputeWheelMovement();
@@ -56,29 +46,29 @@ namespace MiniEngine.GameLogic
 
         private void ComputeCarMovement()
         {
-            var newFrontAxlePosition = this.GetPositionAfter(this.DistanceCovered);
-            this.carDynamics.BringAxlesInLine(newFrontAxlePosition);
+            var newFrontAxlePosition = this.Path.GetPositionAfter(this.DistanceCovered);
+            this.CarDynamics.BringAxlesInLine(newFrontAxlePosition);
 
-            this.target.Move(this.carDynamics.GetCarSupportedCenter());
+            this.Target.Move(this.CarDynamics.GetCarSupportedCenter());
 
-            var forward = this.carDynamics.GetCarForward();
+            var forward = this.CarDynamics.GetCarForward();
             if (forward.LengthSquared() > 0)
             {
                 // TODO: why -Atan2?
                 var yaw = -(float)Math.Atan2(forward.Z, forward.X);
-                this.target.Yaw = yaw;
+                this.Target.Yaw = yaw;
             }
         }
 
         private void ComputeWheelMovement()
         {
-            this.carDynamics.UpdateWheelPositions();
+            this.CarDynamics.UpdateWheelPositions();
 
             for (var i = 0; i < 4; i++)
             {
                 var wheel = (WheelPosition)i;
-                var rotation = this.carDynamics.GetWheelRotationToCoverPositionChange(wheel);
-                this.carAnimation.WheelRoll[i] += rotation;
+                var rotation = this.CarDynamics.GetWheelRotationToCoverPositionChange(wheel);
+                this.CarAnimation.WheelRoll[i] += rotation;
             }
 
             this.AngleFrontWheelsAlongPath();
@@ -86,64 +76,24 @@ namespace MiniEngine.GameLogic
 
         private void AngleFrontWheelsAlongPath()
         {
-            var frontAxle = this.carDynamics.GetFrontAxlePosition();
+            var frontAxle = this.CarDynamics.GetFrontAxlePosition();
 
             // TODO: find a better number for the wheel target
             // Maybe once we start following splines we can just take the diff betwen wheel positions?
-            var wheelTarget = this.GetPositionAfter(this.DistanceCovered + (this.carDynamics.AxleDistance / 5));
+            var wheelTarget = this.Path.GetPositionAfter(this.DistanceCovered + (this.CarDynamics.AxleDistance / 5));
             var axleToTarget = Vector3.Normalize(wheelTarget - frontAxle);
 
-            // TODO: why - Atan2?
-            var angleToTarget = -(float)Math.Atan2(axleToTarget.Z, axleToTarget.X);
-
-            var angleDifference = this.target.Yaw - angleToTarget;
-            var wheelYaw = -angleDifference;
-
-            this.carAnimation.WheelYaw[(int)WheelPosition.FrontLeft] = wheelYaw;
-            this.carAnimation.WheelYaw[(int)WheelPosition.FrontRight] = wheelYaw;
-        }
-
-        public Vector3 GetPositionAfter(float distanceCovered)
-        {
-            var toCover = distanceCovered;
-            for (var i = 1; i < this.path.Count; i++)
+            if (axleToTarget.LengthSquared() > 0)
             {
-                var from = this.GetPosition(i - 1);
-                var to = this.GetPosition(i);
+                // TODO: why - Atan2?
+                var angleToTarget = -(float)Math.Atan2(axleToTarget.Z, axleToTarget.X);
 
-                var distance = Vector3.Distance(from, to);
-                if (toCover > distance)
-                {
-                    toCover -= distance; ;
-                }
-                else
-                {
-                    return Vector3.Lerp(from, to, toCover / distance);
-                }
+                var angleDifference = this.Target.Yaw - angleToTarget;
+                var wheelYaw = -angleDifference;
+
+                this.CarAnimation.WheelYaw[(int)WheelPosition.FrontLeft] = wheelYaw;
+                this.CarAnimation.WheelYaw[(int)WheelPosition.FrontRight] = wheelYaw;
             }
-
-            return this.GetPosition(this.path.Count - 1);
-        }
-
-        private Vector3 GetPosition(int index)
-        {
-            var v2 = this.path[index];
-            return new Vector3(v2.X, 0, v2.Y);
-        }
-
-        private void ComputePathLength()
-        {
-            var length = 0.0f;
-            for (var i = 1; i < this.path.Count; i++)
-            {
-                var from = this.GetPosition(i - 1);
-                var to = this.GetPosition(i);
-
-                var distance = Vector3.Distance(from, to);
-                length += distance;
-            }
-
-            this.length = length;
         }
     }
 }

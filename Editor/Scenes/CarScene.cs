@@ -17,13 +17,16 @@ namespace MiniEngine.Scenes
         private readonly PerspectiveCamera camera;
         private readonly SceneBuilder SceneBuilder;
         private readonly DumbMovementLogic MovementLogic;
-        private readonly DumbFollowLogic FollowLogic;
+
 
         private AModel carModel;
         private CarAnimation carAnimation;
         private AModel indicator;
+        private DumbFollowLogic followLogic;
+        private Path path;
 
         private DebugLine pathLine;
+        private DebugLine originalLine;
         private System.Numerics.Vector2 endPosition;
 
         public CarScene(PerspectiveCamera camera, SceneBuilder sceneBuilder)
@@ -31,7 +34,6 @@ namespace MiniEngine.Scenes
             this.camera = camera;
             this.SceneBuilder = sceneBuilder;
             this.MovementLogic = new DumbMovementLogic();
-            this.FollowLogic = new DumbFollowLogic();
             this.endPosition = new System.Numerics.Vector2(10, 7);
         }
 
@@ -45,7 +47,6 @@ namespace MiniEngine.Scenes
         public void Set()
         {
             this.carModel = this.SceneBuilder.BuildCar(new Pose(Vector3.Zero, 0.1f));
-            //this.carModel.Origin = new Vector3(-0.075f, 0, 0); // TODO: should we take scaling into account in offset?
 
             this.carAnimation = new CarAnimation();
             this.carModel.Animation = this.carAnimation;
@@ -54,15 +55,22 @@ namespace MiniEngine.Scenes
 
             this.indicator = this.SceneBuilder.BuildCube(new Pose(Vector3.Zero, 0.0002f));
 
-            this.SceneBuilder.BuildTerrain(40, 40, new Pose(new Vector3(-20, 0, -20)));
+            this.SceneBuilder.BuildTerrain(40, 40);
             this.SceneBuilder.BuildSponzaAmbientLight();
             this.SceneBuilder.BuildSponzeSunLight();
             this.Skybox = this.SceneBuilder.SponzaSkybox;
+            this.CreatePath();
+        }
 
-            var path = this.MovementLogic.PlanPath(0, 0, (int)this.endPosition.X, (int)this.endPosition.Y);
-            this.FollowLogic.Start(this.carModel, path, new MetersPerSecond(0.1f));
+        private void CreatePath()
+        {
+            var roughPath = this.MovementLogic.PlanPath(0, 0, (int)this.endPosition.X, (int)this.endPosition.Y);
+            var smoothPath = PathInterpolator.Interpolate(roughPath);
+            this.path = new Path(smoothPath);
+            this.followLogic = new DumbFollowLogic(this.carModel, this.path, new MetersPerSecond(0.25f));
 
-            this.pathLine = this.SceneBuilder.CreateDebugLine(path.Select(x => new Vector3(x.X, 0, x.Y)).ToList(), Color.White);
+            this.pathLine = this.SceneBuilder.CreateDebugLine(smoothPath.Select(x => new Vector3(x.X, 0, x.Y)).ToList(), Color.White);
+            this.originalLine = this.SceneBuilder.CreateDebugLine(roughPath.Select(x => new Vector3(x.X, 0, x.Y)).ToList(), Color.LightGray);
         }
 
         public void RenderUI()
@@ -73,9 +81,7 @@ namespace MiniEngine.Scenes
 
                 if (ImGui.MenuItem("Move"))
                 {
-                    var path = this.MovementLogic.PlanPath(0, 0, (int)this.endPosition.X, (int)this.endPosition.Y);
-                    this.pathLine.Positions = path.Select(x => new Vector3(x.X, 0, x.Y)).ToList();
-                    this.FollowLogic.Start(this.carModel, path, new MetersPerSecond(0.1f));
+                    this.CreatePath();
                 }
 
                 ImGui.EndMenu();
@@ -85,11 +91,11 @@ namespace MiniEngine.Scenes
         public void Update(Seconds elapsed)
         {
             this.carAnimation.Update(elapsed);
-            this.FollowLogic.Update(elapsed);
+            this.followLogic.Update(elapsed);
 
             var scale = Matrix.CreateScale(0.00025f);
 
-            var mat = scale * Matrix.CreateTranslation(this.FollowLogic.GetPositionAfter(this.FollowLogic.DistanceCovered + 0.3f));
+            var mat = scale * Matrix.CreateTranslation(this.path.GetPositionAfter(this.followLogic.DistanceCovered + 0.3f));
             this.indicator.Pose = new Pose(mat);
         }
     }
