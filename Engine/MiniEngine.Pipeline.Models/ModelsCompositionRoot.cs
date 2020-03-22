@@ -12,11 +12,14 @@ namespace MiniEngine.Pipeline.Models
         {
             serviceRegistry.Register<IComponentContainer<OpaqueModel>, ComponentList<OpaqueModel>>();
             serviceRegistry.Register<IComponentContainer<TransparentModel>, ComponentList<TransparentModel>>();
+            serviceRegistry.Register<IComponentContainer<AAnimation>, ComponentList<AAnimation>>();
 
             serviceRegistry.Register<OpaqueModelFactory>();
             serviceRegistry.Register<TransparentModelFactory>();
+            serviceRegistry.Register<AnimationStore>();
 
             serviceRegistry.Register<ModelSystem>();
+            serviceRegistry.Register<AnimationSystem>();
         }
     }
 }

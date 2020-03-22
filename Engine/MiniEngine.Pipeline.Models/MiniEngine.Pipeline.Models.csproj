@@ -54,7 +54,6 @@
     <Compile Include="Batches\ModelRenderBatch.cs" />
     <Compile Include="Components\AModel.cs" />
     <Compile Include="Components\AAnimation.cs" />
-    <Compile Include="Components\IdentityAnimation.cs" />
     <Compile Include="Components\TransparentModel.cs" />
     <Compile Include="Components\OpaqueModel.cs" />
     <Compile Include="Extensions\AntiAliasingStageExtensions.cs" />
@@ -62,12 +61,14 @@
     <Compile Include="Extensions\CombineDiffuseWithLigtingStageExtensions.cs" />
     <Compile Include="Extensions\RenderModelBatchStageExtensions.cs" />
     <Compile Include="Extensions\RenderModelsStageExtension.cs" />
+    <Compile Include="Factories\AnimationStore.cs" />
     <Compile Include="Factories\TransparentModelFactory.cs" />
     <Compile Include="Factories\OpaqueModelFactory.cs" />
     <Compile Include="ModelPipeline.cs" />
     <Compile Include="ModelPipelineInput.cs" />
     <Compile Include="ModelsCompositionRoot.cs" />
     <Compile Include="Stages\ClearStage.cs" />
+    <Compile Include="Systems\AnimationSystem.cs" />
     <Compile Include="Systems\ModelSystem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Stages\AntiAliasStage.cs" />

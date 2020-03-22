@@ -13,15 +13,8 @@ namespace MiniEngine.Pipeline.Models.Factories
             : base(device, container) { }
 
         public OpaqueModel Construct(Entity entity, Model model, Pose pose)
-            => this.Construct(entity, model, pose, new IdentityAnimation());
-
-        public OpaqueModel Construct(Entity entity, Model model, Pose pose, AAnimation animation)
         {
             var opaqueModel = new OpaqueModel(entity, model, pose);
-
-            animation.SetTarget(opaqueModel);
-            opaqueModel.Animation = animation;
-
             this.Container.Add(opaqueModel);
 
             return opaqueModel;

@@ -1,8 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using MiniEngine.GameLogic;
-using MiniEngine.Pipeline.Models.Components;
 using MiniEngine.Primitives;
 using MiniEngine.Units;
 
@@ -22,14 +20,10 @@ namespace MiniEngine.Scenes
 
         public string Name => "Sponza";
 
-        private AModel carModel;
-
         public TextureCube Skybox { get; private set; }
 
         public void Set()
         {
-            this.carModel = this.SceneBuilder.BuildCar(new Pose(Vector3.Up * 6));
-
             this.SceneBuilder.BuildSponzaLit(new Pose(Vector3.Zero, 0.05f));
             this.SceneBuilder.BuildStainedGlass();
             this.SceneBuilder.BuildFirePlace();
@@ -47,8 +41,6 @@ namespace MiniEngine.Scenes
 
         public void Update(Seconds elapsed)
         {
-            (this.carModel.Animation as CarAnimation).Update(elapsed);
-            return;
         }
     }
 }

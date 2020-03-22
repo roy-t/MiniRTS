@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
@@ -12,10 +13,12 @@ namespace MiniEngine
 {
     public sealed class GameLoop : Game
     {
+        [SuppressMessage("Code Quality", "IDE0052:Remove unread private members", Justification = "Reference required to prevent collection")]
         private readonly GraphicsDeviceManager Graphics;
+
         private Injector injector;
 
-        public PerspectiveCamera Camera;
+        private PerspectiveCamera camera;
         private SpriteBatch spriteBatch;
 
         private DeferredRenderPipeline renderPipeline;
@@ -42,7 +45,7 @@ namespace MiniEngine
 
         protected override void LoadContent()
         {
-            this.Camera = new PerspectiveCamera(this.GraphicsDevice.Viewport);
+            this.camera = new PerspectiveCamera(this.GraphicsDevice.Viewport);
             this.injector = new Injector(this);
 
             this.spriteBatch = this.injector.Resolve<SpriteBatch>();
@@ -55,7 +58,7 @@ namespace MiniEngine
         }
 
         protected override void OnExiting(object sender, EventArgs args)
-            => this.uiManager.Close(this.Camera);
+            => this.uiManager.Close(this.camera);
 
         protected override void Update(GameTime gameTime)
         {
@@ -69,11 +72,11 @@ namespace MiniEngine
         {
             this.Window.Title = $"{gameTime.ElapsedGameTime.TotalMilliseconds:F2}ms, {1.0f / gameTime.ElapsedGameTime.TotalSeconds:F2} fps.";
             this.Window.Title +=
-                $" Camera ({this.Camera.Position.X:F2}, {this.Camera.Position.Y:F2}, {this.Camera.Position.Z:F2})";
+                $" Camera ({this.camera.Position.X:F2}, {this.camera.Position.Y:F2}, {this.camera.Position.Z:F2})";
 
 
             var skybox = this.sceneSelector.CurrentScene.Skybox;
-            var result = this.renderPipeline.Render(this.Camera, (float)gameTime.ElapsedGameTime.TotalSeconds, skybox);
+            var result = this.renderPipeline.Render(this.camera, (float)gameTime.ElapsedGameTime.TotalSeconds, skybox);
 
             this.GraphicsDevice.SetRenderTarget(null);
             this.GraphicsDevice.Clear(Color.CornflowerBlue);
@@ -93,7 +96,7 @@ namespace MiniEngine
 
             this.spriteBatch.End();
 
-            this.uiManager.Render(this.sceneSelector.CurrentScene, this.Camera, this.GraphicsDevice.Viewport, gameTime);
+            this.uiManager.Render(this.sceneSelector.CurrentScene, this.camera, this.GraphicsDevice.Viewport, gameTime);
 
             base.Draw(gameTime);
         }

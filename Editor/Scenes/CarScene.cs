@@ -7,14 +7,12 @@ using MiniEngine.GameLogic;
 using MiniEngine.Pipeline.Debug.Components;
 using MiniEngine.Pipeline.Models.Components;
 using MiniEngine.Primitives;
-using MiniEngine.Primitives.Cameras;
 using MiniEngine.Units;
 
 namespace MiniEngine.Scenes
 {
     public sealed class CarScene : IScene
     {
-        private readonly PerspectiveCamera camera;
         private readonly SceneBuilder SceneBuilder;
         private readonly DumbMovementLogic MovementLogic;
 
@@ -29,9 +27,8 @@ namespace MiniEngine.Scenes
         private DebugLine originalLine;
         private System.Numerics.Vector2 endPosition;
 
-        public CarScene(PerspectiveCamera camera, SceneBuilder sceneBuilder)
+        public CarScene(SceneBuilder sceneBuilder)
         {
-            this.camera = camera;
             this.SceneBuilder = sceneBuilder;
             this.MovementLogic = new DumbMovementLogic();
             this.endPosition = new System.Numerics.Vector2(10, 7);
@@ -46,12 +43,7 @@ namespace MiniEngine.Scenes
 
         public void Set()
         {
-            this.carModel = this.SceneBuilder.BuildCar(new Pose(Vector3.Zero, 0.1f));
-
-            this.carAnimation = new CarAnimation();
-            this.carModel.Animation = this.carAnimation;
-            this.carAnimation.SetTarget(this.carModel);
-
+            (this.carModel, this.carAnimation) = this.SceneBuilder.BuildCar(new Pose(Vector3.Zero, 0.1f));
 
             this.indicator = this.SceneBuilder.BuildCube(new Pose(Vector3.Zero, 0.0002f));
 
@@ -67,7 +59,7 @@ namespace MiniEngine.Scenes
             var roughPath = this.MovementLogic.PlanPath(0, 0, (int)this.endPosition.X, (int)this.endPosition.Y);
             var smoothPath = PathInterpolator.Interpolate(roughPath);
             this.path = new Path(smoothPath);
-            this.followLogic = new DumbFollowLogic(this.carModel, this.path, new MetersPerSecond(0.25f));
+            this.followLogic = new DumbFollowLogic(this.carModel, this.carAnimation, this.path, new MetersPerSecond(0.25f));
 
             this.pathLine = this.SceneBuilder.CreateDebugLine(smoothPath.Select(x => new Vector3(x.X, 0, x.Y)).ToList(), Color.White);
             this.originalLine = this.SceneBuilder.CreateDebugLine(roughPath.Select(x => new Vector3(x.X, 0, x.Y)).ToList(), Color.LightGray);
@@ -90,7 +82,6 @@ namespace MiniEngine.Scenes
 
         public void Update(Seconds elapsed)
         {
-            this.carAnimation.Update(elapsed);
             this.followLogic.Update(elapsed);
 
             var scale = Matrix.CreateScale(0.00025f);

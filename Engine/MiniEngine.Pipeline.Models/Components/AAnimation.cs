@@ -1,26 +1,39 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
+using MiniEngine.Systems;
+using MiniEngine.Systems.Components;
+using MiniEngine.Units;
 using ModelExtension;
 
 namespace MiniEngine.Pipeline.Models.Components
 {
-    public abstract class AAnimation
+    public abstract class AAnimation : IComponent
     {
-        protected readonly Matrix[] SkinTransforms;
-
-        public AAnimation()
+        protected readonly SkinningData SkinningData;
+        public AAnimation(Entity entity, AModel model)
         {
-            this.SkinTransforms = new Matrix[Constants.MaxBones];
+            this.Entity = entity;
+            this.Model = model;
 
-            for (var i = 0; i < this.SkinTransforms.Length; i++)
+            if ((model.Model.Tag as SkinningData) == null)
             {
-                this.SkinTransforms[i] = Matrix.Identity;
+                throw new ArgumentException("Target does not have skinning data ", nameof(model));
+            }
+            this.SkinningData = model.Model.Tag as SkinningData;
+            this.Model.SkinTransforms = new Matrix[Constants.MaxBones];
+            for (var i = 0; i < model.SkinTransforms.Length; i++)
+            {
+                this.Model.SkinTransforms[i] = Matrix.Identity;
             }
         }
 
-        public AModel Target { get; private set; }
+        public AModel Model { get; }
 
-        public virtual Matrix[] GetSkinTransforms() => this.SkinTransforms;
+        public Entity Entity { get; }
 
-        public virtual void SetTarget(AModel target) => this.Target = target;
+        protected void CopySkinTransformsToModel(Matrix[] skinTransforms)
+            => Array.Copy(skinTransforms, 0, this.Model.SkinTransforms, 0, skinTransforms.Length);
+
+        public abstract void Update(Seconds elapsed);
     }
 }

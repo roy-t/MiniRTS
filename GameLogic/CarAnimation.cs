@@ -1,48 +1,37 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using MiniEngine.Pipeline.Models.Components;
+using MiniEngine.Systems;
 using MiniEngine.Units;
-using ModelExtension;
 
 namespace MiniEngine.GameLogic
 {
-    public class CarAnimation : AAnimation
+    public sealed class CarAnimation : AAnimation
     {
-        private SkinningData skinningData;
-        private Matrix[] boneTransforms;
-        private Matrix[] worldTransforms;
-        private Matrix[] skinTransforms;
+        private readonly Matrix[] BoneTransforms;
+        private readonly Matrix[] WorldTransforms;
+        private readonly Matrix[] SkinTransforms;
 
-        public CarAnimation() : base() { }
-
-        public override void SetTarget(AModel target)
+        public CarAnimation(Entity entity, AModel model)
+            : base(entity, model)
         {
-            if ((target.Model.Tag as SkinningData) == null)
-            {
-                throw new ArgumentException("Target does not have skinning data ", nameof(target));
-            }
-
-            this.skinningData = target.Model.Tag as SkinningData;
-
-            this.boneTransforms = new Matrix[this.skinningData.BindPose.Count];
-            this.worldTransforms = new Matrix[this.skinningData.BindPose.Count];
-            this.skinTransforms = new Matrix[this.skinningData.BindPose.Count];
+            this.BoneTransforms = new Matrix[this.SkinningData.BindPose.Count];
+            this.WorldTransforms = new Matrix[this.SkinningData.BindPose.Count];
+            this.SkinTransforms = new Matrix[this.SkinningData.BindPose.Count];
 
             this.WheelRoll = new float[4];
             this.WheelYaw = new float[4];
-
-            base.SetTarget(target);
         }
 
-        public void Update(Seconds elapsed)
+        public override void Update(Seconds elapsed)
         {
-            this.skinningData.BindPose.CopyTo(this.boneTransforms);
-            this.worldTransforms[0] = this.boneTransforms[0] * Matrix.Identity;
+            this.SkinningData.BindPose.CopyTo(this.BoneTransforms);
+            this.WorldTransforms[0] = this.BoneTransforms[0] * Matrix.Identity;
 
-            for (var bone = 1; bone < this.worldTransforms.Length; bone++)
+            for (var bone = 1; bone < this.WorldTransforms.Length; bone++)
             {
-                var parentBone = this.skinningData.SkeletonHierarchy[bone];
-                var worldTransform = this.boneTransforms[bone] * this.worldTransforms[parentBone];
+                var parentBone = this.SkinningData.SkeletonHierarchy[bone];
+                var worldTransform = this.BoneTransforms[bone] * this.WorldTransforms[parentBone];
 
                 if (this.IsWheel(bone))
                 {
@@ -51,15 +40,15 @@ namespace MiniEngine.GameLogic
                     worldTransform = wheelMatrix * worldTransform;
                 }
 
-                this.worldTransforms[bone] = worldTransform;
+                this.WorldTransforms[bone] = worldTransform;
             }
 
-            for (var bone = 0; bone < this.skinTransforms.Length; bone++)
+            for (var bone = 0; bone < this.SkinTransforms.Length; bone++)
             {
-                this.skinTransforms[bone] = this.skinningData.InverseBindPose[bone] * this.worldTransforms[bone];
+                this.SkinTransforms[bone] = this.SkinningData.InverseBindPose[bone] * this.WorldTransforms[bone];
             }
 
-            Array.Copy(this.skinTransforms, 0, this.SkinTransforms, 0, this.skinTransforms.Length);
+            this.CopySkinTransformsToModel(this.SkinTransforms);
         }
 
         private int GetWheelIndex(int bone)
@@ -96,9 +85,9 @@ namespace MiniEngine.GameLogic
             this.IsRearLeftWheel(bone) ||
             this.IsRearRightWheel(bone);
 
-        private bool IsFrontLeftWheel(int bone) => this.skinningData.BoneNames[bone].Equals(WheelNameLookUp.GetCarWheelSkinBoneName(WheelPosition.FrontLeft), StringComparison.OrdinalIgnoreCase);
-        private bool IsFrontRightWheel(int bone) => this.skinningData.BoneNames[bone].Equals(WheelNameLookUp.GetCarWheelSkinBoneName(WheelPosition.FrontRight), StringComparison.OrdinalIgnoreCase);
-        private bool IsRearLeftWheel(int bone) => this.skinningData.BoneNames[bone].Equals(WheelNameLookUp.GetCarWheelSkinBoneName(WheelPosition.RearLeft), StringComparison.OrdinalIgnoreCase);
-        private bool IsRearRightWheel(int bone) => this.skinningData.BoneNames[bone].Equals(WheelNameLookUp.GetCarWheelSkinBoneName(WheelPosition.RearRight), StringComparison.OrdinalIgnoreCase);
+        private bool IsFrontLeftWheel(int bone) => this.SkinningData.BoneNames[bone].Equals(WheelNameLookUp.GetCarWheelSkinBoneName(WheelPosition.FrontLeft), StringComparison.OrdinalIgnoreCase);
+        private bool IsFrontRightWheel(int bone) => this.SkinningData.BoneNames[bone].Equals(WheelNameLookUp.GetCarWheelSkinBoneName(WheelPosition.FrontRight), StringComparison.OrdinalIgnoreCase);
+        private bool IsRearLeftWheel(int bone) => this.SkinningData.BoneNames[bone].Equals(WheelNameLookUp.GetCarWheelSkinBoneName(WheelPosition.RearLeft), StringComparison.OrdinalIgnoreCase);
+        private bool IsRearRightWheel(int bone) => this.SkinningData.BoneNames[bone].Equals(WheelNameLookUp.GetCarWheelSkinBoneName(WheelPosition.RearRight), StringComparison.OrdinalIgnoreCase);
     }
 }

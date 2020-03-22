@@ -13,11 +13,11 @@ namespace MiniEngine.GameLogic
         private readonly AModel Target;
         private readonly Path Path;
 
-        public DumbFollowLogic(AModel target, Path path, MetersPerSecond speed)
+        public DumbFollowLogic(AModel target, CarAnimation carAnimation, Path path, MetersPerSecond speed)
         {
             this.DistanceCovered = 0.0f;
             this.Target = target;
-            this.CarAnimation = this.Target.Animation as CarAnimation;
+            this.CarAnimation = carAnimation;
             this.CarDynamics = new CarDynamics(new CarLayout(target));
 
             this.Path = path;

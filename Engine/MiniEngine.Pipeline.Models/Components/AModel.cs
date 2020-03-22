@@ -5,7 +5,6 @@ using MiniEngine.Primitives.Bounds;
 using MiniEngine.Systems;
 using MiniEngine.Systems.Annotations;
 using MiniEngine.Systems.Components;
-using ModelExtension;
 
 namespace MiniEngine.Pipeline.Models.Components
 {
@@ -18,11 +17,8 @@ namespace MiniEngine.Pipeline.Models.Components
             this.Entity = entity;
             this.Model = model;
             this.pose = pose;
-            this.Animation = new IdentityAnimation();
             this.TextureScale = Vector2.One;
             this.ComputeBounds();
-
-            this.HasAnimations = this.Model.Tag is SkinningData;
         }
 
         public Entity Entity { get; }
@@ -31,8 +27,6 @@ namespace MiniEngine.Pipeline.Models.Components
 
         [Editor(nameof(TextureScale))]
         public Vector2 TextureScale { get; set; }
-
-        public AAnimation Animation { get; set; }
 
         public BoundingSphere BoundingSphere { get; private set; }
 
@@ -44,7 +38,9 @@ namespace MiniEngine.Pipeline.Models.Components
 
         public Vector3 Position => this.pose.Translation;
 
-        public bool HasAnimations { get; }
+        public Matrix[] SkinTransforms { get; set; }
+
+        public bool HasAnimations => this.SkinTransforms != null;
 
         [Editor(nameof(Origin))]
         public Vector3 Origin { get => this.pose.Origin; set => this.pose.SetOrigin(value); }

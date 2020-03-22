@@ -36,7 +36,6 @@ namespace MiniEngine.Configuration
             this.Container.RegisterInstance(new SpriteBatch(this.GameLoop.GraphicsDevice));
             this.Container.RegisterInstance(this.GameLoop.GraphicsDevice);
             this.Container.RegisterInstance(this.GameLoop.Content);
-            this.Container.RegisterInstance(this.GameLoop.Camera);
 
             this.Container.RegisterFrom<EffectCompositionRoot>();
             this.Container.RegisterFrom<DebugCompositionRoot>();

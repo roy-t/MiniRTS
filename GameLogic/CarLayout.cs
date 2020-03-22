@@ -108,8 +108,7 @@ namespace MiniEngine.GameLogic
             {
                 if (skinningData.BoneNames[i].Equals(boneName, StringComparison.OrdinalIgnoreCase))
                 {
-                    var transforms = this.Model.Animation.GetSkinTransforms();
-                    return transforms[i];
+                    return this.Model.SkinTransforms[i];
                 }
             }
 

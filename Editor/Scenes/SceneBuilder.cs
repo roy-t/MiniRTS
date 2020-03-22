@@ -29,6 +29,7 @@ namespace MiniEngine.Scenes
         private readonly LightsFactory LightsFactory;
         private readonly OpaqueModelFactory OpaqueModelFactory;
         private readonly TransparentModelFactory TransparentModelFactory;
+        private readonly AnimationStore AnimationStore;
         private readonly ProjectorFactory ProjectorFactory;
         private readonly AdditiveEmitterFactory AdditiveEmitterFactory;
         private readonly AveragedEmitterFactory AveragedEmitterFactory;
@@ -57,6 +58,7 @@ namespace MiniEngine.Scenes
             LightsFactory lightsFactory,
             OpaqueModelFactory opaqueModelFactory,
             TransparentModelFactory transparentModelFactory,
+            AnimationStore animationStore,
             ProjectorFactory projectorFactory,
             AdditiveEmitterFactory additiveEmitterFactory,
             AveragedEmitterFactory averagedEmitterFactory,
@@ -71,6 +73,7 @@ namespace MiniEngine.Scenes
             this.LightsFactory = lightsFactory;
             this.OpaqueModelFactory = opaqueModelFactory;
             this.TransparentModelFactory = transparentModelFactory;
+            this.AnimationStore = animationStore;
             this.ProjectorFactory = projectorFactory;
             this.AdditiveEmitterFactory = additiveEmitterFactory;
             this.AveragedEmitterFactory = averagedEmitterFactory;
@@ -200,15 +203,15 @@ namespace MiniEngine.Scenes
             this.DebugInfoFactory.Construct(entity, model);
         }
 
-        public AModel BuildCar(Pose pose)
+        public (AModel, CarAnimation) BuildCar(Pose pose)
         {
             var entity = this.EntityController.CreateEntity();
-            var animation = new CarAnimation();
-            var model = this.OpaqueModelFactory.Construct(entity, this.car, pose, animation);
-
+            var model = this.OpaqueModelFactory.Construct(entity, this.car, pose);
+            var animation = new CarAnimation(entity, model);
+            this.AnimationStore.Store(animation);
             this.DebugInfoFactory.Construct(entity, model);
 
-            return model;
+            return (model, animation);
         }
 
         public void BuildTerrainInParts(int rows, int columns, Pose offset)
