@@ -3,7 +3,6 @@ using Microsoft.Xna.Framework;
 using MiniEngine.Systems;
 using MiniEngine.Systems.Components;
 using MiniEngine.Units;
-using ModelExtension;
 
 namespace MiniEngine.Pipeline.Models.Components
 {
@@ -20,7 +19,7 @@ namespace MiniEngine.Pipeline.Models.Components
                 throw new ArgumentException("Target does not have skinning data ", nameof(model));
             }
             this.SkinningData = model.Model.Tag as SkinningData;
-            this.Model.SkinTransforms = new Matrix[Constants.MaxBones];
+            this.Model.SkinTransforms = new Matrix[SkinningData.MaxBones];
             for (var i = 0; i < model.SkinTransforms.Length; i++)
             {
                 this.Model.SkinTransforms[i] = Matrix.Identity;

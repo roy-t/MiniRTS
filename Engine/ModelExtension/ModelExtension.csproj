@@ -47,21 +47,24 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Constants.cs" />
     <Compile Include="MaterialDescriptionParser.cs" />
     <Compile Include="MaterialLinker.cs" />
     <Compile Include="MaterialDescription.cs" />
     <Compile Include="MaterialDescriptionFile.cs" />
     <Compile Include="MultiMaterialModelProcessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SkinningData.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="ini-parser">
       <Version>2.5.2</Version>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\MiniEngine.Pipeline.Models\MiniEngine.Pipeline.Models.csproj">
+      <Project>{d77598b5-73bf-4cd4-b9a6-d94895058a60}</Project>
+      <Name>MiniEngine.Pipeline.Models</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

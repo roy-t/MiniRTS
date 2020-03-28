@@ -3,6 +3,13 @@
 Threading:
 - Make a ThreadSafe IComponentCollection that overrides the add and remove methods and stores the component to add or remove in a seperate list and syncs with the main thread once every frame, on that sync it allows the stuff to be added or removed. In this way  most threading stuff will work out OK as long as things are not too tightly coupled?
 
+Multiplayer
+- Make all stuff that is shared uniquely identifyable (UnitId?), send commands for a given tick (Like Move Unit 4 at Tick Now + 10). 
+Have every client wait on each tick. Handle 1 command per tick per player, always handle player 1 first, then 2, ... Store commands in a list
+so someone can try to reload and catch up if they desync/disconnect. Periodic state hash checks
+
+- GameServer, hosted somewhere, should store public IP of every server and on what port they are listening? (How to communicate correct port 
+if people are behind NAT?). Make game p2p?
 
 - What if we create a server (that's either directly addressable locally, or via tcp/udp remotely) that manages all state changes
     - making the games simple viewers

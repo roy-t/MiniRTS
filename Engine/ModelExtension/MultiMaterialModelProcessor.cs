@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content.Pipeline;
 using Microsoft.Xna.Framework.Content.Pipeline.Graphics;
 using Microsoft.Xna.Framework.Content.Pipeline.Processors;
+using MiniEngine.Pipeline.Models.Components;
 
 namespace ModelExtension
 {
@@ -79,9 +80,9 @@ namespace ModelExtension
                 }
 
                 var bones = MeshHelper.FlattenSkeleton(skeleton);
-                if (bones.Count > Constants.MaxBones)
+                if (bones.Count > SkinningData.MaxBones)
                 {
-                    throw new InvalidContentException($"Skeleton has {bones.Count} bones, but the maximum supported is {Constants.MaxBones}");
+                    throw new InvalidContentException($"Skeleton has {bones.Count} bones, but the maximum supported is {SkinningData.MaxBones}");
                 }
 
                 var bindPose = new List<Matrix>();
