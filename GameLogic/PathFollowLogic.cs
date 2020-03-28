@@ -1,21 +1,27 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using MiniEngine.Pipeline.Models.Components;
+using MiniEngine.Systems;
 using MiniEngine.Units;
+using Roy_T.AStar.Primitives;
 
 namespace MiniEngine.GameLogic
 {
-    public sealed class DumbFollowLogic
+    public sealed class PathFollowLogic
     {
         private readonly CarDynamics CarDynamics;
         private readonly CarAnimation CarAnimation;
-
+        private readonly WorldGrid WorldGrid;
         private readonly AModel Target;
         private readonly Path Path;
 
-        public DumbFollowLogic(AModel target, CarAnimation carAnimation, Path path, MetersPerSecond speed)
+        public GridPosition lastReserved;
+        private Vector3 lookAhead;
+
+        public PathFollowLogic(WorldGrid worldGrid, AModel target, CarAnimation carAnimation, Path path, MetersPerSecond speed)
         {
             this.DistanceCovered = 0.0f;
+            this.WorldGrid = worldGrid;
             this.Target = target;
             this.CarAnimation = carAnimation;
             this.CarDynamics = new CarDynamics(new CarLayout(target));
@@ -27,6 +33,9 @@ namespace MiniEngine.GameLogic
             var back = this.Path.GetPositionAfter(0);
             var front = this.Path.GetPositionAfter(this.DistanceCovered);
             this.CarDynamics.BringAxlesInLine(front, back);
+
+            this.LookAhead();
+            this.lastReserved = this.WorldGrid.ToGridPosition(this.lookAhead);
         }
 
         public MetersPerSecond Speed { get; set; }
@@ -38,11 +47,29 @@ namespace MiniEngine.GameLogic
             if (this.DistanceCovered < this.Path.Length)
             {
                 this.DistanceCovered = Math.Min(this.DistanceCovered + (elapsed * this.Speed), this.Path.Length);
+                this.LookAhead();
+
+                var toReserve = this.WorldGrid.ToGridPosition(this.lookAhead);
+                if (toReserve != this.lastReserved)
+                {
+                    if (this.WorldGrid.Reserve(new Entity(99), toReserve))
+                    {
+                        this.WorldGrid.Free(this.lastReserved);
+                        this.lastReserved = toReserve;
+                    }
+                    else
+                    {
+                        return;
+                    }
+                }
 
                 this.ComputeCarMovement();
                 this.ComputeWheelMovement();
             }
         }
+
+        private void LookAhead()
+            => this.lookAhead = this.Path.GetPositionAfter(this.DistanceCovered + (this.CarDynamics.AxleDistance / 5));
 
         private void ComputeCarMovement()
         {
@@ -79,9 +106,8 @@ namespace MiniEngine.GameLogic
             var frontAxle = this.CarDynamics.GetFrontAxlePosition();
 
             // TODO: find a better number for the wheel target
-            // Maybe once we start following splines we can just take the diff betwen wheel positions?
-            var wheelTarget = this.Path.GetPositionAfter(this.DistanceCovered + (this.CarDynamics.AxleDistance / 5));
-            var axleToTarget = Vector3.Normalize(wheelTarget - frontAxle);
+            // Maybe once we start following splines we can just take the diff betwen wheel positions?            
+            var axleToTarget = Vector3.Normalize(this.lookAhead - frontAxle);
 
             if (axleToTarget.LengthSquared() > 0)
             {

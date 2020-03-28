@@ -8,13 +8,11 @@ namespace MiniEngine.Systems
         private int next = 1;
         private readonly List<Entity> Entities;
 
-        private readonly IReadOnlyList<ISystem> Systems;
         private readonly IReadOnlyList<IComponentFactory> Factories;
 
-        public EntityController(IEnumerable<ISystem> systems, IEnumerable<IComponentFactory> factories)
+        public EntityController(IEnumerable<IComponentFactory> factories)
         {
             this.Entities = new List<Entity>();
-            this.Systems = new List<ISystem>(systems).AsReadOnly();
             this.Factories = new List<IComponentFactory>(factories).AsReadOnly();
         }
 
@@ -52,7 +50,7 @@ namespace MiniEngine.Systems
             {
                 this.DestroyEntity(entities[i]);
             }
-        }        
+        }
 
         private void RemoveEntityFromSystems(Entity entity)
         {

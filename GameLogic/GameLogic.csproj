@@ -73,9 +73,10 @@
     <Compile Include="PathInterpolator.cs" />
     <Compile Include="WheelPosition.cs" />
     <Compile Include="DumbMovementLogic.cs" />
-    <Compile Include="DumbFollowLogic.cs" />
+    <Compile Include="PathFollowLogic.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WheelNameLookUp.cs" />
+    <Compile Include="WorldGrid.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="RoyT.AStar">

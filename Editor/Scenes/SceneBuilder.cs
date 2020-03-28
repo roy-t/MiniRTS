@@ -230,13 +230,13 @@ namespace MiniEngine.Scenes
             }
         }
 
-        public void BuildTerrain(int width, int depth)
+        public void BuildTerrain(Vector2 size)
         {
             var entity = this.EntityController.CreateEntity();
             var pose = new Pose(Vector3.Zero);
             var model = this.OpaqueModelFactory.Construct(entity, this.terrain, pose);
 
-            model.TextureScale = new Vector2(width, depth);
+            model.TextureScale = size;
         }
 
 

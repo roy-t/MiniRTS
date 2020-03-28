@@ -7,11 +7,11 @@ namespace MiniEngine.GameLogic
     {
         private const float l = 0.25f;
 
-        public static IReadOnlyList<Vector2> Interpolate(IReadOnlyList<Vector2> path)
+        public static Path Interpolate(Path path)
         {
-            if (path.Count > 0)
+            if (path.WayPoints.Count > 2)
             {
-                var points = new List<Vector2>(path);
+                var points = new List<Vector3>(path.WayPoints);
                 var start = points[0];
                 for (var r = 0; r < 5; r++)
                 {
@@ -19,15 +19,16 @@ namespace MiniEngine.GameLogic
                 }
 
                 points.Insert(0, start);
-                return points;
+                return new Path(points);
             }
 
             return path;
         }
 
-        private static List<Vector2> InterpolateInternal(IReadOnlyList<Vector2> path)
+        private static List<Vector3> InterpolateInternal(IReadOnlyList<Vector3> path)
         {
-            var points = new List<Vector2>();
+            var points = new List<Vector3>();
+            points.Add(path[0]);
 
             for (var i = 2; i < path.Count; i += 2)
             {
@@ -35,29 +36,22 @@ namespace MiniEngine.GameLogic
                 var control = path[i - 1];
                 var end = path[i];
 
-                points.AddRange(Interpolate(start, control, end));
+                var a = Vector3.Lerp(start, control, l);
+                var b = Vector3.Lerp(start, control, l * 2);
+                var c = Vector3.Lerp(start, control, l * 3);
+
+                var a2 = Vector3.Lerp(control, end, l);
+                var b2 = Vector3.Lerp(control, end, l * 2);
+                var c2 = Vector3.Lerp(control, end, l * 3);
+
+                points.Add(Vector3.Lerp(a, a2, l));
+                points.Add(Vector3.Lerp(b, b2, l * 2));
+                points.Add(Vector3.Lerp(c, c2, l * 3));
             }
 
+
+            points.Add(path[path.Count - 1]);
             return points;
-        }
-
-        private static Vector2[] Interpolate(Vector2 start, Vector2 control, Vector2 end)
-        {
-            var a = Vector2.Lerp(start, control, l);
-            var b = Vector2.Lerp(start, control, l * 2);
-            var c = Vector2.Lerp(start, control, l * 3);
-
-            var a2 = Vector2.Lerp(control, end, l);
-            var b2 = Vector2.Lerp(control, end, l * 2);
-            var c2 = Vector2.Lerp(control, end, l * 3);
-
-
-            var p0 = Vector2.Lerp(a, a2, l);
-            var p1 = Vector2.Lerp(b, b2, l * 2);
-            var p2 = Vector2.Lerp(c, c2, l * 3);
-
-
-            return new Vector2[] { p0, p1, p2 };
         }
     }
 }
