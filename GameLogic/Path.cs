@@ -15,6 +15,8 @@ namespace MiniEngine.GameLogic
 
         public IReadOnlyList<Vector3> WayPoints { get; }
 
+        // TODO: optimize by storing last position and starting from there?
+
         public Vector3 GetPositionAfter(float distanceCovered)
         {
             var toCover = distanceCovered;

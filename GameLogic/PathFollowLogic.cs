@@ -1,7 +1,6 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using MiniEngine.Pipeline.Models.Components;
-using MiniEngine.Systems;
 using MiniEngine.Units;
 using Roy_T.AStar.Primitives;
 
@@ -46,13 +45,12 @@ namespace MiniEngine.GameLogic
         {
             if (this.DistanceCovered < this.Path.Length)
             {
-                this.DistanceCovered = Math.Min(this.DistanceCovered + (elapsed * this.Speed), this.Path.Length);
                 this.LookAhead();
 
                 var toReserve = this.WorldGrid.ToGridPosition(this.lookAhead);
                 if (toReserve != this.lastReserved)
                 {
-                    if (this.WorldGrid.Reserve(new Entity(99), toReserve))
+                    if (this.WorldGrid.Reserve(this.Target.Entity, toReserve))
                     {
                         this.WorldGrid.Free(this.lastReserved);
                         this.lastReserved = toReserve;
@@ -62,6 +60,8 @@ namespace MiniEngine.GameLogic
                         return;
                     }
                 }
+
+                this.DistanceCovered = Math.Min(this.DistanceCovered + (elapsed * this.Speed), this.Path.Length);
 
                 this.ComputeCarMovement();
                 this.ComputeWheelMovement();

@@ -11,6 +11,10 @@ namespace MiniEngine.Pipeline.Models.Components
     public abstract class AModel : IPhysicalComponent
     {
         private Pose pose;
+        private BoundingSphere boundingSphere;
+        private BoundingBox boundingBox;
+
+        private bool boundsAreDirty;
 
         protected AModel(Entity entity, Model model, Pose pose)
         {
@@ -18,7 +22,7 @@ namespace MiniEngine.Pipeline.Models.Components
             this.Model = model;
             this.pose = pose;
             this.TextureScale = Vector2.One;
-            this.ComputeBounds();
+            this.boundsAreDirty = true;
         }
 
         public Entity Entity { get; }
@@ -28,11 +32,32 @@ namespace MiniEngine.Pipeline.Models.Components
         [Editor(nameof(TextureScale))]
         public Vector2 TextureScale { get; set; }
 
-        public BoundingSphere BoundingSphere { get; private set; }
+        public BoundingSphere BoundingSphere
+        {
+            get
+            {
+                if (this.boundsAreDirty) { this.ComputeBounds(); }
+                return this.boundingSphere;
+            }
+        }
 
-        public BoundingBox BoundingBox { get; private set; }
+        public BoundingBox BoundingBox
+        {
+            get
+            {
+                if (this.boundsAreDirty) { this.ComputeBounds(); }
+                return this.boundingBox;
+            }
+        }
 
-        public Vector3[] Corners => this.BoundingBox.GetCorners();
+        public Vector3[] Corners
+        {
+            get
+            {
+                if (this.boundsAreDirty) { this.ComputeBounds(); }
+                return this.boundingBox.GetCorners();
+            }
+        }
 
         public IconType Icon => IconType.Model;
 
@@ -75,29 +100,32 @@ namespace MiniEngine.Pipeline.Models.Components
         }
 
         public void Rotate(float yaw, float pitch, float roll)
-        {
-            this.pose.Rotate(yaw, pitch, roll);
-            this.ComputeBounds();
-        }
+            => this.pose.Rotate(yaw, pitch, roll);
 
         public void Move(Vector3 position)
         {
             this.pose.Move(position);
-            this.ComputeBounds();
+            this.boundsAreDirty = true;
         }
 
         public void SetScale(Vector3 scale)
         {
             this.pose.SetScale(scale);
-            this.ComputeBounds();
+            this.boundsAreDirty = true;
         }
 
         public void SetScale(float scale) => this.SetScale(Vector3.One * scale);
 
         private void ComputeBounds()
         {
-            this.BoundingSphere = this.Model.ComputeBoundingSphere(this.pose.Matrix);
-            this.BoundingBox = this.Model.ComputeBoundingBox(this.pose.Matrix);
+            if (this.boundsAreDirty)
+            {
+                this.Model.ComputeExtremes(this.pose.Matrix, out var min, out var max);
+                this.boundingBox = new BoundingBox(min, max);
+                this.boundingSphere = BoundingSphere.CreateFromBoundingBox(this.boundingBox);
+
+                this.boundsAreDirty = false;
+            }
         }
     }
 }

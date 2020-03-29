@@ -19,7 +19,7 @@ namespace MiniEngine.Primitives.Bounds
             return BoundingSphere.CreateFromPoints(new[] { min, max });
         }
 
-        private static void ComputeExtremes(Model model, Matrix worldTransform, out Vector3 min, out Vector3 max)
+        public static void ComputeExtremes(this Model model, Matrix worldTransform, out Vector3 min, out Vector3 max)
         {
             // Initialize minimum and maximum corners of the bounding box to max and min values
             min = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
