@@ -80,6 +80,12 @@ namespace MiniEngine.GameLogic
             return Vector3.Normalize(frontAxlePosition - rearAxlePosition);
         }
 
+        public Vector3 GetCarLeft()
+        {
+            var mat = Matrix.CreateRotationY(MathHelper.PiOver2);
+            return Vector3.Transform(this.GetCarForward(), mat);
+        }
+
         public Vector3 GetCarSupportedCenter()
             => Vector3.Lerp(this.ProjectedAxlePositions[FrontAxleIndex], this.ProjectedAxlePositions[RearAxleIndex], 0.5f);
 

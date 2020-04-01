@@ -61,7 +61,7 @@ namespace MiniEngine.Scenes
             // TODO: fix origin in a different place!
             var carDynamics = new CarDynamics(new CarLayout(this.carModel));
             this.carModel.Origin = carDynamics.GetCarSupportedCenter();
-            this.carModel.Move(Vector3.Zero);
+            this.carModel.Move(this.worldGrid.ToWorldPositionCentered(new GridPosition(19, 19)));
         }
 
         public void Update(PerspectiveCamera camera, Seconds elapsed)
@@ -82,17 +82,26 @@ namespace MiniEngine.Scenes
                         this.EntityController.DestroyEntity(this.pathLine.Entity);
                     }
 
-                    var from = this.worldGrid.ToGridPosition(this.carModel.Position);
-                    var mouseWorldPosition = camera.Pick(this.MouseInput.Position, 0.0f);
-                    var to = this.worldGrid.ToGridPosition(mouseWorldPosition);
+                    //var from = this.worldGrid.ToGridPosition(this.carModel.Position);
+                    //var mouseWorldPosition = camera.Pick(this.MouseInput.Position, 0.0f);
+                    //var to = this.worldGrid.ToGridPosition(mouseWorldPosition);
 
-                    var roughPath = this.worldGrid.PlanPath(from, to);
-                    var completePath = PathStarter.CreateStart(roughPath, this.carModel);
-                    //var smoothPath = PathInterpolator.Interpolate(completePath);
+                    //var roughPath = this.worldGrid.PlanPath(from, to);
+
+                    var waypoints = new List<Vector3>()
+                    {
+                        this.carModel.Position,
+                        camera.Pick(this.MouseInput.Position, 0.0f)
+                    };
+                    var roughPath = new Path(waypoints);
+                    var smoothPath = PathInterpolator.Interpolate(roughPath);
+                    var completePath = PathStarter.CreateStart(smoothPath, this.carModel);
+
 
                     this.pathLine = this.SceneBuilder.CreateDebugLine(completePath.WayPoints, Color.Purple);
 
-                    var followLogic = new PathFollowLogic(this.worldGrid, this.carModel, this.carAnimation, completePath, new MetersPerSecond(0.025f));
+                    var followLogic = new PathFollowLogic(this.worldGrid, this.carModel, this.carAnimation, completePath,
+                        new MetersPerSecond(0.13f));
                     followLogic.Update(new Seconds(0));
 
                     this.Followers.Add(followLogic);
