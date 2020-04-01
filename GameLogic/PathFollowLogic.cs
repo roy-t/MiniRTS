@@ -28,13 +28,7 @@ namespace MiniEngine.GameLogic
             this.Path = path;
             this.Speed = speed;
 
-            this.DistanceCovered = this.CarDynamics.AxleDistance;
-            var back = this.Path.GetPositionAfter(0);
-            var front = this.Path.GetPositionAfter(this.DistanceCovered);
-            this.CarDynamics.BringAxlesInLine(front, back);
-
-            this.LookAhead();
-            this.lastReserved = this.WorldGrid.ToGridPosition(this.lookAhead);
+            this.lastReserved = this.WorldGrid.ToGridPosition(this.CarDynamics.GetCarSupportedCenter());
         }
 
         public MetersPerSecond Speed { get; set; }
@@ -103,7 +97,7 @@ namespace MiniEngine.GameLogic
 
         private void AngleFrontWheelsAlongPath()
         {
-            var frontAxle = this.CarDynamics.GetFrontAxlePosition();
+            var frontAxle = this.CarDynamics.GetProjectedFrontAxlePosition();
 
             // TODO: find a better number for the wheel target
             // Maybe once we start following splines we can just take the diff betwen wheel positions?            

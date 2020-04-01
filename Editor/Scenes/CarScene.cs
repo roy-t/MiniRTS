@@ -4,7 +4,11 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.GameLogic;
+using MiniEngine.Input;
+using MiniEngine.Pipeline.Debug.Components;
+using MiniEngine.Pipeline.Models.Components;
 using MiniEngine.Primitives;
+using MiniEngine.Primitives.Cameras;
 using MiniEngine.Systems;
 using MiniEngine.Units;
 using Roy_T.AStar.Primitives;
@@ -15,15 +19,21 @@ namespace MiniEngine.Scenes
     {
         private readonly SceneBuilder SceneBuilder;
         private readonly EntityController EntityController;
+        private readonly MouseInput MouseInput;
         private readonly List<PathFollowLogic> Followers;
 
         private WorldGrid worldGrid;
         private bool pause = false;
 
-        public CarScene(SceneBuilder sceneBuilder, EntityController controller)
+        private AModel carModel;
+        private CarAnimation carAnimation;
+        private DebugLine pathLine;
+
+        public CarScene(SceneBuilder sceneBuilder, EntityController entityController, MouseInput mouseInput)
         {
             this.SceneBuilder = sceneBuilder;
-            this.EntityController = controller;
+            this.EntityController = entityController;
+            this.MouseInput = mouseInput;
             this.Followers = new List<PathFollowLogic>();
         }
 
@@ -46,41 +56,46 @@ namespace MiniEngine.Scenes
             this.worldGrid = new WorldGrid(40, 40, 1, 8, new Vector3(-20, 0, -20));
             this.SceneBuilder.CreateDebugLine(CreateGridLines(40, 40), Color.White);
 
-            const int n = 40;
-            for (var x = 0; x < n; x++)
-            {
-                (var carModel, var carAnimation) = this.SceneBuilder.BuildCar(new Pose(Vector3.Zero, 0.1f));
+            (this.carModel, this.carAnimation) = this.SceneBuilder.BuildCar(new Pose(Vector3.Zero, 0.1f));
 
-                var from = new GridPosition(x, 0);
-                var to = new GridPosition(x, 39);
-                var roughPath = this.worldGrid.PlanPath(from, to);
-                var smoothPath = PathInterpolator.Interpolate(roughPath);
-
-                var followLogic = new PathFollowLogic(this.worldGrid, carModel, carAnimation, smoothPath, new MetersPerSecond(0.25f));
-                this.Followers.Add(followLogic);
-            }
-
-            for (var y = 0; y < n; y++)
-            {
-                (var carModel, var carAnimation) = this.SceneBuilder.BuildCar(new Pose(Vector3.Zero, 0.1f));
-
-                var from = new GridPosition(0, y);
-                var to = new GridPosition(39, y);
-                var roughPath = this.worldGrid.PlanPath(from, to);
-                var smoothPath = PathInterpolator.Interpolate(roughPath);
-
-                var followLogic = new PathFollowLogic(this.worldGrid, carModel, carAnimation, smoothPath, new MetersPerSecond(0.25f));
-                this.Followers.Add(followLogic);
-            }
+            // TODO: fix origin in a different place!
+            var carDynamics = new CarDynamics(new CarLayout(this.carModel));
+            this.carModel.Origin = carDynamics.GetCarSupportedCenter();
+            this.carModel.Move(Vector3.Zero);
         }
 
-        public void Update(Seconds elapsed)
+        public void Update(PerspectiveCamera camera, Seconds elapsed)
         {
             if (!this.pause)
             {
                 for (var i = 0; i < this.Followers.Count; i++)
                 {
                     this.Followers[i].Update(elapsed);
+                }
+
+
+                if (this.MouseInput.Click(MouseButtons.Left))
+                {
+                    this.Followers.Clear();
+                    if (this.pathLine != null)
+                    {
+                        this.EntityController.DestroyEntity(this.pathLine.Entity);
+                    }
+
+                    var from = this.worldGrid.ToGridPosition(this.carModel.Position);
+                    var mouseWorldPosition = camera.Pick(this.MouseInput.Position, 0.0f);
+                    var to = this.worldGrid.ToGridPosition(mouseWorldPosition);
+
+                    var roughPath = this.worldGrid.PlanPath(from, to);
+                    var completePath = PathStarter.CreateStart(roughPath, this.carModel);
+                    //var smoothPath = PathInterpolator.Interpolate(completePath);
+
+                    this.pathLine = this.SceneBuilder.CreateDebugLine(completePath.WayPoints, Color.Purple);
+
+                    var followLogic = new PathFollowLogic(this.worldGrid, this.carModel, this.carAnimation, completePath, new MetersPerSecond(0.025f));
+                    followLogic.Update(new Seconds(0));
+
+                    this.Followers.Add(followLogic);
                 }
             }
         }

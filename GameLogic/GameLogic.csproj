@@ -71,6 +71,7 @@
     <Compile Include="CarDynamics.cs" />
     <Compile Include="Path.cs" />
     <Compile Include="PathInterpolator.cs" />
+    <Compile Include="PathStarter.cs" />
     <Compile Include="WheelPosition.cs" />
     <Compile Include="DumbMovementLogic.cs" />
     <Compile Include="PathFollowLogic.cs" />

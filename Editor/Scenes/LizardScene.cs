@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Primitives;
+using MiniEngine.Primitives.Cameras;
 using MiniEngine.Units;
 
 namespace MiniEngine.Scenes
@@ -33,7 +34,7 @@ namespace MiniEngine.Scenes
             => new Pose(translation, scale, rotY, rotX, rotZ);
 
         public void RenderUI() { }
-        public void Update(Seconds elapsed)
+        public void Update(PerspectiveCamera camera, Seconds elapsed)
         {
 
         }

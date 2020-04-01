@@ -85,7 +85,7 @@ namespace MiniEngine.Primitives
             var moveToCenter = Matrix.CreateTranslation(-origin);
             var rotation = Matrix.CreateFromYawPitchRoll(yaw, pitch, roll);
             var size = Matrix.CreateScale(scale);
-            var translation = Matrix.CreateTranslation(position + origin);
+            var translation = Matrix.CreateTranslation(position);
 
             return size * moveToCenter * rotation * translation;
         }

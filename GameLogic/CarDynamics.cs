@@ -13,7 +13,7 @@ namespace MiniEngine.GameLogic
         private readonly CarLayout Car;
         private readonly Vector3[] LastWheelPositions;
         private readonly Vector3[] CurrentWheelPositions;
-        private readonly Vector3[] AxlePositions;
+        private readonly Vector3[] ProjectedAxlePositions;
 
         private readonly float[] WheelCircumferences;
 
@@ -24,12 +24,12 @@ namespace MiniEngine.GameLogic
             this.CurrentWheelPositions = new Vector3[Wheels];
             this.WheelCircumferences = this.ComputeWheelCircumferences();
 
-            this.AxlePositions = new Vector3[Axles];
+            this.ProjectedAxlePositions = new Vector3[Axles];
 
             this.UpdateWheelPositions();
             this.PushWheelPositions();
 
-            this.ComputeAxlePositions();
+            this.ComputeProjectedAxlePositions();
             this.AxleDistance = Vector3.Distance(car.GetFrontAxlePosition(), car.GetRearAxlePosition());
         }
 
@@ -58,39 +58,43 @@ namespace MiniEngine.GameLogic
 
         public void BringAxlesInLine(Vector3 newFrontAxlePosition)
         {
-            var rearAxlePosition = this.AxlePositions[RearAxleIndex];
+            var rearAxlePosition = this.ProjectedAxlePositions[RearAxleIndex];
             this.BringAxlesInLine(newFrontAxlePosition, rearAxlePosition);
         }
 
         public void BringAxlesInLine(Vector3 newFrontAxlePosition, Vector3 newRearAxlePosition)
         {
-            this.AxlePositions[FrontAxleIndex] = newFrontAxlePosition;
+            this.ProjectedAxlePositions[FrontAxleIndex] = newFrontAxlePosition;
             var normal = Vector3.Normalize(newFrontAxlePosition - newRearAxlePosition);
 
             if (normal.LengthSquared() > 0)
             {
-                this.AxlePositions[RearAxleIndex] = newFrontAxlePosition - (normal * this.AxleDistance);
+                this.ProjectedAxlePositions[RearAxleIndex] = newFrontAxlePosition - (normal * this.AxleDistance);
             }
         }
 
         public Vector3 GetCarForward()
         {
-            var frontAxlePosition = this.AxlePositions[FrontAxleIndex];
-            var rearAxlePosition = this.AxlePositions[RearAxleIndex];
+            var frontAxlePosition = this.ProjectedAxlePositions[FrontAxleIndex];
+            var rearAxlePosition = this.ProjectedAxlePositions[RearAxleIndex];
             return Vector3.Normalize(frontAxlePosition - rearAxlePosition);
         }
 
         public Vector3 GetCarSupportedCenter()
-            => Vector3.Lerp(this.AxlePositions[FrontAxleIndex], this.AxlePositions[RearAxleIndex], 0.5f);
+            => Vector3.Lerp(this.ProjectedAxlePositions[FrontAxleIndex], this.ProjectedAxlePositions[RearAxleIndex], 0.5f);
 
-        public Vector3 GetFrontAxlePosition() => this.AxlePositions[FrontAxleIndex];
+        public Vector3 GetCarProjectedFrontAxlePosition()
+            => this.ProjectedAxlePositions[FrontAxleIndex];
 
+        public Vector3 GetProjectedFrontAxlePosition() => this.ProjectedAxlePositions[FrontAxleIndex];
 
-        public void ComputeAxlePositions()
+        public void ComputeProjectedAxlePositions()
         {
+            var frontAxlePosition = this.Car.GetFrontAxlePosition();
+            var rearAxlePosition = this.Car.GetRearAxlePosition();
 
-            this.AxlePositions[FrontAxleIndex] = this.Car.GetFrontAxlePosition();
-            this.AxlePositions[RearAxleIndex] = this.Car.GetRearAxlePosition();
+            this.ProjectedAxlePositions[FrontAxleIndex] = new Vector3(frontAxlePosition.X, 0, frontAxlePosition.Z);
+            this.ProjectedAxlePositions[RearAxleIndex] = new Vector3(rearAxlePosition.X, 0, rearAxlePosition.Z);
         }
 
         private float[] ComputeWheelCircumferences()

@@ -20,7 +20,7 @@ namespace MiniEngine.Pipeline.Projectors.Components
 
             this.Tint = tint;
 
-            this.ViewPoint = new PerspectiveCamera(1);
+            this.ViewPoint = new PerspectiveCamera(texture.Width, texture.Height);
             this.ViewPoint.Move(position, lookAt);
 
             this.SetMinDistance(minDistance);

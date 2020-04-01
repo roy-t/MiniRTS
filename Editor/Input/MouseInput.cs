@@ -13,7 +13,6 @@ namespace MiniEngine.Input
 
         private float scrollWheelValue;
 
-        private Point lastPosition;
         private ScrollDirection scrollDirection;
 
         public MouseInput()
@@ -26,15 +25,16 @@ namespace MiniEngine.Input
                 this.ButtonStates.Add(button, InputState.Released);
             }
 
-            this.lastPosition = Point.Zero;
+            this.Position = Point.Zero;
         }
 
         public void Update()
         {
             var current = Mouse.GetState();
 
-            this.Movement = current.Position - this.lastPosition;
-            this.lastPosition = current.Position;
+            this.Movement = current.Position - this.Position;
+            this.Position = current.Position;
+
 
             if (current.ScrollWheelValue > this.scrollWheelValue)
             {
@@ -98,6 +98,8 @@ namespace MiniEngine.Input
         }
 
         public Point Movement { get; private set; }
+
+        public Point Position { get; private set; }
 
         public bool Click(MouseButtons button) => this.ButtonStates[button] == InputState.JustPressed;
 

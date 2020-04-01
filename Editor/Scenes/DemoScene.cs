@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using MiniEngine.Pipeline.Lights.Components;
 using MiniEngine.Primitives;
+using MiniEngine.Primitives.Cameras;
 using MiniEngine.Units;
 
 namespace MiniEngine.Scenes
@@ -48,7 +49,7 @@ namespace MiniEngine.Scenes
         public void RenderUI() { }
 
         private float off2;
-        public void Update(Seconds elapsed)
+        public void Update(PerspectiveCamera camera, Seconds elapsed)
         {
             if (this.started == false)
             {

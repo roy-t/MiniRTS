@@ -63,7 +63,7 @@ namespace MiniEngine
         protected override void Update(GameTime gameTime)
         {
             var elapsed = (Seconds)gameTime.ElapsedGameTime;
-            this.sceneSelector.CurrentScene.Update(elapsed);
+            this.sceneSelector.CurrentScene.Update(this.camera, elapsed);
 
             base.Update(gameTime);
         }

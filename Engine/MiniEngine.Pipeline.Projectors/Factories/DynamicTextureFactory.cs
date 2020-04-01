@@ -20,7 +20,7 @@ namespace MiniEngine.Pipeline.Projectors.Factories
             var pipeline = new RenderPipeline(this.Device, new NullMeterRegistry());
 
             var gBuffer = new GBuffer(this.Device, width, height);
-            var viewPoint = new PerspectiveCamera(gBuffer.AspectRatio);
+            var viewPoint = new PerspectiveCamera(width, height);
             viewPoint.Move(position, lookAt);
             var pass = new Pass(type, 0);
 

@@ -5,25 +5,26 @@ namespace MiniEngine.Primitives.Cameras
 {
     public sealed class PerspectiveCamera : IViewPoint
     {
+        private readonly Viewport Viewport;
         private const float Epsilon = 0.001f;
 
-        public PerspectiveCamera(float aspectRatio)
+        public PerspectiveCamera(int width, int height)
+            : this(new Viewport(0, 0, width, height)) { }
+
+        public PerspectiveCamera(Viewport viewport)
         {
             this.NearPlane = 0.1f;
             this.FarPlane = 250.0f;
-            this.AspectRatio = aspectRatio;
+            this.Viewport = viewport;
 
             this.Move(Vector3.Backward * 10, Vector3.Zero);
             this.SetFieldOfView(MathHelper.PiOver2);
         }
 
-        public PerspectiveCamera(Viewport viewport)
-            : this(viewport.AspectRatio) { }
-
         public float NearPlane { get; private set; }
         public float FarPlane { get; private set; }
-        public float AspectRatio { get; }
-        public float FieldOfView { get; private set;}
+        public float AspectRatio => this.Viewport.AspectRatio;
+        public float FieldOfView { get; private set; }
         public Vector3 LookAt { get; private set; }
         public Matrix ViewProjection { get; private set; }
 
@@ -43,9 +44,9 @@ namespace MiniEngine.Primitives.Cameras
             this.LookAt = lookAt;
             this.Forward = Vector3.Normalize(lookAt - position);
 
-            this.View = Matrix.CreateLookAt(this.Position, this.LookAt, Vector3.Up);           
+            this.View = Matrix.CreateLookAt(this.Position, this.LookAt, Vector3.Up);
 
-            this.ComputeMatrices();            
+            this.ComputeMatrices();
         }
 
         public void SetFieldOfView(float fieldOfView)
@@ -75,11 +76,26 @@ namespace MiniEngine.Primitives.Cameras
             this.ComputeMatrices();
         }
 
+        public Vector3 Pick(Point position, float depth)
+        {
+            var near = this.Viewport.Unproject(new Vector3(position.X, position.Y, 0), this.Projection, this.View, Matrix.Identity);
+            var far = this.Viewport.Unproject(new Vector3(position.X, position.Y, 1), this.Projection, this.View, Matrix.Identity);
+
+            var direction = Vector3.Normalize(far - near);
+            var ray = new Ray(near, direction);
+
+            var plane = new Plane(Vector3.Up, depth);
+            var intersection = ray.Intersects(plane);
+            var value = intersection.GetValueOrDefault(0.0f);
+
+            return near + (direction * value);
+        }
+
         private void ComputeMatrices()
         {
             this.ViewProjection = this.View * this.Projection;
             this.Frustum = new BoundingFrustum(this.ViewProjection);
             this.InverseViewProjection = Matrix.Invert(this.ViewProjection);
-        }       
+        }
     }
 }
