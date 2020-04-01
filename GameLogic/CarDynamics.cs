@@ -51,9 +51,16 @@ namespace MiniEngine.GameLogic
             var before = this.LastWheelPositions[index];
             var after = this.CurrentWheelPositions[index];
             var distance = Vector3.Distance(before, after);
-            var circumference = this.WheelCircumferences[index];
 
-            return (distance / circumference) * MathHelper.TwoPi;
+            if (distance > 0)
+            {
+                var direction = Vector3.Normalize(after - before);
+                var sign = Math.Sign(Vector3.Dot(this.GetCarForward(), direction));
+                var circumference = this.WheelCircumferences[index];
+                return (distance * sign / circumference) * MathHelper.TwoPi;
+            }
+
+            return 0.0f;
         }
 
         public void BringAxlesInLine(Vector3 newFrontAxlePosition)

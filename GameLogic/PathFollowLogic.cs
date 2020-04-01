@@ -15,7 +15,6 @@ namespace MiniEngine.GameLogic
         private readonly Path Path;
 
         public GridPosition lastReserved;
-        private Vector3 lookAhead;
 
         public PathFollowLogic(WorldGrid worldGrid, AModel target, CarAnimation carAnimation, Path path, MetersPerSecond speed)
         {
@@ -39,9 +38,8 @@ namespace MiniEngine.GameLogic
         {
             if (this.DistanceCovered < this.Path.Length)
             {
-                this.LookAhead();
-
-                var toReserve = this.WorldGrid.ToGridPosition(this.lookAhead);
+                var lookAhead = this.LookAhead(this.CarDynamics.AxleDistance / 5);
+                var toReserve = this.WorldGrid.ToGridPosition(lookAhead);
                 if (toReserve != this.lastReserved)
                 {
                     if (this.WorldGrid.Reserve(this.Target.Entity, toReserve))
@@ -62,8 +60,8 @@ namespace MiniEngine.GameLogic
             }
         }
 
-        private void LookAhead()
-            => this.lookAhead = this.Path.GetPositionAfter(this.DistanceCovered + (this.CarDynamics.AxleDistance / 5));
+        private Vector3 LookAhead(float amount)
+            => this.Path.GetPositionAfter(this.DistanceCovered + amount);
 
         private void ComputeCarMovement()
         {
@@ -84,24 +82,37 @@ namespace MiniEngine.GameLogic
         private void ComputeWheelMovement()
         {
             this.CarDynamics.UpdateWheelPositions();
-
+            var sum = 0.0f;
             for (var i = 0; i < 4; i++)
             {
                 var wheel = (WheelPosition)i;
                 var rotation = this.CarDynamics.GetWheelRotationToCoverPositionChange(wheel);
                 this.CarAnimation.WheelRoll[i] += rotation;
+                sum += rotation;
             }
 
-            this.AngleFrontWheelsAlongPath();
+            this.AngleFrontWheelsAlongPath(sum);
         }
 
-        private void AngleFrontWheelsAlongPath()
+        private void AngleFrontWheelsAlongPath(float sum)
         {
             var frontAxle = this.CarDynamics.GetProjectedFrontAxlePosition();
 
+            var axleToTarget = Vector3.Zero;
+            if (sum > 0)
+            {
+                var lookAhead = this.LookAhead(this.CarDynamics.AxleDistance / 5);
+                axleToTarget = Vector3.Normalize(lookAhead - frontAxle);
+            }
+            else
+            {
+                var lookAhead = this.LookAhead(-this.CarDynamics.AxleDistance / 5);
+                axleToTarget = Vector3.Normalize(lookAhead - frontAxle);
+            }
+
+
             // TODO: find a better number for the wheel target
-            // Maybe once we start following splines we can just take the diff betwen wheel positions?            
-            var axleToTarget = Vector3.Normalize(this.lookAhead - frontAxle);
+            // Maybe once we start following splines we can just take the diff betwen wheel positions?         
 
             if (axleToTarget.LengthSquared() > 0)
             {
@@ -109,6 +120,20 @@ namespace MiniEngine.GameLogic
                 var angleToTarget = -(float)Math.Atan2(axleToTarget.Z, axleToTarget.X);
 
                 var angleDifference = this.Target.Yaw - angleToTarget;
+                //angleDifference = MathHelper.WrapAngle(angleDifference);
+
+                //if (angleDifference > MathHelper.PiOver2)
+                //{
+                //    angleDifference -= MathHelper.Pi;
+                //}
+
+                //if (angleDifference < -MathHelper.PiOver2)
+                //{
+                //    angleDifference += MathHelper.Pi;
+                //}
+
+
+
                 var wheelYaw = -angleDifference;
 
                 this.CarAnimation.WheelYaw[(int)WheelPosition.FrontLeft] = wheelYaw;
