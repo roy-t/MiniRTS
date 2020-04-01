@@ -20,20 +20,22 @@ namespace MiniEngine.Scenes
         private readonly SceneBuilder SceneBuilder;
         private readonly EntityController EntityController;
         private readonly MouseInput MouseInput;
+        private readonly KeyboardInput KeyboardInput;
         private readonly List<PathFollowLogic> Followers;
 
         private WorldGrid worldGrid;
-        private bool pause = false;
+        private bool pause = true;
 
         private AModel carModel;
         private CarAnimation carAnimation;
         private DebugLine pathLine;
 
-        public CarScene(SceneBuilder sceneBuilder, EntityController entityController, MouseInput mouseInput)
+        public CarScene(SceneBuilder sceneBuilder, EntityController entityController, MouseInput mouseInput, KeyboardInput keyboardInput)
         {
             this.SceneBuilder = sceneBuilder;
             this.EntityController = entityController;
             this.MouseInput = mouseInput;
+            this.KeyboardInput = keyboardInput;
             this.Followers = new List<PathFollowLogic>();
         }
 
@@ -66,47 +68,52 @@ namespace MiniEngine.Scenes
 
         public void Update(PerspectiveCamera camera, Seconds elapsed)
         {
+            if (this.KeyboardInput.Click(Microsoft.Xna.Framework.Input.Keys.P))
+            {
+                this.pause = !this.pause;
+            }
+
             if (!this.pause)
             {
                 for (var i = 0; i < this.Followers.Count; i++)
                 {
                     this.Followers[i].Update(elapsed);
                 }
+            }
 
-
-                if (this.MouseInput.Click(MouseButtons.Left))
+            if (this.MouseInput.Click(MouseButtons.Left))
+            {
+                this.Followers.Clear();
+                if (this.pathLine != null)
                 {
-                    this.Followers.Clear();
-                    if (this.pathLine != null)
-                    {
-                        this.EntityController.DestroyEntity(this.pathLine.Entity);
-                    }
+                    this.EntityController.DestroyEntity(this.pathLine.Entity);
+                }
 
-                    //var from = this.worldGrid.ToGridPosition(this.carModel.Position);
-                    //var mouseWorldPosition = camera.Pick(this.MouseInput.Position, 0.0f);
-                    //var to = this.worldGrid.ToGridPosition(mouseWorldPosition);
+                //var from = this.worldGrid.ToGridPosition(this.carModel.Position);
+                //var mouseWorldPosition = camera.Pick(this.MouseInput.Position, 0.0f);
+                //var to = this.worldGrid.ToGridPosition(mouseWorldPosition);
 
-                    //var roughPath = this.worldGrid.PlanPath(from, to);
+                //var roughPath = this.worldGrid.PlanPath(from, to);
 
-                    var waypoints = new List<Vector3>()
+                var waypoints = new List<Vector3>()
                     {
                         this.carModel.Position,
                         camera.Pick(this.MouseInput.Position, 0.0f)
                     };
-                    var roughPath = new Path(waypoints);
-                    var smoothPath = PathInterpolator.Interpolate(roughPath);
-                    var completePath = PathStarter.CreateStart(smoothPath, this.carModel);
+                var roughPath = new Path(waypoints);
+                var smoothPath = PathInterpolator.Interpolate(roughPath);
+                var completePath = PathStarter.CreateStart(smoothPath, this.carModel);
 
 
-                    this.pathLine = this.SceneBuilder.CreateDebugLine(completePath.WayPoints, Color.Purple);
+                this.pathLine = this.SceneBuilder.CreateDebugLine(completePath.WayPoints, Color.Purple);
 
-                    var followLogic = new PathFollowLogic(this.worldGrid, this.carModel, this.carAnimation, completePath,
-                        new MetersPerSecond(0.13f));
-                    followLogic.Update(new Seconds(0));
+                var followLogic = new PathFollowLogic(this.worldGrid, this.carModel, this.carAnimation, completePath,
+                    new MetersPerSecond(0.1f));
+                followLogic.Update(new Seconds(0));
 
-                    this.Followers.Add(followLogic);
-                }
+                this.Followers.Add(followLogic);
             }
+
         }
 
         public void RenderUI()

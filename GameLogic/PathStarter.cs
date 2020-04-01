@@ -28,42 +28,36 @@ namespace MiniEngine.GameLogic
             var startAngle = GetAngleDifference(startPosition, startForward, startLeft, path.WayPoints[1]);
             var absStartAngle = Math.Abs(startAngle);
 
+            var carCenter = carDynamics.GetCarSupportedCenter();
+
             wayPoints.Add(startPosition);
-            if (absStartAngle >= MathHelper.PiOver4 && absStartAngle < MathHelper.PiOver2)
+            if (absStartAngle >= MathHelper.PiOver4)
             {
                 // Drive backwards, have the front wheels follow a circle rotating in the opposite direction
                 // of the way we are supposed to go. This makes the back wheels become angled in the direction
-                // that we want to go.
-                Vector3 offset;
-                Vector3 circleBase;
+                // that we want to go.   
 
-                var carCenter = carDynamics.GetCarSupportedCenter();
-                offset = carDynamics.GetCarLeft() * axleDistance * Math.Sign(startAngle);
-                circleBase = carCenter + offset;
+                wayPoints.Add(carCenter);
 
-                for (var i = 0; i < 10; i++)
-                {
-                    // To get the rear wheels completely in the right direction we should follow 
-                    // the entire difference in angle, but this will rotate the front wheels to 
-                    // a relativel 90 degree angle. So we rotate only partially as we can make up
-                    // the rest of the rotation by going forward
-                    var rot = Matrix.CreateRotationY((startAngle / 17) * -i);
-                    var o = Vector3.Transform(offset, rot);
 
-                    wayPoints.Add(circleBase - o);
-                }
+                var sign = Math.Sign(startAngle);
+                var length = 0.5f;
 
-                var last = wayPoints[wayPoints.Count - 1];
-                wayPoints.RemoveAt(wayPoints.Count - 1);
-                var backwards = Vector3.Normalize(last - path.WayPoints[1]);
-                wayPoints.Add(last + (backwards * axleDistance * 0.1f));
-                wayPoints.Add(last + (backwards * axleDistance * 0.2f));
+                (var startPoint, var circleBase) = ComputeStartPointOfCircle(axleDistance, wayPoints, sign);
+                var pointsOnCircle = CreateCircle(circleBase, startPoint, startAngle * length, 10);
+                wayPoints.AddRange(pointsOnCircle);
+
+                sign = -sign;
+
+                (startPoint, circleBase) = ComputeStartPointOfCircle(axleDistance, wayPoints, sign);
+                var pointsOnSecondCircle = CreateCircle(circleBase, startPoint, -startAngle * length, 10);
+                wayPoints.AddRange(pointsOnSecondCircle);
             }
 
-            for (var i = 1; i < path.WayPoints.Count; i++)
-            {
-                wayPoints.Add(path.WayPoints[i]);
-            }
+            //for (var i = 1; i < path.WayPoints.Count; i++)
+            //{
+            //    wayPoints.Add(path.WayPoints[i]);
+            //}
 
             return new Path(wayPoints);
 
@@ -71,6 +65,36 @@ namespace MiniEngine.GameLogic
 
             // TODO think of two circles, the first circle to get the rear wheels in the middle of a circle
             // the second circle to rotate to the desired position. Sort of what we cheat with above by adding a backwards part
+        }
+
+        private static (Vector3 startPoint, Vector3 pointOnPerimeter) ComputeStartPointOfCircle(float axleDistance, List<Vector3> wayPoints, float sign)
+        {
+            var a = wayPoints[wayPoints.Count - 2];
+            var startPoint = wayPoints[wayPoints.Count - 1];
+            var to = Vector3.Normalize(startPoint - a);
+            var cross = Vector3.Cross(to, Vector3.Up);
+
+            var circleBase = startPoint + (cross * axleDistance * sign);
+
+            return (startPoint, circleBase);
+        }
+
+        private static List<Vector3> CreateCircle(Vector3 origin, Vector3 startPointOnPerimeter, float angle, int steps)
+        {
+            var wayPoints = new List<Vector3>(steps);
+
+            var offset = startPointOnPerimeter - origin;
+
+            var stepSize = angle / steps;
+            for (var i = 0; i < steps; i++)
+            {
+                var rotation = Matrix.CreateRotationY(stepSize * -i);
+                var pointOnPerimeter = origin + Vector3.Transform(offset, rotation);
+
+                wayPoints.Add(pointOnPerimeter);
+            }
+
+            return wayPoints;
         }
 
 
