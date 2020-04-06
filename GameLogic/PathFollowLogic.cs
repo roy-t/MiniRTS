@@ -16,13 +16,13 @@ namespace MiniEngine.GameLogic
 
         public GridPosition lastReserved;
 
-        public PathFollowLogic(WorldGrid worldGrid, AModel target, CarAnimation carAnimation, Path path, MetersPerSecond speed)
+        public PathFollowLogic(WorldGrid worldGrid, Car car, Path path, MetersPerSecond speed)
         {
             this.DistanceCovered = 0.0f;
             this.WorldGrid = worldGrid;
-            this.Target = target;
-            this.CarAnimation = carAnimation;
-            this.CarDynamics = new CarDynamics(new CarLayout(target));
+            this.Target = car.Model;
+            this.CarAnimation = car.Animation;
+            this.CarDynamics = car.Dynamics;// new CarDynamics(car.Layout);
 
             this.Path = path;
             this.Speed = speed;
@@ -81,7 +81,6 @@ namespace MiniEngine.GameLogic
 
         private void ComputeWheelMovement()
         {
-            this.CarDynamics.UpdateWheelPositions();
             var sum = 0.0f;
             for (var i = 0; i < 4; i++)
             {

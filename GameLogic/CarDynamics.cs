@@ -10,16 +10,16 @@ namespace MiniEngine.GameLogic
         private const int Axles = 2;
         private const int Wheels = 4;
 
-        private readonly CarLayout Car;
+        private readonly CarLayout Layout;
         private readonly Vector3[] LastWheelPositions;
         private readonly Vector3[] CurrentWheelPositions;
         private readonly Vector3[] ProjectedAxlePositions;
 
         private readonly float[] WheelCircumferences;
 
-        public CarDynamics(CarLayout car)
+        public CarDynamics(CarLayout layout)
         {
-            this.Car = car;
+            this.Layout = layout;
             this.LastWheelPositions = new Vector3[Wheels];
             this.CurrentWheelPositions = new Vector3[Wheels];
             this.WheelCircumferences = this.ComputeWheelCircumferences();
@@ -30,7 +30,30 @@ namespace MiniEngine.GameLogic
             this.PushWheelPositions();
 
             this.ComputeProjectedAxlePositions();
-            this.AxleDistance = Vector3.Distance(car.GetFrontAxlePosition(), car.GetRearAxlePosition());
+            this.AxleDistance = Vector3.Distance(layout.GetFrontAxlePosition(), layout.GetRearAxlePosition());
+        }
+
+        private CarDynamics(CarLayout layout, Vector3[] lastWheelPositions, Vector3[] currentWheelPositions, Vector3[] projectedAxlePositions, float[] wheelCircumference, float axleDistance)
+        {
+            this.Layout = layout;
+            this.LastWheelPositions = lastWheelPositions;
+            this.CurrentWheelPositions = currentWheelPositions;
+            this.ProjectedAxlePositions = projectedAxlePositions;
+            this.WheelCircumferences = wheelCircumference;
+            this.AxleDistance = axleDistance;
+        }
+
+        public CarDynamics Clone()
+        {
+            return new CarDynamics
+            (
+                this.Layout,
+                (Vector3[])this.LastWheelPositions.Clone(),
+                (Vector3[])this.CurrentWheelPositions.Clone(),
+                (Vector3[])this.ProjectedAxlePositions.Clone(),
+                (float[])this.WheelCircumferences.Clone(),
+                this.AxleDistance
+            );
         }
 
         public float AxleDistance { get; }
@@ -40,7 +63,7 @@ namespace MiniEngine.GameLogic
             this.PushWheelPositions();
             for (var i = 0; i < Wheels; i++)
             {
-                this.CurrentWheelPositions[i] = this.Car.GetWheelPosition((WheelPosition)i);
+                this.CurrentWheelPositions[i] = this.Layout.GetWheelPosition((WheelPosition)i);
             }
         }
 
@@ -103,8 +126,8 @@ namespace MiniEngine.GameLogic
 
         public void ComputeProjectedAxlePositions()
         {
-            var frontAxlePosition = this.Car.GetFrontAxlePosition();
-            var rearAxlePosition = this.Car.GetRearAxlePosition();
+            var frontAxlePosition = this.Layout.GetFrontAxlePosition();
+            var rearAxlePosition = this.Layout.GetRearAxlePosition();
 
             this.ProjectedAxlePositions[FrontAxleIndex] = new Vector3(frontAxlePosition.X, 0, frontAxlePosition.Z);
             this.ProjectedAxlePositions[RearAxleIndex] = new Vector3(rearAxlePosition.X, 0, rearAxlePosition.Z);
@@ -115,7 +138,7 @@ namespace MiniEngine.GameLogic
             var circumferences = new float[Wheels];
             for (var i = 0; i < Wheels; i++)
             {
-                var radius = this.Car.GetWheelRadius((WheelPosition)i);
+                var radius = this.Layout.GetWheelRadius((WheelPosition)i);
                 circumferences[i] = MathHelper.TwoPi * radius;
             }
 

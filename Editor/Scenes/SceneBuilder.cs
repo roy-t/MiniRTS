@@ -203,7 +203,7 @@ namespace MiniEngine.Scenes
             this.DebugInfoFactory.Construct(entity, model);
         }
 
-        public (AModel, CarAnimation) BuildCar(Pose pose)
+        public Car BuildCar(Pose pose)
         {
             var entity = this.EntityController.CreateEntity();
             var model = this.OpaqueModelFactory.Construct(entity, this.car, pose);
@@ -211,7 +211,7 @@ namespace MiniEngine.Scenes
             this.AnimationStore.Store(animation);
             this.DebugInfoFactory.Construct(entity, model);
 
-            return (model, animation);
+            return new Car(model, animation);
         }
 
         public void BuildTerrainInParts(int rows, int columns, Pose offset)

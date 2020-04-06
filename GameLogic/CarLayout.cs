@@ -2,7 +2,6 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Pipeline.Models.Components;
-using ModelExtension;
 
 namespace MiniEngine.GameLogic
 {

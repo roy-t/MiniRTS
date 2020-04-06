@@ -1,18 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using MiniEngine.Pipeline.Models.Components;
 
 namespace MiniEngine.GameLogic
 {
     public static class PathStarter
     {
         // TODO:
+        // - Still infinite loop
+        // - Wheels rotate 360 degrees in CreateHalfCircleBack
         // - Clean up code
         // - Check if we can prevent infinite loops in Circle methods by not using an arbitrary stop condition
         // but by computing how many steps to take in advance?
 
-        public static Path CreateStart(Path path, AModel car)
+        public static Path CreateStart(Path path, Car car)
         {
             if (path.WayPoints.Count < 2)
             {
@@ -20,7 +21,7 @@ namespace MiniEngine.GameLogic
             }
 
             // TODO: don't create these here
-            var carDynamics = new CarDynamics(new CarLayout(car));
+            var carDynamics = car.Dynamics.Clone();
             var axleDistance = carDynamics.AxleDistance;
             var startPosition = carDynamics.GetCarProjectedFrontAxlePosition();
 
