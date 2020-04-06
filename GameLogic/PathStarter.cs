@@ -7,10 +7,13 @@ namespace MiniEngine.GameLogic
 {
     public static class PathStarter
     {
+        // TODO:
+        // - Clean up code
+        // - Check if we can prevent infinite loops in Circle methods by not using an arbitrary stop condition
+        // but by computing how many steps to take in advance?
+
         public static Path CreateStart(Path path, AModel car)
         {
-            // TODO: special case waypoint with just 1 point?
-            // get the car in the center of its current tile
             if (path.WayPoints.Count < 2)
             {
                 return path;
@@ -19,59 +22,39 @@ namespace MiniEngine.GameLogic
             // TODO: don't create these here
             var carDynamics = new CarDynamics(new CarLayout(car));
             var axleDistance = carDynamics.AxleDistance;
-            var wayPoints = new List<Vector3>(path.WayPoints.Count);
-
             var startPosition = carDynamics.GetCarProjectedFrontAxlePosition();
+
+            var wayPoints = new List<Vector3>(path.WayPoints.Count);
 
             var startAngle = GetAngleDifference(carDynamics, path.WayPoints[1]);
             var absStartAngle = Math.Abs(startAngle);
-
 
             wayPoints.Add(startPosition);
             var maxWheelAngle = (MathHelper.Pi / 6.0f);
             if (absStartAngle >= MathHelper.PiOver4)
             {
-                // TODO: infinite loop if the point is very close
-
                 var steps = 20;
                 var rotationStepSize = (MathHelper.Pi / 8) * Math.Sign(-startAngle);
                 var translationStepSize = axleDistance / steps;
-                do
+
+
+                var distanceToFirstWayPoint = Vector3.Distance(startPosition, path.WayPoints[1]);
+                if (distanceToFirstWayPoint > axleDistance * 5)
+                {
+                    CreateHalfCircleBack(path, carDynamics, wayPoints, maxWheelAngle * 2, rotationStepSize, translationStepSize);
+                    var halfWayIndex = wayPoints.Count - 1;
+                    CreateHalfCircleForward(path, carDynamics, wayPoints, maxWheelAngle, rotationStepSize, translationStepSize);
+                    ConnectHalfCircles(axleDistance, wayPoints, halfWayIndex);
+                }
+                else if (distanceToFirstWayPoint > axleDistance * 2)
+                {
+                    CreateHalfCircleBack(path, carDynamics, wayPoints, maxWheelAngle, rotationStepSize, translationStepSize);
+                }
+                else
                 {
                     var forward = carDynamics.GetCarForward();
-
-                    var rotation = Matrix.CreateRotationY(rotationStepSize);
-                    var newForward = Vector3.Transform(forward, rotation);
-
-                    var newFrontAxlePosition = carDynamics.GetCarProjectedFrontAxlePosition() - (newForward * translationStepSize);
-                    carDynamics.BringAxlesInLine(newFrontAxlePosition);
-
-                    wayPoints.Add(carDynamics.GetCarProjectedFrontAxlePosition());
-                } while (Math.Abs(GetAngleDifference(carDynamics, path.WayPoints[1])) > (maxWheelAngle * 2));
-
-                var halfWayIndex = wayPoints.Count - 1;
-
-                do
-                {
-                    var forward = carDynamics.GetCarForward();
-
-                    var rotation = Matrix.CreateRotationY(-rotationStepSize);
-                    var newForward = Vector3.Transform(forward, rotation);
-
-                    var newFrontAxlePosition = carDynamics.GetCarProjectedFrontAxlePosition() + (newForward * translationStepSize);
-                    carDynamics.BringAxlesInLine(newFrontAxlePosition);
-
-                    wayPoints.Add(carDynamics.GetCarProjectedFrontAxlePosition());
-                } while (Math.Abs(GetAngleDifference(carDynamics, path.WayPoints[1])) > maxWheelAngle);
-
-                var basis = wayPoints[halfWayIndex];
-                var before = Vector3.Normalize(wayPoints[halfWayIndex] - wayPoints[halfWayIndex - 1]);
-                var after = Vector3.Normalize(wayPoints[halfWayIndex + 1] - wayPoints[halfWayIndex + 2]);
-
-                var cross = Vector3.Lerp(before, after, 0.5f);
-                wayPoints.Insert(halfWayIndex, basis + (cross * axleDistance * 0.1f));
-                wayPoints.Insert(halfWayIndex + 1, basis + (cross * axleDistance * 0.2f));
-                wayPoints.Insert(halfWayIndex + 2, basis + (cross * axleDistance * 0.1f));
+                    wayPoints.Add(startPosition - (forward * axleDistance));
+                }
             }
 
             for (var i = 1; i < path.WayPoints.Count; i++)
@@ -80,6 +63,50 @@ namespace MiniEngine.GameLogic
             }
 
             return new Path(wayPoints);
+        }
+
+        private static void ConnectHalfCircles(float axleDistance, List<Vector3> wayPoints, int halfWayIndex)
+        {
+            var basis = wayPoints[halfWayIndex];
+            var before = Vector3.Normalize(wayPoints[halfWayIndex] - wayPoints[halfWayIndex - 1]);
+            var after = Vector3.Normalize(wayPoints[halfWayIndex + 1] - wayPoints[halfWayIndex + 2]);
+
+            var cross = Vector3.Lerp(before, after, 0.5f);
+            wayPoints.Insert(halfWayIndex, basis + (cross * axleDistance * 0.1f));
+            wayPoints.Insert(halfWayIndex + 1, basis + (cross * axleDistance * 0.2f));
+            wayPoints.Insert(halfWayIndex + 2, basis + (cross * axleDistance * 0.1f));
+        }
+
+        private static void CreateHalfCircleForward(Path path, CarDynamics carDynamics, List<Vector3> wayPoints, float limit, float rotationStepSize, float translationStepSize)
+        {
+            do
+            {
+                var forward = carDynamics.GetCarForward();
+
+                var rotation = Matrix.CreateRotationY(-rotationStepSize);
+                var newForward = Vector3.Transform(forward, rotation);
+
+                var newFrontAxlePosition = carDynamics.GetCarProjectedFrontAxlePosition() + (newForward * translationStepSize);
+                carDynamics.BringAxlesInLine(newFrontAxlePosition);
+
+                wayPoints.Add(carDynamics.GetCarProjectedFrontAxlePosition());
+            } while (Math.Abs(GetAngleDifference(carDynamics, path.WayPoints[1])) > limit);
+        }
+
+        private static void CreateHalfCircleBack(Path path, CarDynamics carDynamics, List<Vector3> wayPoints, float limit, float rotationStepSize, float translationStepSize)
+        {
+            do
+            {
+                var forward = carDynamics.GetCarForward();
+
+                var rotation = Matrix.CreateRotationY(rotationStepSize);
+                var newForward = Vector3.Transform(forward, rotation);
+
+                var newFrontAxlePosition = carDynamics.GetCarProjectedFrontAxlePosition() - (newForward * translationStepSize);
+                carDynamics.BringAxlesInLine(newFrontAxlePosition);
+
+                wayPoints.Add(carDynamics.GetCarProjectedFrontAxlePosition());
+            } while (Math.Abs(GetAngleDifference(carDynamics, path.WayPoints[1])) > limit);
         }
 
         private static (Vector3 startPoint, Vector3 pointOnPerimeter) ComputeStartPointOfCircle(float axleDistance, List<Vector3> wayPoints, float sign)
@@ -117,7 +144,6 @@ namespace MiniEngine.GameLogic
         {
             var carPosition = carDynamics.GetCarProjectedFrontAxlePosition();
             var carForward = carDynamics.GetCarForward();
-            var carLeft = carDynamics.GetCarLeft();
 
             var carAngle = (float)Math.Atan2(carForward.Z, carForward.X);
 

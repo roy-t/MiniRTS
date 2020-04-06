@@ -47,22 +47,22 @@ namespace MiniEngine.GameLogic
         public void Free(GridPosition gridPosition)
             => this.Reservations[gridPosition.X, gridPosition.Y] = default;
 
-        public Path PlanPath(GridPosition from, GridPosition to)
+        public Path PlanPath(Vector3 from, Vector3 to)
         {
-            // TODO: maybe plan paths from world positions, remove the last node and use the given world position?
-            var path = this.PathFinder.FindPath(from, to, this.Grid, this.MaximumVelocity);
+            var path = this.PathFinder.FindPath(this.ToGridPosition(from), this.ToGridPosition(to), this.Grid, this.MaximumVelocity);
 
             var waypoints = new List<Vector3>(path.Edges.Count + 1);
 
-            waypoints.Add(this.ToWorldPositionCentered(from));
+            waypoints.Add(from);
             if (path.Edges.Count > 0)
             {
-                for (var i = 0; i < path.Edges.Count; i++)
+                for (var i = 0; i < path.Edges.Count - 1; i++)
                 {
                     var position = path.Edges[i].End.Position;
                     waypoints.Add(new Vector3(position.X, 0, position.Y) + this.CellOffset + this.Offset);
                 }
             }
+            waypoints.Add(to);
 
             return new Path(waypoints);
         }

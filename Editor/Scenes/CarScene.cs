@@ -89,18 +89,15 @@ namespace MiniEngine.Scenes
                     this.EntityController.DestroyEntity(this.pathLine.Entity);
                 }
 
-                //var from = this.worldGrid.ToGridPosition(this.carModel.Position);
-                //var mouseWorldPosition = camera.Pick(this.MouseInput.Position, 0.0f);
-                //var to = this.worldGrid.ToGridPosition(mouseWorldPosition);
+                var mouseWorldPosition = camera.Pick(this.MouseInput.Position, 0.0f);
+                var roughPath = this.worldGrid.PlanPath(this.carModel.Position, mouseWorldPosition);
 
-                //var roughPath = this.worldGrid.PlanPath(from, to);
-
-                var waypoints = new List<Vector3>()
-                    {
-                        this.carModel.Position,
-                        camera.Pick(this.MouseInput.Position, 0.0f)
-                    };
-                var roughPath = new Path(waypoints);
+                //var waypoints = new List<Vector3>()
+                //    {
+                //        this.carModel.Position,
+                //        camera.Pick(this.MouseInput.Position, 0.0f)
+                //    };
+                //var roughPath = new Path(waypoints);
                 var smoothPath = PathInterpolator.Interpolate(roughPath);
                 var completePath = PathStarter.CreateStart(smoothPath, this.carModel);
 

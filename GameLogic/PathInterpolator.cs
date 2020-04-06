@@ -6,7 +6,7 @@ namespace MiniEngine.GameLogic
 {
     public sealed class PathInterpolator
     {
-        private const float l = 0.25f;
+        private const float l = 0.15f;
 
         public static Path Interpolate(Path path)
         {
@@ -29,13 +29,18 @@ namespace MiniEngine.GameLogic
             var points = new List<Vector3>();
             points.Add(path[0]);
 
-            for (var i = 2; i < path.Count; i += 2)
+            for (var i = 3; i < path.Count; i += 2)
             {
                 var start = path[i - 2];
                 var control = path[i - 1];
                 var end = path[i];
 
-                if (!AreOnOneLine(start, control, end))
+                if (AreOnOneLine(start, control, end))
+                {
+                    points.Add(start);
+                    points.Add(end);
+                }
+                else
                 {
                     var a = Vector3.Lerp(start, control, l);
                     var b = Vector3.Lerp(start, control, l * 2);
