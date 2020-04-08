@@ -92,7 +92,7 @@ struct DeferredPixelShaderOutput
 DeferredPixelShaderOutput DeferredMainPS(DeferredVertexShaderOutput input)
 {
     DeferredPixelShaderOutput output = (DeferredPixelShaderOutput)0;
-    float2 texCoord = input.TexCoord * TextureScale;
+    float2 texCoord = (input.TexCoord + TextureOffset) * TextureScale;
 
     float mask = tex2D(maskSampler, texCoord).r;
     clip(mask - 0.05f);

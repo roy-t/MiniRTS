@@ -81,6 +81,11 @@ namespace MiniEngine.Effects.Wrappers
             set => this.effect.Parameters["TextureScale"].SetValue(value);
         }
 
+        public Vector2 TextureOffset
+        {
+            set => this.effect.Parameters["TextureOffset"].SetValue(value);
+        }
+
         public void Apply(RenderEffectTechniques technique)
         {
             this.effect.CurrentTechnique = technique switch

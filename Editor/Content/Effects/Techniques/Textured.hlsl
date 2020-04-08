@@ -31,7 +31,7 @@ struct TexturedPixelShaderOutput
 
 TexturedPixelShaderOutput TexturedMainPS(TexturedVertexShaderOutput input)
 {
-    float2 texCoord = input.TexCoord * TextureScale;
+    float2 texCoord = (input.TexCoord + TextureOffset) * TextureScale;
 
     TexturedPixelShaderOutput output = (TexturedPixelShaderOutput)0;    
     output.Color = tex2D(diffuseSampler, texCoord);       

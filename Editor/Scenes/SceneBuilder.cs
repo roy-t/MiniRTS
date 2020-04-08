@@ -41,6 +41,7 @@ namespace MiniEngine.Scenes
 
         private Model terrain;
         private Model car;
+        private Model tank;
         private Model sponza;
         private Model plane;
         private Model lizard;
@@ -88,6 +89,7 @@ namespace MiniEngine.Scenes
         {
             this.terrain = content.Load<Model>(@"Scenes\Primitives\plane3");
             this.car = content.Load<Model>(@"Scenes\Primitives\car_textured");
+            this.tank = content.Load<Model>(@"Scenes\Primitives\tank");
             this.sponza = content.Load<Model>(@"Scenes\Sponza\Sponza");
             this.cube = content.Load<Model>(@"Scenes\Primitives\Cube");
             this.gear = content.Load<Model>(@"Scenes\Primitives\Gear");
@@ -212,6 +214,15 @@ namespace MiniEngine.Scenes
             this.DebugInfoFactory.Construct(entity, model);
 
             return new Car(model, animation);
+        }
+
+        public AModel BuildTank(Pose pose)
+        {
+            var entity = this.EntityController.CreateEntity();
+            var model = this.OpaqueModelFactory.Construct(entity, this.tank, pose);
+            this.DebugInfoFactory.Construct(entity, model);
+
+            return model;
         }
 
         public void BuildTerrainInParts(int rows, int columns, Pose offset)

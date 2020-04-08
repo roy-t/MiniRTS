@@ -79,6 +79,7 @@ samplerCUBE skyboxSampler = sampler_state
 
 float3 CameraPosition;
 float2 TextureScale;
+float2 TextureOffset;
 float4x4 BoneTransforms[16];
 
 #include "Techniques/ShadowMap.hlsl"
