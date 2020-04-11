@@ -67,9 +67,17 @@ namespace MiniEngine.Pipeline.Models.Batches
                         this.Effect.BoneTransforms = modelPose.SkinTransforms;
                     }
 
+                    // TODO: temp test for UV animations
+                    if (mesh.Name == "BezierCircle")
+                    {
+                        this.Effect.TextureOffset = Vector2.UnitY * accum;
+                        accum += (1.0f / 6000.0f);
+                    }
+                    else
+                    {
+                        this.Effect.TextureOffset = Vector2.Zero;
+                    }
 
-                    this.Effect.TextureOffset = Vector2.UnitY * accum;
-                    accum += (1.0f / 6000.0f);
                     this.Effect.World = SharedBoneMatrix[mesh.ParentBone.Index] * world;
                     this.Effect.View = viewPoint.View;
                     this.Effect.Projection = viewPoint.Projection;
