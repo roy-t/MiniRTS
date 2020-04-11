@@ -89,7 +89,7 @@ namespace MiniEngine.Scenes
         {
             this.terrain = content.Load<Model>(@"Scenes\Primitives\plane3");
             this.car = content.Load<Model>(@"Scenes\Primitives\car_textured");
-            this.tank = content.Load<Model>(@"Scenes\Primitives\tank");
+            this.tank = content.Load<Model>(@"Scenes\Primitives\tank2");
             this.sponza = content.Load<Model>(@"Scenes\Sponza\Sponza");
             this.cube = content.Load<Model>(@"Scenes\Primitives\Cube");
             this.gear = content.Load<Model>(@"Scenes\Primitives\Gear");
