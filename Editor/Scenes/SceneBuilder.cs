@@ -6,6 +6,8 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
 using MiniEngine.CutScene;
 using MiniEngine.GameLogic;
+using MiniEngine.GameLogic.Factories;
+using MiniEngine.Pipeline.Basics.Factories;
 using MiniEngine.Pipeline.Debug.Components;
 using MiniEngine.Pipeline.Debug.Factories;
 using MiniEngine.Pipeline.Lights.Components;
@@ -29,7 +31,7 @@ namespace MiniEngine.Scenes
         private readonly LightsFactory LightsFactory;
         private readonly OpaqueModelFactory OpaqueModelFactory;
         private readonly TransparentModelFactory TransparentModelFactory;
-        private readonly AnimationStore AnimationStore;
+        private readonly CarAnimationFactory CarAnimationFactory;
         private readonly ProjectorFactory ProjectorFactory;
         private readonly AdditiveEmitterFactory AdditiveEmitterFactory;
         private readonly AveragedEmitterFactory AveragedEmitterFactory;
@@ -38,6 +40,7 @@ namespace MiniEngine.Scenes
         private readonly DebugLineFactory DebugLineFactory;
         private readonly WaypointFactory WaypointFactory;
         private readonly PipelineBuilder PipelineBuilder;
+        private readonly PoseFactory PoseFactory;
 
         private Model terrain;
         private Model car;
@@ -59,7 +62,7 @@ namespace MiniEngine.Scenes
             LightsFactory lightsFactory,
             OpaqueModelFactory opaqueModelFactory,
             TransparentModelFactory transparentModelFactory,
-            AnimationStore animationStore,
+            CarAnimationFactory carAnimationFactory,
             ProjectorFactory projectorFactory,
             AdditiveEmitterFactory additiveEmitterFactory,
             AveragedEmitterFactory averagedEmitterFactory,
@@ -67,14 +70,15 @@ namespace MiniEngine.Scenes
             DebugInfoFactory debugInfoFactory,
             DebugLineFactory debugLineFactory,
             WaypointFactory waypointFactory,
-            PipelineBuilder pipelineBuilder)
+            PipelineBuilder pipelineBuilder,
+            PoseFactory poseFactory)
         {
             this.EntityController = entityController;
             this.SkyboxBuilder = skyboxBuilder;
             this.LightsFactory = lightsFactory;
             this.OpaqueModelFactory = opaqueModelFactory;
             this.TransparentModelFactory = transparentModelFactory;
-            this.AnimationStore = animationStore;
+            this.CarAnimationFactory = carAnimationFactory;
             this.ProjectorFactory = projectorFactory;
             this.AdditiveEmitterFactory = additiveEmitterFactory;
             this.AveragedEmitterFactory = averagedEmitterFactory;
@@ -83,6 +87,7 @@ namespace MiniEngine.Scenes
             this.DebugLineFactory = debugLineFactory;
             this.WaypointFactory = waypointFactory;
             this.PipelineBuilder = pipelineBuilder;
+            this.PoseFactory = poseFactory;
         }
 
         public void LoadContent(ContentManager content)
@@ -101,7 +106,6 @@ namespace MiniEngine.Scenes
             this.bulletHole = content.Load<Texture2D>(@"Decals\BulletHole");
             this.mask = content.Load<Texture2D>(@"StarMask");
             this.song = content.Load<Song>(@"Music\Zemdens");
-
 
             this.NullSkybox = this.SkyboxBuilder.BuildSkyBox(Color.Black);
 
@@ -143,13 +147,15 @@ namespace MiniEngine.Scenes
         public OpaqueModel BuildSponza(Pose pose)
         {
             var entity = this.EntityController.CreateEntity();
-            return this.OpaqueModelFactory.Construct(entity, this.sponza, pose);
+            this.PoseFactory.Construct(entity, pose.Translation, pose.Scale, pose.Yaw, pose.Pitch, pose.Roll);
+            return this.OpaqueModelFactory.Construct(entity, this.sponza);
         }
 
         public Entity BuildLizard(Pose pose)
         {
             var entity = this.EntityController.CreateEntity();
-            this.OpaqueModelFactory.Construct(entity, this.lizard, pose);
+            this.PoseFactory.Construct(entity, pose.Translation, pose.Scale, pose.Yaw, pose.Pitch, pose.Roll);
+            this.OpaqueModelFactory.Construct(entity, this.lizard);
             //this.LightsFactory.PointLightFactory.Construct(entity, new Vector3(55, 8, 20), Color.White, 50.0f, 0.75f);
 
             return entity;
@@ -158,7 +164,8 @@ namespace MiniEngine.Scenes
         public OpaqueModel BuildCube(Pose pose)
         {
             var entity = this.EntityController.CreateEntity();
-            var model = this.OpaqueModelFactory.Construct(entity, this.cube, pose);
+            this.PoseFactory.Construct(entity, pose.Translation, pose.Scale, pose.Yaw, pose.Pitch, pose.Roll);
+            var model = this.OpaqueModelFactory.Construct(entity, this.cube);
 
             return model;
         }
@@ -201,26 +208,29 @@ namespace MiniEngine.Scenes
         public void BuildGear(Pose pose)
         {
             var entity = this.EntityController.CreateEntity();
-            var model = this.OpaqueModelFactory.Construct(entity, this.gear, pose);
-            this.DebugInfoFactory.Construct(entity, model);
+            this.PoseFactory.Construct(entity, pose.Translation, pose.Scale, pose.Yaw, pose.Pitch, pose.Roll);
+            var model = this.OpaqueModelFactory.Construct(entity, this.gear);
+            //this.DebugInfoFactory.Construct(entity, model);
         }
 
         public Car BuildCar(Pose pose)
         {
             var entity = this.EntityController.CreateEntity();
-            var model = this.OpaqueModelFactory.Construct(entity, this.car, pose);
-            var animation = new CarAnimation(entity, model);
-            this.AnimationStore.Store(animation);
-            this.DebugInfoFactory.Construct(entity, model);
+            var modelPose = this.PoseFactory.Construct(entity, pose.Translation, pose.Scale, pose.Yaw, pose.Pitch, pose.Roll);
+            var model = this.OpaqueModelFactory.Construct(entity, this.car);
+            var animation = this.CarAnimationFactory.Construct(entity, model);
 
-            return new Car(model, animation);
+            //this.DebugInfoFactory.Construct(entity, model);
+
+            return new Car(model, modelPose, animation);
         }
 
         public AModel BuildTank(Pose pose)
         {
             var entity = this.EntityController.CreateEntity();
-            var model = this.OpaqueModelFactory.Construct(entity, this.tank, pose);
-            this.DebugInfoFactory.Construct(entity, model);
+            this.PoseFactory.Construct(entity, pose.Translation, pose.Scale, pose.Yaw, pose.Pitch, pose.Roll);
+            var model = this.OpaqueModelFactory.Construct(entity, this.tank);
+            //this.DebugInfoFactory.Construct(entity, model);
 
             return model;
         }
@@ -233,10 +243,11 @@ namespace MiniEngine.Scenes
                 for (var y = 0; y < rows; y++)
                 {
                     var v3 = new Vector3(x, 0, y);
-                    var position = new Pose(v3 + offset.Translation, 1.0f / 40.0f);
+                    var pose = new Pose(v3 + offset.Translation, 1.0f / 40.0f);
 
-                    var model = this.OpaqueModelFactory.Construct(entity, this.terrain, position);
-                    this.DebugInfoFactory.Construct(entity, model);
+                    this.PoseFactory.Construct(entity, pose.Translation, pose.Scale, pose.Yaw, pose.Pitch, pose.Roll);
+                    var model = this.OpaqueModelFactory.Construct(entity, this.terrain);
+                    //this.DebugInfoFactory.Construct(entity, model);
                 }
             }
         }
@@ -245,7 +256,8 @@ namespace MiniEngine.Scenes
         {
             var entity = this.EntityController.CreateEntity();
             var pose = new Pose(Vector3.Zero);
-            var model = this.OpaqueModelFactory.Construct(entity, this.terrain, pose);
+            this.PoseFactory.Construct(entity, pose.Translation, pose.Scale, pose.Yaw, pose.Pitch, pose.Roll);
+            var model = this.OpaqueModelFactory.Construct(entity, this.terrain);
 
             model.TextureScale = size;
         }
@@ -256,14 +268,16 @@ namespace MiniEngine.Scenes
             var entities = this.EntityController.CreateEntities(2);
 
             var position = new Vector3(-40.5f, 30.0f, 3.2f);
-            var world = new Pose(position, 4.4f * 0.01f, MathHelper.PiOver2, MathHelper.PiOver2, 0);
-            var model1 = this.TransparentModelFactory.Construct(entities[0], this.plane, world);
-            this.DebugInfoFactory.Construct(entities[0], model1);
+            var pose = new Pose(position, 4.4f * 0.01f, MathHelper.PiOver2, MathHelper.PiOver2, 0);
+            this.PoseFactory.Construct(entities[0], pose.Translation, pose.Scale, pose.Yaw, pose.Pitch, pose.Roll);
+            var model1 = this.TransparentModelFactory.Construct(entities[0], this.plane);
+            //this.DebugInfoFactory.Construct(entities[0], model1);
 
             position = new Vector3(-40.5f, 30.0f, -7.2f);
-            world = new Pose(position, 4.4f * 0.01f, MathHelper.PiOver4);
-            var model2 = this.TransparentModelFactory.Construct(entities[1], this.plane, world);
-            this.DebugInfoFactory.Construct(entities[1], model2);
+            pose = new Pose(position, 4.4f * 0.01f, MathHelper.PiOver4);
+            this.PoseFactory.Construct(entities[1], pose.Translation, pose.Scale, pose.Yaw, pose.Pitch, pose.Roll);
+            var model2 = this.TransparentModelFactory.Construct(entities[1], this.plane);
+            //this.DebugInfoFactory.Construct(entities[1], model2);
 
             return entities;
         }
@@ -271,12 +285,13 @@ namespace MiniEngine.Scenes
         public PointLight BuildFirePlace()
         {
             var entity = this.EntityController.CreateEntity();
+            var entity2 = this.EntityController.CreateEntity();
 
             var particleSpawn = new Vector3(-60.5f, 6.0f, 20.0f);
 
             this.AveragedEmitterFactory.ConstructAveragedEmitter(entity, particleSpawn, this.smoke, 1, 1, 2.0f);
             this.AdditiveEmitterFactory.ConstructAdditiveEmitter(entity, particleSpawn, this.explosion2, 1, 1, 1.0f);
-            var emitter = this.AdditiveEmitterFactory.ConstructAdditiveEmitter(entity, particleSpawn, this.explosion, 8, 8, 0.075f);
+            var emitter = this.AdditiveEmitterFactory.ConstructAdditiveEmitter(entity2, particleSpawn, this.explosion, 8, 8, 0.075f);
             emitter.SpawnInterval = 0;
             emitter.Spread = 0.75f;
             emitter.TimeToLive = 2.25f;
@@ -311,7 +326,7 @@ namespace MiniEngine.Scenes
             var center = new Vector3(-71.2f, 10, -25);
             var forward = Vector3.Left;
 
-            for (var i = 0; i < 110; i++)
+            for (var i = 0; i < 1 /*100*/; i++)
             {
                 var u = (float)(random.NextDouble() * 15) - 7.5f;
                 var v = (float)(random.NextDouble() * 15) - 7.5f;
@@ -321,15 +336,11 @@ namespace MiniEngine.Scenes
                 projector.SetMaxDistance(1.0f);
             }
 
-
-
             return entity;
         }
 
-        public Entity BuildCutScene()
+        public void BuildCutScene()
         {
-            var entity = this.EntityController.CreateEntity();
-
             var speeds = new MetersPerSecond[]
             {
                 new MetersPerSecond(15.0f),
@@ -378,10 +389,9 @@ namespace MiniEngine.Scenes
                 var position = positions[i];
                 var lookAt = lookAts[i];
 
+                var entity = this.EntityController.CreateEntity();
                 this.WaypointFactory.Construct(entity, speed, position, lookAt);
             }
-
-            return entity;
         }
     }
 }

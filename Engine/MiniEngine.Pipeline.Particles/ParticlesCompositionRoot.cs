@@ -10,8 +10,8 @@ namespace MiniEngine.Pipeline.Particles
     {
         public void Compose(IServiceRegistry serviceRegistry)
         {
-            serviceRegistry.Register<IComponentContainer<AdditiveEmitter>, ComponentList<AdditiveEmitter>>();
-            serviceRegistry.Register<IComponentContainer<AveragedEmitter>, ComponentList<AveragedEmitter>>();
+            serviceRegistry.Register<IComponentContainer<AdditiveEmitter>, ComponentContainer<AdditiveEmitter>>();
+            serviceRegistry.Register<IComponentContainer<AveragedEmitter>, ComponentContainer<AveragedEmitter>>();
 
             serviceRegistry.Register<AdditiveEmitterFactory>();
             serviceRegistry.Register<AveragedEmitterFactory>();

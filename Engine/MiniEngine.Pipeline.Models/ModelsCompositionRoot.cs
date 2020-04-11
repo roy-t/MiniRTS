@@ -10,13 +10,12 @@ namespace MiniEngine.Pipeline.Models
     {
         public void Compose(IServiceRegistry serviceRegistry)
         {
-            serviceRegistry.Register<IComponentContainer<OpaqueModel>, ComponentList<OpaqueModel>>();
-            serviceRegistry.Register<IComponentContainer<TransparentModel>, ComponentList<TransparentModel>>();
-            serviceRegistry.Register<IComponentContainer<AAnimation>, ComponentList<AAnimation>>();
+            serviceRegistry.Register<IComponentContainer<OpaqueModel>, ComponentContainer<OpaqueModel>>();
+            serviceRegistry.Register<IComponentContainer<TransparentModel>, ComponentContainer<TransparentModel>>();
+            serviceRegistry.Register<IComponentContainer<AAnimation>, ComponentContainer<AAnimation>>();
 
             serviceRegistry.Register<OpaqueModelFactory>();
             serviceRegistry.Register<TransparentModelFactory>();
-            serviceRegistry.Register<AnimationStore>();
 
             serviceRegistry.Register<ModelSystem>();
             serviceRegistry.Register<AnimationSystem>();

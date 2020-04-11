@@ -16,7 +16,7 @@ namespace MiniEngine.Configuration
 
         public void Compose(IServiceRegistry serviceRegistry)
         {
-            serviceRegistry.Register<IComponentContainer<Waypoint>, ComponentList<Waypoint>>();
+            serviceRegistry.Register<IComponentContainer<Waypoint>, ComponentContainer<Waypoint>>();
             serviceRegistry.Register<WaypointFactory>();
             serviceRegistry.Register<CutsceneSystem>();
             serviceRegistry.Register<CameraController>();

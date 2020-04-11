@@ -10,8 +10,8 @@ namespace MiniEngine.Pipeline.Debug
     {
         public void Compose(IServiceRegistry serviceRegistry)
         {
-            serviceRegistry.Register<IComponentContainer<DebugInfo>, ComponentList<DebugInfo>>();
-            serviceRegistry.Register<IComponentContainer<DebugLine>, ComponentList<DebugLine>>();
+            serviceRegistry.Register<IComponentContainer<DebugInfo>, ComponentContainer<DebugInfo>>();
+            serviceRegistry.Register<IComponentContainer<DebugLine>, ComponentContainer<DebugLine>>();
 
             serviceRegistry.Register<DebugInfoFactory>();
             serviceRegistry.Register<DebugLineFactory>();

@@ -31,23 +31,14 @@ namespace MiniEngine.Pipeline.Shadows.Factories
             int cascades, int resolution, float[] cascadeDistances)
         {
             var cascadedShadowMap = new CascadedShadowMap(entity, this.Device, resolution, cascades, position, lookAt, cascadeDistances);
-            this.Container.Add(cascadedShadowMap);
+            this.Container.Add(entity, cascadedShadowMap);
 
-            for (var i = 0; i < cascades; i++)
-            {
-                this.ShadowMapFactory.Construct(entity, cascadedShadowMap.DepthMapArray, cascadedShadowMap.ColorMapArray, i, cascadedShadowMap.ShadowCameras[i]);
-            }
+            
 
             return cascadedShadowMap;
         }
 
         public CascadedShadowMap Construct(Entity entity, Vector3 position, Vector3 lookAt, int cascades, int resolution = DefaultResolution)
-            => this.Construct(entity, position, lookAt, cascades, resolution, DefaultCascadeDistances);
-
-        public override void Deconstruct(Entity entity)
-        {
-            this.ShadowMapFactory.Deconstruct(entity);
-            base.Deconstruct(entity);
-        }
+            => this.Construct(entity, position, lookAt, cascades, resolution, DefaultCascadeDistances);        
     }
 }

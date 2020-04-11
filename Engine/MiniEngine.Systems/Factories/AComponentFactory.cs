@@ -16,6 +16,6 @@ namespace MiniEngine.Systems.Factories
             this.Container = container;
         }
 
-        public virtual void Deconstruct(Entity entity) => this.Container.RemoveAllOwnedBy(entity);
+        public virtual void Deconstruct(Entity entity) => this.Container.Remove(entity);
     }
 }

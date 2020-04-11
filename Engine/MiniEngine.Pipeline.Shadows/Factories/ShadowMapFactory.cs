@@ -40,15 +40,7 @@ namespace MiniEngine.Pipeline.Shadows.Factories
 
 
             var shadowMap = new ShadowMap(entity, depthMap, colorMap, 0, viewPoint);
-            this.Container.Add(shadowMap);
-
-            return shadowMap;
-        }
-
-        internal ShadowMap Construct(Entity entity, RenderTarget2D depthMapArray, RenderTarget2D colorMapArray, int index, IViewPoint viewPoint)
-        {
-            var shadowMap = new ShadowMap(entity, depthMapArray, colorMapArray, index, viewPoint);
-            this.Container.Add(shadowMap);
+            this.Container.Add(entity, shadowMap);
 
             return shadowMap;
         }

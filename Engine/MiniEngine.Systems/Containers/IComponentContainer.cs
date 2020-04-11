@@ -6,19 +6,25 @@ namespace MiniEngine.Systems.Containers
     public interface IComponentContainer
     {
         int Count { get; }
-        void RemoveAllOwnedBy(Entity entity);
+
         void Clear();
+
         Type GetComponentType();
+
         IComponent this[int index] { get; }
 
-        bool Remove(IComponent component);
+        void Remove(Entity entity);
+
+        IComponent Get(Entity entity);
     }
 
     public interface IComponentContainer<T> : IComponentContainer
         where T : IComponent
     {
-        void Add(T item);
+        void Add(Entity entity, T item);
+
+        new T Get(Entity entity);
+
         new T this[int index] { get; }
-        bool Remove(T item);        
     }
 }

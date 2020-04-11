@@ -9,13 +9,13 @@ namespace MiniEngine.CutScene
 {
     public sealed class WaypointFactory : AComponentFactory<Waypoint>
     {
-        public WaypointFactory(GraphicsDevice device, IComponentContainer<Waypoint> container) 
+        public WaypointFactory(GraphicsDevice device, IComponentContainer<Waypoint> container)
             : base(device, container) { }
 
         public void Construct(Entity entity, MetersPerSecond speed, Vector3 position, Vector3 lookAt)
         {
             var waypoint = new Waypoint(entity, speed, position, lookAt);
-            this.Container.Add(waypoint);
+            this.Container.Add(entity, waypoint);
         }
     }
 }

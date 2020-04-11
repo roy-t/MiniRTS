@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Pipeline.Models.Components;
-using MiniEngine.Primitives;
 using MiniEngine.Systems;
 using MiniEngine.Systems.Containers;
 using MiniEngine.Systems.Factories;
@@ -12,10 +11,10 @@ namespace MiniEngine.Pipeline.Models.Factories
         public TransparentModelFactory(GraphicsDevice device, IComponentContainer<TransparentModel> container)
             : base(device, container) { }
 
-        public TransparentModel Construct(Entity entity, Model model, Pose pose)
+        public TransparentModel Construct(Entity entity, Model model)
         {
-            var transparentModel = new TransparentModel(entity, model, pose);
-            this.Container.Add(transparentModel);
+            var transparentModel = new TransparentModel(entity, model);
+            this.Container.Add(entity, transparentModel);
 
             return transparentModel;
         }

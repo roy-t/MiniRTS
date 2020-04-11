@@ -10,12 +10,12 @@ namespace MiniEngine.Pipeline.Particles.Factories
     public sealed class AdditiveEmitterFactory : AComponentFactory<AdditiveEmitter>
     {
         public AdditiveEmitterFactory(GraphicsDevice device, IComponentContainer<AdditiveEmitter> container)
-            : base(device, container) { }        
+            : base(device, container) { }
 
         public AdditiveEmitter ConstructAdditiveEmitter(Entity entity, Vector3 position, Texture2D texture, int rows, int columns, float scale)
         {
             var emitter = new AdditiveEmitter(entity, position, texture, rows, columns, scale);
-            this.Container.Add(emitter);
+            this.Container.Add(entity, emitter);
 
             return emitter;
         }

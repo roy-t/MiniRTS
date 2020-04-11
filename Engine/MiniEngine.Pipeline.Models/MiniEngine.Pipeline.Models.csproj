@@ -82,7 +82,6 @@
     <Compile Include="Extensions\CombineDiffuseWithLigtingStageExtensions.cs" />
     <Compile Include="Extensions\RenderModelBatchStageExtensions.cs" />
     <Compile Include="Extensions\RenderModelsStageExtension.cs" />
-    <Compile Include="Factories\AnimationStore.cs" />
     <Compile Include="Factories\TransparentModelFactory.cs" />
     <Compile Include="Factories\OpaqueModelFactory.cs" />
     <Compile Include="ModelPipeline.cs" />
@@ -101,6 +100,10 @@
     <ProjectReference Include="..\MiniEngine.Effects\MiniEngine.Effects.csproj">
       <Project>{2bb9181f-a31d-4da2-93d2-64f5a56cf4f5}</Project>
       <Name>MiniEngine.Effects</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MiniEngine.Pipeline.Basics\MiniEngine.Pipeline.Basics.csproj">
+      <Project>{34CEB330-4365-41C3-B68F-D738181989AB}</Project>
+      <Name>MiniEngine.Pipeline.Basics</Name>
     </ProjectReference>
     <ProjectReference Include="..\MiniEngine.Pipeline\MiniEngine.Pipeline.csproj">
       <Project>{820720c5-666a-4d5e-96ee-f053baa063d9}</Project>

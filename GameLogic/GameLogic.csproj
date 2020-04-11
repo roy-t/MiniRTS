@@ -70,6 +70,8 @@
     <Compile Include="CarLayout.cs" />
     <Compile Include="CarAnimation.cs" />
     <Compile Include="CarDynamics.cs" />
+    <Compile Include="Factories\AnimationStore.cs" />
+    <Compile Include="GameLogicCompositionRoot.cs" />
     <Compile Include="Path.cs" />
     <Compile Include="PathInterpolator.cs" />
     <Compile Include="PathStarter.cs" />
@@ -86,6 +88,10 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Engine\MiniEngine.Pipeline.Basics\MiniEngine.Pipeline.Basics.csproj">
+      <Project>{34CEB330-4365-41C3-B68F-D738181989AB}</Project>
+      <Name>MiniEngine.Pipeline.Basics</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Engine\MiniEngine.Pipeline.Models\MiniEngine.Pipeline.Models.csproj">
       <Project>{D77598B5-73BF-4CD4-B9A6-D94895058A60}</Project>
       <Name>MiniEngine.Pipeline.Models</Name>

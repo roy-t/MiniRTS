@@ -25,10 +25,12 @@ if people are behind NAT?). Make game p2p?
 - Job/Threading system for tasks that take more than one frame
     - Systems that are receive the processed output should have a thread-safe queue or something to process incoming events?
 
+### Entities
+- Look up components on the same entity, instead of referencing them
+
 ### Misc
 - Make it cleaner to select or deselect render pipeline features
 - Make it possible to tweak parameters used by components (like shadowmap resolution) at runtime
-
 
 ### Particles
 - Particles need a lot more configurable parameters to look good
@@ -51,7 +53,7 @@ if people are behind NAT?). Make game p2p?
 ## Interesting
 - Skybox: http://rbwhitaker.wikidot.com/skyboxes-1
 - Water
-- Terrain/tree/water generation
+- Terrain/tree/water generation, especially sand dunes/desert
 
 ## Possible Improvements
 - The MiniEngine.Primitives project should be organized better as there is no coherence between classes in that project

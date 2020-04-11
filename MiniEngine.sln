@@ -44,6 +44,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameLogic", "GameLogic\GameLogic.csproj", "{F3BB1367-1E76-44CC-8604-038C9161F130}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiniEngine.Pipeline.Basics", "Engine\MiniEngine.Pipeline.Basics\MiniEngine.Pipeline.Basics.csproj", "{34CEB330-4365-41C3-B68F-D738181989AB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -114,6 +116,10 @@ Global
 		{F3BB1367-1E76-44CC-8604-038C9161F130}.Debug|x64.Build.0 = Debug|x64
 		{F3BB1367-1E76-44CC-8604-038C9161F130}.Release|x64.ActiveCfg = Release|x64
 		{F3BB1367-1E76-44CC-8604-038C9161F130}.Release|x64.Build.0 = Release|x64
+		{34CEB330-4365-41C3-B68F-D738181989AB}.Debug|x64.ActiveCfg = Debug|x64
+		{34CEB330-4365-41C3-B68F-D738181989AB}.Debug|x64.Build.0 = Debug|x64
+		{34CEB330-4365-41C3-B68F-D738181989AB}.Release|x64.ActiveCfg = Release|x64
+		{34CEB330-4365-41C3-B68F-D738181989AB}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -133,6 +139,7 @@ Global
 		{278C12E6-3984-4E5C-ABA1-108F1296F6B6} = {0946A9F9-B243-4BA9-A40F-722D531DBC73}
 		{051E397D-4C6C-4F8F-8F40-CCE916A45C5E} = {0946A9F9-B243-4BA9-A40F-722D531DBC73}
 		{E939D1A8-2A0D-4605-8704-9F41275C2CF6} = {0946A9F9-B243-4BA9-A40F-722D531DBC73}
+		{34CEB330-4365-41C3-B68F-D738181989AB} = {0946A9F9-B243-4BA9-A40F-722D531DBC73}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C9D6E246-646C-4636-9798-204EB727B5DC}

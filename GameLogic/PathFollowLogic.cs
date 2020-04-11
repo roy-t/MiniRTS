@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
+using MiniEngine.Pipeline.Basics.Components;
 using MiniEngine.Pipeline.Models.Components;
 using MiniEngine.Units;
 using Roy_T.AStar.Primitives;
@@ -12,6 +13,7 @@ namespace MiniEngine.GameLogic
         private readonly CarAnimation CarAnimation;
         private readonly WorldGrid WorldGrid;
         private readonly AModel Target;
+        private readonly Pose TargetPose;
         private readonly Path Path;
 
         public GridPosition lastReserved;
@@ -21,6 +23,7 @@ namespace MiniEngine.GameLogic
             this.DistanceCovered = 0.0f;
             this.WorldGrid = worldGrid;
             this.Target = car.Model;
+            this.TargetPose = car.Pose;
             this.CarAnimation = car.Animation;
             this.CarDynamics = car.Dynamics;// new CarDynamics(car.Layout);
 
@@ -68,14 +71,14 @@ namespace MiniEngine.GameLogic
             var newFrontAxlePosition = this.Path.GetPositionAfter(this.DistanceCovered);
             this.CarDynamics.BringAxlesInLine(newFrontAxlePosition);
 
-            this.Target.Move(this.CarDynamics.GetCarSupportedCenter());
+            this.TargetPose.Move(this.CarDynamics.GetCarSupportedCenter());
 
             var forward = this.CarDynamics.GetCarForward();
             if (forward.LengthSquared() > 0)
             {
                 // TODO: why -Atan2?
                 var yaw = -(float)Math.Atan2(forward.Z, forward.X);
-                this.Target.Yaw = yaw;
+                this.TargetPose.Rotate(yaw, this.TargetPose.Pitch, this.TargetPose.Roll);
             }
         }
 
@@ -118,7 +121,7 @@ namespace MiniEngine.GameLogic
                 // TODO: why - Atan2?
                 var angleToTarget = -(float)Math.Atan2(axleToTarget.Z, axleToTarget.X);
 
-                var angleDifference = this.Target.Yaw - angleToTarget;
+                var angleDifference = this.TargetPose.Yaw - angleToTarget;
                 //angleDifference = MathHelper.WrapAngle(angleDifference);
 
                 //if (angleDifference > MathHelper.PiOver2)

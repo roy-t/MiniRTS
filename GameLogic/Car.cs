@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using MiniEngine.Pipeline.Basics.Components;
 using MiniEngine.Pipeline.Models.Components;
 using MiniEngine.Systems;
 using MiniEngine.Systems.Components;
@@ -7,29 +8,31 @@ namespace MiniEngine.GameLogic
 {
     public sealed class Car : IComponent
     {
-        public Car(OpaqueModel model, CarAnimation animation)
+        public Car(OpaqueModel model, Pose pose, CarAnimation animation)
         {
             this.Entity = model.Entity;
             this.Model = model;
+            this.Pose = pose;
             this.Animation = animation;
 
-            this.Layout = new CarLayout(model);
+            this.Layout = new CarLayout(model, pose);
             this.Dynamics = new CarDynamics(this.Layout);
 
-            this.Model.Origin = this.Dynamics.GetCarSupportedCenter();
+            this.Pose.SetOrigin(this.Dynamics.GetCarSupportedCenter());
         }
 
         public Entity Entity { get; }
 
         public AModel Model { get; }
+        public Pose Pose { get; }
         public CarAnimation Animation { get; }
         public CarLayout Layout { get; }
         public CarDynamics Dynamics { get; }
 
         public void MoveAndTurn(Vector3 position, float yaw)
         {
-            this.Model.Move(position);
-            this.Model.Yaw = yaw;
+            this.Pose.Move(position);
+            this.Pose.Rotate(yaw, this.Pose.Pitch, this.Pose.Roll);
 
             this.Dynamics.UpdateWheelPositions();
             this.Dynamics.ComputeProjectedAxlePositions();
@@ -47,12 +50,12 @@ namespace MiniEngine.GameLogic
 
         // Derived properties
 
-        public Vector3 Position => this.Model.Position;
+        public Vector3 Position => this.Pose.Position;
 
-        public float Yaw => this.Model.Yaw;
+        public float Yaw => this.Pose.Yaw;
 
-        public float Pitch => this.Model.Pitch;
+        public float Pitch => this.Pose.Pitch;
 
-        public float Roll => this.Model.Roll;
+        public float Roll => this.Pose.Roll;
     }
 }

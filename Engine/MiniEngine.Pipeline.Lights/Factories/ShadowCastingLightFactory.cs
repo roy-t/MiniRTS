@@ -29,7 +29,7 @@ namespace MiniEngine.Pipeline.Lights.Factories
 
             var shadowMap = this.ShadowMapFactory.Construct(entity, viewPoint, resolution);
             var light = new ShadowCastingLight(entity, viewPoint, shadowMap, color);
-            this.Container.Add(light);
+            this.Container.Add(entity, light);
 
             return light;
         }

@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MiniEngine.Pipeline.Basics.Components;
 using MiniEngine.Pipeline.Models.Components;
 
 namespace MiniEngine.GameLogic
@@ -8,11 +9,13 @@ namespace MiniEngine.GameLogic
     public sealed class CarLayout
     {
         private readonly AModel Model;
+        private readonly Pose Pose;
         private readonly Matrix[] Bones;
 
-        public CarLayout(AModel model)
+        public CarLayout(AModel model, Pose pose)
         {
             this.Model = model;
+            this.Pose = pose;
             this.Bones = new Matrix[model.Model.Bones.Count];
             model.Model.CopyAbsoluteBoneTransformsTo(this.Bones);
         }
@@ -25,7 +28,7 @@ namespace MiniEngine.GameLogic
             var name = WheelNameLookUp.GetCarWheelMeshName(wheel);
             var mesh = this.GetMeshMatrix(name);
 
-            var world = this.Model.Pose.Matrix;
+            var world = this.Pose.Matrix;
             return mesh * world;
         }
 
@@ -48,7 +51,7 @@ namespace MiniEngine.GameLogic
             var mesh = this.GetMesh(name);
 
             // TODO: this should probably also take into account the scale in the absolutebone transforms
-            return mesh.BoundingSphere.Radius * this.Model.Scale.X;
+            return mesh.BoundingSphere.Radius * this.Pose.Scale.X;
         }
 
         public Vector3 GetWheelPosition(WheelPosition wheel)

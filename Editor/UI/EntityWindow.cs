@@ -32,7 +32,7 @@ namespace MiniEngine.UI
 
         public UIState State { get; set; }
         public EntityState EntityState => this.State.EntityState;
-        
+
         public void Render()
         {
             if (ImGui.Begin("Entity Details", ref this.EntityState.ShowEntityWindow, ImGuiWindowFlags.NoCollapse))
@@ -59,7 +59,7 @@ namespace MiniEngine.UI
                         if (ImGui.Button("Remove Component"))
                         {
                             var container = this.ComponentSearcher.GetContainer(component);
-                            container.Remove(component);
+                            container.Remove(this.EntityState.SelectedEntity);
                         }
                         ImGui.TreePop();
                     }
@@ -106,14 +106,14 @@ namespace MiniEngine.UI
                         this.Editors.Create(attribute.Name, getter(), attribute.MinMax, setter, index);
                     }
                 }
-            }            
+            }
         }
 
-        private static string GetName(IComponent component) 
+        private static string GetName(IComponent component)
             => component.GetType().Name;
 
         private static Func<object> GetGetter(PropertyInfo property, IComponent component, Type componentType)
-        {            
+        {
             if (property != null)
             {
                 return () => property.GetGetMethod().Invoke(component, null);
@@ -128,9 +128,9 @@ namespace MiniEngine.UI
             {
                 return null;
             }
-           
+
             var method = componentType.GetMethod(name);
-            if(method != null)
+            if (method != null)
             {
                 return o => method.Invoke(component, new object[] { o });
             }
@@ -140,7 +140,7 @@ namespace MiniEngine.UI
 
         private static Action<object> GetSetter(PropertyInfo property, IComponent component, Type componentType)
         {
-            if(property != null && property.GetSetMethod() != null)
+            if (property != null && property.GetSetMethod() != null)
             {
                 return o => property.GetSetMethod().Invoke(component, new object[] { o });
             }

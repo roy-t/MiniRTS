@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Effects.Techniques;
 using MiniEngine.Effects.Wrappers;
 using MiniEngine.Pipeline.Models.Components;
+using MiniEngine.Pipeline.Models.Systems;
 using MiniEngine.Primitives.Cameras;
 
 namespace MiniEngine.Pipeline.Models.Batches
@@ -13,13 +14,13 @@ namespace MiniEngine.Pipeline.Models.Batches
         private static Matrix[] SharedBoneMatrix;
         private readonly RenderEffect Effect;
 
-        private readonly IReadOnlyList<AModel> Models;
+        private readonly IReadOnlyList<ModelPose> Models;
         private readonly IViewPoint ViewPoint;
         private readonly TextureCube Skybox;
 
         private readonly Matrix InverseViewProjection;
 
-        public ModelRenderBatch(IReadOnlyList<AModel> models, IViewPoint viewPoint, TextureCube skybox)
+        public ModelRenderBatch(IReadOnlyList<ModelPose> models, IViewPoint viewPoint, TextureCube skybox)
         {
             this.Models = models;
             this.ViewPoint = viewPoint;
@@ -35,10 +36,9 @@ namespace MiniEngine.Pipeline.Models.Batches
             for (var i = 0; i < this.Models.Count; i++)
             {
                 var modelPose = this.Models[i];
-                this.DrawModel(technique, modelPose, modelPose.WorldMatrix, this.ViewPoint);
+                this.DrawModel(technique, modelPose.Model, modelPose.Pose.Matrix, this.ViewPoint);
             }
         }
-
 
         private static float accum = 0.0f;
         private void DrawModel(RenderEffectTechniques technique, AModel modelPose, Matrix world, IViewPoint viewPoint)

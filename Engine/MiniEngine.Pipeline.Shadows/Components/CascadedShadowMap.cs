@@ -50,6 +50,12 @@ namespace MiniEngine.Pipeline.Shadows.Components
             this.Resolution = resolution;
             this.CascadeDistances = cascadeDistances;
 
+            this.ShadowMaps = new ShadowMap[cascades];
+            for (var i = 0; i < cascades; i++)
+            {
+                this.ShadowMaps[i] = new ShadowMap(entity, this.DepthMapArray, this.ColorMapArray, i, this.ShadowCameras[i]);
+            }
+
             this.Move(position, lookAt);
         }
 
@@ -58,7 +64,10 @@ namespace MiniEngine.Pipeline.Shadows.Components
         [Editor(nameof(Cascades))]
         public int Cascades => this.CascadeSplits.Length;
 
+        public ShadowMap[] ShadowMaps { get; }
+
         public RenderTarget2D DepthMapArray { get; }
+
         public RenderTarget2D ColorMapArray { get; }
 
         public CascadeCamera[] ShadowCameras { get; }
@@ -80,13 +89,13 @@ namespace MiniEngine.Pipeline.Shadows.Components
         public int Resolution { get; }
 
         [Editor(nameof(CascadeDistances), nameof(CascadeDistances), 0.0f, float.MaxValue)]
-        public float[] CascadeDistances { get; set;  }
+        public float[] CascadeDistances { get; set; }
 
         public void Move(Vector3 position, Vector3 lookAt)
         {
             this.Position = position;
             this.LookAt = lookAt;
             this.SurfaceToLightVector = Vector3.Normalize(position - lookAt);
-        }       
+        }
     }
 }

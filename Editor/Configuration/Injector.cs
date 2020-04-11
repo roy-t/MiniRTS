@@ -3,6 +3,8 @@ using LightInject;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Effects;
+using MiniEngine.GameLogic;
+using MiniEngine.Pipeline.Basics;
 using MiniEngine.Pipeline.Debug;
 using MiniEngine.Pipeline.Lights;
 using MiniEngine.Pipeline.Models;
@@ -37,6 +39,7 @@ namespace MiniEngine.Configuration
             this.Container.RegisterInstance(this.GameLoop.GraphicsDevice);
             this.Container.RegisterInstance(this.GameLoop.Content);
 
+            this.Container.RegisterFrom<BasicsCompositionRoot>();
             this.Container.RegisterFrom<EffectCompositionRoot>();
             this.Container.RegisterFrom<DebugCompositionRoot>();
             this.Container.RegisterFrom<LightsCompositionRoot>();
@@ -48,6 +51,7 @@ namespace MiniEngine.Configuration
             this.Container.RegisterFrom<SystemsCompositionRoot>();
             this.Container.RegisterFrom<UICompositionRoot>();
             this.Container.RegisterFrom<EditorCompositionRoot>();
+            this.Container.RegisterFrom<GameLogicCompositionRoot>();
         }
 
         public T Resolve<T>() => this.Container.GetInstance<T>();

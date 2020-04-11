@@ -13,10 +13,12 @@ namespace MiniEngine.Pipeline.Lights.Factories
         public DirectionalLightFactory(GraphicsDevice device, IComponentContainer<DirectionalLight> container)
             : base(device, container) { }
 
-        public void Construct(Entity entity, Vector3 direction, Color color)
+        public DirectionalLight Construct(Entity entity, Vector3 direction, Color color)
         {
             var light = new DirectionalLight(entity, direction, color);
-            this.Container.Add(light);
+            this.Container.Add(entity, light);
+
+            return light;
         }
     }
 }

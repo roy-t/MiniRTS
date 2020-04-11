@@ -10,8 +10,8 @@ namespace MiniEngine.Pipeline.Projectors
     {
         public void Compose(IServiceRegistry serviceRegistry)
         {
-            serviceRegistry.Register<IComponentContainer<DynamicTexture>, ComponentList<DynamicTexture>>();
-            serviceRegistry.Register<IComponentContainer<Projector>, ComponentList<Projector>>();
+            serviceRegistry.Register<IComponentContainer<DynamicTexture>, ComponentContainer<DynamicTexture>>();
+            serviceRegistry.Register<IComponentContainer<Projector>, ComponentContainer<Projector>>();
 
             serviceRegistry.Register<DynamicTextureFactory>();
             serviceRegistry.Register<ProjectorFactory>();

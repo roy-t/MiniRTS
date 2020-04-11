@@ -115,6 +115,10 @@
       <Project>{2bb9181f-a31d-4da2-93d2-64f5a56cf4f5}</Project>
       <Name>MiniEngine.Effects</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Engine\MiniEngine.Pipeline.Basics\MiniEngine.Pipeline.Basics.csproj">
+      <Project>{34ceb330-4365-41c3-b68f-d738181989ab}</Project>
+      <Name>MiniEngine.Pipeline.Basics</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Engine\MiniEngine.Pipeline.Debug\MiniEngine.Pipeline.Debug.csproj">
       <Project>{1f48156e-ddc9-4332-8084-6fe15ea6a41b}</Project>
       <Name>MiniEngine.Pipeline.Debug</Name>

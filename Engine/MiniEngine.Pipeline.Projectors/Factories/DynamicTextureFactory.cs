@@ -26,7 +26,7 @@ namespace MiniEngine.Pipeline.Projectors.Factories
 
             var dynamicTexture = new DynamicTexture(entity, pipeline, viewPoint, gBuffer, skybox, pass, label);
 
-            this.Container.Add(dynamicTexture);
+            this.Container.Add(entity, dynamicTexture);
 
             return dynamicTexture;
         }

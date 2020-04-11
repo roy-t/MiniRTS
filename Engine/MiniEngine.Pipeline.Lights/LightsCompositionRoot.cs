@@ -14,11 +14,11 @@ namespace MiniEngine.Pipeline.Lights
         {
             serviceRegistry.Register<LightPrimitiveLoader>();
 
-            serviceRegistry.Register<IComponentContainer<AmbientLight>, ComponentList<AmbientLight>>();
-            serviceRegistry.Register<IComponentContainer<DirectionalLight>, ComponentList<DirectionalLight>>();
-            serviceRegistry.Register<IComponentContainer<PointLight>, ComponentList<PointLight>>();            
-            serviceRegistry.Register<IComponentContainer<ShadowCastingLight>, ComponentList<ShadowCastingLight>>();
-            serviceRegistry.Register<IComponentContainer<Sunlight>, ComponentList<Sunlight>>();            
+            serviceRegistry.Register<IComponentContainer<AmbientLight>, ComponentContainer<AmbientLight>>();
+            serviceRegistry.Register<IComponentContainer<DirectionalLight>, ComponentContainer<DirectionalLight>>();
+            serviceRegistry.Register<IComponentContainer<PointLight>, ComponentContainer<PointLight>>();            
+            serviceRegistry.Register<IComponentContainer<ShadowCastingLight>, ComponentContainer<ShadowCastingLight>>();
+            serviceRegistry.Register<IComponentContainer<Sunlight>, ComponentContainer<Sunlight>>();            
 
             serviceRegistry.Register<LightsFactory>();
 

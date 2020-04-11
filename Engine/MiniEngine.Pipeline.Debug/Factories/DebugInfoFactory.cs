@@ -16,7 +16,7 @@ namespace MiniEngine.Pipeline.Debug.Factories
         public DebugInfo Construct(Entity entity, IPhysicalComponent target)
         {
             var debugInfo = new DebugInfo(entity, target, Color.Blue, Color.Red, Color.White, Color.FromNonPremultiplied(32, 32, 32, 255));
-            this.Container.Add(debugInfo);
+            this.Container.Add(entity, debugInfo);
 
             return debugInfo;
         }

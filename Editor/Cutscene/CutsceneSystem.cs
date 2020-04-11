@@ -27,12 +27,7 @@ namespace MiniEngine.CutScene
             this.state = CutsceneState.Stopped;
             this.CameraSpring = new SpringController();
             this.LookAtSpring = new SpringController();
-        }
-
-        public void AddWaypoint(Waypoint waypoint)
-        {            
-            this.Waypoints.Add(waypoint);            
-        }
+        }       
 
         public void Start()
         {

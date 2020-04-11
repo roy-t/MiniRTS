@@ -10,8 +10,8 @@ namespace MiniEngine.Pipeline.Shadows
     {
         public void Compose(IServiceRegistry serviceRegistry)
         {
-            serviceRegistry.Register<IComponentContainer<CascadedShadowMap>, ComponentList<CascadedShadowMap>>();
-            serviceRegistry.Register<IComponentContainer<ShadowMap>, ComponentList<ShadowMap>>();            
+            serviceRegistry.Register<IComponentContainer<CascadedShadowMap>, ComponentContainer<CascadedShadowMap>>();
+            serviceRegistry.Register<IComponentContainer<ShadowMap>, ComponentContainer<ShadowMap>>();            
 
             serviceRegistry.Register<CascadedShadowMapFactory>();
             serviceRegistry.Register<ShadowMapFactory>();
