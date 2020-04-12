@@ -7,7 +7,8 @@ using MiniEngine.Systems.Components;
 
 namespace MiniEngine.Pipeline.Lights.Components
 {
-    public sealed class ShadowCastingLight : IPhysicalComponent
+    // TODO: use Pose 
+    public sealed class ShadowCastingLight : IComponent
     {
         public ShadowCastingLight(Entity entity, PerspectiveCamera viewPoint, ShadowMap shadowMap, Color color)
         {
@@ -26,13 +27,5 @@ namespace MiniEngine.Pipeline.Lights.Components
 
         [Editor(nameof(Color))]
         public Color Color { get; set; }
-
-        public Vector3[] Corners => this.ViewPoint.Frustum.GetCorners();
-
-        public Vector3 Position => this.ViewPoint.Position;
-
-        public Vector3 LookAt => this.ViewPoint.LookAt;
-
-        public IconType Icon => IconType.Light;
     }
 }

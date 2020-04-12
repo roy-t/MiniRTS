@@ -1,8 +1,7 @@
 # WIP
+- Let all components that use Position use Pose, maybe let items with lookat also use Pose
 - Replace icon system with a system that prints the number of the entity! Then remove all icons and clean up debug systems
-- Think how to get BoundingBoxes back (maybe min/max and transform those?) as they hug a lot tighter
 - Make sure no component directly references another component
-- Think how to re-introduce bounding boxes
 
 # Future
 ## TODO

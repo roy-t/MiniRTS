@@ -10,7 +10,8 @@ using MiniEngine.Units;
 
 namespace MiniEngine.Pipeline.Particles.Components
 {
-    public abstract class AEmitter : IPhysicalComponent
+    // TODO: use Pose 
+    public abstract class AEmitter : IComponent
     {
         private static readonly Random Random = new Random();
 
@@ -43,10 +44,6 @@ namespace MiniEngine.Pipeline.Particles.Components
 
         [Editor(nameof(Position))]
         public Vector3 Position { get; set; }
-
-        public IconType Icon => IconType.Emitter;
-
-        public Vector3[] Corners => new Vector3[] { this.Position, this.Position, this.Position, this.Position, this.Position, this.Position, this.Position, this.Position };
 
         [Editor(nameof(Texture))]
         public Texture2D Texture { get; }

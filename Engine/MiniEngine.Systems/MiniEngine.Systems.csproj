@@ -75,7 +75,6 @@
     <Compile Include="Components\ComponentLookup.cs" />
     <Compile Include="Components\ComponentProperty.cs" />
     <Compile Include="Components\EntityComponentRecord.cs" />
-    <Compile Include="Components\IPhysicalComponent.cs" />
     <Compile Include="Components\MinMaxDescription.cs" />
     <Compile Include="Containers\ComponentContainer.cs" />
     <Compile Include="Containers\IComponentContainer.cs" />

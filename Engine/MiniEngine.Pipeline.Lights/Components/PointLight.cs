@@ -5,7 +5,7 @@ using MiniEngine.Systems.Components;
 
 namespace MiniEngine.Pipeline.Lights.Components
 {
-    public sealed class PointLight : IPhysicalComponent
+    public sealed class PointLight : IComponent
     {
         public PointLight(Entity entity, Vector3 position, Color color, float radius, float intensity)
         {
@@ -20,10 +20,6 @@ namespace MiniEngine.Pipeline.Lights.Components
 
         [Editor(nameof(Position))]
         public Vector3 Position { get; set; }
-
-        public IconType Icon => IconType.Light;
-
-        public Vector3[] Corners => new Vector3[] { this.Position, this.Position, this.Position, this.Position, this.Position, this.Position, this.Position, this.Position };
 
         [Editor(nameof(Color))]
         public Color Color { get; set; }
