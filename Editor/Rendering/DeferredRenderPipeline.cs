@@ -3,6 +3,7 @@ using MiniEngine.CutScene;
 using MiniEngine.Effects;
 using MiniEngine.Effects.Wrappers;
 using MiniEngine.Pipeline;
+using MiniEngine.Pipeline.Basics.Systems;
 using MiniEngine.Pipeline.Debug.Extensions;
 using MiniEngine.Pipeline.Debug.Systems;
 using MiniEngine.Pipeline.Extensions;
@@ -57,6 +58,7 @@ namespace MiniEngine.Rendering
         private readonly DynamicTextureSystem DynamicTextureSystem;
         private readonly CutsceneSystem CutsceneSystem;
         private readonly AnimationSystem AnimationSystem;
+        private readonly BoundsSystem BoundsSystem;
 
         private readonly RenderPipeline Pipeline;
         private readonly Pass RootPass;
@@ -81,6 +83,7 @@ namespace MiniEngine.Rendering
             IconSystem iconSystem,
             CutsceneSystem cutsceneSystem,
             AnimationSystem animationSystem,
+            BoundsSystem boundsSystem,
             IMeterRegistry meterRegistry)
         {
             this.ShadowMapSystem = shadowMapSystem;
@@ -102,6 +105,7 @@ namespace MiniEngine.Rendering
             this.CutsceneSystem = cutsceneSystem;
             this.IconSystem = iconSystem;
             this.AnimationSystem = animationSystem;
+            this.BoundsSystem = boundsSystem;
 
             var width = device.PresentationParameters.BackBufferWidth;
             var height = device.PresentationParameters.BackBufferHeight;
@@ -176,6 +180,7 @@ namespace MiniEngine.Rendering
                 .UpdateSystem(this.DynamicTextureSystem)
                 .UpdateSystem(this.CutsceneSystem)
                 .UpdateSystem(this.AnimationSystem)
+                .UpdateSystem(this.BoundsSystem)
                 .EnableIf(this.Settings.EnableShadows, x => x.RenderShadows(this.ShadowPipeline))
                 .EnableIf(this.Settings.EnableModels, x => x.RenderModels(this.ModelSystem, this.ModelPipeline))
                 .EnableIf(this.Settings.EnableParticles, x => x.RenderParticles(this.ParticlePipeline))

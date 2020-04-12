@@ -1,25 +1,17 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace MiniEngine.Primitives.Bounds
+namespace MiniEngine.Pipeline.Models.Factories
 {
-    public static class ModelExtensions
+    public static class ModelBoundaryComputer
     {
-        // From: https://gamedev.stackexchange.com/questions/2438/how-do-i-create-bounding-boxes-with-xna-4-0
-
-        public static BoundingBox ComputeBoundingBox(this Model model, Matrix worldTransform)
+        public static BoundingSphere Compute(Model model)
         {
-            ComputeExtremes(model, worldTransform, out var min, out var max);
-            return new BoundingBox(min, max);
+            ComputeExtremes(model, Matrix.Identity, out var min, out var max);
+            return new BoundingSphere(Vector3.Lerp(min, max, 0.5f), Vector3.Distance(min, max) * 0.5f);
         }
 
-        public static BoundingSphere ComputeBoundingSphere(this Model model, Matrix worldTransform)
-        {
-            ComputeExtremes(model, worldTransform, out var min, out var max);
-            return BoundingSphere.CreateFromPoints(new[] { min, max });
-        }
-
-        public static void ComputeExtremes(this Model model, Matrix worldTransform, out Vector3 min, out Vector3 max)
+        private static void ComputeExtremes(Model model, Matrix worldTransform, out Vector3 min, out Vector3 max)
         {
             // Initialize minimum and maximum corners of the bounding box to max and min values
             min = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);

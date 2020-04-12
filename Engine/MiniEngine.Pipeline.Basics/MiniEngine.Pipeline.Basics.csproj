@@ -49,9 +49,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BasicsCompositionRoot.cs" />
+    <Compile Include="Components\Bounds.cs" />
     <Compile Include="Components\Pose.cs" />
     <Compile Include="Factories\PoseFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Systems\BoundsSystem.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
@@ -67,6 +69,10 @@
     <ProjectReference Include="..\MiniEngine.Systems\MiniEngine.Systems.csproj">
       <Project>{c1db1986-23b4-4293-a6ea-527da1adc78f}</Project>
       <Name>MiniEngine.Systems</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MiniEngine.Units\MiniEngine.Units.csproj">
+      <Project>{051E397D-4C6C-4F8F-8F40-CCE916A45C5E}</Project>
+      <Name>MiniEngine.Units</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

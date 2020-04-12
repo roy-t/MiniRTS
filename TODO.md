@@ -1,4 +1,10 @@
-# Worklist
+# WIP
+- Replace icon system with a system that prints the number of the entity! Then remove all icons and clean up debug systems
+- Think how to get BoundingBoxes back (maybe min/max and transform those?) as they hug a lot tighter
+- Make sure no component directly references another component
+- Think how to re-introduce bounding boxes
+
+# Future
 ## TODO
 Threading:
 - Make a ThreadSafe IComponentCollection that overrides the add and remove methods and stores the component to add or remove in a seperate list and syncs with the main thread once every frame, on that sync it allows the stuff to be added or removed. In this way  most threading stuff will work out OK as long as things are not too tightly coupled?

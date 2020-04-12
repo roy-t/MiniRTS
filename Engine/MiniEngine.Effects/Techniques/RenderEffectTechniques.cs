@@ -7,6 +7,9 @@
         /// </summary>
         ShadowMap,
 
+        /// <summary>
+        /// Renders depth, taking into account animations/skinning of models
+        /// </summary>
         ShadowMapSkinned,
 
         /// <summary>
@@ -19,6 +22,10 @@
         /// </summary>
         Deferred,
 
+        /// <summary>
+        /// Renders all material properties for deferred rendering, 
+        /// taking into account animations/skinning of models
+        /// </summary>
         DeferredSkinned
     }
 }

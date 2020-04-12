@@ -82,6 +82,7 @@
     <Compile Include="Extensions\CombineDiffuseWithLigtingStageExtensions.cs" />
     <Compile Include="Extensions\RenderModelBatchStageExtensions.cs" />
     <Compile Include="Extensions\RenderModelsStageExtension.cs" />
+    <Compile Include="Factories\ModelBoundaryComputer.cs" />
     <Compile Include="Factories\TransparentModelFactory.cs" />
     <Compile Include="Factories\OpaqueModelFactory.cs" />
     <Compile Include="ModelPipeline.cs" />

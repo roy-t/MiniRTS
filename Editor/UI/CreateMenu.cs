@@ -5,9 +5,11 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Controllers;
 using MiniEngine.CutScene;
+using MiniEngine.Pipeline.Basics.Components;
 using MiniEngine.Pipeline.Debug.Factories;
 using MiniEngine.Pipeline.Projectors.Factories;
 using MiniEngine.Primitives.Cameras;
+using MiniEngine.Systems.Annotations;
 using MiniEngine.Systems.Components;
 using MiniEngine.UI.State;
 using MiniEngine.UI.Utilities;
@@ -101,9 +103,9 @@ namespace MiniEngine.UI
 
                     for (var i = 0; i < this.Components.Count; i++)
                     {
-                        if (this.Components[i] is IPhysicalComponent component)
+                        if (this.Components[i] is Bounds)
                         {
-                            this.DebugInfoFactory.Construct(this.EntityState.SelectedEntity, component);
+                            this.DebugInfoFactory.Construct(this.EntityState.SelectedEntity, IconType.Model);
                         }
                     }
                 }

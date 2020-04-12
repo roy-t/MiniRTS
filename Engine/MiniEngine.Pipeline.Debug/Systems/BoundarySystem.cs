@@ -4,6 +4,7 @@ using MiniEngine.Effects;
 using MiniEngine.Effects.DeviceStates;
 using MiniEngine.Effects.Techniques;
 using MiniEngine.Effects.Wrappers;
+using MiniEngine.Pipeline.Basics.Components;
 using MiniEngine.Pipeline.Debug.Components;
 using MiniEngine.Primitives;
 using MiniEngine.Primitives.Cameras;
@@ -16,17 +17,19 @@ namespace MiniEngine.Pipeline.Debug.Systems
     {
         private readonly GraphicsDevice Device;
         private readonly IComponentContainer<DebugInfo> Components;
+        private readonly IComponentContainer<Bounds> Bounds;
         private readonly ColorEffect Effect;
         private readonly BoundsDrawer2D Quad;
-        private readonly BoundsDrawer3D Bounds;
+        private readonly BoundsDrawer3D Bound;
 
 
-        public BoundarySystem(GraphicsDevice device, EffectFactory effectFactory, IComponentContainer<DebugInfo> components)
+        public BoundarySystem(GraphicsDevice device, EffectFactory effectFactory, IComponentContainer<DebugInfo> components, IComponentContainer<Bounds> bounds)
         {
             this.Device = device;
             this.Components = components;
+            this.Bounds = bounds;
             this.Effect = effectFactory.Construct<ColorEffect>();
-            this.Bounds = new BoundsDrawer3D(device);
+            this.Bound = new BoundsDrawer3D(device);
             this.Quad = new BoundsDrawer2D(device);
         }
 
@@ -45,12 +48,13 @@ namespace MiniEngine.Pipeline.Debug.Systems
             for (var i = 0; i < this.Components.Count; i++)
             {
                 var component = this.Components[i];
+                var bounds = this.Bounds.Get(component.Entity);
                 this.Effect.Color = component.Color3D;
                 this.Effect.VisibleTint = component.BoundaryVisibleTint;
                 this.Effect.ClippedTint = component.BoundaryClippedTint;
 
                 this.Effect.Apply(ColorEffectTechniques.ColorGeometryDepthTest);
-                this.Bounds.RenderOutline(component.BoundarySource.Corners);
+                this.Bound.RenderOutline(bounds.BoundingSphere);
             }
         }
 
@@ -69,12 +73,13 @@ namespace MiniEngine.Pipeline.Debug.Systems
             for (var i = 0; i < this.Components.Count; i++)
             {
                 var component = this.Components[i];
+                var bounds = this.Bounds.Get(component.Entity);
                 this.Effect.Color = component.Color2D;
                 this.Effect.VisibleTint = component.BoundaryVisibleTint;
                 this.Effect.ClippedTint = component.BoundaryClippedTint;
 
                 this.Effect.Apply(ColorEffectTechniques.ColorGeometryDepthTest);
-                this.Quad.RenderOutline(component.BoundarySource.Corners, viewPoint);
+                this.Quad.RenderOutline(bounds.BoundingSphere, viewPoint);
             }
         }
     }

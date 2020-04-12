@@ -7,11 +7,10 @@ namespace MiniEngine.Pipeline.Debug.Components
 {
     public sealed class DebugInfo : IComponent
     {
-        public DebugInfo(Entity entity, IPhysicalComponent boundarySource, Color color3D, Color color2d, Color boundaryVisibileTint, Color boundaryClippedTint)
+        public DebugInfo(Entity entity, IconType icon, Color color3D, Color color2d, Color boundaryVisibileTint, Color boundaryClippedTint)
         {
             this.Entity = entity;
-            this.BoundarySource = boundarySource;
-
+            this.Icon = icon;
             this.Color3D = color3D;
             this.Color2D = color2d;
 
@@ -21,7 +20,7 @@ namespace MiniEngine.Pipeline.Debug.Components
 
         public Entity Entity { get; }
 
-        public IPhysicalComponent BoundarySource { get; }
+        public IconType Icon { get; }
 
         [Editor("Boundary 3D")]
         public Color Color3D { get; set; }

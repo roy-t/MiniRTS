@@ -11,7 +11,6 @@ using MiniEngine.Systems.Containers;
 
 namespace MiniEngine.Pipeline.Models.Systems
 {
-
     public class ModelPose
     {
         public ModelPose(AModel model, Pose pose)
@@ -32,16 +31,19 @@ namespace MiniEngine.Pipeline.Models.Systems
         private readonly IComponentContainer<OpaqueModel> OpaqueModels;
         private readonly IComponentContainer<TransparentModel> TransparentModels;
         private readonly IComponentContainer<Pose> Poses;
+        private readonly IComponentContainer<Bounds> Bounds;
         private readonly List<ModelPose> OpaqueModelBatchList;
 
         public ModelSystem(
             IComponentContainer<OpaqueModel> opaqueModels,
             IComponentContainer<TransparentModel> transparentModels,
-            IComponentContainer<Pose> poses)
+            IComponentContainer<Pose> poses,
+            IComponentContainer<Bounds> bounds)
         {
             this.OpaqueModels = opaqueModels;
             this.TransparentModels = transparentModels;
             this.Poses = poses;
+            this.Bounds = bounds;
 
             this.OpaqueModelBatchList = new List<ModelPose>();
         }
@@ -79,18 +81,13 @@ namespace MiniEngine.Pipeline.Models.Systems
             for (var i = 0; i < models.Count; i++)
             {
                 var model = models[i];
-                var pose = this.Poses.Get(model.Entity);
+                var bounds = this.Bounds.Get(model.Entity);
 
-                // TODO: replace with bounds system?
-                model.Model.ComputeExtremes(pose.Matrix, out var min, out var max);
-                var boundingSphere = new BoundingSphere(Vector3.Lerp(min, max, 0.5f), Vector3.Distance(min, max) * 0.5f);
-
-                if (viewPoint.Frustum.Intersects(boundingSphere))
+                if (bounds.IsInView)
                 {
-                    var viewPosition = Vector4.Transform(boundingSphere.Center, viewPoint.Frustum.Matrix);
+                    var viewPosition = Vector4.Transform(bounds.BoundingSphere.Center, viewPoint.Frustum.Matrix);
                     // Apply the perspective division
                     var distance = viewPosition.Z / viewPosition.W;
-
                     InsertBackToFront(modeList, distanceList, model, distance);
                 }
             }
@@ -109,30 +106,26 @@ namespace MiniEngine.Pipeline.Models.Systems
             {
                 var model = models[i];
                 var pose = this.Poses.Get(model.Entity);
+                var bounds = this.Bounds.Get(model.Entity);
                 var modelPose = new ModelPose(model, pose);
-                model.Model.ComputeExtremes(pose.Matrix, out var min, out var max);
 
-                var boundingBox = new BoundingBox(min, max);
-
-                var bounds = BoundingRectangle.CreateFromProjectedBoundingBox(
-                    boundingBox,
-                    viewPoint);
+                var boundingRectangle = BoundingRectangle.CreateFromProjectedBoundingSphere(bounds.BoundingSphere, viewPoint);
 
                 if (currentBatch.Count == 0)
                 {
-                    currentBounds = bounds;
+                    currentBounds = boundingRectangle;
                     currentBatch.Add(modelPose);
                 }
-                else if (bounds.Intersects(currentBounds))
+                else if (boundingRectangle.Intersects(currentBounds))
                 {
                     batches.Add(currentBatch);
                     currentBatch = new List<ModelPose> { modelPose };
-                    currentBounds = bounds;
+                    currentBounds = boundingRectangle;
                 }
                 else
                 {
                     currentBatch.Add(modelPose);
-                    currentBounds = BoundingRectangle.CreateMerged(currentBounds, bounds);
+                    currentBounds = BoundingRectangle.CreateMerged(currentBounds, boundingRectangle);
                 }
             }
 

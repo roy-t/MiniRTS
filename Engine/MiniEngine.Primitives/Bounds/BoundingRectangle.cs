@@ -40,7 +40,7 @@ namespace MiniEngine.Primitives.Bounds
             }
 
             return false;
-        }      
+        }
 
         public static BoundingRectangle CreateMerged(BoundingRectangle rectA, BoundingRectangle rectB)
         {
@@ -51,6 +51,12 @@ namespace MiniEngine.Primitives.Bounds
             var maxY = Math.Max(rectA.MaxY, rectB.MaxY);
 
             return new BoundingRectangle(minX, maxX, minY, maxY);
+        }
+
+        public static BoundingRectangle CreateFromProjectedBoundingSphere(BoundingSphere sphere, IViewPoint viewPoint)
+        {
+            var box = BoundingBox.CreateFromSphere(sphere);
+            return CreateFromProjectedBoundingBox(box, viewPoint);
         }
 
         public static BoundingRectangle CreateFromProjectedBoundingBox(BoundingBox box, IViewPoint viewPoint)
@@ -76,6 +82,6 @@ namespace MiniEngine.Primitives.Bounds
             }
 
             return new BoundingRectangle(minX, maxX, minY, maxY);
-        }       
+        }
     }
 }
