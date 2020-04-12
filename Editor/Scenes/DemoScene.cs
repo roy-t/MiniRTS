@@ -5,7 +5,6 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using MiniEngine.Pipeline.Lights.Components;
-using MiniEngine.Primitives;
 using MiniEngine.Primitives.Cameras;
 using MiniEngine.Units;
 
@@ -39,12 +38,9 @@ namespace MiniEngine.Scenes
 
         public void Set()
         {
-            this.SceneBuilder.BuildSponza(new Pose(Vector3.Zero, 0.05f));
+            this.SceneBuilder.BuildSponza(Vector3.Zero, 0.05f);
             this.Skybox = this.SceneBuilder.NullSkybox;
         }
-
-        public static Pose CreateScaleRotationTranslation(float scale, float rotX, float rotY, float rotZ, Vector3 translation)
-            => new Pose(translation, scale, rotY, rotX, rotZ);
 
         public void RenderUI() { }
 

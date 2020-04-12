@@ -16,7 +16,6 @@ using MiniEngine.Pipeline.Models.Components;
 using MiniEngine.Pipeline.Models.Factories;
 using MiniEngine.Pipeline.Particles.Factories;
 using MiniEngine.Pipeline.Projectors.Factories;
-using MiniEngine.Primitives;
 using MiniEngine.Rendering;
 using MiniEngine.Systems;
 using MiniEngine.Units;
@@ -144,27 +143,27 @@ namespace MiniEngine.Scenes
             return this.LightsFactory.SunlightFactory.Construct(entity, Color.White, Vector3.Up, (Vector3.Left * 0.75f) + (Vector3.Backward * 0.1f));
         }
 
-        public OpaqueModel BuildSponza(Pose pose)
+        public OpaqueModel BuildSponza(Vector3 position, float scale)
         {
             var entity = this.EntityController.CreateEntity();
-            this.PoseFactory.Construct(entity, pose.Translation, pose.Scale, pose.Yaw, pose.Pitch, pose.Roll);
+            this.PoseFactory.Construct(entity, position, scale);
             return this.OpaqueModelFactory.Construct(entity, this.sponza);
         }
 
-        public Entity BuildLizard(Pose pose)
+        public Entity BuildLizard(Vector3 position, float scale)
         {
             var entity = this.EntityController.CreateEntity();
-            this.PoseFactory.Construct(entity, pose.Translation, pose.Scale, pose.Yaw, pose.Pitch, pose.Roll);
+            this.PoseFactory.Construct(entity, position, scale);
             this.OpaqueModelFactory.Construct(entity, this.lizard);
             //this.LightsFactory.PointLightFactory.Construct(entity, new Vector3(55, 8, 20), Color.White, 50.0f, 0.75f);
 
             return entity;
         }
 
-        public OpaqueModel BuildCube(Pose pose)
+        public OpaqueModel BuildCube(Vector3 position, float scale)
         {
             var entity = this.EntityController.CreateEntity();
-            this.PoseFactory.Construct(entity, pose.Translation, pose.Scale, pose.Yaw, pose.Pitch, pose.Roll);
+            this.PoseFactory.Construct(entity, position, scale);
             var model = this.OpaqueModelFactory.Construct(entity, this.cube);
 
             return model;
@@ -198,25 +197,25 @@ namespace MiniEngine.Scenes
             return lights;
         }
 
-        public void BuildSponzaLit(Pose pose)
+        public void BuildSponzaLit(Vector3 position, float scale)
         {
             this.BuildSponzaAmbientLight();
             this.BuildSponzeSunLight();
-            this.BuildSponza(pose);
+            this.BuildSponza(position, scale);
         }
 
-        public void BuildGear(Pose pose)
+        public void BuildGear(Vector3 position, float scale)
         {
             var entity = this.EntityController.CreateEntity();
-            this.PoseFactory.Construct(entity, pose.Translation, pose.Scale, pose.Yaw, pose.Pitch, pose.Roll);
+            this.PoseFactory.Construct(entity, position, scale);
             var model = this.OpaqueModelFactory.Construct(entity, this.gear);
             //this.DebugInfoFactory.Construct(entity, model);
         }
 
-        public Car BuildCar(Pose pose)
+        public Car BuildCar(Vector3 position, float scale)
         {
             var entity = this.EntityController.CreateEntity();
-            var modelPose = this.PoseFactory.Construct(entity, pose.Translation, pose.Scale, pose.Yaw, pose.Pitch, pose.Roll);
+            var modelPose = this.PoseFactory.Construct(entity, position, scale);
             var model = this.OpaqueModelFactory.Construct(entity, this.car);
             var animation = this.CarAnimationFactory.Construct(entity, model);
 
@@ -225,38 +224,20 @@ namespace MiniEngine.Scenes
             return new Car(model, modelPose, animation);
         }
 
-        public AModel BuildTank(Pose pose)
+        public AModel BuildTank(Vector3 position, float scale)
         {
             var entity = this.EntityController.CreateEntity();
-            this.PoseFactory.Construct(entity, pose.Translation, pose.Scale, pose.Yaw, pose.Pitch, pose.Roll);
+            this.PoseFactory.Construct(entity, position, scale);
             var model = this.OpaqueModelFactory.Construct(entity, this.tank);
             //this.DebugInfoFactory.Construct(entity, model);
 
             return model;
         }
 
-        public void BuildTerrainInParts(int rows, int columns, Pose offset)
-        {
-            var entity = this.EntityController.CreateEntity();
-            for (var x = 0; x < columns; x++)
-            {
-                for (var y = 0; y < rows; y++)
-                {
-                    var v3 = new Vector3(x, 0, y);
-                    var pose = new Pose(v3 + offset.Translation, 1.0f / 40.0f);
-
-                    this.PoseFactory.Construct(entity, pose.Translation, pose.Scale, pose.Yaw, pose.Pitch, pose.Roll);
-                    var model = this.OpaqueModelFactory.Construct(entity, this.terrain);
-                    //this.DebugInfoFactory.Construct(entity, model);
-                }
-            }
-        }
-
         public void BuildTerrain(Vector2 size)
         {
             var entity = this.EntityController.CreateEntity();
-            var pose = new Pose(Vector3.Zero);
-            this.PoseFactory.Construct(entity, pose.Translation, pose.Scale, pose.Yaw, pose.Pitch, pose.Roll);
+            this.PoseFactory.Construct(entity, Vector3.Zero, 1.0f);
             var model = this.OpaqueModelFactory.Construct(entity, this.terrain);
 
             model.TextureScale = size;
@@ -268,14 +249,12 @@ namespace MiniEngine.Scenes
             var entities = this.EntityController.CreateEntities(2);
 
             var position = new Vector3(-40.5f, 30.0f, 3.2f);
-            var pose = new Pose(position, 4.4f * 0.01f, MathHelper.PiOver2, MathHelper.PiOver2, 0);
-            this.PoseFactory.Construct(entities[0], pose.Translation, pose.Scale, pose.Yaw, pose.Pitch, pose.Roll);
+            this.PoseFactory.Construct(entities[0], position, 4.4f * 0.01f, MathHelper.PiOver2, MathHelper.PiOver2, 0);
             var model1 = this.TransparentModelFactory.Construct(entities[0], this.plane);
             //this.DebugInfoFactory.Construct(entities[0], model1);
 
             position = new Vector3(-40.5f, 30.0f, -7.2f);
-            pose = new Pose(position, 4.4f * 0.01f, MathHelper.PiOver4);
-            this.PoseFactory.Construct(entities[1], pose.Translation, pose.Scale, pose.Yaw, pose.Pitch, pose.Roll);
+            this.PoseFactory.Construct(entities[1], position, 4.4f * 0.01f, MathHelper.PiOver4);
             var model2 = this.TransparentModelFactory.Construct(entities[1], this.plane);
             //this.DebugInfoFactory.Construct(entities[1], model2);
 

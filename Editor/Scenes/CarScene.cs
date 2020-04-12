@@ -6,7 +6,6 @@ using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.GameLogic;
 using MiniEngine.Input;
 using MiniEngine.Pipeline.Debug.Components;
-using MiniEngine.Primitives;
 using MiniEngine.Primitives.Cameras;
 using MiniEngine.Systems;
 using MiniEngine.Units;
@@ -60,7 +59,7 @@ namespace MiniEngine.Scenes
             //this.car.MoveAndTurn(this.worldGrid.ToWorldPositionCentered(new GridPosition(19, 19)), 0.0f);
 
 
-            var tank = this.SceneBuilder.BuildTank(new Pose(Vector3.Zero));
+            var tank = this.SceneBuilder.BuildTank(Vector3.Zero, 1.0f);
         }
 
         public void Update(PerspectiveCamera camera, Seconds elapsed)

@@ -75,7 +75,6 @@
     <Compile Include="Frustum.cs" />
     <Compile Include="FullScreenTriangle.cs" />
     <Compile Include="GBuffer.cs" />
-    <Compile Include="Pose.cs" />
     <Compile Include="BoundsDrawer3D.cs" />
     <Compile Include="ProjectionMath.cs" />
     <Compile Include="BoundsDrawer2D.cs" />

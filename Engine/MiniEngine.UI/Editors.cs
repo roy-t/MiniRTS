@@ -3,7 +3,6 @@ using System.Linq;
 using ImGuiNET;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using MiniEngine.Primitives;
 using MiniEngine.Primitives.Cameras;
 using MiniEngine.Systems.Components;
 using MiniEngine.Units;
@@ -58,27 +57,6 @@ namespace MiniEngine.UI
                     var v2 = ToNum(vector2);
                     if (this.CreateVector2(label, ref v2, minMax)) { setter(ToXna(v2)); }
                     break;
-                case Pose pose:
-                    {
-                        ImGui.Text(label);
-
-                        var yaw = pose.Yaw;
-                        var pitch = pose.Pitch;
-                        var roll = pose.Roll;
-                        var translation = ToNum(pose.Translation);
-                        var scale = ToNum(pose.Scale);
-
-                        var set = false;
-                        set |= this.CreateVector3("Translation", ref translation, MinMaxDescription.MinusInfinityToInfinity);
-                        set |= this.CreateVector3("Scale", ref scale, MinMaxDescription.ZeroToInfinity);
-                        set |= this.CreateFloat("Yaw", ref yaw, MinMaxDescription.MinusPiToPi);
-                        set |= this.CreateFloat("Pitch", ref pitch, MinMaxDescription.MinusPiToPi);
-                        set |= this.CreateFloat("Roll", ref roll, MinMaxDescription.MinusPiToPi);
-
-                        if (set) { setter(new Pose(ToXna(translation), ToXna(scale), yaw, pitch, roll)); }
-                    }
-                    break;
-
                 case PerspectiveCamera camera:
                     {
                         ImGui.Text(label);
