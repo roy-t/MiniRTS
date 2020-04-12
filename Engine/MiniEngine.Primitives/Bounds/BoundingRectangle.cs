@@ -53,12 +53,6 @@ namespace MiniEngine.Primitives.Bounds
             return new BoundingRectangle(minX, maxX, minY, maxY);
         }
 
-        public static BoundingRectangle CreateFromProjectedBoundingSphere(BoundingSphere sphere, IViewPoint viewPoint)
-        {
-            var box = BoundingBox.CreateFromSphere(sphere);
-            return CreateFromProjectedBoundingBox(box, viewPoint);
-        }
-
         public static BoundingRectangle CreateFromProjectedBoundingBox(BoundingBox box, IViewPoint viewPoint)
         {
             var minX = float.MaxValue;

@@ -85,7 +85,7 @@ namespace MiniEngine.Pipeline.Models.Systems
 
                 if (bounds.IsInView)
                 {
-                    var viewPosition = Vector4.Transform(bounds.BoundingSphere.Center, viewPoint.Frustum.Matrix);
+                    var viewPosition = Vector4.Transform(bounds.Center, viewPoint.Frustum.Matrix);
                     // Apply the perspective division
                     var distance = viewPosition.Z / viewPosition.W;
                     InsertBackToFront(modeList, distanceList, model, distance);
@@ -109,7 +109,7 @@ namespace MiniEngine.Pipeline.Models.Systems
                 var bounds = this.Bounds.Get(model.Entity);
                 var modelPose = new ModelPose(model, pose);
 
-                var boundingRectangle = BoundingRectangle.CreateFromProjectedBoundingSphere(bounds.BoundingSphere, viewPoint);
+                var boundingRectangle = BoundingRectangle.CreateFromProjectedBoundingBox(bounds.BoundingBox, viewPoint);
 
                 if (currentBatch.Count == 0)
                 {

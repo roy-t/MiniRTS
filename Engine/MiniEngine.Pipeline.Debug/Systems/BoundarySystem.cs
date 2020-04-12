@@ -54,7 +54,7 @@ namespace MiniEngine.Pipeline.Debug.Systems
                 this.Effect.ClippedTint = component.BoundaryClippedTint;
 
                 this.Effect.Apply(ColorEffectTechniques.ColorGeometryDepthTest);
-                this.Bound.RenderOutline(bounds.BoundingSphere);
+                this.Bound.RenderOutline(bounds.BoundingBox);
             }
         }
 
@@ -63,7 +63,7 @@ namespace MiniEngine.Pipeline.Debug.Systems
             this.Effect.World = Matrix.Identity;
             this.Effect.View = Matrix.Identity;
             this.Effect.Projection = Matrix.Identity;
-
+            
             this.Effect.DepthMap = gBuffer.DepthTarget;
             this.Effect.CameraPosition = viewPoint.Position;
             this.Effect.InverseViewProjection = viewPoint.InverseViewProjection;
@@ -79,7 +79,7 @@ namespace MiniEngine.Pipeline.Debug.Systems
                 this.Effect.ClippedTint = component.BoundaryClippedTint;
 
                 this.Effect.Apply(ColorEffectTechniques.ColorGeometryDepthTest);
-                this.Quad.RenderOutline(bounds.BoundingSphere, viewPoint);
+                this.Quad.RenderOutline(bounds.BoundingBox, viewPoint);
             }
         }
     }

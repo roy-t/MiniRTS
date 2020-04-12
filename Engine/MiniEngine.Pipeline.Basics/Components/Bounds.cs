@@ -6,18 +6,16 @@ namespace MiniEngine.Pipeline.Basics.Components
 {
     public sealed class Bounds : IComponent
     {
-        public Bounds(Entity entity, BoundingSphere neutralBoundingSphere)
+        public Bounds(Entity entity, Vector3 min, Vector3 max)
         {
             this.Entity = entity;
-            this.NeutralBoundingSphere = neutralBoundingSphere;
+            this.NeutralBoundingBox = new BoundingBox(min, max);
         }
 
         public Entity Entity { get; }
-
-        public BoundingSphere NeutralBoundingSphere { get; }
-
-        public BoundingSphere BoundingSphere { get; internal set; }
-
+        public Vector3 Center => Vector3.Lerp(this.BoundingBox.Min, this.BoundingBox.Max, 0.5f);
+        public BoundingBox NeutralBoundingBox { get; }
+        public BoundingBox BoundingBox { get; internal set; }
         public bool IsInView { get; internal set; }
     }
 }

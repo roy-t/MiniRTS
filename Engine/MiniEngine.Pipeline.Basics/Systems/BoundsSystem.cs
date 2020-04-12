@@ -1,4 +1,5 @@
-﻿using MiniEngine.Pipeline.Basics.Components;
+﻿using Microsoft.Xna.Framework;
+using MiniEngine.Pipeline.Basics.Components;
 using MiniEngine.Primitives.Cameras;
 using MiniEngine.Systems;
 using MiniEngine.Systems.Containers;
@@ -24,9 +25,26 @@ namespace MiniEngine.Pipeline.Basics.Systems
                 var bounds = this.Bounds[i];
                 var pose = this.Poses.Get(bounds.Entity);
 
-                bounds.BoundingSphere = bounds.NeutralBoundingSphere.Transform(pose.Matrix);
-                bounds.IsInView = perspectiveCamera.Frustum.Intersects(bounds.BoundingSphere);
+                bounds.BoundingBox = TransformBoundingBox(bounds.NeutralBoundingBox, pose.Matrix);
+                bounds.IsInView = perspectiveCamera.Frustum.Intersects(bounds.BoundingBox);
             }
+        }
+
+        public static BoundingBox TransformBoundingBox(BoundingBox boundingBox, Matrix world)
+        {
+            var xa = world.Right * boundingBox.Min.X;
+            var xb = world.Right * boundingBox.Max.X;
+
+            var ya = world.Up * boundingBox.Min.Y;
+            var yb = world.Up * boundingBox.Max.Y;
+
+            var za = world.Backward * boundingBox.Min.Z;
+            var zb = world.Backward * boundingBox.Max.Z;
+
+            return new BoundingBox(
+                Vector3.Min(xa, xb) + Vector3.Min(ya, yb) + Vector3.Min(za, zb) + world.Translation,
+                Vector3.Max(xa, xb) + Vector3.Max(ya, yb) + Vector3.Max(za, zb) + world.Translation
+            );
         }
     }
 }

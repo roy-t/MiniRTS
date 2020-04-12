@@ -29,10 +29,6 @@ namespace MiniEngine.Primitives
             this.Indices = new short[] { 0, 1, 3, 2, 0 };
         }
 
-
-        public void RenderOutline(BoundingSphere boundingSphere, PerspectiveCamera camera)
-            => this.RenderOutline(BoundingBox.CreateFromSphere(boundingSphere), camera);
-
         public void RenderOutline(Vector3[] corners, PerspectiveCamera camera)
         {
             corners.CopyTo(this.Corners, 0);

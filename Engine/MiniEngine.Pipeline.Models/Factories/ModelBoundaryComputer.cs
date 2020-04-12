@@ -5,13 +5,10 @@ namespace MiniEngine.Pipeline.Models.Factories
 {
     public static class ModelBoundaryComputer
     {
-        public static BoundingSphere Compute(Model model)
-        {
-            ComputeExtremes(model, Matrix.Identity, out var min, out var max);
-            return new BoundingSphere(Vector3.Lerp(min, max, 0.5f), Vector3.Distance(min, max) * 0.5f);
-        }
+        public static BoundingSphere FromMinMax(Vector3 min, Vector3 max)
+            => new BoundingSphere(Vector3.Lerp(min, max, 0.5f), Vector3.Distance(min, max) * 0.5f);
 
-        private static void ComputeExtremes(Model model, Matrix worldTransform, out Vector3 min, out Vector3 max)
+        public static void ComputeExtremes(Model model, Matrix worldTransform, out Vector3 min, out Vector3 max)
         {
             // Initialize minimum and maximum corners of the bounding box to max and min values
             min = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);

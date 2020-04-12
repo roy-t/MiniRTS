@@ -79,9 +79,6 @@ namespace MiniEngine.Primitives
             this.Render();
         }
 
-        public void RenderOutline(BoundingSphere boundingSphere)
-            => this.RenderOutline(BoundingBox.CreateFromSphere(boundingSphere));
-
         public void RenderOutline(Vector3[] corners)
         {
             corners.CopyTo(this.Corners, 0);
