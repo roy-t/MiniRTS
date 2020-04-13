@@ -175,28 +175,6 @@ namespace MiniEngine.Scenes
             return this.LightsFactory.ShadowCastingLightFactory.Construct(entity, new Vector3(40, 13, 27), new Vector3(53, 11, 12), Color.White, 2048);
         }
 
-        public PointLight[] CreateFestiveLights()
-        {
-            var entity = this.EntityController.CreateEntity();
-            var count = 20;
-            var lights = new PointLight[count];
-
-            var start = new Vector3(60, 30, 20);
-            var end = new Vector3(-60, 30, 20);
-
-            var distance = Vector3.Distance(start, end);
-            var direction = Vector3.Normalize(end - start);
-            var step = distance / count;
-
-            for (var i = 0; i < count; i++)
-            {
-                var position = start + (direction * step * i);
-                lights[i] = this.LightsFactory.PointLightFactory.Construct(entity, position, Color.White, 10.0f, 1.0f);
-            }
-
-            return lights;
-        }
-
         public void BuildSponzaLit(Vector3 position, float scale)
         {
             this.BuildSponzaAmbientLight();
@@ -215,13 +193,13 @@ namespace MiniEngine.Scenes
         public Car BuildCar(Vector3 position, float scale)
         {
             var entity = this.EntityController.CreateEntity();
-            var modelPose = this.PoseFactory.Construct(entity, position, scale);
+            var pose = this.PoseFactory.Construct(entity, position, scale);
             var model = this.OpaqueModelFactory.Construct(entity, this.car);
-            var animation = this.CarAnimationFactory.Construct(entity, model);
+            var animation = this.CarAnimationFactory.Construct(entity, model.Model.Tag as SkinningData);
 
             //this.DebugInfoFactory.Construct(entity, model);
 
-            return new Car(model, modelPose, animation);
+            return new Car(model, pose, animation);
         }
 
         public AModel BuildTank(Vector3 position, float scale)
@@ -264,9 +242,11 @@ namespace MiniEngine.Scenes
         public PointLight BuildFirePlace()
         {
             var entity = this.EntityController.CreateEntity();
+
             var entity2 = this.EntityController.CreateEntity();
 
             var particleSpawn = new Vector3(-60.5f, 6.0f, 20.0f);
+            var pose = this.PoseFactory.Construct(entity, particleSpawn);
 
             this.AveragedEmitterFactory.ConstructAveragedEmitter(entity, particleSpawn, this.smoke, 1, 1, 2.0f);
             this.AdditiveEmitterFactory.ConstructAdditiveEmitter(entity, particleSpawn, this.explosion2, 1, 1, 1.0f);
@@ -275,10 +255,7 @@ namespace MiniEngine.Scenes
             emitter.Spread = 0.75f;
             emitter.TimeToLive = 2.25f;
 
-            var pointLight = this.LightsFactory.PointLightFactory.Construct(entity, particleSpawn, Color.IndianRed, 20.0f, 1.0f);
-            //var light = particleSpawn + (Vector3.Up * 3);
-            //this.LightsFactory.ShadowCastingLightFactory.Construct(this.particleEntity, light, light + Vector3.Up + (Vector3.Left * 0.001f), Color.IndianRed);
-
+            var pointLight = this.LightsFactory.PointLightFactory.Construct(entity, Color.IndianRed, 20.0f, 1.0f);
 
             var cameraPosition = new Vector3(-60.5f, 8.0f, 20.0f);
             var projectorPosition = new Vector3(-60.5f, 0.0f, 20.0f);

@@ -84,6 +84,7 @@ namespace MiniEngine.GameLogic
 
         private void ComputeWheelMovement()
         {
+            this.CarDynamics.UpdateWheelPositions();
             var sum = 0.0f;
             for (var i = 0; i < 4; i++)
             {

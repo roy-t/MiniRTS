@@ -33,5 +33,6 @@ namespace MiniEngine.Pipeline.Lights.Factories
 
             return light;
         }
+
     }
 }

@@ -1,7 +1,10 @@
 # WIP
-- Let all components that use Position use Pose, maybe let items with lookat also use Pose
+- There are still a few components that use a position. However they usually use it in different way, should they use Pose?
+    - ShadowCastingLight
+    - Sunlight
+    - Waypoint
+    - AEmitter
 - Replace icon system with a system that prints the number of the entity! Then remove all icons and clean up debug systems
-- Make sure no component directly references another component
 
 # Future
 ## TODO
@@ -29,9 +32,6 @@ if people are behind NAT?). Make game p2p?
 
 - Job/Threading system for tasks that take more than one frame
     - Systems that are receive the processed output should have a thread-safe queue or something to process incoming events?
-
-### Entities
-- Look up components on the same entity, instead of referencing them
 
 ### Misc
 - Make it cleaner to select or deselect render pipeline features
@@ -72,5 +72,5 @@ if people are behind NAT?). Make game p2p?
     - In a lot of cases our vertex shader computes some camera matrices that we already have
 
 ## Known Issues
-- Sometimes transparency effects from the sunlight disappear when zooming in. Possibly due to the camera for that cascade not seeing the object anymore, even though backface culling and z-culling are disabled. This can usually be prevented by tweaking the cascade distances.
+- All transparent models need to be rendered always to make sure that sunlights/directional lights projections work even when the model itself is not on screen
 - SSAO: tiling/shimmiring/banding effect for flat surfaces visibile in light/blur render target

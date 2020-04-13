@@ -63,11 +63,14 @@ namespace MiniEngine.Pipeline.Models.Systems
             for (var i = 0; i < this.OpaqueModels.Count; i++)
             {
                 var model = this.OpaqueModels[i];
-                var pose = this.Poses.Get(model.Entity);
+                var bounds = this.Bounds.Get(model.Entity);
 
-                var modelPose = new ModelPose(model, pose);
-                this.OpaqueModelBatchList.Add(modelPose);
-
+                if (bounds.IsInView)
+                {
+                    var pose = this.Poses.Get(model.Entity);
+                    var modelPose = new ModelPose(model, pose);
+                    this.OpaqueModelBatchList.Add(modelPose);
+                }
             }
 
             return new ModelBatchList(new ModelRenderBatch(this.OpaqueModelBatchList, viewPoint, skybox), transparentBatches);
@@ -83,13 +86,10 @@ namespace MiniEngine.Pipeline.Models.Systems
                 var model = models[i];
                 var bounds = this.Bounds.Get(model.Entity);
 
-                if (bounds.IsInView)
-                {
-                    var viewPosition = Vector4.Transform(bounds.Center, viewPoint.Frustum.Matrix);
-                    // Apply the perspective division
-                    var distance = viewPosition.Z / viewPosition.W;
-                    InsertBackToFront(modeList, distanceList, model, distance);
-                }
+                var viewPosition = Vector4.Transform(bounds.Center, viewPoint.Frustum.Matrix);
+                // Apply the perspective division
+                var distance = viewPosition.Z / viewPosition.W;
+                InsertBackToFront(modeList, distanceList, model, distance);
             }
 
             return modeList;

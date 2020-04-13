@@ -10,14 +10,12 @@ namespace MiniEngine.GameLogic
     {
         private readonly Matrix[] BoneTransforms;
         private readonly Matrix[] WorldTransforms;
-        private readonly Matrix[] SkinTransforms;
 
-        public CarAnimation(Entity entity, AModel model)
-            : base(entity, model)
+        public CarAnimation(Entity entity, SkinningData skinningData)
+            : base(entity, skinningData)
         {
             this.BoneTransforms = new Matrix[this.SkinningData.BindPose.Count];
             this.WorldTransforms = new Matrix[this.SkinningData.BindPose.Count];
-            this.SkinTransforms = new Matrix[this.SkinningData.BindPose.Count];
 
             this.WheelRoll = new float[4];
             this.WheelYaw = new float[4];
@@ -43,12 +41,10 @@ namespace MiniEngine.GameLogic
                 this.WorldTransforms[bone] = worldTransform;
             }
 
-            for (var bone = 0; bone < this.SkinTransforms.Length; bone++)
+            for (var bone = 0; bone < this.SkinningData.BindPose.Count; bone++)
             {
                 this.SkinTransforms[bone] = this.SkinningData.InverseBindPose[bone] * this.WorldTransforms[bone];
             }
-
-            this.CopySkinTransformsToModel(this.SkinTransforms);
         }
 
         private int GetWheelIndex(int bone)

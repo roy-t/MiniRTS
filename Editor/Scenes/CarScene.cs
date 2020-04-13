@@ -47,19 +47,19 @@ namespace MiniEngine.Scenes
         {
             this.Followers.Clear();
 
-            //this.SceneBuilder.BuildTerrain(new Vector2(40, 40));
+            this.SceneBuilder.BuildTerrain(new Vector2(40, 40));
             this.SceneBuilder.BuildSponzaAmbientLight();
             this.SceneBuilder.BuildSponzeSunLight();
             this.Skybox = this.SceneBuilder.SponzaSkybox;
 
-            //this.worldGrid = new WorldGrid(40, 40, 1, 8, new Vector3(-20, 0, -20));
-            //this.SceneBuilder.CreateDebugLine(CreateGridLines(40, 40), Color.White);
+            this.worldGrid = new WorldGrid(40, 40, 1, 8, new Vector3(-20, 0, -20));
+            this.SceneBuilder.CreateDebugLine(CreateGridLines(40, 40), Color.White);
 
-            //this.car = this.SceneBuilder.BuildCar(new Pose(Vector3.Zero, 0.1f));
-            //this.car.MoveAndTurn(this.worldGrid.ToWorldPositionCentered(new GridPosition(19, 19)), 0.0f);
+            this.car = this.SceneBuilder.BuildCar(Vector3.Zero, 0.1f);
+            this.car.MoveAndTurn(this.worldGrid.ToWorldPositionCentered(new GridPosition(19, 19)), 0.0f);
 
 
-            var tank = this.SceneBuilder.BuildTank(Vector3.Zero, 1.0f);
+            //var tank = this.SceneBuilder.BuildTank(Vector3.Zero, 1.0f);
         }
 
         public void Update(PerspectiveCamera camera, Seconds elapsed)
@@ -77,28 +77,28 @@ namespace MiniEngine.Scenes
                 }
             }
 
-            //if (this.MouseInput.Click(MouseButtons.Left))
-            //{
-            //    this.Followers.Clear();
-            //    if (this.pathLine != null)
-            //    {
-            //        this.EntityController.DestroyEntity(this.pathLine.Entity);
-            //    }
+            if (this.MouseInput.Click(MouseButtons.Left))
+            {
+                this.Followers.Clear();
+                if (this.pathLine != null)
+                {
+                    this.EntityController.DestroyEntity(this.pathLine.Entity);
+                }
 
-            //    var mouseWorldPosition = camera.Pick(this.MouseInput.Position, 0.0f);
-            //    var roughPath = this.worldGrid.PlanPath(this.car.Position, mouseWorldPosition);
+                var mouseWorldPosition = camera.Pick(this.MouseInput.Position, 0.0f);
+                var roughPath = this.worldGrid.PlanPath(this.car.Position, mouseWorldPosition);
 
-            //    var smoothPath = PathInterpolator.Interpolate(roughPath);
-            //    var completePath = PathStarter.CreateStart(smoothPath, this.car);
+                var smoothPath = PathInterpolator.Interpolate(roughPath);
+                var completePath = PathStarter.CreateStart(smoothPath, this.car);
 
-            //    this.pathLine = this.SceneBuilder.CreateDebugLine(completePath.WayPoints, Color.Purple);
+                this.pathLine = this.SceneBuilder.CreateDebugLine(completePath.WayPoints, Color.Purple);
 
-            //    var followLogic = new PathFollowLogic(this.worldGrid, this.car, completePath,
-            //        new MetersPerSecond(0.1f));
-            //    followLogic.Update(new Seconds(0));
+                var followLogic = new PathFollowLogic(this.worldGrid, this.car, completePath,
+                    new MetersPerSecond(0.1f));
+                followLogic.Update(new Seconds(0));
 
-            //    this.Followers.Add(followLogic);
-            //}
+                this.Followers.Add(followLogic);
+            }
 
         }
 

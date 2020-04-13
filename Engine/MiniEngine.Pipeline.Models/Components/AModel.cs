@@ -13,6 +13,12 @@ namespace MiniEngine.Pipeline.Models.Components
             this.Entity = entity;
             this.Model = model;
             this.TextureScale = Vector2.One;
+
+            if (model.Tag is SkinningData)
+            {
+                this.SkinTransforms = new Matrix[SkinningData.MaxBones];
+                this.HasAnimations = true;
+            }
         }
 
         public Entity Entity { get; }
@@ -26,6 +32,6 @@ namespace MiniEngine.Pipeline.Models.Components
 
         public Matrix[] SkinTransforms { get; set; }
 
-        public bool HasAnimations => this.SkinTransforms != null;
+        public bool HasAnimations { get; }
     }
 }

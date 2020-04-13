@@ -12,9 +12,9 @@ namespace MiniEngine.Pipeline.Lights.Factories
         public PointLightFactory(GraphicsDevice device, IComponentContainer<PointLight> container)
             : base(device, container) { }
 
-        public PointLight Construct(Entity entity, Vector3 position, Color color, float radius, float intensity)
+        public PointLight Construct(Entity entity, Color color, float radius, float intensity)
         {
-            var light = new PointLight(entity, position, color, radius, intensity);
+            var light = new PointLight(entity, color, radius, intensity);
             this.Container.Add(entity, light);
 
             return light;

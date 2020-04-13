@@ -2,11 +2,10 @@
 using MiniEngine.Pipeline.Basics.Components;
 using MiniEngine.Pipeline.Models.Components;
 using MiniEngine.Systems;
-using MiniEngine.Systems.Components;
 
 namespace MiniEngine.GameLogic
 {
-    public sealed class Car : IComponent
+    public sealed class Car
     {
         public Car(OpaqueModel model, Pose pose, CarAnimation animation)
         {

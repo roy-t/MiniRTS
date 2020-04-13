@@ -30,5 +30,11 @@ namespace MiniEngine.Pipeline.Models.Factories
 
             return transparentModel;
         }
+
+        public override void Deconstruct(Entity entity)
+        {
+            this.Bounds.Remove(entity);
+            base.Deconstruct(entity);
+        }
     }
 }

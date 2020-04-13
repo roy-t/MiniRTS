@@ -70,7 +70,7 @@
     <Compile Include="CarLayout.cs" />
     <Compile Include="CarAnimation.cs" />
     <Compile Include="CarDynamics.cs" />
-    <Compile Include="Factories\AnimationStore.cs" />
+    <Compile Include="Factories\CarAnimationFactory.cs" />
     <Compile Include="GameLogicCompositionRoot.cs" />
     <Compile Include="Path.cs" />
     <Compile Include="PathInterpolator.cs" />
