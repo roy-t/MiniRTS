@@ -6,7 +6,6 @@ using MiniEngine.Units;
 
 namespace MiniEngine.CutScene
 {
-    // TODO: use Pose 
     public sealed class Waypoint : IComponent
     {
         public Waypoint(Entity entity, MetersPerSecond speed, Vector3 position, Vector3 lookAt)
