@@ -47,7 +47,7 @@ namespace MiniEngine.Scenes
         {
             //this.Followers.Clear();
 
-            //this.SceneBuilder.BuildTerrain(new Vector2(40, 40));
+            this.SceneBuilder.BuildTerrain(new Vector2(40, 40));
             this.SceneBuilder.BuildSponzaAmbientLight();
             this.SceneBuilder.BuildSponzeSunLight();
             this.Skybox = this.SceneBuilder.SponzaSkybox;

@@ -68,7 +68,7 @@ namespace MiniEngine.Pipeline.Models.Batches
                     }
 
                     // TODO: temp test for UV animations
-                    if (mesh.Name == "BezierCircle")
+                    if (mesh.Name.StartsWith("TRACK"))
                     {
                         this.Effect.TextureOffset = Vector2.UnitY * accum;
                         accum += (1.0f / 6000.0f);
