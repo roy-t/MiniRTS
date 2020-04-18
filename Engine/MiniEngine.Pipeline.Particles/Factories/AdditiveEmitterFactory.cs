@@ -15,7 +15,7 @@ namespace MiniEngine.Pipeline.Particles.Factories
         public AdditiveEmitter ConstructAdditiveEmitter(Entity entity, Vector3 position, Texture2D texture, int rows, int columns, float scale)
         {
             var emitter = new AdditiveEmitter(entity, position, texture, rows, columns, scale);
-            this.Container.Add(entity, emitter);
+            this.Container.Add(emitter);
 
             return emitter;
         }

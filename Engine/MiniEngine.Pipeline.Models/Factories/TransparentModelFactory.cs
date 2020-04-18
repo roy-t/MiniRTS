@@ -23,10 +23,10 @@ namespace MiniEngine.Pipeline.Models.Factories
         public TransparentModel Construct(Entity entity, Model model)
         {
             var transparentModel = new TransparentModel(entity, model);
-            this.Container.Add(entity, transparentModel);
+            this.Container.Add(transparentModel);
 
             ModelBoundaryComputer.ComputeExtremes(model, Matrix.Identity, out var min, out var max);
-            this.Bounds.Add(entity, new Bounds(entity, min, max));
+            this.Bounds.Add(new Bounds(entity, min, max));
 
             return transparentModel;
         }

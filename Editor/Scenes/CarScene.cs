@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.GameLogic;
 using MiniEngine.Input;
 using MiniEngine.Pipeline.Debug.Components;
+using MiniEngine.Pipeline.Models.Components;
 using MiniEngine.Primitives.Cameras;
 using MiniEngine.Systems;
 using MiniEngine.Units;
@@ -26,6 +27,7 @@ namespace MiniEngine.Scenes
 
         private Car car;
         private DebugLine pathLine;
+        private UVAnimation tankTrackAnimation;
 
         public CarScene(SceneBuilder sceneBuilder, EntityController entityController, MouseInput mouseInput, KeyboardInput keyboardInput)
         {
@@ -59,11 +61,16 @@ namespace MiniEngine.Scenes
             //this.car.MoveAndTurn(this.worldGrid.ToWorldPositionCentered(new GridPosition(19, 19)), 0.0f);
 
 
-            var tank = this.SceneBuilder.BuildTank(Vector3.Zero, 1.0f);
+            var (tank, animation) = this.SceneBuilder.BuildTank(Vector3.Zero, 1.0f);
+            this.tankTrackAnimation = animation;
         }
 
         public void Update(PerspectiveCamera camera, Seconds elapsed)
         {
+
+            this.tankTrackAnimation.MeshUVOffsets[0].UVOffset += Vector2.UnitY * elapsed * 0.01f;
+            this.tankTrackAnimation.MeshUVOffsets[1].UVOffset += Vector2.UnitY * elapsed * 0.02f;
+
             //if (this.KeyboardInput.Click(Microsoft.Xna.Framework.Input.Keys.P))
             //{
             //    this.pause = !this.pause;

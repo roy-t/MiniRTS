@@ -14,7 +14,7 @@ namespace MiniEngine.GameLogic.Factories
         public CarAnimation Construct(Entity entity, SkinningData skinningData)
         {
             var animation = new CarAnimation(entity, skinningData);
-            this.Container.Add(entity, animation);
+            this.Container.Add(animation);
 
             return animation;
         }

@@ -19,6 +19,8 @@ namespace MiniEngine.Pipeline.Models.Components
                 this.SkinTransforms = new Matrix[SkinningData.MaxBones];
                 this.HasAnimations = true;
             }
+
+            this.UVOffsets = new Vector2[model.Meshes.Count];
         }
 
         public Entity Entity { get; }
@@ -30,7 +32,9 @@ namespace MiniEngine.Pipeline.Models.Components
 
         public IconType Icon => IconType.Model;
 
-        public Matrix[] SkinTransforms { get; set; }
+        public Matrix[] SkinTransforms { get; }
+
+        public Vector2[] UVOffsets { get; }
 
         public bool HasAnimations { get; }
     }

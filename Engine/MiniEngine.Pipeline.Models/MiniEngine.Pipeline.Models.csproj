@@ -77,6 +77,7 @@
     <Compile Include="Components\SkinningData.cs" />
     <Compile Include="Components\TransparentModel.cs" />
     <Compile Include="Components\OpaqueModel.cs" />
+    <Compile Include="Components\UVAnimation.cs" />
     <Compile Include="Extensions\AntiAliasingStageExtensions.cs" />
     <Compile Include="Extensions\ClearStageExtensions.cs" />
     <Compile Include="Extensions\CombineDiffuseWithLigtingStageExtensions.cs" />
@@ -85,6 +86,7 @@
     <Compile Include="Factories\ModelBoundaryComputer.cs" />
     <Compile Include="Factories\TransparentModelFactory.cs" />
     <Compile Include="Factories\OpaqueModelFactory.cs" />
+    <Compile Include="Factories\UVAnimationFactory.cs" />
     <Compile Include="ModelPipeline.cs" />
     <Compile Include="ModelPipelineInput.cs" />
     <Compile Include="ModelsCompositionRoot.cs" />
@@ -96,6 +98,7 @@
     <Compile Include="Stages\CombineDiffuseWithLightingStage.cs" />
     <Compile Include="Stages\RenderModelBatchStage.cs" />
     <Compile Include="Stages\RenderModelsStage.cs" />
+    <Compile Include="Systems\UVAnimationSystem.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MiniEngine.Effects\MiniEngine.Effects.csproj">

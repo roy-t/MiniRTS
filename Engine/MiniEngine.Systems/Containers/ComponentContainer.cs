@@ -16,10 +16,10 @@ namespace MiniEngine.Systems.Containers
             this.LookUp = new Dictionary<Entity, T>();
         }
 
-        public void Add(Entity entity, T item)
+        public void Add(T item)
         {
             this.Components.Add(item);
-            this.LookUp.Add(entity, item);
+            this.LookUp.Add(item.Entity, item);
         }
 
         public void Remove(Entity entity)

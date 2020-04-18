@@ -16,7 +16,7 @@ namespace MiniEngine.Pipeline.Debug.Factories
         public DebugInfo Construct(Entity entity, IconType icon)
         {
             var debugInfo = new DebugInfo(entity, icon, Color.Blue, Color.Red, Color.White, Color.FromNonPremultiplied(32, 32, 32, 255));
-            this.Container.Add(entity, debugInfo);
+            this.Container.Add(debugInfo);
 
             return debugInfo;
         }

@@ -21,7 +21,7 @@ namespace MiniEngine.Systems.Containers
     public interface IComponentContainer<T> : IComponentContainer
         where T : IComponent
     {
-        void Add(Entity entity, T item);
+        void Add(T item);
 
         new T Get(Entity entity);
 

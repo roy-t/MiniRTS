@@ -18,6 +18,7 @@ using MiniEngine.Pipeline.Particles.Factories;
 using MiniEngine.Pipeline.Projectors.Factories;
 using MiniEngine.Rendering;
 using MiniEngine.Systems;
+using MiniEngine.Systems.Annotations;
 using MiniEngine.Units;
 
 namespace MiniEngine.Scenes
@@ -31,6 +32,7 @@ namespace MiniEngine.Scenes
         private readonly OpaqueModelFactory OpaqueModelFactory;
         private readonly TransparentModelFactory TransparentModelFactory;
         private readonly CarAnimationFactory CarAnimationFactory;
+        private readonly UVAnimationFactory UVAnimationFactory;
         private readonly ProjectorFactory ProjectorFactory;
         private readonly AdditiveEmitterFactory AdditiveEmitterFactory;
         private readonly AveragedEmitterFactory AveragedEmitterFactory;
@@ -62,6 +64,7 @@ namespace MiniEngine.Scenes
             OpaqueModelFactory opaqueModelFactory,
             TransparentModelFactory transparentModelFactory,
             CarAnimationFactory carAnimationFactory,
+            UVAnimationFactory uvAnimationFactory,
             ProjectorFactory projectorFactory,
             AdditiveEmitterFactory additiveEmitterFactory,
             AveragedEmitterFactory averagedEmitterFactory,
@@ -78,6 +81,7 @@ namespace MiniEngine.Scenes
             this.OpaqueModelFactory = opaqueModelFactory;
             this.TransparentModelFactory = transparentModelFactory;
             this.CarAnimationFactory = carAnimationFactory;
+            this.UVAnimationFactory = uvAnimationFactory;
             this.ProjectorFactory = projectorFactory;
             this.AdditiveEmitterFactory = additiveEmitterFactory;
             this.AveragedEmitterFactory = averagedEmitterFactory;
@@ -202,14 +206,16 @@ namespace MiniEngine.Scenes
             return new Car(model, pose, animation);
         }
 
-        public AModel BuildTank(Vector3 position, float scale)
+        public (AModel, UVAnimation) BuildTank(Vector3 position, float scale)
         {
             var entity = this.EntityController.CreateEntity();
             this.PoseFactory.Construct(entity, position, scale);
             var model = this.OpaqueModelFactory.Construct(entity, this.tank);
-            //this.DebugInfoFactory.Construct(entity, model);
+            this.DebugInfoFactory.Construct(entity, IconType.Model);
 
-            return model;
+            var animation = this.UVAnimationFactory.Construct(entity, "TRACK_LEFT", "TRACK_RIGHT");
+
+            return (model, animation);
         }
 
         public void BuildTerrain(Vector2 size)

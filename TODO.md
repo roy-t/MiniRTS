@@ -5,6 +5,7 @@
     - Waypoint
     - AEmitter
 - Replace icon system with a system that prints the number of the entity! Then remove all icons and clean up debug systems
+- The split between opaque and transparent models makes it hard for other systems to reference all kinds of models (see UVAnimationSystem)
 
 # Future
 ## TODO

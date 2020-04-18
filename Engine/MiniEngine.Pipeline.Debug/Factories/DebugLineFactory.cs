@@ -16,7 +16,7 @@ namespace MiniEngine.Pipeline.Debug.Factories
         public DebugLine Construct(Entity entity, IReadOnlyList<Vector3> linePositions, Color color)
         {
             var debugLine = new DebugLine(entity, linePositions, color, Color.White, Color.Gray);
-            this.Container.Add(entity, debugLine);
+            this.Container.Add(debugLine);
 
             return debugLine;
         }

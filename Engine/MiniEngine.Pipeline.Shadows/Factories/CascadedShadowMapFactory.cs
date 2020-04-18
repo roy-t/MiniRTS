@@ -31,7 +31,7 @@ namespace MiniEngine.Pipeline.Shadows.Factories
             int cascades, int resolution, float[] cascadeDistances)
         {
             var cascadedShadowMap = new CascadedShadowMap(entity, this.Device, resolution, cascades, position, lookAt, cascadeDistances);
-            this.Container.Add(entity, cascadedShadowMap);
+            this.Container.Add(cascadedShadowMap);
 
             
 

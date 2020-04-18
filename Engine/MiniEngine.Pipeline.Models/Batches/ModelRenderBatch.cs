@@ -40,7 +40,6 @@ namespace MiniEngine.Pipeline.Models.Batches
             }
         }
 
-        private static float accum = 0.0f;
         private void DrawModel(RenderEffectTechniques technique, AModel modelPose, Matrix world, IViewPoint viewPoint)
         {
             var model = modelPose.Model;
@@ -67,17 +66,7 @@ namespace MiniEngine.Pipeline.Models.Batches
                         this.Effect.BoneTransforms = modelPose.SkinTransforms;
                     }
 
-                    // TODO: temp test for UV animations
-                    if (mesh.Name.StartsWith("TRACK"))
-                    {
-                        this.Effect.TextureOffset = Vector2.UnitY * accum;
-                        accum += (1.0f / 6000.0f);
-                    }
-                    else
-                    {
-                        this.Effect.TextureOffset = Vector2.Zero;
-                    }
-
+                    this.Effect.TextureOffset = modelPose.UVOffsets[iMesh];
                     this.Effect.World = SharedBoneMatrix[mesh.ParentBone.Index] * world;
                     this.Effect.View = viewPoint.View;
                     this.Effect.Projection = viewPoint.Projection;
@@ -92,7 +81,5 @@ namespace MiniEngine.Pipeline.Models.Batches
                 mesh.Draw();
             }
         }
-
-
     }
 }

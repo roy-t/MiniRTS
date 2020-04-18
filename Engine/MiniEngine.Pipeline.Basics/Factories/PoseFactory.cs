@@ -18,7 +18,7 @@ namespace MiniEngine.Pipeline.Basics.Factories
         public Pose Construct(Entity entity, Vector3 position, Vector3 scale, float yaw, float pitch, float roll)
         {
             var pose = new Pose(entity, position, scale, yaw, pitch, roll);
-            this.Container.Add(entity, pose);
+            this.Container.Add(pose);
 
             return pose;
         }

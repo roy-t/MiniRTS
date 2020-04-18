@@ -58,6 +58,7 @@ namespace MiniEngine.Rendering
         private readonly DynamicTextureSystem DynamicTextureSystem;
         private readonly CutsceneSystem CutsceneSystem;
         private readonly AnimationSystem AnimationSystem;
+        private readonly UVAnimationSystem UVAnimationSystem;
         private readonly BoundsSystem BoundsSystem;
 
         private readonly RenderPipeline Pipeline;
@@ -83,6 +84,7 @@ namespace MiniEngine.Rendering
             IconSystem iconSystem,
             CutsceneSystem cutsceneSystem,
             AnimationSystem animationSystem,
+            UVAnimationSystem uvAnimationSystem,
             BoundsSystem boundsSystem,
             IMeterRegistry meterRegistry)
         {
@@ -105,6 +107,7 @@ namespace MiniEngine.Rendering
             this.CutsceneSystem = cutsceneSystem;
             this.IconSystem = iconSystem;
             this.AnimationSystem = animationSystem;
+            this.UVAnimationSystem = uvAnimationSystem;
             this.BoundsSystem = boundsSystem;
 
             var width = device.PresentationParameters.BackBufferWidth;
@@ -180,6 +183,7 @@ namespace MiniEngine.Rendering
                 .UpdateSystem(this.DynamicTextureSystem)
                 .UpdateSystem(this.CutsceneSystem)
                 .UpdateSystem(this.AnimationSystem)
+                .UpdateSystem(this.UVAnimationSystem)
                 .UpdateSystem(this.BoundsSystem)
                 .EnableIf(this.Settings.EnableShadows, x => x.RenderShadows(this.ShadowPipeline))
                 .EnableIf(this.Settings.EnableModels, x => x.RenderModels(this.ModelSystem, this.ModelPipeline))

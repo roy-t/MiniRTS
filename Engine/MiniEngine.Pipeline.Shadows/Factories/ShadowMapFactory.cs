@@ -40,7 +40,7 @@ namespace MiniEngine.Pipeline.Shadows.Factories
 
 
             var shadowMap = new ShadowMap(entity, depthMap, colorMap, 0, viewPoint);
-            this.Container.Add(entity, shadowMap);
+            this.Container.Add(shadowMap);
 
             return shadowMap;
         }

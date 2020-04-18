@@ -24,7 +24,7 @@ namespace MiniEngine.Pipeline.Projectors.Factories
         {
             var projector = new Projector(entity, texture, mask, tint, position, lookAt, 1.0f, 25.0f);
 
-            this.Container.Add(entity, projector);
+            this.Container.Add(projector);
 
             return projector;
         }

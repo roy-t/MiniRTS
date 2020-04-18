@@ -16,7 +16,7 @@ namespace MiniEngine.Pipeline.Lights.Factories
         public DirectionalLight Construct(Entity entity, Vector3 direction, Color color)
         {
             var light = new DirectionalLight(entity, direction, color);
-            this.Container.Add(entity, light);
+            this.Container.Add(light);
 
             return light;
         }
