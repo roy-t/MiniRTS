@@ -20,15 +20,16 @@ namespace MiniEngine.Pipeline.Models.Factories
             this.Bounds = bounds;
         }
 
-        public OpaqueModel Construct(Entity entity, Model model)
+        public (OpaqueModel, Bounds) Construct(Entity entity, Model model)
         {
             var opaqueModel = new OpaqueModel(entity, model);
             this.Container.Add(opaqueModel);
 
             ModelBoundaryComputer.ComputeExtremes(model, Matrix.Identity, out var min, out var max);
-            this.Bounds.Add(new Bounds(entity, min, max));
+            var bounds = new Bounds(entity, min, max);
+            this.Bounds.Add(bounds);
 
-            return opaqueModel;
+            return (opaqueModel, bounds);
         }
 
         public override void Deconstruct(Entity entity)

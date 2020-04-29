@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.GameLogic;
+using MiniEngine.GameLogic.Vehicles;
 using MiniEngine.Input;
 using MiniEngine.Pipeline.Debug.Components;
 using MiniEngine.Pipeline.Models.Components;
@@ -20,22 +21,26 @@ namespace MiniEngine.Scenes
         private readonly EntityController EntityController;
         private readonly MouseInput MouseInput;
         private readonly KeyboardInput KeyboardInput;
-        private readonly List<PathFollowLogic> Followers;
 
         private WorldGrid worldGrid;
         private bool pause = true;
 
-        private Car car;
         private DebugLine pathLine;
         private UVAnimation tankTrackAnimation;
+        private Tank tank;
+        private TankPathFollowLogic tankPathFollowLogic;
 
-        public CarScene(SceneBuilder sceneBuilder, EntityController entityController, MouseInput mouseInput, KeyboardInput keyboardInput)
+
+        public CarScene(
+            SceneBuilder sceneBuilder,
+            EntityController entityController,
+            MouseInput mouseInput,
+            KeyboardInput keyboardInput)
         {
             this.SceneBuilder = sceneBuilder;
             this.EntityController = entityController;
             this.MouseInput = mouseInput;
             this.KeyboardInput = keyboardInput;
-            this.Followers = new List<PathFollowLogic>();
         }
 
         public void LoadContent(ContentManager content)
@@ -47,65 +52,58 @@ namespace MiniEngine.Scenes
 
         public void Set()
         {
-            //this.Followers.Clear();
-
             this.SceneBuilder.BuildTerrain(new Vector2(40, 40));
             this.SceneBuilder.BuildSponzaAmbientLight();
             this.SceneBuilder.BuildSponzeSunLight();
             this.Skybox = this.SceneBuilder.SponzaSkybox;
 
-            //this.worldGrid = new WorldGrid(40, 40, 1, 8, new Vector3(-20, 0, -20));
-            //this.SceneBuilder.CreateDebugLine(CreateGridLines(40, 40), Color.White);
+            this.worldGrid = new WorldGrid(40, 40, 1, 8, new Vector3(-20, 0, -20));
+            this.SceneBuilder.CreateDebugLine(CreateGridLines(40, 40), Color.White);
 
-            //this.car = this.SceneBuilder.BuildCar(Vector3.Zero, 0.1f);
-            //this.car.MoveAndTurn(this.worldGrid.ToWorldPositionCentered(new GridPosition(19, 19)), 0.0f);
+            var (pose, model, bounds, animation) = this.SceneBuilder.BuildTank(Vector3.Zero, 0.2f);
 
-
-            var (tank, animation) = this.SceneBuilder.BuildTank(Vector3.Zero, 1.0f);
+            this.tank = new Tank(model, bounds, pose, animation);
             this.tankTrackAnimation = animation;
         }
 
         public void Update(PerspectiveCamera camera, Seconds elapsed)
         {
+            if (this.KeyboardInput.Click(Microsoft.Xna.Framework.Input.Keys.P))
+            {
+                this.pause = !this.pause;
+            }
 
-            this.tankTrackAnimation.MeshUVOffsets[0].UVOffset += Vector2.UnitY * elapsed * 0.01f;
-            this.tankTrackAnimation.MeshUVOffsets[1].UVOffset += Vector2.UnitY * elapsed * 0.02f;
+            if (!this.pause)
+            {
+                if (this.tankPathFollowLogic != null)
+                {
+                    this.tankPathFollowLogic.Update(elapsed);
+                }
+            }
 
-            //if (this.KeyboardInput.Click(Microsoft.Xna.Framework.Input.Keys.P))
-            //{
-            //    this.pause = !this.pause;
-            //}
+            if (this.MouseInput.Click(MouseButtons.Left))
+            {
+                if (this.pathLine != null)
+                {
+                    this.EntityController.DestroyEntity(this.pathLine.Entity);
+                }
 
-            //if (!this.pause)
-            //{
-            //    for (var i = 0; i < this.Followers.Count; i++)
-            //    {
-            //        this.Followers[i].Update(elapsed);
-            //    }
-            //}
+                var mouseWorldPosition = camera.Pick(this.MouseInput.Position, 0.0f);
+                var roughPath = this.worldGrid.PlanPath(this.tank.Pose.Position, mouseWorldPosition);
 
-            //if (this.MouseInput.Click(MouseButtons.Left))
-            //{
-            //    this.Followers.Clear();
-            //    if (this.pathLine != null)
-            //    {
-            //        this.EntityController.DestroyEntity(this.pathLine.Entity);
-            //    }
+                var smoothPath = PathInterpolator.Interpolate(roughPath);
+                //var completePath = PathStarter.CreateStart(smoothPath, this.car);
 
-            //    var mouseWorldPosition = camera.Pick(this.MouseInput.Position, 0.0f);
-            //    var roughPath = this.worldGrid.PlanPath(this.car.Position, mouseWorldPosition);
+                this.pathLine = this.SceneBuilder.CreateDebugLine(smoothPath.WayPoints, Color.Purple);
 
-            //    var smoothPath = PathInterpolator.Interpolate(roughPath);
-            //    var completePath = PathStarter.CreateStart(smoothPath, this.car);
+                this.tankPathFollowLogic = new TankPathFollowLogic(worldGrid, tank, smoothPath, new MetersPerSecond(0.02f));
 
-            //    this.pathLine = this.SceneBuilder.CreateDebugLine(completePath.WayPoints, Color.Purple);
+                //var followLogic = new PathFollowLogic(this.worldGrid, this.car, smoothPath,
+                //    new MetersPerSecond(0.1f));
+                //followLogic.Update(new Seconds(0));
 
-            //    var followLogic = new PathFollowLogic(this.worldGrid, this.car, completePath,
-            //        new MetersPerSecond(0.1f));
-            //    followLogic.Update(new Seconds(0));
-
-            //    this.Followers.Add(followLogic);
-            //}
+                //this.Followers.Add(followLogic);
+            }
 
         }
 

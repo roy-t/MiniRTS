@@ -20,15 +20,16 @@ namespace MiniEngine.Pipeline.Models.Factories
             this.Bounds = bounds;
         }
 
-        public TransparentModel Construct(Entity entity, Model model)
+        public (TransparentModel, Bounds) Construct(Entity entity, Model model)
         {
             var transparentModel = new TransparentModel(entity, model);
             this.Container.Add(transparentModel);
 
             ModelBoundaryComputer.ComputeExtremes(model, Matrix.Identity, out var min, out var max);
-            this.Bounds.Add(new Bounds(entity, min, max));
+            var bounds = new Bounds(entity, min, max);
+            this.Bounds.Add(bounds);
 
-            return transparentModel;
+            return (transparentModel, bounds);
         }
 
         public override void Deconstruct(Entity entity)

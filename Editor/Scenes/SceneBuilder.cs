@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework.Media;
 using MiniEngine.CutScene;
 using MiniEngine.GameLogic;
 using MiniEngine.GameLogic.Factories;
+using MiniEngine.Pipeline.Basics.Components;
 using MiniEngine.Pipeline.Basics.Factories;
 using MiniEngine.Pipeline.Debug.Components;
 using MiniEngine.Pipeline.Debug.Factories;
@@ -151,7 +152,8 @@ namespace MiniEngine.Scenes
         {
             var entity = this.EntityController.CreateEntity();
             this.PoseFactory.Construct(entity, position, scale);
-            return this.OpaqueModelFactory.Construct(entity, this.sponza);
+            var (model, bounds) = this.OpaqueModelFactory.Construct(entity, this.sponza);
+            return model;
         }
 
         public Entity BuildLizard(Vector3 position, float scale)
@@ -168,7 +170,7 @@ namespace MiniEngine.Scenes
         {
             var entity = this.EntityController.CreateEntity();
             this.PoseFactory.Construct(entity, position, scale);
-            var model = this.OpaqueModelFactory.Construct(entity, this.cube);
+            var (model, bounds) = this.OpaqueModelFactory.Construct(entity, this.cube);
 
             return model;
         }
@@ -198,7 +200,7 @@ namespace MiniEngine.Scenes
         {
             var entity = this.EntityController.CreateEntity();
             var pose = this.PoseFactory.Construct(entity, position, scale);
-            var model = this.OpaqueModelFactory.Construct(entity, this.car);
+            var (model, bounds) = this.OpaqueModelFactory.Construct(entity, this.car);
             var animation = this.CarAnimationFactory.Construct(entity, model.Model.Tag as SkinningData);
 
             //this.DebugInfoFactory.Construct(entity, model);
@@ -206,23 +208,23 @@ namespace MiniEngine.Scenes
             return new Car(model, pose, animation);
         }
 
-        public (AModel, UVAnimation) BuildTank(Vector3 position, float scale)
+        public (Pose, OpaqueModel, Bounds, UVAnimation) BuildTank(Vector3 position, float scale)
         {
             var entity = this.EntityController.CreateEntity();
-            this.PoseFactory.Construct(entity, position, scale);
-            var model = this.OpaqueModelFactory.Construct(entity, this.tank);
+            var pose = this.PoseFactory.Construct(entity, position, scale);
+            var (model, bounds) = this.OpaqueModelFactory.Construct(entity, this.tank);
             this.DebugInfoFactory.Construct(entity, IconType.Model);
 
             var animation = this.UVAnimationFactory.Construct(entity, "TRACK_LEFT", "TRACK_RIGHT");
 
-            return (model, animation);
+            return (pose, model, bounds, animation);
         }
 
         public void BuildTerrain(Vector2 size)
         {
             var entity = this.EntityController.CreateEntity();
             this.PoseFactory.Construct(entity, Vector3.Zero, 1.0f);
-            var model = this.OpaqueModelFactory.Construct(entity, this.terrain);
+            var (model, bounds) = this.OpaqueModelFactory.Construct(entity, this.terrain);
 
             model.TextureScale = size;
         }
