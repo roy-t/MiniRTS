@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using ImGuiNET;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -90,13 +91,14 @@ namespace MiniEngine.Scenes
 
                 var mouseWorldPosition = camera.Pick(this.MouseInput.Position, 0.0f);
                 var roughPath = this.worldGrid.PlanPath(this.tank.Pose.Position, mouseWorldPosition);
-
                 var smoothPath = PathInterpolator.Interpolate(roughPath);
+
+                //var smoothPath = CreateCirclePath();
                 //var completePath = PathStarter.CreateStart(smoothPath, this.car);
 
                 this.pathLine = this.SceneBuilder.CreateDebugLine(smoothPath.WayPoints, Color.Purple);
 
-                this.tankPathFollowLogic = new TankPathFollowLogic(worldGrid, tank, smoothPath, new MetersPerSecond(0.02f));
+                this.tankPathFollowLogic = new TankPathFollowLogic(worldGrid, tank, smoothPath, new MetersPerSecond(0.08f));
 
                 //var followLogic = new PathFollowLogic(this.worldGrid, this.car, smoothPath,
                 //    new MetersPerSecond(0.1f));
@@ -105,6 +107,20 @@ namespace MiniEngine.Scenes
                 //this.Followers.Add(followLogic);
             }
 
+        }
+
+        private static Path CreateCirclePath()
+        {
+            var waypoints = new List<Vector3>();
+
+            for (var i = 0; i < 360; i++)
+            {
+                var x = (float)Math.Cos(MathHelper.ToRadians(i));
+                var y = (float)Math.Sin(MathHelper.ToRadians(i));
+                waypoints.Add(new Vector3(x, 0, y) * 3);
+            }
+            var smoothPath = new Path(waypoints);
+            return smoothPath;
         }
 
         public void RenderUI()
