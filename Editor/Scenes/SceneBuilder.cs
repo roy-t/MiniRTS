@@ -47,6 +47,7 @@ namespace MiniEngine.Scenes
         private Model terrain;
         private Model car;
         private Model tank;
+        private Model fighter;
         private Model sponza;
         private Model plane;
         private Model lizard;
@@ -99,6 +100,7 @@ namespace MiniEngine.Scenes
             this.terrain = content.Load<Model>(@"Scenes\Primitives\plane3");
             this.car = content.Load<Model>(@"Scenes\Primitives\car_textured");
             this.tank = content.Load<Model>(@"Scenes\Primitives\tank");
+            this.fighter = content.Load<Model>(@"Scenes\Primitives\fighter");
             this.sponza = content.Load<Model>(@"Scenes\Sponza\Sponza");
             this.cube = content.Load<Model>(@"Scenes\Primitives\Cube");
             this.gear = content.Load<Model>(@"Scenes\Primitives\Gear");
@@ -218,6 +220,17 @@ namespace MiniEngine.Scenes
             var animation = this.UVAnimationFactory.Construct(entity, "TRACK_LEFT", "TRACK_RIGHT");
 
             return (pose, model, bounds, animation);
+        }
+
+
+        public (Pose, OpaqueModel, Bounds) BuildFighter(Vector3 position, float scale)
+        {
+            var entity = this.EntityController.CreateEntity();
+            var pose = this.PoseFactory.Construct(entity, position, scale);
+            var (model, bounds) = this.OpaqueModelFactory.Construct(entity, this.fighter);
+            this.DebugInfoFactory.Construct(entity, IconType.Model);
+
+            return (pose, model, bounds);
         }
 
         public void BuildTerrain(Vector2 size)

@@ -63,12 +63,18 @@ namespace MiniEngine.Scenes
 
             var (pose, model, bounds, animation) = this.SceneBuilder.BuildTank(Vector3.Zero, 0.2f);
 
+
+            var (fighter_pose, fighter_model, fighter_bounds) = this.SceneBuilder.BuildFighter(Vector3.Zero, 1.0f);
+
+
             this.tank = new Tank(model, bounds, pose, animation);
             this.tankTrackAnimation = animation;
         }
 
         public void Update(PerspectiveCamera camera, Seconds elapsed)
         {
+            return;
+
             if (this.KeyboardInput.Click(Microsoft.Xna.Framework.Input.Keys.P))
             {
                 this.pause = !this.pause;
