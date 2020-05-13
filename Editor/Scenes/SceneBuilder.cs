@@ -168,13 +168,13 @@ namespace MiniEngine.Scenes
             return entity;
         }
 
-        public OpaqueModel BuildCube(Vector3 position, float scale)
+        public (Pose, OpaqueModel, Bounds) BuildCube(Vector3 position, float scale)
         {
             var entity = this.EntityController.CreateEntity();
-            this.PoseFactory.Construct(entity, position, scale);
+            var pose = this.PoseFactory.Construct(entity, position, scale);
             var (model, bounds) = this.OpaqueModelFactory.Construct(entity, this.cube);
 
-            return model;
+            return (pose, model, bounds);
         }
 
         public ShadowCastingLight BuildLionSpotLight()

@@ -48,6 +48,7 @@ namespace MiniEngine.Pipeline.Basics.Components
             set => this.Rotate(this.yaw, value, this.roll);
         }
 
+
         [Editor(nameof(Roll))]
         public float Roll
         {
