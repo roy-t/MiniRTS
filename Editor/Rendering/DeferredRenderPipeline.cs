@@ -60,6 +60,7 @@ namespace MiniEngine.Rendering
         private readonly AnimationSystem AnimationSystem;
         private readonly UVAnimationSystem UVAnimationSystem;
         private readonly BoundsSystem BoundsSystem;
+        private readonly OffsetSystem OffsetSystem;
 
         private readonly RenderPipeline Pipeline;
         private readonly Pass RootPass;
@@ -86,6 +87,7 @@ namespace MiniEngine.Rendering
             AnimationSystem animationSystem,
             UVAnimationSystem uvAnimationSystem,
             BoundsSystem boundsSystem,
+            OffsetSystem offsetSystem,
             IMeterRegistry meterRegistry)
         {
             this.ShadowMapSystem = shadowMapSystem;
@@ -108,6 +110,7 @@ namespace MiniEngine.Rendering
             this.IconSystem = iconSystem;
             this.AnimationSystem = animationSystem;
             this.UVAnimationSystem = uvAnimationSystem;
+            this.OffsetSystem = offsetSystem;
             this.BoundsSystem = boundsSystem;
 
             var width = device.PresentationParameters.BackBufferWidth;
@@ -184,6 +187,7 @@ namespace MiniEngine.Rendering
                 .UpdateSystem(this.CutsceneSystem)
                 .UpdateSystem(this.AnimationSystem)
                 .UpdateSystem(this.UVAnimationSystem)
+                .UpdateSystem(this.OffsetSystem)
                 .UpdateSystem(this.BoundsSystem)
                 .EnableIf(this.Settings.EnableShadows, x => x.RenderShadows(this.ShadowPipeline))
                 .EnableIf(this.Settings.EnableModels, x => x.RenderModels(this.ModelSystem, this.ModelPipeline))

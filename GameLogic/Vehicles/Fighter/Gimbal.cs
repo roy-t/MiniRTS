@@ -43,6 +43,7 @@ namespace MiniEngine.GameLogic.Vehicles.Fighter
                     var yaw = GetYaw(targetDirection);
                     var pitch = GetPitch(targetDirection);
 
+                    // TODO: base ETA on distance
                     var maneuver = new Maneuver(this.Pose, yaw, pitch, 1.0f);
                     this.Maneuvers.Enqueue(maneuver);
                 }

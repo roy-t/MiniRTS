@@ -50,10 +50,13 @@
   <ItemGroup>
     <Compile Include="BasicsCompositionRoot.cs" />
     <Compile Include="Components\Bounds.cs" />
+    <Compile Include="Components\Offset.cs" />
     <Compile Include="Components\Pose.cs" />
+    <Compile Include="Factories\OffsetFactory.cs" />
     <Compile Include="Factories\PoseFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Systems\BoundsSystem.cs" />
+    <Compile Include="Systems\OffsetSystem.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

@@ -89,6 +89,18 @@ namespace MiniEngine.Pipeline.Basics.Components
             this.Matrix = Recompute(this.origin, this.position, this.scale, this.yaw, this.pitch, this.roll);
         }
 
+        public void PlaceAtOffset(Offset offset, Pose other)
+        {
+            var rotation = Matrix.CreateFromYawPitchRoll(other.Yaw, other.Pitch, other.Roll);
+
+            this.Yaw = MathHelper.WrapAngle(other.Yaw + offset.Yaw);
+            this.Pitch = MathHelper.WrapAngle(other.Pitch + offset.Pitch);
+            this.Roll = MathHelper.WrapAngle(other.Roll + offset.Roll);
+
+            this.position = other.position + Vector3.Transform(offset.Position, rotation);
+            this.Matrix = Recompute(this.origin, this.position, this.scale, this.yaw, this.pitch, this.roll);
+        }
+
         public void SetScale(Vector3 scale)
         {
             this.scale = scale;

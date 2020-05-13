@@ -7,6 +7,7 @@ using MiniEngine.GameLogic;
 using MiniEngine.GameLogic.Vehicles.Fighter;
 using MiniEngine.Input;
 using MiniEngine.Pipeline.Basics.Components;
+using MiniEngine.Pipeline.Basics.Factories;
 using MiniEngine.Primitives.Cameras;
 using MiniEngine.Systems;
 using MiniEngine.Units;
@@ -17,6 +18,7 @@ namespace MiniEngine.Scenes
     public sealed class CarScene : IScene
     {
         private readonly SceneBuilder SceneBuilder;
+        private readonly OffsetFactory OffsetFactory;
         private WorldGrid worldGrid;
 
         private Gimbal gimbal;
@@ -30,9 +32,11 @@ namespace MiniEngine.Scenes
             SceneBuilder sceneBuilder,
             EntityController entityController,
             MouseInput mouseInput,
-            KeyboardInput keyboardInput)
+            KeyboardInput keyboardInput,
+            OffsetFactory offsetFactory)
         {
             this.SceneBuilder = sceneBuilder;
+            this.OffsetFactory = offsetFactory;
         }
 
         public void LoadContent(ContentManager content)
@@ -52,12 +56,18 @@ namespace MiniEngine.Scenes
             this.worldGrid = new WorldGrid(40, 40, 1, 8, new Vector3(-20, 0, -20));
             this.SceneBuilder.CreateDebugLine(CreateGridLines(40, 40), Color.White);
 
-            var (spherePose, _, _) = this.SceneBuilder.BuildCube(Vector3.Zero, 0.005f);
+            var (cubePose, _, _) = this.SceneBuilder.BuildCube(Vector3.Zero, 0.005f);
+
+            var (stickyPose, _, _) = this.SceneBuilder.BuildCube(Vector3.Zero, 0.005f);
+
+
             var (fighterPose, fighterModel, fighterBounds) = this.SceneBuilder.BuildFighter(Vector3.Zero, 1.0f);
+
+            this.OffsetFactory.Construct(stickyPose.Entity, Vector3.Forward * 5, 0, 0, 0, fighterPose.Entity);
 
             //this.pitch = MathHelper.PiOver4;
 
-            this.targetPose = spherePose;
+            this.targetPose = cubePose;
 
             this.gimbal = new Gimbal(fighterPose);
         }

@@ -12,10 +12,13 @@ namespace MiniEngine.Pipeline.Basics
         {
             serviceRegistry.Register<IComponentContainer<Pose>, ComponentContainer<Pose>>();
             serviceRegistry.Register<IComponentContainer<Bounds>, ComponentContainer<Bounds>>();
+            serviceRegistry.Register<IComponentContainer<Offset>, ComponentContainer<Offset>>();
 
             serviceRegistry.Register<PoseFactory>();
+            serviceRegistry.Register<OffsetFactory>();
 
             serviceRegistry.Register<BoundsSystem>();
+            serviceRegistry.Register<OffsetSystem>();
         }
     }
 }
