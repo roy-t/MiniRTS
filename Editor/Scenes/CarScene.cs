@@ -65,8 +65,6 @@ namespace MiniEngine.Scenes
 
             this.OffsetFactory.Construct(stickyPose.Entity, Vector3.Forward * 5, 0, 0, 0, fighterPose.Entity);
 
-            //this.pitch = MathHelper.PiOver4;
-
             this.targetPose = cubePose;
 
             this.gimbal = new Gimbal(fighterPose);
