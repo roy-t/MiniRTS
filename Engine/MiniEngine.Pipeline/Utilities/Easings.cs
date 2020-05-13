@@ -1,5 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using System;
+﻿using System;
+using Microsoft.Xna.Framework;
 
 namespace MiniEngine.Pipeline.Utilities
 {
@@ -57,6 +57,14 @@ namespace MiniEngine.Pipeline.Utilities
             BounceEaseIn,
             BounceEaseOut,
             BounceEaseInOut
+        }
+
+
+        public static float Interpolate(float from, float to, float progress, Functions function)
+        {
+            var diff = to - from;
+
+            return from + Interpolate(progress, function) * diff;
         }
 
         /// <summary>

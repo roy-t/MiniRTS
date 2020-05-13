@@ -1,95 +1,68 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using MiniEngine.Pipeline.Basics.Components;
 using MiniEngine.Units;
 
 namespace MiniEngine.GameLogic.Vehicles.Fighter
 {
-    public sealed class Gimbal
+    public class Gimbal
     {
-        private readonly Pose pose;
+        private readonly Pose Pose;
+        private readonly Queue<Maneuver> Maneuvers;
 
         public Gimbal(Pose pose)
         {
-            this.pose = pose;
+            this.Pose = pose;
+            this.Maneuvers = new Queue<Maneuver>();
         }
 
 
         public Vector3 PointAt { get; set; }
 
-
         public void Update(Seconds elapsed)
         {
-            var forward = Vector3.Forward;
-            var desiredForward = Vector3.Normalize(this.PointAt - this.pose.Position);
-
-            var dot = Vector3.Dot(forward, desiredForward);
-
-            Vector3 axis;
-            float angle;
-
-            if (Math.Abs(dot - 1.0f) < 0.01f)
+            if (this.Maneuvers.Count > 0)
             {
-                // vector a and b point in the same direction   
-                return;
-            }
-            else if (Math.Abs(dot + 1.0f) < 0.01f)
-            {
-                // vector a and b point in the opposite direction, 
-                // so it is a 180 degrees turn around the up-axis
-                axis = Vector3.Up;
-                angle = MathHelper.Pi;
+                var currentManeuver = this.Maneuvers.Peek();
+
+                currentManeuver.Update(elapsed);
+                if (currentManeuver.Completed)
+                {
+                    this.Maneuvers.Dequeue();
+                }
             }
             else
             {
-                axis = Vector3.Normalize(Vector3.Cross(forward, desiredForward));
-                angle = (float)Math.Acos(dot);
+                // TODO: do not allow straight up, move to a different package
+                var targetDirection = Vector3.Normalize(this.PointAt - this.Pose.Position);
+                var dot = Vector3.Dot(this.Pose.GetForward(), targetDirection);
+
+                if (targetDirection.LengthSquared() > 0 && Math.Abs(dot - 1.0f) > 0.01f)
+                {
+                    var yaw = GetYaw(targetDirection);
+                    var pitch = GetPitch(targetDirection);
+
+                    var maneuver = new Maneuver(this.Pose, yaw, pitch, 1.0f);
+                    this.Maneuvers.Enqueue(maneuver);
+                }
             }
-
-            (var yaw, var pitch, var roll) = ToEulerAngles(axis, angle);
-
-            var speed = 1.0f; // elapsed * 1.0f;
-            this.pose.Rotate(yaw * speed, pitch * speed, roll * speed);
         }
 
-        private static (float yaw, float pitch, float roll) ToEulerAngles(Vector3 normalizedAxis, float angle)
+        private static float GetYaw(Vector3 targetDirection)
         {
-            var yaw = 0.0;
-            var pitch = 0.0;
-            var roll = 0.0;
-
-            var x = normalizedAxis.X;
-            var y = normalizedAxis.Y;
-            var z = normalizedAxis.Z;
-
-            var s = Math.Sin(angle);
-            var c = Math.Cos(angle);
-            var t = 1 - c;
-
-            // North pole singularity
-            if ((x * y * t + z * s) > 0.998)
-            {
-                yaw = (float)(2 * Math.Atan2(x * Math.Sin(angle / 2), Math.Cos(angle / 2)));
-                pitch = MathHelper.PiOver2;
-                roll = 0;
-            }
-
-            // South pole singularity
-            if ((x * y * t + z * s) < -0.998)
-            {
-                yaw = (float)(-2 * Math.Atan2(x * Math.Sin(angle / 2), Math.Cos(angle / 2)));
-                pitch = -MathHelper.PiOver2;
-                roll = 0;
-            }
-
-            yaw = Math.Atan2(y * s - x * z * t, 1 - (y * y + z * z) * t);
-            pitch = Math.Asin(x * y * t + z * s);
-            roll = Math.Atan2(x * s - y * z * t, 1 - (x * x + z * z) * t);
-
-
-            //return ((float)yaw, (float)pitch, (float)roll);
-            return ((float)yaw, (float)roll, (float)pitch);
+            var v2 = Vector2.Normalize(new Vector2(targetDirection.Z, targetDirection.X));
+            return MathHelper.WrapAngle((float)Math.Atan2(v2.Y, v2.X) + MathHelper.Pi);
         }
 
+        private static float GetPitch(Vector3 targetDirection)
+        {
+            // TODO: can this be simplified?
+            var groundPlanePosition = new Vector2(targetDirection.X, targetDirection.Z);
+            var groundDistanceFromOrigin = groundPlanePosition.Length();
+
+            var v2 = Vector2.Normalize(new Vector2(-targetDirection.Y, groundDistanceFromOrigin));
+            return MathHelper.WrapAngle((float)Math.Atan2(v2.Y, v2.X) - MathHelper.PiOver2);
+        }
     }
 }

@@ -55,7 +55,7 @@ namespace MiniEngine.Scenes
             var (spherePose, _, _) = this.SceneBuilder.BuildCube(Vector3.Zero, 0.005f);
             var (fighterPose, fighterModel, fighterBounds) = this.SceneBuilder.BuildFighter(Vector3.Zero, 1.0f);
 
-            this.pitch = MathHelper.PiOver4;
+            //this.pitch = MathHelper.PiOver4;
 
             this.targetPose = spherePose;
 
@@ -78,7 +78,7 @@ namespace MiniEngine.Scenes
             {
                 ImGui.SliderFloat("Radius", ref this.radius, 0.0f, 10.0f);
                 ImGui.SliderFloat("Yaw", ref this.yaw, -MathHelper.Pi, MathHelper.Pi);
-                ImGui.SliderFloat("Pitch", ref this.pitch, -MathHelper.Pi, MathHelper.Pi);
+                ImGui.SliderFloat("Pitch", ref this.pitch, -MathHelper.PiOver2 + 0.001f, MathHelper.PiOver2 - 0.001f);
                 ImGui.End();
             }
         }

@@ -48,7 +48,6 @@ namespace MiniEngine.Pipeline.Basics.Components
             set => this.Rotate(this.yaw, value, this.roll);
         }
 
-
         [Editor(nameof(Roll))]
         public float Roll
         {
@@ -72,7 +71,7 @@ namespace MiniEngine.Pipeline.Basics.Components
 
         public Vector3 GetForward()
         {
-            var rotation = Matrix.CreateRotationY(this.Yaw);
+            var rotation = Matrix.CreateFromYawPitchRoll(this.yaw, this.pitch, this.roll);
             return Vector3.Transform(Vector3.Forward, rotation);
         }
 

@@ -76,6 +76,7 @@
     <Compile Include="PathInterpolator.cs" />
     <Compile Include="PathStarter.cs" />
     <Compile Include="Vehicles\Fighter\Gimbal.cs" />
+    <Compile Include="Vehicles\Fighter\Maneuver.cs" />
     <Compile Include="Vehicles\Tank.cs" />
     <Compile Include="Vehicles\TankPathFollowLogic.cs" />
     <Compile Include="WheelPosition.cs" />
