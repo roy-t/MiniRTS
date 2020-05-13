@@ -43,6 +43,7 @@ namespace MiniEngine.GameLogic.Vehicles.Fighter
         public bool Completed { get; private set; }
 
 
+        // TODO: simplify this class and move it to a different package
         private static float LerpRadians(float a, float b, float lerpFactor) // Lerps from angle a to b (both between -PI and PI), taking the shortest path
         {
 
