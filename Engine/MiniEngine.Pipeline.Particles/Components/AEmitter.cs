@@ -11,7 +11,6 @@ using MiniEngine.Units;
 
 namespace MiniEngine.Pipeline.Particles.Components
 {
-    // TODO: use Pose 
     public abstract class AEmitter : IComponent
     {
         private static readonly Random Random = new Random();
@@ -37,6 +36,7 @@ namespace MiniEngine.Pipeline.Particles.Components
             this.TimeToLive = 2.0f;
             this.TimePerFrame = 0.125f;
             this.Tint = Color.White;
+            this.StartVelocity = Vector3.Zero;
         }
 
         public Entity Entity { get; }
@@ -60,6 +60,11 @@ namespace MiniEngine.Pipeline.Particles.Components
 
         [Editor(nameof(Speed), nameof(Speed), 0, float.MaxValue)]
         public float Speed { get; set; }
+
+
+        [Editor(nameof(StartVelocity))]
+        public Vector3 StartVelocity { get; set; }
+
 
         [Editor(nameof(Spread), nameof(Spread), 0, 1)]
         public float Spread { get; set; }
@@ -103,7 +108,7 @@ namespace MiniEngine.Pipeline.Particles.Components
             {
                 var direction = Vector3.TransformNormal(Vector3.Forward, pose.RotationMatrix);
 
-                var velocity = Vector3.Normalize(direction + this.GetSpreadVector()) * this.Speed;
+                var velocity = this.StartVelocity + (Vector3.Normalize(direction + this.GetSpreadVector()) * this.Speed);
 
                 this.timeToSpawn += this.SpawnInterval;
                 this.Particles.Add(

@@ -22,7 +22,7 @@ namespace MiniEngine.GameLogic.Vehicles.Fighter
 
         public void Update(Seconds elapsed)
         {
-            var progress = Easings.Interpolate(this.accumulator / this.ETA, Easings.Functions.QuarticEaseOut);
+            var progress = Easings.Interpolate(this.accumulator / this.ETA, Easings.Functions.QuadraticEaseInOut);
             var yaw = LerpRadians(this.StartYaw, this.TargetYaw, progress);
             var pitch = LerpRadians(this.StartPich, this.TargetPitch, progress);
 

@@ -21,6 +21,8 @@ using MiniEngine.Pipeline.Projectors.Factories;
 using MiniEngine.Rendering;
 using MiniEngine.Systems;
 using MiniEngine.Systems.Annotations;
+using MiniEngine.Systems.Components;
+using MiniEngine.Systems.Factories;
 using MiniEngine.Units;
 
 namespace MiniEngine.Scenes
@@ -45,6 +47,7 @@ namespace MiniEngine.Scenes
         private readonly PipelineBuilder PipelineBuilder;
         private readonly PoseFactory PoseFactory;
         private readonly OffsetFactory OffsetFactory;
+        private readonly ParentFactory ParentFactory;
 
         private Model terrain;
         private Model car;
@@ -78,7 +81,8 @@ namespace MiniEngine.Scenes
             WaypointFactory waypointFactory,
             PipelineBuilder pipelineBuilder,
             OffsetFactory offsetFactory,
-            PoseFactory poseFactory)
+            PoseFactory poseFactory,
+            ParentFactory parentFactory)
         {
             this.EntityController = entityController;
             this.SkyboxBuilder = skyboxBuilder;
@@ -97,6 +101,7 @@ namespace MiniEngine.Scenes
             this.PipelineBuilder = pipelineBuilder;
             this.PoseFactory = poseFactory;
             this.OffsetFactory = offsetFactory;
+            this.ParentFactory = parentFactory;
         }
 
         public void LoadContent(ContentManager content)
@@ -300,11 +305,18 @@ namespace MiniEngine.Scenes
             return pointLight;
         }
 
-        public (AdditiveEmitter, Pose, Offset) BuildRCS(Entity target, Vector3 offset)
+        public Parent BuildParent(string name)
+        {
+            var parentEntity = this.EntityController.CreateEntity(name);
+            var parent = this.ParentFactory.Construct(parentEntity);
+            return parent;
+        }
+
+        public (AdditiveEmitter, Pose, Offset) BuildRCS(Entity target, Vector3 offset, float yaw, float pitch, float roll)
         {
             var entity = this.EntityController.CreateEntity();
             var pose = this.PoseFactory.Construct(entity, offset, 0.1f);
-            var offsetC = this.OffsetFactory.Construct(entity, offset, 0, MathHelper.PiOver2, 0, target);
+            var offsetC = this.OffsetFactory.Construct(entity, offset, yaw, pitch, roll, target);
 
             var emitter = this.AdditiveEmitterFactory.ConstructAdditiveEmitter(entity, this.explosion2, 1, 1);
             emitter.SpawnInterval = 0;

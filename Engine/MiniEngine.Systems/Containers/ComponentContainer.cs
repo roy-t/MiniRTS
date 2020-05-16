@@ -35,6 +35,20 @@ namespace MiniEngine.Systems.Containers
 
         IComponent IComponentContainer.Get(Entity entity) => this.Get(entity);
 
+        public bool TryGet(Entity entity, out T component) => this.LookUp.TryGetValue(entity, out component);
+
+        bool IComponentContainer.TryGet(Entity entity, out IComponent component)
+        {
+            if (this.TryGet(entity, out var c))
+            {
+                component = c;
+                return true;
+            }
+
+            component = default;
+            return false;
+        }
+
         public int Count => this.Components.Count;
 
         public void Clear() => this.Components.Clear();

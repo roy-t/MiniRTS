@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using ImGuiNET;
+using MiniEngine.Pipeline.Basics.Components;
 using MiniEngine.Systems;
 using MiniEngine.Systems.Annotations;
 using MiniEngine.Systems.Components;
@@ -41,29 +42,7 @@ namespace MiniEngine.UI
 
                 this.ComponentCounter.Clear();
 
-                this.Components.Clear();
-                this.ComponentSearcher.GetComponents(this.EntityState.SelectedEntity, this.Components);
-
-                for (var i = 0; i < this.Components.Count; i++)
-                {
-                    var component = this.Components[i];
-                    // ImGui requires a unique name for every node, so for each component we add
-                    // check how many of that component we've already added and use that in the name
-                    var count = this.Count(component);
-
-                    var name = GetName(component);
-                    if (ImGui.TreeNode(name + " #" + count.ToString("00")))
-                    {
-                        this.CreateEditors(component);
-
-                        if (ImGui.Button("Remove Component"))
-                        {
-                            var container = this.ComponentSearcher.GetContainer(component);
-                            container.Remove(this.EntityState.SelectedEntity);
-                        }
-                        ImGui.TreePop();
-                    }
-                }
+                this.WriteEntityComponents(this.EntityState.SelectedEntity);
 
                 if (this.EntityController.GetAllEntities().Contains(this.EntityState.SelectedEntity))
                 {
@@ -72,11 +51,61 @@ namespace MiniEngine.UI
                         this.EntityController.DestroyEntity(this.EntityState.SelectedEntity);
                         this.EntityState.ShowEntityWindow = false;
                         var entities = this.EntityController.GetAllEntities();
-                        this.EntityState.SelectedEntity = entities.Any() ? entities.First() : new Entity(-1);
+                        this.EntityState.SelectedEntity = entities.Any() ? entities.First() : new Entity(-1, string.Empty);
                     }
                 }
 
                 ImGui.End();
+            }
+        }
+
+        private void WriteEntityComponents(Entity entity)
+        {
+            this.Components.Clear();
+            this.ComponentSearcher.GetComponents(entity, this.Components);
+            Parent parent = null;
+            for (var i = 0; i < this.Components.Count; i++)
+            {
+                var component = this.Components[i];
+                // ImGui requires a unique name for every node, so for each component we add
+                // check how many of that component we've already added and use that in the name
+                var count = this.Count(component);
+
+                var name = GetName(component);
+
+                if (component is Parent p)
+                {
+                    parent = p;
+                }
+                else if (ImGui.TreeNode(name + " #" + count.ToString("00")))
+                {
+                    this.CreateEditors(component);
+
+                    if (ImGui.Button("Remove Component"))
+                    {
+                        var container = this.ComponentSearcher.GetContainer(component);
+                        container.Remove(this.EntityState.SelectedEntity);
+                    }
+                    ImGui.TreePop();
+                }
+            }
+
+            if (parent != null)
+            {
+                if (ImGui.TreeNode("Children"))
+                {
+                    for (var i = 0; i < parent.Children.Count; i++)
+                    {
+                        var child = parent.Children[i];
+                        if (ImGui.TreeNode($"{child}"))
+                        {
+                            this.WriteEntityComponents(child);
+                            ImGui.TreePop();
+                        }
+                    }
+
+                    ImGui.TreePop();
+                }
             }
         }
 

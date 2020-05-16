@@ -16,6 +16,8 @@ namespace MiniEngine.Systems.Containers
         void Remove(Entity entity);
 
         IComponent Get(Entity entity);
+
+        bool TryGet(Entity entity, out IComponent component);
     }
 
     public interface IComponentContainer<T> : IComponentContainer
@@ -24,6 +26,8 @@ namespace MiniEngine.Systems.Containers
         void Add(T item);
 
         new T Get(Entity entity);
+
+        new bool TryGet(Entity entity, out T component);
 
         new T this[int index] { get; }
     }

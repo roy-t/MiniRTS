@@ -1,7 +1,8 @@
 # WIP
 - If the game is running at <60fps the draw loop gets called less, but the elasped parameter is still 1/60s so the accelerometer (among other things) will freak out.
+- The hierarchy (Parent component) works great in the Entity Window, however we don't do anything with it in the EntityMenu
 
-- There are still a few components that use a position. However they usually use it in different way, should they use Pose?
+- There are still a few components that use a position. However they usually use it in different way, should they use Pose? -> Yes because then we can use offset for these things
     - ShadowCastingLight
     - Sunlight
     - Waypoint    

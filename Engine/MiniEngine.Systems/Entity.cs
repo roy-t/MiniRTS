@@ -4,10 +4,13 @@ namespace MiniEngine.Systems
 {
     public readonly struct Entity : IEquatable<Entity>
     {
-        public Entity(int id)
+        public Entity(int id, string name)
         {
             this.Id = id;
+            this.Name = name;
         }
+
+        public string Name { get; }
 
         public override bool Equals(object obj)
         {
@@ -28,7 +31,15 @@ namespace MiniEngine.Systems
 
         public override int GetHashCode() => this.Id;
 
-        public override string ToString() => $"Entity {this.Id}";
+        public override string ToString()
+        {
+            if (string.IsNullOrEmpty(this.Name))
+            {
+                return $"Entity {this.Id}";
+            }
+
+            return $"{this.Name} ({this.Id})";
+        }
 
         public static implicit operator int(Entity entity) => entity.Id;
     }

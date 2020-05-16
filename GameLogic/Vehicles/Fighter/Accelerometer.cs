@@ -7,9 +7,7 @@ namespace MiniEngine.GameLogic.Vehicles.Fighter
     public sealed class Accelerometer
     {
         private readonly Pose Pose;
-
         private Vector3 position;
-        private Vector3 velocity;
 
         public Accelerometer(Pose pose)
         {
@@ -17,14 +15,15 @@ namespace MiniEngine.GameLogic.Vehicles.Fighter
         }
 
         public Vector3 Acceleration { get; private set; }
+        public Vector3 Velocity { get; set; }
 
         public void Update(Seconds elapsed)
         {
             var newPosition = this.Pose.Position;
             var newVelocity = (newPosition - this.position) / elapsed;
-            this.Acceleration = newVelocity - this.velocity;
+            this.Acceleration = newVelocity - this.Velocity;
 
-            this.velocity = newVelocity;
+            this.Velocity = newVelocity;
             this.position = newPosition;
         }
     }

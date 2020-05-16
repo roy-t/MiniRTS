@@ -72,10 +72,15 @@ namespace MiniEngine.Scenes
 
             this.gimbal = new Gimbal(fighterPose);
 
-            var (emitter, emitterPose, emitterOffset) = this.SceneBuilder.BuildRCS(fighterPose.Entity, Vector3.Forward * 5);
-            this.emitter = emitter;
-            this.accelerometer = new Accelerometer(emitterPose);
+            var parent = this.SceneBuilder.BuildParent("Reaction Control Thruster");
 
+            var (emmiterLeft, emitterPoseLeft, _) = this.SceneBuilder.BuildRCS(fighterPose.Entity, Vector3.Forward * 5, MathHelper.PiOver2, 0, 0);
+            var (emmiterRight, emitterPoseRight, _) = this.SceneBuilder.BuildRCS(fighterPose.Entity, Vector3.Forward * 5, -MathHelper.PiOver2, 0, 0);
+            this.emitter = emmiterLeft;
+            this.accelerometer = new Accelerometer(emitterPoseLeft);
+
+            parent.Children.Add(emmiterLeft.Entity);
+            parent.Children.Add(emmiterRight.Entity);
 
 
             // TODO:
@@ -98,9 +103,10 @@ namespace MiniEngine.Scenes
 
             if (this.accelerometer.Acceleration.LengthSquared() > 0)
             {
-                var length = this.accelerometer.Acceleration.Length();
                 this.emitter.Enabled = true;
-                this.emitter.Speed = length;
+                this.emitter.StartVelocity = this.accelerometer.Velocity;
+                //var length = this.accelerometer.Acceleration.Length();
+                //this.emitter.Speed = length * 5;
             }
             else
             {

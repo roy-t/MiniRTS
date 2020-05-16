@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using MiniEngine.Systems.Components;
+using MiniEngine.Systems.Containers;
 using MiniEngine.Systems.Factories;
 
 namespace MiniEngine.Systems
@@ -9,16 +11,20 @@ namespace MiniEngine.Systems
         private readonly List<Entity> Entities;
 
         private readonly IReadOnlyList<IComponentFactory> Factories;
+        private readonly IComponentContainer<Parent> Parents;
 
-        public EntityController(IEnumerable<IComponentFactory> factories)
+        public EntityController(IEnumerable<IComponentFactory> factories, IComponentContainer<Parent> parents)
         {
             this.Entities = new List<Entity>();
             this.Factories = new List<IComponentFactory>(factories).AsReadOnly();
+            this.Parents = parents;
         }
 
-        public Entity CreateEntity()
+        public Entity CreateEntity() => this.CreateEntity(string.Empty);
+
+        public Entity CreateEntity(string name)
         {
-            var entity = new Entity(this.next++);
+            var entity = new Entity(this.next++, name);
             this.Entities.Add(entity);
 
             return entity;
@@ -39,8 +45,23 @@ namespace MiniEngine.Systems
 
         public void DestroyEntity(Entity entity)
         {
-            this.Entities.Remove(entity);
-            this.RemoveEntityFromSystems(entity);
+            var toDestroy = new Stack<Entity>(1);
+            toDestroy.Push(entity);
+
+            if (this.Parents.TryGet(entity, out var parent))
+            {
+                for (var i = 0; i < parent.Children.Count; i++)
+                {
+                    toDestroy.Push(parent.Children[i]);
+                }
+            }
+
+            while (toDestroy.Count > 0)
+            {
+                var current = toDestroy.Pop();
+                this.Entities.Remove(current);
+                this.RemoveEntityFromSystems(current);
+            }
         }
 
         public void DestroyAllEntities()

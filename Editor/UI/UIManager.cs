@@ -8,6 +8,7 @@ using MiniEngine.Controllers;
 using MiniEngine.Input;
 using MiniEngine.Primitives.Cameras;
 using MiniEngine.Scenes;
+using MiniEngine.Systems;
 using MiniEngine.UI.State;
 using MiniEngine.UI.Utilities;
 using MiniEngine.Units;
@@ -40,7 +41,7 @@ namespace MiniEngine.UI
 
         private bool setCamera;
 
-        public UIManager(Game game, SpriteBatch spriteBatch, ImGuiRenderer gui, RenderTargetDescriber renderTargetDescriber, SceneSelector sceneSelector, CameraController cameraController, Editors editors, IList<IMenu> menus, EntityWindow entityWindow, KeyboardInput keyboardInput, MouseInput mouseInput)
+        public UIManager(Game game, SpriteBatch spriteBatch, ImGuiRenderer gui, RenderTargetDescriber renderTargetDescriber, SceneSelector sceneSelector, EntityController entityController, CameraController cameraController, Editors editors, IList<IMenu> menus, EntityWindow entityWindow, KeyboardInput keyboardInput, MouseInput mouseInput)
         {
             this.Gui = gui;
             this.KeyboardInput = keyboardInput;
@@ -68,6 +69,11 @@ namespace MiniEngine.UI
             if (sceneSelector.CurrentScene == null)
             {
                 sceneSelector.SwitchScenes(sceneSelector.Scenes.First());
+            }
+
+            if (this.State.EntityState.SelectedEntity.Id > 0)
+            {
+                this.State.EntityState.SelectedEntity = entityController.GetAllEntities().FirstOrDefault(e => e.Id == this.State.EntityState.SelectedEntity.Id);
             }
 
             this.setCamera = true;
@@ -199,9 +205,13 @@ namespace MiniEngine.UI
                         ImGui.EndMainMenuBar();
                     }
 
-                    if (this.State.EntityState.ShowEntityWindow)
+                    if (this.State.EntityState.ShowEntityWindow && this.State.EntityState.SelectedEntity.Id > 0)
                     {
                         this.EntityWindow.Render();
+                    }
+                    else
+                    {
+                        this.State.EntityState.ShowEntityWindow = false;
                     }
 
                     if (this.State.DebugState.ShowDemo) { ImGui.ShowDemoWindow(); }
