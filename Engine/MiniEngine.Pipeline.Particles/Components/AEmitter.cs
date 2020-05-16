@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MiniEngine.Pipeline.Basics.Components;
 using MiniEngine.Pipeline.Utilities;
 using MiniEngine.Systems;
 using MiniEngine.Systems.Annotations;
@@ -18,10 +19,10 @@ namespace MiniEngine.Pipeline.Particles.Components
         private Seconds timeToSpawn;
         private Vector4 tint;
 
-        public AEmitter(Entity entity, Vector3 position, Texture2D texture, int rows, int columns, float scale)
+        public AEmitter(Entity entity, Texture2D texture, int rows, int columns)
         {
             this.Entity = entity;
-            this.Position = position;
+            this.Enabled = true;
             this.Texture = texture;
             this.Rows = rows;
             this.Columns = columns;
@@ -31,8 +32,6 @@ namespace MiniEngine.Pipeline.Particles.Components
             this.SpawnInterval = 0.05f;
             this.timeToSpawn = 0.0f;
 
-            this.Scale = scale;
-            this.Direction = Vector3.Up;
             this.Speed = 3.0f;
             this.Spread = 0.5f;
             this.TimeToLive = 2.0f;
@@ -42,8 +41,8 @@ namespace MiniEngine.Pipeline.Particles.Components
 
         public Entity Entity { get; }
 
-        [Editor(nameof(Position))]
-        public Vector3 Position { get; set; }
+        [Editor(nameof(Enabled))]
+        public bool Enabled { get; set; }
 
         [Editor(nameof(Texture))]
         public Texture2D Texture { get; }
@@ -58,12 +57,6 @@ namespace MiniEngine.Pipeline.Particles.Components
 
         [Editor(nameof(SpawnInterval), nameof(SpawnInterval), 0, float.MaxValue)]
         public Seconds SpawnInterval { get; set; }
-
-        [Editor(nameof(Scale), nameof(Scale), 0, float.MaxValue)]
-        public float Scale { get; set; }
-
-        [Editor(nameof(Direction), nameof(Direction), -1, 1)]
-        public Vector3 Direction { get; set; }
 
         [Editor(nameof(Speed), nameof(Speed), 0, float.MaxValue)]
         public float Speed { get; set; }
@@ -84,7 +77,7 @@ namespace MiniEngine.Pipeline.Particles.Components
             set => this.tint = value.ToVector4();
         }
 
-        public void Update(Seconds elapsed)
+        public void Update(Seconds elapsed, Pose pose)
         {
             for (var i = this.Particles.Count - 1; i >= 0; i--)
             {
@@ -106,15 +99,17 @@ namespace MiniEngine.Pipeline.Particles.Components
             }
 
             this.timeToSpawn -= elapsed;
-            if (this.timeToSpawn <= 0.0f)
+            if (this.Enabled && this.timeToSpawn <= 0.0f)
             {
-                var velocity = Vector3.Normalize(this.Direction + this.GetSpreadVector()) * this.Speed;
+                var direction = Vector3.TransformNormal(Vector3.Forward, pose.RotationMatrix);
+
+                var velocity = Vector3.Normalize(direction + this.GetSpreadVector()) * this.Speed;
 
                 this.timeToSpawn += this.SpawnInterval;
                 this.Particles.Add(
                     new Particle(
-                        this.Position,
-                        this.Scale,
+                        pose.Position,
+                        pose.Scale,
                         velocity,
                         this.TimePerFrame));
             }

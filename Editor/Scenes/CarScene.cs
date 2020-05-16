@@ -8,6 +8,7 @@ using MiniEngine.GameLogic.Vehicles.Fighter;
 using MiniEngine.Input;
 using MiniEngine.Pipeline.Basics.Components;
 using MiniEngine.Pipeline.Basics.Factories;
+using MiniEngine.Pipeline.Particles.Components;
 using MiniEngine.Primitives.Cameras;
 using MiniEngine.Systems;
 using MiniEngine.Units;
@@ -22,6 +23,8 @@ namespace MiniEngine.Scenes
         private WorldGrid worldGrid;
 
         private Gimbal gimbal;
+        private Accelerometer accelerometer;
+        private AdditiveEmitter emitter;
 
         private Pose targetPose;
         float radius = 10.0f;
@@ -54,30 +57,55 @@ namespace MiniEngine.Scenes
             this.Skybox = this.SceneBuilder.SponzaSkybox;
 
             this.worldGrid = new WorldGrid(40, 40, 1, 8, new Vector3(-20, 0, -20));
-            this.SceneBuilder.CreateDebugLine(CreateGridLines(40, 40), Color.White);
+            this.SceneBuilder.CreateDebugLine(this.CreateGridLines(40, 40), Color.White);
 
             var (cubePose, _, _) = this.SceneBuilder.BuildCube(Vector3.Zero, 0.005f);
 
-            var (stickyPose, _, _) = this.SceneBuilder.BuildCube(Vector3.Zero, 0.005f);
+            //var (stickyPose, _, _) = this.SceneBuilder.BuildCube(Vector3.Zero, 0.005f);
 
 
             var (fighterPose, fighterModel, fighterBounds) = this.SceneBuilder.BuildFighter(Vector3.Zero, 1.0f);
 
-            this.OffsetFactory.Construct(stickyPose.Entity, Vector3.Forward * 5, 0, 0, 0, fighterPose.Entity);
+            //this.OffsetFactory.Construct(stickyPose.Entity, Vector3.Forward * 5, 0, 0, 0, fighterPose.Entity);
 
             this.targetPose = cubePose;
 
             this.gimbal = new Gimbal(fighterPose);
+
+            var (emitter, emitterPose, emitterOffset) = this.SceneBuilder.BuildRCS(fighterPose.Entity, Vector3.Forward * 5);
+            this.emitter = emitter;
+            this.accelerometer = new Accelerometer(emitterPose);
+
+
+
+            // TODO:
+            /*
+             * Now place an emitter using an offset. Get the delta's of the position of the pose of the emitter. Transform the delta vector
+             * Using the rotation matrix, then check if X > 0, fire X>0 emitter, etc...
+             */
         }
 
         public void Update(PerspectiveCamera camera, Seconds elapsed)
         {
             var position = Vector3.Forward;
 
-            this.targetPose.Position = radius * Vector3.TransformNormal(position, Matrix.CreateFromYawPitchRoll(this.yaw, this.pitch, 0.0f));
+            this.targetPose.Position = this.radius * Vector3.TransformNormal(position, Matrix.CreateFromYawPitchRoll(this.yaw, this.pitch, 0.0f));
 
             this.gimbal.PointAt = this.targetPose.Position;
             this.gimbal.Update(elapsed);
+
+            this.accelerometer.Update(elapsed);
+
+            if (this.accelerometer.Acceleration.LengthSquared() > 0)
+            {
+                var length = this.accelerometer.Acceleration.Length();
+                this.emitter.Enabled = true;
+                this.emitter.Speed = length;
+            }
+            else
+            {
+                this.emitter.Enabled = false;
+            }
         }
 
         public void RenderUI()

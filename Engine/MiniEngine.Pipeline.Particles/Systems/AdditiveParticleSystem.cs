@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Effects;
 using MiniEngine.Effects.DeviceStates;
 using MiniEngine.Effects.Wrappers;
+using MiniEngine.Pipeline.Basics.Components;
 using MiniEngine.Pipeline.Particles.Components;
 using MiniEngine.Primitives;
 using MiniEngine.Primitives.Cameras;
@@ -18,6 +19,7 @@ namespace MiniEngine.Pipeline.Particles.Systems
         private readonly AdditiveParticlesEffect AdditiveParticlesEffect;
 
         private readonly IComponentContainer<AdditiveEmitter> Emitters;
+        private readonly IComponentContainer<Pose> Poses;
         private readonly List<ParticlePose> Particles;
 
         private readonly UnitQuad Quad;
@@ -25,12 +27,14 @@ namespace MiniEngine.Pipeline.Particles.Systems
         public AdditiveParticleSystem(
             GraphicsDevice device,
             EffectFactory effectFactory,
-            IComponentContainer<AdditiveEmitter> emitters)
+            IComponentContainer<AdditiveEmitter> emitters,
+            IComponentContainer<Pose> poses)
         {
             this.Device = device;
 
             this.AdditiveParticlesEffect = effectFactory.Construct<AdditiveParticlesEffect>();
             this.Emitters = emitters;
+            this.Poses = poses;
 
             this.Particles = new List<ParticlePose>();
             this.Quad = new UnitQuad(device);
@@ -67,7 +71,9 @@ namespace MiniEngine.Pipeline.Particles.Systems
         {
             for (var i = 0; i < this.Emitters.Count; i++)
             {
-                this.Emitters[i].Update(elapsed);
+                var emitter = this.Emitters[i];
+                var pose = this.Poses.Get(emitter.Entity);
+                emitter.Update(elapsed, pose);
             }
         }
     }

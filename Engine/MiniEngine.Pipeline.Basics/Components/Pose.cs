@@ -20,12 +20,14 @@ namespace MiniEngine.Pipeline.Basics.Components
             this.Pitch = pitch;
             this.Roll = roll;
 
-            this.Matrix = Recompute(this.Origin, position, scale, yaw, pitch, roll);
+            this.RecomputeMatrices();
         }
 
         public Entity Entity { get; }
 
         public Matrix Matrix { get; private set; }
+
+        public Matrix RotationMatrix { get; private set; }
 
         [Editor(nameof(Origin))]
         public Vector3 Origin
@@ -80,13 +82,13 @@ namespace MiniEngine.Pipeline.Basics.Components
             this.yaw = yaw;
             this.pitch = pitch;
             this.roll = roll;
-            this.Matrix = Recompute(this.origin, this.position, this.scale, this.yaw, this.pitch, this.roll);
+            this.RecomputeMatrices();
         }
 
         public void Move(Vector3 position)
         {
             this.position = position;
-            this.Matrix = Recompute(this.origin, this.position, this.scale, this.yaw, this.pitch, this.roll);
+            this.RecomputeMatrices();
         }
 
         public void PlaceAtOffset(Offset offset, Pose other)
@@ -98,13 +100,13 @@ namespace MiniEngine.Pipeline.Basics.Components
             this.Roll = MathHelper.WrapAngle(other.Roll + offset.Roll);
 
             this.position = other.position + Vector3.Transform(offset.Position, rotation);
-            this.Matrix = Recompute(this.origin, this.position, this.scale, this.yaw, this.pitch, this.roll);
+            this.RecomputeMatrices();
         }
 
         public void SetScale(Vector3 scale)
         {
             this.scale = scale;
-            this.Matrix = Recompute(this.origin, this.position, this.scale, this.yaw, this.pitch, this.roll);
+            this.RecomputeMatrices();
         }
 
         public void SetScale(float scale) => this.SetScale(Vector3.One * scale);
@@ -112,17 +114,17 @@ namespace MiniEngine.Pipeline.Basics.Components
         public void SetOrigin(Vector3 origin)
         {
             this.origin = origin;
-            this.Matrix = Recompute(this.origin, this.position, this.scale, this.yaw, this.pitch, this.roll);
+            this.RecomputeMatrices();
         }
 
-        private static Matrix Recompute(Vector3 origin, Vector3 position, Vector3 scale, float yaw, float pitch, float roll)
+        private void RecomputeMatrices()
         {
-            var moveToCenter = Matrix.CreateTranslation(-origin);
-            var rotation = Matrix.CreateFromYawPitchRoll(yaw, pitch, roll);
-            var size = Matrix.CreateScale(scale);
-            var translation = Matrix.CreateTranslation(position);
+            var moveToCenter = Matrix.CreateTranslation(-this.origin);
+            this.RotationMatrix = Matrix.CreateFromYawPitchRoll(this.yaw, this.pitch, this.roll);
+            var size = Matrix.CreateScale(this.scale);
+            var translation = Matrix.CreateTranslation(this.position);
 
-            return size * moveToCenter * rotation * translation;
+            this.Matrix = size * moveToCenter * this.RotationMatrix * translation;
         }
     }
 }

@@ -7,13 +7,12 @@ namespace MiniEngine.GameLogic.Vehicles.Fighter
 {
     public class Maneuver
     {
-
+        private readonly Pose Pose;
         private Seconds accumulator;
-        private readonly Pose pose;
 
         public Maneuver(Pose pose, float targetYaw, float targetPitch, Seconds eta)
         {
-            this.pose = pose;
+            this.Pose = pose;
             this.StartYaw = pose.Yaw;
             this.TargetYaw = targetYaw;
             this.StartPich = pose.Pitch;
@@ -27,7 +26,7 @@ namespace MiniEngine.GameLogic.Vehicles.Fighter
             var yaw = LerpRadians(this.StartYaw, this.TargetYaw, progress);
             var pitch = LerpRadians(this.StartPich, this.TargetPitch, progress);
 
-            this.pose.Rotate(yaw, pitch, this.pose.Roll);
+            this.Pose.Rotate(yaw, pitch, this.Pose.Roll);
 
             this.accumulator += elapsed;
 

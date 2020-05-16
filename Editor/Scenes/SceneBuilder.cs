@@ -15,6 +15,7 @@ using MiniEngine.Pipeline.Lights.Components;
 using MiniEngine.Pipeline.Lights.Factories;
 using MiniEngine.Pipeline.Models.Components;
 using MiniEngine.Pipeline.Models.Factories;
+using MiniEngine.Pipeline.Particles.Components;
 using MiniEngine.Pipeline.Particles.Factories;
 using MiniEngine.Pipeline.Projectors.Factories;
 using MiniEngine.Rendering;
@@ -43,6 +44,7 @@ namespace MiniEngine.Scenes
         private readonly WaypointFactory WaypointFactory;
         private readonly PipelineBuilder PipelineBuilder;
         private readonly PoseFactory PoseFactory;
+        private readonly OffsetFactory OffsetFactory;
 
         private Model terrain;
         private Model car;
@@ -75,6 +77,7 @@ namespace MiniEngine.Scenes
             DebugLineFactory debugLineFactory,
             WaypointFactory waypointFactory,
             PipelineBuilder pipelineBuilder,
+            OffsetFactory offsetFactory,
             PoseFactory poseFactory)
         {
             this.EntityController = entityController;
@@ -93,6 +96,7 @@ namespace MiniEngine.Scenes
             this.WaypointFactory = waypointFactory;
             this.PipelineBuilder = pipelineBuilder;
             this.PoseFactory = poseFactory;
+            this.OffsetFactory = offsetFactory;
         }
 
         public void LoadContent(ContentManager content)
@@ -263,18 +267,20 @@ namespace MiniEngine.Scenes
         public PointLight BuildFirePlace()
         {
             var entity = this.EntityController.CreateEntity();
+            this.PoseFactory.Construct(entity, new Vector3(-60.5f, 6.0f, 20.0f), Vector3.One * 2, 0, MathHelper.PiOver2, 0);
+            this.AveragedEmitterFactory.ConstructAveragedEmitter(entity, this.smoke, 1, 1);
 
             var entity2 = this.EntityController.CreateEntity();
+            this.PoseFactory.Construct(entity2, new Vector3(-60.5f, 6.0f, 20.0f), Vector3.One, 0, MathHelper.PiOver2, 0);
+            this.AdditiveEmitterFactory.ConstructAdditiveEmitter(entity2, this.explosion2, 1, 1);
 
-            var particleSpawn = new Vector3(-60.5f, 6.0f, 20.0f);
-            var pose = this.PoseFactory.Construct(entity, particleSpawn);
-
-            this.AveragedEmitterFactory.ConstructAveragedEmitter(entity, particleSpawn, this.smoke, 1, 1, 2.0f);
-            this.AdditiveEmitterFactory.ConstructAdditiveEmitter(entity, particleSpawn, this.explosion2, 1, 1, 1.0f);
-            var emitter = this.AdditiveEmitterFactory.ConstructAdditiveEmitter(entity2, particleSpawn, this.explosion, 8, 8, 0.075f);
+            var entity3 = this.EntityController.CreateEntity();
+            this.PoseFactory.Construct(entity3, new Vector3(-60.5f, 6.0f, 20.0f), Vector3.One * 0.075f, 0, MathHelper.PiOver2, 0);
+            var emitter = this.AdditiveEmitterFactory.ConstructAdditiveEmitter(entity3, this.explosion, 8, 8);
             emitter.SpawnInterval = 0;
             emitter.Spread = 0.75f;
             emitter.TimeToLive = 2.25f;
+
 
             var pointLight = this.LightsFactory.PointLightFactory.Construct(entity, Color.IndianRed, 20.0f, 1.0f);
 
@@ -292,6 +298,20 @@ namespace MiniEngine.Scenes
             projector.SetMaxDistance(30.0f);
 
             return pointLight;
+        }
+
+        public (AdditiveEmitter, Pose, Offset) BuildRCS(Entity target, Vector3 offset)
+        {
+            var entity = this.EntityController.CreateEntity();
+            var pose = this.PoseFactory.Construct(entity, offset, 0.1f);
+            var offsetC = this.OffsetFactory.Construct(entity, offset, 0, MathHelper.PiOver2, 0, target);
+
+            var emitter = this.AdditiveEmitterFactory.ConstructAdditiveEmitter(entity, this.explosion2, 1, 1);
+            emitter.SpawnInterval = 0;
+            emitter.Spread = 0.05f;
+            emitter.TimeToLive = 0.4f;
+
+            return (emitter, pose, offsetC);
         }
 
         public Entity BuildBulletHoles()

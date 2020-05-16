@@ -5,7 +5,7 @@ namespace MiniEngine.Pipeline.Particles.Components
 {
     public sealed class Particle
     {
-        public Particle(Vector3 position, float scale, Vector3 linearVelocity, Seconds timePerFrame)
+        public Particle(Vector3 position, Vector3 scale, Vector3 linearVelocity, Seconds timePerFrame)
         {
             this.Position = position;
             this.Scale = scale;
@@ -18,7 +18,7 @@ namespace MiniEngine.Pipeline.Particles.Components
         }
 
         public Vector3 Position { get; set; }
-        public float Scale { get; set; }
+        public Vector3 Scale { get; set; }
         public Vector3 LinearVelocity { get; set; }
         public Seconds LifeTime { get; set; }
         public Seconds TimePerFrame { get; set; }

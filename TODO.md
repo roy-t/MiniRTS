@@ -1,9 +1,10 @@
 # WIP
+- If the game is running at <60fps the draw loop gets called less, but the elasped parameter is still 1/60s so the accelerometer (among other things) will freak out.
+
 - There are still a few components that use a position. However they usually use it in different way, should they use Pose?
     - ShadowCastingLight
     - Sunlight
-    - Waypoint
-    - AEmitter
+    - Waypoint    
 - Replace icon system with a system that prints the number of the entity! Then remove all icons and clean up debug systems
 - The split between opaque and transparent models makes it hard for other systems to reference all kinds of models (see UVAnimationSystem)
 

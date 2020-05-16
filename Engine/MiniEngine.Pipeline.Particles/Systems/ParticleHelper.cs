@@ -7,7 +7,7 @@ using MiniEngine.Systems.Containers;
 namespace MiniEngine.Pipeline.Particles.Systems
 {
     public static class ParticleHelper
-    {        
+    {
         public static void GatherParticles<T>(IComponentContainer<T> emitters, IViewPoint viewPoint, List<ParticlePose> particlesOut)
             where T : AEmitter
         {

@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Effects;
 using MiniEngine.Effects.DeviceStates;
 using MiniEngine.Effects.Wrappers;
+using MiniEngine.Pipeline.Basics.Components;
 using MiniEngine.Pipeline.Particles.Components;
 using MiniEngine.Primitives;
 using MiniEngine.Primitives.Cameras;
@@ -19,6 +20,7 @@ namespace MiniEngine.Pipeline.Particles.Systems
         private readonly AverageParticlesEffect AverageParticlesEffect;
 
         private readonly IComponentContainer<AveragedEmitter> Emitters;
+        private readonly IComponentContainer<Pose> Poses;
         private readonly List<ParticlePose> Particles;
 
         private readonly FullScreenTriangle FullScreenTriangle;
@@ -26,13 +28,15 @@ namespace MiniEngine.Pipeline.Particles.Systems
 
         public AveragedParticleSystem(
             GraphicsDevice device,
-            EffectFactory effectFactory,            
-            IComponentContainer<AveragedEmitter> emitters)
+            EffectFactory effectFactory,
+            IComponentContainer<AveragedEmitter> emitters,
+            IComponentContainer<Pose> poses)
         {
             this.Device = device;
             this.WeightedParticlesEffect = effectFactory.Construct<WeightedParticlesEffect>();
             this.AverageParticlesEffect = effectFactory.Construct<AverageParticlesEffect>();
             this.Emitters = emitters;
+            this.Poses = poses;
 
             this.Particles = new List<ParticlePose>();
 
@@ -77,14 +81,16 @@ namespace MiniEngine.Pipeline.Particles.Systems
             this.AverageParticlesEffect.Apply();
 
             this.FullScreenTriangle.Render(this.Device);
-        }    
-      
+        }
+
         public void Update(PerspectiveCamera camera, Seconds elapsed)
         {
             for (var i = 0; i < this.Emitters.Count; i++)
             {
-                this.Emitters[i].Update(elapsed);
+                var emitter = this.Emitters[i];
+                var pose = this.Poses.Get(emitter.Entity);
+                emitter.Update(elapsed, pose);
             }
-        }        
+        }
     }
 }
