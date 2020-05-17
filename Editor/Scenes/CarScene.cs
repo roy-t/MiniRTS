@@ -61,11 +61,9 @@ namespace MiniEngine.Scenes
 
             var (cubePose, _, _) = this.SceneBuilder.BuildCube(Vector3.Zero, 0.005f);
 
-            //var (stickyPose, _, _) = this.SceneBuilder.BuildCube(Vector3.Zero, 0.005f);
-
-
             var (fighterPose, fighterModel, fighterBounds) = this.SceneBuilder.BuildFighter(Vector3.Zero, 1.0f);
 
+            //var (stickyPose, _, _) = this.SceneBuilder.BuildCube(Vector3.Zero, 0.005f);
             //this.OffsetFactory.Construct(stickyPose.Entity, Vector3.Forward * 5, 0, 0, 0, fighterPose.Entity);
 
             this.targetPose = cubePose;
@@ -85,8 +83,7 @@ namespace MiniEngine.Scenes
 
             // TODO:
             /*
-             * Now place an emitter using an offset. Get the delta's of the position of the pose of the emitter. Transform the delta vector
-             * Using the rotation matrix, then check if X > 0, fire X>0 emitter, etc...
+             * Create multiple emitters and then figure out which one to fire based on transformed acceleration vector
              */
         }
 

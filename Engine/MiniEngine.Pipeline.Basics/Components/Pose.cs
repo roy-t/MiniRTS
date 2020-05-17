@@ -93,14 +93,11 @@ namespace MiniEngine.Pipeline.Basics.Components
 
         public void PlaceAtOffset(Offset offset, Pose other)
         {
-            var rotation = Matrix.CreateFromYawPitchRoll(other.Yaw, other.Pitch, other.Roll);
-
-            this.Yaw = MathHelper.WrapAngle(other.Yaw + offset.Yaw);
-            this.Pitch = MathHelper.WrapAngle(other.Pitch + offset.Pitch);
-            this.Roll = MathHelper.WrapAngle(other.Roll + offset.Roll);
-
-            this.position = other.position + Vector3.Transform(offset.Position, rotation);
-            this.RecomputeMatrices();
+            this.position = other.position + Vector3.Transform(offset.Position, other.RotationMatrix);
+            this.yaw = offset.Yaw;
+            this.pitch = offset.Pitch;
+            this.roll = offset.Roll;
+            this.RecomputeMatrices(other.RotationMatrix);
         }
 
         public void SetScale(Vector3 scale)
@@ -117,14 +114,17 @@ namespace MiniEngine.Pipeline.Basics.Components
             this.RecomputeMatrices();
         }
 
-        private void RecomputeMatrices()
+        private void RecomputeMatrices(Matrix additionalRotation)
         {
             var moveToCenter = Matrix.CreateTranslation(-this.origin);
-            this.RotationMatrix = Matrix.CreateFromYawPitchRoll(this.yaw, this.pitch, this.roll);
             var size = Matrix.CreateScale(this.scale);
             var translation = Matrix.CreateTranslation(this.position);
 
+            this.RotationMatrix = Matrix.CreateFromYawPitchRoll(this.yaw, this.pitch, this.roll) * additionalRotation;
             this.Matrix = size * moveToCenter * this.RotationMatrix * translation;
         }
+
+        private void RecomputeMatrices()
+            => this.RecomputeMatrices(Matrix.Identity);
     }
 }
