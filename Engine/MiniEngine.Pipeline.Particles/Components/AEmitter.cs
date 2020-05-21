@@ -82,8 +82,13 @@ namespace MiniEngine.Pipeline.Particles.Components
             set => this.tint = value.ToVector4();
         }
 
+        [Editor(nameof(Direction))]
+        public Vector3 Direction { get; private set; }
+
         public void Update(Seconds elapsed, Pose pose)
         {
+            this.Direction = Vector3.TransformNormal(Vector3.Forward, pose.RotationMatrix);
+
             for (var i = this.Particles.Count - 1; i >= 0; i--)
             {
                 var particle = this.Particles[i];
@@ -106,9 +111,7 @@ namespace MiniEngine.Pipeline.Particles.Components
             this.timeToSpawn -= elapsed;
             if (this.Enabled && this.timeToSpawn <= 0.0f)
             {
-                var direction = Vector3.TransformNormal(Vector3.Forward, pose.RotationMatrix);
-
-                var velocity = this.StartVelocity + (Vector3.Normalize(direction + this.GetSpreadVector()) * this.Speed);
+                var velocity = this.StartVelocity + (Vector3.Normalize(Direction + this.GetSpreadVector()) * this.Speed);
 
                 this.timeToSpawn += this.SpawnInterval;
                 this.Particles.Add(

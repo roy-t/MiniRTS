@@ -315,13 +315,14 @@ namespace MiniEngine.Scenes
         public (AdditiveEmitter, Pose, Offset) BuildRCS(Entity target, Vector3 offset, float yaw, float pitch, float roll)
         {
             var entity = this.EntityController.CreateEntity();
-            var pose = this.PoseFactory.Construct(entity, offset, 0.1f);
+            var pose = this.PoseFactory.Construct(entity, offset, 0.2f);
             var offsetC = this.OffsetFactory.Construct(entity, offset, yaw, pitch, roll, target);
 
             var emitter = this.AdditiveEmitterFactory.ConstructAdditiveEmitter(entity, this.explosion2, 1, 1);
             emitter.SpawnInterval = 0;
             emitter.Spread = 0.05f;
-            emitter.TimeToLive = 0.4f;
+            emitter.Speed = 5.0f;
+            emitter.TimeToLive = 0.1f;
 
             return (emitter, pose, offsetC);
         }

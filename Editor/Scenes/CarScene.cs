@@ -24,8 +24,9 @@ namespace MiniEngine.Scenes
 
         private Gimbal gimbal;
         private Accelerometer accelerometer;
-        private AdditiveEmitter emitter;
+        private AdditiveEmitter[] emitters;
 
+        private Pose fighterPose;
         private Pose targetPose;
         float radius = 10.0f;
         float yaw = 0.0f;
@@ -62,7 +63,7 @@ namespace MiniEngine.Scenes
             var (cubePose, _, _) = this.SceneBuilder.BuildCube(Vector3.Zero, 0.005f);
 
             var (fighterPose, fighterModel, fighterBounds) = this.SceneBuilder.BuildFighter(Vector3.Zero, 1.0f);
-
+            this.fighterPose = fighterPose;
             //var (stickyPose, _, _) = this.SceneBuilder.BuildCube(Vector3.Zero, 0.005f);
             //this.OffsetFactory.Construct(stickyPose.Entity, Vector3.Forward * 5, 0, 0, 0, fighterPose.Entity);
 
@@ -72,9 +73,12 @@ namespace MiniEngine.Scenes
 
             var parent = this.SceneBuilder.BuildParent("Reaction Control Thruster");
 
-            var (emmiterLeft, emitterPoseLeft, _) = this.SceneBuilder.BuildRCS(fighterPose.Entity, Vector3.Forward * 5, MathHelper.PiOver2, 0, 0);
-            var (emmiterRight, emitterPoseRight, _) = this.SceneBuilder.BuildRCS(fighterPose.Entity, Vector3.Forward * 5, -MathHelper.PiOver2, 0, 0);
-            this.emitter = emmiterLeft;
+            var fighterToNose = Vector3.Forward * 5;
+            var (emmiterLeft, emitterPoseLeft, _) = this.SceneBuilder.BuildRCS(fighterPose.Entity, fighterToNose, MathHelper.PiOver2, 0, 0);
+            var (emmiterRight, _, _) = this.SceneBuilder.BuildRCS(fighterPose.Entity, fighterToNose, -MathHelper.PiOver2, 0, 0);
+            var (emmiterUp, _, _) = this.SceneBuilder.BuildRCS(fighterPose.Entity, fighterToNose, 0, MathHelper.PiOver2, 0);
+            var (emmiterDown, _, _) = this.SceneBuilder.BuildRCS(fighterPose.Entity, fighterToNose, 0, -MathHelper.PiOver2, 0);
+            this.emitters = new[] { emmiterLeft, emmiterRight, emmiterUp, emmiterDown };
             this.accelerometer = new Accelerometer(emitterPoseLeft);
 
             parent.Children.Add(emmiterLeft.Entity);
@@ -98,17 +102,36 @@ namespace MiniEngine.Scenes
 
             this.accelerometer.Update(elapsed);
 
-            if (this.accelerometer.Acceleration.LengthSquared() > 0)
+            for (var i = 0; i < this.emitters.Length; i++)
             {
-                this.emitter.Enabled = true;
-                this.emitter.StartVelocity = this.accelerometer.Velocity;
-                //var length = this.accelerometer.Acceleration.Length();
-                //this.emitter.Speed = length * 5;
+                var emitter = this.emitters[i];
+                var dot = Vector3.Dot(emitter.Direction, -this.accelerometer.Acceleration);
+                if (dot > 0)
+                {
+                    emitter.StartVelocity = this.accelerometer.Velocity;
+                    emitter.Enabled = true;
+                }
+                else
+                {
+                    emitter.Enabled = false;
+                }
+
+
             }
-            else
-            {
-                this.emitter.Enabled = false;
-            }
+
+            //this.fighterPose.Position += Vector3.Forward * elapsed;
+
+            //if (this.accelerometer.Acceleration.LengthSquared() > 0)
+            //{
+            //    this.emitter.Enabled = true;
+            //    this.emitter.StartVelocity = this.accelerometer.Velocity; // does this work?
+            //    //var length = this.accelerometer.Acceleration.Length();
+            //    //this.emitter.Speed = length * 5;
+            //}
+            //else
+            //{
+            //    this.emitter.Enabled = false;
+            //}
         }
 
         public void RenderUI()
