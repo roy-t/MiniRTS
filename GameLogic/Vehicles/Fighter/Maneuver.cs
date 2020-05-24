@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using MiniEngine.Pipeline.Basics.Components;
 using MiniEngine.Pipeline.Utilities;
 using MiniEngine.Units;
@@ -10,14 +11,15 @@ namespace MiniEngine.GameLogic.Vehicles.Fighter
         private readonly Pose Pose;
         private Seconds accumulator;
 
-        public Maneuver(Pose pose, float targetYaw, float targetPitch, Seconds eta)
+        public Maneuver(Pose pose, float targetYaw, float targetPitch, float radiansPerSecond)
         {
             this.Pose = pose;
             this.StartYaw = pose.Yaw;
             this.TargetYaw = targetYaw;
             this.StartPich = pose.Pitch;
             this.TargetPitch = targetPitch;
-            this.ETA = eta;
+            var distance = Math.Max(DistanceRadians(this.StartYaw, this.TargetYaw), DistanceRadians(this.StartPich, this.TargetPitch));
+            this.ETA = distance / radiansPerSecond;
         }
 
         public void Update(Seconds elapsed)
@@ -37,7 +39,7 @@ namespace MiniEngine.GameLogic.Vehicles.Fighter
         public float TargetYaw { get; }
         public float StartPich { get; }
         public float TargetPitch { get; }
-        public Seconds ETA { get; }
+        public Seconds ETA { get; set; }
 
         public bool Completed { get; private set; }
 
@@ -64,20 +66,12 @@ namespace MiniEngine.GameLogic.Vehicles.Fighter
                 // lerp upwards past MathHelper.TwoPi
                 b += MathHelper.TwoPi;
                 result = MathHelper.Lerp(a, b, lerpFactor);
-                if (result >= MathHelper.TwoPi)
-                {
-                    result -= MathHelper.TwoPi;
-                }
             }
             else if (diff > MathHelper.Pi)
             {
                 // lerp downwards past 0
                 b -= MathHelper.TwoPi;
                 result = MathHelper.Lerp(a, b, lerpFactor);
-                if (result < 0.0f)
-                {
-                    result += MathHelper.TwoPi;
-                }
             }
             else
             {
@@ -86,6 +80,13 @@ namespace MiniEngine.GameLogic.Vehicles.Fighter
             }
 
             return MathHelper.WrapAngle(result);
+        }
+
+        private static float DistanceRadians(float a, float b)
+        {
+            a = MathHelper.WrapAngle(a) + MathHelper.Pi;
+            b = MathHelper.WrapAngle(b) + MathHelper.Pi;
+            return Math.Abs(b - a);
         }
     }
 }

@@ -1,25 +1,26 @@
 ﻿using Microsoft.Xna.Framework;
-using MiniEngine.Pipeline.Basics.Components;
+using MiniEngine.Systems;
+using MiniEngine.Systems.Components;
 using MiniEngine.Units;
 
 namespace MiniEngine.GameLogic.Vehicles.Fighter
 {
-    public sealed class Accelerometer
+    public sealed class Accelerometer : IComponent
     {
-        private readonly Pose Pose;
         private Vector3 position;
 
-        public Accelerometer(Pose pose)
+        public Accelerometer(Entity entity)
         {
-            this.Pose = pose;
+            this.Entity = entity;
         }
 
-        public Vector3 Acceleration { get; private set; }
-        public Vector3 Velocity { get; set; }
+        public Entity Entity { get; }
 
-        public void Update(Seconds elapsed)
+        public Vector3 Acceleration { get; private set; }
+        public Vector3 Velocity { get; private set; }
+
+        public void UpdateAccelerationAndVelocity(Vector3 newPosition, Seconds elapsed)
         {
-            var newPosition = this.Pose.Position;
             var newVelocity = (newPosition - this.position) / elapsed;
             this.Acceleration = newVelocity - this.Velocity;
 

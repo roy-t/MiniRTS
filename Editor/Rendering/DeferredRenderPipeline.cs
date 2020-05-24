@@ -2,6 +2,7 @@
 using MiniEngine.CutScene;
 using MiniEngine.Effects;
 using MiniEngine.Effects.Wrappers;
+using MiniEngine.GameLogic.Systems;
 using MiniEngine.Pipeline;
 using MiniEngine.Pipeline.Basics.Systems;
 using MiniEngine.Pipeline.Debug.Extensions;
@@ -61,6 +62,7 @@ namespace MiniEngine.Rendering
         private readonly UVAnimationSystem UVAnimationSystem;
         private readonly BoundsSystem BoundsSystem;
         private readonly OffsetSystem OffsetSystem;
+        private readonly AccelerometerSystem AccelerometerSystem;
 
         private readonly RenderPipeline Pipeline;
         private readonly Pass RootPass;
@@ -88,6 +90,7 @@ namespace MiniEngine.Rendering
             UVAnimationSystem uvAnimationSystem,
             BoundsSystem boundsSystem,
             OffsetSystem offsetSystem,
+            AccelerometerSystem accelerometerSystem,
             IMeterRegistry meterRegistry)
         {
             this.ShadowMapSystem = shadowMapSystem;
@@ -112,6 +115,7 @@ namespace MiniEngine.Rendering
             this.UVAnimationSystem = uvAnimationSystem;
             this.OffsetSystem = offsetSystem;
             this.BoundsSystem = boundsSystem;
+            this.AccelerometerSystem = accelerometerSystem;
 
             var width = device.PresentationParameters.BackBufferWidth;
             var height = device.PresentationParameters.BackBufferHeight;
@@ -188,6 +192,7 @@ namespace MiniEngine.Rendering
                 .UpdateSystem(this.AnimationSystem)
                 .UpdateSystem(this.UVAnimationSystem)
                 .UpdateSystem(this.OffsetSystem)
+                .UpdateSystem(this.AccelerometerSystem)
                 .UpdateSystem(this.BoundsSystem)
                 .EnableIf(this.Settings.EnableShadows, x => x.RenderShadows(this.ShadowPipeline))
                 .EnableIf(this.Settings.EnableModels, x => x.RenderModels(this.ModelSystem, this.ModelPipeline))

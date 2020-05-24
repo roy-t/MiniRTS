@@ -6,17 +6,16 @@ using MiniEngine.Units;
 
 namespace MiniEngine.GameLogic.Vehicles.Fighter
 {
-    public class Gimbal
+    public class AttitudeController
     {
         private readonly Pose Pose;
         private readonly Queue<Maneuver> Maneuvers;
 
-        public Gimbal(Pose pose)
+        public AttitudeController(Pose pose)
         {
             this.Pose = pose;
             this.Maneuvers = new Queue<Maneuver>();
         }
-
 
         public Vector3 PointAt { get; set; }
 
@@ -43,8 +42,7 @@ namespace MiniEngine.GameLogic.Vehicles.Fighter
                     var yaw = GetYaw(targetDirection);
                     var pitch = GetPitch(targetDirection);
 
-                    // TODO: base ETA on distance
-                    var maneuver = new Maneuver(this.Pose, yaw, pitch, 1.0f);
+                    var maneuver = new Maneuver(this.Pose, yaw, pitch, MathHelper.TwoPi / 10);
                     this.Maneuvers.Enqueue(maneuver);
                 }
             }

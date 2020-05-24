@@ -48,7 +48,7 @@ namespace MiniEngine.Configuration
             serviceRegistry.Register<SceneSelector>();
             serviceRegistry.Register<IScene, SponzaScene>(nameof(SponzaScene));
             serviceRegistry.Register<IScene, DemoScene>(nameof(DemoScene));
-            serviceRegistry.Register<IScene, CarScene>(nameof(CarScene));
+            serviceRegistry.Register<IScene, FlightScene>(nameof(FlightScene));
         }
     }
 }

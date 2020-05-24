@@ -5,8 +5,8 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
 using MiniEngine.CutScene;
-using MiniEngine.GameLogic;
 using MiniEngine.GameLogic.Factories;
+using MiniEngine.GameLogic.Vehicles.Fighter;
 using MiniEngine.Pipeline.Basics.Components;
 using MiniEngine.Pipeline.Basics.Factories;
 using MiniEngine.Pipeline.Debug.Components;
@@ -35,7 +35,6 @@ namespace MiniEngine.Scenes
         private readonly LightsFactory LightsFactory;
         private readonly OpaqueModelFactory OpaqueModelFactory;
         private readonly TransparentModelFactory TransparentModelFactory;
-        private readonly CarAnimationFactory CarAnimationFactory;
         private readonly UVAnimationFactory UVAnimationFactory;
         private readonly ProjectorFactory ProjectorFactory;
         private readonly AdditiveEmitterFactory AdditiveEmitterFactory;
@@ -48,7 +47,7 @@ namespace MiniEngine.Scenes
         private readonly PoseFactory PoseFactory;
         private readonly OffsetFactory OffsetFactory;
         private readonly ParentFactory ParentFactory;
-
+        private readonly AccelerometerFactory AccelerometerFactory;
         private Model terrain;
         private Model car;
         private Model tank;
@@ -70,7 +69,6 @@ namespace MiniEngine.Scenes
             LightsFactory lightsFactory,
             OpaqueModelFactory opaqueModelFactory,
             TransparentModelFactory transparentModelFactory,
-            CarAnimationFactory carAnimationFactory,
             UVAnimationFactory uvAnimationFactory,
             ProjectorFactory projectorFactory,
             AdditiveEmitterFactory additiveEmitterFactory,
@@ -82,14 +80,14 @@ namespace MiniEngine.Scenes
             PipelineBuilder pipelineBuilder,
             OffsetFactory offsetFactory,
             PoseFactory poseFactory,
-            ParentFactory parentFactory)
+            ParentFactory parentFactory,
+            AccelerometerFactory accelerometerFactory)
         {
             this.EntityController = entityController;
             this.SkyboxBuilder = skyboxBuilder;
             this.LightsFactory = lightsFactory;
             this.OpaqueModelFactory = opaqueModelFactory;
             this.TransparentModelFactory = transparentModelFactory;
-            this.CarAnimationFactory = carAnimationFactory;
             this.UVAnimationFactory = uvAnimationFactory;
             this.ProjectorFactory = projectorFactory;
             this.AdditiveEmitterFactory = additiveEmitterFactory;
@@ -102,6 +100,7 @@ namespace MiniEngine.Scenes
             this.PoseFactory = poseFactory;
             this.OffsetFactory = offsetFactory;
             this.ParentFactory = parentFactory;
+            this.AccelerometerFactory = accelerometerFactory;
         }
 
         public void LoadContent(ContentManager content)
@@ -205,18 +204,6 @@ namespace MiniEngine.Scenes
             this.PoseFactory.Construct(entity, position, scale);
             var model = this.OpaqueModelFactory.Construct(entity, this.gear);
             //this.DebugInfoFactory.Construct(entity, model);
-        }
-
-        public Car BuildCar(Vector3 position, float scale)
-        {
-            var entity = this.EntityController.CreateEntity();
-            var pose = this.PoseFactory.Construct(entity, position, scale);
-            var (model, bounds) = this.OpaqueModelFactory.Construct(entity, this.car);
-            var animation = this.CarAnimationFactory.Construct(entity, model.Model.Tag as SkinningData);
-
-            //this.DebugInfoFactory.Construct(entity, model);
-
-            return new Car(model, pose, animation);
         }
 
         public (Pose, OpaqueModel, Bounds, UVAnimation) BuildTank(Vector3 position, float scale)
@@ -347,6 +334,11 @@ namespace MiniEngine.Scenes
             }
 
             return entity;
+        }
+
+        public Accelerometer BuildAccelerometer(Entity target)
+        {
+            return this.AccelerometerFactory.Construct(target);
         }
 
         public void BuildCutScene()
