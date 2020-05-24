@@ -29,12 +29,12 @@ namespace MiniEngine.Scenes
         public TextureCube BuildSkyBox(Color color)
         {
             var skybox = new TextureCube(this.Device, 1, false, SurfaceFormat.Color);
-            skybox.SetData(CubeMapFace.PositiveX, new Color[] { Color.Black });
-            skybox.SetData(CubeMapFace.NegativeX, new Color[] { Color.Black });
-            skybox.SetData(CubeMapFace.PositiveY, new Color[] { Color.Black });
-            skybox.SetData(CubeMapFace.NegativeY, new Color[] { Color.Black });
-            skybox.SetData(CubeMapFace.PositiveZ, new Color[] { Color.Black });
-            skybox.SetData(CubeMapFace.NegativeZ, new Color[] { Color.Black });
+            skybox.SetData(CubeMapFace.PositiveX, new Color[] { color });
+            skybox.SetData(CubeMapFace.NegativeX, new Color[] { color });
+            skybox.SetData(CubeMapFace.PositiveY, new Color[] { color });
+            skybox.SetData(CubeMapFace.NegativeY, new Color[] { color });
+            skybox.SetData(CubeMapFace.PositiveZ, new Color[] { color });
+            skybox.SetData(CubeMapFace.NegativeZ, new Color[] { color });
 
             return skybox;
         }

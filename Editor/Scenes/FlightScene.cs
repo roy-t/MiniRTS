@@ -48,6 +48,7 @@ namespace MiniEngine.Scenes
             this.Skybox = this.SceneBuilder.SponzaSkybox;
 
             this.worldGrid = new WorldGrid(40, 40, 1, 8, new Vector3(-20, 0, -20));
+
             this.SceneBuilder.CreateDebugLine(this.CreateGridLines(40, 40), Color.White);
 
             var (cubePose, _, _) = this.SceneBuilder.BuildCube(Vector3.Zero, 0.005f);
@@ -61,12 +62,15 @@ namespace MiniEngine.Scenes
 
             var parent = this.SceneBuilder.BuildParent("Reaction Control Thruster");
 
+            // TODO: make it easy to make the below two times
             var fighterToNose = Vector3.Forward * 4;
             var (emmiterLeft, emitterPoseLeft, _) = this.SceneBuilder.BuildRCS(fighterPose.Entity, fighterToNose, MathHelper.PiOver2, 0, 0);
             var (emmiterRight, _, _) = this.SceneBuilder.BuildRCS(fighterPose.Entity, fighterToNose, -MathHelper.PiOver2, 0, 0);
             var (emmiterUp, _, _) = this.SceneBuilder.BuildRCS(fighterPose.Entity, fighterToNose, 0, MathHelper.PiOver2, 0);
             var (emmiterDown, _, _) = this.SceneBuilder.BuildRCS(fighterPose.Entity, fighterToNose, 0, -MathHelper.PiOver2, 0);
             this.emitters = new[] { emmiterLeft, emmiterRight, emmiterUp, emmiterDown };
+
+
             this.accelerometer = this.SceneBuilder.BuildAccelerometer(emitterPoseLeft.Entity);
 
             parent.Children.Add(emmiterLeft.Entity);
@@ -88,6 +92,7 @@ namespace MiniEngine.Scenes
             this.attitudeController.Update(elapsed);
 
 
+            // TODO: move this to an RCS system?
             for (var i = 0; i < this.emitters.Length; i++)
             {
                 var emitter = this.emitters[i];
