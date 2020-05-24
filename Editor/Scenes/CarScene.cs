@@ -73,7 +73,7 @@ namespace MiniEngine.Scenes
 
             var parent = this.SceneBuilder.BuildParent("Reaction Control Thruster");
 
-            var fighterToNose = Vector3.Forward * 5;
+            var fighterToNose = Vector3.Forward * 4;
             var (emmiterLeft, emitterPoseLeft, _) = this.SceneBuilder.BuildRCS(fighterPose.Entity, fighterToNose, MathHelper.PiOver2, 0, 0);
             var (emmiterRight, _, _) = this.SceneBuilder.BuildRCS(fighterPose.Entity, fighterToNose, -MathHelper.PiOver2, 0, 0);
             var (emmiterUp, _, _) = this.SceneBuilder.BuildRCS(fighterPose.Entity, fighterToNose, 0, MathHelper.PiOver2, 0);
@@ -83,12 +83,8 @@ namespace MiniEngine.Scenes
 
             parent.Children.Add(emmiterLeft.Entity);
             parent.Children.Add(emmiterRight.Entity);
-
-
-            // TODO:
-            /*
-             * Create multiple emitters and then figure out which one to fire based on transformed acceleration vector
-             */
+            parent.Children.Add(emmiterUp.Entity);
+            parent.Children.Add(emmiterDown.Entity);
         }
 
         public void Update(PerspectiveCamera camera, Seconds elapsed)
@@ -105,8 +101,8 @@ namespace MiniEngine.Scenes
             for (var i = 0; i < this.emitters.Length; i++)
             {
                 var emitter = this.emitters[i];
-                var dot = Vector3.Dot(emitter.Direction, -this.accelerometer.Acceleration);
-                if (dot > 0)
+                var dot = Vector3.Dot(emitter.Direction, -Vector3.Normalize(this.accelerometer.Acceleration));
+                if (dot > 0.15f) // TODO: should be a bit higher than 0, 45 degrees?
                 {
                     emitter.StartVelocity = this.accelerometer.Velocity;
                     emitter.Enabled = true;
@@ -115,8 +111,6 @@ namespace MiniEngine.Scenes
                 {
                     emitter.Enabled = false;
                 }
-
-
             }
 
             //this.fighterPose.Position += Vector3.Forward * elapsed;

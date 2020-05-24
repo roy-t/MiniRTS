@@ -58,15 +58,12 @@ PixelShaderOutput MainPS(VertexShaderOutput input)
     float depth = input.Depth.x / input.Depth.y;
     float2 screenCoord = ToTextureCoordinates(input.ParticlePosition.xy, input.ParticlePosition.w);
     float worldDepth = ReadDepth(screenCoord);
-                
-    float4 particleWorld = ReadWorldPosition(screenCoord, depth, InverseViewProjection);
-    float4 depthWorld = ReadWorldPosition(screenCoord, worldDepth, InverseViewProjection);
-      
-    float diff = distance(particleWorld.xyz, depthWorld.xyz);            
-    float fade = min(diff, 1.0);    
+
+    // Manual depth test with the z-buffer
+    clip(worldDepth - depth);
     
     float2 texCoord = input.TexCoord;
-    float4 color = (tex2D(textureSampler, texCoord) * fade) * Tint;
+    float4 color = tex2D(textureSampler, texCoord) * Tint;
     float w = clamp(pow(1.0f + 0.01f, 3.0) * 1e8 * pow(1.0f - depth * 0.9f, 3.0f), 1e-2, 3e3);
 
     output.Color = float4(color.rgb * color.a, color.a) * w;

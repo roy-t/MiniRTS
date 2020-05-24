@@ -54,16 +54,9 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
 
     // Manual depth test with the z-buffer
     clip(worldDepth - depth);
-    
-    float4 particleWorld = ReadWorldPosition(screenCoord, depth, InverseViewProjection);
-    float4 depthWorld = ReadWorldPosition(screenCoord, worldDepth, InverseViewProjection);
-        
-    // Fade out near other objects
-    float diff = distance(particleWorld.xyz, depthWorld.xyz);
-    float fade = min(diff, 1.0);
-    
+
     float2 texCoord = input.TexCoord;
-    return (tex2D(textureSampler, texCoord) * fade) * Tint;        
+    return tex2D(textureSampler, texCoord) * Tint;        
 }
 
 technique WeightedParticlesTechnique

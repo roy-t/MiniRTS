@@ -321,7 +321,7 @@ namespace MiniEngine.Scenes
             var emitter = this.AdditiveEmitterFactory.ConstructAdditiveEmitter(entity, this.explosion2, 1, 1);
             emitter.SpawnInterval = 0;
             emitter.Spread = 0.05f;
-            emitter.Speed = 5.0f;
+            emitter.Speed = 6.0f;
             emitter.TimeToLive = 0.1f;
 
             return (emitter, pose, offsetC);
