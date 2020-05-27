@@ -22,6 +22,7 @@ namespace MiniEngine.Scenes
         float radius = 10.0f;
         float yaw = 0.0f;
         float pitch = 0.0f;
+        float x, y, z = 0.0f;
 
         public FlightScene(
             SceneBuilder sceneBuilder)
@@ -52,17 +53,18 @@ namespace MiniEngine.Scenes
             var (fighterPose, _, _) = this.SceneBuilder.BuildFighter(Vector3.Zero, 1.0f);
             this.SceneBuilder.BuildSmallReactionControlSystem(fighterPose.Entity, Vector3.Forward * 4, 0, 0, 0);
             this.SceneBuilder.BuildSmallReactionControlSystem(fighterPose.Entity, Vector3.Backward * 4, 0, 0, 0);
+            this.SceneBuilder.BuildThruster(fighterPose.Entity, Vector3.Backward * 4, MathHelper.Pi, 0, 0);
 
             this.attitudeController = new AttitudeController(fighterPose);
         }
 
         public void Update(PerspectiveCamera camera, Seconds elapsed)
         {
-            var position = Vector3.Forward;
-
-            this.targetPose.Position = this.radius * Vector3.TransformNormal(position, Matrix.CreateFromYawPitchRoll(this.yaw, this.pitch, 0.0f));
+            var targetPosition = new Vector3(this.x, this.y, this.z);
+            this.targetPose.Position = targetPosition + (this.radius * Vector3.TransformNormal(Vector3.Forward, Matrix.CreateFromYawPitchRoll(this.yaw, this.pitch, 0.0f)));
 
             this.attitudeController.PointAt = this.targetPose.Position;
+            this.attitudeController.MoveTo = targetPosition;
             this.attitudeController.Update(elapsed);
         }
 
@@ -70,9 +72,16 @@ namespace MiniEngine.Scenes
         {
             if (ImGui.Begin("Scene"))
             {
+                ImGui.DragFloat("X", ref this.x);
+                ImGui.DragFloat("Y", ref this.y);
+                ImGui.DragFloat("Z", ref this.z);
+
+                ImGui.Spacing();
+
                 ImGui.SliderFloat("Radius", ref this.radius, 0.0f, 10.0f);
                 ImGui.SliderFloat("Yaw", ref this.yaw, -MathHelper.Pi, MathHelper.Pi);
                 ImGui.SliderFloat("Pitch", ref this.pitch, -MathHelper.PiOver2 + 0.001f, MathHelper.PiOver2 - 0.001f);
+
                 ImGui.End();
             }
         }

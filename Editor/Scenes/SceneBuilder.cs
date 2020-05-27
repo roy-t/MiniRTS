@@ -255,6 +255,24 @@ namespace MiniEngine.Scenes
             return this.GetFactory<ReactionControlFactory>().Construct(entity, emitterLeft.Entity, emitterRight.Entity, emitterUp.Entity, emitterDown.Entity);
         }
 
+        public ReactionControl BuildThruster(Entity target, Vector3 offset, float yaw, float pitch, float roll)
+        {
+            var entity = this.EntityController.CreateEntity("Thruster");
+            this.GetFactory<PoseFactory>().Construct(entity, Vector3.Zero, 1.0f);
+            this.GetFactory<OffsetFactory>().Construct(entity, offset, yaw, pitch, roll, target);
+
+            var emitter = this.GetFactory<AdditiveEmitterFactory>().ConstructAdditiveEmitter(entity, this.explosion2, 1, 1);
+            emitter.SpawnInterval = 0;
+            emitter.Spread = 0.1f;
+            emitter.Speed = 20.0f;
+            emitter.TimeToLive = 0.5f;
+
+            var rcs = this.GetFactory<ReactionControlFactory>().Construct(entity, emitter.Entity);
+            rcs.EmitterReactionRange = 0.95f;
+
+            return rcs;
+        }
+
         public Entity BuildBulletHoles()
         {
             var entity = this.EntityController.CreateEntity();

@@ -73,7 +73,9 @@
     <Compile Include="Systems\ReactionControlSystem.cs" />
     <Compile Include="Components\ReactionControl.cs" />
     <Compile Include="Vehicles\Fighter\AttitudeController.cs" />
-    <Compile Include="Vehicles\Fighter\Maneuver.cs" />
+    <Compile Include="Vehicles\Fighter\IManeuver.cs" />
+    <Compile Include="Vehicles\Fighter\TranslationManeuver.cs" />
+    <Compile Include="Vehicles\Fighter\RotationManeuver.cs" />
     <Compile Include="DumbMovementLogic.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WorldGrid.cs" />

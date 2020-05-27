@@ -6,12 +6,12 @@ using MiniEngine.Units;
 
 namespace MiniEngine.GameLogic.Vehicles.Fighter
 {
-    public class Maneuver
+    public class RotationManeuver : IManeuver
     {
         private readonly Pose Pose;
         private Seconds accumulator;
 
-        public Maneuver(Pose pose, float targetYaw, float targetPitch, float radiansPerSecond)
+        public RotationManeuver(Pose pose, float targetYaw, float targetPitch, float radiansPerSecond)
         {
             this.Pose = pose;
             this.StartYaw = pose.Yaw;

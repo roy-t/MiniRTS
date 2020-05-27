@@ -40,7 +40,7 @@ namespace MiniEngine.GameLogic.Systems
                 {
                     var emitter = this.Emitters.Get(rcs.Emitters[e]);
                     var dot = Vector3.Dot(emitter.Direction, -Vector3.Normalize(rcs.Acceleration));
-                    if (dot > 0.15f)
+                    if (dot > rcs.EmitterReactionRange)
                     {
                         emitter.StartVelocity = rcs.Velocity;
                         emitter.Enabled = true;

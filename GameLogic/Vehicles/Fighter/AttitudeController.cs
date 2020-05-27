@@ -9,15 +9,16 @@ namespace MiniEngine.GameLogic.Vehicles.Fighter
     public class AttitudeController
     {
         private readonly Pose Pose;
-        private readonly Queue<Maneuver> Maneuvers;
+        private readonly Queue<IManeuver> Maneuvers;
 
         public AttitudeController(Pose pose)
         {
             this.Pose = pose;
-            this.Maneuvers = new Queue<Maneuver>();
+            this.Maneuvers = new Queue<IManeuver>();
         }
 
         public Vector3 PointAt { get; set; }
+        public Vector3 MoveTo { get; set; }
 
         public void Update(Seconds elapsed)
         {
@@ -42,8 +43,12 @@ namespace MiniEngine.GameLogic.Vehicles.Fighter
                     var yaw = GetYaw(targetDirection);
                     var pitch = GetPitch(targetDirection);
 
-                    var maneuver = new Maneuver(this.Pose, yaw, pitch, MathHelper.TwoPi / 10);
+                    var maneuver = new RotationManeuver(this.Pose, yaw, pitch, MathHelper.TwoPi / 10);
                     this.Maneuvers.Enqueue(maneuver);
+                }
+                else if (this.Pose.Position != this.MoveTo)
+                {
+                    this.Maneuvers.Enqueue(new TranslationManeuver(this.Pose, this.MoveTo, 5.0f));
                 }
             }
         }
