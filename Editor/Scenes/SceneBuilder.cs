@@ -239,6 +239,22 @@ namespace MiniEngine.Scenes
             return (emitter, pose, offsetC);
         }
 
+        public ReactionControl BuildSmallReactionControlSystem(Entity target, Vector3 offset, float yaw, float pitch, float roll)
+        {
+            var entity = this.EntityController.CreateEntity("RCS");
+            this.GetFactory<PoseFactory>().Construct(entity, Vector3.Zero);
+            this.GetFactory<OffsetFactory>().Construct(entity, offset, yaw, pitch, roll, target);
+
+            var (emitterLeft, _, _) = this.BuildRCS(entity, Vector3.Zero, MathHelper.PiOver2, 0, 0);
+            var (emitterRight, _, _) = this.BuildRCS(entity, Vector3.Zero, -MathHelper.PiOver2, 0, 0);
+            var (emitterUp, _, _) = this.BuildRCS(entity, Vector3.Zero, 0, MathHelper.PiOver2, 0);
+            var (emitterDown, _, _) = this.BuildRCS(entity, Vector3.Zero, 0, -MathHelper.PiOver2, 0);
+
+            this.GetFactory<ParentFactory>().Construct(entity, emitterLeft.Entity, emitterRight.Entity, emitterUp.Entity, emitterDown.Entity);
+
+            return this.GetFactory<ReactionControlFactory>().Construct(entity, emitterLeft.Entity, emitterRight.Entity, emitterUp.Entity, emitterDown.Entity);
+        }
+
         public Entity BuildBulletHoles()
         {
             var entity = this.EntityController.CreateEntity();
@@ -261,10 +277,7 @@ namespace MiniEngine.Scenes
             return entity;
         }
 
-        public Accelerometer BuildAccelerometer(Entity target)
-        {
-            return this.GetFactory<AccelerometerFactory>().Construct(target);
-        }
+
 
         public void BuildCutScene()
         {

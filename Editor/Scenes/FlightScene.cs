@@ -6,7 +6,6 @@ using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.GameLogic;
 using MiniEngine.GameLogic.Vehicles.Fighter;
 using MiniEngine.Pipeline.Basics.Components;
-using MiniEngine.Pipeline.Particles.Components;
 using MiniEngine.Primitives.Cameras;
 using MiniEngine.Units;
 using Roy_T.AStar.Primitives;
@@ -19,10 +18,6 @@ namespace MiniEngine.Scenes
         private WorldGrid worldGrid;
 
         private AttitudeController attitudeController;
-        private Accelerometer accelerometer;
-        private AdditiveEmitter[] emitters;
-
-        private Pose fighterPose;
         private Pose targetPose;
         float radius = 10.0f;
         float yaw = 0.0f;
@@ -52,34 +47,13 @@ namespace MiniEngine.Scenes
             this.SceneBuilder.CreateDebugLine(this.CreateGridLines(40, 40), Color.White);
 
             var (cubePose, _, _) = this.SceneBuilder.BuildCube(Vector3.Zero, 0.005f);
-
-            var (fighterPose, fighterModel, fighterBounds) = this.SceneBuilder.BuildFighter(Vector3.Zero, 1.0f);
-            this.fighterPose = fighterPose;
-
             this.targetPose = cubePose;
 
+            var (fighterPose, _, _) = this.SceneBuilder.BuildFighter(Vector3.Zero, 1.0f);
+            this.SceneBuilder.BuildSmallReactionControlSystem(fighterPose.Entity, Vector3.Forward * 4, 0, 0, 0);
+            this.SceneBuilder.BuildSmallReactionControlSystem(fighterPose.Entity, Vector3.Backward * 4, 0, 0, 0);
+
             this.attitudeController = new AttitudeController(fighterPose);
-
-            var parent = this.SceneBuilder.BuildParent("Reaction Control Thruster");
-
-            // TODO: make it easy to make the below two times
-            var fighterToNose = Vector3.Forward * 4;
-            var (emmiterLeft, emitterPoseLeft, _) = this.SceneBuilder.BuildRCS(fighterPose.Entity, fighterToNose, MathHelper.PiOver2, 0, 0);
-            var (emmiterRight, _, _) = this.SceneBuilder.BuildRCS(fighterPose.Entity, fighterToNose, -MathHelper.PiOver2, 0, 0);
-            var (emmiterUp, _, _) = this.SceneBuilder.BuildRCS(fighterPose.Entity, fighterToNose, 0, MathHelper.PiOver2, 0);
-            var (emmiterDown, _, _) = this.SceneBuilder.BuildRCS(fighterPose.Entity, fighterToNose, 0, -MathHelper.PiOver2, 0);
-            this.emitters = new[] { emmiterLeft, emmiterRight, emmiterUp, emmiterDown };
-
-
-            this.accelerometer = this.SceneBuilder.BuildAccelerometer(emitterPoseLeft.Entity);
-
-            parent.Children.Add(emmiterLeft.Entity);
-            parent.Children.Add(emmiterRight.Entity);
-            parent.Children.Add(emmiterUp.Entity);
-            parent.Children.Add(emmiterDown.Entity);
-
-            // Accelerometer
-            // ReactionControlSystem
         }
 
         public void Update(PerspectiveCamera camera, Seconds elapsed)
@@ -90,23 +64,6 @@ namespace MiniEngine.Scenes
 
             this.attitudeController.PointAt = this.targetPose.Position;
             this.attitudeController.Update(elapsed);
-
-
-            // TODO: move this to an RCS system?
-            for (var i = 0; i < this.emitters.Length; i++)
-            {
-                var emitter = this.emitters[i];
-                var dot = Vector3.Dot(emitter.Direction, -Vector3.Normalize(this.accelerometer.Acceleration));
-                if (dot > 0.15f)
-                {
-                    emitter.StartVelocity = this.accelerometer.Velocity;
-                    emitter.Enabled = true;
-                }
-                else
-                {
-                    emitter.Enabled = false;
-                }
-            }
         }
 
         public void RenderUI()

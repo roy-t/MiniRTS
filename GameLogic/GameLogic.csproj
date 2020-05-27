@@ -66,13 +66,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Components\ReactionController.cs" />
-    <Compile Include="Factories\AccelerometerFactory.cs" />
+    <Compile Include="Factories\ReactionControlFactory.cs" />
     <Compile Include="GameLogicCompositionRoot.cs" />
     <Compile Include="Path.cs" />
     <Compile Include="PathInterpolator.cs" />
-    <Compile Include="Systems\AccelerometerSystem.cs" />
-    <Compile Include="Components\Accelerometer.cs" />
+    <Compile Include="Systems\ReactionControlSystem.cs" />
+    <Compile Include="Components\ReactionControl.cs" />
     <Compile Include="Vehicles\Fighter\AttitudeController.cs" />
     <Compile Include="Vehicles\Fighter\Maneuver.cs" />
     <Compile Include="DumbMovementLogic.cs" />
@@ -92,6 +91,10 @@
     <ProjectReference Include="..\Engine\MiniEngine.Pipeline.Models\MiniEngine.Pipeline.Models.csproj">
       <Project>{D77598B5-73BF-4CD4-B9A6-D94895058A60}</Project>
       <Name>MiniEngine.Pipeline.Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Engine\MiniEngine.Pipeline.Particles\MiniEngine.Pipeline.Particles.csproj">
+      <Project>{373867C7-7717-4CCC-A049-F0E174F5F5A4}</Project>
+      <Name>MiniEngine.Pipeline.Particles</Name>
     </ProjectReference>
     <ProjectReference Include="..\Engine\MiniEngine.Pipeline\MiniEngine.Pipeline.csproj">
       <Project>{820720C5-666A-4D5E-96EE-F053BAA063D9}</Project>

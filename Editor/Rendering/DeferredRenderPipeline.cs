@@ -62,7 +62,7 @@ namespace MiniEngine.Rendering
         private readonly UVAnimationSystem UVAnimationSystem;
         private readonly BoundsSystem BoundsSystem;
         private readonly OffsetSystem OffsetSystem;
-        private readonly AccelerometerSystem AccelerometerSystem;
+        private readonly ReactionControlSystem AccelerometerSystem;
 
         private readonly RenderPipeline Pipeline;
         private readonly Pass RootPass;
@@ -90,7 +90,7 @@ namespace MiniEngine.Rendering
             UVAnimationSystem uvAnimationSystem,
             BoundsSystem boundsSystem,
             OffsetSystem offsetSystem,
-            AccelerometerSystem accelerometerSystem,
+            ReactionControlSystem accelerometerSystem,
             IMeterRegistry meterRegistry)
         {
             this.ShadowMapSystem = shadowMapSystem;

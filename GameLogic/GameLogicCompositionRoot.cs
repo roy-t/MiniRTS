@@ -10,11 +10,11 @@ namespace MiniEngine.GameLogic
     {
         public void Compose(IServiceRegistry serviceRegistry)
         {
-            serviceRegistry.Register<IComponentContainer<Accelerometer>, ComponentContainer<Accelerometer>>();
+            serviceRegistry.Register<IComponentContainer<ReactionControl>, ComponentContainer<ReactionControl>>();
 
-            serviceRegistry.Register<AccelerometerFactory>();
+            serviceRegistry.Register<ReactionControlFactory>();
 
-            serviceRegistry.Register<AccelerometerSystem>();
+            serviceRegistry.Register<ReactionControlSystem>();
         }
 
     }

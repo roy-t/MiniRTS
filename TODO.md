@@ -6,8 +6,10 @@
     - ShadowCastingLight
     - Sunlight
     - Waypoint    
+    - Cameras??
 - Replace icon system with a system that prints the number of the entity! Then remove all icons and clean up debug systems
-- The split between opaque and transparent models makes it hard for other systems to reference all kinds of models (see UVAnimationSystem)
+- The split between opaque and transparent models makes it hard for other systems to reference all kinds (see UVAnimationSystem)
+- The split between additive and transparent particles makes it hard for other systems to reference all kinds (see ReactionControlSystem)
 
 # Future
 ## TODO
