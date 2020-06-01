@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using MiniEngine.Systems;
+using MiniEngine.Systems.Annotations;
 using MiniEngine.Systems.Components;
 
 namespace MiniEngine.GameLogic.Vehicles.Fighter
@@ -22,11 +23,15 @@ namespace MiniEngine.GameLogic.Vehicles.Fighter
         /// 1.0 react if the acceleration vector perfectly aligns with the emitter vector
         /// 0.0 react if the acceleration vector makes a <= 90 degree angle with the emitter vector        
         /// </summary>
+        [Editor(nameof(EmitterReactionRange))]
         public float EmitterReactionRange { get; set; }
 
         public Vector3 LastPosition { get; set; }
 
+        [Editor(nameof(Acceleration))]
         public Vector3 Acceleration { get; set; }
+
+        [Editor(nameof(Velocity))]
         public Vector3 Velocity { get; set; }
     }
 }

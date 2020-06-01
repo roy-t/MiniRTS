@@ -56,7 +56,7 @@ namespace MiniEngine.GameLogic.Systems
         public static void UpdateAccelerationAndVelocity(ReactionControl rcs, Vector3 newPosition, Seconds elapsed)
         {
             var newVelocity = (newPosition - rcs.LastPosition) / elapsed;
-            rcs.Acceleration = newVelocity - rcs.Velocity;
+            rcs.Acceleration = (newVelocity - rcs.Velocity) / elapsed;
 
             rcs.Velocity = newVelocity;
             rcs.LastPosition = newPosition;

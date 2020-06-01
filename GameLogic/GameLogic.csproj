@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>MiniEngine.GameLogic</RootNamespace>
     <AssemblyName>GameLogic</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
     <TargetFrameworkProfile />
@@ -72,7 +72,9 @@
     <Compile Include="PathInterpolator.cs" />
     <Compile Include="Systems\ReactionControlSystem.cs" />
     <Compile Include="Components\ReactionControl.cs" />
-    <Compile Include="Vehicles\Fighter\AttitudeController.cs" />
+    <Compile Include="Vehicles\Fighter\AngleMath.cs" />
+    <Compile Include="Vehicles\Fighter\BurnRetroBurnManeuver.cs" />
+    <Compile Include="Vehicles\Fighter\FlightController.cs" />
     <Compile Include="Vehicles\Fighter\IManeuver.cs" />
     <Compile Include="Vehicles\Fighter\TranslationManeuver.cs" />
     <Compile Include="Vehicles\Fighter\RotationManeuver.cs" />

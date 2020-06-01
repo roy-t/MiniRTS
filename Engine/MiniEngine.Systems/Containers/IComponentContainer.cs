@@ -27,7 +27,7 @@ namespace MiniEngine.Systems.Containers
 
         new T Get(Entity entity);
 
-        new bool TryGet(Entity entity, out T component);
+        bool TryGet(Entity entity, out T component);
 
         new T this[int index] { get; }
     }

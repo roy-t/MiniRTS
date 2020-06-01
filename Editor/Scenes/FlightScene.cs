@@ -17,12 +17,14 @@ namespace MiniEngine.Scenes
         private readonly SceneBuilder SceneBuilder;
         private WorldGrid worldGrid;
 
-        private AttitudeController attitudeController;
+        private FlightController attitudeController;
         private Pose targetPose;
-        float radius = 10.0f;
-        float yaw = 0.0f;
-        float pitch = 0.0f;
-        float x, y, z = 0.0f;
+        private float radius = 10.0f;
+        private float yaw = 0.0f;
+        private float pitch = 0.0f;
+        private float x, y, z = 0.0f;
+        private bool set;
+
 
         public FlightScene(
             SceneBuilder sceneBuilder)
@@ -39,6 +41,8 @@ namespace MiniEngine.Scenes
 
         public void Set()
         {
+            this.z = -20.0f;
+
             this.SceneBuilder.BuildSponzaAmbientLight();
             this.SceneBuilder.BuildSponzeSunLight();
             this.Skybox = this.SceneBuilder.SponzaSkybox;
@@ -55,16 +59,22 @@ namespace MiniEngine.Scenes
             this.SceneBuilder.BuildSmallReactionControlSystem(fighterPose.Entity, Vector3.Backward * 4, 0, 0, 0);
             this.SceneBuilder.BuildThruster(fighterPose.Entity, Vector3.Backward * 4, MathHelper.Pi, 0, 0);
 
-            this.attitudeController = new AttitudeController(fighterPose);
+            this.attitudeController = new FlightController(fighterPose);
         }
 
         public void Update(PerspectiveCamera camera, Seconds elapsed)
         {
             var targetPosition = new Vector3(this.x, this.y, this.z);
-            this.targetPose.Position = targetPosition + (this.radius * Vector3.TransformNormal(Vector3.Forward, Matrix.CreateFromYawPitchRoll(this.yaw, this.pitch, 0.0f)));
+            this.targetPose.Position = targetPosition;// + (this.radius * Vector3.TransformNormal(Vector3.Forward, Matrix.CreateFromYawPitchRoll(this.yaw, this.pitch, 0.0f)));
 
-            this.attitudeController.PointAt = this.targetPose.Position;
-            this.attitudeController.MoveTo = targetPosition;
+            if (this.set)
+            {
+                this.attitudeController.PointAt = targetPosition; // this.targetPose.Position;
+                this.attitudeController.MoveTo = targetPosition;
+
+                this.set = false;
+            }
+
             this.attitudeController.Update(elapsed);
         }
 
@@ -81,6 +91,10 @@ namespace MiniEngine.Scenes
                 ImGui.SliderFloat("Radius", ref this.radius, 0.0f, 10.0f);
                 ImGui.SliderFloat("Yaw", ref this.yaw, -MathHelper.Pi, MathHelper.Pi);
                 ImGui.SliderFloat("Pitch", ref this.pitch, -MathHelper.PiOver2 + 0.001f, MathHelper.PiOver2 - 0.001f);
+
+                ImGui.Spacing();
+
+                this.set = ImGui.Button("Go!");
 
                 ImGui.End();
             }
