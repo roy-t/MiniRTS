@@ -44,6 +44,7 @@ namespace MiniEngine.GameLogic.Vehicles.Fighter
             return MathHelper.WrapAngle(result);
         }
 
+
         public static float DistanceRadians(float a, float b)
         {
             a = MathHelper.WrapAngle(a) + MathHelper.Pi;

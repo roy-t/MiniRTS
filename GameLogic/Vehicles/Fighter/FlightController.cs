@@ -38,23 +38,24 @@ namespace MiniEngine.GameLogic.Vehicles.Fighter
             }
             else
             {
-
-
-                var targetDirection = Vector3.Normalize(this.PointAt - this.Pose.Position);
-                var dot = Vector3.Dot(this.Pose.GetForward(), targetDirection);
-
-                if (targetDirection.LengthSquared() > 0 && Math.Abs(dot - 1.0f) > 0.01f)
+                if (Vector3.Distance(this.Pose.Position, this.MoveTo) > MinMoveDistance)
                 {
-                    var yaw = AngleMath.YawFromVector(targetDirection);
-                    var pitch = AngleMath.PitchFromVector(targetDirection);
+                    var targetDirection = Vector3.Normalize(this.PointAt - this.Pose.Position);
+                    var dot = Vector3.Dot(this.Pose.GetForward(), targetDirection);
 
-                    var maneuver = new RotationManeuver(this.Pose, yaw, pitch, MathHelper.TwoPi / 10);
-                    this.Maneuvers.Enqueue(maneuver);
-                }
-                else if (Vector3.Distance(this.Pose.Position, this.MoveTo) > MinMoveDistance)
-                {
-                    var maneuver = new BurnRetroBurnManeuver(this.Pose, this.MoveTo, MaxLinearAcceleration, MaxAngularAcceleration);
-                    this.Maneuvers.Enqueue(maneuver);
+                    if (targetDirection.LengthSquared() > 0 && Math.Abs(dot - 1.0f) > 0.01f)
+                    {
+                        var yaw = AngleMath.YawFromVector(targetDirection);
+                        var pitch = AngleMath.PitchFromVector(targetDirection);
+
+                        var rotation = new RotationManeuver(this.Pose, yaw, pitch, MathHelper.TwoPi / 10);
+                        this.Maneuvers.Enqueue(rotation);
+                    }
+                    else
+                    {
+                        var translation = new BurnRetroBurnManeuver(this.Pose, this.MoveTo, MaxLinearAcceleration, MaxAngularAcceleration);
+                        this.Maneuvers.Enqueue(translation);
+                    }
                 }
             }
         }

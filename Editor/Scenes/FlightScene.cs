@@ -42,6 +42,7 @@ namespace MiniEngine.Scenes
         public void Set()
         {
             this.z = -20.0f;
+            this.y = -20;
 
             this.SceneBuilder.BuildSponzaAmbientLight();
             this.SceneBuilder.BuildSponzeSunLight();
@@ -57,7 +58,10 @@ namespace MiniEngine.Scenes
             var (fighterPose, _, _) = this.SceneBuilder.BuildFighter(Vector3.Zero, 1.0f);
             this.SceneBuilder.BuildSmallReactionControlSystem(fighterPose.Entity, Vector3.Forward * 4, 0, 0, 0);
             this.SceneBuilder.BuildSmallReactionControlSystem(fighterPose.Entity, Vector3.Backward * 4, 0, 0, 0);
-            this.SceneBuilder.BuildThruster(fighterPose.Entity, Vector3.Backward * 4, MathHelper.Pi, 0, 0);
+
+            // TODO: for the thruster it looks best if the accelerometer is at the center of mass but the emitter should
+            // be placed at the exhaust
+            this.SceneBuilder.BuildThruster(fighterPose.Entity, Vector3.Backward * 0, MathHelper.Pi, 0, 0);
 
             this.attitudeController = new FlightController(fighterPose);
         }
