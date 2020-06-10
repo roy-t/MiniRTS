@@ -23,11 +23,11 @@ namespace MiniEngine.GameLogic.Vehicles.Fighter
 
         private Seconds accumulator;
 
-        public RotationManeuver(Pose pose, Vector3 linearVelocity, float targetYaw, Seconds yawDuration, float targetPitch, Seconds pitchDuration, float acceleration)
+        public RotationManeuver(Pose pose, Vector3 currentVelocity, float targetYaw, Seconds yawDuration, float targetPitch, Seconds pitchDuration, float acceleration)
         {
             this.Pose = pose;
 
-            this.LinearVelocity = linearVelocity;
+            this.LinearVelocity = currentVelocity;
             this.YawDuration = yawDuration;
             this.PitchDuration = pitchDuration;
             this.Acceleration = acceleration;

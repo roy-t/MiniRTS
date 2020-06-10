@@ -7,17 +7,18 @@ namespace MiniEngine.GameLogic.Vehicles.Fighter
     public sealed class BurnManeuver : IManeuver
     {
         private readonly Pose Pose;
+        private readonly Vector3 Direction;
         private readonly float Acceleration;
         private readonly Seconds Duration;
 
         private Vector3 velocity;
         private Seconds accumulator;
 
-        public BurnManeuver(Pose pose, Vector3 linearVelocity, float acceleration, Seconds duration)
+        public BurnManeuver(Pose pose, Vector3 direction, Vector3 currentVelocity, float acceleration, Seconds duration)
         {
             this.Pose = pose;
-
-            this.velocity = linearVelocity;
+            this.Direction = direction;
+            this.velocity = currentVelocity;
             this.Acceleration = acceleration;
             this.Duration = duration;
 
@@ -33,8 +34,7 @@ namespace MiniEngine.GameLogic.Vehicles.Fighter
             this.accumulator += elapsed;
             if (this.accumulator < this.Duration)
             {
-                var forward = this.Pose.GetForward();
-                this.velocity += forward * this.Acceleration * elapsed;
+                this.velocity += this.Direction * this.Acceleration * elapsed;
                 this.Pose.Move(this.Pose.Position + (this.velocity * elapsed));
             }
             else

@@ -4,7 +4,7 @@ using MiniEngine.Units;
 
 namespace MiniEngine.GameLogic.Vehicles.Fighter
 {
-    public sealed class HoldManeuver : IManeuver
+    public sealed class LerpManeuver : IManeuver
     {
         private readonly Pose Pose;
         private readonly Vector3 TargetPosition;
@@ -18,7 +18,7 @@ namespace MiniEngine.GameLogic.Vehicles.Fighter
         private float startYaw;
         private float startPitch;
 
-        public HoldManeuver(Pose pose, Vector3 targetPosition, float targetYaw, float targetPitch, Seconds duration)
+        public LerpManeuver(Pose pose, Vector3 targetPosition, float targetYaw, float targetPitch, Seconds duration)
         {
             this.Pose = pose;
             this.TargetPosition = targetPosition;

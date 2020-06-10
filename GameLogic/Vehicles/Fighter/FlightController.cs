@@ -30,8 +30,8 @@ namespace MiniEngine.GameLogic.Vehicles.Fighter
             if (this.Maneuvers.Count > 0)
             {
                 var currentManeuver = this.Maneuvers.Peek();
-
                 currentManeuver.Update(elapsed);
+
                 if (currentManeuver.Completed)
                 {
                     this.Maneuvers.Dequeue();

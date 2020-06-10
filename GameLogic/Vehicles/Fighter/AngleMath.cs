@@ -7,9 +7,10 @@ namespace MiniEngine.GameLogic.Vehicles.Fighter
     public static class AngleMath
     {
         // TODO: simplify
-        public static float LerpRadians(float a, float b, float lerpFactor) // Lerps from angle a to b (both between -PI and PI), taking the shortest path
+        public static float LerpRadians(float a, float b, float lerpFactor)
         {
-
+            a = MathHelper.WrapAngle(a);
+            b = MathHelper.WrapAngle(b);
             if (a < MathHelper.Pi)
             {
                 a += MathHelper.TwoPi;
@@ -19,7 +20,6 @@ namespace MiniEngine.GameLogic.Vehicles.Fighter
             {
                 b += MathHelper.TwoPi;
             }
-
 
             float result;
             var diff = b - a;

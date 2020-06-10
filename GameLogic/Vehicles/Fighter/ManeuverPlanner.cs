@@ -22,7 +22,10 @@ namespace MiniEngine.GameLogic.Vehicles.Fighter
             var pitchRotationDuration = ComputeRotationDuration(pitchDistance, maxAngularAcceleration);
 
             var rotation = new RotationManeuver(pose, Vector3.Zero, targetYaw, yawRotationDuration, targetPitch, pitchRotationDuration, maxAngularAcceleration);
+            var adjust = new LerpManeuver(pose, pose.Position, targetYaw, targetPitch, new Seconds(0.2f));
+
             maneuvers.Enqueue(rotation);
+            maneuvers.Enqueue(adjust);
         }
 
         public static void PlanMoveTo(Queue<IManeuver> maneuvers, Pose pose, Vector3 target, float maxLinearAcceleration, float maxAngularAcceleration)
@@ -44,15 +47,17 @@ namespace MiniEngine.GameLogic.Vehicles.Fighter
             var burnDuration = ComputeBurnDuration(distance, maxLinearAcceleration, yawRotationDuration);
             var velocityAfterBurn = maxLinearAcceleration * burnDuration * forward;
 
-            var progradeBurn = new BurnManeuver(pose, Vector3.Zero, maxLinearAcceleration, burnDuration);
+
+            var direction = Vector3.Normalize(target - pose.Position);
+            var progradeBurn = new BurnManeuver(pose, direction, Vector3.Zero, maxLinearAcceleration, burnDuration);
             var rotation = new RotationManeuver(pose, velocityAfterBurn, targetYaw, yawRotationDuration, targetPitch, pitchRotationDuration, maxAngularAcceleration);
-            var retrogradeBurn = new BurnManeuver(pose, velocityAfterBurn, maxLinearAcceleration, burnDuration);
-            var hold = new HoldManeuver(pose, target, targetYaw, targetPitch, new Seconds(1.0f));
+            var retrogradeBurn = new BurnManeuver(pose, -direction, velocityAfterBurn, maxLinearAcceleration, burnDuration);
+            var adjust = new LerpManeuver(pose, target, targetYaw, targetPitch, new Seconds(1.0f));
 
             maneuvers.Enqueue(progradeBurn);
             maneuvers.Enqueue(rotation);
             maneuvers.Enqueue(retrogradeBurn);
-            maneuvers.Enqueue(hold);
+            maneuvers.Enqueue(adjust);
         }
 
         private static float ComputeRotationDuration(double distanceRadians, double accelerationRadians)
