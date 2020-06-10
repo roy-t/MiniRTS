@@ -44,13 +44,25 @@ namespace MiniEngine.GameLogic.Vehicles.Fighter
             return MathHelper.WrapAngle(result);
         }
 
-
-        public static float DistanceRadians(float a, float b)
+        public static float DistanceRadians(float sourceAngle, float targetAngle)
         {
-            a = MathHelper.WrapAngle(a) + MathHelper.Pi;
-            b = MathHelper.WrapAngle(b) + MathHelper.Pi;
-            return Math.Abs(b - a);
+            sourceAngle = MathHelper.WrapAngle(sourceAngle);
+            targetAngle = MathHelper.WrapAngle(targetAngle);
+
+            var angle = targetAngle - sourceAngle;
+            if (angle > MathHelper.PiOver2)
+            {
+                angle -= MathHelper.TwoPi;
+            }
+
+            if (angle < -MathHelper.PiOver2)
+            {
+                angle += MathHelper.TwoPi;
+            }
+
+            return angle;
         }
+
 
         // TODO: do not allow straight up!
         public static float YawFromVector(Vector3 targetDirection)

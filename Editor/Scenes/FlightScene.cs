@@ -17,7 +17,7 @@ namespace MiniEngine.Scenes
         private readonly SceneBuilder SceneBuilder;
         private WorldGrid worldGrid;
 
-        private FlightController attitudeController;
+        private FlightController flightController;
         private Pose targetPose;
         private float radius = 10.0f;
         private float yaw = 0.0f;
@@ -42,6 +42,7 @@ namespace MiniEngine.Scenes
         public void Set()
         {
             this.z = -20.0f;
+            //this.x = 20.0f;
             this.y = -20;
 
             this.SceneBuilder.BuildSponzaAmbientLight();
@@ -63,7 +64,7 @@ namespace MiniEngine.Scenes
             // be placed at the exhaust
             this.SceneBuilder.BuildThruster(fighterPose.Entity, Vector3.Backward * 0, MathHelper.Pi, 0, 0);
 
-            this.attitudeController = new FlightController(fighterPose);
+            this.flightController = new FlightController(fighterPose);
         }
 
         public void Update(PerspectiveCamera camera, Seconds elapsed)
@@ -73,13 +74,11 @@ namespace MiniEngine.Scenes
 
             if (this.set)
             {
-                this.attitudeController.PointAt = targetPosition; // this.targetPose.Position;
-                this.attitudeController.MoveTo = targetPosition;
-
+                this.flightController.MoveTo = targetPosition;
                 this.set = false;
             }
 
-            this.attitudeController.Update(elapsed);
+            this.flightController.Update(elapsed);
         }
 
         public void RenderUI()
@@ -99,6 +98,10 @@ namespace MiniEngine.Scenes
                 ImGui.Spacing();
 
                 this.set = ImGui.Button("Go!");
+
+                ImGui.Spacing();
+
+                ImGui.Text($"Distance to target: {Vector3.Distance(this.flightController.Pose.Position, this.flightController.MoveTo):F2}");
 
                 ImGui.End();
             }

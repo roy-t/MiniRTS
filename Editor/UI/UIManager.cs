@@ -25,7 +25,7 @@ namespace MiniEngine.UI
         private readonly SpriteBatch SpriteBatch;
 
         private readonly RenderTargetDescriber RenderTargetDescriber;
-
+        private readonly SceneSelector SceneSelector;
         private readonly UIState State;
         private readonly ImGuiRenderer Gui;
 
@@ -50,7 +50,7 @@ namespace MiniEngine.UI
             this.SpriteBatch = spriteBatch;
             this.CameraController = cameraController;
             this.RenderTargetDescriber = renderTargetDescriber;
-
+            this.SceneSelector = sceneSelector;
             this.Menus = menus;
             this.EntityWindow = entityWindow;
             this.Editors = editors;
@@ -196,6 +196,11 @@ namespace MiniEngine.UI
                         }
 
                         currentScene.RenderUI();
+
+                        if (ImGui.Button("Reset Scene"))
+                        {
+                            this.SceneSelector.ResetScene();
+                        }
 
                         var speed = this.CameraController.TranslateSpeed.Value;
                         ImGui.SliderFloat("Movement Speed", ref speed, CameraController.MinTranslateSpeed, CameraController.MaxTranslateSpeed);

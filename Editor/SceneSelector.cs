@@ -29,5 +29,11 @@ namespace MiniEngine
             this.CurrentScene = scene;
             this.CurrentScene.Set();
         }
+
+        public void ResetScene()
+        {
+            this.EntityController.DestroyAllEntities();
+            this.CurrentScene.Set();
+        }
     }
 }

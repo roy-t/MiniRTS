@@ -73,10 +73,11 @@
     <Compile Include="Systems\ReactionControlSystem.cs" />
     <Compile Include="Components\ReactionControl.cs" />
     <Compile Include="Vehicles\Fighter\AngleMath.cs" />
-    <Compile Include="Vehicles\Fighter\BurnRetroBurnManeuver.cs" />
+    <Compile Include="Vehicles\Fighter\BurnManeuver.cs" />
     <Compile Include="Vehicles\Fighter\FlightController.cs" />
+    <Compile Include="Vehicles\Fighter\HoldManeuver.cs" />
     <Compile Include="Vehicles\Fighter\IManeuver.cs" />
-    <Compile Include="Vehicles\Fighter\TranslationManeuver.cs" />
+    <Compile Include="Vehicles\Fighter\ManeuverPlanner.cs" />
     <Compile Include="Vehicles\Fighter\RotationManeuver.cs" />
     <Compile Include="DumbMovementLogic.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

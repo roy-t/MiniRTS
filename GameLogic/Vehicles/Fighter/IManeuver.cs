@@ -6,6 +6,8 @@ namespace MiniEngine.GameLogic.Vehicles.Fighter
     {
         void Update(Seconds elapsed);
 
+        void Initiate();
+
         bool Completed { get; }
     }
 }

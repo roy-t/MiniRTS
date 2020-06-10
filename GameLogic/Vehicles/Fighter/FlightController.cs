@@ -9,10 +9,10 @@ namespace MiniEngine.GameLogic.Vehicles.Fighter
     public class FlightController
     {
         private const float MinMoveDistance = 0.1f;
+        private const float MinRotateDistance = 0.1f;
         private const float MaxLinearAcceleration = 1.0f;
         private const float MaxAngularAcceleration = 1.0f;
 
-        private readonly Pose Pose;
         private readonly Queue<IManeuver> Maneuvers;
 
         public FlightController(Pose pose)
@@ -21,7 +21,8 @@ namespace MiniEngine.GameLogic.Vehicles.Fighter
             this.Maneuvers = new Queue<IManeuver>();
         }
 
-        public Vector3 PointAt { get; set; }
+        public Pose Pose { get; set; }
+
         public Vector3 MoveTo { get; set; }
 
         public void Update(Seconds elapsed)
@@ -34,32 +35,29 @@ namespace MiniEngine.GameLogic.Vehicles.Fighter
                 if (currentManeuver.Completed)
                 {
                     this.Maneuvers.Dequeue();
+                    if (this.Maneuvers.Count > 0)
+                    {
+                        this.Maneuvers.Peek().Initiate();
+                    }
                 }
             }
             else
             {
                 if (Vector3.Distance(this.Pose.Position, this.MoveTo) > MinMoveDistance)
                 {
-                    var targetDirection = Vector3.Normalize(this.PointAt - this.Pose.Position);
+                    var targetDirection = Vector3.Normalize(this.MoveTo - this.Pose.Position);
                     var dot = Vector3.Dot(this.Pose.GetForward(), targetDirection);
 
-                    if (targetDirection.LengthSquared() > 0 && Math.Abs(dot - 1.0f) > 0.01f)
+                    if (Math.Abs(dot - 1.0f) > MinRotateDistance)
                     {
-                        var yaw = AngleMath.YawFromVector(targetDirection);
-                        var pitch = AngleMath.PitchFromVector(targetDirection);
-
-                        var rotation = new RotationManeuver(this.Pose, yaw, pitch, MathHelper.TwoPi / 10);
-                        this.Maneuvers.Enqueue(rotation);
+                        ManeuverPlanner.PlanPointAt(this.Maneuvers, this.Pose, this.MoveTo, MaxAngularAcceleration);
                     }
                     else
                     {
-                        var translation = new BurnRetroBurnManeuver(this.Pose, this.MoveTo, MaxLinearAcceleration, MaxAngularAcceleration);
-                        this.Maneuvers.Enqueue(translation);
+                        ManeuverPlanner.PlanMoveTo(this.Maneuvers, this.Pose, this.MoveTo, MaxLinearAcceleration, MaxAngularAcceleration);
                     }
                 }
             }
         }
-
-
     }
 }
