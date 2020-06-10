@@ -26,7 +26,8 @@ namespace MiniEngine.Scenes
         private float linearAcceleration = 1.0f;
         private float angularAcceleration = MathHelper.PiOver4;
         private bool set;
-        private Pose fighterPose;
+
+        private List<Pose> fighters;
 
         public FlightScene(
             SceneBuilder sceneBuilder,
@@ -56,15 +57,15 @@ namespace MiniEngine.Scenes
             var (cubePose, _, _) = this.SceneBuilder.BuildCube(Vector3.Zero, 0.005f);
             this.targetPose = cubePose;
 
-            var (fighterPose, _, _) = this.SceneBuilder.BuildFighter(Vector3.Zero, 1.0f);
-            this.SceneBuilder.BuildSmallReactionControlSystem(fighterPose.Entity, Vector3.Forward * 4, 0, 0, 0);
-            this.SceneBuilder.BuildSmallReactionControlSystem(fighterPose.Entity, Vector3.Backward * 4, 0, 0, 0);
 
-            // TODO: for the thruster it looks best if the accelerometer is at the center of mass but the emitter should
-            // be placed at the exhaust
-            this.SceneBuilder.BuildThruster(fighterPose.Entity, Vector3.Backward * 0, MathHelper.Pi, 0, 0);
 
-            this.fighterPose = fighterPose;
+            this.fighters = new List<Pose>();
+            for (var i = 0; i < 100; i++)
+            {
+                var (fighterPose, _, _) = this.SceneBuilder.BuildFighter(Vector3.Zero, 1.0f);
+                fighterPose.Move(Vector3.Right * 7.5f * i);
+                this.fighters.Add(fighterPose);
+            }
         }
 
         public void Update(PerspectiveCamera camera, Seconds elapsed)
@@ -74,10 +75,16 @@ namespace MiniEngine.Scenes
 
             if (this.set)
             {
-                var maneuvers = new Queue<IManeuver>();
-                ManeuverPlanner.PlanMoveTo(maneuvers, this.fighterPose, targetPosition, this.linearAcceleration, this.angularAcceleration);
 
-                this.flightPlanFactory.Construct(this.fighterPose.Entity, maneuvers);
+                for (var i = 0; i < this.fighters.Count; i++)
+                {
+                    var pose = this.fighters[i];
+                    var maneuvers = new Queue<IManeuver>();
+                    ManeuverPlanner.PlanMoveTo(maneuvers, pose, targetPosition + Vector3.Right * 7.5f * i, this.linearAcceleration, this.angularAcceleration);
+                    this.flightPlanFactory.Construct(pose.Entity, maneuvers);
+                }
+
+
                 this.set = false;
             }
         }
@@ -107,7 +114,7 @@ namespace MiniEngine.Scenes
 
                 ImGui.Spacing();
 
-                ImGui.Text($"Distance to target: {Vector3.Distance(this.fighterPose.Position, this.targetPose.Position):F2}");
+                //ImGui.Text($"Distance to target: {Vector3.Distance(this.fighterPose.Position, this.targetPose.Position):F2}");
 
                 ImGui.End();
             }
