@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using MiniEngine.Pipeline.Basics.Components;
 using MiniEngine.Units;
 
@@ -7,8 +6,6 @@ namespace MiniEngine.GameLogic.Vehicles.Fighter
 {
     public sealed class RotationManeuver : IManeuver
     {
-        private readonly Pose Pose;
-
         private readonly Vector3 LinearVelocity;
 
         private readonly Seconds YawDuration;
@@ -23,47 +20,43 @@ namespace MiniEngine.GameLogic.Vehicles.Fighter
 
         private Seconds accumulator;
 
-        public RotationManeuver(Pose pose, Vector3 currentVelocity, float targetYaw, Seconds yawDuration, float targetPitch, Seconds pitchDuration, float acceleration)
+        public RotationManeuver(Vector3 currentVelocity, float yawDirection, Seconds yawDuration, float pitchDirection, Seconds pitchDuration, float acceleration)
         {
-            this.Pose = pose;
-
             this.LinearVelocity = currentVelocity;
             this.YawDuration = yawDuration;
             this.PitchDuration = pitchDuration;
             this.Acceleration = acceleration;
 
-            this.YawDirection = Math.Sign(AngleMath.DistanceRadians(pose.Yaw, targetYaw));
-            this.PitchDirection = Math.Sign(AngleMath.DistanceRadians(pose.Pitch, targetPitch));
+            this.YawDirection = yawDirection;
+            this.PitchDirection = pitchDirection;
         }
 
         public bool Completed { get; private set; }
 
-        public void Initiate() { }
-
-        public void Update(Seconds elapsed)
+        public void Update(Pose pose, Seconds elapsed)
         {
             this.accumulator += elapsed;
 
             this.UpdateYaw(elapsed);
             this.UpdatePitch(elapsed);
 
-            this.ApplyForces(elapsed);
+            this.ApplyForces(pose, elapsed);
 
             this.Completed =
                 this.accumulator >= this.YawDuration &&
                 this.accumulator >= this.PitchDuration;
         }
 
-        private void ApplyForces(Seconds elapsed)
+        private void ApplyForces(Pose pose, Seconds elapsed)
         {
-            this.Pose.Move(this.Pose.Position + (this.LinearVelocity * elapsed));
+            pose.Move(pose.Position + (this.LinearVelocity * elapsed));
 
             var yawChange = this.yawVelocity * elapsed;
-            var yaw = this.Pose.Yaw + yawChange;
+            var yaw = pose.Yaw + yawChange;
 
             var pitchChange = this.pitchVelocity * elapsed;
-            var pitch = this.Pose.Pitch + pitchChange;
-            this.Pose.Rotate(yaw, pitch, this.Pose.Roll);
+            var pitch = pose.Pitch + pitchChange;
+            pose.Rotate(yaw, pitch, pose.Roll);
         }
 
         private void UpdateYaw(Seconds elapsed)
@@ -74,7 +67,7 @@ namespace MiniEngine.GameLogic.Vehicles.Fighter
             }
             else if (this.accumulator < this.YawDuration)
             {
-                this.yawVelocity -= this.Acceleration * elapsed * this.YawDirection; ;
+                this.yawVelocity -= this.Acceleration * elapsed * this.YawDirection;
             }
         }
 

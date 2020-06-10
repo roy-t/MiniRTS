@@ -66,15 +66,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Components\FlightPlan.cs" />
+    <Compile Include="Factories\FlightPlanFactory.cs" />
     <Compile Include="Factories\ReactionControlFactory.cs" />
     <Compile Include="GameLogicCompositionRoot.cs" />
     <Compile Include="Path.cs" />
     <Compile Include="PathInterpolator.cs" />
+    <Compile Include="Systems\FlightPlanSystem.cs" />
     <Compile Include="Systems\ReactionControlSystem.cs" />
     <Compile Include="Components\ReactionControl.cs" />
     <Compile Include="Vehicles\Fighter\AngleMath.cs" />
     <Compile Include="Vehicles\Fighter\BurnManeuver.cs" />
-    <Compile Include="Vehicles\Fighter\FlightController.cs" />
     <Compile Include="Vehicles\Fighter\LerpManeuver.cs" />
     <Compile Include="Vehicles\Fighter\IManeuver.cs" />
     <Compile Include="Vehicles\Fighter\ManeuverPlanner.cs" />

@@ -6,7 +6,6 @@ namespace MiniEngine.GameLogic.Vehicles.Fighter
 {
     public sealed class LerpManeuver : IManeuver
     {
-        private readonly Pose Pose;
         private readonly Vector3 TargetPosition;
         private readonly float TargetYaw;
         private readonly float TargetPitch;
@@ -18,9 +17,8 @@ namespace MiniEngine.GameLogic.Vehicles.Fighter
         private float startYaw;
         private float startPitch;
 
-        public LerpManeuver(Pose pose, Vector3 targetPosition, float targetYaw, float targetPitch, Seconds duration)
+        public LerpManeuver(Vector3 targetPosition, float targetYaw, float targetPitch, Seconds duration)
         {
-            this.Pose = pose;
             this.TargetPosition = targetPosition;
             this.TargetYaw = targetYaw;
             this.TargetPitch = targetPitch;
@@ -29,28 +27,33 @@ namespace MiniEngine.GameLogic.Vehicles.Fighter
 
         public bool Completed { get; private set; }
 
-        public void Initiate()
+        public void Update(Pose pose, Seconds elapsed)
         {
-            this.startPosition = this.Pose.Position;
-            this.startYaw = this.Pose.Yaw;
-            this.startPitch = this.Pose.Pitch;
-        }
+            if (this.accumulator == 0)
+            {
+                this.Initiate(pose);
+            }
 
-        public void Update(Seconds elapsed)
-        {
             this.accumulator += elapsed;
             var progress = this.accumulator / this.Duration;
-            this.Pose.Rotate(
+            pose.Rotate(
                 AngleMath.LerpRadians(this.startYaw, this.TargetYaw, progress),
                 AngleMath.LerpRadians(this.startPitch, this.TargetPitch, progress),
-                this.Pose.Roll);
+                pose.Roll);
 
-            this.Pose.Move(Vector3.Lerp(this.startPosition, this.TargetPosition, progress));
+            pose.Move(Vector3.Lerp(this.startPosition, this.TargetPosition, progress));
 
             if (this.accumulator >= this.Duration)
             {
                 this.Completed = true;
             }
+        }
+
+        private void Initiate(Pose pose)
+        {
+            this.startPosition = pose.Position;
+            this.startYaw = pose.Yaw;
+            this.startPitch = pose.Pitch;
         }
     }
 }

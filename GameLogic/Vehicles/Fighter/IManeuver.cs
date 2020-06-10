@@ -1,12 +1,11 @@
-﻿using MiniEngine.Units;
+﻿using MiniEngine.Pipeline.Basics.Components;
+using MiniEngine.Units;
 
 namespace MiniEngine.GameLogic.Vehicles.Fighter
 {
     public interface IManeuver
     {
-        void Update(Seconds elapsed);
-
-        void Initiate();
+        void Update(Pose pose, Seconds elapsed);
 
         bool Completed { get; }
     }

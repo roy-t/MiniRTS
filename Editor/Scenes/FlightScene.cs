@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.GameLogic;
+using MiniEngine.GameLogic.Factories;
 using MiniEngine.GameLogic.Vehicles.Fighter;
 using MiniEngine.Pipeline.Basics.Components;
 using MiniEngine.Primitives.Cameras;
@@ -15,21 +16,24 @@ namespace MiniEngine.Scenes
     public sealed class FlightScene : IScene
     {
         private readonly SceneBuilder SceneBuilder;
+        private readonly FlightPlanFactory flightPlanFactory;
         private WorldGrid worldGrid;
 
-        private FlightController flightController;
         private Pose targetPose;
         private float radius = 10.0f;
         private float yaw = 0.0f;
         private float pitch = 0.0f;
-        private float x, y, z = 0.0f;
+        private float linearAcceleration = 1.0f;
+        private float angularAcceleration = MathHelper.PiOver4;
         private bool set;
-
+        private Pose fighterPose;
 
         public FlightScene(
-            SceneBuilder sceneBuilder)
+            SceneBuilder sceneBuilder,
+            FlightPlanFactory flightPlanFactory)
         {
             this.SceneBuilder = sceneBuilder;
+            this.flightPlanFactory = flightPlanFactory;
         }
 
         public void LoadContent(ContentManager content)
@@ -41,10 +45,6 @@ namespace MiniEngine.Scenes
 
         public void Set()
         {
-            this.z = -20.0f;
-            //this.x = 20.0f;
-            this.y = -20;
-
             this.SceneBuilder.BuildSponzaAmbientLight();
             this.SceneBuilder.BuildSponzeSunLight();
             this.Skybox = this.SceneBuilder.SponzaSkybox;
@@ -64,44 +64,50 @@ namespace MiniEngine.Scenes
             // be placed at the exhaust
             this.SceneBuilder.BuildThruster(fighterPose.Entity, Vector3.Backward * 0, MathHelper.Pi, 0, 0);
 
-            this.flightController = new FlightController(fighterPose);
+            this.fighterPose = fighterPose;
         }
 
         public void Update(PerspectiveCamera camera, Seconds elapsed)
         {
-            var targetPosition = new Vector3(this.x, this.y, this.z);
-            this.targetPose.Position = targetPosition;// + (this.radius * Vector3.TransformNormal(Vector3.Forward, Matrix.CreateFromYawPitchRoll(this.yaw, this.pitch, 0.0f)));
+            var targetPosition = (this.radius * Vector3.TransformNormal(Vector3.Forward, Matrix.CreateFromYawPitchRoll(this.yaw, this.pitch, 0.0f)));
+            this.targetPose.Position = targetPosition;
 
             if (this.set)
             {
-                this.flightController.MoveTo = targetPosition;
+                var maneuvers = new Queue<IManeuver>();
+                ManeuverPlanner.PlanMoveTo(maneuvers, this.fighterPose, targetPosition, this.linearAcceleration, this.angularAcceleration);
+
+                this.flightPlanFactory.Construct(this.fighterPose.Entity, maneuvers);
                 this.set = false;
             }
-
-            this.flightController.Update(elapsed);
         }
 
         public void RenderUI()
         {
             if (ImGui.Begin("Scene"))
             {
-                ImGui.DragFloat("X", ref this.x);
-                ImGui.DragFloat("Y", ref this.y);
-                ImGui.DragFloat("Z", ref this.z);
-
-                ImGui.Spacing();
-
-                ImGui.SliderFloat("Radius", ref this.radius, 0.0f, 10.0f);
+                ImGui.DragFloat("Radius", ref this.radius);
                 ImGui.SliderFloat("Yaw", ref this.yaw, -MathHelper.Pi, MathHelper.Pi);
                 ImGui.SliderFloat("Pitch", ref this.pitch, -MathHelper.PiOver2 + 0.001f, MathHelper.PiOver2 - 0.001f);
 
                 ImGui.Spacing();
 
-                this.set = ImGui.Button("Go!");
+                ImGui.SliderFloat("Linear Acceleration", ref this.linearAcceleration, 0.1f, 10.0f);
+                ImGui.SliderFloat("Angular Acceleration", ref this.angularAcceleration, 0.1f, 10.0f);
 
                 ImGui.Spacing();
 
-                ImGui.Text($"Distance to target: {Vector3.Distance(this.flightController.Pose.Position, this.flightController.MoveTo):F2}");
+                this.set = ImGui.Button("Go!");
+
+                if (ImGui.Button("Invert"))
+                {
+                    this.yaw = MathHelper.WrapAngle(this.yaw + MathHelper.Pi);
+                    this.pitch = MathHelper.WrapAngle(-this.pitch);
+                }
+
+                ImGui.Spacing();
+
+                ImGui.Text($"Distance to target: {Vector3.Distance(this.fighterPose.Position, this.targetPose.Position):F2}");
 
                 ImGui.End();
             }

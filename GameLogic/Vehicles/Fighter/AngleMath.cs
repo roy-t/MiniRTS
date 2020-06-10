@@ -50,12 +50,12 @@ namespace MiniEngine.GameLogic.Vehicles.Fighter
             targetAngle = MathHelper.WrapAngle(targetAngle);
 
             var angle = targetAngle - sourceAngle;
-            if (angle > MathHelper.PiOver2)
+            if (angle > MathHelper.Pi)
             {
                 angle -= MathHelper.TwoPi;
             }
 
-            if (angle < -MathHelper.PiOver2)
+            if (angle < -MathHelper.Pi)
             {
                 angle += MathHelper.TwoPi;
             }

@@ -63,6 +63,7 @@ namespace MiniEngine.Rendering
         private readonly BoundsSystem BoundsSystem;
         private readonly OffsetSystem OffsetSystem;
         private readonly ReactionControlSystem AccelerometerSystem;
+        private readonly FlightPlanSystem FlightPlanSystem;
 
         private readonly RenderPipeline Pipeline;
         private readonly Pass RootPass;
@@ -91,6 +92,7 @@ namespace MiniEngine.Rendering
             BoundsSystem boundsSystem,
             OffsetSystem offsetSystem,
             ReactionControlSystem accelerometerSystem,
+            FlightPlanSystem flightPlanSystem,
             IMeterRegistry meterRegistry)
         {
             this.ShadowMapSystem = shadowMapSystem;
@@ -116,6 +118,7 @@ namespace MiniEngine.Rendering
             this.OffsetSystem = offsetSystem;
             this.BoundsSystem = boundsSystem;
             this.AccelerometerSystem = accelerometerSystem;
+            this.FlightPlanSystem = flightPlanSystem;
 
             var width = device.PresentationParameters.BackBufferWidth;
             var height = device.PresentationParameters.BackBufferHeight;
@@ -192,6 +195,7 @@ namespace MiniEngine.Rendering
                 .UpdateSystem(this.AnimationSystem)
                 .UpdateSystem(this.UVAnimationSystem)
                 .UpdateSystem(this.OffsetSystem)
+                .UpdateSystem(this.FlightPlanSystem)
                 .UpdateSystem(this.AccelerometerSystem)
                 .UpdateSystem(this.BoundsSystem)
                 .EnableIf(this.Settings.EnableShadows, x => x.RenderShadows(this.ShadowPipeline))
