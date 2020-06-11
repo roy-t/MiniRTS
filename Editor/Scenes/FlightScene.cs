@@ -16,7 +16,7 @@ namespace MiniEngine.Scenes
     public sealed class FlightScene : IScene
     {
         private readonly SceneBuilder SceneBuilder;
-        private readonly FlightPlanFactory flightPlanFactory;
+        private readonly FlightPlanFactory FlightPlanFactory;
         private WorldGrid worldGrid;
 
         private Pose targetPose;
@@ -25,16 +25,17 @@ namespace MiniEngine.Scenes
         private float pitch = 0.0f;
         private float linearAcceleration = 1.0f;
         private float angularAcceleration = MathHelper.PiOver4;
-        private bool set;
 
+        private int selectedFighter;
         private List<Pose> fighters;
+        private List<string> fighterNames;
 
         public FlightScene(
             SceneBuilder sceneBuilder,
             FlightPlanFactory flightPlanFactory)
         {
             this.SceneBuilder = sceneBuilder;
-            this.flightPlanFactory = flightPlanFactory;
+            this.FlightPlanFactory = flightPlanFactory;
         }
 
         public void LoadContent(ContentManager content)
@@ -57,64 +58,68 @@ namespace MiniEngine.Scenes
             var (cubePose, _, _) = this.SceneBuilder.BuildCube(Vector3.Zero, 0.005f);
             this.targetPose = cubePose;
 
-
-
             this.fighters = new List<Pose>();
-            for (var i = 0; i < 100; i++)
-            {
-                var (fighterPose, _, _) = this.SceneBuilder.BuildFighter(Vector3.Zero, 1.0f);
-                fighterPose.Move(Vector3.Right * 7.5f * i);
-                this.fighters.Add(fighterPose);
-            }
+            this.fighterNames = new List<string>();
         }
 
         public void Update(PerspectiveCamera camera, Seconds elapsed)
         {
-            var targetPosition = (this.radius * Vector3.TransformNormal(Vector3.Forward, Matrix.CreateFromYawPitchRoll(this.yaw, this.pitch, 0.0f)));
+            var targetPosition = this.radius * Vector3.TransformNormal(Vector3.Forward, Matrix.CreateFromYawPitchRoll(this.yaw, this.pitch, 0.0f));
             this.targetPose.Position = targetPosition;
-
-            if (this.set)
-            {
-
-                for (var i = 0; i < this.fighters.Count; i++)
-                {
-                    var pose = this.fighters[i];
-                    var maneuvers = new Queue<IManeuver>();
-                    ManeuverPlanner.PlanMoveTo(maneuvers, pose, targetPosition + Vector3.Right * 7.5f * i, this.linearAcceleration, this.angularAcceleration);
-                    this.flightPlanFactory.Construct(pose.Entity, maneuvers);
-                }
-
-
-                this.set = false;
-            }
         }
 
         public void RenderUI()
         {
             if (ImGui.Begin("Scene"))
             {
-                ImGui.DragFloat("Radius", ref this.radius);
-                ImGui.SliderFloat("Yaw", ref this.yaw, -MathHelper.Pi, MathHelper.Pi);
-                ImGui.SliderFloat("Pitch", ref this.pitch, -MathHelper.PiOver2 + 0.001f, MathHelper.PiOver2 - 0.001f);
-
-                ImGui.Spacing();
-
-                ImGui.SliderFloat("Linear Acceleration", ref this.linearAcceleration, 0.1f, 10.0f);
-                ImGui.SliderFloat("Angular Acceleration", ref this.angularAcceleration, 0.1f, 10.0f);
-
-                ImGui.Spacing();
-
-                this.set = ImGui.Button("Go!");
-
-                if (ImGui.Button("Invert"))
+                if (ImGui.BeginTabBar("SceneTabs"))
                 {
-                    this.yaw = MathHelper.WrapAngle(this.yaw + MathHelper.Pi);
-                    this.pitch = MathHelper.WrapAngle(-this.pitch);
+                    if (ImGui.BeginTabItem("Fighters"))
+                    {
+                        ImGui.ListBox("Selection", ref this.selectedFighter, this.fighterNames.ToArray(), this.fighterNames.Count);
+                        ImGui.EndTabItem();
+
+                        if (ImGui.Button("Build Fighter"))
+                        {
+                            var (fighterPose, _, _) = this.SceneBuilder.BuildFighter(Vector3.Zero, 1.0f);
+                            this.fighters.Add(fighterPose);
+                            this.fighterNames.Add($"Fighter {this.fighters.Count}");
+                        }
+
+                        if (ImGui.Button("Move"))
+                        {
+                            var pose = this.fighters[this.selectedFighter];
+                            var maneuvers = new Queue<IManeuver>();
+                            ManeuverPlanner.PlanMoveTo(maneuvers, pose, this.targetPose.Position, this.linearAcceleration, this.angularAcceleration);
+                            this.FlightPlanFactory.Construct(pose.Entity, maneuvers);
+                        }
+                    }
+
+
+                    if (ImGui.BeginTabItem("Debug"))
+                    {
+                        ImGui.DragFloat("Radius", ref this.radius);
+                        ImGui.SliderFloat("Yaw", ref this.yaw, -MathHelper.Pi, MathHelper.Pi);
+                        ImGui.SliderFloat("Pitch", ref this.pitch, -MathHelper.PiOver2 + 0.001f, MathHelper.PiOver2 - 0.001f);
+
+                        ImGui.Spacing();
+
+                        ImGui.SliderFloat("Linear Acceleration", ref this.linearAcceleration, 0.1f, 10.0f);
+                        ImGui.SliderFloat("Angular Acceleration", ref this.angularAcceleration, 0.1f, 10.0f);
+
+                        ImGui.Spacing();
+
+                        if (ImGui.Button("Invert"))
+                        {
+                            this.yaw = MathHelper.WrapAngle(this.yaw + MathHelper.Pi);
+                            this.pitch = MathHelper.WrapAngle(-this.pitch);
+                        }
+
+                        ImGui.EndTabItem();
+                    }
+
+                    ImGui.EndTabBar();
                 }
-
-                ImGui.Spacing();
-
-                //ImGui.Text($"Distance to target: {Vector3.Distance(this.fighterPose.Position, this.targetPose.Position):F2}");
 
                 ImGui.End();
             }
