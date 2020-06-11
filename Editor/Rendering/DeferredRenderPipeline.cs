@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using System;
+using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.CutScene;
 using MiniEngine.Effects;
 using MiniEngine.Effects.Wrappers;
@@ -30,7 +31,7 @@ using MiniEngine.Units;
 
 namespace MiniEngine.Rendering
 {
-    public sealed class DeferredRenderPipeline
+    public sealed class DeferredRenderPipeline : IDisposable
     {
         private readonly GBuffer GBuffer;
         private readonly RenderPipelineInput Input;
@@ -215,5 +216,7 @@ namespace MiniEngine.Rendering
         }
 
         public GBuffer GetGBuffer() => this.GBuffer;
+
+        public void Dispose() => this.GBuffer.Dispose();
     }
 }

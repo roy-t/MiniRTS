@@ -59,7 +59,7 @@ namespace MiniEngine.Scenes
             if (this.accumulator == 0)
             {
                 this.ambientLight = this.SceneBuilder.BuildSponzaAmbientLight();
-                this.sunlight = this.SceneBuilder.BuildSponzeSunLight();
+                this.sunlight = this.SceneBuilder.BuildSponzaSunLight();
                 this.PointLight = this.SceneBuilder.BuildFirePlace();
 
                 this.SceneBuilder.BuildStainedGlass();

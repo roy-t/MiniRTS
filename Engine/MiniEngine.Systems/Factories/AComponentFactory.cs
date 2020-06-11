@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using System;
+using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Systems.Components;
 using MiniEngine.Systems.Containers;
 
@@ -16,6 +17,17 @@ namespace MiniEngine.Systems.Factories
             this.Container = container;
         }
 
-        public virtual void Deconstruct(Entity entity) => this.Container.Remove(entity);
+        public virtual void Deconstruct(Entity entity)
+        {
+            if (this.Container.TryGet(entity, out var component))
+            {
+                if (component is IDisposable disposable)
+                {
+                    disposable.Dispose();
+                }
+
+                this.Container.Remove(entity);
+            }
+        }
     }
 }

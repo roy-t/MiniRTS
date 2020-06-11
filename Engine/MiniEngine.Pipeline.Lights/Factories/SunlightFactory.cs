@@ -27,7 +27,7 @@ namespace MiniEngine.Pipeline.Lights.Factories
 
             var light = new Sunlight(entity, shadowMap, color);
             this.Container.Add(light);
-
+            
             return light;
         }
     }

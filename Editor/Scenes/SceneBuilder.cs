@@ -121,7 +121,7 @@ namespace MiniEngine.Scenes
             return this.GetFactory<AmbientLightFactory>().Construct(entity, Color.White * 0.5f);
         }
 
-        public Sunlight BuildSponzeSunLight()
+        public Sunlight BuildSponzaSunLight()
         {
             var entity = this.EntityController.CreateEntity();
             return this.GetFactory<SunlightFactory>().Construct(entity, Color.White, Vector3.Up, (Vector3.Left * 0.75f) + (Vector3.Backward * 0.1f));
@@ -153,7 +153,7 @@ namespace MiniEngine.Scenes
         public void BuildSponzaLit(Vector3 position, float scale)
         {
             this.BuildSponzaAmbientLight();
-            this.BuildSponzeSunLight();
+            this.BuildSponzaSunLight();
             this.BuildSponza(position, scale);
         }
 

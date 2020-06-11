@@ -1,9 +1,10 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace MiniEngine.Primitives
 {
-    public sealed class GBuffer
+    public sealed class GBuffer : IDisposable
     {
         private static readonly Color NormalClearColor = new Color(0.5f, 0.5f, 0.5f, 0.0f);
         private static readonly Color ParticleClearColor = new Color(1.0f, 0, 0, 0);
@@ -97,7 +98,7 @@ namespace MiniEngine.Primitives
               0,
               RenderTargetUsage.PreserveContents);
 
-            
+
         }
 
         public RenderTarget2D DiffuseTarget { get; }
@@ -174,6 +175,18 @@ namespace MiniEngine.Primitives
         {
             this.Device.SetRenderTarget(this.FinalTarget);
             this.Device.Clear(Color.TransparentBlack);
+        }
+
+        public void Dispose()
+        {
+            this.DiffuseTarget.Dispose();
+            this.NormalTarget.Dispose();
+            this.ParticleTarget.Dispose();
+            this.DepthTarget.Dispose();
+            this.LightTarget.Dispose();
+            this.BlurTarget.Dispose();
+            this.CombineTarget.Dispose();
+            this.FinalTarget.Dispose();
         }
     }
 }

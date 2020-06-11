@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using System;
+using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Primitives.Cameras;
 using MiniEngine.Systems;
 using MiniEngine.Systems.Annotations;
@@ -6,7 +7,7 @@ using MiniEngine.Systems.Components;
 
 namespace MiniEngine.Pipeline.Shadows.Components
 {
-    public sealed class ShadowMap : IComponent
+    public sealed class ShadowMap : IComponent, IDisposable
     {
         public ShadowMap(Entity entity, RenderTarget2D depthMap, RenderTarget2D colorMap, int index, IViewPoint viewPoint)
         {
@@ -17,7 +18,7 @@ namespace MiniEngine.Pipeline.Shadows.Components
             this.ViewPoint = viewPoint;
         }
 
-        public Entity Entity { get; }        
+        public Entity Entity { get; }
 
         [Editor(nameof(Width))]
         public int Width => this.DepthMap.Width;
@@ -34,6 +35,12 @@ namespace MiniEngine.Pipeline.Shadows.Components
         [Editor(nameof(Index))]
         public int Index { get; }
 
-        public IViewPoint ViewPoint { get; }        
+        public IViewPoint ViewPoint { get; }
+
+        public void Dispose()
+        {
+            this.DepthMap.Dispose();
+            this.ColorMap.Dispose();
+        }
     }
 }

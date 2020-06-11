@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Systems;
 using MiniEngine.Systems.Annotations;
@@ -6,7 +7,7 @@ using MiniEngine.Systems.Components;
 
 namespace MiniEngine.Pipeline.Shadows.Components
 {
-    public sealed class CascadedShadowMap : IComponent
+    public sealed class CascadedShadowMap : IComponent, IDisposable
     {
         public CascadedShadowMap(Entity entity, GraphicsDevice device, int resolution, int cascades,
             Vector3 position, Vector3 lookAt, float[] cascadeDistances)
@@ -96,6 +97,12 @@ namespace MiniEngine.Pipeline.Shadows.Components
             this.Position = position;
             this.LookAt = lookAt;
             this.SurfaceToLightVector = Vector3.Normalize(position - lookAt);
+        }
+
+        public void Dispose()
+        {
+            this.DepthMapArray?.Dispose();
+            this.ColorMapArray?.Dispose();
         }
     }
 }

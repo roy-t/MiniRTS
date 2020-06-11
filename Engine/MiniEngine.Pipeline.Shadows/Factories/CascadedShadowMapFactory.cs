@@ -19,13 +19,8 @@ namespace MiniEngine.Pipeline.Shadows.Factories
             1.0f
         };
 
-        private readonly ShadowMapFactory ShadowMapFactory;
-
-        public CascadedShadowMapFactory(GraphicsDevice device, ShadowMapFactory shadowMapFactory, IComponentContainer<CascadedShadowMap> cascadedShadowMapContainer)
-            : base(device, cascadedShadowMapContainer)
-        {
-            this.ShadowMapFactory = shadowMapFactory;
-        }
+        public CascadedShadowMapFactory(GraphicsDevice device, IComponentContainer<CascadedShadowMap> cascadedShadowMapContainer)
+            : base(device, cascadedShadowMapContainer) { }
 
         public CascadedShadowMap Construct(Entity entity, Vector3 position, Vector3 lookAt,
             int cascades, int resolution, float[] cascadeDistances)
@@ -33,12 +28,10 @@ namespace MiniEngine.Pipeline.Shadows.Factories
             var cascadedShadowMap = new CascadedShadowMap(entity, this.Device, resolution, cascades, position, lookAt, cascadeDistances);
             this.Container.Add(cascadedShadowMap);
 
-            
-
             return cascadedShadowMap;
         }
 
         public CascadedShadowMap Construct(Entity entity, Vector3 position, Vector3 lookAt, int cascades, int resolution = DefaultResolution)
-            => this.Construct(entity, position, lookAt, cascades, resolution, DefaultCascadeDistances);        
+            => this.Construct(entity, position, lookAt, cascades, resolution, DefaultCascadeDistances);
     }
 }

@@ -57,6 +57,12 @@ namespace MiniEngine
             this.metricServer.Start(7070);
         }
 
+        protected override void UnloadContent()
+        {
+            this.renderPipeline?.Dispose();
+            base.UnloadContent();
+        }
+
         protected override void OnExiting(object sender, EventArgs args)
             => this.uiManager.Close(this.camera);
 

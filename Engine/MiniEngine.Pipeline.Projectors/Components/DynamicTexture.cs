@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Primitives;
 using MiniEngine.Primitives.Cameras;
@@ -8,7 +9,7 @@ using MiniEngine.Systems.Components;
 
 namespace MiniEngine.Pipeline.Projectors.Components
 {
-    public sealed class DynamicTexture : IComponent
+    public sealed class DynamicTexture : IComponent, IDisposable
     {
         public DynamicTexture(Entity entity, RenderPipeline pipeline, PerspectiveCamera viewPoint, GBuffer gBuffer, TextureCube skybox, Pass pass, string label)
         {
@@ -70,5 +71,7 @@ namespace MiniEngine.Pipeline.Projectors.Components
 
         [Editor(nameof(Skybox))]
         public TextureCube Skybox { get; }
+
+        public void Dispose() => this.GBuffer.Dispose();
     }
 }

@@ -48,7 +48,7 @@ namespace MiniEngine.Scenes
         public void Set()
         {
             this.SceneBuilder.BuildSponzaAmbientLight();
-            this.SceneBuilder.BuildSponzeSunLight();
+            this.SceneBuilder.BuildSponzaSunLight();
             this.Skybox = this.SceneBuilder.SponzaSkybox;
 
             this.worldGrid = new WorldGrid(40, 40, 1, 8, new Vector3(-20, 0, -20));
