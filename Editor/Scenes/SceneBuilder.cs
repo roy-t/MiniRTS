@@ -159,15 +159,16 @@ namespace MiniEngine.Scenes
 
         public (Pose, OpaqueModel, Bounds) BuildFighter(Vector3 position, float scale)
         {
-            var entity = this.EntityController.CreateEntity();
+            var entity = this.EntityController.CreateEntity("Fighter");
             var pose = this.GetFactory<PoseFactory>().Construct(entity, position, scale);
             var (model, bounds) = this.GetFactory<OpaqueModelFactory>().Construct(entity, this.fighter);
 
-            this.BuildSmallReactionControlSystem(entity, Vector3.Forward * 4, 0, 0, 0);
-            this.BuildSmallReactionControlSystem(entity, Vector3.Backward * 4, 0, 0, 0);
+            var rcsFront = this.BuildSmallReactionControlSystem(entity, Vector3.Forward * 4, 0, 0, 0);
+            var rcsBack = this.BuildSmallReactionControlSystem(entity, Vector3.Backward * 4, 0, 0, 0);
             // TODO: for the thruster it looks best if the accelerometer is at the center of mass but the emitter should
             // be placed at the exhaust
-            this.BuildThruster(entity, Vector3.Backward * 0, MathHelper.Pi, 0, 0);
+            var thruster = this.BuildThruster(entity, Vector3.Backward * 0, MathHelper.Pi, 0, 0);
+            this.GetFactory<ParentFactory>().Construct(entity, thruster.Entity, rcsFront.Entity, rcsBack.Entity);
 
             return (pose, model, bounds);
         }
@@ -275,7 +276,6 @@ namespace MiniEngine.Scenes
 
             var rcs = this.GetFactory<ReactionControlFactory>().Construct(entity, emitter.Entity);
             rcs.EmitterReactionRange = 0.95f;
-
             return rcs;
         }
 

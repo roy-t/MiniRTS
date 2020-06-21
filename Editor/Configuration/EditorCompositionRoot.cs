@@ -26,6 +26,8 @@ namespace MiniEngine.Configuration
             serviceRegistry.Register<PipelineBuilder>();
             serviceRegistry.Register<DeferredRenderPipeline>();
             serviceRegistry.Register<RenderTargetDescriber>();
+            serviceRegistry.Register<RenderPipelineBuilder>();
+            serviceRegistry.Register<AnimationPipelineBuilder>();
 
             // UI
             serviceRegistry.Register<KeyboardInput>();

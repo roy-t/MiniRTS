@@ -1,6 +1,6 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using System.Collections.Generic;
+using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Telemetry;
-using System.Collections.Generic;
 
 namespace MiniEngine.Pipeline
 {
@@ -20,8 +20,10 @@ namespace MiniEngine.Pipeline
             this.Stages = new List<IPipelineStage<T>>();
 
             this.StageGauge = $"{name}_stages_render_time";
-            this.MeterRegistry.CreateGauge(this.StageGauge, "stage", "pass");
-        }           
+
+            // TODO: give unique names
+            //this.MeterRegistry.CreateGauge(this.StageGauge, "stage", "pass");
+        }
 
         public GraphicsDevice Device { get; }
 
@@ -35,9 +37,9 @@ namespace MiniEngine.Pipeline
             {
                 var stage = this.Stages[i];
 
-                this.MeterRegistry.StartGauge(this.StageGauge);
+                //this.MeterRegistry.StartGauge(this.StageGauge);
                 stage.Execute(input);
-                this.MeterRegistry.StopGauge(this.StageGauge, stage.GetType().Name, label);
+                //this.MeterRegistry.StopGauge(this.StageGauge, stage.GetType().Name, label);
             }
         }
     }

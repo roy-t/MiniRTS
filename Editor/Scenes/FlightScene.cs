@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.GameLogic;
 using MiniEngine.GameLogic.Factories;
+using MiniEngine.GameLogic.Systems;
 using MiniEngine.GameLogic.Vehicles.Fighter;
 using MiniEngine.Pipeline.Basics.Components;
 using MiniEngine.Primitives.Cameras;
@@ -17,6 +18,10 @@ namespace MiniEngine.Scenes
     {
         private readonly SceneBuilder SceneBuilder;
         private readonly FlightPlanFactory FlightPlanFactory;
+
+        private readonly FlightPlanSystem FlightPlanSystem;
+        private readonly ReactionControlSystem ReactionControlSystem;
+
         private WorldGrid worldGrid;
 
         private Pose targetPose;
@@ -32,10 +37,14 @@ namespace MiniEngine.Scenes
 
         public FlightScene(
             SceneBuilder sceneBuilder,
-            FlightPlanFactory flightPlanFactory)
+            FlightPlanFactory flightPlanFactory,
+            FlightPlanSystem flightPlanSystem,
+            ReactionControlSystem reactionControlSystem)
         {
             this.SceneBuilder = sceneBuilder;
             this.FlightPlanFactory = flightPlanFactory;
+            this.FlightPlanSystem = flightPlanSystem;
+            this.ReactionControlSystem = reactionControlSystem;
         }
 
         public void LoadContent(ContentManager content)
@@ -64,6 +73,9 @@ namespace MiniEngine.Scenes
 
         public void Update(PerspectiveCamera camera, Seconds elapsed)
         {
+            this.FlightPlanSystem.Update(camera, elapsed);
+            this.ReactionControlSystem.Update(camera, elapsed);
+
             var targetPosition = this.radius * Vector3.TransformNormal(Vector3.Forward, Matrix.CreateFromYawPitchRoll(this.yaw, this.pitch, 0.0f));
             this.targetPose.Position = targetPosition;
         }

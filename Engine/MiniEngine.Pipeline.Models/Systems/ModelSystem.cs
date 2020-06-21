@@ -105,8 +105,9 @@ namespace MiniEngine.Pipeline.Models.Systems
             for (var i = 0; i < models.Count; i++)
             {
                 var model = models[i];
-                var pose = this.Poses.Get(model.Entity);
+
                 var bounds = this.Bounds.Get(model.Entity);
+                var pose = this.Poses.Get(model.Entity);
                 var modelPose = new ModelPose(model, pose);
 
                 var boundingRectangle = BoundingRectangle.CreateFromProjectedBoundingBox(bounds.BoundingBox, viewPoint);

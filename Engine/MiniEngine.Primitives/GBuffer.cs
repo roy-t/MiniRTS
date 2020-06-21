@@ -9,8 +9,6 @@ namespace MiniEngine.Primitives
         private static readonly Color NormalClearColor = new Color(0.5f, 0.5f, 0.5f, 0.0f);
         private static readonly Color ParticleClearColor = new Color(1.0f, 0, 0, 0);
 
-        private readonly GraphicsDevice Device;
-
         public GBuffer(GraphicsDevice device, int width, int height)
         {
             this.Device = device;
@@ -100,6 +98,8 @@ namespace MiniEngine.Primitives
 
 
         }
+
+        public GraphicsDevice Device { get; }
 
         public RenderTarget2D DiffuseTarget { get; }
         public RenderTarget2D NormalTarget { get; }

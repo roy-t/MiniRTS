@@ -55,9 +55,13 @@
     <Compile Include="Cutscene\Waypoint.cs" />
     <Compile Include="Cutscene\WaypointFactory.cs" />
     <Compile Include="Input\ScrollDirection.cs" />
+    <Compile Include="Rendering\AccelerometerSystem.cs" />
+    <Compile Include="Rendering\AnimationPipelineBuilder.cs" />
+    <Compile Include="Rendering\APipelineBuilder.cs" />
     <Compile Include="Rendering\LightPipelineSettings.cs" />
     <Compile Include="Rendering\ModelPipelineSettings.cs" />
     <Compile Include="Rendering\PipelineBuilder.cs" />
+    <Compile Include="Rendering\RenderPipelineBuilder.cs" />
     <Compile Include="Rendering\RenderPipelineSettings.cs" />
     <Compile Include="SceneSelector.cs" />
     <Compile Include="Scenes\EmptyScene.cs" />

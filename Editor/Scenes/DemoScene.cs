@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+using MiniEngine.CutScene;
 using MiniEngine.Pipeline.Lights.Components;
 using MiniEngine.Primitives.Cameras;
 using MiniEngine.Units;
@@ -13,7 +14,7 @@ namespace MiniEngine.Scenes
     public sealed class DemoScene : IScene
     {
         private readonly SceneBuilder SceneBuilder;
-
+        private readonly CutsceneSystem CutsceneSystem;
         private Seconds accumulator;
         private AmbientLight ambientLight;
         private Sunlight sunlight;
@@ -23,9 +24,10 @@ namespace MiniEngine.Scenes
 
         private bool started = false;
 
-        public DemoScene(SceneBuilder sceneBuilder)
+        public DemoScene(SceneBuilder sceneBuilder, CutsceneSystem cutsceneSystem)
         {
             this.SceneBuilder = sceneBuilder;
+            this.CutsceneSystem = cutsceneSystem;
             this.accumulator = 0.0f;
         }
 
@@ -55,6 +57,8 @@ namespace MiniEngine.Scenes
                 }
                 return;
             }
+
+            this.CutsceneSystem.Update(camera, elapsed);
 
             if (this.accumulator == 0)
             {
