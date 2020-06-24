@@ -1,14 +1,17 @@
 ﻿using System.Collections.Generic;
 using ImGuiNET;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.GameLogic;
+using MiniEngine.GameLogic.Commands;
 using MiniEngine.GameLogic.Factories;
 using MiniEngine.GameLogic.Systems;
 using MiniEngine.GameLogic.Vehicles.Fighter;
 using MiniEngine.Pipeline.Basics.Components;
 using MiniEngine.Primitives.Cameras;
+using MiniEngine.Systems;
+using MiniEngine.Systems.Containers;
+using MiniEngine.Systems.Factories;
 using MiniEngine.Units;
 using Roy_T.AStar.Primitives;
 
@@ -16,6 +19,10 @@ namespace MiniEngine.Scenes
 {
     public sealed class FlightScene : IScene
     {
+        private readonly Content Content;
+        private readonly EntityController EntityController;
+        private readonly Resolver<IComponentFactory> Factories;
+        private readonly Resolver<IComponentContainer> Containers;
         private readonly SceneBuilder SceneBuilder;
         private readonly FlightPlanFactory FlightPlanFactory;
 
@@ -32,23 +39,31 @@ namespace MiniEngine.Scenes
         private float angularAcceleration = MathHelper.PiOver4;
 
         private int selectedFighter;
-        private List<Pose> fighters;
+        private List<Entity> fighters;
         private List<string> fighterNames;
 
         public FlightScene(
+            Content content,
+            EntityController entityController,
+            Resolver<IComponentFactory> factories,
+            Resolver<IComponentContainer> containers,
             SceneBuilder sceneBuilder,
             FlightPlanFactory flightPlanFactory,
             FlightPlanSystem flightPlanSystem,
             ReactionControlSystem reactionControlSystem)
         {
+            this.Content = content;
+            this.EntityController = entityController;
+            this.Factories = factories;
+            this.Containers = containers;
             this.SceneBuilder = sceneBuilder;
             this.FlightPlanFactory = flightPlanFactory;
             this.FlightPlanSystem = flightPlanSystem;
             this.ReactionControlSystem = reactionControlSystem;
         }
 
-        public void LoadContent(ContentManager content)
-            => this.SceneBuilder.LoadContent(content);
+        public void LoadContent(Content content)
+            => this.Skybox = content.SponzaSkybox;
 
         public string Name => "Flight Scene";
 
@@ -58,7 +73,6 @@ namespace MiniEngine.Scenes
         {
             this.SceneBuilder.BuildSponzaAmbientLight();
             this.SceneBuilder.BuildSponzaSunLight();
-            this.Skybox = this.SceneBuilder.SponzaSkybox;
 
             this.worldGrid = new WorldGrid(40, 40, 1, 8, new Vector3(-20, 0, -20));
 
@@ -67,7 +81,7 @@ namespace MiniEngine.Scenes
             var (cubePose, _, _) = this.SceneBuilder.BuildCube(Vector3.Zero, 0.005f);
             this.targetPose = cubePose;
 
-            this.fighters = new List<Pose>();
+            this.fighters = new List<Entity>();
             this.fighterNames = new List<string>();
         }
 
@@ -93,17 +107,25 @@ namespace MiniEngine.Scenes
 
                         if (ImGui.Button("Build Fighter"))
                         {
-                            var (fighterPose, _, _) = this.SceneBuilder.BuildFighter(Vector3.Zero, 1.0f);
-                            this.fighters.Add(fighterPose);
+                            var command = new BuildFighterCommand
+                            {
+                                Position = Vector3.Zero,
+                                Scale = Vector3.One
+                            };
+
+                            var entity = command.Execute(this.Content, this.EntityController, this.Factories);
+                            this.fighters.Add(entity);
+
                             this.fighterNames.Add($"Fighter {this.fighters.Count}");
                         }
 
                         if (ImGui.Button("Move"))
                         {
-                            var pose = this.fighters[this.selectedFighter];
+                            var entity = this.fighters[this.selectedFighter];
+                            var pose = this.Containers.Get<ComponentContainer<Pose>>().Get(entity);
                             var maneuvers = new Queue<IManeuver>();
                             ManeuverPlanner.PlanMoveTo(maneuvers, pose, this.targetPose.Position, this.linearAcceleration, this.angularAcceleration);
-                            this.FlightPlanFactory.Construct(pose.Entity, maneuvers);
+                            this.FlightPlanFactory.Construct(entity, maneuvers);
                         }
                     }
 

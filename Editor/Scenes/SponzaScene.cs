@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using MiniEngine.GameLogic;
 using MiniEngine.Primitives.Cameras;
 using MiniEngine.Units;
 
@@ -15,8 +15,8 @@ namespace MiniEngine.Scenes
             this.SceneBuilder = sceneBuilder;
         }
 
-        public void LoadContent(ContentManager content)
-            => this.SceneBuilder.LoadContent(content);
+        public void LoadContent(Content content)
+            => this.Skybox = content.SponzaSkybox;
 
         public string Name => "Sponza";
 
@@ -30,8 +30,6 @@ namespace MiniEngine.Scenes
             this.SceneBuilder.BuildBulletHoles();
             this.SceneBuilder.BuildCube(new Vector3(20, 10, 0), 0.01f);
             this.SceneBuilder.BuildCube(new Vector3(20, 20, 0), 0.01f);
-
-            this.Skybox = this.SceneBuilder.SponzaSkybox;
         }
 
 

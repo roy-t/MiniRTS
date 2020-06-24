@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Effects;
 using MiniEngine.Effects.Wrappers;
 using MiniEngine.Pipeline;
@@ -27,21 +26,22 @@ using MiniEngine.Telemetry;
 
 namespace MiniEngine.Rendering
 {
-    public sealed class RenderPipelineBuilder : APipelineBuilder
+    public sealed class RenderPipelineBuilder
     {
         private readonly EffectFactory EffectFactory;
+        private readonly Resolver<ISystem> Systems;
 
-        public RenderPipelineBuilder(EffectFactory effectFactory, IEnumerable<ISystem> systems)
-            : base(systems)
+        public RenderPipelineBuilder(EffectFactory effectFactory, Resolver<ISystem> systems)
         {
             this.EffectFactory = effectFactory;
+            this.Systems = systems;
         }
 
         public RenderPipeline Build(GraphicsDevice device, IMeterRegistry meterRegistry, RenderPipelineSettings settings)
         {
             var pipeline = RenderPipeline.Create(device, meterRegistry)
                 .ClearRenderTargetSet()
-                .UpdateSystem(this.GetSystem<OffsetSystem>());
+                .UpdateSystem(this.Systems.Get<OffsetSystem>());
 
             this.AddDynamicTextures(pipeline);
             this.AddShadows(pipeline, device, meterRegistry, settings);
@@ -53,7 +53,7 @@ namespace MiniEngine.Rendering
         }
 
         private void AddDynamicTextures(RenderPipeline pipeline)
-            => pipeline.UpdateSystem(this.GetSystem<DynamicTextureSystem>());
+            => pipeline.UpdateSystem(this.Systems.Get<DynamicTextureSystem>());
 
 
         private void AddShadows(RenderPipeline pipeline, GraphicsDevice device, IMeterRegistry meterRegistry, RenderPipelineSettings settings)
@@ -61,10 +61,10 @@ namespace MiniEngine.Rendering
             if (settings.EnableShadows)
             {
                 var shadowPipeline = ShadowPipeline.Create(device, meterRegistry)
-                    .RenderShadowMaps(this.GetSystem<ShadowMapSystem>());
+                    .RenderShadowMaps(this.Systems.Get<ShadowMapSystem>());
 
                 pipeline
-                    .UpdateSystem(this.GetSystem<CascadedShadowMapSystem>())
+                    .UpdateSystem(this.Systems.Get<CascadedShadowMapSystem>())
                     .RenderShadows(shadowPipeline);
             }
         }
@@ -73,7 +73,7 @@ namespace MiniEngine.Rendering
         {
             if (settings.EnableModels)
             {
-                pipeline.UpdateSystem(this.GetSystem<BoundsSystem>());
+                pipeline.UpdateSystem(this.Systems.Get<BoundsSystem>());
 
                 var modelPipeline = ModelPipeline.Create(device, meterRegistry)
                     .ClearModelRenderTargets()
@@ -82,7 +82,7 @@ namespace MiniEngine.Rendering
                 if (settings.EnableProjectors)
                 {
                     var projectorPipeline = ProjectorPipeline.Create(device, meterRegistry);
-                    var projectorSystem = this.GetSystem<ProjectorSystem>();
+                    var projectorSystem = this.Systems.Get<ProjectorSystem>();
                     projectorSystem.Technique = settings.ProjectorTechnique;
                     projectorPipeline.RenderProjectors(projectorSystem);
 
@@ -94,11 +94,11 @@ namespace MiniEngine.Rendering
                     var ls = settings.LightSettings;
                     var lightingPipeline = LightingPipeline.Create(device, meterRegistry)
                         .ClearLightTargets()
-                        .EnableIf(ls.EnableAmbientLights, x => x.RenderAmbientLight(this.GetSystem<AmbientLightSystem>(), ls.EnableSSAO))
-                        .EnableIf(ls.EnableDirectionalLights, x => x.RenderDirectionalLights(this.GetSystem<DirectionalLightSystem>()))
-                        .EnableIf(ls.EnablePointLights, x => x.RenderPointLights(this.GetSystem<PointLightSystem>()))
-                        .EnableIf(ls.EnableShadowCastingLights, x => x.RenderShadowCastingLights(this.GetSystem<ShadowCastingLightSystem>()))
-                        .EnableIf(ls.EnableSunLights, x => x.RenderSunlights(this.GetSystem<SunlightSystem>()));
+                        .EnableIf(ls.EnableAmbientLights, x => x.RenderAmbientLight(this.Systems.Get<AmbientLightSystem>(), ls.EnableSSAO))
+                        .EnableIf(ls.EnableDirectionalLights, x => x.RenderDirectionalLights(this.Systems.Get<DirectionalLightSystem>()))
+                        .EnableIf(ls.EnablePointLights, x => x.RenderPointLights(this.Systems.Get<PointLightSystem>()))
+                        .EnableIf(ls.EnableShadowCastingLights, x => x.RenderShadowCastingLights(this.Systems.Get<ShadowCastingLightSystem>()))
+                        .EnableIf(ls.EnableSunLights, x => x.RenderSunlights(this.Systems.Get<SunlightSystem>()));
 
                     modelPipeline.RenderLights(lightingPipeline);
                 }
@@ -109,7 +109,7 @@ namespace MiniEngine.Rendering
                     .CombineDiffuseWithLighting(combineEffect)
                     .AntiAlias(fxaaEffect, settings.ModelSettings.FxaaFactor);
 
-                pipeline.RenderModels(this.GetSystem<ModelSystem>(), modelPipeline);
+                pipeline.RenderModels(this.Systems.Get<ModelSystem>(), modelPipeline);
             }
         }
 
@@ -124,8 +124,8 @@ namespace MiniEngine.Rendering
             if (settings.EnableParticles)
             {
                 var particlePipeline = ParticlePipeline.Create(device, meterRegistry).ClearParticleRenderTargets()
-                    .RenderTransparentParticles(this.GetSystem<AveragedParticleSystem>())
-                    .RenderAdditiveParticles(this.GetSystem<AdditiveParticleSystem>());
+                    .RenderTransparentParticles(this.Systems.Get<AveragedParticleSystem>())
+                    .RenderAdditiveParticles(this.Systems.Get<AdditiveParticleSystem>());
 
                 pipeline.RenderParticles(particlePipeline);
             }
@@ -134,10 +134,10 @@ namespace MiniEngine.Rendering
         private void AddDebug(RenderPipeline pipeline, RenderPipelineSettings settings)
         {
             pipeline
-                .EnableIf(settings.EnableDebugLines, x => x.RenderDebugLines(this.GetSystem<LineSystem>()))
-                .EnableIf(settings.Enable3DOutlines, x => x.Render3DOutline(this.GetSystem<BoundarySystem>()))
-                .EnableIf(settings.Enable2DOutlines, x => x.Render2DOutline(this.GetSystem<BoundarySystem>()))
-                .EnableIf(settings.EnableIcons, x => x.RenderIcons(this.GetSystem<IconSystem>()));
+                .EnableIf(settings.EnableDebugLines, x => x.RenderDebugLines(this.Systems.Get<LineSystem>()))
+                .EnableIf(settings.Enable3DOutlines, x => x.Render3DOutline(this.Systems.Get<BoundarySystem>()))
+                .EnableIf(settings.Enable2DOutlines, x => x.Render2DOutline(this.Systems.Get<BoundarySystem>()))
+                .EnableIf(settings.EnableIcons, x => x.RenderIcons(this.Systems.Get<IconSystem>()));
         }
     }
 }

@@ -19,6 +19,8 @@ namespace MiniEngine.GameLogic
 
             serviceRegistry.Register<ReactionControlSystem>();
             serviceRegistry.Register<FlightPlanSystem>();
+
+            serviceRegistry.Register<Content>();
         }
 
     }

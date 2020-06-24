@@ -26,7 +26,7 @@ namespace MiniEngine.UI
 
         private readonly RenderTargetDescriber RenderTargetDescriber;
         private readonly SceneSelector SceneSelector;
-        private readonly UIState State;
+        private readonly EntityController EntityController;
         private readonly ImGuiRenderer Gui;
 
         private readonly Editors Editors;
@@ -51,29 +51,35 @@ namespace MiniEngine.UI
             this.CameraController = cameraController;
             this.RenderTargetDescriber = renderTargetDescriber;
             this.SceneSelector = sceneSelector;
+            this.EntityController = entityController;
             this.Menus = menus;
             this.EntityWindow = entityWindow;
             this.Editors = editors;
+        }
 
+        public UIState State { get; private set; }
+
+        public void LoadState()
+        {
             this.State = UIState.Deserialize();
 
             if (!string.IsNullOrEmpty(this.State.EditorState.Scene))
             {
-                var scene = sceneSelector.Scenes.FirstOrDefault(s => s.Name.Equals(this.State.EditorState.Scene, System.StringComparison.OrdinalIgnoreCase));
-                if (scene != null && sceneSelector.CurrentScene != scene)
+                var scene = this.SceneSelector.Scenes.FirstOrDefault(s => s.Name.Equals(this.State.EditorState.Scene, System.StringComparison.OrdinalIgnoreCase));
+                if (scene != null && this.SceneSelector.CurrentScene != scene)
                 {
-                    sceneSelector.SwitchScenes(scene);
+                    this.SceneSelector.SwitchScenes(scene);
                 }
             }
 
-            if (sceneSelector.CurrentScene == null)
+            if (this.SceneSelector.CurrentScene == null)
             {
-                sceneSelector.SwitchScenes(sceneSelector.Scenes.First());
+                this.SceneSelector.SwitchScenes(this.SceneSelector.Scenes.First());
             }
 
             if (this.State.EntityState.SelectedEntity.Id > 0)
             {
-                this.State.EntityState.SelectedEntity = entityController.GetAllEntities().FirstOrDefault(e => e.Id == this.State.EntityState.SelectedEntity.Id);
+                this.State.EntityState.SelectedEntity = this.EntityController.GetAllEntities().FirstOrDefault(e => e.Id == this.State.EntityState.SelectedEntity.Id);
             }
 
             this.setCamera = true;

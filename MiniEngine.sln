@@ -37,6 +37,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Editor", "Editor\Editor.csp
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{CBC432E5-FDDE-4E1F-97BD-EA247446F340}"
 	ProjectSection(SolutionItems) = preProject
+		GameDesign.md = GameDesign.md
 		HowToAddAModel.md = HowToAddAModel.md
 		README.md = README.md
 		TODO.md = TODO.md

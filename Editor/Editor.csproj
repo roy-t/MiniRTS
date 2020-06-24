@@ -57,7 +57,6 @@
     <Compile Include="Input\ScrollDirection.cs" />
     <Compile Include="Rendering\AccelerometerSystem.cs" />
     <Compile Include="Rendering\AnimationPipelineBuilder.cs" />
-    <Compile Include="Rendering\APipelineBuilder.cs" />
     <Compile Include="Rendering\LightPipelineSettings.cs" />
     <Compile Include="Rendering\ModelPipelineSettings.cs" />
     <Compile Include="Rendering\PipelineBuilder.cs" />
@@ -67,7 +66,6 @@
     <Compile Include="Scenes\EmptyScene.cs" />
     <Compile Include="Scenes\SceneBuilder.cs" />
     <Compile Include="Scenes\DemoScene.cs" />
-    <Compile Include="Scenes\SkyboxBuilder.cs" />
     <Compile Include="Scenes\FlightScene.cs" />
     <Compile Include="UI\CreateMenu.cs" />
     <Compile Include="UI\DebugDisplay.cs" />

@@ -13,6 +13,10 @@ namespace MiniEngine.Systems
 
             serviceRegistry.Register<IComponentContainer<Parent>, ComponentContainer<Parent>>();
             serviceRegistry.Register<ParentFactory>();
+
+            serviceRegistry.Register<Resolver<ISystem>>();
+            serviceRegistry.Register<Resolver<IComponentFactory>>();
+            serviceRegistry.Register<Resolver<IComponentContainer>>();
         }
     }
 }

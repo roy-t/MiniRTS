@@ -83,6 +83,7 @@
     <Compile Include="Stages\ClearStage.cs" />
     <Compile Include="Stages\UpdateSystemStage.cs" />
     <Compile Include="Utilities\Easings.cs" />
+    <Compile Include="Utilities\SkyboxBuilder.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MiniEngine.Effects\MiniEngine.Effects.csproj">

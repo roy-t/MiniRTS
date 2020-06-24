@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Microsoft.Xna.Framework.Content;
+using MiniEngine.GameLogic;
 using MiniEngine.Scenes;
 using MiniEngine.Systems;
 
@@ -9,7 +9,7 @@ namespace MiniEngine
     {
         private readonly EntityController EntityController;
 
-        public SceneSelector(IList<IScene> scenes, ContentManager content, EntityController entityController)
+        public SceneSelector(IList<IScene> scenes, Content content, EntityController entityController)
         {
             this.Scenes = scenes;
             this.EntityController = entityController;

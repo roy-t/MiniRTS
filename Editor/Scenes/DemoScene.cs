@@ -1,10 +1,10 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using MiniEngine.CutScene;
+using MiniEngine.GameLogic;
 using MiniEngine.Pipeline.Lights.Components;
 using MiniEngine.Primitives.Cameras;
 using MiniEngine.Units;
@@ -31,18 +31,17 @@ namespace MiniEngine.Scenes
             this.accumulator = 0.0f;
         }
 
-        public void LoadContent(ContentManager content)
-            => this.SceneBuilder.LoadContent(content);
+        public void LoadContent(Content content)
+        {
+            this.Skybox = content.NullSkybox;
+            this.song = content.Song;
+        }
 
         public string Name => "Demo";
 
         public TextureCube Skybox { get; private set; }
 
-        public void Set()
-        {
-            this.SceneBuilder.BuildSponza(Vector3.Zero, 0.05f);
-            this.Skybox = this.SceneBuilder.NullSkybox;
-        }
+        public void Set() => this.SceneBuilder.BuildSponza(Vector3.Zero, 0.05f);
 
         public void RenderUI() { }
 
@@ -71,7 +70,7 @@ namespace MiniEngine.Scenes
 
                 this.SceneBuilder.BuildCutScene();
 
-                this.song = this.SceneBuilder.LoadMusic();
+
                 this.ambientLight.Color = Color.Black;
                 this.sunlight.Move(this.sunlight.Position, new Vector3(-10.0f, this.sunlight.LookAt.Y, this.sunlight.LookAt.Z));
 

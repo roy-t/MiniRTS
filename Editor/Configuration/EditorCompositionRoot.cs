@@ -44,8 +44,8 @@ namespace MiniEngine.Configuration
             serviceRegistry.Register<IMenu, DebugMenu>("5");
             serviceRegistry.Register<EntityWindow>();
 
-            // Scenes
-            serviceRegistry.Register<SkyboxBuilder>();
+
+            // Scenes            
             serviceRegistry.Register<SceneBuilder>();
             serviceRegistry.Register<SceneSelector>();
             serviceRegistry.Register<IScene, SponzaScene>(nameof(SponzaScene));

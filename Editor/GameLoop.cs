@@ -3,8 +3,10 @@ using System.Diagnostics.CodeAnalysis;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
+using MiniEngine.GameLogic;
 using MiniEngine.Primitives.Cameras;
 using MiniEngine.Rendering;
+using MiniEngine.Scenes;
 using MiniEngine.Telemetry;
 using MiniEngine.UI;
 using MiniEngine.Units;
@@ -51,10 +53,14 @@ namespace MiniEngine
             this.spriteBatch = this.injector.Resolve<SpriteBatch>();
             this.renderPipeline = this.injector.Resolve<DeferredRenderPipeline>();
             this.sceneSelector = this.injector.Resolve<SceneSelector>();
-            this.uiManager = this.injector.Resolve<UIManager>();
 
             this.metricServer = this.injector.Resolve<IMetricServer>();
             this.metricServer.Start(7070);
+
+            this.injector.Resolve<Content>().LoadContent(this.Content);
+
+            this.uiManager = this.injector.Resolve<UIManager>();
+            this.uiManager.LoadState();
         }
 
         protected override void UnloadContent()

@@ -23,6 +23,7 @@ using MiniEngine.Telemetry;
 
 namespace MiniEngine.Rendering
 {
+    // TODO: refactor this class based on how DeferredRenderPipeline now works
     public sealed class PipelineBuilder
     {
         private readonly GraphicsDevice Device;

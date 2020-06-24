@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace MiniEngine.Scenes
+namespace MiniEngine.Pipeline.Utilities
 {
     public sealed class SkyboxBuilder
     {
