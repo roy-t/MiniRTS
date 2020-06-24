@@ -9,14 +9,14 @@ namespace MiniEngine.UI
     {
         private readonly Game Game;
         private readonly SceneSelector SceneSelector;
-        
+
 
         public FileMenu(Game game, SceneSelector sceneSelector)
-        {        
+        {
             this.Game = game;
             this.SceneSelector = sceneSelector;
             this.State = new UIState();
-        }        
+        }
 
         public UIState State { get; set; }
         public EditorState EditorState => State.EditorState;

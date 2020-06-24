@@ -76,7 +76,9 @@
     <Compile Include="Input\MouseInput.cs" />
     <Compile Include="Rendering\DeferredRenderPipeline.cs" />
     <Compile Include="UI\DebugMenu.cs" />
+    <Compile Include="UI\NetWindow.cs" />
     <Compile Include="UI\IMenu.cs" />
+    <Compile Include="UI\NetMenu.cs" />
     <Compile Include="UI\State\DebugState.cs" />
     <Compile Include="UI\State\EditorState.cs" />
     <Compile Include="UI\EntityMenu.cs" />
@@ -84,6 +86,7 @@
     <Compile Include="UI\EntityWindow.cs" />
     <Compile Include="UI\FileMenu.cs" />
     <Compile Include="UI\RenderingMenu.cs" />
+    <Compile Include="UI\State\NetState.cs" />
     <Compile Include="UI\Utilities\ComponentSearcher.cs" />
     <Compile Include="UI\Utilities\RenderTargetDescriber.cs" />
     <Compile Include="UI\Utilities\RenderTargetDescription.cs" />
@@ -177,10 +180,14 @@
       <Project>{f3bb1367-1e76-44cc-8604-038c9161f130}</Project>
       <Name>GameLogic</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MiniEngine.Net\MiniEngine.Net.csproj">
+      <Project>{c6df95d0-2557-482b-9051-eecb4b62eb59}</Project>
+      <Name>MiniEngine.Net</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="LightInject">
-      <Version>5.5.0</Version>
+      <Version>6.3.4</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>

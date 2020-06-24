@@ -38,10 +38,11 @@ namespace MiniEngine.UI
 
         private readonly IList<IMenu> Menus;
         private readonly EntityWindow EntityWindow;
+        private readonly NetWindow NetWindow;
 
         private bool setCamera;
 
-        public UIManager(Game game, SpriteBatch spriteBatch, ImGuiRenderer gui, RenderTargetDescriber renderTargetDescriber, SceneSelector sceneSelector, EntityController entityController, CameraController cameraController, Editors editors, IList<IMenu> menus, EntityWindow entityWindow, KeyboardInput keyboardInput, MouseInput mouseInput)
+        public UIManager(Game game, SpriteBatch spriteBatch, ImGuiRenderer gui, RenderTargetDescriber renderTargetDescriber, SceneSelector sceneSelector, EntityController entityController, CameraController cameraController, Editors editors, IList<IMenu> menus, EntityWindow entityWindow, NetWindow netWindow, KeyboardInput keyboardInput, MouseInput mouseInput)
         {
             this.Gui = gui;
             this.KeyboardInput = keyboardInput;
@@ -54,6 +55,7 @@ namespace MiniEngine.UI
             this.EntityController = entityController;
             this.Menus = menus;
             this.EntityWindow = entityWindow;
+            this.NetWindow = netWindow;
             this.Editors = editors;
         }
 
@@ -89,6 +91,7 @@ namespace MiniEngine.UI
                 this.Menus[i].State = this.State;
             }
             this.EntityWindow.State = this.State;
+            this.NetWindow.State = this.State;
         }
 
         public void Render(IScene currentScene, PerspectiveCamera camera, Viewport viewport, GameTime gameTime)
@@ -223,6 +226,11 @@ namespace MiniEngine.UI
                     else
                     {
                         this.State.EntityState.ShowEntityWindow = false;
+                    }
+
+                    if (this.State.NetState.ShowNetWindow)
+                    {
+                        this.NetWindow.Render();
                     }
 
                     if (this.State.DebugState.ShowDemo) { ImGui.ShowDemoWindow(); }

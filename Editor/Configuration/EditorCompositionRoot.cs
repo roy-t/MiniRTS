@@ -40,9 +40,12 @@ namespace MiniEngine.Configuration
             serviceRegistry.Register<IMenu, FileMenu>("0");
             serviceRegistry.Register<IMenu, EntityMenu>("1");
             serviceRegistry.Register<IMenu, CreateMenu>("2");
+            serviceRegistry.Register<IMenu, NetMenu>("3");
             serviceRegistry.Register<IMenu, RenderingMenu>("4");
             serviceRegistry.Register<IMenu, DebugMenu>("5");
+
             serviceRegistry.Register<EntityWindow>();
+            serviceRegistry.Register<NetWindow>();
 
 
             // Scenes            

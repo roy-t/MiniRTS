@@ -4,9 +4,9 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
 using MiniEngine.GameLogic;
+using MiniEngine.Net;
 using MiniEngine.Primitives.Cameras;
 using MiniEngine.Rendering;
-using MiniEngine.Scenes;
 using MiniEngine.Telemetry;
 using MiniEngine.UI;
 using MiniEngine.Units;
@@ -29,6 +29,9 @@ namespace MiniEngine
 
         private UIManager uiManager;
         private SceneSelector sceneSelector;
+
+        private Server server;
+        private Client client;
 
         public GameLoop()
         {
@@ -54,6 +57,9 @@ namespace MiniEngine
             this.renderPipeline = this.injector.Resolve<DeferredRenderPipeline>();
             this.sceneSelector = this.injector.Resolve<SceneSelector>();
 
+            this.server = this.injector.Resolve<Server>();
+            this.client = this.injector.Resolve<Client>();
+
             this.metricServer = this.injector.Resolve<IMetricServer>();
             this.metricServer.Start(7070);
 
@@ -76,6 +82,16 @@ namespace MiniEngine
         {
             var elapsed = (Seconds)gameTime.ElapsedGameTime;
             this.sceneSelector.CurrentScene.Update(this.camera, elapsed);
+
+            if (this.server.IsRunning)
+            {
+                this.server.Update();
+            }
+
+            if (this.client.IsConnected)
+            {
+                this.client.Update();
+            }
 
             base.Update(gameTime);
         }

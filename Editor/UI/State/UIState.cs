@@ -16,12 +16,14 @@ namespace MiniEngine.UI.State
             this.EditorState = new EditorState();
             this.EntityState = new EntityState();
             this.DebugState = new DebugState();
+            this.NetState = new NetState();
         }
 
         public EditorState EditorState { get; set; }
         public EntityState EntityState { get; set; }
-        public DebugState DebugState { get; set; }                
-          
+        public DebugState DebugState { get; set; }
+        public NetState NetState { get; set; }
+
         public void Serialize(Vector3 cameraPosition, Vector3 cameraLookAt)
         {
             var culture = Thread.CurrentThread.CurrentCulture;
@@ -29,7 +31,7 @@ namespace MiniEngine.UI.State
 
             this.EditorState.CameraPosition = cameraPosition;
             this.EditorState.CameraLookAt = cameraLookAt;
-          
+
             var serializer = new XmlSerializer(typeof(UIState));
             using (var stream = File.CreateText(UIStateFile))
             {
@@ -48,18 +50,18 @@ namespace MiniEngine.UI.State
                 var serializer = new XmlSerializer(typeof(UIState));
                 using (var stream = File.OpenRead(UIStateFile))
                 {
-                    return (UIState)serializer.Deserialize(stream);                   
+                    return (UIState)serializer.Deserialize(stream);
                 }
             }
             catch (Exception e)
             {
-                Console.Error.WriteLine($"Error: could not deserialize {UIStateFile}, {e.ToString()}");
+                Console.Error.WriteLine($"Error: could not deserialize {UIStateFile}, {e}");
                 return new UIState();
             }
             finally
             {
                 Thread.CurrentThread.CurrentCulture = culture;
-            }            
-        }       
+            }
+        }
     }
 }
