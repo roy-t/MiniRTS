@@ -16,32 +16,29 @@ namespace MiniEngine.UI
 
         public UIState State { get; set; }
 
+        public NetState NetState => this.State.NetState;
+
         public void Render(PerspectiveCamera camera)
         {
 
             if (ImGui.BeginMenu("Net"))
             {
-                //if (this.Server.IsRunning)
-                //{
-                //    if (ImGui.MenuItem("Stop Server"))
-                //    {
-                //        this.Server.Stop();
-                //    }
-                //}
-                //else
-                //{
-                //    if (ImGui.MenuItem("Start Server"))
-                //    {
-                //        this.Server.Start();
-                //    }
-                //}
+                this.NetState.ShowNetWindow = this.Toggle("Toggle Details", this.NetState.ShowNetWindow);
 
-                var show = this.State.NetState.ShowNetWindow;
-                ImGui.Checkbox("Toggle Details", ref show);
-                this.State.NetState.ShowNetWindow = show;
+                ImGui.Separator();
+
+                this.NetState.AutoStartServer = this.Toggle("Auto Start Server", this.NetState.AutoStartServer);
+                this.NetState.AutoStartClient = this.Toggle("Auto Start Client", this.NetState.AutoStartClient);
 
                 ImGui.EndMenu();
             }
+        }
+
+
+        private bool Toggle(string name, bool currentValue)
+        {
+            ImGui.Checkbox(name, ref currentValue);
+            return currentValue;
         }
     }
 }

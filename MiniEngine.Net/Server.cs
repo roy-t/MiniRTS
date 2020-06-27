@@ -46,7 +46,15 @@ namespace MiniEngine.Net
             this.Writer.Reset();
         }
 
-        public void PingClients() => this.SendToAll("Ping from server");
+        public void PingClients()
+        {
+            for (var i = 0; i < this.NetManager.ConnectedPeerList.Count; i++)
+            {
+                var peer = this.NetManager.ConnectedPeerList[i];
+                var command = NetCommand.Create(0, 1, "Ping!");
+                this.SendCommand(command, peer);
+            }
+        }
 
         public void PrintStatistics()
         {
@@ -58,12 +66,6 @@ namespace MiniEngine.Net
 
         protected override void RegisterHandlers()
         {
-            this.Listener.NetworkReceiveEvent += (fromPeer, dataReader, deliveryMethod) =>
-            {
-                this.Logger.Info($"served: received message '{dataReader.GetString(100)}' from client {fromPeer.EndPoint}");
-                dataReader.Recycle();
-            };
-
             this.Listener.ConnectionRequestEvent += request =>
             {
                 if (this.NetManager.ConnectedPeersCount < MaxConnections)
@@ -88,16 +90,17 @@ namespace MiniEngine.Net
             this.Listener.PeerConnectedEvent += peer =>
             {
                 this.Logger.Info($"server: client {peer.EndPoint} connected");
-                this.Writer.Put("Hello from Server");
-                peer.Send(this.Writer, DeliveryMethod.ReliableOrdered);
-
-                this.Writer.Reset();
             };
 
             this.Listener.PeerDisconnectedEvent += (peer, disconnect) =>
             {
                 this.Logger.Info($"server: client {peer.EndPoint} disconnected from server, {disconnect.Reason}");
             };
+        }
+
+        protected override void OnCommandReceived(NetCommand command, NetPeer peer)
+        {
+            this.Logger.Info($"server: received command {command.CommandId}:{command.Payload} from {command.Player} at {peer.EndPoint}");
         }
     }
 }

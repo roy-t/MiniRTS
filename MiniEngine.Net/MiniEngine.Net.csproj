@@ -45,9 +45,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Client.cs" />
+    <Compile Include="NetCommand.cs" />
     <Compile Include="NetCompositionRoot.cs" />
     <Compile Include="NetworkLogger.cs" />
     <Compile Include="NetworkBase.cs" />
+    <Compile Include="Player.cs" />
     <Compile Include="Server.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

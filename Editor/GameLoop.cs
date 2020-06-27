@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Net;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
@@ -67,6 +68,17 @@ namespace MiniEngine
 
             this.uiManager = this.injector.Resolve<UIManager>();
             this.uiManager.LoadState();
+
+
+            if (this.uiManager.State.NetState.AutoStartServer)
+            {
+                this.server.Start(Server.DefaultServerPort);
+            }
+
+            if (this.uiManager.State.NetState.AutoStartClient)
+            {
+                this.client.Connect(new IPEndPoint(IPAddress.Loopback, Server.DefaultServerPort));
+            }
         }
 
         protected override void UnloadContent()

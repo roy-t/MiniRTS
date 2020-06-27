@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using LiteNetLib;
 
 namespace MiniEngine.Net
 {
@@ -24,11 +25,7 @@ namespace MiniEngine.Net
 
         protected override void RegisterHandlers()
         {
-            this.Listener.NetworkReceiveEvent += (fromPeer, dataReader, deliveryMethod) =>
-            {
-                this.Logger.Info($"client: received message '{dataReader.GetString(100)}' from server {fromPeer.EndPoint}");
-                dataReader.Recycle();
-            };
+
 
             this.Listener.PeerConnectedEvent += peer =>
             {
@@ -43,9 +40,13 @@ namespace MiniEngine.Net
 
         public void PingServer()
         {
-            this.Writer.Put("Ping from client");
-            this.NetManager.FirstPeer.Send(this.Writer, LiteNetLib.DeliveryMethod.ReliableOrdered);
-            this.Writer.Reset();
+            var command = NetCommand.Create(1, 1, "Ping!");
+            this.SendCommand(command, this.NetManager.FirstPeer);
+        }
+
+        protected override void OnCommandReceived(NetCommand command, NetPeer peer)
+        {
+            this.Logger.Info($"client: received command {command.CommandId}:{command.Payload} from {command.Player} at {peer.EndPoint}");
         }
     }
 }
