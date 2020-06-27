@@ -1,4 +1,5 @@
 ﻿using LiteNetLib;
+using Microsoft.Xna.Framework;
 
 namespace MiniEngine.Net
 {
@@ -51,7 +52,7 @@ namespace MiniEngine.Net
             for (var i = 0; i < this.NetManager.ConnectedPeerList.Count; i++)
             {
                 var peer = this.NetManager.ConnectedPeerList[i];
-                var command = NetCommand.Create(0, 1, "Ping!");
+                var command = NetCommand.Create(Vector3.One, 1, "Ping!");
                 this.SendCommand(command, peer);
             }
         }
@@ -100,7 +101,7 @@ namespace MiniEngine.Net
 
         protected override void OnCommandReceived(NetCommand command, NetPeer peer)
         {
-            this.Logger.Info($"server: received command {command.CommandId}:{command.Payload} from {command.Player} at {peer.EndPoint}");
+            this.Logger.Info($"server: received command {command.CommandId}:{command.Payload} from {command.Where} at {peer.EndPoint}");
         }
     }
 }

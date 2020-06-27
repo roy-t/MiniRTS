@@ -1,18 +1,20 @@
-﻿namespace MiniEngine.Net
+﻿using Microsoft.Xna.Framework;
+
+namespace MiniEngine.Net
 {
     public class NetCommand
     {
-        public static NetCommand Create(byte playerId, int commandId, string payload)
+        public static NetCommand Create(Vector3 where, int commandId, string payload)
         {
             return new NetCommand()
             {
-                Player = new Player() { Id = playerId },
+                Where = where,
                 CommandId = commandId,
                 Payload = payload
             };
         }
 
-        public Player Player { get; set; }
+        public Vector3 Where { get; set; }
 
         public int CommandId { get; set; }
         public string Payload { get; set; }

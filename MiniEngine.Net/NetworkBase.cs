@@ -1,6 +1,7 @@
 ﻿using System;
 using LiteNetLib;
 using LiteNetLib.Utils;
+using MiniEngine.Net.Serializers;
 
 namespace MiniEngine.Net
 {
@@ -25,7 +26,10 @@ namespace MiniEngine.Net
             };
 
             this.processor = new NetPacketProcessor();
-            this.processor.RegisterNestedType<Player>();
+
+            // TODO: somehow register all types via dependency injection?
+
+            this.processor.RegisterNestedType(Vector3Serializer.Write, Vector3Serializer.Read);
             this.processor.SubscribeReusable<NetCommand, NetPeer>(this.OnCommandReceived);
 
             this.Writer = new NetDataWriter();

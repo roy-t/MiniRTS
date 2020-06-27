@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using LiteNetLib;
+using Microsoft.Xna.Framework;
 
 namespace MiniEngine.Net
 {
@@ -40,13 +41,13 @@ namespace MiniEngine.Net
 
         public void PingServer()
         {
-            var command = NetCommand.Create(1, 1, "Ping!");
+            var command = NetCommand.Create(Vector3.Up, 1, "Ping!");
             this.SendCommand(command, this.NetManager.FirstPeer);
         }
 
         protected override void OnCommandReceived(NetCommand command, NetPeer peer)
         {
-            this.Logger.Info($"client: received command {command.CommandId}:{command.Payload} from {command.Player} at {peer.EndPoint}");
+            this.Logger.Info($"client: received command {command.CommandId}:{command.Payload} from {command.Where} at {peer.EndPoint}");
         }
     }
 }
