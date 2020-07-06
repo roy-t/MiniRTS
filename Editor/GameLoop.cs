@@ -54,6 +54,8 @@ namespace MiniEngine
             this.camera = new PerspectiveCamera(this.GraphicsDevice.Viewport);
             this.injector = new Injector(this);
 
+            this.injector.Resolve<Content>().LoadContent(this.Content);
+
             this.spriteBatch = this.injector.Resolve<SpriteBatch>();
             this.renderPipeline = this.injector.Resolve<DeferredRenderPipeline>();
             this.sceneSelector = this.injector.Resolve<SceneSelector>();
@@ -64,7 +66,6 @@ namespace MiniEngine
             this.metricServer = this.injector.Resolve<IMetricServer>();
             this.metricServer.Start(7070);
 
-            this.injector.Resolve<Content>().LoadContent(this.Content);
 
             this.uiManager = this.injector.Resolve<UIManager>();
             this.uiManager.LoadState();

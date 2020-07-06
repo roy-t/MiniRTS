@@ -8,16 +8,13 @@ namespace MiniEngine
     public sealed class SceneSelector
     {
         private readonly EntityController EntityController;
+        private readonly Content Content;
 
         public SceneSelector(IList<IScene> scenes, Content content, EntityController entityController)
         {
             this.Scenes = scenes;
+            this.Content = content;
             this.EntityController = entityController;
-
-            foreach (var scene in this.Scenes)
-            {
-                scene.LoadContent(content);
-            }
         }
 
         public IList<IScene> Scenes { get; }
@@ -27,6 +24,7 @@ namespace MiniEngine
         {
             this.EntityController.DestroyAllEntities();
             this.CurrentScene = scene;
+            this.CurrentScene.LoadContent(this.Content);
             this.CurrentScene.Set();
         }
 
