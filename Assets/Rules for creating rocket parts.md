@@ -5,6 +5,9 @@
 - Leave parts hollow, between each part a cap will be placed
 - 1 texture per part
 
+# Rules for add-ons
+- Their origin should be at the center (0,0,0) of the rocket
+- They should point in the X+ direction so the can easily be repeated
 
 
 # Colours
