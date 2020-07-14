@@ -1,12 +1,12 @@
 # Rules for creating rocket parts
-- The origin is at the top of the part where it would connect with the cap/next part
+- The origin is at the center line of the part (0, 0, 0), not at the center of mass
 - Parts are exactly 4 meters tall
 - Parts have a radius of exactly 1 meter (diameter of 2 meters)
 - Leave parts hollow, between each part a cap will be placed
 - 1 texture per part
 
 # Rules for add-ons
-- Their origin should be at the center (0,0,0) of the rocket
+- Their origin should be at the center line (0,0,0) of the rocket
 - They should point in the X+ direction so the can easily be repeated
 
 
