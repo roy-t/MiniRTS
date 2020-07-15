@@ -1,6 +1,8 @@
 Update to monogame 3.8: https://community.monogame.net/t/monogame-3-8-prerelease-packages-are-up-on-nuget/12708/15 get rid of installer
 
 # WIP
+- Textures for models need more margin between island to avoid bleeding. Exhaust misses inside of the pipe
+
 - Use network serialization from: https://revenantx.github.io/LiteNetLib/articles/netserializerusage.html
 - If the game is running at <60fps the draw loop gets called less, but the elasped parameter is still 1/60s so the accelerometer (among other things) will freak out.
 - The hierarchy (Parent component) works great in the Entity Window, however we don't do anything with it in the EntityMenu

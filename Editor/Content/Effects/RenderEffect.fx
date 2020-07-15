@@ -14,8 +14,8 @@ sampler diffuseSampler = sampler_state
     MagFilter = ANISOTROPIC;
     MipFilter = LINEAR;
     MaxAnisotropy = 16;
-    AddressU = Wrap;
-    AddressV = Wrap;
+    AddressU = Clamp;
+    AddressV = Clamp;
 };
 
 texture SpecularMap;
@@ -26,8 +26,8 @@ sampler specularSampler = sampler_state
     MagFilter = ANISOTROPIC;
     MipFilter = LINEAR;
     MaxAnisotropy = 16;
-    AddressU = Wrap;
-    AddressV = Wrap;
+    AddressU = Clamp;
+    AddressV = Clamp;
 };
 
 texture NormalMap;
@@ -38,8 +38,8 @@ sampler normalSampler = sampler_state
     MagFilter = ANISOTROPIC;
     MipFilter = LINEAR;
     MaxAnisotropy = 16;
-    AddressU = Wrap;
-    AddressV = Wrap;
+    AddressU = Clamp;
+    AddressV = Clamp;
 };
 
 texture ReflectionMap;
@@ -50,8 +50,8 @@ sampler reflectionSampler = sampler_state
     MagFilter = ANISOTROPIC;
     MipFilter = LINEAR;
     MaxAnisotropy = 16;
-    AddressU = Wrap;
-    AddressV = Wrap;
+    AddressU = Clamp;
+    AddressV = Clamp;
 };
 
 texture Mask;
@@ -62,8 +62,8 @@ sampler maskSampler = sampler_state
     MagFilter = ANISOTROPIC;
     MipFilter = LINEAR;
     MaxAnisotropy = 16;
-    AddressU = Wrap;
-    AddressV = Wrap;
+    AddressU = Clamp;
+    AddressV = Clamp;
 };
 
 texture Skybox;
