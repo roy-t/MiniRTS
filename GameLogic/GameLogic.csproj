@@ -66,6 +66,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BluePrints\ExhaustBluePrint.cs" />
+    <Compile Include="BluePrints\RocketFuselageBluePrint.cs" />
     <Compile Include="Commands\BuildFighterCommand.cs" />
     <Compile Include="Commands\BuildSpaceShipCommand.cs" />
     <Compile Include="Commands\ICommand.cs" />

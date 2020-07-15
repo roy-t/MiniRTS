@@ -26,7 +26,7 @@ namespace MiniEngine.GameLogic.Commands
         {
             var entity = entityController.CreateEntity("Fighter");
             factories.Get<PoseFactory>().Construct(entity, this.Position, this.Scale);
-            factories.Get<OpaqueModelFactory>().Construct(entity, content.Exhaust);
+            factories.Get<OpaqueModelFactory>().Construct(entity, content.Fighter);
 
             var rcsFront = this.BuildSmallReactionControlSystem(entityController, factories, content, entity, Vector3.Forward * 4, 0, 0, 0);
             var rcsBack = this.BuildSmallReactionControlSystem(entityController, factories, content, entity, Vector3.Backward * 4, 0, 0, 0);
