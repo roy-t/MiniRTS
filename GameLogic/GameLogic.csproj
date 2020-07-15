@@ -67,6 +67,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands\BuildFighterCommand.cs" />
+    <Compile Include="Commands\BuildSpaceShipCommand.cs" />
     <Compile Include="Commands\ICommand.cs" />
     <Compile Include="Components\FlightPlan.cs" />
     <Compile Include="Content.cs" />

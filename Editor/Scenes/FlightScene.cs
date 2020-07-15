@@ -76,7 +76,8 @@ namespace MiniEngine.Scenes
 
             this.worldGrid = new WorldGrid(40, 40, 1, 8, new Vector3(-20, 0, -20));
 
-            this.SceneBuilder.CreateDebugLine(this.CreateGridLines(40, 40), Color.White);
+            var lines = this.SceneBuilder.CreateDebugLine(this.CreateGridLines(40, 40), Color.White);
+            lines.ClippedTint = Color.TransparentBlack;
 
             var (cubePose, _, _) = this.SceneBuilder.BuildCube(Vector3.Zero, 0.005f);
             this.targetPose = cubePose;
@@ -108,6 +109,20 @@ namespace MiniEngine.Scenes
                         if (ImGui.Button("Build Fighter"))
                         {
                             var command = new BuildFighterCommand
+                            {
+                                Position = Vector3.Zero,
+                                Scale = Vector3.One
+                            };
+
+                            var entity = command.Execute(this.Content, this.EntityController, this.Factories);
+                            this.fighters.Add(entity);
+
+                            this.fighterNames.Add($"Fighter {this.fighters.Count}");
+                        }
+
+                        if (ImGui.Button("Build Space Ship"))
+                        {
+                            var command = new BuildSpaceShipCommand
                             {
                                 Position = Vector3.Zero,
                                 Scale = Vector3.One

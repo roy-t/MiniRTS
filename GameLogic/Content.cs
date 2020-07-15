@@ -15,8 +15,17 @@ namespace MiniEngine.GameLogic
             this.SkyboxBuilder = new SkyboxBuilder(device);
         }
 
+        public Model Cap { get; private set; }
 
         public Model Exhaust { get; private set; }
+
+        public Model Fairing { get; private set; }
+
+        public Model FuelTank { get; private set; }
+
+        public Model RCS { get; private set; }
+
+        public Model RibbedFuelTank { get; private set; }
 
         public Model Fighter { get; private set; }
         public Model Sponza { get; private set; }
@@ -36,7 +45,13 @@ namespace MiniEngine.GameLogic
 
         public void LoadContent(ContentManager content)
         {
+            this.Cap = content.Load<Model>(@"Scenes\RocketParts\Cap");
             this.Exhaust = content.Load<Model>(@"Scenes\RocketParts\Exhaust");
+            this.Fairing = content.Load<Model>(@"Scenes\RocketParts\Fairing");
+            this.FuelTank = content.Load<Model>(@"Scenes\RocketParts\FuelTank");
+            this.RCS = content.Load<Model>(@"Scenes\RocketParts\RCS");
+            this.RibbedFuelTank = content.Load<Model>(@"Scenes\RocketParts\RibbedFuelTank");
+
             this.Fighter = content.Load<Model>(@"Scenes\Primitives\fighter");
             this.Sponza = content.Load<Model>(@"Scenes\Sponza\Sponza");
             this.Cube = content.Load<Model>(@"Scenes\Primitives\Cube");
