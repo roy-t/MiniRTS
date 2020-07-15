@@ -67,7 +67,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BluePrints\ExhaustBluePrint.cs" />
-    <Compile Include="BluePrints\RocketFuselageBluePrint.cs" />
+    <Compile Include="BluePrints\FuselageBluePrint.cs" />
+    <Compile Include="BluePrints\RCSBluePrint.cs" />
     <Compile Include="Commands\BuildFighterCommand.cs" />
     <Compile Include="Commands\BuildSpaceShipCommand.cs" />
     <Compile Include="Commands\ICommand.cs" />

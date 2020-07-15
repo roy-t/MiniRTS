@@ -84,6 +84,8 @@ namespace MiniEngine.Scenes
 
             this.fighters = new List<Entity>();
             this.fighterNames = new List<string>();
+
+            this.BuildSpaceShip();
         }
 
         public void Update(PerspectiveCamera camera, Seconds elapsed)
@@ -122,16 +124,7 @@ namespace MiniEngine.Scenes
 
                         if (ImGui.Button("Build Space Ship"))
                         {
-                            var command = new BuildSpaceShipCommand
-                            {
-                                Position = Vector3.Zero,
-                                Scale = Vector3.One
-                            };
-
-                            var entity = command.Execute(this.Content, this.EntityController, this.Factories);
-                            this.fighters.Add(entity);
-
-                            this.fighterNames.Add($"Fighter {this.fighters.Count}");
+                            BuildSpaceShip();
                         }
 
                         if (ImGui.Button("Move"))
@@ -172,6 +165,20 @@ namespace MiniEngine.Scenes
 
                 ImGui.End();
             }
+        }
+
+        private void BuildSpaceShip()
+        {
+            var command = new BuildSpaceShipCommand
+            {
+                Position = Vector3.Zero,
+                Scale = Vector3.One
+            };
+
+            var entity = command.Execute(this.Content, this.EntityController, this.Factories);
+            this.fighters.Add(entity);
+
+            this.fighterNames.Add($"Fighter {this.fighters.Count}");
         }
 
         private IReadOnlyList<Vector3> CreateGridLines(int columns, int rows)

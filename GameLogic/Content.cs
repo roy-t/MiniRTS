@@ -16,17 +16,17 @@ namespace MiniEngine.GameLogic
             this.SkyboxBuilder = new SkyboxBuilder(device);
         }
 
-        public RocketFuselageBluePrint Cap { get; private set; }
+        public FuselageBluePrint Cap { get; private set; }
 
-        public RocketFuselageBluePrint Exhaust { get; private set; }
+        public FuselageBluePrint Exhaust { get; private set; }
 
-        public RocketFuselageBluePrint Fairing { get; private set; }
+        public FuselageBluePrint Fairing { get; private set; }
 
-        public RocketFuselageBluePrint FuelTank { get; private set; }
+        public FuselageBluePrint FuelTank { get; private set; }
 
-        public Model RCS { get; private set; }
+        public RCSBluePrint RCS { get; private set; }
 
-        public RocketFuselageBluePrint RibbedFuelTank { get; private set; }
+        public FuselageBluePrint RibbedFuelTank { get; private set; }
 
         public Model Fighter { get; private set; }
         public Model Sponza { get; private set; }
@@ -46,15 +46,28 @@ namespace MiniEngine.GameLogic
 
         public void LoadContent(ContentManager content)
         {
-            this.Cap = new RocketFuselageBluePrint(content.Load<Model>(@"Scenes\RocketParts\Cap"), height: 0.1f, allowRCS: false);
+            this.Cap = new FuselageBluePrint(content.Load<Model>(@"Scenes\RocketParts\Cap"), height: 0.1f, allowAddons: false);
 
             var exhaustOffset = new ExhaustBluePrint(Vector3.Down * 2, 0, -MathHelper.PiOver2, 0);
-            this.Exhaust = new RocketFuselageBluePrint(content.Load<Model>(@"Scenes\RocketParts\Exhaust"), bottomConnector: ConnectorType.None, allowRCS: false, exhaustOffsets: new ExhaustBluePrint[] { exhaustOffset });
-            this.Fairing = new RocketFuselageBluePrint(content.Load<Model>(@"Scenes\RocketParts\Fairing"), topConnector: ConnectorType.None, allowRCS: false);
-            this.FuelTank = new RocketFuselageBluePrint(content.Load<Model>(@"Scenes\RocketParts\FuelTank"));
-            this.RibbedFuelTank = new RocketFuselageBluePrint(content.Load<Model>(@"Scenes\RocketParts\RibbedFuelTank"));
+            this.Exhaust = new FuselageBluePrint(content.Load<Model>(@"Scenes\RocketParts\Exhaust"), bottomConnector: ConnectorType.None, allowAddons: false, exhaustOffsets: new ExhaustBluePrint[] { exhaustOffset });
+            this.Fairing = new FuselageBluePrint(content.Load<Model>(@"Scenes\RocketParts\Fairing"), topConnector: ConnectorType.None, allowAddons: false);
+            this.FuelTank = new FuselageBluePrint(content.Load<Model>(@"Scenes\RocketParts\FuelTank"));
+            this.RibbedFuelTank = new FuselageBluePrint(content.Load<Model>(@"Scenes\RocketParts\RibbedFuelTank"));
 
-            this.RCS = content.Load<Model>(@"Scenes\RocketParts\RCS");
+
+            var toRcs = Vector3.Right * 1.33f;
+            var tweak = 0.2f;
+            var exhaustOffsets = new ExhaustBluePrint[]
+            {
+                new ExhaustBluePrint(toRcs + (Vector3.Up * tweak), 0, MathHelper.PiOver2, 0),
+                new ExhaustBluePrint(toRcs + (Vector3.Down * tweak), 0, -MathHelper.PiOver2, 0),
+
+                new ExhaustBluePrint(toRcs + (Vector3.Forward * tweak), 0, 0, 0),
+                new ExhaustBluePrint(toRcs + (Vector3.Backward * tweak), MathHelper.Pi, 0, 0),
+
+                new ExhaustBluePrint(toRcs + (Vector3.Right * tweak), -MathHelper.PiOver2, 0, 0)
+            };
+            this.RCS = new RCSBluePrint(content.Load<Model>(@"Scenes\RocketParts\RCS"), exhaustOffsets);
 
 
             this.Fighter = content.Load<Model>(@"Scenes\Primitives\fighter");

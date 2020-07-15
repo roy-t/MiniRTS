@@ -26,13 +26,12 @@ namespace MiniEngine.GameLogic.Commands
 
             factories.Get<PoseFactory>().Construct(entity, this.Position, this.Scale);
 
-            this.BuildParts(content, factories, entityController, entity, content.Cap.Model, content.Exhaust, content.FuelTank, content.RibbedFuelTank, content.FuelTank, content.Fairing);
+            this.BuildParts(content, factories, entityController, entity, content.Cap.Model, content.RCS, new int[] { 1, 3 }, content.Exhaust, content.FuelTank, content.RibbedFuelTank, content.FuelTank, content.Fairing);
 
             return entity;
         }
 
-
-        private void BuildParts(Content content, Resolver<IComponentFactory> factories, EntityController entityController, Entity root, Model connector, params RocketFuselageBluePrint[] bluePrints)
+        private void BuildParts(Content content, Resolver<IComponentFactory> factories, EntityController entityController, Entity root, Model connector, RCSBluePrint rcsBluePrint, int[] rcsPositions, params FuselageBluePrint[] bluePrints)
         {
             var totalHeight = bluePrints.Sum(x => x.Height);
             var currentHeight = -(totalHeight / 2.0f);
@@ -58,6 +57,11 @@ namespace MiniEngine.GameLogic.Commands
                     this.CreateExhausts(entityController, factories, root, entity, bluePrint, content);
                 }
 
+                if (rcsPositions.Contains(i))
+                {
+                    this.CreateRcs(entityController, factories, entity, rcsBluePrint, content);
+                }
+
                 if (i < bluePrints.Length - 1)
                 {
                     offset += toCenterOfMass;
@@ -70,14 +74,46 @@ namespace MiniEngine.GameLogic.Commands
             factories.Get<ParentFactory>().Construct(root, children);
         }
 
-        private void CreateExhausts(EntityController entityController, Resolver<IComponentFactory> factories, Entity rootEntity, Entity partEntity, RocketFuselageBluePrint bluePrint, Content content)
+        private void CreateRcs(EntityController entityController, Resolver<IComponentFactory> factories, Entity partEntity, RCSBluePrint rcsBluePrint, Content content)
+        {
+            var count = 4;
+            var step = MathHelper.TwoPi / count;
+            for (var r = 0; r < count; r++)
+            {
+                var rcsEntity = entityController.CreateEntity("RCS_Root");
+                factories.Get<PoseFactory>().Construct(rcsEntity, Vector3.Zero);
+                factories.Get<OffsetFactory>().Construct(rcsEntity, Vector3.Zero, step * r, 0, 0, partEntity);
+                factories.Get<OpaqueModelFactory>().Construct(rcsEntity, rcsBluePrint.Model);
+
+                var emitters = new Entity[rcsBluePrint.ExhaustOffsets.Length];
+                for (var i = 0; i < rcsBluePrint.ExhaustOffsets.Length; i++)
+                {
+                    var exhaust = rcsBluePrint.ExhaustOffsets[i];
+                    var exhaustEntity = entityController.CreateEntity($"RCS_Exhaust_{i}");
+                    factories.Get<PoseFactory>().Construct(exhaustEntity, Vector3.Zero, 0.1f);
+                    factories.Get<OffsetFactory>().Construct(exhaustEntity, exhaust.Offset, exhaust.Yaw, exhaust.Pitch, exhaust.Roll, rcsEntity);
+
+                    var emitter = factories.Get<AdditiveEmitterFactory>().ConstructAdditiveEmitter(exhaustEntity, content.Explosion2, 1, 1);
+                    emitter.SpawnInterval = 0.0f;
+                    emitter.Spread = 0.1f;
+                    emitter.Speed = 6.0f;
+                    emitter.TimeToLive = 0.15f;
+
+                    emitters[i] = exhaustEntity;
+                }
+
+                factories.Get<ReactionControlFactory>().Construct(rcsEntity, emitters);
+            }
+        }
+
+        private void CreateExhausts(EntityController entityController, Resolver<IComponentFactory> factories, Entity rootEntity, Entity partEntity, FuselageBluePrint bluePrint, Content content)
         {
             var emitters = new Entity[bluePrint.ExhaustOffsets.Length];
             for (var i = 0; i < bluePrint.ExhaustOffsets.Length; i++)
             {
                 var exhaust = bluePrint.ExhaustOffsets[i];
                 var exhaustEntity = entityController.CreateEntity("Exhaust");
-                factories.Get<PoseFactory>().Construct(exhaustEntity, Vector3.Zero, 1.0f);
+                factories.Get<PoseFactory>().Construct(exhaustEntity, Vector3.Zero);
                 factories.Get<OffsetFactory>().Construct(exhaustEntity, exhaust.Offset, exhaust.Yaw, exhaust.Pitch, exhaust.Roll, partEntity);
 
                 var emitter = factories.Get<AdditiveEmitterFactory>().ConstructAdditiveEmitter(exhaustEntity, content.Explosion2, 1, 1);
