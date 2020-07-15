@@ -10,6 +10,9 @@
 - They should point in the X+ direction so the can easily be repeated
 
 
+# Exporting
+- Use the embedded python script inside the .blend file!
+
 # Colours
 ![Colour Palet](colours.png)
 

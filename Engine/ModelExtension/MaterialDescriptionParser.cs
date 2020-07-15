@@ -59,7 +59,7 @@ namespace ModelExtension
                 }
 
                 string reflection = null;
-                if(lookup.TryGet(MaterialType.Reflection, tuple.Value, out var reflectionLookup))
+                if (lookup.TryGet(MaterialType.Reflection, tuple.Value, out var reflectionLookup))
                 {
                     reflection = Path.GetFullPath(Path.Combine(this.BasePath, config.RelativePath, reflectionLookup));
                 }
