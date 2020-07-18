@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using MiniEngine.GameLogic.Vehicles.Fighter;
 using MiniEngine.Systems;
+using MiniEngine.Systems.Annotations;
 using MiniEngine.Systems.Components;
 
 namespace MiniEngine.GameLogic.Components
@@ -16,6 +17,9 @@ namespace MiniEngine.GameLogic.Components
         public Entity Entity { get; }
 
         public bool IsCompleted => this.Maneuvers.Count == 0;
+
+        [Editor(nameof(ManeuverCount))]
+        public int ManeuverCount => this.Maneuvers.Count;
 
         public Queue<IManeuver> Maneuvers { get; }
     }

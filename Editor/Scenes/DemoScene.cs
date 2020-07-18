@@ -1,10 +1,10 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using MiniEngine.CutScene;
 using MiniEngine.GameLogic;
+using MiniEngine.Input;
 using MiniEngine.Pipeline.Lights.Components;
 using MiniEngine.Primitives.Cameras;
 using MiniEngine.Units;
@@ -50,10 +50,6 @@ namespace MiniEngine.Scenes
         {
             if (this.started == false)
             {
-                if (Keyboard.GetState().IsKeyDown(Keys.I))
-                {
-                    this.started = true;
-                }
                 return;
             }
 
@@ -120,6 +116,14 @@ namespace MiniEngine.Scenes
             }
 
             Console.WriteLine(this.accumulator);
+        }
+
+        public void HandleInput(PerspectiveCamera camera, KeyboardInput keyboard, MouseInput mouse)
+        {
+            if (keyboard.Click(Microsoft.Xna.Framework.Input.Keys.I))
+            {
+                this.started = true;
+            }
         }
     }
 }

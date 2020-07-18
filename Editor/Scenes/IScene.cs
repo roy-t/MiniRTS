@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.GameLogic;
+using MiniEngine.Input;
 using MiniEngine.Primitives.Cameras;
 using MiniEngine.Units;
 
@@ -13,6 +14,8 @@ namespace MiniEngine.Scenes
         void Update(PerspectiveCamera camera, Seconds elapsed);
 
         void RenderUI();
+
+        void HandleInput(PerspectiveCamera camera, KeyboardInput keyboard, MouseInput mouse);
 
         TextureCube Skybox { get; }
     }

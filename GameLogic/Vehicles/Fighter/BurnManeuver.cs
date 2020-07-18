@@ -25,6 +25,10 @@ namespace MiniEngine.GameLogic.Vehicles.Fighter
 
         public bool Completed { get; private set; }
 
+        public Vector3 TargetPosition { get; }
+        public float TargetYaw { get; }
+        public float TargetPitch { get; }
+
         public void Update(Pose pose, Seconds elapsed)
         {
             this.accumulator += elapsed;

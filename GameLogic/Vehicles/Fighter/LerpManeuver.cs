@@ -6,9 +6,6 @@ namespace MiniEngine.GameLogic.Vehicles.Fighter
 {
     public sealed class LerpManeuver : IManeuver
     {
-        private readonly Vector3 TargetPosition;
-        private readonly float TargetYaw;
-        private readonly float TargetPitch;
         private readonly Seconds Duration;
 
         private Seconds accumulator;
@@ -26,6 +23,10 @@ namespace MiniEngine.GameLogic.Vehicles.Fighter
         }
 
         public bool Completed { get; private set; }
+
+        public Vector3 TargetPosition { get; }
+        public float TargetYaw { get; }
+        public float TargetPitch { get; }
 
         public void Update(Pose pose, Seconds elapsed)
         {

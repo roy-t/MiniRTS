@@ -46,7 +46,7 @@ namespace MiniEngine.Controllers
 
             var translate = TranslateSpeed * elapsed;
 
-            if (this.Mouse.Hold(MouseButtons.Right))
+            if (this.Mouse.Hold(MouseButtons.Left))
             {
                 var rotation = new Vector2(this.Mouse.Movement.X, this.Mouse.Movement.Y) * RotateFactor;
                 var matrix = Matrix.CreateFromAxisAngle(this.up, rotation.X) * Matrix.CreateFromAxisAngle(this.left, -rotation.Y);

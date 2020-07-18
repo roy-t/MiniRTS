@@ -114,8 +114,6 @@ namespace MiniEngine.UI
             this.KeyboardInput.Update();
             this.MouseInput.Update();
 
-            this.CameraController.Update(camera, elapsed);
-
             if (this.KeyboardInput.Click(Keys.F12))
             {
                 this.State.EditorState.ShowGui = !this.State.EditorState.ShowGui;
@@ -128,6 +126,16 @@ namespace MiniEngine.UI
 
             this.RenderOverlay(viewport);
             this.RenderUI(currentScene, camera, gameTime);
+
+            var io = ImGui.GetIO();
+            if (!io.WantCaptureKeyboard)
+            {
+                this.CameraController.Update(camera, elapsed);
+                if (!io.WantCaptureMouse)
+                {
+                    currentScene.HandleInput(camera, this.KeyboardInput, this.MouseInput);
+                }
+            }
         }
 
         private void RenderOverlay(Viewport viewport)
@@ -204,8 +212,6 @@ namespace MiniEngine.UI
                             this.Menus[i].Render(camera);
                         }
 
-                        currentScene.RenderUI();
-
                         if (ImGui.Button("Reset Scene"))
                         {
                             this.SceneSelector.ResetScene();
@@ -218,6 +224,8 @@ namespace MiniEngine.UI
 
                         ImGui.EndMainMenuBar();
                     }
+
+                    currentScene.RenderUI();
 
                     if (this.State.EntityState.ShowEntityWindow && this.State.EntityState.SelectedEntity.Id > 0)
                     {

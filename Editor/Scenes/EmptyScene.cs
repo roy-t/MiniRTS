@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.GameLogic;
+using MiniEngine.Input;
 using MiniEngine.Primitives.Cameras;
 using MiniEngine.Units;
 
@@ -10,6 +11,7 @@ namespace MiniEngine.Scenes
         public string Name => "Empty Scene";
         public TextureCube Skybox { get; private set; }
 
+        public void HandleInput(PerspectiveCamera camera, KeyboardInput keyboard, MouseInput mouse) { }
         public void LoadContent(Content content)
             => this.Skybox = content.NullSkybox;
 

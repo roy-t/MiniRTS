@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using MiniEngine.Pipeline.Basics.Components;
 using MiniEngine.Units;
 
 namespace MiniEngine.GameLogic.Vehicles.Fighter
@@ -11,17 +10,17 @@ namespace MiniEngine.GameLogic.Vehicles.Fighter
         private const float MinMoveDistance = 0.001f;
         private const float MinRotateDistance = MathHelper.TwoPi / 1000.0f;
 
-        public static void PlanPointAt(Queue<IManeuver> maneuvers, Pose pose, Vector3 target, float maxAngularAcceleration)
+        public static void PlanPointAt(Queue<IManeuver> maneuvers, Vector3 position, float yaw, float pitch, Vector3 target, float maxAngularAcceleration)
         {
-            if (Vector3.DistanceSquared(target, pose.Position) > 0)
+            if (Vector3.DistanceSquared(target, position) > 0)
             {
-                var targetDirection = Vector3.Normalize(target - pose.Position);
+                var targetDirection = Vector3.Normalize(target - position);
 
                 var targetYaw = AngleMath.YawFromVector(targetDirection);
-                var yawDistance = AngleMath.DistanceRadians(pose.Yaw, targetYaw);
+                var yawDistance = AngleMath.DistanceRadians(yaw, targetYaw);
 
                 var targetPitch = AngleMath.PitchFromVector(targetDirection);
-                var pitchDistance = AngleMath.DistanceRadians(pose.Pitch, targetPitch);
+                var pitchDistance = AngleMath.DistanceRadians(pitch, targetPitch);
 
                 if (Math.Abs(yawDistance) > MinRotateDistance || Math.Abs(pitchDistance) > MinRotateDistance)
                 {
@@ -31,24 +30,24 @@ namespace MiniEngine.GameLogic.Vehicles.Fighter
                     maneuvers.Enqueue(rotation);
                 }
 
-                var adjust = new LerpManeuver(pose.Position, targetYaw, targetPitch, new Seconds(0.2f));
+                var adjust = new LerpManeuver(position, targetYaw, targetPitch, new Seconds(0.2f));
                 maneuvers.Enqueue(adjust);
             }
         }
 
-        public static void PlanMoveTo(Queue<IManeuver> maneuvers, Pose pose, Vector3 target, float maxLinearAcceleration, float maxAngularAcceleration)
+        public static void PlanMoveTo(Queue<IManeuver> maneuvers, Vector3 position, float yaw, float pitch, Vector3 target, float maxLinearAcceleration, float maxAngularAcceleration)
         {
             // 1. Point in the right direction
             // 2. Accelerate by performing a prograde burn
             // 3. Rotate so that the rocket points in the opposite direction of the velocity vector
             // 4. Decelerate by performing a retrograde burn
             // 5. Make tiny adjustments to correct floating point math errors
-            PlanPointAt(maneuvers, pose, target, maxAngularAcceleration);
+            PlanPointAt(maneuvers, position, yaw, pitch, target, maxAngularAcceleration);
 
-            var distance = Vector3.Distance(pose.Position, target);
+            var distance = Vector3.Distance(position, target);
             if (distance > MinMoveDistance)
             {
-                var direction = Vector3.Normalize(target - pose.Position);
+                var direction = Vector3.Normalize(target - position);
 
                 var targetYaw = AngleMath.YawFromVector(-direction);
                 var yawDistance = Math.PI;

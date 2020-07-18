@@ -76,7 +76,7 @@ namespace MiniEngine.Primitives.Cameras
             this.ComputeMatrices();
         }
 
-        public Vector3 Pick(Point position, float depth)
+        public Vector3? Pick(Point position, float depth)
         {
             var near = this.Viewport.Unproject(new Vector3(position.X, position.Y, 0), this.Projection, this.View, Matrix.Identity);
             var far = this.Viewport.Unproject(new Vector3(position.X, position.Y, 1), this.Projection, this.View, Matrix.Identity);
@@ -86,9 +86,14 @@ namespace MiniEngine.Primitives.Cameras
 
             var plane = new Plane(Vector3.Up, depth);
             var intersection = ray.Intersects(plane);
-            var value = intersection.GetValueOrDefault(0.0f);
-
-            return near + (direction * value);
+            if (!intersection.HasValue)
+            {
+                return null;
+            }
+            else
+            {
+                return near + (direction * intersection.Value);
+            }
         }
 
         private void ComputeMatrices()

@@ -1,12 +1,15 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using ImGuiNET;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.GameLogic;
 using MiniEngine.GameLogic.Commands;
+using MiniEngine.GameLogic.Components;
 using MiniEngine.GameLogic.Factories;
 using MiniEngine.GameLogic.Systems;
 using MiniEngine.GameLogic.Vehicles.Fighter;
+using MiniEngine.Input;
 using MiniEngine.Pipeline.Basics.Components;
 using MiniEngine.Primitives.Cameras;
 using MiniEngine.Systems;
@@ -27,6 +30,7 @@ namespace MiniEngine.Scenes
         private readonly FlightPlanFactory FlightPlanFactory;
 
         private readonly FlightPlanSystem FlightPlanSystem;
+        private readonly IComponentContainer<FlightPlan> FlightPlans;
         private readonly ReactionControlSystem ReactionControlSystem;
 
         private WorldGrid worldGrid;
@@ -36,7 +40,7 @@ namespace MiniEngine.Scenes
         private float yaw = 0.0f;
         private float pitch = 0.0f;
         private float linearAcceleration = 1.0f;
-        private float angularAcceleration = MathHelper.PiOver4;
+        private float angularAcceleration = MathHelper.Pi * 0.04f;
 
         private int selectedFighter;
         private List<Entity> fighters;
@@ -50,6 +54,7 @@ namespace MiniEngine.Scenes
             SceneBuilder sceneBuilder,
             FlightPlanFactory flightPlanFactory,
             FlightPlanSystem flightPlanSystem,
+            IComponentContainer<FlightPlan> flightPlans,
             ReactionControlSystem reactionControlSystem)
         {
             this.Content = content;
@@ -59,6 +64,7 @@ namespace MiniEngine.Scenes
             this.SceneBuilder = sceneBuilder;
             this.FlightPlanFactory = flightPlanFactory;
             this.FlightPlanSystem = flightPlanSystem;
+            this.FlightPlans = flightPlans;
             this.ReactionControlSystem = reactionControlSystem;
         }
 
@@ -97,6 +103,31 @@ namespace MiniEngine.Scenes
             this.targetPose.Position = targetPosition;
         }
 
+        public void HandleInput(PerspectiveCamera camera, KeyboardInput keyboard, MouseInput mouse)
+        {
+            if (mouse.Click(MouseButtons.Right))
+            {
+                var mouseWorldPosition = camera.Pick(mouse.Position, 0.0f);
+                if (mouseWorldPosition.HasValue)
+                {
+                    var entity = this.fighters[this.selectedFighter];
+
+                    if (this.FlightPlans.TryGet(entity, out var flightPlan))
+                    {
+                        var finalManeuver = (LerpManeuver)flightPlan.Maneuvers.Last();
+                        ManeuverPlanner.PlanMoveTo(flightPlan.Maneuvers, finalManeuver.TargetPosition, finalManeuver.TargetYaw, finalManeuver.TargetPitch, mouseWorldPosition.Value, this.linearAcceleration, this.angularAcceleration);
+                    }
+                    else
+                    {
+                        var pose = this.Containers.Get<ComponentContainer<Pose>>().Get(entity);
+                        var maneuvers = new Queue<IManeuver>();
+                        ManeuverPlanner.PlanMoveTo(maneuvers, pose.Position, pose.Yaw, pose.Pitch, mouseWorldPosition.Value, this.linearAcceleration, this.angularAcceleration);
+                        this.FlightPlanFactory.Construct(entity, maneuvers);
+                    }
+                }
+            }
+        }
+
         public void RenderUI()
         {
             if (ImGui.Begin("Scene"))
@@ -132,7 +163,7 @@ namespace MiniEngine.Scenes
                             var entity = this.fighters[this.selectedFighter];
                             var pose = this.Containers.Get<ComponentContainer<Pose>>().Get(entity);
                             var maneuvers = new Queue<IManeuver>();
-                            ManeuverPlanner.PlanMoveTo(maneuvers, pose, this.targetPose.Position, this.linearAcceleration, this.angularAcceleration);
+                            ManeuverPlanner.PlanMoveTo(maneuvers, pose.Position, pose.Yaw, pose.Pitch, this.targetPose.Position, this.linearAcceleration, this.angularAcceleration);
                             this.FlightPlanFactory.Construct(entity, maneuvers);
                         }
                     }
