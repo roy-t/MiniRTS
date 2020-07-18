@@ -4,13 +4,13 @@ namespace MiniEngine.GameLogic.BluePrints
 {
     public sealed class RCSBluePrint
     {
-        public RCSBluePrint(Model model, ExhaustBluePrint[] exhaustOffsets)
+        public RCSBluePrint(Model model, ExhaustPoint[] exhausts)
         {
             this.Model = model;
-            this.ExhaustOffsets = exhaustOffsets;
+            this.Exhausts = exhausts;
         }
 
         public Model Model { get; }
-        public ExhaustBluePrint[] ExhaustOffsets { get; }
+        public ExhaustPoint[] Exhausts { get; }
     }
 }

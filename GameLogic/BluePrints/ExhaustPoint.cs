@@ -2,9 +2,9 @@
 
 namespace MiniEngine.GameLogic.BluePrints
 {
-    public sealed class ExhaustBluePrint
+    public sealed class ExhaustPoint
     {
-        public ExhaustBluePrint(Vector3 offset, float yaw, float pitch, float roll)
+        public ExhaustPoint(Vector3 offset, float yaw, float pitch, float roll)
         {
             this.Offset = offset;
             this.Yaw = yaw;

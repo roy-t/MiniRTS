@@ -4,7 +4,7 @@ namespace MiniEngine.GameLogic.BluePrints
 {
     public sealed class FuselageBluePrint
     {
-        public FuselageBluePrint(Model model, ConnectorType topConnector = ConnectorType.Medium, ConnectorType bottomConnector = ConnectorType.Medium, float height = 4.0f, float radius = 1.0f, bool allowAddons = true, params ExhaustBluePrint[] exhaustOffsets)
+        public FuselageBluePrint(Model model, ConnectorType topConnector = ConnectorType.Medium, ConnectorType bottomConnector = ConnectorType.Medium, float height = 4.0f, float radius = 1.0f, bool allowAddons = true, params ExhaustPoint[] exhausts)
         {
             this.TopConnector = topConnector;
             this.BottomConnector = bottomConnector;
@@ -12,7 +12,7 @@ namespace MiniEngine.GameLogic.BluePrints
             this.Radius = radius;
             this.Model = model;
             this.AllowAddons = allowAddons;
-            this.ExhaustOffsets = exhaustOffsets ?? new ExhaustBluePrint[0];
+            this.Exhausts = exhausts ?? new ExhaustPoint[0];
         }
 
         public ConnectorType TopConnector { get; }
@@ -26,7 +26,7 @@ namespace MiniEngine.GameLogic.BluePrints
 
         public bool AllowAddons { get; }
 
-        public ExhaustBluePrint[] ExhaustOffsets { get; }
+        public ExhaustPoint[] Exhausts { get; }
     }
 
 

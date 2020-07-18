@@ -26,6 +26,9 @@ namespace MiniEngine.GameLogic.Commands
 
             factories.Get<PoseFactory>().Construct(entity, this.Position, this.Scale);
 
+            //this.BuildParts(content, factories, entityController, entity, content.Cap.Model, content.RCS, new int[] { 1, 3 }, content.Exhaust, content.FuelTank, content.RibbedFuelTank, content.FuelTank, content.Fairing);
+
+
             this.BuildParts(content, factories, entityController, entity, content.Cap.Model, content.RCS, new int[] { 1, 3 }, content.Exhaust, content.FuelTank, content.RibbedFuelTank, content.FuelTank, content.Fairing);
 
             return entity;
@@ -43,8 +46,8 @@ namespace MiniEngine.GameLogic.Commands
             {
                 var bluePrint = bluePrints[i];
 
-                var toCenterOfMass = Vector3.Up * bluePrint.Height * 0.5f;
-                var offset = (Vector3.Up * currentHeight) + toCenterOfMass;
+                var toCenterOfMass = Vector3.Forward * bluePrint.Height * 0.5f;
+                var offset = (Vector3.Forward * currentHeight) + toCenterOfMass;
 
                 currentHeight += bluePrint.Height;
 
@@ -52,7 +55,7 @@ namespace MiniEngine.GameLogic.Commands
                 this.AddPart(factories, root, bluePrint.Model, offset, entity);
                 children[c++] = entity;
 
-                if (bluePrint.ExhaustOffsets.Length > 0)
+                if (bluePrint.Exhausts.Length > 0)
                 {
                     this.CreateExhausts(entityController, factories, root, entity, bluePrint, content);
                 }
@@ -82,13 +85,13 @@ namespace MiniEngine.GameLogic.Commands
             {
                 var rcsEntity = entityController.CreateEntity("RCS_Root");
                 factories.Get<PoseFactory>().Construct(rcsEntity, Vector3.Zero);
-                factories.Get<OffsetFactory>().Construct(rcsEntity, Vector3.Zero, step * r, 0, 0, partEntity);
+                factories.Get<OffsetFactory>().Construct(rcsEntity, Vector3.Zero, 0, 0, step * r, partEntity);
                 factories.Get<OpaqueModelFactory>().Construct(rcsEntity, rcsBluePrint.Model);
 
-                var emitters = new Entity[rcsBluePrint.ExhaustOffsets.Length];
-                for (var i = 0; i < rcsBluePrint.ExhaustOffsets.Length; i++)
+                var emitters = new Entity[rcsBluePrint.Exhausts.Length];
+                for (var i = 0; i < rcsBluePrint.Exhausts.Length; i++)
                 {
-                    var exhaust = rcsBluePrint.ExhaustOffsets[i];
+                    var exhaust = rcsBluePrint.Exhausts[i];
                     var exhaustEntity = entityController.CreateEntity($"RCS_Exhaust_{i}");
                     factories.Get<PoseFactory>().Construct(exhaustEntity, Vector3.Zero, 0.1f);
                     factories.Get<OffsetFactory>().Construct(exhaustEntity, exhaust.Offset, exhaust.Yaw, exhaust.Pitch, exhaust.Roll, rcsEntity);
@@ -108,10 +111,10 @@ namespace MiniEngine.GameLogic.Commands
 
         private void CreateExhausts(EntityController entityController, Resolver<IComponentFactory> factories, Entity rootEntity, Entity partEntity, FuselageBluePrint bluePrint, Content content)
         {
-            var emitters = new Entity[bluePrint.ExhaustOffsets.Length];
-            for (var i = 0; i < bluePrint.ExhaustOffsets.Length; i++)
+            var emitters = new Entity[bluePrint.Exhausts.Length];
+            for (var i = 0; i < bluePrint.Exhausts.Length; i++)
             {
-                var exhaust = bluePrint.ExhaustOffsets[i];
+                var exhaust = bluePrint.Exhausts[i];
                 var exhaustEntity = entityController.CreateEntity("Exhaust");
                 factories.Get<PoseFactory>().Construct(exhaustEntity, Vector3.Zero);
                 factories.Get<OffsetFactory>().Construct(exhaustEntity, exhaust.Offset, exhaust.Yaw, exhaust.Pitch, exhaust.Roll, partEntity);

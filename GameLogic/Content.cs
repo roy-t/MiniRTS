@@ -48,26 +48,26 @@ namespace MiniEngine.GameLogic
         {
             this.Cap = new FuselageBluePrint(content.Load<Model>(@"Scenes\RocketParts\Cap"), height: 0.1f, allowAddons: false);
 
-            var exhaustOffset = new ExhaustBluePrint(Vector3.Down * 2, 0, -MathHelper.PiOver2, 0);
-            this.Exhaust = new FuselageBluePrint(content.Load<Model>(@"Scenes\RocketParts\Exhaust"), bottomConnector: ConnectorType.None, allowAddons: false, exhaustOffsets: new ExhaustBluePrint[] { exhaustOffset });
+            var exhaust = new ExhaustPoint(Vector3.Backward * 2, MathHelper.Pi, 0, 0);
+            this.Exhaust = new FuselageBluePrint(content.Load<Model>(@"Scenes\RocketParts\Exhaust"), bottomConnector: ConnectorType.None, allowAddons: false, exhausts: new ExhaustPoint[] { exhaust });
             this.Fairing = new FuselageBluePrint(content.Load<Model>(@"Scenes\RocketParts\Fairing"), topConnector: ConnectorType.None, allowAddons: false);
             this.FuelTank = new FuselageBluePrint(content.Load<Model>(@"Scenes\RocketParts\FuelTank"));
             this.RibbedFuelTank = new FuselageBluePrint(content.Load<Model>(@"Scenes\RocketParts\RibbedFuelTank"));
 
 
             var toRcs = Vector3.Right * 1.33f;
-            var tweak = 0.2f;
-            var exhaustOffsets = new ExhaustBluePrint[]
+            var distanceFromCenter = 0.2f;
+            var exhausts = new ExhaustPoint[]
             {
-                new ExhaustBluePrint(toRcs + (Vector3.Up * tweak), 0, MathHelper.PiOver2, 0),
-                new ExhaustBluePrint(toRcs + (Vector3.Down * tweak), 0, -MathHelper.PiOver2, 0),
+                new ExhaustPoint(toRcs + (Vector3.Up * distanceFromCenter), 0, MathHelper.PiOver2, 0),
+                new ExhaustPoint(toRcs + (Vector3.Down * distanceFromCenter), 0, -MathHelper.PiOver2, 0),
 
-                new ExhaustBluePrint(toRcs + (Vector3.Forward * tweak), 0, 0, 0),
-                new ExhaustBluePrint(toRcs + (Vector3.Backward * tweak), MathHelper.Pi, 0, 0),
+                new ExhaustPoint(toRcs + (Vector3.Forward * distanceFromCenter), 0, 0, 0),
+                new ExhaustPoint(toRcs + (Vector3.Backward * distanceFromCenter), MathHelper.Pi, 0, 0),
 
-                new ExhaustBluePrint(toRcs + (Vector3.Right * tweak), -MathHelper.PiOver2, 0, 0)
+                new ExhaustPoint(toRcs + (Vector3.Right * distanceFromCenter), -MathHelper.PiOver2, 0, 0)
             };
-            this.RCS = new RCSBluePrint(content.Load<Model>(@"Scenes\RocketParts\RCS"), exhaustOffsets);
+            this.RCS = new RCSBluePrint(content.Load<Model>(@"Scenes\RocketParts\RCS"), exhausts);
 
 
             this.Fighter = content.Load<Model>(@"Scenes\Primitives\fighter");
