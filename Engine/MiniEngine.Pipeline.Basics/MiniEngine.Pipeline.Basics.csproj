@@ -52,11 +52,14 @@
     <Compile Include="Components\Bounds.cs" />
     <Compile Include="Components\Offset.cs" />
     <Compile Include="Components\Pose.cs" />
+    <Compile Include="Components\SelectionHitbox.cs" />
     <Compile Include="Factories\OffsetFactory.cs" />
     <Compile Include="Factories\PoseFactory.cs" />
+    <Compile Include="Factories\SelectionHitboxFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Systems\BoundsSystem.cs" />
     <Compile Include="Systems\OffsetSystem.cs" />
+    <Compile Include="Systems\SelectionSystem.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
@@ -72,6 +75,10 @@
     <ProjectReference Include="..\MiniEngine.Systems\MiniEngine.Systems.csproj">
       <Project>{c1db1986-23b4-4293-a6ea-527da1adc78f}</Project>
       <Name>MiniEngine.Systems</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MiniEngine.UI\MiniEngine.UI.csproj">
+      <Project>{278C12E6-3984-4E5C-ABA1-108F1296F6B6}</Project>
+      <Name>MiniEngine.UI</Name>
     </ProjectReference>
     <ProjectReference Include="..\MiniEngine.Units\MiniEngine.Units.csproj">
       <Project>{051E397D-4C6C-4F8F-8F40-CCE916A45C5E}</Project>

@@ -6,7 +6,7 @@ Update to monogame 3.8: https://community.monogame.net/t/monogame-3-8-prerelease
 
 - Use network serialization from: https://revenantx.github.io/LiteNetLib/articles/netserializerusage.html
 - If the game is running at <60fps the draw loop gets called less, but the elasped parameter is still 1/60s so the accelerometer (among other things) will freak out.
-- The hierarchy (Parent component) works great in the Entity Window, however we don't do anything with it in the EntityMenu
+- The hierarchy (Parent component) works great in the Entity Window, however we don't do anything with it in the EntityMenu, biggest problem is finding the roots!
 
 - There are still a few components that use a position. However they usually use it in different way, should they use Pose? -> Yes because then we can use offset for these things
     - ShadowCastingLight

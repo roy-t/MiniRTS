@@ -5,7 +5,6 @@ namespace MiniEngine.Primitives.Cameras
 {
     public sealed class PerspectiveCamera : IViewPoint
     {
-        private readonly Viewport Viewport;
         private const float Epsilon = 0.001f;
 
         public PerspectiveCamera(int width, int height)
@@ -20,6 +19,8 @@ namespace MiniEngine.Primitives.Cameras
             this.Move(Vector3.Backward * 10, Vector3.Zero);
             this.SetFieldOfView(MathHelper.PiOver2);
         }
+
+        public Viewport Viewport { get; }
 
         public float NearPlane { get; private set; }
         public float FarPlane { get; private set; }

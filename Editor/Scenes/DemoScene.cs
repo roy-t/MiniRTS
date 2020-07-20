@@ -4,9 +4,9 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
 using MiniEngine.CutScene;
 using MiniEngine.GameLogic;
-using MiniEngine.Input;
 using MiniEngine.Pipeline.Lights.Components;
 using MiniEngine.Primitives.Cameras;
+using MiniEngine.UI.Input;
 using MiniEngine.Units;
 
 namespace MiniEngine.Scenes

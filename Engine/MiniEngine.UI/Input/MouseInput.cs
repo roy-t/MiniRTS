@@ -4,7 +4,7 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
-namespace MiniEngine.Input
+namespace MiniEngine.UI.Input
 {
     public sealed class MouseInput
     {
@@ -105,6 +105,12 @@ namespace MiniEngine.Input
 
         public bool ScrolledUp => this.scrollDirection == ScrollDirection.Up;
         public bool ScrolledDown => this.scrollDirection == ScrollDirection.Down;
+
+        public bool JustPressed(MouseButtons button)
+        {
+            var state = this.ButtonStates[button];
+            return state == InputState.JustPressed;
+        }
 
         public bool Hold(MouseButtons button)
         {

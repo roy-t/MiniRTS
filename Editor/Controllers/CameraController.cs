@@ -1,10 +1,10 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using MiniEngine.Input;
 using MiniEngine.Primitives.Cameras;
+using MiniEngine.UI.Input;
 using MiniEngine.Units;
-using KeyboardInput = MiniEngine.Input.KeyboardInput;
+using KeyboardInput = MiniEngine.UI.Input.KeyboardInput;
 
 namespace MiniEngine.Controllers
 {
@@ -46,7 +46,7 @@ namespace MiniEngine.Controllers
 
             var translate = TranslateSpeed * elapsed;
 
-            if (this.Mouse.Hold(MouseButtons.Left))
+            if (this.Mouse.Hold(MouseButtons.Middle))
             {
                 var rotation = new Vector2(this.Mouse.Movement.X, this.Mouse.Movement.Y) * RotateFactor;
                 var matrix = Matrix.CreateFromAxisAngle(this.up, rotation.X) * Matrix.CreateFromAxisAngle(this.left, -rotation.Y);

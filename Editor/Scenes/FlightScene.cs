@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using ImGuiNET;
 using Microsoft.Xna.Framework;
@@ -9,12 +10,13 @@ using MiniEngine.GameLogic.Components;
 using MiniEngine.GameLogic.Factories;
 using MiniEngine.GameLogic.Systems;
 using MiniEngine.GameLogic.Vehicles.Fighter;
-using MiniEngine.Input;
 using MiniEngine.Pipeline.Basics.Components;
+using MiniEngine.Pipeline.Basics.Systems;
 using MiniEngine.Primitives.Cameras;
 using MiniEngine.Systems;
 using MiniEngine.Systems.Containers;
 using MiniEngine.Systems.Factories;
+using MiniEngine.UI.Input;
 using MiniEngine.Units;
 using Roy_T.AStar.Primitives;
 
@@ -32,7 +34,7 @@ namespace MiniEngine.Scenes
         private readonly FlightPlanSystem FlightPlanSystem;
         private readonly IComponentContainer<FlightPlan> FlightPlans;
         private readonly ReactionControlSystem ReactionControlSystem;
-
+        private readonly SelectionSystem SelectionSystem;
         private WorldGrid worldGrid;
 
         private Pose targetPose;
@@ -55,7 +57,8 @@ namespace MiniEngine.Scenes
             FlightPlanFactory flightPlanFactory,
             FlightPlanSystem flightPlanSystem,
             IComponentContainer<FlightPlan> flightPlans,
-            ReactionControlSystem reactionControlSystem)
+            ReactionControlSystem reactionControlSystem,
+            SelectionSystem selectionSystem)
         {
             this.Content = content;
             this.EntityController = entityController;
@@ -66,6 +69,7 @@ namespace MiniEngine.Scenes
             this.FlightPlanSystem = flightPlanSystem;
             this.FlightPlans = flightPlans;
             this.ReactionControlSystem = reactionControlSystem;
+            this.SelectionSystem = selectionSystem;
         }
 
         public void LoadContent(Content content)
@@ -103,8 +107,34 @@ namespace MiniEngine.Scenes
             this.targetPose.Position = targetPosition;
         }
 
+
+        bool selecting;
+
         public void HandleInput(PerspectiveCamera camera, KeyboardInput keyboard, MouseInput mouse)
         {
+            if (mouse.JustPressed(MouseButtons.Left))
+            {
+                this.selecting = true;
+                this.SelectionSystem.StartSelection(camera, mouse.Position);
+
+                Console.WriteLine("Selection started");
+            }
+            else if (this.selecting && !mouse.Hold(MouseButtons.Left))
+            {
+                this.selecting = false;
+                var selected = new List<Entity>();
+                this.SelectionSystem.EndSelection(camera, mouse.Position, selected);
+
+                foreach (var entity in selected)
+                {
+                    Console.WriteLine($"Selected {entity}");
+                    this.selectedFighter = this.fighters.IndexOf(entity);
+                }
+
+                Console.WriteLine("Selection finished");
+            }
+
+
             if (mouse.Click(MouseButtons.Right))
             {
                 var mouseWorldPosition = camera.Pick(mouse.Position, 0.0f);

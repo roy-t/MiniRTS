@@ -25,9 +25,7 @@ namespace MiniEngine.GameLogic.Commands
             var entity = entityController.CreateEntity("SpaceShip");
 
             factories.Get<PoseFactory>().Construct(entity, this.Position, this.Scale);
-
-            //this.BuildParts(content, factories, entityController, entity, content.Cap.Model, content.RCS, new int[] { 1, 3 }, content.Exhaust, content.FuelTank, content.RibbedFuelTank, content.FuelTank, content.Fairing);
-
+            factories.Get<SelectionHitboxFactory>().Construct(entity, 1, 1, 1);
 
             this.BuildParts(content, factories, entityController, entity, content.Cap.Model, content.RCS, new int[] { 1, 3 }, content.Exhaust, content.FuelTank, content.RibbedFuelTank, content.FuelTank, content.Fairing);
 

@@ -1,7 +1,6 @@
 ﻿using LightInject;
 using MiniEngine.Controllers;
 using MiniEngine.CutScene;
-using MiniEngine.Input;
 using MiniEngine.Pipeline.Debug;
 using MiniEngine.Rendering;
 using MiniEngine.Scenes;
@@ -29,9 +28,7 @@ namespace MiniEngine.Configuration
             serviceRegistry.Register<RenderPipelineBuilder>();
             serviceRegistry.Register<AnimationPipelineBuilder>();
 
-            // UI
-            serviceRegistry.Register<KeyboardInput>();
-            serviceRegistry.Register<MouseInput>();
+            // UI                        
             serviceRegistry.Register<IconLibrary>();
             serviceRegistry.Register<ComponentSearcher>();
 

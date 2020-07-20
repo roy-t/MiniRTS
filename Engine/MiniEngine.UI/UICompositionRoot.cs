@@ -1,4 +1,5 @@
 ﻿using LightInject;
+using MiniEngine.UI.Input;
 
 namespace MiniEngine.UI
 {
@@ -6,6 +7,9 @@ namespace MiniEngine.UI
     {
         public void Compose(IServiceRegistry serviceRegistry)
         {
+            serviceRegistry.Register<KeyboardInput>();
+            serviceRegistry.Register<MouseInput>();
+
             serviceRegistry.Register<ImGuiRenderer>();
             serviceRegistry.Register<Editors>();
         }

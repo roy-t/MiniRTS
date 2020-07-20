@@ -1,8 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.GameLogic;
-using MiniEngine.Input;
 using MiniEngine.Primitives.Cameras;
+using MiniEngine.UI.Input;
 using MiniEngine.Units;
 
 namespace MiniEngine.Scenes

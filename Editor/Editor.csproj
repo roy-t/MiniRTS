@@ -54,7 +54,6 @@
     <Compile Include="Cutscene\CutsceneState.cs" />
     <Compile Include="Cutscene\Waypoint.cs" />
     <Compile Include="Cutscene\WaypointFactory.cs" />
-    <Compile Include="Input\ScrollDirection.cs" />
     <Compile Include="Rendering\AccelerometerSystem.cs" />
     <Compile Include="Rendering\AnimationPipelineBuilder.cs" />
     <Compile Include="Rendering\LightPipelineSettings.cs" />
@@ -70,10 +69,6 @@
     <Compile Include="UI\CreateMenu.cs" />
     <Compile Include="UI\DebugDisplay.cs" />
     <Compile Include="GameLoop.cs" />
-    <Compile Include="Input\InputState.cs" />
-    <Compile Include="Input\KeyboardInput.cs" />
-    <Compile Include="Input\MouseButtons.cs" />
-    <Compile Include="Input\MouseInput.cs" />
     <Compile Include="Rendering\DeferredRenderPipeline.cs" />
     <Compile Include="UI\DebugMenu.cs" />
     <Compile Include="UI\NetWindow.cs" />

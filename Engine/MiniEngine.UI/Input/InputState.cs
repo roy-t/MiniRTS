@@ -1,4 +1,4 @@
-﻿namespace MiniEngine.Input
+﻿namespace MiniEngine.UI.Input
 {
     internal enum InputState
     {

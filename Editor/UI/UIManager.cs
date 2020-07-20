@@ -5,14 +5,14 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MiniEngine.Controllers;
-using MiniEngine.Input;
 using MiniEngine.Primitives.Cameras;
 using MiniEngine.Scenes;
 using MiniEngine.Systems;
+using MiniEngine.UI.Input;
 using MiniEngine.UI.State;
 using MiniEngine.UI.Utilities;
 using MiniEngine.Units;
-using KeyboardInput = MiniEngine.Input.KeyboardInput;
+using KeyboardInput = MiniEngine.UI.Input.KeyboardInput;
 
 namespace MiniEngine.UI
 {
