@@ -10,7 +10,7 @@
 
 #-------------------------------- References --------------------------------#
 
-/reference:..\..\Engine\ModelExtension\bin\x64\Debug\ModelExtension.dll
+/reference:..\..\Engine\ModelExtension\bin\x64\Debug\netcoreapp3.1\ModelExtension.dll
 
 #---------------------------------- Content ---------------------------------#
 

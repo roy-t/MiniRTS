@@ -1,26 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using ImGuiNET;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using MiniEngine.GameLogic;
-using MiniEngine.GameLogic.Commands;
-using MiniEngine.GameLogic.Components;
-using MiniEngine.GameLogic.Factories;
-using MiniEngine.GameLogic.Systems;
-using MiniEngine.GameLogic.Vehicles.Fighter;
-using MiniEngine.Pipeline.Basics.Components;
-using MiniEngine.Pipeline.Basics.Systems;
-using MiniEngine.Primitives.Cameras;
-using MiniEngine.Systems;
-using MiniEngine.Systems.Containers;
-using MiniEngine.Systems.Factories;
-using MiniEngine.UI.Input;
-using MiniEngine.Units;
-using Roy_T.AStar.Primitives;
-
-namespace MiniEngine.Scenes
+﻿namespace MiniEngine.Scenes
 {
     public sealed class FlightScene : IScene
     {
@@ -87,7 +65,7 @@ namespace MiniEngine.Scenes
             this.worldGrid = new WorldGrid(40, 40, 1, 8, new Vector3(-20, 0, -20));
 
             var lines = this.SceneBuilder.CreateDebugLine(this.CreateGridLines(40, 40), Color.White);
-            lines.ClippedTint = Color.TransparentBlack;
+            lines.ClippedTint = Color.Transparent;
 
             var (cubePose, _, _) = this.SceneBuilder.BuildCube(Vector3.Zero, 0.005f);
             this.targetPose = cubePose;
@@ -185,7 +163,7 @@ namespace MiniEngine.Scenes
 
                         if (ImGui.Button("Build Space Ship"))
                         {
-                            BuildSpaceShip();
+                            this.BuildSpaceShip();
                         }
 
                         if (ImGui.Button("Move"))

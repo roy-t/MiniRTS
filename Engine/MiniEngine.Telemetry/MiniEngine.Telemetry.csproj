@@ -1,12 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <Platforms>x64</Platforms>
   </PropertyGroup>
-  
-  <ItemGroup>
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.ServiceModel" />
-  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MiniEngine.Units\MiniEngine.Units.csproj" />
   </ItemGroup>

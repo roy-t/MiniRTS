@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using IniParser;
-using IniParser.Model;
 
 namespace ModelExtension
 {
@@ -11,34 +9,34 @@ namespace ModelExtension
         private readonly string BasePath;
         private const string InitSectionKey = "init";
         private const string MappingSectionKey = "mapping";
-        private readonly FileIniDataParser IniParser;
+        private readonly IniParser IniParser;
 
         public MaterialDescriptionParser(string modelPath)
         {
             this.BasePath = Path.GetDirectoryName(modelPath);
-            this.IniParser = new FileIniDataParser();
+            this.IniParser = new IniParser();
         }
 
         public Dictionary<string, MaterialDescription> Parse(string file)
         {
             var data = this.IniParser.ReadFile(file);
 
-            if (!data.Sections.ContainsSection(MappingSectionKey))
+            if (!data.Sections.ContainsKey(MappingSectionKey))
             {
                 throw new Exception($"Missing required section marked with [{MappingSectionKey}]");
             }
 
             var config = ParserConfiguration.Default;
-            if (data.Sections.ContainsSection(InitSectionKey))
+            if (data.Sections.ContainsKey(InitSectionKey))
             {
                 config = ParserConfiguration.Parse(data.Sections[InitSectionKey]);
             }
 
             var lookup = new MaterialTypeLookUp(config);
             var dictionary = new Dictionary<string, MaterialDescription>();
-            foreach (var tuple in data.Sections[MappingSectionKey])
+            foreach (var tuple in data.Sections[MappingSectionKey].Properties)
             {
-                var diffuse = Path.GetFullPath(Path.Combine(this.BasePath, config.RelativePath, tuple.KeyName));
+                var diffuse = Path.GetFullPath(Path.Combine(this.BasePath, config.RelativePath, tuple.Key));
 
                 string normal = null;
                 if (lookup.TryGet(MaterialType.Normal, tuple.Value, out var normalLookUp))
@@ -132,18 +130,18 @@ namespace ModelExtension
             }
 
 
-            public static ParserConfiguration Parse(KeyDataCollection initSection)
+            public static ParserConfiguration Parse(Section initSection)
             {
                 var config = Default;
 
-                if (initSection.ContainsKey(RelativePathKey))
+                if (initSection.Properties.ContainsKey(RelativePathKey))
                 {
-                    config.RelativePath = initSection[RelativePathKey];
+                    config.RelativePath = initSection.Properties[RelativePathKey];
                 }
 
-                if (initSection.ContainsKey(ValuesKey))
+                if (initSection.Properties.ContainsKey(ValuesKey))
                 {
-                    var valuesString = initSection[ValuesKey].Split(',');
+                    var valuesString = initSection.Properties[ValuesKey].Split(',');
                     var valueArray = new MaterialType[valuesString.Length];
                     for (var i = 0; i < valuesString.Length; i++)
                     {
