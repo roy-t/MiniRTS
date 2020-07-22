@@ -32,7 +32,7 @@ namespace MiniEngine.Configuration
             this.Compose();
         }
 
-        public void Compose()
+        private void Compose()
         {
             this.Container.RegisterInstance<Game>(this.GameLoop);
             this.Container.RegisterInstance(new SpriteBatch(this.GameLoop.GraphicsDevice));

@@ -22,4 +22,4 @@ I'm not sure why this happens, must be something in Blender's FBX exporter or Mo
 
 ## Tips
 - Rigging: https://continuebreak.com/articles/how-rig-vehicle-blender-28-ue4/
-- UV unwrapping: go to UV view, go to edit mode, select all vertices, UV -> Unwrap, then select all islands in the UV editor and choose Pack Islands from the UV menu to get a good start.
+- UV unwrapping: go to UV view, go to edit mode, select all vertices, UV -> Unwrap, then select all islands in the UV editor and choose Pack Islands from the UV menu to get a good start, make sure to set a large margin between islands so island don't bleed when mipmaps are generated
