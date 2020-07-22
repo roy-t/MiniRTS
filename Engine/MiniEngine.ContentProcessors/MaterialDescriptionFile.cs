@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace ModelExtension
+namespace MiniEngine.ContentProcessors
 {
     internal class MaterialDescriptionFile
     {

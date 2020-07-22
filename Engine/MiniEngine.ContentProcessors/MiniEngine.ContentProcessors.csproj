@@ -9,22 +9,19 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <OutputPath>bin\x64\Debug\</OutputPath>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <LangVersion>latest</LangVersion>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>bin\x64\Release\</OutputPath>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
-<ItemGroup>
-    <PackageReference Include="MonoGame.Framework.WindowsDX" Version="3.8.0.1469-develop" />
-</ItemGroup>
   <ItemGroup>
-    <PackageReference Include="LightInject">
-      <Version>6.3.4</Version>
-    </PackageReference>
-    <PackageReference Include="LiteNetLib">
-      <Version>0.9.2.2</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-    <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
+    <PackageReference Include="MonoGame.Framework.Content.Pipeline" Version="3.8.0.1469-develop" />
+    <PackageReference Include="MonoGame.Framework.WindowsDX" Version="3.8.0.1469-develop" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MiniEngine.Pipeline.Models\MiniEngine.Pipeline.Models.csproj" />
   </ItemGroup>
 </Project>

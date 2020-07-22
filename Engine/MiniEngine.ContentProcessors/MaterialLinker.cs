@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework.Content.Pipeline;
 using Microsoft.Xna.Framework.Content.Pipeline.Graphics;
 
-namespace ModelExtension
+namespace MiniEngine.ContentProcessors
 {
     public static class MaterialLinker
     {

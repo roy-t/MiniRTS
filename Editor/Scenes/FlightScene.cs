@@ -87,7 +87,7 @@ namespace MiniEngine.Scenes
             this.worldGrid = new WorldGrid(40, 40, 1, 8, new Vector3(-20, 0, -20));
 
             var lines = this.SceneBuilder.CreateDebugLine(this.CreateGridLines(40, 40), Color.White);
-            lines.ClippedTint = Color.TransparentBlack;
+            lines.ClippedTint = Color.Transparent;
 
             var (cubePose, _, _) = this.SceneBuilder.BuildCube(Vector3.Zero, 0.005f);
             this.targetPose = cubePose;
@@ -185,7 +185,7 @@ namespace MiniEngine.Scenes
 
                         if (ImGui.Button("Build Space Ship"))
                         {
-                            BuildSpaceShip();
+                            this.BuildSpaceShip();
                         }
 
                         if (ImGui.Button("Move"))

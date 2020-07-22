@@ -3,37 +3,35 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29519.87
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiniEngine.Effects", "Engine\MiniEngine.Effects\MiniEngine.Effects.csproj", "{2BB9181F-A31D-4DA2-93D2-64F5A56CF4F5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MiniEngine.Effects", "Engine\MiniEngine.Effects\MiniEngine.Effects.csproj", "{2BB9181F-A31D-4DA2-93D2-64F5A56CF4F5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiniEngine.Pipeline", "Engine\MiniEngine.Pipeline\MiniEngine.Pipeline.csproj", "{820720C5-666A-4D5E-96EE-F053BAA063D9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MiniEngine.Pipeline", "Engine\MiniEngine.Pipeline\MiniEngine.Pipeline.csproj", "{820720C5-666A-4D5E-96EE-F053BAA063D9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiniEngine.Pipeline.Debug", "Engine\MiniEngine.Pipeline.Debug\MiniEngine.Pipeline.Debug.csproj", "{1F48156E-DDC9-4332-8084-6FE15EA6A41B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MiniEngine.Pipeline.Debug", "Engine\MiniEngine.Pipeline.Debug\MiniEngine.Pipeline.Debug.csproj", "{1F48156E-DDC9-4332-8084-6FE15EA6A41B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiniEngine.Pipeline.Lights", "Engine\MiniEngine.Pipeline.Lights\MiniEngine.Pipeline.Lights.csproj", "{54491AEB-E0A7-4556-890E-7C49908952BC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MiniEngine.Pipeline.Lights", "Engine\MiniEngine.Pipeline.Lights\MiniEngine.Pipeline.Lights.csproj", "{54491AEB-E0A7-4556-890E-7C49908952BC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiniEngine.Pipeline.Models", "Engine\MiniEngine.Pipeline.Models\MiniEngine.Pipeline.Models.csproj", "{D77598B5-73BF-4CD4-B9A6-D94895058A60}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MiniEngine.Pipeline.Models", "Engine\MiniEngine.Pipeline.Models\MiniEngine.Pipeline.Models.csproj", "{D77598B5-73BF-4CD4-B9A6-D94895058A60}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiniEngine.Pipeline.Particles", "Engine\MiniEngine.Pipeline.Particles\MiniEngine.Pipeline.Particles.csproj", "{373867C7-7717-4CCC-A049-F0E174F5F5A4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MiniEngine.Pipeline.Particles", "Engine\MiniEngine.Pipeline.Particles\MiniEngine.Pipeline.Particles.csproj", "{373867C7-7717-4CCC-A049-F0E174F5F5A4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiniEngine.Pipeline.Projectors", "Engine\MiniEngine.Pipeline.Projectors\MiniEngine.Pipeline.Projectors.csproj", "{89AE0FF0-F607-44D8-AE81-0301334BD53F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MiniEngine.Pipeline.Projectors", "Engine\MiniEngine.Pipeline.Projectors\MiniEngine.Pipeline.Projectors.csproj", "{89AE0FF0-F607-44D8-AE81-0301334BD53F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Engine", "Engine", "{0946A9F9-B243-4BA9-A40F-722D531DBC73}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiniEngine.Pipeline.Shadows", "Engine\MiniEngine.Pipeline.Shadows\MiniEngine.Pipeline.Shadows.csproj", "{3C8F3FC4-9E92-475E-A9BD-AC687DC13963}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MiniEngine.Pipeline.Shadows", "Engine\MiniEngine.Pipeline.Shadows\MiniEngine.Pipeline.Shadows.csproj", "{3C8F3FC4-9E92-475E-A9BD-AC687DC13963}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiniEngine.Primitives", "Engine\MiniEngine.Primitives\MiniEngine.Primitives.csproj", "{D02E8240-0178-4792-9C38-2455D1250FA6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MiniEngine.Primitives", "Engine\MiniEngine.Primitives\MiniEngine.Primitives.csproj", "{D02E8240-0178-4792-9C38-2455D1250FA6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiniEngine.Systems", "Engine\MiniEngine.Systems\MiniEngine.Systems.csproj", "{C1DB1986-23B4-4293-A6EA-527DA1ADC78F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MiniEngine.Systems", "Engine\MiniEngine.Systems\MiniEngine.Systems.csproj", "{C1DB1986-23B4-4293-A6EA-527DA1ADC78F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiniEngine.Telemetry", "Engine\MiniEngine.Telemetry\MiniEngine.Telemetry.csproj", "{FE2DE91D-CA69-4844-8D5F-10A664F4E17D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MiniEngine.Telemetry", "Engine\MiniEngine.Telemetry\MiniEngine.Telemetry.csproj", "{FE2DE91D-CA69-4844-8D5F-10A664F4E17D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiniEngine.UI", "Engine\MiniEngine.UI\MiniEngine.UI.csproj", "{278C12E6-3984-4E5C-ABA1-108F1296F6B6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MiniEngine.UI", "Engine\MiniEngine.UI\MiniEngine.UI.csproj", "{278C12E6-3984-4E5C-ABA1-108F1296F6B6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiniEngine.Units", "Engine\MiniEngine.Units\MiniEngine.Units.csproj", "{051E397D-4C6C-4F8F-8F40-CCE916A45C5E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MiniEngine.Units", "Engine\MiniEngine.Units\MiniEngine.Units.csproj", "{051E397D-4C6C-4F8F-8F40-CCE916A45C5E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModelExtension", "Engine\ModelExtension\ModelExtension.csproj", "{E939D1A8-2A0D-4605-8704-9F41275C2CF6}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Editor", "Editor\Editor.csproj", "{BE5800C0-34CD-4FE1-9726-7CBB671DBB27}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Editor", "Editor\Editor.csproj", "{BE5800C0-34CD-4FE1-9726-7CBB671DBB27}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{CBC432E5-FDDE-4E1F-97BD-EA247446F340}"
 	ProjectSection(SolutionItems) = preProject
@@ -43,13 +41,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		TODO.md = TODO.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameLogic", "GameLogic\GameLogic.csproj", "{F3BB1367-1E76-44CC-8604-038C9161F130}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameLogic", "GameLogic\GameLogic.csproj", "{F3BB1367-1E76-44CC-8604-038C9161F130}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiniEngine.Pipeline.Basics", "Engine\MiniEngine.Pipeline.Basics\MiniEngine.Pipeline.Basics.csproj", "{34CEB330-4365-41C3-B68F-D738181989AB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MiniEngine.Pipeline.Basics", "Engine\MiniEngine.Pipeline.Basics\MiniEngine.Pipeline.Basics.csproj", "{34CEB330-4365-41C3-B68F-D738181989AB}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Networking", "Networking", "{AA3EC08B-9AF9-4399-8ED3-8CFBE719E6FC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiniEngine.Net", "MiniEngine.Net\MiniEngine.Net.csproj", "{C6DF95D0-2557-482B-9051-EECB4B62EB59}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MiniEngine.Net", "MiniEngine.Net\MiniEngine.Net.csproj", "{C6DF95D0-2557-482B-9051-EECB4B62EB59}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MiniEngine.ContentProcessors", "Engine\MiniEngine.ContentProcessors\MiniEngine.ContentProcessors.csproj", "{DD6407B1-13A1-412E-861F-87958A7D854B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -109,10 +109,6 @@ Global
 		{051E397D-4C6C-4F8F-8F40-CCE916A45C5E}.Debug|x64.Build.0 = Debug|x64
 		{051E397D-4C6C-4F8F-8F40-CCE916A45C5E}.Release|x64.ActiveCfg = Release|x64
 		{051E397D-4C6C-4F8F-8F40-CCE916A45C5E}.Release|x64.Build.0 = Release|x64
-		{E939D1A8-2A0D-4605-8704-9F41275C2CF6}.Debug|x64.ActiveCfg = Debug|x64
-		{E939D1A8-2A0D-4605-8704-9F41275C2CF6}.Debug|x64.Build.0 = Debug|x64
-		{E939D1A8-2A0D-4605-8704-9F41275C2CF6}.Release|x64.ActiveCfg = Release|x64
-		{E939D1A8-2A0D-4605-8704-9F41275C2CF6}.Release|x64.Build.0 = Release|x64
 		{BE5800C0-34CD-4FE1-9726-7CBB671DBB27}.Debug|x64.ActiveCfg = Debug|x64
 		{BE5800C0-34CD-4FE1-9726-7CBB671DBB27}.Debug|x64.Build.0 = Debug|x64
 		{BE5800C0-34CD-4FE1-9726-7CBB671DBB27}.Release|x64.ActiveCfg = Release|x64
@@ -129,6 +125,10 @@ Global
 		{C6DF95D0-2557-482B-9051-EECB4B62EB59}.Debug|x64.Build.0 = Debug|x64
 		{C6DF95D0-2557-482B-9051-EECB4B62EB59}.Release|x64.ActiveCfg = Release|x64
 		{C6DF95D0-2557-482B-9051-EECB4B62EB59}.Release|x64.Build.0 = Release|x64
+		{DD6407B1-13A1-412E-861F-87958A7D854B}.Debug|x64.ActiveCfg = Debug|x64
+		{DD6407B1-13A1-412E-861F-87958A7D854B}.Debug|x64.Build.0 = Debug|x64
+		{DD6407B1-13A1-412E-861F-87958A7D854B}.Release|x64.ActiveCfg = Release|x64
+		{DD6407B1-13A1-412E-861F-87958A7D854B}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -147,9 +147,9 @@ Global
 		{FE2DE91D-CA69-4844-8D5F-10A664F4E17D} = {0946A9F9-B243-4BA9-A40F-722D531DBC73}
 		{278C12E6-3984-4E5C-ABA1-108F1296F6B6} = {0946A9F9-B243-4BA9-A40F-722D531DBC73}
 		{051E397D-4C6C-4F8F-8F40-CCE916A45C5E} = {0946A9F9-B243-4BA9-A40F-722D531DBC73}
-		{E939D1A8-2A0D-4605-8704-9F41275C2CF6} = {0946A9F9-B243-4BA9-A40F-722D531DBC73}
 		{34CEB330-4365-41C3-B68F-D738181989AB} = {0946A9F9-B243-4BA9-A40F-722D531DBC73}
 		{C6DF95D0-2557-482B-9051-EECB4B62EB59} = {AA3EC08B-9AF9-4399-8ED3-8CFBE719E6FC}
+		{DD6407B1-13A1-412E-861F-87958A7D854B} = {0946A9F9-B243-4BA9-A40F-722D531DBC73}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C9D6E246-646C-4636-9798-204EB727B5DC}

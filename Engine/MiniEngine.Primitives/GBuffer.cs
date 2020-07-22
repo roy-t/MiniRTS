@@ -126,13 +126,13 @@ namespace MiniEngine.Primitives
         public void SetClearDiffuseTarget()
         {
             this.Device.SetRenderTarget(this.DiffuseTarget);
-            this.Device.Clear(Color.TransparentBlack);
+            this.Device.Clear(Color.Transparent);
         }
 
         public void SetClearDiffuseTargetColorOnly()
         {
             this.Device.SetRenderTarget(this.DiffuseTarget);
-            this.Device.Clear(ClearOptions.Target, Color.TransparentBlack, 1.0f, 0);
+            this.Device.Clear(ClearOptions.Target, Color.Transparent, 1.0f, 0);
         }
 
         public void SetClearNormalTarget()
@@ -156,25 +156,25 @@ namespace MiniEngine.Primitives
         public void SetClearLightTarget()
         {
             this.Device.SetRenderTarget(this.LightTarget);
-            this.Device.Clear(Color.TransparentBlack);
+            this.Device.Clear(Color.Transparent);
         }
 
         public void SetClearBlurTarget()
         {
             this.Device.SetRenderTarget(this.BlurTarget);
-            this.Device.Clear(Color.TransparentBlack);
+            this.Device.Clear(Color.Transparent);
         }
 
         public void SetClearCombineTarget()
         {
             this.Device.SetRenderTarget(this.CombineTarget);
-            this.Device.Clear(Color.TransparentBlack);
+            this.Device.Clear(Color.Transparent);
         }
 
         public void SetClearFinalTarget()
         {
             this.Device.SetRenderTarget(this.FinalTarget);
-            this.Device.Clear(Color.TransparentBlack);
+            this.Device.Clear(Color.Transparent);
         }
 
         public void Dispose()

@@ -34,7 +34,7 @@ namespace MiniEngine.Pipeline.Lights.Systems
             this.FullScreenTriangle = new FullScreenTriangle();
 
             this.Kernel = this.GenerateKernel();
-            
+
             var random = new Random(255);
 
             this.NoiseMap = new Texture2D(device, 64, 64, false, SurfaceFormat.Color);
@@ -108,7 +108,7 @@ namespace MiniEngine.Pipeline.Lights.Systems
 
         private Color ComputeAmbientLightZeroAlpha()
         {
-            var accumulate = Color.TransparentBlack;
+            var accumulate = Color.Transparent;
             for (var i = 0; i < this.Lights.Count; i++)
             {
                 var light = this.Lights[i];

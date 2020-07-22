@@ -1,4 +1,4 @@
-﻿namespace ModelExtension
+﻿namespace MiniEngine.ContentProcessors
 {
     public class MaterialDescription
     {
