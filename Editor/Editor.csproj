@@ -52,7 +52,6 @@
     <ProjectReference Include="..\Engine\MiniEngine.Telemetry\MiniEngine.Telemetry.csproj" />
     <ProjectReference Include="..\Engine\MiniEngine.UI\MiniEngine.UI.csproj" />
     <ProjectReference Include="..\Engine\MiniEngine.Units\MiniEngine.Units.csproj" />
-    <ProjectReference Include="..\Engine\ModelExtension\ModelExtension.csproj" />
     <ProjectReference Include="..\GameLogic\GameLogic.csproj" />
     <ProjectReference Include="..\MiniEngine.Net\MiniEngine.Net.csproj" />
   </ItemGroup>

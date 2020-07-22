@@ -10,7 +10,7 @@
 
 #-------------------------------- References --------------------------------#
 
-/reference:..\..\Engine\ModelExtension\bin\x64\Debug\netcoreapp3.1\ModelExtension.dll
+/reference:..\..\Engine\MiniEngine.ContentProcessors\bin\x64\Debug\netcoreapp3.1\MiniEngine.ContentProcessors.dll
 
 #---------------------------------- Content ---------------------------------#
 
@@ -40,73 +40,73 @@
 
 #begin Effects/AdditiveParticlesEffect.fx
 /importer:EffectImporter
-/processor:EffectProcessor
+/processor:MultiFileEffectProcessor
 /processorParam:DebugMode=Auto
 /build:Effects/AdditiveParticlesEffect.fx
 
 #begin Effects/AmbientLightEffect.fx
 /importer:EffectImporter
-/processor:EffectProcessor
+/processor:MultiFileEffectProcessor
 /processorParam:DebugMode=Auto
 /build:Effects/AmbientLightEffect.fx
 
 #begin Effects/AverageParticlesEffect.fx
 /importer:EffectImporter
-/processor:EffectProcessor
+/processor:MultiFileEffectProcessor
 /processorParam:DebugMode=Auto
 /build:Effects/AverageParticlesEffect.fx
 
 #begin Effects/BlurEffect.fx
 /importer:EffectImporter
-/processor:EffectProcessor
+/processor:MultiFileEffectProcessor
 /processorParam:DebugMode=Auto
 /build:Effects/BlurEffect.fx
 
 #begin Effects/ColorEffect.fx
 /importer:EffectImporter
-/processor:EffectProcessor
+/processor:MultiFileEffectProcessor
 /processorParam:DebugMode=Auto
 /build:Effects/ColorEffect.fx
 
 #begin Effects/CombineEffect.fx
 /importer:EffectImporter
-/processor:EffectProcessor
+/processor:MultiFileEffectProcessor
 /processorParam:DebugMode=Auto
 /build:Effects/CombineEffect.fx
 
 #begin Effects/DirectionalLightEffect.fx
 /importer:EffectImporter
-/processor:EffectProcessor
+/processor:MultiFileEffectProcessor
 /processorParam:DebugMode=Auto
 /build:Effects/DirectionalLightEffect.fx
 
 #begin Effects/FxaaEffect.fx
 /importer:EffectImporter
-/processor:EffectProcessor
+/processor:MultiFileEffectProcessor
 /processorParam:DebugMode=Auto
 /build:Effects/FxaaEffect.fx
 
 #begin Effects/PointLightEffect.fx
 /importer:EffectImporter
-/processor:EffectProcessor
+/processor:MultiFileEffectProcessor
 /processorParam:DebugMode=Auto
 /build:Effects/PointLightEffect.fx
 
 #begin Effects/ProjectorEffect.fx
 /importer:EffectImporter
-/processor:EffectProcessor
+/processor:MultiFileEffectProcessor
 /processorParam:DebugMode=Auto
 /build:Effects/ProjectorEffect.fx
 
 #begin Effects/RenderEffect.fx
 /importer:EffectImporter
-/processor:EffectProcessor
+/processor:MultiFileEffectProcessor
 /processorParam:DebugMode=Auto
 /build:Effects/RenderEffect.fx
 
 #begin Effects/ShadowCastingLightEffect.fx
 /importer:EffectImporter
-/processor:EffectProcessor
+/processor:MultiFileEffectProcessor
 /processorParam:DebugMode=Auto
 /build:Effects/ShadowCastingLightEffect.fx
 
@@ -131,25 +131,25 @@
 
 #begin Effects/SunlightEffect.fx
 /importer:EffectImporter
-/processor:EffectProcessor
+/processor:MultiFileEffectProcessor
 /processorParam:DebugMode=Auto
 /build:Effects/SunlightEffect.fx
 
 #begin Effects/TextureEffect.fx
 /importer:EffectImporter
-/processor:EffectProcessor
+/processor:MultiFileEffectProcessor
 /processorParam:DebugMode=Auto
 /build:Effects/TextureEffect.fx
 
 #begin Effects/UIEffect.fx
 /importer:EffectImporter
-/processor:EffectProcessor
+/processor:MultiFileEffectProcessor
 /processorParam:DebugMode=Auto
 /build:Effects/UIEffect.fx
 
 #begin Effects/WeightedParticlesEffect.fx
 /importer:EffectImporter
-/processor:EffectProcessor
+/processor:MultiFileEffectProcessor
 /processorParam:DebugMode=Auto
 /build:Effects/WeightedParticlesEffect.fx
 

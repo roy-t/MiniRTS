@@ -8,9 +8,9 @@ using Microsoft.Xna.Framework.Content.Pipeline.Graphics;
 using Microsoft.Xna.Framework.Content.Pipeline.Processors;
 using MiniEngine.Pipeline.Models.Components;
 
-namespace ModelExtension
+namespace MiniEngine.ContentProcessors
 {
-    [ContentProcessor(DisplayName = "ModelExtension :: Multi Material Model Processor")]
+    [ContentProcessor(DisplayName = "MiniEngine :: Multi Material Model Processor")]
     public class MultiMaterialModelProcessor : ModelProcessor
     {
         private static readonly IList<string> AcceptableVertexChannelNames =

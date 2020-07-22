@@ -31,6 +31,5 @@
     <ProjectReference Include="..\Engine\MiniEngine.Primitives\MiniEngine.Primitives.csproj" />
     <ProjectReference Include="..\Engine\MiniEngine.Systems\MiniEngine.Systems.csproj" />
     <ProjectReference Include="..\Engine\MiniEngine.Units\MiniEngine.Units.csproj" />
-    <ProjectReference Include="..\Engine\ModelExtension\ModelExtension.csproj" />
   </ItemGroup>
 </Project>

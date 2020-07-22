@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 
-namespace ModelExtension
+namespace MiniEngine.ContentProcessors
 {
     // Quick hack to get rid of dependency, TODO: clean-up and rewrite!
 
