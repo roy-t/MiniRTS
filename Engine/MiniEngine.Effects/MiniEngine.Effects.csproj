@@ -4,7 +4,7 @@
     <Platforms>x64</Platforms>
   </PropertyGroup>  
   <ItemGroup>
-    <PackageReference Include="MonoGame.Framework.WindowsDX" Version="3.8.0.1375-develop">
+    <PackageReference Include="MonoGame.Framework.WindowsDX" Version="3.8.0.1469-develop">
       <PrivateAssets>All</PrivateAssets>
     </PackageReference>
   </ItemGroup>

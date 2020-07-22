@@ -1,4 +1,26 @@
-﻿namespace MiniEngine.Scenes
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using ImGuiNET;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using MiniEngine.GameLogic;
+using MiniEngine.GameLogic.Commands;
+using MiniEngine.GameLogic.Components;
+using MiniEngine.GameLogic.Factories;
+using MiniEngine.GameLogic.Systems;
+using MiniEngine.GameLogic.Vehicles.Fighter;
+using MiniEngine.Pipeline.Basics.Components;
+using MiniEngine.Pipeline.Basics.Systems;
+using MiniEngine.Primitives.Cameras;
+using MiniEngine.Systems;
+using MiniEngine.Systems.Containers;
+using MiniEngine.Systems.Factories;
+using MiniEngine.UI.Input;
+using MiniEngine.Units;
+using Roy_T.AStar.Primitives;
+
+namespace MiniEngine.Scenes
 {
     public sealed class FlightScene : IScene
     {

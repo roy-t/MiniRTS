@@ -40,10 +40,16 @@ Both additive and transparent particles are supported. All transparent particles
 Projects support projecting textures onto the environment. You can even use a texture that is generated everyframe using a separate render pipeline, to create portal like effects.
 
 # Requirements
-- Windows 10 64 bit*
-- Visual Studio 2017 or higher
-- MonoGame 3.7.1 ([download here](http://www.monogame.net/downloads/))
+- Windows 10 64 bit
+- Visual Studio 2019
+- .Net Core 3.1
+- MonoGame 3.8.0.1469-develop ([see](http://www.monogame.net/downloads/))
 
-**Might also work on earlier versions of Windows, and since MiniEngine uses MonoGame it should, in theory, also work on Mac and Linux but I haven't tested it*
+Install the monogame nuget source and the monogame content pipeline tools
+```
+dotnet nuget add source http://teamcity.monogame.net/guestAuth/app/nuget/feed/_Root/default/v3/index.json --name monogame-develop
+dotnet tool update -g dotnet-mgcb --version 3.8.0.1469-develop
+dotnet tool update -g dotnet-mgcb-editor --version 3.8.0.1469-develop
+```
 
 Simply open the `.sln` file, compile and run the `Editor` project and you should be able to play around. Note that there are some pre-populated scenes that you can view, they are available via the `file` menu.

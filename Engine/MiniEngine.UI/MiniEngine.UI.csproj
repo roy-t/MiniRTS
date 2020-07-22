@@ -16,7 +16,7 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 <ItemGroup>
-    <PackageReference Include="MonoGame.Framework.WindowsDX" Version="3.8.0.1375-develop" />
+    <PackageReference Include="MonoGame.Framework.WindowsDX" Version="3.8.0.1469-develop" />
 </ItemGroup>
   <ItemGroup>
     <Content Include="Roboto-Regular.ttf">
