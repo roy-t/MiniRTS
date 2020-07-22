@@ -1,126 +1,29 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{89AE0FF0-F607-44D8-AE81-0301334BD53F}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MiniEngine.Pipeline.Projectors</RootNamespace>
-    <AssemblyName>MiniEngine.Pipeline.Projectors</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <Deterministic>true</Deterministic>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <LangVersion>latest</LangVersion>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <LangVersion>latest</LangVersion>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x64\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <LangVersion>latest</LangVersion>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <OutputPath>bin\x64\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <LangVersion>latest</LangVersion>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
+  
   <ItemGroup>
     <Reference Include="MonoGame.Framework, Version=3.7.1.189, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\Program Files (x86)\MonoGame\v3.0\Assemblies\Windows\MonoGame.Framework.dll</HintPath>
     </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Components\DynamicTexture.cs" />
-    <Compile Include="Components\Projector.cs" />
-    <Compile Include="ProjectorsCompositionRoot.cs" />
-    <Compile Include="Extensions\PipelineExtensions.cs" />
-    <Compile Include="Factories\DynamicTextureFactory.cs" />
-    <Compile Include="Factories\ProjectorFactory.cs" />
-    <Compile Include="ProjectorPipeline.cs" />
-    <Compile Include="ProjectorPipelineInput.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Stages\RenderProjectorsInternalStage.cs" />
-    <Compile Include="Stages\RenderProjectorsStage.cs" />
-    <Compile Include="Systems\DynamicTextureSystem.cs" />
-    <Compile Include="Systems\ProjectorSystem.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\MiniEngine.Effects\MiniEngine.Effects.csproj">
-      <Project>{2bb9181f-a31d-4da2-93d2-64f5a56cf4f5}</Project>
-      <Name>MiniEngine.Effects</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MiniEngine.Pipeline.Debug\MiniEngine.Pipeline.Debug.csproj">
-      <Project>{1F48156E-DDC9-4332-8084-6FE15EA6A41B}</Project>
-      <Name>MiniEngine.Pipeline.Debug</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MiniEngine.Pipeline.Models\MiniEngine.Pipeline.Models.csproj">
-      <Project>{D77598B5-73BF-4CD4-B9A6-D94895058A60}</Project>
-      <Name>MiniEngine.Pipeline.Models</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MiniEngine.Pipeline\MiniEngine.Pipeline.csproj">
-      <Project>{820720c5-666a-4d5e-96ee-f053baa063d9}</Project>
-      <Name>MiniEngine.Pipeline</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MiniEngine.Primitives\MiniEngine.Primitives.csproj">
-      <Project>{d02e8240-0178-4792-9c38-2455d1250fa6}</Project>
-      <Name>MiniEngine.Primitives</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MiniEngine.Systems\MiniEngine.Systems.csproj">
-      <Project>{c1db1986-23b4-4293-a6ea-527da1adc78f}</Project>
-      <Name>MiniEngine.Systems</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MiniEngine.Telemetry\MiniEngine.Telemetry.csproj">
-      <Project>{fe2de91d-ca69-4844-8d5f-10a664f4e17d}</Project>
-      <Name>MiniEngine.Telemetry</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MiniEngine.Units\MiniEngine.Units.csproj">
-      <Project>{051e397d-4c6c-4f8f-8f40-cce916a45c5e}</Project>
-      <Name>MiniEngine.Units</Name>
-    </ProjectReference>
+    <ProjectReference Include="..\MiniEngine.Effects\MiniEngine.Effects.csproj" />
+    <ProjectReference Include="..\MiniEngine.Pipeline.Debug\MiniEngine.Pipeline.Debug.csproj" />
+    <ProjectReference Include="..\MiniEngine.Pipeline.Models\MiniEngine.Pipeline.Models.csproj" />
+    <ProjectReference Include="..\MiniEngine.Pipeline\MiniEngine.Pipeline.csproj" />
+    <ProjectReference Include="..\MiniEngine.Primitives\MiniEngine.Primitives.csproj" />
+    <ProjectReference Include="..\MiniEngine.Systems\MiniEngine.Systems.csproj" />
+    <ProjectReference Include="..\MiniEngine.Telemetry\MiniEngine.Telemetry.csproj" />
+    <ProjectReference Include="..\MiniEngine.Units\MiniEngine.Units.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="LightInject">
       <Version>6.3.4</Version>
     </PackageReference>
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

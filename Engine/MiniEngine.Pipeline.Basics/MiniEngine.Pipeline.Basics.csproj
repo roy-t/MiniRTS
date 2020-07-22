@@ -1,36 +1,15 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{34CEB330-4365-41C3-B68F-D738181989AB}</ProjectGuid>
+    <TargetFramework>net48</TargetFramework>
     <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MiniEngine.Pipeline.Basics</RootNamespace>
-    <AssemblyName>MiniEngine.Pipeline.Basics</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <Deterministic>true</Deterministic>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\x64\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <LangVersion>7.3</LangVersion>
-    <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>bin\x64\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <LangVersion>7.3</LangVersion>
-    <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
@@ -38,52 +17,20 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\Program Files (x86)\MonoGame\v3.0\Assemblies\Windows\MonoGame.Framework.dll</HintPath>
     </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BasicsCompositionRoot.cs" />
-    <Compile Include="Components\Bounds.cs" />
-    <Compile Include="Components\Offset.cs" />
-    <Compile Include="Components\Pose.cs" />
-    <Compile Include="Components\SelectionHitbox.cs" />
-    <Compile Include="Factories\OffsetFactory.cs" />
-    <Compile Include="Factories\PoseFactory.cs" />
-    <Compile Include="Factories\SelectionHitboxFactory.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Systems\BoundsSystem.cs" />
-    <Compile Include="Systems\OffsetSystem.cs" />
-    <Compile Include="Systems\SelectionSystem.cs" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <PackageReference Include="LightInject">
       <Version>6.3.4</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MiniEngine.Primitives\MiniEngine.Primitives.csproj">
-      <Project>{d02e8240-0178-4792-9c38-2455d1250fa6}</Project>
-      <Name>MiniEngine.Primitives</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MiniEngine.Systems\MiniEngine.Systems.csproj">
-      <Project>{c1db1986-23b4-4293-a6ea-527da1adc78f}</Project>
-      <Name>MiniEngine.Systems</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MiniEngine.UI\MiniEngine.UI.csproj">
-      <Project>{278C12E6-3984-4E5C-ABA1-108F1296F6B6}</Project>
-      <Name>MiniEngine.UI</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MiniEngine.Units\MiniEngine.Units.csproj">
-      <Project>{051E397D-4C6C-4F8F-8F40-CCE916A45C5E}</Project>
-      <Name>MiniEngine.Units</Name>
-    </ProjectReference>
+    <ProjectReference Include="..\MiniEngine.Primitives\MiniEngine.Primitives.csproj" />
+    <ProjectReference Include="..\MiniEngine.Systems\MiniEngine.Systems.csproj" />
+    <ProjectReference Include="..\MiniEngine.UI\MiniEngine.UI.csproj" />
+    <ProjectReference Include="..\MiniEngine.Units\MiniEngine.Units.csproj" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

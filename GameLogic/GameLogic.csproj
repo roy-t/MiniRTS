@@ -1,54 +1,16 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{F3BB1367-1E76-44CC-8604-038C9161F130}</ProjectGuid>
+    <TargetFramework>net48</TargetFramework>
     <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>MiniEngine.GameLogic</RootNamespace>
-    <AssemblyName>GameLogic</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <Deterministic>true</Deterministic>
-    <TargetFrameworkProfile />
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\x64\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <LangVersion>7.3</LangVersion>
-    <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>bin\x64\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <LangVersion>7.3</LangVersion>
-    <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
@@ -56,81 +18,22 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\Program Files (x86)\MonoGame\v3.0\Assemblies\Windows\MonoGame.Framework.dll</HintPath>
     </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BluePrints\ExhaustPoint.cs" />
-    <Compile Include="BluePrints\FuselageBluePrint.cs" />
-    <Compile Include="BluePrints\RCSBluePrint.cs" />
-    <Compile Include="Commands\BuildFighterCommand.cs" />
-    <Compile Include="Commands\BuildSpaceShipCommand.cs" />
-    <Compile Include="Commands\ICommand.cs" />
-    <Compile Include="Components\FlightPlan.cs" />
-    <Compile Include="Content.cs" />
-    <Compile Include="Factories\FlightPlanFactory.cs" />
-    <Compile Include="Factories\ReactionControlFactory.cs" />
-    <Compile Include="GameLogicCompositionRoot.cs" />
-    <Compile Include="Path.cs" />
-    <Compile Include="PathInterpolator.cs" />
-    <Compile Include="Systems\FlightPlanSystem.cs" />
-    <Compile Include="Systems\ReactionControlSystem.cs" />
-    <Compile Include="Components\ReactionControl.cs" />
-    <Compile Include="Vehicles\Fighter\AngleMath.cs" />
-    <Compile Include="Vehicles\Fighter\BurnManeuver.cs" />
-    <Compile Include="Vehicles\Fighter\LerpManeuver.cs" />
-    <Compile Include="Vehicles\Fighter\IManeuver.cs" />
-    <Compile Include="Vehicles\Fighter\ManeuverPlanner.cs" />
-    <Compile Include="Vehicles\Fighter\RotationManeuver.cs" />
-    <Compile Include="DumbMovementLogic.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="WorldGrid.cs" />
-  </ItemGroup>
-  <ItemGroup>
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="RoyT.AStar">
       <Version>3.0.1</Version>
     </PackageReference>
+    <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Engine\MiniEngine.Pipeline.Basics\MiniEngine.Pipeline.Basics.csproj">
-      <Project>{34CEB330-4365-41C3-B68F-D738181989AB}</Project>
-      <Name>MiniEngine.Pipeline.Basics</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Engine\MiniEngine.Pipeline.Models\MiniEngine.Pipeline.Models.csproj">
-      <Project>{D77598B5-73BF-4CD4-B9A6-D94895058A60}</Project>
-      <Name>MiniEngine.Pipeline.Models</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Engine\MiniEngine.Pipeline.Particles\MiniEngine.Pipeline.Particles.csproj">
-      <Project>{373867C7-7717-4CCC-A049-F0E174F5F5A4}</Project>
-      <Name>MiniEngine.Pipeline.Particles</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Engine\MiniEngine.Pipeline\MiniEngine.Pipeline.csproj">
-      <Project>{820720C5-666A-4D5E-96EE-F053BAA063D9}</Project>
-      <Name>MiniEngine.Pipeline</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Engine\MiniEngine.Primitives\MiniEngine.Primitives.csproj">
-      <Project>{D02E8240-0178-4792-9C38-2455D1250FA6}</Project>
-      <Name>MiniEngine.Primitives</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Engine\MiniEngine.Systems\MiniEngine.Systems.csproj">
-      <Project>{C1DB1986-23B4-4293-A6EA-527DA1ADC78F}</Project>
-      <Name>MiniEngine.Systems</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Engine\MiniEngine.Units\MiniEngine.Units.csproj">
-      <Project>{051E397D-4C6C-4F8F-8F40-CCE916A45C5E}</Project>
-      <Name>MiniEngine.Units</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Engine\ModelExtension\ModelExtension.csproj">
-      <Project>{E939D1A8-2A0D-4605-8704-9F41275C2CF6}</Project>
-      <Name>ModelExtension</Name>
-    </ProjectReference>
+    <ProjectReference Include="..\Engine\MiniEngine.Pipeline.Basics\MiniEngine.Pipeline.Basics.csproj" />
+    <ProjectReference Include="..\Engine\MiniEngine.Pipeline.Models\MiniEngine.Pipeline.Models.csproj" />
+    <ProjectReference Include="..\Engine\MiniEngine.Pipeline.Particles\MiniEngine.Pipeline.Particles.csproj" />
+    <ProjectReference Include="..\Engine\MiniEngine.Pipeline\MiniEngine.Pipeline.csproj" />
+    <ProjectReference Include="..\Engine\MiniEngine.Primitives\MiniEngine.Primitives.csproj" />
+    <ProjectReference Include="..\Engine\MiniEngine.Systems\MiniEngine.Systems.csproj" />
+    <ProjectReference Include="..\Engine\MiniEngine.Units\MiniEngine.Units.csproj" />
+    <ProjectReference Include="..\Engine\ModelExtension\ModelExtension.csproj" />
   </ItemGroup>
-  <ItemGroup />
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
