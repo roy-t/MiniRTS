@@ -33,14 +33,6 @@ namespace MiniEngine.Pipeline.Models.Systems
             this.Bounds = bounds;
 
             this.Effect = effectFactory.Construct<RenderEffect>();
-
-            this.NullSkybox = new TextureCube(device, 1, false, SurfaceFormat.Color);
-            this.NullSkybox.SetData(CubeMapFace.PositiveX, new Color[] { Color.White });
-            this.NullSkybox.SetData(CubeMapFace.NegativeX, new Color[] { Color.White });
-            this.NullSkybox.SetData(CubeMapFace.PositiveY, new Color[] { Color.White });
-            this.NullSkybox.SetData(CubeMapFace.NegativeY, new Color[] { Color.White });
-            this.NullSkybox.SetData(CubeMapFace.PositiveZ, new Color[] { Color.White });
-            this.NullSkybox.SetData(CubeMapFace.NegativeZ, new Color[] { Color.White });
         }
 
         public void Render(PerspectiveCamera camera, GBuffer gBuffer)
@@ -54,12 +46,18 @@ namespace MiniEngine.Pipeline.Models.Systems
                 {
                     var pose = this.Poses[i];
 
+                    this.Effect.DiffuseMap = geometry.DiffuseMap;
+                    this.Effect.SpecularMap = geometry.SpecularMap;
+                    this.Effect.NormalMap = geometry.NormalMap;
+                    this.Effect.ReflectionMap = geometry.ReflectionMap;
+                    this.Effect.Mask = geometry.Mask;
+                    this.Effect.Skybox = geometry.SkyBox;
+
                     this.Effect.TextureOffset = Vector2.Zero;
                     this.Effect.World = pose.Matrix;
                     this.Effect.View = camera.View;
                     this.Effect.Projection = camera.Projection;
                     this.Effect.InverseViewProjection = camera.InverseViewProjection;
-                    this.Effect.Skybox = this.NullSkybox;
                     this.Effect.CameraPosition = camera.Position;
                     this.Effect.TextureScale = Vector2.One;
 

@@ -56,7 +56,7 @@ namespace MiniEngine.Effects.DeviceStates
         /// or perform or other comparisons on a single texture that contains depth information.        
         /// </summary>
         public static void ShadowCastingLightState(this GraphicsDevice device)
-        {            
+        {
             SetDeviceState(
                 device,
                 BlendState.AlphaBlend,

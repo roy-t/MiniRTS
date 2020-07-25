@@ -11,8 +11,11 @@ using MiniEngine.GameLogic.Factories;
 using MiniEngine.GameLogic.Systems;
 using MiniEngine.GameLogic.Vehicles.Fighter;
 using MiniEngine.Pipeline.Basics.Components;
+using MiniEngine.Pipeline.Basics.Factories;
 using MiniEngine.Pipeline.Basics.Systems;
+using MiniEngine.Pipeline.Models.Factories;
 using MiniEngine.Primitives.Cameras;
+using MiniEngine.Primitives.VertexTypes;
 using MiniEngine.Systems;
 using MiniEngine.Systems.Containers;
 using MiniEngine.Systems.Factories;
@@ -29,7 +32,6 @@ namespace MiniEngine.Scenes
         private readonly Resolver<IComponentFactory> Factories;
         private readonly Resolver<IComponentContainer> Containers;
         private readonly SceneBuilder SceneBuilder;
-        private readonly FlightPlanFactory FlightPlanFactory;
 
         private readonly FlightPlanSystem FlightPlanSystem;
         private readonly IComponentContainer<FlightPlan> FlightPlans;
@@ -54,7 +56,6 @@ namespace MiniEngine.Scenes
             Resolver<IComponentFactory> factories,
             Resolver<IComponentContainer> containers,
             SceneBuilder sceneBuilder,
-            FlightPlanFactory flightPlanFactory,
             FlightPlanSystem flightPlanSystem,
             IComponentContainer<FlightPlan> flightPlans,
             ReactionControlSystem reactionControlSystem,
@@ -65,7 +66,6 @@ namespace MiniEngine.Scenes
             this.Factories = factories;
             this.Containers = containers;
             this.SceneBuilder = sceneBuilder;
-            this.FlightPlanFactory = flightPlanFactory;
             this.FlightPlanSystem = flightPlanSystem;
             this.FlightPlans = flightPlans;
             this.ReactionControlSystem = reactionControlSystem;
@@ -152,7 +152,8 @@ namespace MiniEngine.Scenes
                         var pose = this.Containers.Get<ComponentContainer<Pose>>().Get(entity);
                         var maneuvers = new Queue<IManeuver>();
                         ManeuverPlanner.PlanMoveTo(maneuvers, pose.Position, pose.Yaw, pose.Pitch, mouseWorldPosition.Value, this.linearAcceleration, this.angularAcceleration);
-                        this.FlightPlanFactory.Construct(entity, maneuvers);
+
+                        this.Factories.Get<FlightPlanFactory>().Construct(entity, maneuvers);
                     }
                 }
             }
@@ -164,6 +165,25 @@ namespace MiniEngine.Scenes
             {
                 if (ImGui.BeginTabBar("SceneTabs"))
                 {
+                    if (ImGui.BeginTabItem("Geometry"))
+                    {
+                        if (ImGui.Button("Generate"))
+                        {
+                            var entity = this.EntityController.CreateEntity();
+                            this.Factories.Get<PoseFactory>().Construct(entity, Vector3.Zero);
+                            var vertices = new GBufferVertex[]
+                            {
+                                new GBufferVertex(Vector3.Left),
+                                new GBufferVertex(Vector3.Up),
+                                new GBufferVertex(Vector3.Right),
+                            };
+
+                            var indices = new short[] { 0, 1, 2 };
+                            this.Factories.Get<GeometryFactory>().Construct(entity, vertices, indices);
+                        }
+                        ImGui.EndTabItem();
+                    }
+
                     if (ImGui.BeginTabItem("Fighters"))
                     {
                         ImGui.ListBox("Selection", ref this.selectedFighter, this.fighterNames.ToArray(), this.fighterNames.Count);
@@ -194,7 +214,7 @@ namespace MiniEngine.Scenes
                             var pose = this.Containers.Get<ComponentContainer<Pose>>().Get(entity);
                             var maneuvers = new Queue<IManeuver>();
                             ManeuverPlanner.PlanMoveTo(maneuvers, pose.Position, pose.Yaw, pose.Pitch, this.targetPose.Position, this.linearAcceleration, this.angularAcceleration);
-                            this.FlightPlanFactory.Construct(entity, maneuvers);
+                            this.Factories.Get<FlightPlanFactory>().Construct(entity, maneuvers);
                         }
                     }
 
