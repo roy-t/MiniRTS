@@ -1,5 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Pipeline.Basics.Components;
 using MiniEngine.Pipeline.Models.Components;
 using MiniEngine.Systems;
@@ -25,7 +24,7 @@ namespace MiniEngine.Pipeline.Models.Factories
             var transparentModel = new TransparentModel(entity, model);
             this.Container.Add(transparentModel);
 
-            ModelBoundaryComputer.ComputeExtremes(model, Matrix.Identity, out var min, out var max);
+            BoundaryComputer.ComputeExtremes(model, out var min, out var max);
             var bounds = new Bounds(entity, min, max);
             this.Bounds.Add(bounds);
 

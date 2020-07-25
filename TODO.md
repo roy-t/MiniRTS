@@ -1,4 +1,13 @@
-Update to monogame 3.8: https://community.monogame.net/t/monogame-3-8-prerelease-packages-are-up-on-nuget/12708/15 get rid of installer
+# Generate comets
+Use https://github.com/nerogann/MonogameComputeShader and https://www.youtube.com/watch?v=lctXaT9pxA0
+
+
+
+
+
+
+
+
 
 # WIP
 - Textures for models need more margin between island to avoid bleeding. Exhaust misses inside of the pipe

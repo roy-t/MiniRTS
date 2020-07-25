@@ -1,14 +1,15 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MiniEngine.Pipeline.Models.Components;
 
 namespace MiniEngine.Pipeline.Models.Factories
 {
-    public static class ModelBoundaryComputer
+    public static class BoundaryComputer
     {
         public static BoundingSphere FromMinMax(Vector3 min, Vector3 max)
             => new BoundingSphere(Vector3.Lerp(min, max, 0.5f), Vector3.Distance(min, max) * 0.5f);
 
-        public static void ComputeExtremes(Model model, Matrix worldTransform, out Vector3 min, out Vector3 max)
+        public static void ComputeExtremes(Model model, out Vector3 min, out Vector3 max)
         {
             // Initialize minimum and maximum corners of the bounding box to max and min values
             min = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
@@ -20,7 +21,7 @@ namespace MiniEngine.Pipeline.Models.Factories
             for (var iMesh = 0; iMesh < model.Meshes.Count; iMesh++)
             {
                 var mesh = model.Meshes[iMesh];
-                var localWorldTransform = absoluteBoneTransforms[mesh.ParentBone.Index] * worldTransform;
+                var localWorldTransform = absoluteBoneTransforms[mesh.ParentBone.Index];
 
                 for (var iPart = 0; iPart < mesh.MeshParts.Count; iPart++)
                 {
@@ -42,6 +43,19 @@ namespace MiniEngine.Pipeline.Models.Factories
                         max = Vector3.Max(max, transformedPosition);
                     }
                 }
+            }
+        }
+
+        public static void ComputeExtremes(Geometry geometry, out Vector3 min, out Vector3 max)
+        {
+            min = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
+            max = new Vector3(float.MinValue, float.MinValue, float.MinValue);
+            for (var i = 0; i < geometry.VertexCount; i++)
+            {
+                var vertex = geometry.Vertices[i];
+                var position = new Vector3(vertex.Position.X, vertex.Position.Y, vertex.Position.Z);
+                min = Vector3.Min(min, position);
+                max = Vector3.Max(max, position);
             }
         }
     }

@@ -77,6 +77,7 @@ namespace MiniEngine.Rendering
 
                 var modelPipeline = ModelPipeline.Create(device, meterRegistry)
                     .ClearModelRenderTargets()
+                    .RenderGeometry(this.Systems.Get<GeometrySystem>())
                     .RenderModelBatch();
 
                 if (settings.EnableProjectors)

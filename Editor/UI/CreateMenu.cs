@@ -81,7 +81,7 @@ namespace MiniEngine.UI
                 if (ImGui.MenuItem("Remove created lights"))
                 {
                     this.LightsController.RemoveCreatedLights();
-                }              
+                }
 
                 ImGui.Separator();
 
