@@ -1,4 +1,5 @@
-﻿using LightInject;
+﻿using GameLogic.Asteroids;
+using LightInject;
 using MiniEngine.GameLogic.Components;
 using MiniEngine.GameLogic.Factories;
 using MiniEngine.GameLogic.Systems;
@@ -21,6 +22,9 @@ namespace MiniEngine.GameLogic
             serviceRegistry.Register<FlightPlanSystem>();
 
             serviceRegistry.Register<Content>();
+
+
+            serviceRegistry.Register<AsteroidEditorTab>();
         }
 
     }

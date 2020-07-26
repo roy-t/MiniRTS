@@ -23,7 +23,7 @@ namespace MiniEngine.Pipeline.Models.Stages
                 input.GBuffer.DepthTarget);
 
             this.Device.GeometryState();
-            this.GeometrySystem.Render(input.Camera, input.GBuffer);
+            this.GeometrySystem.Render(input.Camera);
         }
     }
 }

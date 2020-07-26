@@ -7,6 +7,8 @@ namespace MiniEngine.Effects.DeviceStates
     /// </summary>
     public static class GraphicsDeviceExtensions
     {
+        public static bool ForceWireFrame = false;
+
         private static readonly BlendState WeighedParticleBlendState = CreateWeightedParticleBlendState();
         private static readonly BlendState AlphaBlendOccluderBlendState = CreateAlphaBlendOccluderBlendState();
 
@@ -15,10 +17,28 @@ namespace MiniEngine.Effects.DeviceStates
         private static readonly RasterizerState ShadowMapRasterizerState = CreateShadowMapRasterizerState();
         private static readonly RasterizerState WireFrameRasterizerState = CreateWireFrameRasterizerState();
 
+
+
         /// <summary>
         /// Graphics device state for drawing geometry to the G-Buffer
         /// </summary>
         public static void GeometryState(this GraphicsDevice device)
+        {
+#if DEBUG
+            if (ForceWireFrame)
+            {
+                WireFrameState(device);
+            }
+            else
+            {
+                GeometryStateInternal(device);
+            }
+#else
+            GeometryStateInternal(device);
+#endif
+        }
+
+        private static void GeometryStateInternal(GraphicsDevice device)
         {
             SetDeviceState(
                 device,
@@ -205,7 +225,7 @@ namespace MiniEngine.Effects.DeviceStates
         {
             return new RasterizerState
             {
-                CullMode = CullMode.None,
+                CullMode = CullMode.CullCounterClockwiseFace,
                 FillMode = FillMode.WireFrame
             };
         }

@@ -41,7 +41,7 @@ namespace MiniEngine.UI
                         break;
 
                     default:
-                        ImGui.Text($"{label}: {value.ToString()}");
+                        ImGui.Text($"{label}: {value}");
                         break;
                 }
                 return;
@@ -141,7 +141,7 @@ namespace MiniEngine.UI
                     }
                     break;
                 default:
-                    ImGui.Text($"{label}: {value.ToString()}*");
+                    ImGui.Text($"{label}: {value}*");
                     return;
             }
         }

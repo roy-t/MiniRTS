@@ -1,6 +1,7 @@
 ﻿using LightInject;
 using MiniEngine.Pipeline.Models.Components;
 using MiniEngine.Pipeline.Models.Factories;
+using MiniEngine.Pipeline.Models.Generators;
 using MiniEngine.Pipeline.Models.Systems;
 using MiniEngine.Systems.Containers;
 
@@ -25,6 +26,9 @@ namespace MiniEngine.Pipeline.Models
             serviceRegistry.Register<AnimationSystem>();
             serviceRegistry.Register<UVAnimationSystem>();
             serviceRegistry.Register<GeometrySystem>();
+
+
+            serviceRegistry.Register<SpherifiedCubeGenerator>();
         }
     }
 }

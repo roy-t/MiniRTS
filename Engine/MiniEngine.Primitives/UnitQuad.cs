@@ -38,17 +38,10 @@ namespace MiniEngine.Primitives
 
         public void SetTextureCoordinates(Vector2 minUv, Vector2 maxUv)
         {
-            this.Vertices[0].TextureCoordinate.X = minUv.X;
-            this.Vertices[0].TextureCoordinate.Y = minUv.Y;
-
-            this.Vertices[1].TextureCoordinate.X = minUv.X;
-            this.Vertices[1].TextureCoordinate.Y = maxUv.Y;
-
-            this.Vertices[2].TextureCoordinate.X = maxUv.X;
-            this.Vertices[2].TextureCoordinate.Y = minUv.Y;
-
-            this.Vertices[3].TextureCoordinate.X = maxUv.X;
-            this.Vertices[3].TextureCoordinate.Y = maxUv.Y;
+            this.Vertices[0] = new GBufferVertex(this.Vertices[0].Position, minUv.X, minUv.Y);
+            this.Vertices[1] = new GBufferVertex(this.Vertices[1].Position, minUv.X, maxUv.Y);
+            this.Vertices[2] = new GBufferVertex(this.Vertices[2].Position, maxUv.X, minUv.Y); ;
+            this.Vertices[3] = new GBufferVertex(this.Vertices[3].Position, maxUv.X, maxUv.Y); ;
         }
 
         public void Render()

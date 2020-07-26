@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 
-namespace MiniEngine.Pipeline.Models.Components
+namespace MiniEngine.ContentProcessors
 {
     public class SkinningData
     {

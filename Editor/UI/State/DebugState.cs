@@ -13,11 +13,13 @@ namespace MiniEngine.UI.State
         }
 
         public DebugDisplay DebugDisplay { get; set; }
-        public int Columns { get; set; }        
+        public int Columns { get; set; }
         public bool ShowDemo { get; set; }
         public float TextureContrast { get; set; }
 
         public List<string> SelectedRenderTargets { get; set; }
-        public string SelectedRenderTarget { get; set; }                       
+        public string SelectedRenderTarget { get; set; }
+
+        public bool ForceWireFrame { get; set; }
     }
 }

@@ -4,7 +4,6 @@ using MiniEngine.Effects;
 using MiniEngine.Effects.Wrappers;
 using MiniEngine.Pipeline.Basics.Components;
 using MiniEngine.Pipeline.Models.Components;
-using MiniEngine.Primitives;
 using MiniEngine.Primitives.Cameras;
 using MiniEngine.Systems;
 using MiniEngine.Systems.Containers;
@@ -18,7 +17,6 @@ namespace MiniEngine.Pipeline.Models.Systems
         private readonly IComponentContainer<Pose> Poses;
         private readonly IComponentContainer<Bounds> Bounds;
         private readonly RenderEffect Effect;
-        private readonly TextureCube NullSkybox;
 
         public GeometrySystem(
             GraphicsDevice device,
@@ -35,16 +33,20 @@ namespace MiniEngine.Pipeline.Models.Systems
             this.Effect = effectFactory.Construct<RenderEffect>();
         }
 
-        public void Render(PerspectiveCamera camera, GBuffer gBuffer)
+        public void Render(PerspectiveCamera camera)
         {
             for (var i = 0; i < this.Geometries.Count; i++)
             {
                 var geometry = this.Geometries[i];
-                var bounds = this.Bounds[i];
+                var bounds = this.Bounds.Get(geometry.Entity);
 
                 if (bounds.IsInView)
                 {
-                    var pose = this.Poses[i];
+                    //throw new Exception("HERE");
+                    // Calculate uvs and tangents see: D:\Projects\C#\MonoGame\MonoGame.Framework.Content.Pipeline\Graphics\MeshHelper.cs
+                    // for a sphere we might just use a 'raaklijn' and the binormal is the cross of normal and tangent since triplanar mapping might make it difficult to have uvs
+
+                    var pose = this.Poses.Get(geometry.Entity);
 
                     this.Effect.DiffuseMap = geometry.DiffuseMap;
                     this.Effect.SpecularMap = geometry.SpecularMap;
@@ -69,10 +71,10 @@ namespace MiniEngine.Pipeline.Models.Systems
         }
 
 
-        public void RenderShadowMaps(PerspectiveCamera _, RenderTarget2D shadowMap)
-        {
-            // TODO: we can propably render shadows from here instead of creating batches for the shadow map system
-        }
+        //public void RenderShadowMaps(PerspectiveCamera _, RenderTarget2D shadowMap)
+        //{
+        //    // TODO: we can propably render shadows from here instead of creating batches for the shadow map system
+        //}
 
         private void DrawGeometry(Geometry geometry)
         {

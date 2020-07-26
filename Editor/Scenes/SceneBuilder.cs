@@ -81,7 +81,7 @@ namespace MiniEngine.Scenes
         {
             var entity = this.EntityController.CreateEntity();
             this.GetFactory<PoseFactory>().Construct(entity, position, scale);
-            var (model, bounds) = this.GetFactory<OpaqueModelFactory>().Construct(entity, this.Content.Sponza);
+            var (model, _) = this.GetFactory<OpaqueModelFactory>().Construct(entity, this.Content.Sponza);
             return model;
         }
 
@@ -113,11 +113,11 @@ namespace MiniEngine.Scenes
 
             var position = new Vector3(-40.5f, 30.0f, 3.2f);
             this.GetFactory<PoseFactory>().Construct(entities[0], position, 4.4f * 0.01f, MathHelper.PiOver2, MathHelper.PiOver2, 0);
-            var model1 = this.GetFactory<TransparentModelFactory>().Construct(entities[0], this.Content.Plane);
+            this.GetFactory<TransparentModelFactory>().Construct(entities[0], this.Content.Plane);
 
             position = new Vector3(-40.5f, 30.0f, -7.2f);
             this.GetFactory<PoseFactory>().Construct(entities[1], position, 4.4f * 0.01f, MathHelper.PiOver4);
-            var model2 = this.GetFactory<TransparentModelFactory>().Construct(entities[1], this.Content.Plane);
+            this.GetFactory<TransparentModelFactory>().Construct(entities[1], this.Content.Plane);
 
             return entities;
         }

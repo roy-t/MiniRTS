@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using GameLogic.Asteroids;
 using ImGuiNET;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -11,11 +12,8 @@ using MiniEngine.GameLogic.Factories;
 using MiniEngine.GameLogic.Systems;
 using MiniEngine.GameLogic.Vehicles.Fighter;
 using MiniEngine.Pipeline.Basics.Components;
-using MiniEngine.Pipeline.Basics.Factories;
 using MiniEngine.Pipeline.Basics.Systems;
-using MiniEngine.Pipeline.Models.Factories;
 using MiniEngine.Primitives.Cameras;
-using MiniEngine.Primitives.VertexTypes;
 using MiniEngine.Systems;
 using MiniEngine.Systems.Containers;
 using MiniEngine.Systems.Factories;
@@ -32,6 +30,7 @@ namespace MiniEngine.Scenes
         private readonly Resolver<IComponentFactory> Factories;
         private readonly Resolver<IComponentContainer> Containers;
         private readonly SceneBuilder SceneBuilder;
+        private readonly AsteroidEditorTab AsteroidEditorTab;
 
         private readonly FlightPlanSystem FlightPlanSystem;
         private readonly IComponentContainer<FlightPlan> FlightPlans;
@@ -59,7 +58,8 @@ namespace MiniEngine.Scenes
             FlightPlanSystem flightPlanSystem,
             IComponentContainer<FlightPlan> flightPlans,
             ReactionControlSystem reactionControlSystem,
-            SelectionSystem selectionSystem)
+            SelectionSystem selectionSystem,
+            AsteroidEditorTab asteroidEditorTab)
         {
             this.Content = content;
             this.EntityController = entityController;
@@ -70,6 +70,7 @@ namespace MiniEngine.Scenes
             this.FlightPlans = flightPlans;
             this.ReactionControlSystem = reactionControlSystem;
             this.SelectionSystem = selectionSystem;
+            this.AsteroidEditorTab = asteroidEditorTab;
         }
 
         public void LoadContent(Content content)
@@ -95,7 +96,7 @@ namespace MiniEngine.Scenes
             this.fighters = new List<Entity>();
             this.fighterNames = new List<string>();
 
-            this.BuildSpaceShip();
+            //this.BuildSpaceShip();
         }
 
         public void Update(PerspectiveCamera camera, Seconds elapsed)
@@ -138,7 +139,7 @@ namespace MiniEngine.Scenes
             if (mouse.Click(MouseButtons.Right))
             {
                 var mouseWorldPosition = camera.Pick(mouse.Position, 0.0f);
-                if (mouseWorldPosition.HasValue)
+                if (mouseWorldPosition.HasValue && this.selectedFighter < this.fighters.Count)
                 {
                     var entity = this.fighters[this.selectedFighter];
 
@@ -167,20 +168,7 @@ namespace MiniEngine.Scenes
                 {
                     if (ImGui.BeginTabItem("Geometry"))
                     {
-                        if (ImGui.Button("Generate"))
-                        {
-                            var entity = this.EntityController.CreateEntity();
-                            this.Factories.Get<PoseFactory>().Construct(entity, Vector3.Zero);
-                            var vertices = new GBufferVertex[]
-                            {
-                                new GBufferVertex(Vector3.Left),
-                                new GBufferVertex(Vector3.Up),
-                                new GBufferVertex(Vector3.Right),
-                            };
-
-                            var indices = new short[] { 0, 1, 2 };
-                            this.Factories.Get<GeometryFactory>().Construct(entity, vertices, indices);
-                        }
+                        this.AsteroidEditorTab.Edit();
                         ImGui.EndTabItem();
                     }
 

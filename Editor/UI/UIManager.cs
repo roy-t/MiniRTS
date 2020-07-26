@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MiniEngine.Controllers;
+using MiniEngine.Effects.DeviceStates;
 using MiniEngine.Primitives.Cameras;
 using MiniEngine.Scenes;
 using MiniEngine.Systems;
@@ -92,6 +93,7 @@ namespace MiniEngine.UI
             }
             this.EntityWindow.State = this.State;
             this.NetWindow.State = this.State;
+            GraphicsDeviceExtensions.ForceWireFrame = this.State.DebugState.ForceWireFrame;
         }
 
         public void Render(IScene currentScene, PerspectiveCamera camera, Viewport viewport, GameTime gameTime)

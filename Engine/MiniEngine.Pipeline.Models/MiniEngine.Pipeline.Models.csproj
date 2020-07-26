@@ -9,6 +9,7 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\MiniEngine.ContentProcessors\MiniEngine.ContentProcessors.csproj" />
     <ProjectReference Include="..\MiniEngine.Effects\MiniEngine.Effects.csproj" />
     <ProjectReference Include="..\MiniEngine.Pipeline.Basics\MiniEngine.Pipeline.Basics.csproj" />
     <ProjectReference Include="..\MiniEngine.Pipeline\MiniEngine.Pipeline.csproj" />

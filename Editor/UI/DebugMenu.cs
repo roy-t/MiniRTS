@@ -2,6 +2,7 @@
 using ImGuiNET;
 using Microsoft.Xna.Framework;
 using MiniEngine.CutScene;
+using MiniEngine.Effects.DeviceStates;
 using MiniEngine.Primitives.Cameras;
 using MiniEngine.UI.State;
 using MiniEngine.UI.Utilities;
@@ -23,7 +24,7 @@ namespace MiniEngine.UI
             this.CutsceneSystem = cutsceneSystem;
             this.Game = game;
             this.State = new UIState();
-        }        
+        }
 
         public UIState State { get; set; }
         public DebugState DebugState => State.DebugState;
@@ -87,7 +88,7 @@ namespace MiniEngine.UI
                 }
 
                 var textureContrast = this.DebugState.TextureContrast;
-                if(ImGui.SliderFloat("Texture Contrast", ref textureContrast, 1.0f, 100.0f))
+                if (ImGui.SliderFloat("Texture Contrast", ref textureContrast, 1.0f, 100.0f))
                 {
                     this.DebugState.TextureContrast = textureContrast;
                     this.Renderer.TextureContrast = textureContrast;
@@ -96,6 +97,12 @@ namespace MiniEngine.UI
                 if (ImGui.MenuItem("Fixed Timestep", null, this.Game.IsFixedTimeStep))
                 {
                     this.Game.IsFixedTimeStep = !this.Game.IsFixedTimeStep;
+                }
+
+                if (ImGui.MenuItem("Force Wireframe", null, this.DebugState.ForceWireFrame))
+                {
+                    this.DebugState.ForceWireFrame = !this.DebugState.ForceWireFrame;
+                    GraphicsDeviceExtensions.ForceWireFrame = this.DebugState.ForceWireFrame;
                 }
 
                 var showDemo = this.DebugState.ShowDemo;
