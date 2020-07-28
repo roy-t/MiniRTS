@@ -49,10 +49,8 @@ namespace MiniEngine.UI.State
             try
             {
                 var serializer = new XmlSerializer(typeof(UIState));
-                using (var stream = File.OpenRead(UIStateFile))
-                {
-                    return (UIState)serializer.Deserialize(stream);
-                }
+                using var stream = File.OpenRead(UIStateFile);
+                return (UIState)serializer.Deserialize(stream);
             }
             catch (Exception e)
             {

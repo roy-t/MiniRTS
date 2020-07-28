@@ -27,7 +27,7 @@ namespace MiniEngine.UI
         }
 
         public UIState State { get; set; }
-        public DebugState DebugState => State.DebugState;
+        public DebugState DebugState => this.State.DebugState;
 
         public void Render(PerspectiveCamera camera)
         {

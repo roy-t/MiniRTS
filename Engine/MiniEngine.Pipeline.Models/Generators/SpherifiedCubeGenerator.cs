@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -12,18 +10,12 @@ using MiniEngine.Systems;
 
 namespace MiniEngine.Pipeline.Models.Generators
 {
-    // https://scaryreasoner.wordpress.com/2016/01/23/thoughts-on-tesselating-a-sphere/
-
-    // Without equal angles method
-    // Average area 0.0017018927
-    // Max area 0.0031897912
-    // Min area 0.00074976607
-    // Std Dev 0.0006135705
+    // Inspiration: 
+    // - https://medium.com/game-dev-daily/four-ways-to-create-a-mesh-for-a-sphere-d7956b825db4
+    // - https://scaryreasoner.wordpress.com/2016/01/23/thoughts-on-tesselating-a-sphere/
 
     public class SpherifiedCubeGenerator
     {
-        private static List<int[]> Triangles;
-
         private readonly GeometryFactory GeometryFactory;
         private readonly PoseFactory PoseFactory;
         private readonly EntityController EntityController;
@@ -43,89 +35,42 @@ namespace MiniEngine.Pipeline.Models.Generators
             var vertices = new List<GBufferVertex>();
             var indices = new List<int>();
 
-            Triangles = new List<int[]>();
-
             // Front
-            GenerateFace(Vector3.Right, Vector3.Up, Vector3.Backward, radius, subdivisions, vertices, indices);
+            GenerateFace(new CoordinateSystem(Vector3.Right, Vector3.Up, Vector3.Backward), radius, subdivisions, vertices, indices);
 
-            if (true)
-            {
-                // Back
-                GenerateFace(Vector3.Left, Vector3.Up, Vector3.Forward, radius, subdivisions, vertices, indices);
+            // Back
+            GenerateFace(new CoordinateSystem(Vector3.Left, Vector3.Up, Vector3.Forward), radius, subdivisions, vertices, indices);
 
-                // Left
-                GenerateFace(Vector3.Backward, Vector3.Up, Vector3.Left, radius, subdivisions, vertices, indices);
+            // Left
+            GenerateFace(new CoordinateSystem(Vector3.Backward, Vector3.Up, Vector3.Left), radius, subdivisions, vertices, indices);
 
-                // Right
-                GenerateFace(Vector3.Forward, Vector3.Up, Vector3.Right, radius, subdivisions, vertices, indices);
+            // Right
+            GenerateFace(new CoordinateSystem(Vector3.Forward, Vector3.Up, Vector3.Right), radius, subdivisions, vertices, indices);
 
-                // Top
-                GenerateFace(Vector3.Right, Vector3.Forward, Vector3.Up, radius, subdivisions, vertices, indices);
+            // Top
+            GenerateFace(new CoordinateSystem(Vector3.Right, Vector3.Forward, Vector3.Up), radius, subdivisions, vertices, indices);
 
-                // Botom
-                GenerateFace(Vector3.Right, Vector3.Backward, Vector3.Down, radius, subdivisions, vertices, indices);
-            }
-
-            CalculateStatistics(vertices);
+            // Botom
+            GenerateFace(new CoordinateSystem(Vector3.Right, Vector3.Backward, Vector3.Down), radius, subdivisions, vertices, indices);
 
             return this.GeometryFactory.Construct(entity, vertices.ToArray(), indices.ToArray(), PrimitiveType.TriangleList);
         }
 
-        private static void CalculateStatistics(List<GBufferVertex> vertices)
+        private static void GenerateFace(CoordinateSystem coordinateSystem, float radius, int subdivisions, List<GBufferVertex> vertices, List<int> indices)
         {
-            var areas = new List<float>();
+            var quads = new List<IndexedQuad>();
 
-            foreach (var triangle in Triangles)
-            {
-                var width = Vector4.Distance(vertices[triangle[0]].Position, vertices[triangle[1]].Position);
-                var height = Vector4.Distance(vertices[triangle[1]].Position, vertices[triangle[2]].Position);
-
-                areas.Add(width * height * 0.5f);
-            }
-
-            var average = areas.Average();
-            var stdDev = StdDev(areas);
-            Debug.WriteLine($"Average area {average}M^2");
-            Debug.WriteLine($"Min area {areas.Min()}m^2");
-            Debug.WriteLine($"Max area {areas.Max()}m^2");
-            Debug.WriteLine($"Std Dev {stdDev / average * 100.0f}%, {stdDev}m^2");
-        }
-
-        public static float StdDev(IEnumerable<float> values)
-        {
-            // ref: http://warrenseen.com/blog/2006/03/13/how-to-calculate-standard-deviation/
-            var mean = 0.0f;
-            var sum = 0.0f;
-            var stdDev = 0.0f;
-            var n = 0;
-            foreach (var val in values)
-            {
-                n++;
-                var delta = val - mean;
-                mean += delta / n;
-                sum += delta * (val - mean);
-            }
-
-            if (1 < n)
-            {
-                stdDev = (float)Math.Sqrt(sum / n);
-            }
-
-            return stdDev;
-        }
-
-        private static void GenerateFace(Vector3 right, Vector3 up, Vector3 backward, float radius, int subdivisions, List<GBufferVertex> vertices, List<int> indices)
-        {
             var start = vertices.Count;
             var currentIndex = indices.Union(new int[] { -1 }).Max() + 1;
 
-            var faceCenter = backward * radius;
-            var topLeft = faceCenter + (-right * radius) + (up * radius);
-            var topRight = faceCenter + (right * radius) + (up * radius);
+            var maxX = coordinateSystem.UnitX * radius;
+            var maxY = coordinateSystem.UnitY * radius;
+            var maxZ = coordinateSystem.UnitZ * radius;
 
-            var bottomRight = faceCenter + (right * radius) + (-up * radius);
-
-            var bottomLeft = faceCenter + (-right * radius) + (-up * radius);
+            var topLeft = -maxX + maxY + maxZ;
+            var topRight = maxX + maxY + maxZ;
+            var bottomRight = maxX - maxY + maxZ;
+            var bottomLeft = -maxX - maxY + maxZ;
 
             var verticesPerEdge = subdivisions + 2;
             var indexLookup = new int[verticesPerEdge, verticesPerEdge];
@@ -134,13 +79,13 @@ namespace MiniEngine.Pipeline.Models.Generators
             {
                 for (var row = 0; row < verticesPerEdge; row++)
                 {
-                    var x = Amount(column, verticesPerEdge);
-                    var y = Amount(row, verticesPerEdge);
+                    var x = FaceLerp(column / (verticesPerEdge - 1.0f));
+                    var y = FaceLerp(row / (verticesPerEdge - 1.0f));
 
-                    var l = Vector3.Lerp(topLeft, bottomLeft, y);
+                    var centerLeft = Vector3.Lerp(topLeft, bottomLeft, y);
                     var r = Vector3.Lerp(topRight, bottomRight, y);
 
-                    var position = Vector3.Lerp(l, r, x);
+                    var position = Vector3.Lerp(centerLeft, r, x);
                     vertices.Add(new GBufferVertex(position));
 
                     indexLookup[column, row] = currentIndex++;
@@ -152,50 +97,19 @@ namespace MiniEngine.Pipeline.Models.Generators
                         var bottomRightIndex = indexLookup[column, row];
                         var bottomLeftIndex = indexLookup[column - 1, row];
 
-                        var topLeftBottomRightDistance = Vector4.Distance(vertices[topLeftIndex].Position,
-                            vertices[bottomRightIndex].Position);
-
-                        var topRightBottomLeftDistance = Vector4.Distance(vertices[topRightIndex].Position,
-                            vertices[bottomLeftIndex].Position);
-
-                        if (topLeftBottomRightDistance < topRightBottomLeftDistance)
-                        {
-                            indices.Add(topLeftIndex);
-                            indices.Add(topRightIndex);
-                            indices.Add(bottomRightIndex);
-
-                            indices.Add(bottomRightIndex);
-                            indices.Add(bottomLeftIndex);
-                            indices.Add(topLeftIndex);
-
-                            Triangles.Add(new int[] { topLeftIndex, topRightIndex, bottomRightIndex });
-                            Triangles.Add(new int[] { bottomRightIndex, bottomLeftIndex, topLeftIndex });
-                        }
-                        else
-                        {
-                            indices.Add(topRightIndex);
-                            indices.Add(bottomRightIndex);
-                            indices.Add(bottomLeftIndex);
-
-                            indices.Add(bottomLeftIndex);
-                            indices.Add(topLeftIndex);
-                            indices.Add(topRightIndex);
-
-                            Triangles.Add(new int[] { topRightIndex, bottomRightIndex, bottomLeftIndex });
-                            Triangles.Add(new int[] { bottomLeftIndex, topLeftIndex, topRightIndex });
-                        }
+                        quads.Add(new IndexedQuad(topLeftIndex, topRightIndex, bottomRightIndex, bottomLeftIndex));
                     }
                 }
             }
 
             var length = vertices.Count - start;
-            SpherifyFace(vertices, start, length, up, radius);
+            SpherifyFace(vertices, start, length, coordinateSystem.UnitY, radius);
+            TriangulateFace(vertices, quads, indices);
         }
 
-        private static float Amount(int i, int verticesPerEdge)
+        private static float FaceLerp(float amount)
         {
-            var x = i / (verticesPerEdge - 1.0f);
-            var angle = -MathHelper.PiOver4 + (x * MathHelper.PiOver2);
+            var angle = -MathHelper.PiOver4 + (amount * MathHelper.PiOver2);
 
             var basis = Vector3.UnitZ;
             var v0 = Vector3.Transform(basis, Matrix.CreateRotationY(-MathHelper.PiOver4));
@@ -230,6 +144,40 @@ namespace MiniEngine.Pipeline.Models.Generators
                 var biNormal = Vector3.Normalize(Vector3.Cross(normal, tangent));
 
                 vertices[i] = new GBufferVertex(newPosition, normal, tangent, biNormal);
+            }
+        }
+
+        private static void TriangulateFace(List<GBufferVertex> vertices, List<IndexedQuad> quads, List<int> indices)
+        {
+            for (var i = 0; i < quads.Count; i++)
+            {
+                var quad = quads[i];
+                var topLeftBottomRightDistance = Vector4.DistanceSquared(vertices[quad.TopLeftIndex].Position,
+                    vertices[quad.BottomRightIndex].Position);
+
+                var topRightBottomLeftDistance = Vector4.DistanceSquared(vertices[quad.TopRightIndex].Position,
+                    vertices[quad.BottomLeftIndex].Position);
+
+                if (topLeftBottomRightDistance < topRightBottomLeftDistance)
+                {
+                    indices.Add(quad.TopLeftIndex);
+                    indices.Add(quad.TopRightIndex);
+                    indices.Add(quad.BottomRightIndex);
+
+                    indices.Add(quad.BottomRightIndex);
+                    indices.Add(quad.BottomLeftIndex);
+                    indices.Add(quad.TopLeftIndex);
+                }
+                else
+                {
+                    indices.Add(quad.TopRightIndex);
+                    indices.Add(quad.BottomRightIndex);
+                    indices.Add(quad.BottomLeftIndex);
+
+                    indices.Add(quad.BottomLeftIndex);
+                    indices.Add(quad.TopLeftIndex);
+                    indices.Add(quad.TopRightIndex);
+                }
             }
         }
     }
