@@ -48,21 +48,23 @@ namespace MiniEngine.Pipeline.Models.Generators
             // Front
             GenerateFace(Vector3.Right, Vector3.Up, Vector3.Backward, radius, subdivisions, vertices, indices);
 
-            // Back
-            GenerateFace(Vector3.Left, Vector3.Up, Vector3.Forward, radius, subdivisions, vertices, indices);
+            if (true)
+            {
+                // Back
+                GenerateFace(Vector3.Left, Vector3.Up, Vector3.Forward, radius, subdivisions, vertices, indices);
 
-            // Left
-            GenerateFace(Vector3.Backward, Vector3.Up, Vector3.Left, radius, subdivisions, vertices, indices);
+                // Left
+                GenerateFace(Vector3.Backward, Vector3.Up, Vector3.Left, radius, subdivisions, vertices, indices);
 
-            // Right
-            GenerateFace(Vector3.Forward, Vector3.Up, Vector3.Right, radius, subdivisions, vertices, indices);
+                // Right
+                GenerateFace(Vector3.Forward, Vector3.Up, Vector3.Right, radius, subdivisions, vertices, indices);
 
-            // Top
-            GenerateFace(Vector3.Right, Vector3.Forward, Vector3.Up, radius, subdivisions, vertices, indices);
+                // Top
+                GenerateFace(Vector3.Right, Vector3.Forward, Vector3.Up, radius, subdivisions, vertices, indices);
 
-            // Botom
-            GenerateFace(Vector3.Right, Vector3.Backward, Vector3.Down, radius, subdivisions, vertices, indices);
-
+                // Botom
+                GenerateFace(Vector3.Right, Vector3.Backward, Vector3.Down, radius, subdivisions, vertices, indices);
+            }
 
             CalculateStatistics(vertices);
 
@@ -119,6 +121,11 @@ namespace MiniEngine.Pipeline.Models.Generators
 
             var faceCenter = backward * radius;
             var topLeft = faceCenter + (-right * radius) + (up * radius);
+            var topRight = faceCenter + (right * radius) + (up * radius);
+
+            var bottomRight = faceCenter + (right * radius) + (-up * radius);
+
+            var bottomLeft = faceCenter + (-right * radius) + (-up * radius);
 
             var verticesPerEdge = subdivisions + 2;
             var indexLookup = new int[verticesPerEdge, verticesPerEdge];
@@ -127,40 +134,85 @@ namespace MiniEngine.Pipeline.Models.Generators
             {
                 for (var row = 0; row < verticesPerEdge; row++)
                 {
-                    var columnWidth = (radius * 2) / (verticesPerEdge - 1);
-                    var columnHeight = (radius * 2) / (verticesPerEdge - 1);
+                    var x = Amount(column, verticesPerEdge);
+                    var y = Amount(row, verticesPerEdge);
 
-                    var position = topLeft + (right * column * columnWidth) + (-up * row * columnHeight);
+                    var l = Vector3.Lerp(topLeft, bottomLeft, y);
+                    var r = Vector3.Lerp(topRight, bottomRight, y);
+
+                    var position = Vector3.Lerp(l, r, x);
                     vertices.Add(new GBufferVertex(position));
 
                     indexLookup[column, row] = currentIndex++;
 
                     if (column > 0 && row > 0)
                     {
-                        indices.Add(indexLookup[column - 1, row - 1]);
-                        indices.Add(indexLookup[column, row - 1]);
-                        indices.Add(indexLookup[column, row]);
+                        var topLeftIndex = indexLookup[column - 1, row - 1];
+                        var topRightIndex = indexLookup[column, row - 1];
+                        var bottomRightIndex = indexLookup[column, row];
+                        var bottomLeftIndex = indexLookup[column - 1, row];
 
-                        indices.Add(indexLookup[column, row]);
-                        indices.Add(indexLookup[column - 1, row]);
-                        indices.Add(indexLookup[column - 1, row - 1]);
+                        var topLeftBottomRightDistance = Vector4.Distance(vertices[topLeftIndex].Position,
+                            vertices[bottomRightIndex].Position);
 
-                        var a = indexLookup[column - 1, row - 1];
-                        var b = indexLookup[column, row - 1];
-                        var c = indexLookup[column, row];
+                        var topRightBottomLeftDistance = Vector4.Distance(vertices[topRightIndex].Position,
+                            vertices[bottomLeftIndex].Position);
 
-                        var d = indexLookup[column - 1, row - 1];
-                        var e = indexLookup[column, row - 1];
-                        var f = indexLookup[column, row];
+                        if (topLeftBottomRightDistance < topRightBottomLeftDistance)
+                        {
+                            indices.Add(topLeftIndex);
+                            indices.Add(topRightIndex);
+                            indices.Add(bottomRightIndex);
 
-                        Triangles.Add(new int[] { a, b, c });
-                        Triangles.Add(new int[] { d, e, f });
+                            indices.Add(bottomRightIndex);
+                            indices.Add(bottomLeftIndex);
+                            indices.Add(topLeftIndex);
+
+                            Triangles.Add(new int[] { topLeftIndex, topRightIndex, bottomRightIndex });
+                            Triangles.Add(new int[] { bottomRightIndex, bottomLeftIndex, topLeftIndex });
+                        }
+                        else
+                        {
+                            indices.Add(topRightIndex);
+                            indices.Add(bottomRightIndex);
+                            indices.Add(bottomLeftIndex);
+
+                            indices.Add(bottomLeftIndex);
+                            indices.Add(topLeftIndex);
+                            indices.Add(topRightIndex);
+
+                            Triangles.Add(new int[] { topRightIndex, bottomRightIndex, bottomLeftIndex });
+                            Triangles.Add(new int[] { bottomLeftIndex, topLeftIndex, topRightIndex });
+                        }
                     }
                 }
             }
 
             var length = vertices.Count - start;
             SpherifyFace(vertices, start, length, up, radius);
+        }
+
+        private static float Amount(int i, int verticesPerEdge)
+        {
+            var x = i / (verticesPerEdge - 1.0f);
+            var angle = -MathHelper.PiOver4 + (x * MathHelper.PiOver2);
+
+            var basis = Vector3.UnitZ;
+            var v0 = Vector3.Transform(basis, Matrix.CreateRotationY(-MathHelper.PiOver4));
+            var v1 = Vector3.Transform(basis, Matrix.CreateRotationY(MathHelper.PiOver4));
+
+            var target = Vector3.Normalize(Vector3.Transform(basis, Matrix.CreateRotationY(angle)));
+
+            var plane = new Plane(v0, v1, v1 + Vector3.UnitY);
+            var ray = new Ray(Vector3.Zero, target);
+            var distance = ray.Intersects(plane).Value;
+
+            var position = ray.Position + (ray.Direction * distance);
+
+            var fullLength = Vector3.Distance(v0, v1);
+            var partialLength = Vector3.Distance(v0, position);
+
+            return partialLength / fullLength;
         }
 
         private static void SpherifyFace(List<GBufferVertex> vertices, int startIndex, int length, Vector3 pole, float radius)
@@ -182,3 +234,4 @@ namespace MiniEngine.Pipeline.Models.Generators
         }
     }
 }
+
