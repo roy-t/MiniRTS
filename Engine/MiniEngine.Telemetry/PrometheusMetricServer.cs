@@ -1,5 +1,6 @@
-﻿using Prometheus;
-using System;
+﻿using System;
+using System.Diagnostics;
+using Prometheus;
 
 namespace MiniEngine.Telemetry
 {
@@ -18,8 +19,8 @@ namespace MiniEngine.Telemetry
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Failed to start metrics server, continuing without one. Exception: " + ex);
-                Console.WriteLine("Try running 'netsh http add urlacl url=http://+:7070/metrics user=USER'");
+                Debug.WriteLine("Failed to start metrics server, continuing without one. Exception: " + ex);
+                Debug.WriteLine("Try running 'netsh http add urlacl url=http://+:7070/metrics user=USER'");
             }
         }
 

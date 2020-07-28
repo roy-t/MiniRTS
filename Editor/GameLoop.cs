@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.Net;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using MiniEngine.Configuration;
 using MiniEngine.GameLogic;
 using MiniEngine.Net;
@@ -25,6 +28,7 @@ namespace MiniEngine
         private SpriteBatch spriteBatch;
 
         private DeferredRenderPipeline renderPipeline;
+        private UI.Input.KeyboardInput keyboard;
 
         private IMetricServer metricServer;
 
@@ -62,6 +66,7 @@ namespace MiniEngine
 
             this.server = this.injector.Resolve<Server>();
             this.client = this.injector.Resolve<Client>();
+            this.keyboard = this.injector.Resolve<UI.Input.KeyboardInput>();
 
             this.metricServer = this.injector.Resolve<IMetricServer>();
             this.metricServer.Start(7070);
@@ -118,6 +123,13 @@ namespace MiniEngine
 
             var skybox = this.sceneSelector.CurrentScene.Skybox;
             var result = this.renderPipeline.Render(this.camera, (float)gameTime.ElapsedGameTime.TotalSeconds, skybox);
+
+            if (this.keyboard.Click(Keys.PrintScreen))
+            {
+                var path = System.IO.Path.GetFullPath($"Screenshot {this.sceneSelector.CurrentScene.Name} - {DateTime.Now.Ticks}");
+                result.SaveAsPng(File.Create(path), result.Width, result.Height);
+                Debug.WriteLine($"Screenshot saved in {path}");
+            }
 
             this.GraphicsDevice.SetRenderTarget(null);
             this.GraphicsDevice.Clear(Color.CornflowerBlue);

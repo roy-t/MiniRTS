@@ -11,7 +11,7 @@ namespace MiniEngine.Pipeline.Models.Components
     {
         public Geometry(Entity entity,
             GBufferVertex[] vertices,
-            short[] indices,
+            int[] indices,
             Texture2D diffuseMap,
             Texture2D specularMap,
             Texture2D normalMap,
@@ -39,12 +39,17 @@ namespace MiniEngine.Pipeline.Models.Components
         public GBufferVertex[] Vertices { get; }
         public int VertexOffset => 0;
 
+        [Editor(nameof(VertexCount))]
         public int VertexCount => this.Vertices.Length;
 
-        public short[] Indices { get; }
+        public int[] Indices { get; }
+
+        [Editor(nameof(IndexCount))]
+        public int IndexCount => this.Indices.Length;
 
         public int IndexOffset => 0;
 
+        [Editor(nameof(PrimitiveCount))]
         public int PrimitiveCount
         {
             get

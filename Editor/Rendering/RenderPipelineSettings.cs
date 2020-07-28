@@ -12,7 +12,7 @@ namespace MiniEngine.Rendering
             this.EnableShadows = true;
             this.EnableModels = true;
             this.EnableParticles = true;
-            this.EnableDebugLines = true;
+            this.EnableDebugLines = false;
             this.Enable3DOutlines = false;
             this.Enable2DOutlines = false;
             this.EnableIcons = false;

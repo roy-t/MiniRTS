@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using GameLogic.Asteroids;
 using ImGuiNET;
@@ -118,7 +118,7 @@ namespace MiniEngine.Scenes
                 this.selecting = true;
                 this.SelectionSystem.StartSelection(camera, mouse.Position);
 
-                Console.WriteLine("Selection started");
+                Debug.WriteLine("Selection started");
             }
             else if (this.selecting && !mouse.Hold(MouseButtons.Left))
             {
@@ -128,11 +128,11 @@ namespace MiniEngine.Scenes
 
                 foreach (var entity in selected)
                 {
-                    Console.WriteLine($"Selected {entity}");
+                    Debug.WriteLine($"Selected {entity}");
                     this.selectedFighter = this.fighters.IndexOf(entity);
                 }
 
-                Console.WriteLine("Selection finished");
+                Debug.WriteLine("Selection finished");
             }
 
 

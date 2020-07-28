@@ -12,7 +12,7 @@ namespace MiniEngine.UI
 {
     public sealed class Editors
     {
-        private const int SliderDragThreshold = 10;
+        private const int SliderDragThreshold = 100;
         private readonly ImGuiRenderer GuiRenderer;
 
         public Editors(ImGuiRenderer guiRenderer)

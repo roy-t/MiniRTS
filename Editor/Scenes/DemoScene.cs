@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
@@ -115,7 +115,7 @@ namespace MiniEngine.Scenes
                 MediaPlayer.Volume = 1.0f - left;
             }
 
-            Console.WriteLine(this.accumulator);
+            Debug.WriteLine(this.accumulator);
         }
 
         public void HandleInput(PerspectiveCamera camera, KeyboardInput keyboard, MouseInput mouse)

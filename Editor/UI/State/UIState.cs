@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Threading;
@@ -55,7 +56,7 @@ namespace MiniEngine.UI.State
             }
             catch (Exception e)
             {
-                Console.Error.WriteLine($"Error: could not deserialize {UIStateFile}, {e}");
+                Debug.WriteLine($"Error: could not deserialize {UIStateFile}, {e}");
                 return new UIState();
             }
             finally
