@@ -11,18 +11,20 @@ namespace GameLogic.Asteroids
     {
         private readonly Editors Editors;
         private readonly SpherifiedCubeGenerator SpherifiedCubeGenerator;
+        private readonly NoiseGenerator NoiseGenerator;
         private readonly EntityController EntityController;
 
         private readonly AsteroidBluePrint BluePrint;
 
         private Entity? lastAsteroid;
 
-        public AsteroidEditorTab(Editors editors, SpherifiedCubeGenerator spherifiedCubeGenerator, EntityController entityController)
+        public AsteroidEditorTab(Editors editors, SpherifiedCubeGenerator spherifiedCubeGenerator, EntityController entityController, NoiseGenerator noiseGenerator)
         {
             this.Editors = editors;
             this.BluePrint = new AsteroidBluePrint();
             this.SpherifiedCubeGenerator = spherifiedCubeGenerator;
             this.EntityController = entityController;
+            this.NoiseGenerator = noiseGenerator;
         }
 
         public void Edit()
@@ -50,6 +52,8 @@ namespace GameLogic.Asteroids
         {
             var asteroid = this.SpherifiedCubeGenerator.Generate(this.BluePrint.Radius, this.BluePrint.Subdivisions);
             this.lastAsteroid = asteroid.Entity;
+
+            this.NoiseGenerator.GenerateNoise();
         }
     }
 }

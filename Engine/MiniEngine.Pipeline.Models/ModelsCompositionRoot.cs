@@ -29,6 +29,7 @@ namespace MiniEngine.Pipeline.Models
 
 
             serviceRegistry.Register<SpherifiedCubeGenerator>();
+            serviceRegistry.Register<NoiseGenerator>();
         }
     }
 }
