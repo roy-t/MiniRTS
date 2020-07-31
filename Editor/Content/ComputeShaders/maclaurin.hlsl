@@ -1,64 +1,27 @@
-#define thread_group_size_x 32
-#define thread_group_size_y 32
+static const uint NumThreads = 256;
 
-// uguale al valore passato al dispatch 
-#define N_THREAD_GROUPS_X 64
+#define BUFFER_SIZE;
 
-struct BufferStruct
+struct GBufferVertex
 {
-	float value;
-	int x;
-	float unused;
-	float unused2;
+	float4 position;
+	float3 normal;
+	float2 tex;
+	float3 binormal;
+	float3 tangent;
 };
 
- 
-RWStructuredBuffer<BufferStruct> g_OutBuff;
 
-float FACT(int n)
-{
-	float tot=1.0;
-	while(n>1)
-	{
-		tot*=(float)n;
-		n--;
-	}
-	return tot;
-}
+StructuredBuffer<int> InputBuffer: register(t0);
+RWStructuredBuffer<int> OutputBuffer : register(u1);
 
-float MacLaurin(float x)
+[numthreads(NumThreads, 1, 1)]
+void Kernel (in uint3 dispatchId : SV_DispatchThreadID )
 {
-	float tot=1;
-	for(int i=0;i<10;i++)
-	{
-		tot += (pow(x,i)/ FACT(i));
-	}
-	return tot;
-}
- 
-[numthreads( thread_group_size_x, thread_group_size_y, 1 )]
-void CS( uint3 threadIDInGroup : SV_GroupThreadID, uint3 groupID : SV_GroupID, uint groupIndex : SV_GroupIndex,     uint3 dispatchThreadID : SV_DispatchThreadID )
-{
-	//valori per riga
-	int stride = thread_group_size_x * N_THREAD_GROUPS_X;  
-	//indice linearizzato
-	int idx = dispatchThreadID.y * stride + dispatchThreadID.x;
-	 
-	
-	g_OutBuff[ idx ].value = MacLaurin(idx/1000.0F);
-	g_OutBuff[ idx ].x=idx;
-	g_OutBuff[ idx ].unused=0;
-	g_OutBuff[ idx ].unused2=0;
-}
+	/*GBufferVertex vertex = InputBuffer[dispatchId.x];
 
-RWStructuredBuffer<float4> g_OutBuff2;
+	vertex.xyz *= 1;*/
 
-[numthreads( thread_group_size_x, thread_group_size_y, 1 )]
-void CS2( uint3 threadIDInGroup : SV_GroupThreadID, uint3 groupID : SV_GroupID, uint groupIndex : SV_GroupIndex,     uint3 dispatchThreadID : SV_DispatchThreadID )
-{
-	//valori per riga
-	int stride = thread_group_size_x * N_THREAD_GROUPS_X;
-	//indice linearizzato
-	int idx = dispatchThreadID.y * stride + dispatchThreadID.x;
-	g_OutBuff2[ idx ] = float4(dispatchThreadID.x, dispatchThreadID.y, dispatchThreadID.z, 1.0f);
+	int value = InputBuffer[dispatchId.x];
+	OutputBuffer[dispatchId.x] = value * 2 + dispatchId.x;
 }

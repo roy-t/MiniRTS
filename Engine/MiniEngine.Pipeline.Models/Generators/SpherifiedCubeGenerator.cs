@@ -30,42 +30,42 @@ namespace MiniEngine.Pipeline.Models.Generators
         public Geometry Generate(float radius, int subdivisions)
         {
             var entity = this.EntityController.CreateEntity();
-            this.PoseFactory.Construct(entity, Vector3.Zero);
+            this.PoseFactory.Construct(entity, Vector3.Zero, radius);
 
             var vertices = new List<GBufferVertex>();
             var indices = new List<int>();
 
             // Front
-            GenerateFace(new CoordinateSystem(Vector3.Right, Vector3.Up, Vector3.Backward), radius, subdivisions, vertices, indices);
+            GenerateFace(new CoordinateSystem(Vector3.Right, Vector3.Up, Vector3.Backward), subdivisions, vertices, indices);
 
             // Back
-            GenerateFace(new CoordinateSystem(Vector3.Left, Vector3.Up, Vector3.Forward), radius, subdivisions, vertices, indices);
+            GenerateFace(new CoordinateSystem(Vector3.Left, Vector3.Up, Vector3.Forward), subdivisions, vertices, indices);
 
             // Left
-            GenerateFace(new CoordinateSystem(Vector3.Backward, Vector3.Up, Vector3.Left), radius, subdivisions, vertices, indices);
+            GenerateFace(new CoordinateSystem(Vector3.Backward, Vector3.Up, Vector3.Left), subdivisions, vertices, indices);
 
             // Right
-            GenerateFace(new CoordinateSystem(Vector3.Forward, Vector3.Up, Vector3.Right), radius, subdivisions, vertices, indices);
+            GenerateFace(new CoordinateSystem(Vector3.Forward, Vector3.Up, Vector3.Right), subdivisions, vertices, indices);
 
             // Top
-            GenerateFace(new CoordinateSystem(Vector3.Right, Vector3.Forward, Vector3.Up), radius, subdivisions, vertices, indices);
+            GenerateFace(new CoordinateSystem(Vector3.Right, Vector3.Forward, Vector3.Up), subdivisions, vertices, indices);
 
             // Botom
-            GenerateFace(new CoordinateSystem(Vector3.Right, Vector3.Backward, Vector3.Down), radius, subdivisions, vertices, indices);
+            GenerateFace(new CoordinateSystem(Vector3.Right, Vector3.Backward, Vector3.Down), subdivisions, vertices, indices);
 
             return this.GeometryFactory.Construct(entity, vertices.ToArray(), indices.ToArray(), PrimitiveType.TriangleList);
         }
 
-        private static void GenerateFace(CoordinateSystem coordinateSystem, float radius, int subdivisions, List<GBufferVertex> vertices, List<int> indices)
+        private static void GenerateFace(CoordinateSystem coordinateSystem, int subdivisions, List<GBufferVertex> vertices, List<int> indices)
         {
             var quads = new List<IndexedQuad>();
 
             var start = vertices.Count;
             var currentIndex = indices.Union(new int[] { -1 }).Max() + 1;
 
-            var maxX = coordinateSystem.UnitX * radius;
-            var maxY = coordinateSystem.UnitY * radius;
-            var maxZ = coordinateSystem.UnitZ * radius;
+            var maxX = coordinateSystem.UnitX;
+            var maxY = coordinateSystem.UnitY;
+            var maxZ = coordinateSystem.UnitZ;
 
             var topLeft = -maxX + maxY + maxZ;
             var topRight = maxX + maxY + maxZ;
@@ -103,7 +103,7 @@ namespace MiniEngine.Pipeline.Models.Generators
             }
 
             var length = vertices.Count - start;
-            SpherifyFace(vertices, start, length, coordinateSystem.UnitY, radius);
+            SpherifyFace(vertices, start, length, coordinateSystem.UnitY);
             TriangulateFace(vertices, quads, indices);
         }
 
@@ -129,7 +129,7 @@ namespace MiniEngine.Pipeline.Models.Generators
             return partialLength / fullLength;
         }
 
-        private static void SpherifyFace(List<GBufferVertex> vertices, int startIndex, int length, Vector3 pole, float radius)
+        private static void SpherifyFace(List<GBufferVertex> vertices, int startIndex, int length, Vector3 pole)
         {
             for (var i = startIndex; i < startIndex + length; i++)
             {
@@ -137,13 +137,12 @@ namespace MiniEngine.Pipeline.Models.Generators
 
                 var position = new Vector3(vertex.Position.X, vertex.Position.Y, vertex.Position.Z);
 
-                var normal = Vector3.Normalize(position);
-                var newPosition = normal * radius;
+                var normal = Vector3.Normalize(position); ;
 
                 var tangent = Vector3.Normalize(Vector3.Cross(pole, normal));
                 var biNormal = Vector3.Normalize(Vector3.Cross(normal, tangent));
 
-                vertices[i] = new GBufferVertex(newPosition, normal, tangent, biNormal);
+                vertices[i] = new GBufferVertex(normal, normal, tangent, biNormal);
             }
         }
 
