@@ -20,15 +20,6 @@ namespace MiniEngine.Pipeline.Models.Generators
             this.Content = content;
         }
 
-        [StructLayout(LayoutKind.Sequential, Pack = 1)]
-        struct Settings
-        {
-            public int multiplier;
-            public int _padding0;
-            public int _padding1;
-            public int _padding2;
-        }
-
         public void GenerateNoise()
         {
             try
@@ -42,27 +33,16 @@ namespace MiniEngine.Pipeline.Models.Generators
                 var file = Path.GetFullPath(Path.Join(this.Content.RootDirectory, @"ComputeShaders\maclaurin.hlsl"));
 
                 var input = Enumerable.Range(0, 1000).ToArray();
-                //var shader = new ComputeShader<int>(this.Device, file, "Kernel", input);
-                var shader2 = new ComputeShader2(this.Device, file, "Kernel");
+                var shader = new ComputeShader(this.Device, file, "Kernel");
 
-                //shader2.SetResource("settings", new Settings[] { new Settings { multiplier = 2 } });
-                //shader2.SetResource("InputBuffer", input);
-                shader2.AllocateResource<int>("OutputBuffer", 1000);
+                shader.SetResource("Settings", new Settings { multiplier = 2 });
+                shader.SetResource("InputBuffer", input);
+                shader.AllocateResource<int>("OutputBuffer", input.Length);
 
-                var dispatchers = ComputeShader2.GetDispatchSize(256, 1000);
-                shader2.Compute(dispatchers, 1, 1);
+                var dispatchers = ComputeShader.GetDispatchSize(256, input.Length);
+                shader.Compute(dispatchers, 1, 1);
 
-                var data = shader2.CopyDataToCPU<int>(1000, "OutputBuffer");
-
-                //var dispatches = ComputeShader<int>.GetDispatchSize(256, input.Length);
-
-
-
-                var shader = new ComputeShader<int>(this.Device, file, "Kernel", input);
-                var data2 = shader.Compute(dispatchers, 1, 1, 1000);
-
-
-                //var data = shader.Compute(dispatches, 1, 1, 1000);
+                var data = shader.CopyDataToCPU<int>(input.Length, "OutputBuffer");
 
                 Debug.WriteLine(data[0].ToString());
             }
@@ -72,17 +52,13 @@ namespace MiniEngine.Pipeline.Models.Generators
             }
         }
 
-        private struct ResultData
+        [StructLayout(LayoutKind.Sequential, Pack = 1)]
+        struct Settings
         {
-            public float functionResult;
-            public int x;
-            public float unused;
-            public float unused2;
-
-            public override string ToString()
-            {
-                return string.Format("X: {0} Y: {1}", x, functionResult);
-            }
+            public int multiplier;
+            public int _padding0;
+            public int _padding1;
+            public int _padding2;
         }
     }
 }

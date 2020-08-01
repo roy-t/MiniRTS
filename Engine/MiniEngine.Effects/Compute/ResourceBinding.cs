@@ -15,8 +15,13 @@ namespace MiniEngine.Effects.Compute
         public string Name { get; }
         public ShaderResourceType ResourceType { get; }
 
-        public Buffer Buffer { get; set; }
+        public SharpDX.Direct3D11.Buffer Buffer { get; set; }
         public ResourceView View { get; set; }
 
+        internal void Dispose()
+        {
+            this.Buffer?.Dispose();
+            this.View?.Dispose();
+        }
     }
 }
