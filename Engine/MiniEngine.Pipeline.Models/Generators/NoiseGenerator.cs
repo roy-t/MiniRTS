@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Effects.Compute;
@@ -19,6 +20,15 @@ namespace MiniEngine.Pipeline.Models.Generators
             this.Content = content;
         }
 
+        [StructLayout(LayoutKind.Sequential, Pack = 1)]
+        struct Settings
+        {
+            public int multiplier;
+            public int _padding0;
+            public int _padding1;
+            public int _padding2;
+        }
+
         public void GenerateNoise()
         {
             try
@@ -32,12 +42,27 @@ namespace MiniEngine.Pipeline.Models.Generators
                 var file = Path.GetFullPath(Path.Join(this.Content.RootDirectory, @"ComputeShaders\maclaurin.hlsl"));
 
                 var input = Enumerable.Range(0, 1000).ToArray();
+                //var shader = new ComputeShader<int>(this.Device, file, "Kernel", input);
+                var shader2 = new ComputeShader2(this.Device, file, "Kernel");
+
+                //shader2.SetResource("settings", new Settings[] { new Settings { multiplier = 2 } });
+                //shader2.SetResource("InputBuffer", input);
+                shader2.AllocateResource<int>("OutputBuffer", 1000);
+
+                var dispatchers = ComputeShader2.GetDispatchSize(256, 1000);
+                shader2.Compute(dispatchers, 1, 1);
+
+                var data = shader2.CopyDataToCPU<int>(1000, "OutputBuffer");
+
+                //var dispatches = ComputeShader<int>.GetDispatchSize(256, input.Length);
+
+
+
                 var shader = new ComputeShader<int>(this.Device, file, "Kernel", input);
-                var dispatches = ComputeShader<int>.GetDispatchSize(256, input.Length);
+                var data2 = shader.Compute(dispatchers, 1, 1, 1000);
 
 
-
-                var data = shader.Compute(dispatches, 1, 1, 1000);
+                //var data = shader.Compute(dispatches, 1, 1, 1000);
 
                 Debug.WriteLine(data[0].ToString());
             }

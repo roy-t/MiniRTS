@@ -1,0 +1,22 @@
+﻿using SharpDX.Direct3D11;
+
+namespace MiniEngine.Effects.Compute
+{
+    sealed class ResourceBinding
+    {
+        public ResourceBinding(int register, string name, ShaderResourceType resourceType)
+        {
+            this.Register = register;
+            this.Name = name;
+            this.ResourceType = resourceType;
+        }
+
+        public int Register { get; }
+        public string Name { get; }
+        public ShaderResourceType ResourceType { get; }
+
+        public Buffer Buffer { get; set; }
+        public ResourceView View { get; set; }
+
+    }
+}

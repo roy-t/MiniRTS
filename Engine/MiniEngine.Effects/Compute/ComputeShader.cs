@@ -27,8 +27,8 @@ namespace MiniEngine.Effects.Compute
             this.Context = this.Device.ImmediateContext;
 
 
-            this.InputBuffer = this.CreateInputBuffer(data);
-            this.InputView = this.CreateShaderResourceView(this.InputBuffer, elements);
+            //this.InputBuffer = this.CreateInputBuffer(data);
+            //this.InputView = this.CreateShaderResourceView(this.InputBuffer, elements);
 
             this.OutputBuffer = this.CreateOutputBuffer(elements);
             this.OutputView = this.CreateUAV(this.OutputBuffer, elements);
@@ -54,8 +54,8 @@ namespace MiniEngine.Effects.Compute
         {
             // Upload data
             this.Context.ComputeShader.Set(this.Shader);
-            this.Context.ComputeShader.SetShaderResource(0, this.InputView);
-            this.Context.ComputeShader.SetUnorderedAccessView(1, this.OutputView);
+            //this.Context.ComputeShader.SetShaderResource(0, this.InputView);
+            this.Context.ComputeShader.SetUnorderedAccessView(0, this.OutputView);
 
             // Compute
             this.Context.Dispatch(threadsX, threadsY, threadsZ);
@@ -63,7 +63,7 @@ namespace MiniEngine.Effects.Compute
             // Unset buffers
             this.Context.ComputeShader.Set(null);
             this.Context.ComputeShader.SetUnorderedAccessView(0, null);
-            this.Context.ComputeShader.SetShaderResource(0, null);
+            //this.Context.ComputeShader.SetShaderResource(0, null);
 
             this.Context.MapSubresource(this.StagingBuffer, 0, MapMode.ReadWrite, MapFlags.None, out var stream);
             this.Context.CopyResource(this.OutputBuffer, this.StagingBuffer);
