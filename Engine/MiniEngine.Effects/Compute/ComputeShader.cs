@@ -65,8 +65,9 @@ namespace MiniEngine.Effects.Compute
             this.Context.ComputeShader.SetUnorderedAccessView(0, null);
             this.Context.ComputeShader.SetShaderResource(0, null);
 
-            this.Context.MapSubresource(this.StagingBuffer, 0, MapMode.ReadWrite, MapFlags.None, out var stream);
             this.Context.CopyResource(this.OutputBuffer, this.StagingBuffer);
+            this.Context.MapSubresource(this.StagingBuffer, 0, MapMode.ReadWrite, MapFlags.None, out var stream);
+
             this.Context.Flush();
 
             var result = stream.ReadRange<T>(elements);
