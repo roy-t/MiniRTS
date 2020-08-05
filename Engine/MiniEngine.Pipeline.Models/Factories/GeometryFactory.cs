@@ -22,9 +22,8 @@ namespace MiniEngine.Pipeline.Models.Factories
             this.Bounds = bounds;
         }
 
-        public Geometry Construct(Entity entity, GBufferVertex[] vertices, int[] indices, PrimitiveType primitiveType = PrimitiveType.TriangleList)
+        public Geometry Construct(Entity entity, GBufferVertex[] vertices, int[] indices, Texture2D diffuseMap, PrimitiveType primitiveType = PrimitiveType.TriangleList)
         {
-            var diffuseMap = this.GenerateTexture(Color.Red, 1, 1);
             var specularMap = this.GenerateTexture(Color.White, 1, 1);
             var normalMap = this.GenerateTexture(new Color(0.5f, 0.5f, 1.0f, 1.0f), 1, 1);
             var reflectionMap = this.GenerateTexture(Color.Black, 1, 1);

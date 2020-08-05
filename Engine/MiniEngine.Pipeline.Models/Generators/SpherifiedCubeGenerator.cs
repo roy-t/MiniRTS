@@ -27,7 +27,7 @@ namespace MiniEngine.Pipeline.Models.Generators
             this.EntityController = entityController;
         }
 
-        public Geometry Generate(float radius, int subdivisions)
+        public Geometry Generate(float radius, int subdivisions, Texture2D diffuseMap)
         {
             var entity = this.EntityController.CreateEntity();
             this.PoseFactory.Construct(entity, Vector3.Zero, radius);
@@ -53,13 +53,12 @@ namespace MiniEngine.Pipeline.Models.Generators
             // Botom
             GenerateFace(new CoordinateSystem(Vector3.Right, Vector3.Backward, Vector3.Down), subdivisions, vertices, indices);
 
-            return this.GeometryFactory.Construct(entity, vertices.ToArray(), indices.ToArray(), PrimitiveType.TriangleList);
+            return this.GeometryFactory.Construct(entity, vertices.ToArray(), indices.ToArray(), diffuseMap);
         }
 
         private static void GenerateFace(CoordinateSystem coordinateSystem, int subdivisions, List<GBufferVertex> vertices, List<int> indices)
         {
             var quads = new List<IndexedQuad>();
-
             var start = vertices.Count;
             var currentIndex = indices.Union(new int[] { -1 }).Max() + 1;
 
@@ -86,7 +85,8 @@ namespace MiniEngine.Pipeline.Models.Generators
                     var r = Vector3.Lerp(topRight, bottomRight, y);
 
                     var position = Vector3.Lerp(centerLeft, r, x);
-                    vertices.Add(new GBufferVertex(position));
+                    var texture = new Vector2(x, y);
+                    vertices.Add(new GBufferVertex(position, texture));
 
                     indexLookup[column, row] = currentIndex++;
 
@@ -142,7 +142,7 @@ namespace MiniEngine.Pipeline.Models.Generators
                 var tangent = Vector3.Normalize(Vector3.Cross(pole, normal));
                 var biNormal = Vector3.Normalize(Vector3.Cross(normal, tangent));
 
-                vertices[i] = new GBufferVertex(normal, normal, tangent, biNormal);
+                vertices[i] = new GBufferVertex(new Vector4(normal, 1.0f), normal, tangent, biNormal, vertex.TextureCoordinate);
             }
         }
 

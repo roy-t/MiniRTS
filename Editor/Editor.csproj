@@ -61,6 +61,9 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <None Update="Content\ComputeShaders\FixTriangles.hlsl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Content\ComputeShaders\Noise.hlsl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

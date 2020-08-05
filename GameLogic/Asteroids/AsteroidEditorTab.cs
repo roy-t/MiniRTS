@@ -1,6 +1,8 @@
 ﻿using GameLogic.BluePrints;
 using ImGuiNET;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using MiniEngine.GameLogic;
 using MiniEngine.Pipeline.Models.Components;
 using MiniEngine.Pipeline.Models.Generators;
 using MiniEngine.Systems;
@@ -17,13 +19,15 @@ namespace GameLogic.Asteroids
         private readonly EntityController EntityController;
 
         private readonly AsteroidBluePrint BluePrint;
+        private readonly Texture2D texture;
 
         private Geometry asteroid;
         private float multiplierA = MathHelper.TwoPi;
         private float multiplierB = 0.05f;
 
-        public AsteroidEditorTab(Editors editors, SpherifiedCubeGenerator spherifiedCubeGenerator, EntityController entityController, NoiseGenerator noiseGenerator)
+        public AsteroidEditorTab(Content content, Editors editors, SpherifiedCubeGenerator spherifiedCubeGenerator, EntityController entityController, NoiseGenerator noiseGenerator)
         {
+            this.texture = content.DebugTexture;
             this.Editors = editors;
             this.BluePrint = new AsteroidBluePrint();
             this.SpherifiedCubeGenerator = spherifiedCubeGenerator;
@@ -63,7 +67,7 @@ namespace GameLogic.Asteroids
 
         private void Generate()
         {
-            this.asteroid = this.SpherifiedCubeGenerator.Generate(this.BluePrint.Radius, this.BluePrint.Subdivisions);
+            this.asteroid = this.SpherifiedCubeGenerator.Generate(this.BluePrint.Radius, this.BluePrint.Subdivisions, this.texture);
         }
     }
 }

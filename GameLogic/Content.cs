@@ -38,6 +38,9 @@ namespace MiniEngine.GameLogic
         public Texture2D Smoke { get; private set; }
         public Texture2D BulletHole { get; private set; }
         public Texture2D Mask { get; private set; }
+
+        public Texture2D DebugTexture { get; private set; }
+
         public Song Song { get; private set; }
 
         public TextureCube NullSkybox { get; private set; }
@@ -92,7 +95,8 @@ namespace MiniEngine.GameLogic
             var up = content.Load<Texture2D>(@"Scenes\Sponza\Skybox\up");
 
             this.SponzaSkybox = this.SkyboxBuilder.BuildSkyBox(back, down, front, left, right, up);
-        }
 
+            this.DebugTexture = content.Load<Texture2D>("Debug");
+        }
     }
 }

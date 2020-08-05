@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Effects.Compute;
@@ -29,10 +30,13 @@ namespace MiniEngine.Pipeline.Models.Generators
                 var file = Path.GetFullPath(Path.Join(this.Content.RootDirectory, @"ComputeShaders\Noise.hlsl"));
                 var shader = new ComputeShader(this.Device, file, "Kernel");
 
+                var craters = GenerateCraters(1);
+                noiseSettings.craterCount = craters.Length;
+
                 shader.SetResource("Settings", noiseSettings);
                 shader.SetResource("InputGeometry", inputGeometry.Vertices);
+                shader.SetResource("InputCraters", craters);
                 shader.AllocateResource<GBufferVertex>("OutputGeometry", inputGeometry.VertexCount);
-
 
                 var dispatchSize = ComputeShader.GetDispatchSize(512, inputGeometry.VertexCount);
                 shader.Compute(dispatchSize, 1, 1);
@@ -40,12 +44,54 @@ namespace MiniEngine.Pipeline.Models.Generators
                 var data = shader.CopyDataToCPU<GBufferVertex>(inputGeometry.VertexCount, "OutputGeometry");
                 Array.Copy(data, inputGeometry.Vertices, data.Length);
                 var time = stopwatch.ElapsedMilliseconds;
-                Debug.WriteLine($"Compute shader processed {inputGeometry.VertexCount} in {time}ms");
+                Debug.WriteLine($"Compute shader 'Noise.hlsl' processed {inputGeometry.VertexCount} in {time}ms");
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
             }
+
+            FixTriangles(inputGeometry);
+        }
+
+        private void FixTriangles(Geometry inputGeometry)
+        {
+            try
+            {
+                var stopwatch = Stopwatch.StartNew();
+                var file = Path.GetFullPath(Path.Join(this.Content.RootDirectory, @"ComputeShaders\FixTriangles.hlsl"));
+                var shader = new ComputeShader(this.Device, file, "Kernel");
+
+                shader.SetResource("InputGeometry", inputGeometry.Vertices);
+                shader.SetResource("InputIndices", inputGeometry.Indices);
+                shader.AllocateResource<GBufferVertex>("OutputGeometry", inputGeometry.VertexCount);
+
+                var dispatchSize = ComputeShader.GetDispatchSize(512, inputGeometry.PrimitiveCount);
+                shader.Compute(dispatchSize, 1, 1);
+
+                var data = shader.CopyDataToCPU<GBufferVertex>(inputGeometry.VertexCount, "OutputGeometry");
+                Array.Copy(data, inputGeometry.Vertices, data.Length);
+                var time = stopwatch.ElapsedMilliseconds;
+                Debug.WriteLine($"Compute shader 'FixTriangles.hlsl' processed {inputGeometry.VertexCount} in {time}ms");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+            }
+        }
+
+        private Crater[] GenerateCraters(int count)
+        {
+            return new Crater[]
+            {
+                new Crater
+                {
+                    position = Vector3.Forward,
+                    radius = 0.5f,
+                    floor = 0.8f,
+                    smoothness = 0.0f
+                }
+            };
         }
     }
 
@@ -54,7 +100,16 @@ namespace MiniEngine.Pipeline.Models.Generators
     {
         public float multiplierA;
         public float multiplierB;
-        public int _padding1;
+        public int craterCount;
         public int _padding2;
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public struct Crater
+    {
+        public Vector3 position;
+        public float radius;
+        public float floor;
+        public float smoothness;
     }
 }
