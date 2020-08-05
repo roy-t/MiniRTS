@@ -7,7 +7,7 @@ namespace GameLogic.BluePrints
         public AsteroidBluePrint()
         {
             this.Radius = 1.0f;
-            this.Subdivisions = 24;
+            this.Subdivisions = 99;
         }
 
         [Editor(nameof(Radius))]

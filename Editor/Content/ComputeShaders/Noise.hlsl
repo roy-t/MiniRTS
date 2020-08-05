@@ -51,30 +51,34 @@ float smoothMax(float a, float b, float k)
 }
 
 
+float CavityShape(float x) {
+	return x * x - 1;
+}
+
+float RimShape(float x) {
+	x = min(x - 1 - rimWidth, 0);
+	return rimSteepness * x * x;
+}
+
 
 // TODO: https://www.youtube.com/watch?v=lctXaT9pxA0&t=171s
 // https://github.com/SebLague/Solar-System/blob/Episode_02/Assets/Celestial%20Body/Scripts/Shaders/Includes/Craters.cginc
+// See calculator: https://www.desmos.com/calculator to figure out how formula's interact
 float CalculateCraterDepth(float3 vertexPosition)
 {
 	float craterHeight = 0.0f;
 	for (int i = 0; i < craterCount; i++)
 	{
-		Crater crater = InputCraters[i];
-
+		Crater crater = InputCraters[i];		
 		float x = length(vertexPosition - crater.position) / max(crater.radius, 0.0001);
-		float height = x * x - 1;
-		height = clamp(height, crater.floor, 1.0f);		
-		craterHeight += height;
-
-		/*float x = length(vertexPosition - crater.position) / max(crater.radius, 0.0001);
 
 		float cavity = x * x - 1;
-		float rimX = min(x - 1 - rimWidth, 0);
-		float rim = rimSteepness * rimX * rimX;
+		float rimX = min(x - rimWidth, 0);
+		float rim = (rimX * rimX) * rimSteepness;
+		float combined = 1 + smoothMin(cavity, rim, crater.smoothness);
+		combined = smoothMax(crater.floor, combined, crater.smoothness);
 
-		float craterShape = smoothMax(cavity, crater.floor, crater.smoothness);
-		craterShape = smoothMin(craterShape, rim, crater.smoothness);
-		craterHeight += craterShape * crater.radius;*/
+		craterHeight += combined;
 	}
 	
 	return craterHeight;

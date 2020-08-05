@@ -2,7 +2,6 @@
 using System.Linq;
 using GameLogic.BluePrints;
 using ImGuiNET;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.GameLogic;
 using MiniEngine.Pipeline.Models.Components;
@@ -25,8 +24,8 @@ namespace GameLogic.Asteroids
         private readonly Texture2D Texture;
 
         private Geometry asteroid;
-        private float multiplierA = MathHelper.TwoPi;
-        private float multiplierB = 0.05f;
+        private float rimWidth = 2.0f;
+        private float rimSteepness = 0.1f;
 
         public AsteroidEditorTab(Content content, Editors editors, SpherifiedCubeGenerator spherifiedCubeGenerator, EntityController entityController, NoiseGenerator noiseGenerator)
         {
@@ -55,18 +54,16 @@ namespace GameLogic.Asteroids
 
                 ImGui.Separator();
 
-                if (ImGui.SliderFloat("Rim Width", ref this.multiplierA, 0.0f, 10.0f) ||
-                    ImGui.SliderFloat("Rim Steepness", ref this.multiplierB, 0.01f, 0.99f) ||
+                if (ImGui.SliderFloat("Rim Width", ref this.rimWidth, 0.0f, 10.0f) ||
+                    ImGui.SliderFloat("Rim Steepness", ref this.rimSteepness, 0.01f, 1.0f) ||
                     ImGui.Button("Apply Noise"))
                 {
-                    //this.EntityController.DestroyEntity(this.asteroid.Entity);
-                    //this.Generate();
-                    var craters = GenerateCraters();
+                    var craters = this.GenerateCraters();
                     this.NoiseGenerator.GenerateNoise(this.asteroid,
                         new NoiseSettings()
                         {
-                            rimWidth = multiplierA,
-                            rimSteepness = multiplierB,
+                            rimWidth = rimWidth,
+                            rimSteepness = rimSteepness,
                             craterCount = craters.Length
                         },
                         craters

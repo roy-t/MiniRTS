@@ -10,9 +10,9 @@ namespace GameLogic.Asteroids
         {
             this.Pitch = 0;
             this.Yaw = 0;
-            this.Radius = 0.05f;
+            this.Radius = 0.15f;
             this.FloorHeight = 0.9f;
-            this.Smoothness = 0.1f;
+            this.Smoothness = 0.5f;
         }
 
         [Editor(nameof(Pitch), nameof(Pitch), -MathHelper.Pi, MathHelper.Pi)]
