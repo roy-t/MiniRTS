@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Effects.Compute;
+using MiniEngine.Pipeline.Models.Components;
+using MiniEngine.Primitives.VertexTypes;
 
 namespace MiniEngine.Pipeline.Models.Generators
 {
@@ -20,31 +21,23 @@ namespace MiniEngine.Pipeline.Models.Generators
             this.Content = content;
         }
 
-        public void GenerateNoise()
+        public void GenerateNoise(Geometry inputGeometry)
         {
             try
             {
-                // TODO: I should now be able to change the shader to set an arbitrary number of input buffers
-                // and textures based on the register. Best to only use one output buffer(?) Rewrite the ComputeShader class for this.
-                // Let's try to load all the vertices and move them around a bit based on a texture lookup. Looks like all standard
-                // shader functions are still available. Maybe first even try a sine wave?
-                // TODO: how can we set a couple of variables? -> https://forum.unity.com/threads/global-shader-variables-in-compute-shaders.471211/
-                // apparently not but you can set a buffer with your variables.
-                var file = Path.GetFullPath(Path.Join(this.Content.RootDirectory, @"ComputeShaders\maclaurin.hlsl"));
-
-                var input = Enumerable.Range(0, 1000).ToArray();
+                var file = Path.GetFullPath(Path.Join(this.Content.RootDirectory, @"ComputeShaders\Noise.hlsl"));
                 var shader = new ComputeShader(this.Device, file, "Kernel");
 
                 shader.SetResource("Settings", new Settings { multiplier = 2 });
-                shader.SetResource("InputBuffer", input);
-                shader.AllocateResource<int>("OutputBuffer", input.Length);
+                shader.SetResource("InputGeometry", inputGeometry.Vertices);
+                shader.AllocateResource<GBufferVertex>("OutputGeometry", inputGeometry.VertexCount);
 
-                var dispatchers = ComputeShader.GetDispatchSize(256, input.Length);
-                shader.Compute(dispatchers, 1, 1);
 
-                var data = shader.CopyDataToCPU<int>(input.Length, "OutputBuffer");
+                var dispatchSize = ComputeShader.GetDispatchSize(256, inputGeometry.VertexCount);
+                shader.Compute(dispatchSize, 1, 1);
 
-                Debug.WriteLine(data[0].ToString());
+                var data = shader.CopyDataToCPU<GBufferVertex>(inputGeometry.VertexCount, "OutputGeometry");
+                Array.Copy(data, inputGeometry.Vertices, data.Length);
             }
             catch (Exception ex)
             {

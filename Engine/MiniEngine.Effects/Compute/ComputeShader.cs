@@ -245,7 +245,7 @@ namespace MiniEngine.Effects.Compute
             where T : struct
         {
             var size = Utilities.SizeOf<T>();
-            if (size % 16 != 0) // TODO: is it still true that a constant buffer must be a multiple of 16 bytes??
+            if (size % 16 != 0)
             {
                 throw new System.NotSupportedException($"A constant buffer must be a multiple of 16 bytes but was {size} bytes");
             }

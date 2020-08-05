@@ -61,7 +61,7 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <None Update="Content\ComputeShaders\maclaurin.hlsl">
+    <None Update="Content\ComputeShaders\Noise.hlsl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

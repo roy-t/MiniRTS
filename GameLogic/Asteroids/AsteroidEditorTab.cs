@@ -1,5 +1,6 @@
 ﻿using GameLogic.BluePrints;
 using ImGuiNET;
+using MiniEngine.Pipeline.Models.Components;
 using MiniEngine.Pipeline.Models.Generators;
 using MiniEngine.Systems;
 using MiniEngine.UI;
@@ -16,7 +17,7 @@ namespace GameLogic.Asteroids
 
         private readonly AsteroidBluePrint BluePrint;
 
-        private Entity? lastAsteroid;
+        private Geometry asteroid;
 
         public AsteroidEditorTab(Editors editors, SpherifiedCubeGenerator spherifiedCubeGenerator, EntityController entityController, NoiseGenerator noiseGenerator)
         {
@@ -31,12 +32,18 @@ namespace GameLogic.Asteroids
         {
             ObjectEditor.Create(this.Editors, this.BluePrint);
 
-            if (this.lastAsteroid.HasValue)
+            if (this.asteroid != null)
             {
                 if (ImGui.Button("Regenerate"))
                 {
-                    this.EntityController.DestroyEntity(this.lastAsteroid.Value);
+                    this.EntityController.DestroyEntity(this.asteroid.Entity);
                     this.Generate();
+                }
+
+                if (ImGui.Button("Apply Noise"))
+                {
+
+                    this.NoiseGenerator.GenerateNoise(this.asteroid);
                 }
             }
             else
@@ -50,10 +57,7 @@ namespace GameLogic.Asteroids
 
         private void Generate()
         {
-            var asteroid = this.SpherifiedCubeGenerator.Generate(this.BluePrint.Radius, this.BluePrint.Subdivisions);
-            this.lastAsteroid = asteroid.Entity;
-
-            this.NoiseGenerator.GenerateNoise();
+            this.asteroid = this.SpherifiedCubeGenerator.Generate(this.BluePrint.Radius, this.BluePrint.Subdivisions);
         }
     }
 }
