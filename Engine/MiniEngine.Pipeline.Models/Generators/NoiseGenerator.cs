@@ -22,16 +22,13 @@ namespace MiniEngine.Pipeline.Models.Generators
             this.Content = content;
         }
 
-        public void GenerateNoise(Geometry inputGeometry, NoiseSettings noiseSettings)
+        public void GenerateNoise(Geometry inputGeometry, NoiseSettings noiseSettings, Crater[] craters)
         {
             try
             {
                 var stopwatch = Stopwatch.StartNew();
                 var file = Path.GetFullPath(Path.Join(this.Content.RootDirectory, @"ComputeShaders\Noise.hlsl"));
                 var shader = new ComputeShader(this.Device, file, "Kernel");
-
-                var craters = GenerateCraters(1);
-                noiseSettings.craterCount = craters.Length;
 
                 shader.SetResource("Settings", noiseSettings);
                 shader.SetResource("InputGeometry", inputGeometry.Vertices);
@@ -78,30 +75,16 @@ namespace MiniEngine.Pipeline.Models.Generators
             {
                 Debug.WriteLine(ex);
             }
-        }
-
-        private Crater[] GenerateCraters(int count)
-        {
-            return new Crater[]
-            {
-                new Crater
-                {
-                    position = Vector3.Forward,
-                    radius = 0.5f,
-                    floor = 0.8f,
-                    smoothness = 0.0f
-                }
-            };
-        }
+        }       
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct NoiseSettings
     {
-        public float multiplierA;
-        public float multiplierB;
+        public float rimWidth;
+        public float rimSteepness;
         public int craterCount;
-        public int _padding2;
+        public float padding;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]

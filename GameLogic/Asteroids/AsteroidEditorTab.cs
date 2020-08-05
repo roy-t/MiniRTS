@@ -1,4 +1,6 @@
-﻿using GameLogic.BluePrints;
+﻿using System.Collections.Generic;
+using System.Linq;
+using GameLogic.BluePrints;
 using ImGuiNET;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -18,8 +20,9 @@ namespace GameLogic.Asteroids
         private readonly NoiseGenerator NoiseGenerator;
         private readonly EntityController EntityController;
 
-        private readonly AsteroidBluePrint BluePrint;
-        private readonly Texture2D texture;
+        private readonly AsteroidBluePrint AsteroidBluePrint;
+        private readonly List<CraterBluePrint> CraterBluePrints;
+        private readonly Texture2D Texture;
 
         private Geometry asteroid;
         private float multiplierA = MathHelper.TwoPi;
@@ -27,17 +30,20 @@ namespace GameLogic.Asteroids
 
         public AsteroidEditorTab(Content content, Editors editors, SpherifiedCubeGenerator spherifiedCubeGenerator, EntityController entityController, NoiseGenerator noiseGenerator)
         {
-            this.texture = content.DebugTexture;
+            this.Texture = content.DebugTexture;
             this.Editors = editors;
-            this.BluePrint = new AsteroidBluePrint();
+            this.AsteroidBluePrint = new AsteroidBluePrint();
+            this.CraterBluePrints = new List<CraterBluePrint>();
             this.SpherifiedCubeGenerator = spherifiedCubeGenerator;
             this.EntityController = entityController;
             this.NoiseGenerator = noiseGenerator;
+
+            this.CraterBluePrints.Add(new CraterBluePrint());
         }
 
         public void Edit()
         {
-            ObjectEditor.Create(this.Editors, this.BluePrint);
+
 
             if (this.asteroid != null)
             {
@@ -49,11 +55,22 @@ namespace GameLogic.Asteroids
 
                 ImGui.Separator();
 
-                if (ImGui.SliderFloat("MultplierA", ref this.multiplierA, 0.0f, MathHelper.Pi * 10) ||
-                    ImGui.SliderFloat("MultplierB", ref this.multiplierB, 0.0f, 0.2f) ||
+                if (ImGui.SliderFloat("Rim Width", ref this.multiplierA, 0.0f, 10.0f) ||
+                    ImGui.SliderFloat("Rim Steepness", ref this.multiplierB, 0.01f, 0.99f) ||
                     ImGui.Button("Apply Noise"))
                 {
-                    this.NoiseGenerator.GenerateNoise(this.asteroid, new NoiseSettings() { multiplierA = multiplierA, multiplierB = multiplierB });
+                    //this.EntityController.DestroyEntity(this.asteroid.Entity);
+                    //this.Generate();
+                    var craters = GenerateCraters();
+                    this.NoiseGenerator.GenerateNoise(this.asteroid,
+                        new NoiseSettings()
+                        {
+                            rimWidth = multiplierA,
+                            rimSteepness = multiplierB,
+                            craterCount = craters.Length
+                        },
+                        craters
+                    );
                 }
             }
             else
@@ -63,11 +80,30 @@ namespace GameLogic.Asteroids
                     this.Generate();
                 }
             }
+
+            if (ImGui.TreeNode("Asteroid"))
+            {
+                ObjectEditor.Create(this.Editors, this.AsteroidBluePrint);
+                ImGui.TreePop();
+            }
+            for (var i = 0; i < this.CraterBluePrints.Count; i++)
+            {
+                if (ImGui.TreeNode($"Crater {i}"))
+                {
+                    ObjectEditor.Create(this.Editors, this.CraterBluePrints[i]);
+                    ImGui.TreePop();
+                }
+            }
         }
 
         private void Generate()
         {
-            this.asteroid = this.SpherifiedCubeGenerator.Generate(this.BluePrint.Radius, this.BluePrint.Subdivisions, this.texture);
+            this.asteroid = this.SpherifiedCubeGenerator.Generate(this.AsteroidBluePrint.Radius, this.AsteroidBluePrint.Subdivisions, this.Texture);
+        }
+
+        private Crater[] GenerateCraters()
+        {
+            return this.CraterBluePrints.Select(c => c.ToCrater()).ToArray();
         }
     }
 }
