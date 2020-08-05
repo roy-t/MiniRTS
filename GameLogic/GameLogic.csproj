@@ -17,11 +17,9 @@
     <PackageReference Include="MonoGame.Framework.WindowsDX" Version="3.8.0.1469-develop" />
 </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="RoyT.AStar">
-      <Version>3.0.1</Version>
+      <Version>3.0.2</Version>
     </PackageReference>
-    <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Engine\MiniEngine.Pipeline.Basics\MiniEngine.Pipeline.Basics.csproj" />

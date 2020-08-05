@@ -17,10 +17,6 @@
     <PackageReference Include="MonoGame.Framework.WindowsDX" Version="3.8.0.1469-develop" />
 </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-    <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="LightInject">
       <Version>6.3.4</Version>
     </PackageReference>
