@@ -21,37 +21,40 @@ namespace MiniEngine.Pipeline.Models.Generators
             this.Content = content;
         }
 
-        public void GenerateNoise(Geometry inputGeometry)
+        public void GenerateNoise(Geometry inputGeometry, NoiseSettings noiseSettings)
         {
             try
             {
+                var stopwatch = Stopwatch.StartNew();
                 var file = Path.GetFullPath(Path.Join(this.Content.RootDirectory, @"ComputeShaders\Noise.hlsl"));
                 var shader = new ComputeShader(this.Device, file, "Kernel");
 
-                shader.SetResource("Settings", new Settings { multiplier = 2 });
+                shader.SetResource("Settings", noiseSettings);
                 shader.SetResource("InputGeometry", inputGeometry.Vertices);
                 shader.AllocateResource<GBufferVertex>("OutputGeometry", inputGeometry.VertexCount);
 
 
-                var dispatchSize = ComputeShader.GetDispatchSize(256, inputGeometry.VertexCount);
+                var dispatchSize = ComputeShader.GetDispatchSize(512, inputGeometry.VertexCount);
                 shader.Compute(dispatchSize, 1, 1);
 
                 var data = shader.CopyDataToCPU<GBufferVertex>(inputGeometry.VertexCount, "OutputGeometry");
                 Array.Copy(data, inputGeometry.Vertices, data.Length);
+                var time = stopwatch.ElapsedMilliseconds;
+                Debug.WriteLine($"Compute shader processed {inputGeometry.VertexCount} in {time}ms");
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
             }
         }
+    }
 
-        [StructLayout(LayoutKind.Sequential, Pack = 1)]
-        struct Settings
-        {
-            public int multiplier;
-            public int _padding0;
-            public int _padding1;
-            public int _padding2;
-        }
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public struct NoiseSettings
+    {
+        public float multiplierA;
+        public float multiplierB;
+        public int _padding1;
+        public int _padding2;
     }
 }

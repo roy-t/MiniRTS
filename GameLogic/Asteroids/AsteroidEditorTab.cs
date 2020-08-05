@@ -1,5 +1,6 @@
 ﻿using GameLogic.BluePrints;
 using ImGuiNET;
+using Microsoft.Xna.Framework;
 using MiniEngine.Pipeline.Models.Components;
 using MiniEngine.Pipeline.Models.Generators;
 using MiniEngine.Systems;
@@ -18,6 +19,8 @@ namespace GameLogic.Asteroids
         private readonly AsteroidBluePrint BluePrint;
 
         private Geometry asteroid;
+        private float multiplierA = MathHelper.TwoPi;
+        private float multiplierB = 0.05f;
 
         public AsteroidEditorTab(Editors editors, SpherifiedCubeGenerator spherifiedCubeGenerator, EntityController entityController, NoiseGenerator noiseGenerator)
         {
@@ -40,10 +43,13 @@ namespace GameLogic.Asteroids
                     this.Generate();
                 }
 
-                if (ImGui.Button("Apply Noise"))
-                {
+                ImGui.Separator();
 
-                    this.NoiseGenerator.GenerateNoise(this.asteroid);
+                if (ImGui.SliderFloat("MultplierA", ref this.multiplierA, 0.0f, MathHelper.Pi * 10) ||
+                    ImGui.SliderFloat("MultplierB", ref this.multiplierB, 0.0f, 0.2f) ||
+                    ImGui.Button("Apply Noise"))
+                {
+                    this.NoiseGenerator.GenerateNoise(this.asteroid, new NoiseSettings() { multiplierA = multiplierA, multiplierB = multiplierB });
                 }
             }
             else

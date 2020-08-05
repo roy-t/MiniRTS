@@ -14,7 +14,7 @@ namespace GameLogic.BluePrints
         public float Radius { get; set; }
 
 
-        [Editor(nameof(Subdivisions), nameof(Subdivisions), 0.0f, 90.0f)]
+        [Editor(nameof(Subdivisions), nameof(Subdivisions), 0.0f, 99.0f)]
         public int Subdivisions { get; set; }
     }
 }
