@@ -51,16 +51,6 @@ float smoothMax(float a, float b, float k)
 }
 
 
-float CavityShape(float x) {
-	return x * x - 1;
-}
-
-float RimShape(float x) {
-	x = min(x - 1 - rimWidth, 0);
-	return rimSteepness * x * x;
-}
-
-
 // TODO: https://www.youtube.com/watch?v=lctXaT9pxA0&t=171s
 // https://github.com/SebLague/Solar-System/blob/Episode_02/Assets/Celestial%20Body/Scripts/Shaders/Includes/Craters.cginc
 // See calculator: https://www.desmos.com/calculator to figure out how formula's interact
@@ -75,8 +65,8 @@ float CalculateCraterDepth(float3 vertexPosition)
 		float cavity = x * x - 1;
 		float rimX = min(x - rimWidth, 0);
 		float rim = (rimX * rimX) * rimSteepness;
-		float combined = 1 + smoothMin(cavity, rim, crater.smoothness);
-		combined = smoothMax(crater.floor, combined, crater.smoothness);
+		float combined = min(cavity, rim);
+		combined = max(crater.floor, combined);
 
 		craterHeight += combined;
 	}
@@ -92,7 +82,7 @@ void Kernel(in uint dispatchId : SV_DispatchThreadID)
 	float3 position = vertex.position.xyz;
 	float3 normal = normalize(position);
 
-	float height = CalculateCraterDepth(normal);
+	float height = 1.0f + CalculateCraterDepth(normal);
 
 	vertex.position.xyz = normal * height;
 	OutputGeometry[dispatchId] = vertex;

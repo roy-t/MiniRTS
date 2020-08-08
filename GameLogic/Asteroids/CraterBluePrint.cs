@@ -11,7 +11,7 @@ namespace GameLogic.Asteroids
             this.Pitch = 0;
             this.Yaw = 0;
             this.Radius = 0.15f;
-            this.FloorHeight = 0.9f;
+            this.FloorHeight = 0.0f;
             this.Smoothness = 0.5f;
         }
 
@@ -24,7 +24,7 @@ namespace GameLogic.Asteroids
         [Editor(nameof(Radius), nameof(Radius), 0.01f, 1.0f)]
         public float Radius { get; set; }
 
-        [Editor(nameof(FloorHeight), nameof(FloorHeight), 0.01f, 1.0f)]
+        [Editor(nameof(FloorHeight), nameof(FloorHeight), -0.9f, 0.0f)]
         public float FloorHeight { get; set; }
 
         [Editor(nameof(Smoothness), nameof(Smoothness), 0.01f, 1.0f)]
@@ -33,7 +33,7 @@ namespace GameLogic.Asteroids
         public Crater ToCrater()
         {
             var rotation = Matrix.CreateFromYawPitchRoll(this.Yaw, this.Pitch, 0.0f);
-            var position = Vector3.Transform(Vector3.Forward, rotation);
+            var position = Vector3.Transform(Vector3.Backward, rotation);
             return new Crater()
             {
                 floor = this.FloorHeight,

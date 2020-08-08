@@ -6,6 +6,7 @@
 # Ignore prometheus and grafana folder
 [Pp]rometheus/
 [Gg]rafana/
+.ipynb_checkpoints/
 
 # Ignore stored diagnostic sessions
 [Dd]iagnosticSessions/
