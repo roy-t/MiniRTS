@@ -42,6 +42,9 @@ namespace MiniEngine.Pipeline.Models.Generators
                 Array.Copy(data, inputGeometry.Vertices, data.Length);
                 var time = stopwatch.ElapsedMilliseconds;
                 Debug.WriteLine($"Compute shader 'Noise.hlsl' processed {inputGeometry.VertexCount} in {time}ms");
+
+                // TODO: scale back to fit inside bounding box
+
             }
             catch (Exception ex)
             {
@@ -75,7 +78,7 @@ namespace MiniEngine.Pipeline.Models.Generators
             {
                 Debug.WriteLine(ex);
             }
-        }       
+        }
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
