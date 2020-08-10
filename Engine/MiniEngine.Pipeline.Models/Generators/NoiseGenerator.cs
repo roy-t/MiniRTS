@@ -43,36 +43,10 @@ namespace MiniEngine.Pipeline.Models.Generators
                 var time = stopwatch.ElapsedMilliseconds;
                 Debug.WriteLine($"Compute shader 'Noise.hlsl' processed {inputGeometry.VertexCount} in {time}ms");
 
-                // TODO: scale back to fit inside bounding box
-
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex);
-            }
-
-            FixTriangles(inputGeometry);
-        }
-
-        private void FixTriangles(Geometry inputGeometry)
-        {
-            try
-            {
-                var stopwatch = Stopwatch.StartNew();
-                var file = Path.GetFullPath(Path.Join(this.Content.RootDirectory, @"ComputeShaders\FixTriangles.hlsl"));
-                var shader = new ComputeShader(this.Device, file, "Kernel");
-
-                shader.SetResource("InputGeometry", inputGeometry.Vertices);
-                shader.SetResource("InputIndices", inputGeometry.Indices);
-                shader.AllocateResource<GBufferVertex>("OutputGeometry", inputGeometry.VertexCount);
-
-                var dispatchSize = ComputeShader.GetDispatchSize(512, inputGeometry.PrimitiveCount);
-                shader.Compute(dispatchSize, 1, 1);
-
-                var data = shader.CopyDataToCPU<GBufferVertex>(inputGeometry.VertexCount, "OutputGeometry");
-                Array.Copy(data, inputGeometry.Vertices, data.Length);
-                var time = stopwatch.ElapsedMilliseconds;
-                Debug.WriteLine($"Compute shader 'FixTriangles.hlsl' processed {inputGeometry.VertexCount} in {time}ms");
+                // TODO: scale back to fit inside bounding box doesn't work yet, result looks correct after multiple runs?                
+                //MeshHelper.ScaleToUnitSphere(inputGeometry.Vertices); //--> 
+                MeshHelper.ComputeNormals(inputGeometry.Vertices, inputGeometry.Indices);
+                // TODO: also compute binormals and tangets, MonoGame\MonoGame.Framework.Content.Pipeline\Graphics\MeshHelper.cs for an example.
             }
             catch (Exception ex)
             {
