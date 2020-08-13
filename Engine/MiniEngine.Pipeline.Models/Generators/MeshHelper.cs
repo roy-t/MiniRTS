@@ -23,7 +23,7 @@ namespace MiniEngine.Pipeline.Models.Generators
                 var length = normal.Length();
                 if (length > 0.0f)
                 {
-                    normal = normal / length;
+                    normal /= length;
                     normals[i0] += normal;
                     normals[i1] += normal;
                     normals[i2] += normal;
@@ -42,13 +42,15 @@ namespace MiniEngine.Pipeline.Models.Generators
             var max = 0.0f;
             for (var i = 0; i < vertices.Length; i++)
             {
-                var distance = vertices[i].Position.Length();
+                var distance = vertices[i].PositionXYZ.LengthSquared();
                 max = Math.Max(max, distance);
             }
 
+            max = (float)Math.Sqrt(max);
+
             for (var i = 0; i < vertices.Length; i++)
             {
-                vertices[i].Position = vertices[i].Position / max;
+                vertices[i].Position = new Vector4(vertices[i].PositionXYZ / max, 1);
             }
         }
     }

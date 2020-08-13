@@ -10,7 +10,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>  
   <ItemGroup>
-    <PackageReference Include="MonoGame.Framework.WindowsDX" Version="3.8.0.1469-develop">
+    <PackageReference Include="MonoGame.Framework.WindowsDX" Version="3.8.0.1641">
       <PrivateAssets>All</PrivateAssets>
     </PackageReference>
   </ItemGroup>

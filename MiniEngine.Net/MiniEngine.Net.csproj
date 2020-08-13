@@ -15,14 +15,14 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 <ItemGroup>
-    <PackageReference Include="MonoGame.Framework.WindowsDX" Version="3.8.0.1469-develop" />
+    <PackageReference Include="MonoGame.Framework.WindowsDX" Version="3.8.0.1641" />
 </ItemGroup>
   <ItemGroup>
     <PackageReference Include="LightInject">
       <Version>6.3.4</Version>
     </PackageReference>
     <PackageReference Include="LiteNetLib">
-      <Version>0.9.3.1</Version>
+      <Version>0.9.3.2</Version>
     </PackageReference>
   </ItemGroup>
 </Project>

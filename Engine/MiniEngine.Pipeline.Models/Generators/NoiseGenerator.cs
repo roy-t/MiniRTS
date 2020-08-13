@@ -44,7 +44,7 @@ namespace MiniEngine.Pipeline.Models.Generators
                 Debug.WriteLine($"Compute shader 'Noise.hlsl' processed {inputGeometry.VertexCount} in {time}ms");
 
                 // TODO: scale back to fit inside bounding box doesn't work yet, result looks correct after multiple runs?                
-                //MeshHelper.ScaleToUnitSphere(inputGeometry.Vertices); //--> 
+                MeshHelper.ScaleToUnitSphere(inputGeometry.Vertices); //--> 
                 MeshHelper.ComputeNormals(inputGeometry.Vertices, inputGeometry.Indices);
                 // TODO: also compute binormals and tangets, MonoGame\MonoGame.Framework.Content.Pipeline\Graphics\MeshHelper.cs for an example.
             }
