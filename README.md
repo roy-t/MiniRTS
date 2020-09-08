@@ -7,6 +7,8 @@ MiniEngine is a work-in-progress rendering engine that I'm using as a personal r
 
 This contents of this repository is constantly subject to change, and I would not recommend using MiniEngine as an engine for your own projects. However, I do think my work here can be useful of you're trying to figure out how a technique works. MiniEngine currently includes the following effects.
 
+In 2019 I gave a presentation on real-time rendering where I talk about techniques used in this engine. See: https://youtu.be/l9Mx67fCr5I. 
+
 # General Architecture
 
 MiniEngine is built around a rendering technique called [deferred shading](https://en.wikipedia.org/wiki/Deferred_shading), also called deferred rendering. See `GBuffer.cs` for a description of the buffers in use. Transparency is support and is achieved by rendering multiple passes. One pass for all opaque objects and then one pass for each group of non-overlapping transparent objects. This means that even multiple overlapping semi-transparent objects are supported. Using deferred shading means that all effects mentioned below are only computed in screen space, and are, at most, computed for every pixel on screen
