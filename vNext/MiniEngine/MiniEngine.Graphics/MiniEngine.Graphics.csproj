@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MiniEngine.Systems\MiniEngine.Systems.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="LightInject" Version="6.3.4" />
+    <PackageReference Include="MonoGame.Framework.WindowsDX" Version="3.8.0.1641">
+      <PrivateAssets>All</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
+
+</Project>
