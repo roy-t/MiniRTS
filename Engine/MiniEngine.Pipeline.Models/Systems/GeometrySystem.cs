@@ -42,10 +42,6 @@ namespace MiniEngine.Pipeline.Models.Systems
 
                 if (bounds.IsInView)
                 {
-                    //throw new Exception("HERE");
-                    // Calculate uvs and tangents see: D:\Projects\C#\MonoGame\MonoGame.Framework.Content.Pipeline\Graphics\MeshHelper.cs
-                    // for a sphere we might just use a 'raaklijn' and the binormal is the cross of normal and tangent since triplanar mapping might make it difficult to have uvs
-
                     var pose = this.Poses.Get(geometry.Entity);
 
                     this.Effect.DiffuseMap = geometry.DiffuseMap;

@@ -1,7 +1,7 @@
 # Generate comets
 Use https://github.com/nerogann/MonogameComputeShader and https://www.youtube.com/watch?v=lctXaT9pxA0
 
-
+Fixup models with: https://texturehaven.com/textures/?c=all&o=popular
 
 
 
