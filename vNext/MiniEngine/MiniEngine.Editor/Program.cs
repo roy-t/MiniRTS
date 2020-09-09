@@ -1,5 +1,5 @@
 ﻿using System;
-using MiniEngine.Systems.Injection;
+using MiniEngine.Configuration;
 
 namespace MiniEngine.Editor
 {

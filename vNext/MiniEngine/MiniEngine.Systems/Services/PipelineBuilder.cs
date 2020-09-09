@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using MiniEngine.Configuration;
 using MiniEngine.Systems.Components;
-using MiniEngine.Systems.Injection;
 using MiniEngine.Systems.Pipeline;
 
 namespace MiniEngine.Systems.Services
@@ -15,25 +15,24 @@ namespace MiniEngine.Systems.Services
             private readonly Dictionary<Type, IComponentContainer> ComponentContainers;
             private readonly Resolve ResolveDelegate;
 
-            internal IntermediatePipelineBuilder(Resolve resolveDelegate)
+            internal IntermediatePipelineBuilder(Resolve resolveDelegate, IEnumerable<IComponentContainer> componentContainers)
             {
                 this.SystemSpecs = new List<SystemSpec>();
+
                 this.ComponentContainers = new Dictionary<Type, IComponentContainer>();
+                foreach (var componentContainer in componentContainers)
+                {
+                    this.ComponentContainers.Add(componentContainer.ComponentType, componentContainer);
+                }
+
                 this.ResolveDelegate = resolveDelegate;
             }
 
             public IntermediatePipelineBuilder AddSystem<T>(Func<SystemSpec, SystemSpec> chain)
-           where T : ISystem
+           where T : ISystemBase
             {
                 var spec = SystemSpec.Construct<T>();
                 this.SystemSpecs.Add(chain(spec));
-                return this;
-            }
-
-            public IntermediatePipelineBuilder AddComponentContainer<T>(IComponentContainer componentContainer)
-                 where T : IComponent
-            {
-                this.ComponentContainers.Add(typeof(T), componentContainer);
                 return this;
             }
 
@@ -51,7 +50,7 @@ namespace MiniEngine.Systems.Services
                     {
                         var systemSpec = stage[j];
 
-                        var system = (ISystem)this.ResolveDelegate(systemSpec.SystemType);
+                        var system = (ISystemBase)this.ResolveDelegate(systemSpec.SystemType);
                         systemBindings.AddRange(SystemBinder.BindSystem(system, this.ComponentContainers));
 
                     }
@@ -65,11 +64,14 @@ namespace MiniEngine.Systems.Services
 
 
         private readonly Resolve ResolveDelegate;
-        public PipelineBuilder(Resolve resolveDelegate)
+        private readonly IEnumerable<IComponentContainer> ComponentContainers;
+
+        public PipelineBuilder(Resolve resolveDelegate, IEnumerable<IComponentContainer> componentContainers)
         {
             this.ResolveDelegate = resolveDelegate;
+            this.ComponentContainers = componentContainers;
         }
 
-        public IntermediatePipelineBuilder Builder() => new IntermediatePipelineBuilder(this.ResolveDelegate);
+        public IntermediatePipelineBuilder Builder() => new IntermediatePipelineBuilder(this.ResolveDelegate, this.ComponentContainers);
     }
 }

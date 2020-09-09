@@ -72,7 +72,7 @@ namespace MiniEngine.Scenes
 
                 this.ambientLight.Color = Color.Black;
                 this.sunlight.Move(this.sunlight.Position, new Vector3(-10.0f, this.sunlight.LookAt.Y, this.sunlight.LookAt.Z));
-                MediaPlayer.Play(this.song);
+                //MediaPlayer.Play(this.song);
             }
 
             if (this.accumulator < new Seconds(1))

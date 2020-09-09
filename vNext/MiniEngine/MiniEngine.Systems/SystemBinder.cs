@@ -9,7 +9,7 @@ namespace MiniEngine.Systems
     {
         private static readonly string ProcessMethod = "Process";
 
-        public static List<ISystemBinding> BindSystem(ISystem system, Dictionary<Type, IComponentContainer> componentContainers)
+        public static List<ISystemBinding> BindSystem(ISystemBase system, Dictionary<Type, IComponentContainer> componentContainers)
         {
             var systemBindings = new List<ISystemBinding>();
             var type = system.GetType();

@@ -13,9 +13,9 @@ namespace MiniEngine.Systems
     public class SystemBindingWithoutComponents : ISystemBinding
     {
         private readonly MethodInfo ProcessDelegate;
-        private readonly ISystem System;
+        private readonly ISystemBase System;
 
-        public SystemBindingWithoutComponents(MethodInfo processDelegate, ISystem system)
+        public SystemBindingWithoutComponents(MethodInfo processDelegate, ISystemBase system)
         {
             this.ProcessDelegate = processDelegate;
             this.System = system;
@@ -31,11 +31,11 @@ namespace MiniEngine.Systems
     public class SystemBindingWithOneComponent : ISystemBinding
     {
         private readonly MethodInfo ProcessDelegate;
-        private readonly ISystem System;
+        private readonly ISystemBase System;
         private readonly IComponentContainer ComponentContainer;
         private readonly object[] Parameters;
 
-        public SystemBindingWithOneComponent(MethodInfo processDelegate, ISystem system, IComponentContainer componentContainer)
+        public SystemBindingWithOneComponent(MethodInfo processDelegate, ISystemBase system, IComponentContainer componentContainer)
         {
             this.ProcessDelegate = processDelegate;
             this.System = system;
@@ -59,11 +59,11 @@ namespace MiniEngine.Systems
     public class SystemBindingWithManyComponents : ISystemBinding
     {
         private readonly MethodInfo ProcessDelegate;
-        private readonly ISystem System;
+        private readonly ISystemBase System;
         private readonly IReadOnlyList<IComponentContainer> ComponentContainers;
         private readonly object[] Parameters;
 
-        public SystemBindingWithManyComponents(MethodInfo processDelegate, ISystem system, IReadOnlyList<IComponentContainer> componentContainers)
+        public SystemBindingWithManyComponents(MethodInfo processDelegate, ISystemBase system, IReadOnlyList<IComponentContainer> componentContainers)
         {
             this.ProcessDelegate = processDelegate;
             this.System = system;

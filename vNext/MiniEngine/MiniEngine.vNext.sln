@@ -3,16 +3,18 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30413.136
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiniEngine.Editor", "MiniEngine.Editor\MiniEngine.Editor.csproj", "{9EC1C881-76AF-42E8-8455-D7699460F215}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MiniEngine.Editor", "MiniEngine.Editor\MiniEngine.Editor.csproj", "{9EC1C881-76AF-42E8-8455-D7699460F215}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiniEngine.Systems", "MiniEngine.Systems\MiniEngine.Systems.csproj", "{F2829C9F-6B87-4D88-8FA5-59CFBF145426}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MiniEngine.Systems", "MiniEngine.Systems\MiniEngine.Systems.csproj", "{F2829C9F-6B87-4D88-8FA5-59CFBF145426}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiniEngine.Graphics", "MiniEngine.Graphics\MiniEngine.Graphics.csproj", "{80D2251D-E386-43B0-93F0-92E536E00416}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MiniEngine.Graphics", "MiniEngine.Graphics\MiniEngine.Graphics.csproj", "{80D2251D-E386-43B0-93F0-92E536E00416}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{ABD45EB9-BF3F-45DB-8123-010BCCE4A37C}"
 	ProjectSection(SolutionItems) = preProject
 		Directory.Build.props = Directory.Build.props
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiniEngine.Configuration", "MiniEngine.Configuration\MiniEngine.Configuration.csproj", "{70C66765-87D2-4FC5-B431-FB9FC8179D72}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -32,6 +34,10 @@ Global
 		{80D2251D-E386-43B0-93F0-92E536E00416}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{80D2251D-E386-43B0-93F0-92E536E00416}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{80D2251D-E386-43B0-93F0-92E536E00416}.Release|Any CPU.Build.0 = Release|Any CPU
+		{70C66765-87D2-4FC5-B431-FB9FC8179D72}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{70C66765-87D2-4FC5-B431-FB9FC8179D72}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{70C66765-87D2-4FC5-B431-FB9FC8179D72}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{70C66765-87D2-4FC5-B431-FB9FC8179D72}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

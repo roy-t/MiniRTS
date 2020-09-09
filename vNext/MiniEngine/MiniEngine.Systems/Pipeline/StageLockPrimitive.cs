@@ -1,15 +1,15 @@
 ﻿using System.Threading;
 
-namespace MiniEngine.Systems.Threading
+namespace MiniEngine.Systems.Pipeline
 {
-    public sealed class ThreadingPrimitive
+    public sealed class StageLockPrimitive
     {
         private readonly int MaxCount;
         private readonly int Sleep1Threshold;
         private readonly bool[] Flags;
         private readonly SpinWait[] Spins;
 
-        public ThreadingPrimitive(int maxCount, int sleep1Threshold = -1)
+        public StageLockPrimitive(int maxCount, int sleep1Threshold = -1)
         {
             this.MaxCount = maxCount;
             this.Sleep1Threshold = sleep1Threshold;

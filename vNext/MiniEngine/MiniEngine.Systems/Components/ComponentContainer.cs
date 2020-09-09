@@ -1,16 +1,23 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using MiniEngine.Configuration;
 
 namespace MiniEngine.Systems.Components
 {
     public interface IComponentContainer
     {
-        IComponent this[int index] { get; }
-        IComponent this[Entity entity] { get; }
+        AComponent this[int index] { get; }
+
+        AComponent this[Entity entity] { get; }
+
         int Count { get; }
+
+        Type ComponentType { get; }
     }
 
+    [ComponentContainer]
     public class ComponentContainer<T> : IComponentContainer
-        where T : IComponent
+        where T : AComponent
     {
         private readonly List<T> Components;
         private readonly Dictionary<Entity, T> LookUp;
@@ -21,13 +28,15 @@ namespace MiniEngine.Systems.Components
             this.LookUp = new Dictionary<Entity, T>();
         }
 
+        public Type ComponentType => typeof(T);
+
         public T this[int index] => this.Components[index];
 
-        IComponent IComponentContainer.this[int index] => this[index];
+        AComponent IComponentContainer.this[int index] => this[index];
 
         public T this[Entity entity] => this.LookUp[entity];
 
-        IComponent IComponentContainer.this[Entity entity] => this[entity];
+        AComponent IComponentContainer.this[Entity entity] => this[entity];
 
         public void Add(T item)
         {

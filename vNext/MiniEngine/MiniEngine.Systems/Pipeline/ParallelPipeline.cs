@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using MiniEngine.Systems.Threading;
 
 namespace MiniEngine.Systems.Pipeline
 {
@@ -11,9 +10,9 @@ namespace MiniEngine.Systems.Pipeline
         private readonly int MaxConcurrency;
         private readonly int ExternalThreadIndex;
         private readonly Thread[] Threads;
-        private readonly ThreadingPrimitive StartFramePrimitive;
-        private readonly ThreadingPrimitive EndFramePrimitive;
-        private readonly ThreadingPrimitive StagePrimitive;
+        private readonly StageLockPrimitive StartFramePrimitive;
+        private readonly StageLockPrimitive EndFramePrimitive;
+        private readonly StageLockPrimitive StagePrimitive;
 
         private PipelineState pipelineState;
 
@@ -23,10 +22,10 @@ namespace MiniEngine.Systems.Pipeline
             this.MaxConcurrency = this.PipelineStages.Max(stage => stage.Systems.Count);
             this.ExternalThreadIndex = this.MaxConcurrency;
 
-            this.StartFramePrimitive = new ThreadingPrimitive(this.MaxConcurrency + 1, 10000);
-            this.EndFramePrimitive = new ThreadingPrimitive(this.MaxConcurrency + 1, 10000);
+            this.StartFramePrimitive = new StageLockPrimitive(this.MaxConcurrency + 1, 10000);
+            this.EndFramePrimitive = new StageLockPrimitive(this.MaxConcurrency + 1, 10000);
 
-            this.StagePrimitive = new ThreadingPrimitive(this.MaxConcurrency);
+            this.StagePrimitive = new StageLockPrimitive(this.MaxConcurrency);
 
             this.Threads = new Thread[this.MaxConcurrency];
             for (var i = 0; i < this.MaxConcurrency; i++)

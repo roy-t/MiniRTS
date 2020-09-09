@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MiniEngine.Systems.Injection
+namespace MiniEngine.Configuration
 {
     /// <summary>
     /// Marks the class as a service for the injector

@@ -22,6 +22,7 @@
     <MonoGameContentReference Include="Content\Content.mgcb" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\MiniEngine.Configuration\MiniEngine.Configuration.csproj" />
     <ProjectReference Include="..\MiniEngine.Graphics\MiniEngine.Graphics.csproj" />
     <ProjectReference Include="..\MiniEngine.Systems\MiniEngine.Systems.csproj" />
   </ItemGroup>
