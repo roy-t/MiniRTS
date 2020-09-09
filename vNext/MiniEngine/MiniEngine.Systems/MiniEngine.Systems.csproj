@@ -3,12 +3,6 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="LightInject" Version="6.3.4" />
-    <PackageReference Include="MonoGame.Framework.WindowsDX" Version="3.8.0.1641">
-      <PrivateAssets>All</PrivateAssets>
-    </PackageReference>
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\MiniEngine.Configuration\MiniEngine.Configuration.csproj" />
   </ItemGroup>
 </Project>

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using LightInject;
+using Serilog;
 
 #pragma warning disable IDE0039 // Use local function
 namespace MiniEngine.Configuration
@@ -19,6 +20,14 @@ namespace MiniEngine.Configuration
             this.Container = new ServiceContainer(ContainerOptions.Default);
             this.Container.SetDefaultLifetime<PerContainerLifetime>();
 
+            Log.Logger = new LoggerConfiguration()
+                .Enrich.FromLogContext()
+                .MinimumLevel.Debug()
+                .WriteTo.Debug()
+                .CreateLogger();
+
+            this.Container.RegisterInstance(Log.Logger);
+
             Resolve resolveDelegate = type => this.Container.Create(type);
             this.Container.RegisterInstance(resolveDelegate);
 
@@ -26,6 +35,8 @@ namespace MiniEngine.Configuration
             this.Container.RegisterInstance(registerDelegate);
 
             this.RegisterTypesFromReferencedAssemblies();
+
+            Log.Logger.Information("Registered {@count} services", this.Container.AvailableServices.Count());
         }
 
         public T Create<T>()
