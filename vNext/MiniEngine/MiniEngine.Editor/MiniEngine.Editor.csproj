@@ -22,8 +22,14 @@
     <MonoGameContentReference Include="Content\Content.mgcb" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\External\ImGui.NET\deps\cimgui\win-x64\cimgui.dll" Link="cimgui.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\MiniEngine.Configuration\MiniEngine.Configuration.csproj" />
     <ProjectReference Include="..\MiniEngine.Graphics\MiniEngine.Graphics.csproj" />
+    <ProjectReference Include="..\MiniEngine.Gui\MiniEngine.Gui.csproj" />
     <ProjectReference Include="..\MiniEngine.Systems\MiniEngine.Systems.csproj" />
   </ItemGroup>
 </Project>

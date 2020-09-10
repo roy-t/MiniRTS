@@ -5,12 +5,12 @@ namespace MiniEngine.Graphics.Models
 {
     public sealed class ModelComponent : AComponent
     {
-        public ModelComponent(Entity entity, Model? model)
+        public ModelComponent(Entity entity, Model model)
             : base(entity)
         {
             this.Model = model;
         }
 
-        public Model? Model { get; }
+        public Model Model { get; }
     }
 }

@@ -1,9 +1,10 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using ImGuiNET;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
 using MiniEngine.Editor.Configuration;
-using MiniEngine.Graphics;
-using MiniEngine.Graphics.Models;
-using MiniEngine.Systems.Components;
+using MiniEngine.Gui;
 using MiniEngine.Systems.Pipeline;
 
 namespace MiniEngine.Editor
@@ -12,18 +13,31 @@ namespace MiniEngine.Editor
     {
         private readonly GraphicsDeviceManager Graphics;
         private readonly Register RegisterDelegate;
-        private readonly Resolve ResolveDelegate;
         private readonly RenderPipelineBuilder RenderPipelineBuilder;
 
         private ParallelPipeline? renderPipeline;
+        private SpriteBatch? spriteBatch;
+        private RenderTarget2D? renderTarget;
+        private IntPtr renderTargetBinding;
 
-        public GameLoop(Register registerDelegate, Resolve resolveDelegate, RenderPipelineBuilder renderPipelineBuilder)
+        private ImGuiRenderer? gui;
+        private bool docked = true;
+        private bool showDemoWindow = false;
+
+        public GameLoop(Register registerDelegate, RenderPipelineBuilder renderPipelineBuilder)
         {
-            this.Graphics = new GraphicsDeviceManager(this);
+            this.Graphics = new GraphicsDeviceManager(this)
+            {
+                PreferredBackBufferWidth = 1920,
+                PreferredBackBufferHeight = 1080,
+                PreferMultiSampling = true,
+                SynchronizeWithVerticalRetrace = true,
+                GraphicsProfile = GraphicsProfile.HiDef
+            };
+
             this.Content.RootDirectory = "Content";
             this.IsMouseVisible = true;
             this.RegisterDelegate = registerDelegate;
-            this.ResolveDelegate = resolveDelegate;
             this.RenderPipelineBuilder = renderPipelineBuilder;
         }
 
@@ -32,14 +46,13 @@ namespace MiniEngine.Editor
             this.RegisterDelegate(this.Graphics.GraphicsDevice);
             this.RegisterDelegate(this.Content);
 
+            this.gui = new ImGuiRenderer(this.Graphics.GraphicsDevice, this.Window);
+
             this.renderPipeline = this.RenderPipelineBuilder.Build();
+            this.spriteBatch = new SpriteBatch(this.Graphics.GraphicsDevice);
 
-            var container = (ComponentContainer<ModelComponent>)this.ResolveDelegate(typeof(ComponentContainer<ModelComponent>));
-            container.Add(new ModelComponent(new Systems.Entity(1), null));
-
-
-            var container2 = (ComponentContainer<BodyComponent>)this.ResolveDelegate(typeof(ComponentContainer<BodyComponent>));
-            container2.Add(new BodyComponent(new Systems.Entity(1)));
+            this.renderTarget = new RenderTarget2D(this.Graphics.GraphicsDevice, this.Graphics.PreferredBackBufferWidth, this.Graphics.PreferredBackBufferHeight, false, SurfaceFormat.Color, DepthFormat.Depth24);
+            this.renderTargetBinding = this.gui.BindTexture(this.renderTarget);
         }
 
         protected override void UnloadContent()
@@ -56,9 +69,92 @@ namespace MiniEngine.Editor
 
         protected override void Draw(GameTime gameTime)
         {
+            this.gui!.BeforeLayout(gameTime);
+
+            this.RunPipeline();
+            this.ShowMainMenuBar();
+
+            if (this.docked)
+            {
+                ImGui.DockSpaceOverViewport();
+                this.RenderToWindow(this.renderTarget, this.renderTargetBinding);
+            }
+            else
+            {
+                this.RenderToViewport(this.renderTarget);
+            }
+
+            if (this.showDemoWindow)
+            {
+                ImGui.ShowDemoWindow();
+            }
+
+            this.gui!.AfterLayout();
+            base.Draw(gameTime);
+        }
+
+        private void RunPipeline()
+        {
+            this.GraphicsDevice.SetRenderTarget(this.renderTarget);
+
             this.renderPipeline!.Run();
             this.renderPipeline!.Wait();
-            base.Draw(gameTime);
+
+            this.GraphicsDevice.SetRenderTarget(null);
+        }
+
+        private void ShowMainMenuBar()
+        {
+            if (ImGui.BeginMainMenuBar())
+            {
+                if (ImGui.BeginMenu("View"))
+                {
+                    ImGui.Checkbox("Docked", ref this.docked);
+                    ImGui.Checkbox("Show Demo Window", ref this.showDemoWindow);
+                    ImGui.EndMenu();
+                }
+                ImGui.EndMainMenuBar();
+            }
+        }
+
+        private void RenderToWindow(RenderTarget2D? renderTarget, IntPtr renderTargetBinding)
+        {
+            if (ImGui.Begin("Output"))
+            {
+                var width = ImGui.GetWindowWidth();
+                var height = ImGui.GetWindowHeight() - (ImGui.GetFrameHeightWithSpacing() * 2);
+                var imageSize = FitToBounds(renderTarget?.Width ?? 1, renderTarget?.Height ?? 1, width, height);
+                ImGui.Image(renderTargetBinding, imageSize);
+
+                ImGui.End();
+            }
+        }
+
+        private static Vector2 FitToBounds(float sourceWidth, float sourceHeight, float boundsWidth, float boundsHeight)
+        {
+            var widthRatio = boundsWidth / sourceWidth;
+            var heightRatio = boundsHeight / sourceHeight;
+
+            var ratio = Math.Min(widthRatio, heightRatio);
+            return new Vector2(sourceWidth * ratio, sourceHeight * ratio);
+        }
+
+        private void RenderToViewport(RenderTarget2D? renderTarget)
+        {
+            this.spriteBatch!.Begin(
+                SpriteSortMode.Deferred,
+                BlendState.Opaque,
+                SamplerState.LinearClamp,
+                DepthStencilState.None,
+                RasterizerState.CullCounterClockwise);
+
+            this.spriteBatch!.Draw(
+                renderTarget,
+                new Rectangle(0, 0, this.GraphicsDevice.Viewport.Width, this.GraphicsDevice.Viewport.Height),
+                null,
+                Color.White);
+
+            this.spriteBatch!.End();
         }
     }
 }
