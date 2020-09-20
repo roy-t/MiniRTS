@@ -58,6 +58,7 @@ namespace MiniEngine.Editor
         protected override void UnloadContent()
         {
             this.renderPipeline!.Stop();
+            this.gui?.Dispose();
             base.UnloadContent();
         }
 

@@ -73,7 +73,7 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
 
     for (int i = 0; i < 16; i++)
     {
-        float2 tc = texCoord;
+        float2 tc = texCoord; // TODO: why do I use mapsize here as its in texture coordinates??
         tc.x += (Offsets[i].x * SampleRadius) / mapSize.x;
         tc.y += (Offsets[i].y * SampleRadius) / mapSize.y;
 

@@ -1,5 +1,5 @@
 # MiniRTS
-The name of this repository is MiniRTS, because when I started out I wanted to make an RTS game, inspired by games like Total Annihilation,  Supreme Commander: Forged Alliance, or Age of Empires (1, 2). But I got stuck in making a game engine! Which is what this repository is now focussed on.
+The name of this repository is MiniRTS, because when I started out I wanted to make an RTS game, inspired by games like Total Annihilation,  Supreme Commander: Forged Alliance, or Age of Empires (1, 2). But I got stuck in making a game engine! Which is what this repository is now focused on.
 
 # MiniEngine
 
@@ -8,6 +8,8 @@ MiniEngine is a work-in-progress rendering engine that I'm using as a personal r
 This contents of this repository is constantly subject to change, and I would not recommend using MiniEngine as an engine for your own projects. However, I do think my work here can be useful of you're trying to figure out how a technique works. MiniEngine currently includes the following effects.
 
 In 2019 I gave a presentation on real-time rendering where I talk about techniques used in this engine. See: https://youtu.be/l9Mx67fCr5I. 
+
+The current version is in the root folder, it is not necessarily finished, but the main features for an engine are there. The vNext folder contains several experiments which help me choose a possible next direction for this project.
 
 # General Architecture
 

@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace MiniEngine.Gui
 {
-    public sealed class ImGuiRenderer
+    public sealed class ImGuiRenderer : IDisposable
     {
         // Graphics
         private readonly GraphicsDevice GraphicsDevice;
@@ -356,6 +356,12 @@ namespace MiniEngine.Gui
 
                 vtxOffset += cmdList.VtxBuffer.Size;
             }
+        }
+
+        public void Dispose()
+        {
+            ImGui.DestroyContext();
+            this.Effect?.Dispose();
         }
     }
 }
