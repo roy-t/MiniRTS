@@ -14,7 +14,7 @@ namespace MiniEngine.ContentProcessors
             Section currentSection = null;
             foreach (var line in File.ReadAllLines(file))
             {
-                if (line.StartsWith(';'))
+                if (line.StartsWith(";"))
                     continue;
 
                 var sectionParts = line.Split('[', ']');

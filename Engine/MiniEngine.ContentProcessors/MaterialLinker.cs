@@ -8,7 +8,7 @@ namespace MiniEngine.ContentProcessors
         public static void Bind(ContentProcessorContext context, NodeContent node, string defaultNormalTexture, string defaultSpecularTexture, string defaultMaskTexture, string defaultReflectionTexture)
         {
             if (node is MeshContent mesh)
-            {                
+            {
                 var modelPath = mesh.Identity.SourceFilename;
                 var lookup = new MaterialDescriptionFile(modelPath);
 

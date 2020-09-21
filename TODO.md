@@ -1,13 +1,6 @@
-# Generate comets
-Use https://github.com/nerogann/MonogameComputeShader and https://www.youtube.com/watch?v=lctXaT9pxA0
+# BLOCKERS
 
-
-
-
-
-
-
-
+- The content pipeline extension doesn't work anymore, the MGCB editor sees it as invalid? Maybe it doesn't like .net core? Try again with .netstandard. (It still builds now because the old binary is there....?)
 
 # WIP
 - Textures for models need more margin between island to avoid bleeding. Exhaust misses inside of the pipe
