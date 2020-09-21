@@ -29,20 +29,22 @@ namespace LinearWorkFlow
             {
                 GraphicsProfile = GraphicsProfile.HiDef
             };
+
+            this.Graphics.PreferredBackBufferFormat = SurfaceFormat.ColorSRgb;
             this.Content.RootDirectory = "Content";
             this.IsMouseVisible = true;
         }
 
         protected override void LoadContent()
         {
-            this.red = new Texture2D(this.GraphicsDevice, 16, 16, false, SurfaceFormat.Color);
+            this.red = new Texture2D(this.GraphicsDevice, 16, 16, false, SurfaceFormat.ColorSRgb);
             this.red.SetData(Enumerable.Repeat(Color.Red, this.red.Width * this.red.Height).ToArray());
 
-            this.green = new Texture2D(this.GraphicsDevice, 16, 16, false, SurfaceFormat.Color);
+            this.green = new Texture2D(this.GraphicsDevice, 16, 16, false, SurfaceFormat.ColorSRgb);
             this.green.SetData(Enumerable.Repeat(Color.Green, this.green.Width * this.green.Height).ToArray());
 
-            this.renderTargetA = new RenderTarget2D(this.Graphics.GraphicsDevice, this.Graphics.PreferredBackBufferWidth, this.Graphics.PreferredBackBufferHeight, false, SurfaceFormat.Color, DepthFormat.None);
-            this.renderTargetB = new RenderTarget2D(this.Graphics.GraphicsDevice, this.Graphics.PreferredBackBufferWidth, this.Graphics.PreferredBackBufferHeight, false, SurfaceFormat.Color, DepthFormat.None);
+            this.renderTargetA = new RenderTarget2D(this.Graphics.GraphicsDevice, this.Graphics.PreferredBackBufferWidth, this.Graphics.PreferredBackBufferHeight, false, SurfaceFormat.ColorSRgb, DepthFormat.None);
+            this.renderTargetB = new RenderTarget2D(this.Graphics.GraphicsDevice, this.Graphics.PreferredBackBufferWidth, this.Graphics.PreferredBackBufferHeight, false, SurfaceFormat.ColorSRgb, DepthFormat.None);
 
             this.effect = this.Content.Load<Effect>("Shader");
 
@@ -96,10 +98,12 @@ namespace LinearWorkFlow
 
             if (this.useGammeCorrectness)
             {
+                this.Window.Title = "With Gamma Correction in Shader";
                 this.DrawBlurredLinear(this.renderTargetA, fullScreenMatrix);
             }
             else
             {
+                this.Window.Title = "Without Gamma Correction in Shader";
                 this.DrawBlurred(this.renderTargetA, fullScreenMatrix);
             }
 
