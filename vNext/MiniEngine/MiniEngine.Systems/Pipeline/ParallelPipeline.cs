@@ -12,7 +12,8 @@ namespace MiniEngine.Systems.Pipeline
         private readonly Thread[] Threads;
         private readonly StageLockPrimitive StartFramePrimitive;
         private readonly StageLockPrimitive EndFramePrimitive;
-        private readonly StageLockPrimitive StagePrimitive;
+        private readonly StageLockPrimitive StageStartPrimitive;
+        private readonly StageLockPrimitive StageEndPrimitive;
 
         private PipelineState pipelineState;
 
@@ -22,10 +23,11 @@ namespace MiniEngine.Systems.Pipeline
             this.MaxConcurrency = this.PipelineStages.Max(stage => stage.Systems.Count);
             this.ExternalThreadIndex = this.MaxConcurrency;
 
-            this.StartFramePrimitive = new StageLockPrimitive(this.MaxConcurrency + 1, 10000);
-            this.EndFramePrimitive = new StageLockPrimitive(this.MaxConcurrency + 1, 10000);
+            this.StartFramePrimitive = new StageLockPrimitive(this.MaxConcurrency + 1);
+            this.EndFramePrimitive = new StageLockPrimitive(this.MaxConcurrency + 1);
 
-            this.StagePrimitive = new StageLockPrimitive(this.MaxConcurrency);
+            this.StageStartPrimitive = new StageLockPrimitive(this.MaxConcurrency);
+            this.StageEndPrimitive = new StageLockPrimitive(this.MaxConcurrency);
 
             this.Threads = new Thread[this.MaxConcurrency];
             for (var i = 0; i < this.MaxConcurrency; i++)
@@ -101,6 +103,8 @@ namespace MiniEngine.Systems.Pipeline
 
                 for (var currentStage = 0; currentStage < this.PipelineStages.Count; currentStage++)
                 {
+                    this.StageStartPrimitive.DecrementAndWait(threadIndex);
+
                     var stage = this.PipelineStages[currentStage];
                     if (threadIndex < stage.Systems.Count)
                     {
@@ -108,7 +112,7 @@ namespace MiniEngine.Systems.Pipeline
                         system.Process();
                     }
 
-                    this.StagePrimitive.DecrementAndWait(threadIndex);
+                    this.StageEndPrimitive.DecrementAndWait(threadIndex);
                 }
 
                 this.EndFramePrimitive.DecrementAndWait(threadIndex);

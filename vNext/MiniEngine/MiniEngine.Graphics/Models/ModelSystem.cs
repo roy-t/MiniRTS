@@ -6,7 +6,7 @@ namespace MiniEngine.Graphics.Models
     [System]
     public sealed class ModelSystem : ISystem
     {
-        public void Process(ModelComponent model, BodyComponent body)
+        public void Process(ModelComponent model, TransformComponent body)
         {
 
         }

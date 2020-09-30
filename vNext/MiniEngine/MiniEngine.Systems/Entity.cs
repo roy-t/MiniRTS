@@ -5,12 +5,12 @@ namespace MiniEngine.Systems
 {
     public struct Entity : IEquatable<Entity>
     {
-        public Entity(uint id)
+        internal Entity(int id)
         {
             this.Id = id;
         }
 
-        public uint Id { get; }
+        public int Id { get; }
 
         public bool Equals([AllowNull] Entity other) => this.Id == other.Id;
 

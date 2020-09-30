@@ -13,9 +13,9 @@
 
 #---------------------------------- Content ---------------------------------#
 
-#begin GeometryEffect.fx
+#begin Effects/GeometryEffect.fx
 /importer:EffectImporter
 /processor:EffectProcessor
 /processorParam:DebugMode=Auto
-/build:GeometryEffect.fx
+/build:Effects/GeometryEffect.fx
 

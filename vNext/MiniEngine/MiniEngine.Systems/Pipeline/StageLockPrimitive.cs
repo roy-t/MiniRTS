@@ -4,16 +4,14 @@ namespace MiniEngine.Systems.Pipeline
 {
     public sealed class StageLockPrimitive
     {
+        private const int Sleep1Threshold = -1;
         private readonly int MaxCount;
-        private readonly int Sleep1Threshold;
-        private readonly bool[] Flags;
         private readonly SpinWait[] Spins;
+        private int counter;
 
-        public StageLockPrimitive(int maxCount, int sleep1Threshold = -1)
+        public StageLockPrimitive(int maxCount)
         {
             this.MaxCount = maxCount;
-            this.Sleep1Threshold = sleep1Threshold;
-            this.Flags = new bool[maxCount];
             this.Spins = new SpinWait[maxCount];
 
             this.Reset();
@@ -21,43 +19,26 @@ namespace MiniEngine.Systems.Pipeline
 
         public void DecrementAndWait(int threadIndex)
         {
-            this.Flags[threadIndex] = false;
+            Interlocked.Increment(ref this.counter);
 
             if (threadIndex == 0)
             {
-                while (this.CountSum() > 0)
+                while (this.counter < this.MaxCount)
                 {
-                    this.Spins[threadIndex].SpinOnce(this.Sleep1Threshold);
+                    this.Spins[threadIndex].SpinOnce(Sleep1Threshold);
                 }
+
                 this.Reset();
+                return;
             }
 
-            while (this.CountSum() < this.MaxCount)
+            while (this.counter != 0)
             {
-                this.Spins[threadIndex].SpinOnce(this.Sleep1Threshold);
-            }
-
-            this.Spins[threadIndex].Reset();
-        }
-
-        private void Reset()
-        {
-            for (var i = 0; i < this.MaxCount; i++)
-            {
-                this.Flags[i] = true;
+                this.Spins[threadIndex].SpinOnce(Sleep1Threshold);
             }
         }
 
-        private int CountSum()
-        {
-            var sum = 0;
-            for (var i = 0; i < this.MaxCount; i++)
-            {
-                sum += this.Flags[i] ? 1 : 0;
-            }
-
-            return sum;
-        }
+        private void Reset() => this.counter = 0;
     }
 }
 

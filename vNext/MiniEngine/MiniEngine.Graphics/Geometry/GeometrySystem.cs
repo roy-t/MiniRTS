@@ -17,10 +17,10 @@ namespace MiniEngine.Graphics.Geometry
             this.Effect = effectFactory.Construct<GeometryEffect>();
         }
 
-        public void Process(GeometryComponent geometry, BodyComponent body, FrameService frameService)
+        public void Process(GeometryComponent geometry, TransformComponent transform, FrameService frameService)
         {
 
-            this.Effect.WorldViewProjection = body.World * frameService.Camera.ViewProjection;
+            this.Effect.WorldViewProjection = transform.Matrix * frameService.Camera.ViewProjection;
             this.Effect.Apply();
 
             this.Device.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, geometry.Vertices, 0, geometry.Vertices.Length, geometry.Indices, 0, geometry.Indices.Length / 3);

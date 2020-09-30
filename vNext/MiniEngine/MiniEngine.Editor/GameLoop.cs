@@ -8,8 +8,8 @@ using MiniEngine.Graphics;
 using MiniEngine.Graphics.Camera;
 using MiniEngine.Graphics.Geometry;
 using MiniEngine.Gui;
-using MiniEngine.Systems;
 using MiniEngine.Systems.Components;
+using MiniEngine.Systems.Entities;
 using MiniEngine.Systems.Pipeline;
 
 namespace MiniEngine.Editor
@@ -18,11 +18,14 @@ namespace MiniEngine.Editor
     {
         private readonly GraphicsDeviceManager Graphics;
         private readonly Register RegisterDelegate;
+        private readonly EntityAdministrator EntityAdministator;
         private new readonly ComponentAdministrator Components;
         private readonly RenderPipelineBuilder RenderPipelineBuilder;
 
         private readonly FrameService FrameService;
         private readonly PerspectiveCamera PrimaryCamera;
+
+        private readonly FrameCounter FrameCounter;
 
         private ParallelPipeline? renderPipeline;
         private SpriteBatch? spriteBatch;
@@ -35,16 +38,17 @@ namespace MiniEngine.Editor
 
         /*
          * Next steps:
-         * - Create a manager for entities, think of entity hierarchies
          * - Give the geometry service a real shader
          * - Generate a sphere, start experimenting with SRGB and PBR
          */
 
-        public GameLoop(Register registerDelegate, ComponentAdministrator componentAdministrator, RenderPipelineBuilder renderPipelineBuilder, FrameService frameService)
+        public GameLoop(Register registerDelegate, EntityAdministrator entityAdministator, ComponentAdministrator componentAdministrator, RenderPipelineBuilder renderPipelineBuilder, FrameService frameService)
         {
             this.RegisterDelegate = registerDelegate;
+            this.EntityAdministator = entityAdministator;
             this.Components = componentAdministrator;
             this.RenderPipelineBuilder = renderPipelineBuilder;
+            this.FrameService = frameService;
 
             this.Graphics = new GraphicsDeviceManager(this)
             {
@@ -60,7 +64,7 @@ namespace MiniEngine.Editor
 
             this.PrimaryCamera = new PerspectiveCamera(this.Graphics.PreferredBackBufferWidth / (float)this.Graphics.PreferredBackBufferHeight);
 
-            this.FrameService = frameService;
+            this.FrameCounter = new FrameCounter();
         }
 
         protected override void LoadContent()
@@ -76,10 +80,21 @@ namespace MiniEngine.Editor
             this.renderTarget = new RenderTarget2D(this.Graphics.GraphicsDevice, this.Graphics.PreferredBackBufferWidth, this.Graphics.PreferredBackBufferHeight, false, SurfaceFormat.Color, DepthFormat.Depth24);
             this.renderTargetBinding = this.gui.BindTexture(this.renderTarget);
 
-            var geometry = new GeometryComponent(new Entity(9), new GeometryVertex[0], new int[0]);
+            var entity = this.EntityAdministator.Create();
+
+            var vertices = new GeometryVertex[]
+            {
+                new GeometryVertex(Vector3.Left, Vector3.Backward),
+                new GeometryVertex(Vector3.Up, Vector3.Backward),
+                new GeometryVertex(Vector3.Right, Vector3.Backward)
+            };
+
+            var indices = new int[] { 0, 1, 2 };
+
+            var geometry = new GeometryComponent(entity, vertices, indices);
             this.Components.Add(geometry);
 
-            var body = new BodyComponent(new Entity(9));
+            var body = new TransformComponent(entity);
             this.Components.Add(body);
         }
 
@@ -90,9 +105,14 @@ namespace MiniEngine.Editor
             base.UnloadContent();
         }
 
+
+
         protected override void Update(GameTime gameTime)
         {
-            this.Window.Title = $"Editor :: {gameTime.ElapsedGameTime.TotalMilliseconds:F2}ms";
+            if (this.FrameCounter.Update(gameTime))
+            {
+                this.Window.Title = $"Editor :: {this.FrameCounter.MillisecondsPerFrame:F2}ms, {this.FrameCounter.FramesPerSecond} fps";
+            }
             base.Update(gameTime);
         }
 
@@ -141,6 +161,13 @@ namespace MiniEngine.Editor
                 if (ImGui.BeginMenu("View"))
                 {
                     ImGui.Checkbox("Docked", ref this.docked);
+
+                    var vsync = this.Graphics.SynchronizeWithVerticalRetrace;
+                    ImGui.Checkbox("VSync", ref vsync);
+                    this.Graphics.SynchronizeWithVerticalRetrace = vsync;
+                    this.IsFixedTimeStep = vsync;
+                    this.Graphics.ApplyChanges();
+
                     ImGui.Checkbox("Show Demo Window", ref this.showDemoWindow);
                     ImGui.EndMenu();
                 }
