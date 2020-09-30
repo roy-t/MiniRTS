@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using MiniEngine.Systems.Components;
 
@@ -10,86 +9,69 @@ namespace MiniEngine.Systems
         public void Process();
     }
 
-    public class SystemBindingWithoutComponents : ISystemBinding
+    public class SystemBinding : ISystemBinding
     {
         private readonly MethodInfo ProcessDelegate;
-        private readonly ISystemBase System;
-
-        public SystemBindingWithoutComponents(MethodInfo processDelegate, ISystemBase system)
-        {
-            this.ProcessDelegate = processDelegate;
-            this.System = system;
-        }
-
-        public void Process()
-            => this.ProcessDelegate.Invoke(this.System, null);
-
-        public override string ToString()
-            => $"{this.System.GetType().Name}";
-    }
-
-    public class SystemBindingWithOneComponent : ISystemBinding
-    {
-        private readonly MethodInfo ProcessDelegate;
-        private readonly ISystemBase System;
-        private readonly IComponentContainer ComponentContainer;
-        private readonly object[] Parameters;
-
-        public SystemBindingWithOneComponent(MethodInfo processDelegate, ISystemBase system, IComponentContainer componentContainer)
-        {
-            this.ProcessDelegate = processDelegate;
-            this.System = system;
-            this.ComponentContainer = componentContainer;
-            this.Parameters = new object[1];
-        }
-
-        public void Process()
-        {
-            for (var i = 0; i < this.ComponentContainer.Count; i++)
-            {
-                this.Parameters[0] = this.ComponentContainer[i];
-                this.ProcessDelegate.Invoke(this.System, this.Parameters);
-            }
-        }
-
-        public override string ToString()
-            => $"{this.System.GetType().Name}<{this.ComponentContainer.GetType().GenericTypeArguments[1].Name}>";
-    }
-
-    public class SystemBindingWithManyComponents : ISystemBinding
-    {
-        private readonly MethodInfo ProcessDelegate;
-        private readonly ISystemBase System;
+        private readonly ISystem System;
         private readonly IReadOnlyList<IComponentContainer> ComponentContainers;
+        private readonly IReadOnlyList<int> ComponentIndices;
+        private readonly IReadOnlyList<object> Services;
+        private readonly IReadOnlyList<int> ServiceIndices;
         private readonly object[] Parameters;
 
-        public SystemBindingWithManyComponents(MethodInfo processDelegate, ISystemBase system, IReadOnlyList<IComponentContainer> componentContainers)
+        public SystemBinding(MethodInfo processDelegate, ISystem system, IReadOnlyList<IComponentContainer> componentContainers, IReadOnlyList<int> componentIndices, IReadOnlyList<object> services, IReadOnlyList<int> serviceIndices)
         {
             this.ProcessDelegate = processDelegate;
             this.System = system;
             this.ComponentContainers = componentContainers;
-            this.Parameters = new object[componentContainers.Count];
+            this.ComponentIndices = componentIndices;
+            this.Services = services;
+            this.ServiceIndices = serviceIndices;
+            this.Parameters = new object[componentContainers.Count + services.Count];
         }
 
         public void Process()
         {
-            for (var c = 0; c < this.ComponentContainers[0].Count; c++)
+            this.SetServiceParameters();
+            if (this.ComponentContainers.Count > 0)
             {
-                var primaryComponent = this.ComponentContainers[0][c];
-                this.Parameters[0] = primaryComponent;
-                var entity = primaryComponent.Entity;
-                for (var i = 1; i < this.Parameters.Length; i++)
-                {
-                    var componentContainer = this.ComponentContainers[i];
-                    this.Parameters[i] = componentContainer[entity];
-
-                }
-
+                this.ProcessComponents();
+            }
+            else
+            {
                 this.ProcessDelegate.Invoke(this.System, this.Parameters);
             }
         }
 
-        public override string ToString()
-            => $"{this.System.GetType().Name}<{string.Join(", ", this.ComponentContainers.Select(c => c.GetType().GenericTypeArguments[1].Name))}>";
+        private void SetServiceParameters()
+        {
+            for (var s = 0; s < this.Services.Count; s++)
+            {
+                this.Parameters[this.ServiceIndices[s]] = this.Services[s];
+            }
+        }
+
+        private void ProcessComponents()
+        {
+            var primaryComponentContainer = this.ComponentContainers[this.ComponentIndices[0]];
+
+            for (var c = 0; c < primaryComponentContainer.Count; c++)
+            {
+                var primaryComponent = primaryComponentContainer[c];
+                this.ProcessComponents(primaryComponent.Entity);
+            }
+        }
+
+        private void ProcessComponents(Entity entity)
+        {
+            for (var c = 0; c < this.ComponentContainers.Count; c++)
+            {
+                var componentContainer = this.ComponentContainers[c];
+                var component = componentContainer[entity];
+                this.Parameters[this.ComponentIndices[c]] = component;
+            }
+
+            this.ProcessDelegate.Invoke(this.System, this.Parameters);
+        }
     }
 }

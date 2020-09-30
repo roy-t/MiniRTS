@@ -4,7 +4,12 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
 using MiniEngine.Editor.Configuration;
+using MiniEngine.Graphics;
+using MiniEngine.Graphics.Camera;
+using MiniEngine.Graphics.Geometry;
 using MiniEngine.Gui;
+using MiniEngine.Systems;
+using MiniEngine.Systems.Components;
 using MiniEngine.Systems.Pipeline;
 
 namespace MiniEngine.Editor
@@ -13,7 +18,11 @@ namespace MiniEngine.Editor
     {
         private readonly GraphicsDeviceManager Graphics;
         private readonly Register RegisterDelegate;
+        private new readonly ComponentAdministrator Components;
         private readonly RenderPipelineBuilder RenderPipelineBuilder;
+
+        private readonly FrameService FrameService;
+        private readonly PerspectiveCamera PrimaryCamera;
 
         private ParallelPipeline? renderPipeline;
         private SpriteBatch? spriteBatch;
@@ -24,8 +33,19 @@ namespace MiniEngine.Editor
         private bool docked = true;
         private bool showDemoWindow = false;
 
-        public GameLoop(Register registerDelegate, RenderPipelineBuilder renderPipelineBuilder)
+        /*
+         * Next steps:
+         * - Create a manager for entities, think of entity hierarchies
+         * - Give the geometry service a real shader
+         * - Generate a sphere, start experimenting with SRGB and PBR
+         */
+
+        public GameLoop(Register registerDelegate, ComponentAdministrator componentAdministrator, RenderPipelineBuilder renderPipelineBuilder, FrameService frameService)
         {
+            this.RegisterDelegate = registerDelegate;
+            this.Components = componentAdministrator;
+            this.RenderPipelineBuilder = renderPipelineBuilder;
+
             this.Graphics = new GraphicsDeviceManager(this)
             {
                 PreferredBackBufferWidth = 1920,
@@ -37,8 +57,10 @@ namespace MiniEngine.Editor
 
             this.Content.RootDirectory = "Content";
             this.IsMouseVisible = true;
-            this.RegisterDelegate = registerDelegate;
-            this.RenderPipelineBuilder = renderPipelineBuilder;
+
+            this.PrimaryCamera = new PerspectiveCamera(this.Graphics.PreferredBackBufferWidth / (float)this.Graphics.PreferredBackBufferHeight);
+
+            this.FrameService = frameService;
         }
 
         protected override void LoadContent()
@@ -53,6 +75,12 @@ namespace MiniEngine.Editor
 
             this.renderTarget = new RenderTarget2D(this.Graphics.GraphicsDevice, this.Graphics.PreferredBackBufferWidth, this.Graphics.PreferredBackBufferHeight, false, SurfaceFormat.Color, DepthFormat.Depth24);
             this.renderTargetBinding = this.gui.BindTexture(this.renderTarget);
+
+            var geometry = new GeometryComponent(new Entity(9), new GeometryVertex[0], new int[0]);
+            this.Components.Add(geometry);
+
+            var body = new BodyComponent(new Entity(9));
+            this.Components.Add(body);
         }
 
         protected override void UnloadContent()
@@ -71,6 +99,8 @@ namespace MiniEngine.Editor
         protected override void Draw(GameTime gameTime)
         {
             this.gui!.BeforeLayout(gameTime);
+
+            this.FrameService.Camera = this.PrimaryCamera;
 
             this.RunPipeline();
             this.ShowMainMenuBar();
@@ -143,7 +173,7 @@ namespace MiniEngine.Editor
         private void RenderToViewport(RenderTarget2D? renderTarget)
         {
             this.spriteBatch!.Begin(
-                SpriteSortMode.Deferred,
+                SpriteSortMode.Immediate,
                 BlendState.Opaque,
                 SamplerState.LinearClamp,
                 DepthStencilState.None,

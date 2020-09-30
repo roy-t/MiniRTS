@@ -16,7 +16,7 @@ namespace MiniEngine.Systems.Pipeline
         }
 
         public static SystemSpec Construct<T>()
-            where T : ISystemBase
+            where T : ISystem
             => new SystemSpec(typeof(T));
 
         public Type SystemType { get; }

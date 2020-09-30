@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Reflection;
+using MiniEngine.Configuration;
 using MiniEngine.Systems.Components;
 
 namespace MiniEngine.Systems
@@ -9,41 +10,40 @@ namespace MiniEngine.Systems
     {
         private static readonly string ProcessMethod = "Process";
 
-        public static List<ISystemBinding> BindSystem(ISystemBase system, Dictionary<Type, IComponentContainer> componentContainers)
+        public static List<ISystemBinding> BindSystem(ISystem system, Resolve resolver, Dictionary<Type, IComponentContainer> componentContainers)
         {
             var systemBindings = new List<ISystemBinding>();
             var type = system.GetType();
-            var interfaces = type.GetInterfaces();
 
-            foreach (var @interface in interfaces)
+            var methods = type.GetMethods(BindingFlags.Public | BindingFlags.Instance);
+            foreach (var method in methods)
             {
-                if (typeof(ISystemBase).IsAssignableFrom(@interface) && @interface != typeof(ISystemBase))
+                if (ProcessMethod.Equals(method.Name))
                 {
-                    var method = @interface?.GetMethod(ProcessMethod);
-                    var parameters = method?.GetParameters().Select(p => p.ParameterType).ToArray() ?? new Type[0];
-                    var processor = type.GetMethod(ProcessMethod, parameters)!;
+                    var parameters = method.GetParameters();
 
-                    var arguments = @interface?.GetGenericArguments() ?? new Type[0];
+                    var containers = new List<IComponentContainer>();
+                    var containerIndices = new List<int>();
 
-                    if (arguments.Length == 0)
+                    var services = new List<object>();
+                    var serviceIndices = new List<int>();
+
+                    for (var i = 0; i < parameters.Length; i++)
                     {
-                        systemBindings.Add(new SystemBindingWithoutComponents(processor, system));
-                    }
-                    else if (arguments.Length == 1)
-                    {
-                        var parameterLookup = componentContainers[arguments[0]];
-                        systemBindings.Add(new SystemBindingWithOneComponent(processor, system, parameterLookup));
-                    }
-                    else
-                    {
-                        var parameterLookups = new IComponentContainer[arguments.Length];
-                        for (var i = 0; i < arguments.Length; i++)
+                        var parameter = parameters[i];
+                        if (componentContainers.TryGetValue(parameter.ParameterType, out var container))
                         {
-                            parameterLookups[i] = componentContainers[arguments[i]];
+                            containers.Add(container);
+                            containerIndices.Add(i);
                         }
-                        systemBindings.Add(new SystemBindingWithManyComponents(processor, system, parameterLookups));
+                        else
+                        {
+                            services.Add(resolver(parameter.ParameterType));
+                            serviceIndices.Add(i);
+                        }
                     }
 
+                    systemBindings.Add(new SystemBinding(method, system, containers, containerIndices, services, serviceIndices));
                 }
             }
 

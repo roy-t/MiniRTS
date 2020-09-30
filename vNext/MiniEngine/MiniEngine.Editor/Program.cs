@@ -9,7 +9,7 @@ namespace MiniEngine.Editor
         static void Main()
         {
             using var injector = new Injector();
-            using var game = injector.Create<GameLoop>();
+            using var game = injector.Get<GameLoop>();
             game.Run();
         }
     }

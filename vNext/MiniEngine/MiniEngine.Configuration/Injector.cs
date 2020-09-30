@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using LightInject;
@@ -14,6 +15,7 @@ namespace MiniEngine.Configuration
     public sealed class Injector : IDisposable
     {
         private readonly ServiceContainer Container;
+        private readonly ILogger Logger;
 
         public Injector()
         {
@@ -27,6 +29,7 @@ namespace MiniEngine.Configuration
                 .CreateLogger();
 
             this.Container.RegisterInstance(Log.Logger);
+            this.Logger = Log.Logger;
 
             Resolve resolveDelegate = type => this.Container.Create(type);
             this.Container.RegisterInstance(resolveDelegate);
@@ -35,11 +38,9 @@ namespace MiniEngine.Configuration
             this.Container.RegisterInstance(registerDelegate);
 
             this.RegisterTypesFromReferencedAssemblies();
-
-            Log.Logger.Information("Registered {@count} services", this.Container.AvailableServices.Count());
         }
 
-        public T Create<T>()
+        public T Get<T>()
          where T : class
          => this.Container.Create<T>();
 
@@ -48,7 +49,7 @@ namespace MiniEngine.Configuration
 
         private void RegisterTypesFromReferencedAssemblies()
         {
-            var assemblies = LoadAssemblies();
+            var assemblies = this.LoadAssemblies();
 
             var componentTypes = new List<Type>();
             Type? containerType = null;
@@ -60,16 +61,24 @@ namespace MiniEngine.Configuration
                     if (IsComponentType(concreteType) && serviceType == concreteType)
                     {
                         componentTypes.Add(concreteType);
+                        this.Logger.Debug("Registered component {@component}", concreteType.FullName);
                         return false;
                     }
 
-                    if (IsContainerType(concreteType))
+                    if (IsContainerType(concreteType) && serviceType == concreteType)
                     {
                         containerType = concreteType;
+                        this.Logger.Debug("Registered container {@container}", concreteType.FullName);
                         return false;
                     }
 
-                    return IsInjectableType(concreteType);
+                    if (IsServiceType(concreteType))
+                    {
+                        this.Logger.Debug("Registered service {@service}", concreteType.FullName);
+                        return true;
+                    }
+
+                    return false;
                 });
             }
 
@@ -79,27 +88,52 @@ namespace MiniEngine.Configuration
             }
 
             this.RegisterComponentContainers(containerType, componentTypes);
+
+            this.Logger.Information("Registered {@count} services", this.Container.AvailableServices.Count());
         }
 
-        private static IEnumerable<Assembly> LoadAssemblies()
+        private IEnumerable<Assembly> LoadAssemblies()
         {
-            var entryAssembly = Assembly.GetEntryAssembly();
-            if (entryAssembly != null)
+            var cwd = Directory.GetCurrentDirectory();
+            this.Logger.Information("Loading assemblies from {@directory}", cwd);
+
+            var assemblies = new List<Assembly>();
+            foreach (var file in Directory.EnumerateFiles(cwd, "*.dll"))
             {
-                return entryAssembly.GetReferencedAssemblies()
-                    .Where(name => name.FullName.Contains("MiniEngine", StringComparison.OrdinalIgnoreCase))
-                    .Select(name => Assembly.Load(name))
-                    .Append(entryAssembly);
+                try
+                {
+                    var assemblyName = AssemblyName.GetAssemblyName(file);
+                    if (IsRelevantAssembly(assemblyName))
+                    {
+                        this.Logger.Information("Loading {@assembly}", assemblyName.FullName);
+                        var assembly = Assembly.LoadFrom(file);
+                        assemblies.Add(assembly);
+                    }
+                    else
+                    {
+                        this.Logger.Debug("Ignoring {@assembly} as its not a relevant assembly", assemblyName.FullName);
+                    }
+                }
+                catch (BadImageFormatException)
+                {
+                    this.Logger.Debug("Ignoring {@file} as its not a .NET assembly", file);
+                }
             }
 
-            return Enumerable.Empty<Assembly>();
+            return assemblies;
         }
 
-        private static bool IsInjectableType(Type type) => (type.IsDefined(typeof(ServiceAttribute), true) || type.IsDefined(typeof(SystemAttribute), true)) && !type.IsAbstract;
+        private static bool IsServiceType(Type type) => (type.IsDefined(typeof(ServiceAttribute), true) || type.IsDefined(typeof(SystemAttribute), true)) && !type.IsAbstract;
 
         private static bool IsComponentType(Type type) => type.IsDefined(typeof(ComponentAttribute), true) && !type.IsAbstract;
 
         private static bool IsContainerType(Type type) => type.IsDefined(typeof(ComponentContainerAttribute), true) && !type.IsAbstract;
+
+        private static bool IsRelevantAssembly(AssemblyName name)
+        {
+            var names = new[] { "Microsoft", "MonoGame", "Serilog", "SharpDX", "LightInject", "ImGui.NET" };
+            return !names.Any(n => name.FullName.StartsWith(n));
+        }
 
         private void RegisterComponentContainers(Type containerType, List<Type> componentTypes)
         {

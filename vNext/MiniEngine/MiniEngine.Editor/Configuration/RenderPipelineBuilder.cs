@@ -1,5 +1,6 @@
 ﻿using MiniEngine.Configuration;
 using MiniEngine.Graphics;
+using MiniEngine.Graphics.Geometry;
 using MiniEngine.Graphics.Models;
 using MiniEngine.Systems.Pipeline;
 using MiniEngine.Systems.Services;
@@ -25,7 +26,10 @@ namespace MiniEngine.Editor.Configuration
                                                                   .Produces("GBuffer", "Cleared"))
                 .AddSystem<ModelSystem>(modelSystem => modelSystem.InSequence()
                                                                   .Requires("GBuffer", "Cleared")
-                                                                  .Produces("Models", "Shaded"));
+                                                                  .Produces("Models", "Shaded"))
+                .AddSystem<GeometrySystem>(geometrySystem => geometrySystem.InSequence()
+                                                                           .Requires("GBuffer", "Cleared")
+                                                                           .Produces("Geometry", "Shaded"));
 
             return builder.Build();
         }

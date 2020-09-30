@@ -29,7 +29,7 @@ namespace MiniEngine.Systems.Services
             }
 
             public IntermediatePipelineBuilder AddSystem<T>(Func<SystemSpec, SystemSpec> chain)
-           where T : ISystemBase
+           where T : ISystem
             {
                 var spec = SystemSpec.Construct<T>();
                 this.SystemSpecs.Add(chain(spec));
@@ -50,8 +50,8 @@ namespace MiniEngine.Systems.Services
                     {
                         var systemSpec = stage[j];
 
-                        var system = (ISystemBase)this.ResolveDelegate(systemSpec.SystemType);
-                        systemBindings.AddRange(SystemBinder.BindSystem(system, this.ComponentContainers));
+                        var system = (ISystem)this.ResolveDelegate(systemSpec.SystemType);
+                        systemBindings.AddRange(SystemBinder.BindSystem(system, this.ResolveDelegate, this.ComponentContainers));
 
                     }
 

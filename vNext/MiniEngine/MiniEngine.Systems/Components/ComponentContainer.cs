@@ -13,6 +13,8 @@ namespace MiniEngine.Systems.Components
         int Count { get; }
 
         Type ComponentType { get; }
+
+        void AddUnsafe(AComponent component);
     }
 
     [ComponentContainer]
@@ -37,6 +39,8 @@ namespace MiniEngine.Systems.Components
         public T this[Entity entity] => this.LookUp[entity];
 
         AComponent IComponentContainer.this[Entity entity] => this[entity];
+
+        public void AddUnsafe(AComponent component) => this.Add((T)component);
 
         public void Add(T item)
         {

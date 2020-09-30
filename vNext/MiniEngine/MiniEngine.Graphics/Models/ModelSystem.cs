@@ -4,7 +4,7 @@ using MiniEngine.Systems;
 namespace MiniEngine.Graphics.Models
 {
     [System]
-    public sealed class ModelSystem : ISystem<ModelComponent, BodyComponent>
+    public sealed class ModelSystem : ISystem
     {
         public void Process(ModelComponent model, BodyComponent body)
         {
