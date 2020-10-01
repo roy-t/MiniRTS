@@ -31,7 +31,7 @@ namespace MiniEngine.Configuration
             this.Container.RegisterInstance(Log.Logger);
             this.Logger = Log.Logger;
 
-            Resolve resolveDelegate = type => this.Container.Create(type);
+            Resolve resolveDelegate = type => this.Container.GetInstance(type);
             this.Container.RegisterInstance(resolveDelegate);
 
             Register registerDelegate = o => this.Container.RegisterInstance(o.GetType(), o);

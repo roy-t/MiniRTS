@@ -6,7 +6,7 @@ using MiniEngine.Configuration;
 using MiniEngine.Editor.Configuration;
 using MiniEngine.Graphics;
 using MiniEngine.Graphics.Camera;
-using MiniEngine.Graphics.Geometry;
+using MiniEngine.Graphics.Geometry.Generators;
 using MiniEngine.Gui;
 using MiniEngine.Systems.Components;
 using MiniEngine.Systems.Entities;
@@ -54,7 +54,7 @@ namespace MiniEngine.Editor
             {
                 PreferredBackBufferWidth = 1920,
                 PreferredBackBufferHeight = 1080,
-                PreferMultiSampling = true,
+                PreferMultiSampling = false,
                 SynchronizeWithVerticalRetrace = true,
                 GraphicsProfile = GraphicsProfile.HiDef
             };
@@ -63,7 +63,6 @@ namespace MiniEngine.Editor
             this.IsMouseVisible = true;
 
             this.PrimaryCamera = new PerspectiveCamera(this.Graphics.PreferredBackBufferWidth / (float)this.Graphics.PreferredBackBufferHeight);
-
             this.FrameCounter = new FrameCounter();
         }
 
@@ -81,20 +80,11 @@ namespace MiniEngine.Editor
             this.renderTargetBinding = this.gui.BindTexture(this.renderTarget);
 
             var entity = this.EntityAdministator.Create();
-
-            var vertices = new GeometryVertex[]
-            {
-                new GeometryVertex(Vector3.Left, Vector3.Backward),
-                new GeometryVertex(Vector3.Up, Vector3.Backward),
-                new GeometryVertex(Vector3.Right, Vector3.Backward)
-            };
-
-            var indices = new int[] { 0, 1, 2 };
-
-            var geometry = new GeometryComponent(entity, vertices, indices);
+            var geometry = SpherifiedCubeGenerator.Generate(entity, 6);
             this.Components.Add(geometry);
 
             var body = new TransformComponent(entity);
+            body.Matrix = Matrix.CreateTranslation(Vector3.Forward * 3);
             this.Components.Add(body);
         }
 
@@ -104,8 +94,6 @@ namespace MiniEngine.Editor
             this.gui?.Dispose();
             base.UnloadContent();
         }
-
-
 
         protected override void Update(GameTime gameTime)
         {
@@ -118,11 +106,10 @@ namespace MiniEngine.Editor
 
         protected override void Draw(GameTime gameTime)
         {
-            this.gui!.BeforeLayout(gameTime);
-
             this.FrameService.Camera = this.PrimaryCamera;
-
             this.RunPipeline();
+
+            this.gui!.BeforeLayout(gameTime);
             this.ShowMainMenuBar();
 
             if (this.docked)
@@ -139,8 +126,8 @@ namespace MiniEngine.Editor
             {
                 ImGui.ShowDemoWindow();
             }
-
             this.gui!.AfterLayout();
+
             base.Draw(gameTime);
         }
 
@@ -208,7 +195,7 @@ namespace MiniEngine.Editor
 
             this.spriteBatch!.Draw(
                 renderTarget,
-                new Rectangle(0, 0, this.GraphicsDevice.Viewport.Width, this.GraphicsDevice.Viewport.Height),
+                new Rectangle(0, 0, this.Graphics.PreferredBackBufferWidth, this.Graphics.PreferredBackBufferHeight),
                 null,
                 Color.White);
 

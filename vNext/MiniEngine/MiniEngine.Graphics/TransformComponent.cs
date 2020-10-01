@@ -11,6 +11,6 @@ namespace MiniEngine.Graphics
             this.Matrix = Matrix.Identity;
         }
 
-        public Matrix Matrix { get; }
+        public Matrix Matrix { get; set; }
     }
 }

@@ -7,7 +7,7 @@ namespace MiniEngine.Graphics.Camera
         public PerspectiveCamera(float aspectRatio)
         {
             this.AspectRatio = aspectRatio;
-            this.Move(Vector3.Zero, Vector3.Forward);
+            this.Move(Vector3.Backward * 10, Vector3.Forward);
         }
 
         public float NearPlane => 0.1f;
@@ -16,7 +16,7 @@ namespace MiniEngine.Graphics.Camera
 
         public float FieldOfView => MathHelper.PiOver2;
 
-        public float AspectRatio { get; private set; }
+        public float AspectRatio { get; }
 
         public Vector3 Position { get; private set; }
 
