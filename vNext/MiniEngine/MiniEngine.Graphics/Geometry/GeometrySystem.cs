@@ -19,8 +19,11 @@ namespace MiniEngine.Graphics.Geometry
 
         public void Process(GeometryComponent geometry, TransformComponent transform, FrameService frameService)
         {
+            // TODO: this is overriden by ImGuiRenderer, every system should have a setup step so it can fix things like these once
+            this.Device.DepthStencilState = DepthStencilState.Default;
 
             this.Effect.WorldViewProjection = transform.Matrix * frameService.Camera.ViewProjection;
+            this.Effect.Diffuse = geometry.Diffuse;
             this.Effect.Apply();
 
             this.Device.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, geometry.Vertices, 0, geometry.Vertices.Length, geometry.Indices, 0, geometry.Indices.Length / 3);

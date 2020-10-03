@@ -20,4 +20,8 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Content\Textures\" />
+  </ItemGroup>
+
 </Project>

@@ -2,8 +2,10 @@
 using ImGuiNET;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using MiniEngine.Configuration;
 using MiniEngine.Editor.Configuration;
+using MiniEngine.Editor.Controllers;
 using MiniEngine.Graphics;
 using MiniEngine.Graphics.Camera;
 using MiniEngine.Graphics.Geometry.Generators;
@@ -23,6 +25,9 @@ namespace MiniEngine.Editor
         private readonly RenderPipelineBuilder RenderPipelineBuilder;
 
         private readonly FrameService FrameService;
+        private readonly KeyboardController Keyboard;
+        private readonly MouseController Mouse;
+        private readonly CameraController CameraController;
         private readonly PerspectiveCamera PrimaryCamera;
 
         private readonly FrameCounter FrameCounter;
@@ -42,14 +47,17 @@ namespace MiniEngine.Editor
          * - Generate a sphere, start experimenting with SRGB and PBR
          */
 
-        public GameLoop(Register registerDelegate, EntityAdministrator entityAdministator, ComponentAdministrator componentAdministrator, RenderPipelineBuilder renderPipelineBuilder, FrameService frameService)
+        public GameLoop(Register registerDelegate, EntityAdministrator entityAdministator, ComponentAdministrator componentAdministrator, RenderPipelineBuilder renderPipelineBuilder, FrameService frameService,
+            KeyboardController keyboard, MouseController mouse, CameraController cameraController)
         {
             this.RegisterDelegate = registerDelegate;
             this.EntityAdministator = entityAdministator;
             this.Components = componentAdministrator;
             this.RenderPipelineBuilder = renderPipelineBuilder;
             this.FrameService = frameService;
-
+            this.Keyboard = keyboard;
+            this.Mouse = mouse;
+            this.CameraController = cameraController;
             this.Graphics = new GraphicsDeviceManager(this)
             {
                 PreferredBackBufferWidth = 1920,
@@ -80,7 +88,8 @@ namespace MiniEngine.Editor
             this.renderTargetBinding = this.gui.BindTexture(this.renderTarget);
 
             var entity = this.EntityAdministator.Create();
-            var geometry = SpherifiedCubeGenerator.Generate(entity, 6);
+            var blue = this.Content.Load<Texture2D>(@"Textures\Blue");
+            var geometry = SpherifiedCubeGenerator.Generate(entity, 6, blue);
             this.Components.Add(geometry);
 
             var body = new TransformComponent(entity);
@@ -97,6 +106,17 @@ namespace MiniEngine.Editor
 
         protected override void Update(GameTime gameTime)
         {
+            this.Keyboard.Update();
+            this.Mouse.Update();
+
+            if (this.Keyboard.Pressed(Keys.Escape))
+            {
+                this.Exit();
+            }
+
+            var elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            this.CameraController.Update(this.PrimaryCamera, elapsed);
+
             if (this.FrameCounter.Update(gameTime))
             {
                 this.Window.Title = $"Editor :: {this.FrameCounter.MillisecondsPerFrame:F2}ms, {this.FrameCounter.FramesPerSecond} fps";
@@ -190,7 +210,7 @@ namespace MiniEngine.Editor
                 SpriteSortMode.Immediate,
                 BlendState.Opaque,
                 SamplerState.LinearClamp,
-                DepthStencilState.None,
+                DepthStencilState.Default,
                 RasterizerState.CullCounterClockwise);
 
             this.spriteBatch!.Draw(

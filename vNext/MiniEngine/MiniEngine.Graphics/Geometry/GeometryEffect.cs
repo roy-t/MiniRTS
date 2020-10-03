@@ -13,6 +13,8 @@ namespace MiniEngine.Graphics.Geometry
 
         public Matrix WorldViewProjection { set => this.Effect.Parameters["WorldViewProjection"].SetValue(value); }
 
+        public Texture2D Diffuse { set => this.Effect.Parameters["Diffuse"].SetValue(value); }
+
         public void Apply() => this.ApplyPass();
     }
 }
