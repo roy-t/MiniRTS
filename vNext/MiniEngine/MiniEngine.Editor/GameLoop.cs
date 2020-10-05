@@ -9,6 +9,7 @@ using MiniEngine.Editor.Controllers;
 using MiniEngine.Graphics;
 using MiniEngine.Graphics.Camera;
 using MiniEngine.Graphics.Geometry.Generators;
+using MiniEngine.Graphics.Rendering;
 using MiniEngine.Gui;
 using MiniEngine.Systems.Components;
 using MiniEngine.Systems.Entities;
@@ -32,20 +33,13 @@ namespace MiniEngine.Editor
 
         private readonly FrameCounter FrameCounter;
 
-        private ParallelPipeline? renderPipeline;
-        private SpriteBatch? spriteBatch;
-        private RenderTarget2D? renderTarget;
-        private IntPtr renderTargetBinding;
+        private ParallelPipeline renderPipeline = null!;
+        private SpriteBatch spriteBatch = null!;
+        private RenderTargetSet renderTargetSet = null!;
+        private ImGuiRenderer gui = null!;
 
-        private ImGuiRenderer? gui;
         private bool docked = true;
         private bool showDemoWindow = false;
-
-        /*
-         * Next steps:
-         * - Give the geometry service a real shader
-         * - Generate a sphere, start experimenting with SRGB and PBR
-         */
 
         public GameLoop(Register registerDelegate, EntityAdministrator entityAdministator, ComponentAdministrator componentAdministrator, RenderPipelineBuilder renderPipelineBuilder, FrameService frameService,
             KeyboardController keyboard, MouseController mouse, CameraController cameraController)
@@ -84,23 +78,22 @@ namespace MiniEngine.Editor
             this.renderPipeline = this.RenderPipelineBuilder.Build();
             this.spriteBatch = new SpriteBatch(this.Graphics.GraphicsDevice);
 
-            this.renderTarget = new RenderTarget2D(this.Graphics.GraphicsDevice, this.Graphics.PreferredBackBufferWidth, this.Graphics.PreferredBackBufferHeight, false, SurfaceFormat.Color, DepthFormat.Depth24);
-            this.renderTargetBinding = this.gui.BindTexture(this.renderTarget);
+            this.renderTargetSet = new RenderTargetSet(this.GraphicsDevice, this.Graphics.PreferredBackBufferWidth, this.Graphics.PreferredBackBufferHeight);
 
             var entity = this.EntityAdministator.Create();
             var blue = this.Content.Load<Texture2D>(@"Textures\Blue");
-            var geometry = SpherifiedCubeGenerator.Generate(entity, 6, blue);
+            var geometry = SpherifiedCubeGenerator.Generate(entity, 31, blue);
             this.Components.Add(geometry);
 
-            var body = new TransformComponent(entity);
-            body.Matrix = Matrix.CreateTranslation(Vector3.Forward * 3);
+            var body = new TransformComponent(entity, Matrix.CreateTranslation(Vector3.Forward * 3));
             this.Components.Add(body);
         }
 
         protected override void UnloadContent()
         {
-            this.renderPipeline!.Stop();
-            this.gui?.Dispose();
+            this.renderPipeline.Stop();
+            this.gui.Dispose();
+
             base.UnloadContent();
         }
 
@@ -127,38 +120,37 @@ namespace MiniEngine.Editor
         protected override void Draw(GameTime gameTime)
         {
             this.FrameService.Camera = this.PrimaryCamera;
+            this.FrameService.RenderTargetSet = this.renderTargetSet;
             this.RunPipeline();
 
-            this.gui!.BeforeLayout(gameTime);
+            this.GraphicsDevice.SetRenderTarget(null);
+
+            this.gui.BeforeLayout(gameTime);
             this.ShowMainMenuBar();
 
             if (this.docked)
             {
                 ImGui.DockSpaceOverViewport();
-                this.RenderToWindow(this.renderTarget, this.renderTargetBinding);
+                this.RenderToWindow(this.FrameService.RenderTargetSet.Diffuse);
             }
             else
             {
-                this.RenderToViewport(this.renderTarget);
+                this.RenderToViewport(this.FrameService.RenderTargetSet.Diffuse);
             }
 
             if (this.showDemoWindow)
             {
                 ImGui.ShowDemoWindow();
             }
-            this.gui!.AfterLayout();
+            this.gui.AfterLayout();
 
             base.Draw(gameTime);
         }
 
         private void RunPipeline()
         {
-            this.GraphicsDevice.SetRenderTarget(this.renderTarget);
-
-            this.renderPipeline!.Run();
-            this.renderPipeline!.Wait();
-
-            this.GraphicsDevice.SetRenderTarget(null);
+            this.renderPipeline.Run();
+            this.renderPipeline.Wait();
         }
 
         private void ShowMainMenuBar()
@@ -182,14 +174,16 @@ namespace MiniEngine.Editor
             }
         }
 
-        private void RenderToWindow(RenderTarget2D? renderTarget, IntPtr renderTargetBinding)
+        private void RenderToWindow(RenderTarget2D renderTarget)
         {
             if (ImGui.Begin("Output"))
             {
                 var width = ImGui.GetWindowWidth();
                 var height = ImGui.GetWindowHeight() - (ImGui.GetFrameHeightWithSpacing() * 2);
-                var imageSize = FitToBounds(renderTarget?.Width ?? 1, renderTarget?.Height ?? 1, width, height);
-                ImGui.Image(renderTargetBinding, imageSize);
+                var imageSize = FitToBounds(renderTarget.Width, renderTarget.Height, width, height);
+
+                var pointer = this.gui.BindTexture(renderTarget);
+                ImGui.Image(pointer, imageSize);
 
                 ImGui.End();
             }
@@ -204,22 +198,22 @@ namespace MiniEngine.Editor
             return new Vector2(sourceWidth * ratio, sourceHeight * ratio);
         }
 
-        private void RenderToViewport(RenderTarget2D? renderTarget)
+        private void RenderToViewport(RenderTarget2D renderTarget)
         {
-            this.spriteBatch!.Begin(
+            this.spriteBatch.Begin(
                 SpriteSortMode.Immediate,
                 BlendState.Opaque,
                 SamplerState.LinearClamp,
                 DepthStencilState.Default,
                 RasterizerState.CullCounterClockwise);
 
-            this.spriteBatch!.Draw(
+            this.spriteBatch.Draw(
                 renderTarget,
                 new Rectangle(0, 0, this.Graphics.PreferredBackBufferWidth, this.Graphics.PreferredBackBufferHeight),
                 null,
                 Color.White);
 
-            this.spriteBatch!.End();
+            this.spriteBatch.End();
         }
     }
 }

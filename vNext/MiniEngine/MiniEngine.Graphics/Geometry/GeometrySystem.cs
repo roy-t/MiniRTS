@@ -9,20 +9,29 @@ namespace MiniEngine.Graphics.Geometry
     public sealed class GeometrySystem : ISystem
     {
         private readonly GraphicsDevice Device;
+        private readonly FrameService FrameService;
         private readonly GeometryEffect Effect;
 
-        public GeometrySystem(GraphicsDevice device, EffectFactory effectFactory)
+        public GeometrySystem(GraphicsDevice device, EffectFactory effectFactory, FrameService frameService)
         {
             this.Device = device;
+            this.FrameService = frameService;
             this.Effect = effectFactory.Construct<GeometryEffect>();
         }
 
-        public void Process(GeometryComponent geometry, TransformComponent transform, FrameService frameService)
+        public void OnSet()
         {
-            // TODO: this is overriden by ImGuiRenderer, every system should have a setup step so it can fix things like these once
+            this.Device.BlendState = BlendState.Opaque;
             this.Device.DepthStencilState = DepthStencilState.Default;
+            this.Device.RasterizerState = RasterizerState.CullCounterClockwise;
+            this.Device.SamplerStates[0] = SamplerState.AnisotropicClamp;
 
-            this.Effect.WorldViewProjection = transform.Matrix * frameService.Camera.ViewProjection;
+            this.Device.SetRenderTarget(this.FrameService.RenderTargetSet!.Diffuse);
+        }
+
+        public void Process(GeometryComponent geometry, TransformComponent transform)
+        {
+            this.Effect.WorldViewProjection = transform.Matrix * this.FrameService.Camera!.ViewProjection;
             this.Effect.Diffuse = geometry.Diffuse;
             this.Effect.Apply();
 

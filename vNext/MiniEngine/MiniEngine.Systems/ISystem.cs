@@ -1,8 +1,11 @@
 ﻿namespace MiniEngine.Systems
 {
     /// <summary>
-    /// Marker interface, every class implementing ISystem should have a method called Process with (n + m) arguments
-    /// the first n arguments should be of type AComponent, the last m arguments should be injectable services
+    /// Marker interface, every class implementing ISystem should have a method called Process. This method
+    /// can have multiple parameters, all of which should implement AComponent. 
     /// </summary>
-    public interface ISystem { }
+    public interface ISystem
+    {
+        public void OnSet();
+    }
 }

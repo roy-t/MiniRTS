@@ -5,6 +5,12 @@ namespace MiniEngine.Graphics
 {
     public sealed class TransformComponent : AComponent
     {
+        public TransformComponent(Entity entity, Matrix matrix)
+            : base(entity)
+        {
+            this.Matrix = matrix;
+        }
+
         public TransformComponent(Entity entity)
             : base(entity)
         {

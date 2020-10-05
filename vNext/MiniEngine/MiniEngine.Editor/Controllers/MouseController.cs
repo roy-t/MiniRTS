@@ -116,18 +116,12 @@ namespace MiniEngine.Editor.Controllers
             => this.ButtonStates[button] == InputState.JustReleased;
 
         private static bool IsButtonDown(MouseButtons button, MouseState state)
-        {
-            switch (button)
+            => button switch
             {
-                case MouseButtons.Left:
-                    return state.LeftButton == ButtonState.Pressed;
-                case MouseButtons.Middle:
-                    return state.MiddleButton == ButtonState.Pressed;
-                case MouseButtons.Right:
-                    return state.RightButton == ButtonState.Pressed;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(button), button, null);
-            }
-        }
+                MouseButtons.Left => state.LeftButton == ButtonState.Pressed,
+                MouseButtons.Middle => state.MiddleButton == ButtonState.Pressed,
+                MouseButtons.Right => state.RightButton == ButtonState.Pressed,
+                _ => throw new ArgumentOutOfRangeException(nameof(button), button, null),
+            };
     }
 }

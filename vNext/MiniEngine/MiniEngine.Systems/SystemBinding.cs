@@ -14,64 +14,54 @@ namespace MiniEngine.Systems
         private readonly MethodInfo ProcessDelegate;
         private readonly ISystem System;
         private readonly IReadOnlyList<IComponentContainer> ComponentContainers;
-        private readonly IReadOnlyList<int> ComponentIndices;
-        private readonly IReadOnlyList<object> Services;
-        private readonly IReadOnlyList<int> ServiceIndices;
         private readonly object[] Parameters;
 
-        public SystemBinding(MethodInfo processDelegate, ISystem system, IReadOnlyList<IComponentContainer> componentContainers, IReadOnlyList<int> componentIndices, IReadOnlyList<object> services, IReadOnlyList<int> serviceIndices)
+        public SystemBinding(MethodInfo processDelegate, ISystem system, IReadOnlyList<IComponentContainer> componentContainers)
         {
             this.ProcessDelegate = processDelegate;
             this.System = system;
             this.ComponentContainers = componentContainers;
-            this.ComponentIndices = componentIndices;
-            this.Services = services;
-            this.ServiceIndices = serviceIndices;
-            this.Parameters = new object[componentContainers.Count + services.Count];
+            this.Parameters = new object[componentContainers.Count];
         }
 
         public void Process()
         {
-            this.SetServiceParameters();
+            this.System.OnSet();
+
             if (this.ComponentContainers.Count > 0)
             {
-                this.ProcessComponents();
+                this.InvokeMethodForAllEntities();
             }
             else
             {
-                this.ProcessDelegate.Invoke(this.System, this.Parameters);
+                this.InvokeMethod();
             }
         }
 
-        private void SetServiceParameters()
+        private void InvokeMethodForAllEntities()
         {
-            for (var s = 0; s < this.Services.Count; s++)
+            var primaryComponentContainer = this.ComponentContainers[0];
+
+            for (var i = 0; i < primaryComponentContainer.Count; i++)
             {
-                this.Parameters[this.ServiceIndices[s]] = this.Services[s];
+                var primaryComponent = primaryComponentContainer[i];
+                this.InvokeMethodForEntity(primaryComponent.Entity);
             }
         }
 
-        private void ProcessComponents()
+        private void InvokeMethodForEntity(Entity entity)
         {
-            var primaryComponentContainer = this.ComponentContainers[this.ComponentIndices[0]];
-
-            for (var c = 0; c < primaryComponentContainer.Count; c++)
+            for (var i = 0; i < this.ComponentContainers.Count; i++)
             {
-                var primaryComponent = primaryComponentContainer[c];
-                this.ProcessComponents(primaryComponent.Entity);
-            }
-        }
-
-        private void ProcessComponents(Entity entity)
-        {
-            for (var c = 0; c < this.ComponentContainers.Count; c++)
-            {
-                var componentContainer = this.ComponentContainers[c];
+                var componentContainer = this.ComponentContainers[i];
                 var component = componentContainer[entity];
-                this.Parameters[this.ComponentIndices[c]] = component;
+                this.Parameters[i] = component;
             }
 
-            this.ProcessDelegate.Invoke(this.System, this.Parameters);
+            this.InvokeMethod();
         }
+
+        private void InvokeMethod()
+            => this.ProcessDelegate.Invoke(this.System, this.Parameters);
     }
 }

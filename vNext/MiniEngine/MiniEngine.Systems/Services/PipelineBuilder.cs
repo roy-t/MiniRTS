@@ -51,7 +51,7 @@ namespace MiniEngine.Systems.Services
                         var systemSpec = stage[j];
 
                         var system = (ISystem)this.ResolveDelegate(systemSpec.SystemType);
-                        systemBindings.AddRange(SystemBinder.BindSystem(system, this.ResolveDelegate, this.ComponentContainers));
+                        systemBindings.AddRange(SystemBinder.BindSystem(system, this.ComponentContainers));
 
                     }
 
