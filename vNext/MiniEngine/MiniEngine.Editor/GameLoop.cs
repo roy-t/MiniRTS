@@ -7,9 +7,7 @@ using MiniEngine.Configuration;
 using MiniEngine.Editor.Configuration;
 using MiniEngine.Editor.Controllers;
 using MiniEngine.Graphics;
-using MiniEngine.Graphics.Camera;
 using MiniEngine.Graphics.Geometry.Generators;
-using MiniEngine.Graphics.Rendering;
 using MiniEngine.Gui;
 using MiniEngine.Systems.Components;
 using MiniEngine.Systems.Entities;
@@ -25,30 +23,27 @@ namespace MiniEngine.Editor
         private new readonly ComponentAdministrator Components;
         private readonly RenderPipelineBuilder RenderPipelineBuilder;
 
-        private readonly FrameService FrameService;
         private readonly KeyboardController Keyboard;
         private readonly MouseController Mouse;
         private readonly CameraController CameraController;
-        private readonly PerspectiveCamera PrimaryCamera;
 
         private readonly FrameCounter FrameCounter;
 
+        private FrameService frameService = null!;
         private ParallelPipeline renderPipeline = null!;
         private SpriteBatch spriteBatch = null!;
-        private RenderTargetSet renderTargetSet = null!;
         private ImGuiRenderer gui = null!;
 
         private bool docked = true;
         private bool showDemoWindow = false;
 
-        public GameLoop(Register registerDelegate, EntityAdministrator entityAdministator, ComponentAdministrator componentAdministrator, RenderPipelineBuilder renderPipelineBuilder, FrameService frameService,
+        public GameLoop(Register registerDelegate, EntityAdministrator entityAdministator, ComponentAdministrator componentAdministrator, RenderPipelineBuilder renderPipelineBuilder,
             KeyboardController keyboard, MouseController mouse, CameraController cameraController)
         {
             this.RegisterDelegate = registerDelegate;
             this.EntityAdministator = entityAdministator;
             this.Components = componentAdministrator;
             this.RenderPipelineBuilder = renderPipelineBuilder;
-            this.FrameService = frameService;
             this.Keyboard = keyboard;
             this.Mouse = mouse;
             this.CameraController = cameraController;
@@ -64,7 +59,6 @@ namespace MiniEngine.Editor
             this.Content.RootDirectory = "Content";
             this.IsMouseVisible = true;
 
-            this.PrimaryCamera = new PerspectiveCamera(this.Graphics.PreferredBackBufferWidth / (float)this.Graphics.PreferredBackBufferHeight);
             this.FrameCounter = new FrameCounter();
         }
 
@@ -73,16 +67,23 @@ namespace MiniEngine.Editor
             this.RegisterDelegate(this.Graphics.GraphicsDevice);
             this.RegisterDelegate(this.Content);
 
+            this.frameService = new FrameService(this.Graphics.GraphicsDevice);
+            this.RegisterDelegate(this.frameService);
+
             this.gui = new ImGuiRenderer(this.Graphics.GraphicsDevice, this.Window);
 
             this.renderPipeline = this.RenderPipelineBuilder.Build();
             this.spriteBatch = new SpriteBatch(this.Graphics.GraphicsDevice);
 
-            this.renderTargetSet = new RenderTargetSet(this.GraphicsDevice, this.Graphics.PreferredBackBufferWidth, this.Graphics.PreferredBackBufferHeight);
+            var renderTargetSet = this.frameService.RenderTargetSet;
+            renderTargetSet.Diffuse.Tag = this.gui.BindTexture(renderTargetSet.Diffuse);
+            renderTargetSet.Normal.Tag = this.gui.BindTexture(renderTargetSet.Normal);
+            renderTargetSet.Depth.Tag = this.gui.BindTexture(renderTargetSet.Depth);
+            renderTargetSet.Resolve.Tag = this.gui.BindTexture(renderTargetSet.Resolve);
 
             var entity = this.EntityAdministator.Create();
             var blue = this.Content.Load<Texture2D>(@"Textures\Blue");
-            var geometry = SpherifiedCubeGenerator.Generate(entity, 31, blue);
+            var geometry = SpherifiedCubeGenerator.Generate(entity, 15, blue);
             this.Components.Add(geometry);
 
             var body = new TransformComponent(entity, Matrix.CreateTranslation(Vector3.Forward * 3));
@@ -108,7 +109,7 @@ namespace MiniEngine.Editor
             }
 
             var elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
-            this.CameraController.Update(this.PrimaryCamera, elapsed);
+            this.CameraController.Update(this.frameService.Camera, elapsed);
 
             if (this.FrameCounter.Update(gameTime))
             {
@@ -119,8 +120,6 @@ namespace MiniEngine.Editor
 
         protected override void Draw(GameTime gameTime)
         {
-            this.FrameService.Camera = this.PrimaryCamera;
-            this.FrameService.RenderTargetSet = this.renderTargetSet;
             this.RunPipeline();
 
             this.GraphicsDevice.SetRenderTarget(null);
@@ -131,11 +130,12 @@ namespace MiniEngine.Editor
             if (this.docked)
             {
                 ImGui.DockSpaceOverViewport();
-                this.RenderToWindow(this.FrameService.RenderTargetSet.Diffuse);
+                this.RenderToWindow("Diffuse #1", this.frameService.RenderTargetSet.Diffuse);
+                this.RenderToWindow("Diffuse #2", this.frameService.RenderTargetSet.Diffuse);
             }
             else
             {
-                this.RenderToViewport(this.FrameService.RenderTargetSet.Diffuse);
+                this.RenderToViewport(this.frameService.RenderTargetSet.Diffuse);
             }
 
             if (this.showDemoWindow)
@@ -174,16 +174,15 @@ namespace MiniEngine.Editor
             }
         }
 
-        private void RenderToWindow(RenderTarget2D renderTarget)
+        private void RenderToWindow(string title, RenderTarget2D renderTarget)
         {
-            if (ImGui.Begin("Output"))
+            if (ImGui.Begin(title))
             {
                 var width = ImGui.GetWindowWidth();
                 var height = ImGui.GetWindowHeight() - (ImGui.GetFrameHeightWithSpacing() * 2);
                 var imageSize = FitToBounds(renderTarget.Width, renderTarget.Height, width, height);
 
-                var pointer = this.gui.BindTexture(renderTarget);
-                ImGui.Image(pointer, imageSize);
+                ImGui.Image((IntPtr)renderTarget.Tag, imageSize);
 
                 ImGui.End();
             }

@@ -27,11 +27,11 @@ namespace MiniEngine.Editor.Controllers
         public float Velocity { get; set; }
         public float RadiansPerPixel { get; set; }
 
-        internal void Update(PerspectiveCamera camera, float elapsed)
+        internal void Update(ICamera camera, float elapsed)
         {
             var translation = Matrix.Identity;
             var position = camera.Position;
-            var forward = Vector3.Normalize(camera.LookAt - camera.Position);
+            var forward = camera.Forward;
             var left = Vector3.Cross(Vector3.Up, forward);
 
             if (this.KeyboardInput.Held(Keys.W))
@@ -74,7 +74,7 @@ namespace MiniEngine.Editor.Controllers
             {
                 var mouseMovement = new Vector2(this.MouseInput.Movement.X, this.MouseInput.Movement.Y) * this.RadiansPerPixel;
                 var rotation = Matrix.CreateFromAxisAngle(Vector3.Up, mouseMovement.X) * Matrix.CreateFromAxisAngle(left, -mouseMovement.Y);
-                forward = Vector3.Transform(forward, rotation);
+                forward = Vector3.TransformNormal(forward, rotation);
             }
 
             if (this.MouseInput.ScrolledUp)
@@ -89,7 +89,7 @@ namespace MiniEngine.Editor.Controllers
 
             position = Vector3.Transform(position, translation);
 
-            camera.Move(position, position + forward);
+            camera.Move(position, forward);
         }
     }
 }

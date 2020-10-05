@@ -7,7 +7,7 @@ namespace MiniEngine.Graphics.Camera
         public PerspectiveCamera(float aspectRatio)
         {
             this.AspectRatio = aspectRatio;
-            this.Move(Vector3.Backward * 10, Vector3.Forward);
+            this.Move(Vector3.Zero, Vector3.Forward);
         }
 
         public float NearPlane => 0.1f;
@@ -20,14 +20,14 @@ namespace MiniEngine.Graphics.Camera
 
         public Vector3 Position { get; private set; }
 
-        public Vector3 LookAt { get; private set; }
+        public Vector3 Forward { get; private set; }
 
-        public void Move(Vector3 position, Vector3 lookAt)
+        public void Move(Vector3 position, Vector3 forward)
         {
             this.Position = position;
-            this.LookAt = lookAt;
+            this.Forward = forward;
 
-            var view = Matrix.CreateLookAt(position, lookAt, Vector3.Up);
+            var view = Matrix.CreateLookAt(position, position + forward, Vector3.Up);
             var projection = Matrix.CreatePerspectiveFieldOfView(this.FieldOfView, this.AspectRatio, this.NearPlane, this.FarPlane);
 
             this.ViewProjection = view * projection;
