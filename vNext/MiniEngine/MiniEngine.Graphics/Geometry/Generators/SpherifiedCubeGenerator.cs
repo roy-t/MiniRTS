@@ -11,7 +11,7 @@ namespace MiniEngine.Graphics.Geometry.Generators
     // - https://scaryreasoner.wordpress.com/2016/01/23/thoughts-on-tesselating-a-sphere/
     public static class SpherifiedCubeGenerator
     {
-        public static GeometryComponent Generate(Entity entity, int subdivisions, Texture2D diffuse)
+        public static GeometryComponent Generate(Entity entity, int subdivisions, Texture2D diffuse, Texture2D normal)
         {
             var vertices = new List<GeometryVertex>();
             var indices = new List<int>();
@@ -34,7 +34,7 @@ namespace MiniEngine.Graphics.Geometry.Generators
             // Botom
             GenerateFace(new CoordinateSystem(Vector3.Right, Vector3.Backward, Vector3.Down), subdivisions, vertices, indices);
 
-            return new GeometryComponent(entity, vertices.ToArray(), indices.ToArray(), diffuse);
+            return new GeometryComponent(entity, vertices.ToArray(), indices.ToArray(), diffuse, normal);
         }
 
         private static void GenerateFace(CoordinateSystem coordinateSystem, int subdivisions, List<GeometryVertex> vertices, List<int> indices)
@@ -67,7 +67,7 @@ namespace MiniEngine.Graphics.Geometry.Generators
 
                     var position = Vector3.Lerp(centerLeft, r, x);
                     var texture = new Vector2(x, y);
-                    vertices.Add(new GeometryVertex(position, Vector3.Normalize(position), texture));
+                    vertices.Add(new GeometryVertex(position, texture, Vector3.Normalize(position), Vector3.Zero, Vector3.Zero));
 
                     indexLookup[column, row] = currentIndex++;
 
@@ -118,12 +118,12 @@ namespace MiniEngine.Graphics.Geometry.Generators
 
                 var position = new Vector3(vertex.Position.X, vertex.Position.Y, vertex.Position.Z);
 
-                var normal = Vector3.Normalize(position); ;
+                var normal = Vector3.Normalize(position);
 
                 var tangent = Vector3.Normalize(Vector3.Cross(pole, normal));
-                var biNormal = Vector3.Normalize(Vector3.Cross(normal, tangent));
+                var binormal = Vector3.Normalize(Vector3.Cross(normal, tangent));
 
-                vertices[i] = new GeometryVertex(normal, normal, vertices[i].Texture);
+                vertices[i] = new GeometryVertex(normal, vertices[i].Texture, normal, binormal, tangent);
             }
         }
 

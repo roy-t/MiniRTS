@@ -26,13 +26,15 @@ namespace MiniEngine.Graphics.Geometry
             this.Device.RasterizerState = RasterizerState.CullCounterClockwise;
             this.Device.SamplerStates[0] = SamplerState.AnisotropicClamp;
 
-            this.Device.SetRenderTarget(this.FrameService.RenderTargetSet.Diffuse);
+            this.Device.SetRenderTargets(this.FrameService.RenderTargetSet.Diffuse, this.FrameService.RenderTargetSet.Depth, this.FrameService.RenderTargetSet.Normal);
         }
 
         public void Process(GeometryComponent geometry, TransformComponent transform)
         {
+            this.Effect.World = transform.Matrix;
             this.Effect.WorldViewProjection = transform.Matrix * this.FrameService.Camera.ViewProjection;
             this.Effect.Diffuse = geometry.Diffuse;
+            this.Effect.Normal = geometry.Normal;
             this.Effect.Apply();
 
             this.Device.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, geometry.Vertices, 0, geometry.Vertices.Length, geometry.Indices, 0, geometry.Indices.Length / 3);

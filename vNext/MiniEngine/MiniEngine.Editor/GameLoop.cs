@@ -83,7 +83,8 @@ namespace MiniEngine.Editor
 
             var entity = this.EntityAdministator.Create();
             var blue = this.Content.Load<Texture2D>(@"Textures\Blue");
-            var geometry = SpherifiedCubeGenerator.Generate(entity, 15, blue);
+            var normal = this.Content.Load<Texture2D>(@"Textures\Bricks_Normal");
+            var geometry = SpherifiedCubeGenerator.Generate(entity, 15, blue, normal);
             this.Components.Add(geometry);
 
             var body = new TransformComponent(entity, Matrix.CreateTranslation(Vector3.Forward * 3));
@@ -130,8 +131,10 @@ namespace MiniEngine.Editor
             if (this.docked)
             {
                 ImGui.DockSpaceOverViewport();
-                this.RenderToWindow("Diffuse #1", this.frameService.RenderTargetSet.Diffuse);
-                this.RenderToWindow("Diffuse #2", this.frameService.RenderTargetSet.Diffuse);
+                this.RenderToWindow("Diffuse", this.frameService.RenderTargetSet.Diffuse);
+
+                this.RenderToWindow("RenderTargets", this.frameService.RenderTargetSet.Depth);
+                this.RenderToWindow("RenderTargets", this.frameService.RenderTargetSet.Normal);
             }
             else
             {
