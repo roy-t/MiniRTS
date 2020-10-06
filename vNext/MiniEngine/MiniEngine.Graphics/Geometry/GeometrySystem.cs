@@ -37,7 +37,7 @@ namespace MiniEngine.Graphics.Geometry
             this.Effect.Normal = geometry.Normal;
             this.Effect.Apply();
 
-            this.Device.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, geometry.Vertices, 0, geometry.Vertices.Length, geometry.Indices, 0, geometry.Indices.Length / 3);
+            this.Device.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, geometry.Vertices, 0, geometry.Vertices.Length, geometry.Indices, 0, geometry.Primitives);
         }
     }
 }

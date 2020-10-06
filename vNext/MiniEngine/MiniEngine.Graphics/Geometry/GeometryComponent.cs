@@ -12,6 +12,8 @@ namespace MiniEngine.Graphics.Geometry
             this.Indices = indices;
             this.Diffuse = diffuse;
             this.Normal = normal;
+
+            this.Primitives = this.Indices.Length / 3;
         }
 
         public GeometryVertex[] Vertices { get; }
@@ -19,5 +21,7 @@ namespace MiniEngine.Graphics.Geometry
         public Texture2D Diffuse { get; set; }
 
         public Texture2D Normal { get; set; }
+
+        public int Primitives { get; }
     }
 }
