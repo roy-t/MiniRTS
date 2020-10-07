@@ -13,6 +13,7 @@ namespace MiniEngine.Systems.Pipeline
             this.SystemType = systemType;
             this.RequiresList = new List<ResourceState>();
             this.ProducesList = new List<ResourceState>();
+            this.AllowParallelism = false;
         }
 
         public static SystemSpec Construct<T>()
@@ -21,7 +22,7 @@ namespace MiniEngine.Systems.Pipeline
 
         public Type SystemType { get; }
 
-        public bool AllowParallelism { get; set; }
+        public bool AllowParallelism { get; private set; }
 
         internal IReadOnlyList<ResourceState> RequiredResources => this.RequiresList;
         internal IReadOnlyList<ResourceState> ProducedResources => this.ProducesList;
@@ -53,6 +54,7 @@ namespace MiniEngine.Systems.Pipeline
 
         public override string ToString()
             => $"{this.SystemType.Name}: " +
+            $"allow parallelism: {this.AllowParallelism}, " +
             $"requires: [{string.Join(", ", this.RequiredResources)}], " +
             $"produces: [{string.Join(", ", this.ProducedResources)}]";
     }

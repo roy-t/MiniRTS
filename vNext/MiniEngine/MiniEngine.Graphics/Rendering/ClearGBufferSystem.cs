@@ -33,7 +33,7 @@ namespace MiniEngine.Graphics.Rendering
             this.ClearRenderTarget(renderTargetSet.Diffuse, NeutralDiffuse);
             this.ClearRenderTarget(renderTargetSet.Normal, NeutralNormal);
             this.ClearRenderTarget(renderTargetSet.Depth, NeutralDepth);
-            this.ClearRenderTarget(renderTargetSet.Resolve, NeutralResolve);
+            this.ClearRenderTarget(renderTargetSet.Combine, NeutralResolve);
         }
 
 

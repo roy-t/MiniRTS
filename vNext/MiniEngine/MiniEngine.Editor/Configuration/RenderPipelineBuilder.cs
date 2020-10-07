@@ -1,5 +1,6 @@
 ﻿using MiniEngine.Configuration;
 using MiniEngine.Graphics.Geometry;
+using MiniEngine.Graphics.PostProcess;
 using MiniEngine.Graphics.Rendering;
 using MiniEngine.Systems.Pipeline;
 using MiniEngine.Systems.Services;
@@ -18,16 +19,23 @@ namespace MiniEngine.Editor.Configuration
 
         public ParallelPipeline Build()
         {
-            var builder = this.Builder.Builder();
-
-            builder
-                .AddSystem<ClearGBufferSystem>(clearSystem => clearSystem.InSequence()
-                                                                  .Produces("GBuffer", "Cleared"))
-                .AddSystem<GeometrySystem>(geometrySystem => geometrySystem.InSequence()
-                                                                           .Requires("GBuffer", "Cleared")
-                                                                           .Produces("Geometry", "Shaded"));
-
-            return builder.Build();
+            var pipeline = this.Builder.Builder();
+            return pipeline
+                .System<ClearGBufferSystem>()
+                    .InSequence()
+                    .Produces("GBuffer", "Clear")
+                    .Build()
+                .System<GeometrySystem>()
+                    .InSequence()
+                    .Requires("GBuffer", "Clear")
+                    .Produces("GBuffer", "Geometry")
+                    .Build()
+                .System<CombineSystem>()
+                    .InSequence()
+                    .Requires("GBuffer", "Geometry")
+                    .Produces("Combine", "Geometry")
+                    .Build()
+                .Build();
         }
     }
 }

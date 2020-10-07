@@ -9,13 +9,24 @@ namespace MiniEngine.Systems.Services
     [Service]
     public sealed class PipelineBuilder
     {
-        public sealed class IntermediatePipelineBuilder
+        private readonly Resolve ResolveDelegate;
+        private readonly IEnumerable<IComponentContainer> ComponentContainers;
+
+        public PipelineBuilder(Resolve resolveDelegate, IEnumerable<IComponentContainer> componentContainers)
         {
-            private readonly List<SystemSpec> SystemSpecs;
+            this.ResolveDelegate = resolveDelegate;
+            this.ComponentContainers = componentContainers;
+        }
+
+        public PipelineSpecifier Builder() => new PipelineSpecifier(this.ResolveDelegate, this.ComponentContainers);
+
+        public class PipelineSpecifier
+        {
             private readonly Dictionary<Type, IComponentContainer> ComponentContainers;
             private readonly Resolve ResolveDelegate;
+            private readonly List<SystemSpec> SystemSpecs;
 
-            internal IntermediatePipelineBuilder(Resolve resolveDelegate, IEnumerable<IComponentContainer> componentContainers)
+            public PipelineSpecifier(Resolve resolveDelegate, IEnumerable<IComponentContainer> componentContainers)
             {
                 this.SystemSpecs = new List<SystemSpec>();
 
@@ -28,12 +39,13 @@ namespace MiniEngine.Systems.Services
                 this.ResolveDelegate = resolveDelegate;
             }
 
-            public IntermediatePipelineBuilder AddSystem<T>(Func<SystemSpec, SystemSpec> chain)
-           where T : ISystem
+            public SystemSpecifier System<T>()
+                where T : ISystem
             {
                 var spec = SystemSpec.Construct<T>();
-                this.SystemSpecs.Add(chain(spec));
-                return this;
+                this.SystemSpecs.Add(spec);
+
+                return new SystemSpecifier(this, spec);
             }
 
             public ParallelPipeline Build()
@@ -62,16 +74,43 @@ namespace MiniEngine.Systems.Services
             }
         }
 
-
-        private readonly Resolve ResolveDelegate;
-        private readonly IEnumerable<IComponentContainer> ComponentContainers;
-
-        public PipelineBuilder(Resolve resolveDelegate, IEnumerable<IComponentContainer> componentContainers)
+        public class SystemSpecifier
         {
-            this.ResolveDelegate = resolveDelegate;
-            this.ComponentContainers = componentContainers;
-        }
+            private readonly PipelineSpecifier Parent;
+            private readonly SystemSpec Spec;
 
-        public IntermediatePipelineBuilder Builder() => new IntermediatePipelineBuilder(this.ResolveDelegate, this.ComponentContainers);
+            public SystemSpecifier(PipelineSpecifier parent, SystemSpec spec)
+            {
+                this.Parent = parent;
+                this.Spec = spec;
+            }
+
+            public SystemSpecifier Requires(string resource, string state)
+            {
+                this.Spec.Requires(resource, state);
+                return this;
+            }
+
+            public SystemSpecifier Produces(string resource, string state)
+            {
+                this.Spec.Produces(resource, state);
+                return this;
+            }
+
+            public SystemSpecifier Parallel()
+            {
+                this.Spec.Parallel();
+                return this;
+            }
+
+            public SystemSpecifier InSequence()
+            {
+                this.Spec.InSequence();
+                return this;
+            }
+
+            public PipelineSpecifier Build()
+                => this.Parent;
+        }
     }
 }

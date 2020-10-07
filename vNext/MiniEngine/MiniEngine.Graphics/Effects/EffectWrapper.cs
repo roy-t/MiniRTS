@@ -11,6 +11,6 @@ namespace MiniEngine.Graphics.Effects
             this.Effect = effect;
         }
 
-        protected void ApplyPass() => this.Effect.CurrentTechnique.Passes[0].Apply();
+        public void Apply() => this.Effect.CurrentTechnique.Passes[0].Apply();
     }
 }

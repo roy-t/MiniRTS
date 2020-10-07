@@ -14,7 +14,7 @@ namespace MiniEngine.Graphics.Rendering
             this.Depth = new RenderTarget2D(this.Device, width, height, false, SurfaceFormat.Single, DepthFormat.None);
             this.Normal = new RenderTarget2D(this.Device, width, height, false, SurfaceFormat.Color, DepthFormat.None);
 
-            this.Resolve = new RenderTarget2D(this.Device, width, height, false, SurfaceFormat.Color, DepthFormat.None);
+            this.Combine = new RenderTarget2D(this.Device, width, height, false, SurfaceFormat.Color, DepthFormat.None);
         }
 
         public RenderTarget2D Diffuse { get; }
@@ -23,6 +23,6 @@ namespace MiniEngine.Graphics.Rendering
 
         public RenderTarget2D Normal { get; }
 
-        public RenderTarget2D Resolve { get; }
+        public RenderTarget2D Combine { get; }
     }
 }

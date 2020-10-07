@@ -25,6 +25,7 @@ namespace MiniEngine.Graphics.Geometry
             this.Device.DepthStencilState = DepthStencilState.Default;
             this.Device.RasterizerState = RasterizerState.CullCounterClockwise;
             this.Device.SamplerStates[0] = SamplerState.AnisotropicClamp;
+            this.Device.SamplerStates[1] = SamplerState.AnisotropicClamp;
 
             this.Device.SetRenderTargets(this.FrameService.RenderTargetSet.Diffuse, this.FrameService.RenderTargetSet.Depth, this.FrameService.RenderTargetSet.Normal);
         }

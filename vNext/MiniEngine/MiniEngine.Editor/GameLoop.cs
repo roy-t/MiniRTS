@@ -79,7 +79,7 @@ namespace MiniEngine.Editor
             renderTargetSet.Diffuse.Tag = this.gui.BindTexture(renderTargetSet.Diffuse);
             renderTargetSet.Normal.Tag = this.gui.BindTexture(renderTargetSet.Normal);
             renderTargetSet.Depth.Tag = this.gui.BindTexture(renderTargetSet.Depth);
-            renderTargetSet.Resolve.Tag = this.gui.BindTexture(renderTargetSet.Resolve);
+            renderTargetSet.Combine.Tag = this.gui.BindTexture(renderTargetSet.Combine);
 
             var entity = this.EntityAdministator.Create();
             var blue = this.Content.Load<Texture2D>(@"Textures\Blue");
@@ -131,14 +131,15 @@ namespace MiniEngine.Editor
             if (this.docked)
             {
                 ImGui.DockSpaceOverViewport();
-                this.RenderToWindow("Diffuse", this.frameService.RenderTargetSet.Diffuse);
+                this.RenderToWindow("Combine", this.frameService.RenderTargetSet.Combine);
 
+                this.RenderToWindow("RenderTargets", this.frameService.RenderTargetSet.Diffuse);
                 this.RenderToWindow("RenderTargets", this.frameService.RenderTargetSet.Depth);
                 this.RenderToWindow("RenderTargets", this.frameService.RenderTargetSet.Normal);
             }
             else
             {
-                this.RenderToViewport(this.frameService.RenderTargetSet.Diffuse);
+                this.RenderToViewport(this.frameService.RenderTargetSet.Combine);
             }
 
             if (this.showDemoWindow)
