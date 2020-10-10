@@ -7,6 +7,7 @@ namespace LinearWorkFlow
 {
     public class GameLoop : Game
     {
+        private const SurfaceFormat surfaceFormat = SurfaceFormat.Color;
         private readonly GraphicsDeviceManager Graphics;
 
         private Texture2D red;
@@ -30,21 +31,21 @@ namespace LinearWorkFlow
                 GraphicsProfile = GraphicsProfile.HiDef
             };
 
-            this.Graphics.PreferredBackBufferFormat = SurfaceFormat.ColorSRgb;
+            this.Graphics.PreferredBackBufferFormat = surfaceFormat;
             this.Content.RootDirectory = "Content";
             this.IsMouseVisible = true;
         }
 
         protected override void LoadContent()
         {
-            this.red = new Texture2D(this.GraphicsDevice, 16, 16, false, SurfaceFormat.ColorSRgb);
+            this.red = new Texture2D(this.GraphicsDevice, 16, 16, false, surfaceFormat);
             this.red.SetData(Enumerable.Repeat(Color.Red, this.red.Width * this.red.Height).ToArray());
 
-            this.green = new Texture2D(this.GraphicsDevice, 16, 16, false, SurfaceFormat.ColorSRgb);
+            this.green = new Texture2D(this.GraphicsDevice, 16, 16, false, surfaceFormat);
             this.green.SetData(Enumerable.Repeat(Color.Green, this.green.Width * this.green.Height).ToArray());
 
-            this.renderTargetA = new RenderTarget2D(this.Graphics.GraphicsDevice, this.Graphics.PreferredBackBufferWidth, this.Graphics.PreferredBackBufferHeight, false, SurfaceFormat.ColorSRgb, DepthFormat.None);
-            this.renderTargetB = new RenderTarget2D(this.Graphics.GraphicsDevice, this.Graphics.PreferredBackBufferWidth, this.Graphics.PreferredBackBufferHeight, false, SurfaceFormat.ColorSRgb, DepthFormat.None);
+            this.renderTargetA = new RenderTarget2D(this.Graphics.GraphicsDevice, this.Graphics.PreferredBackBufferWidth, this.Graphics.PreferredBackBufferHeight, false, surfaceFormat, DepthFormat.None);
+            this.renderTargetB = new RenderTarget2D(this.Graphics.GraphicsDevice, this.Graphics.PreferredBackBufferWidth, this.Graphics.PreferredBackBufferHeight, false, surfaceFormat, DepthFormat.None);
 
             this.effect = this.Content.Load<Effect>("Shader");
 

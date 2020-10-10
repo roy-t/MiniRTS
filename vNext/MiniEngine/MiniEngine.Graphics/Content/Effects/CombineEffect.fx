@@ -66,7 +66,7 @@ PixelData VS(in VertexData input)
 OutputData PS(PixelData input)
 {
     OutputData output = (OutputData)0;
-    output.Diffuse = tex2D(diffuseSampler, input.Texture) + float4(1, 0, 0, 0);
+    output.Diffuse = tex2D(diffuseSampler, input.Texture);
     
     return output;
 }

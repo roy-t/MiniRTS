@@ -6,18 +6,18 @@ using MiniEngine.Systems;
 namespace MiniEngine.Graphics.PostProcess
 {
     [System]
-    public sealed class CombineSystem : ISystem
+    public sealed class BlurSystem : ISystem
     {
         private readonly GraphicsDevice Device;
         private readonly FrameService FrameService;
-        private readonly CombineEffect Effect;
+        private readonly BlurEffect Effect;
         private readonly FullScreenTriangle FullScreenTriangle;
 
-        public CombineSystem(GraphicsDevice device, EffectFactory effectFactory, FrameService frameService)
+        public BlurSystem(GraphicsDevice device, EffectFactory effectFactory, FrameService frameService)
         {
             this.Device = device;
             this.FrameService = frameService;
-            this.Effect = effectFactory.Construct<CombineEffect>();
+            this.Effect = effectFactory.Construct<BlurEffect>();
             this.FullScreenTriangle = new FullScreenTriangle();
         }
 
@@ -27,20 +27,16 @@ namespace MiniEngine.Graphics.PostProcess
             this.Device.DepthStencilState = DepthStencilState.None;
             this.Device.RasterizerState = RasterizerState.CullCounterClockwise;
             this.Device.SamplerStates[0] = SamplerState.LinearClamp;
-            this.Device.SamplerStates[1] = SamplerState.LinearClamp;
-            this.Device.SamplerStates[2] = SamplerState.LinearClamp;
 
-            this.Device.SetRenderTarget(this.FrameService.RenderTargetSet.Combine);
+            this.Device.SetRenderTarget(this.FrameService.RenderTargetSet.PostProcess);
         }
 
         public void Process()
         {
             var renderTargets = this.FrameService.RenderTargetSet;
 
-            this.Effect.Diffuse = renderTargets.Diffuse;
-            //this.Effect.Normal = renderTargets.Normal;
-            //this.Effect.Depth = renderTargets.Depth;
-
+            this.Effect.Diffuse = renderTargets.Combine;
+            this.Effect.SampleRadius = 0.008f;
             this.Effect.Apply();
 
             this.FullScreenTriangle.Render(this.Device);

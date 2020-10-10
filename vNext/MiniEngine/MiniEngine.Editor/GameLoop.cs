@@ -80,14 +80,24 @@ namespace MiniEngine.Editor
             renderTargetSet.Normal.Tag = this.gui.BindTexture(renderTargetSet.Normal);
             renderTargetSet.Depth.Tag = this.gui.BindTexture(renderTargetSet.Depth);
             renderTargetSet.Combine.Tag = this.gui.BindTexture(renderTargetSet.Combine);
+            renderTargetSet.PostProcess.Tag = this.gui.BindTexture(renderTargetSet.PostProcess);
 
-            var entity = this.EntityAdministator.Create();
-            var blue = this.Content.Load<Texture2D>(@"Textures\Blue");
+
+            var red = this.Content.Load<Texture2D>(@"Textures\Red");
+            var green = this.Content.Load<Texture2D>(@"Textures\Green");
             var normal = this.Content.Load<Texture2D>(@"Textures\Bricks_Normal");
-            var geometry = SpherifiedCubeGenerator.Generate(entity, 15, blue, normal);
+
+            this.CreateSphere(red, normal, Matrix.CreateTranslation((Vector3.Forward * 3) + (Vector3.Left * 0.5f)));
+            this.CreateSphere(green, normal, Matrix.CreateTranslation((Vector3.Forward * 3) + (Vector3.Right * 0.5f)));
+        }
+
+        private void CreateSphere(Texture2D diffuse, Texture2D normal, Matrix transform)
+        {
+            var entity = this.EntityAdministator.Create();
+            var geometry = SpherifiedCubeGenerator.Generate(entity, 15, diffuse, normal);
             this.Components.Add(geometry);
 
-            var body = new TransformComponent(entity, Matrix.CreateTranslation(Vector3.Forward * 3));
+            var body = new TransformComponent(entity, transform);
             this.Components.Add(body);
         }
 
@@ -131,15 +141,16 @@ namespace MiniEngine.Editor
             if (this.docked)
             {
                 ImGui.DockSpaceOverViewport();
-                this.RenderToWindow("Combine", this.frameService.RenderTargetSet.Combine);
+                this.RenderToWindow("PostProcess", this.frameService.RenderTargetSet.PostProcess);
 
                 this.RenderToWindow("RenderTargets", this.frameService.RenderTargetSet.Diffuse);
                 this.RenderToWindow("RenderTargets", this.frameService.RenderTargetSet.Depth);
                 this.RenderToWindow("RenderTargets", this.frameService.RenderTargetSet.Normal);
+                this.RenderToWindow("RenderTargets", this.frameService.RenderTargetSet.Combine);
             }
             else
             {
-                this.RenderToViewport(this.frameService.RenderTargetSet.Combine);
+                this.RenderToViewport(this.frameService.RenderTargetSet.PostProcess);
             }
 
             if (this.showDemoWindow)

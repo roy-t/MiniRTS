@@ -15,6 +15,7 @@ namespace MiniEngine.Graphics.Rendering
             this.Normal = new RenderTarget2D(this.Device, width, height, false, SurfaceFormat.Color, DepthFormat.None);
 
             this.Combine = new RenderTarget2D(this.Device, width, height, false, SurfaceFormat.Color, DepthFormat.None);
+            this.PostProcess = new RenderTarget2D(this.Device, width, height, false, SurfaceFormat.Color, DepthFormat.None);
         }
 
         public RenderTarget2D Diffuse { get; }
@@ -24,5 +25,7 @@ namespace MiniEngine.Graphics.Rendering
         public RenderTarget2D Normal { get; }
 
         public RenderTarget2D Combine { get; }
+
+        public RenderTarget2D PostProcess { get; }
     }
 }
