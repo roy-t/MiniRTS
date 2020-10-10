@@ -10,12 +10,12 @@ namespace MiniEngine.Graphics.Rendering
         {
             this.Device = device;
 
-            this.Diffuse = new RenderTarget2D(this.Device, width, height, false, SurfaceFormat.Color, DepthFormat.Depth24);
+            this.Diffuse = new RenderTarget2D(this.Device, width, height, false, SurfaceFormat.ColorSRgb, DepthFormat.Depth24);
             this.Depth = new RenderTarget2D(this.Device, width, height, false, SurfaceFormat.Single, DepthFormat.None);
             this.Normal = new RenderTarget2D(this.Device, width, height, false, SurfaceFormat.Color, DepthFormat.None);
 
-            this.Combine = new RenderTarget2D(this.Device, width, height, false, SurfaceFormat.Color, DepthFormat.None);
-            this.PostProcess = new RenderTarget2D(this.Device, width, height, false, SurfaceFormat.Color, DepthFormat.None);
+            this.Combine = new RenderTarget2D(this.Device, width, height, false, SurfaceFormat.ColorSRgb, DepthFormat.None);
+            this.PostProcess = new RenderTarget2D(this.Device, width, height, false, SurfaceFormat.ColorSRgb, DepthFormat.None);
         }
 
         public RenderTarget2D Diffuse { get; }

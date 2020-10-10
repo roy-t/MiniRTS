@@ -7,6 +7,7 @@ using MiniEngine.Configuration;
 using MiniEngine.Editor.Configuration;
 using MiniEngine.Editor.Controllers;
 using MiniEngine.Graphics;
+using MiniEngine.Graphics.Effects;
 using MiniEngine.Graphics.Geometry.Generators;
 using MiniEngine.Gui;
 using MiniEngine.Systems.Components;
@@ -19,6 +20,7 @@ namespace MiniEngine.Editor
     {
         private readonly GraphicsDeviceManager Graphics;
         private readonly Register RegisterDelegate;
+        private readonly Resolve ResolveDelegate;
         private readonly EntityAdministrator EntityAdministator;
         private new readonly ComponentAdministrator Components;
         private readonly RenderPipelineBuilder RenderPipelineBuilder;
@@ -37,10 +39,11 @@ namespace MiniEngine.Editor
         private bool docked = true;
         private bool showDemoWindow = false;
 
-        public GameLoop(Register registerDelegate, EntityAdministrator entityAdministator, ComponentAdministrator componentAdministrator, RenderPipelineBuilder renderPipelineBuilder,
+        public GameLoop(Register registerDelegate, Resolve resolveDelegate, EntityAdministrator entityAdministator, ComponentAdministrator componentAdministrator, RenderPipelineBuilder renderPipelineBuilder,
             KeyboardController keyboard, MouseController mouse, CameraController cameraController)
         {
             this.RegisterDelegate = registerDelegate;
+            this.ResolveDelegate = resolveDelegate;
             this.EntityAdministator = entityAdministator;
             this.Components = componentAdministrator;
             this.RenderPipelineBuilder = renderPipelineBuilder;
@@ -51,6 +54,7 @@ namespace MiniEngine.Editor
             {
                 PreferredBackBufferWidth = 1920,
                 PreferredBackBufferHeight = 1080,
+                PreferredBackBufferFormat = SurfaceFormat.ColorSRgb,
                 PreferMultiSampling = false,
                 SynchronizeWithVerticalRetrace = true,
                 GraphicsProfile = GraphicsProfile.HiDef
@@ -70,7 +74,8 @@ namespace MiniEngine.Editor
             this.frameService = new FrameService(this.Graphics.GraphicsDevice);
             this.RegisterDelegate(this.frameService);
 
-            this.gui = new ImGuiRenderer(this.Graphics.GraphicsDevice, this.Window);
+            var effectFactory = (EffectFactory)this.ResolveDelegate(typeof(EffectFactory));
+            this.gui = new ImGuiRenderer(this.Graphics.GraphicsDevice, this.Window, effectFactory);
 
             this.renderPipeline = this.RenderPipelineBuilder.Build();
             this.spriteBatch = new SpriteBatch(this.Graphics.GraphicsDevice);

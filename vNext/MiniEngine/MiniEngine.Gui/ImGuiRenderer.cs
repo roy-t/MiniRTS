@@ -5,6 +5,8 @@ using ImGuiNET;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using MiniEngine.Graphics.Effects;
+using MiniEngine.Graphics.Immediate;
 
 namespace MiniEngine.Gui
 {
@@ -14,7 +16,7 @@ namespace MiniEngine.Gui
         private readonly GraphicsDevice GraphicsDevice;
         private readonly GameWindow Window;
 
-        private readonly BasicEffect Effect;
+        private readonly ImmediateEffect Effect;
         private readonly RasterizerState RasterizerState;
 
         private byte[]? vertexData;
@@ -36,7 +38,7 @@ namespace MiniEngine.Gui
 
         private readonly List<int> Keys = new List<int>();
 
-        public ImGuiRenderer(GraphicsDevice device, GameWindow window)
+        public ImGuiRenderer(GraphicsDevice device, GameWindow window, EffectFactory effectFactory)
         {
             var context = ImGui.CreateContext();
             ImGui.SetCurrentContext(context);
@@ -44,7 +46,7 @@ namespace MiniEngine.Gui
             this.GraphicsDevice = device;
             this.Window = window;
 
-            this.Effect = new BasicEffect(this.GraphicsDevice);
+            this.Effect = effectFactory.Construct<ImmediateEffect>();
 
             this.LoadedTextures = new Dictionary<IntPtr, Texture2D>();
 
@@ -178,18 +180,13 @@ namespace MiniEngine.Gui
         /// <summary>
         /// Updates the <see cref="Microsoft.Xna.Framework.Graphics.Effect" /> to the current matrices and texture
         /// </summary>
-        private Effect UpdateEffect(Texture2D texture)
+        private void UpdateEffect(Texture2D texture)
         {
             var io = ImGui.GetIO();
 
-            this.Effect.World = Matrix.Identity;
-            this.Effect.View = Matrix.Identity;
-            this.Effect.Projection = Matrix.CreateOrthographicOffCenter(0, io.DisplaySize.X, io.DisplaySize.Y, 0, -1f, 1f);
-            this.Effect.TextureEnabled = true;
-            this.Effect.Texture = texture;
-            this.Effect.VertexColorEnabled = true;
-
-            return this.Effect;
+            this.Effect.WorldViewProjection = Matrix.CreateOrthographicOffCenter(0, io.DisplaySize.X, io.DisplaySize.Y, 0, -1f, 1f);
+            this.Effect.Diffuse = texture;
+            this.Effect.ConvertColorsToLinear = texture.Format != SurfaceFormat.ColorSRgb;
         }
 
         /// <summary>
@@ -268,8 +265,8 @@ namespace MiniEngine.Gui
                 this.vertexBuffer?.Dispose();
 
                 this.vertexBufferSize = (int)(drawData.TotalVtxCount * 1.5f);
-                this.vertexBuffer = new VertexBuffer(this.GraphicsDevice, GuiVertexDeclaration.Declaration, this.vertexBufferSize, BufferUsage.None);
-                this.vertexData = new byte[this.vertexBufferSize * GuiVertexDeclaration.Size];
+                this.vertexBuffer = new VertexBuffer(this.GraphicsDevice, ImmediateVertex.Declaration, this.vertexBufferSize, BufferUsage.None);
+                this.vertexData = new byte[this.vertexBufferSize * sizeof(ImmediateVertex)];
             }
 
             if (drawData.TotalIdxCount > this.indexBufferSize)
@@ -289,10 +286,10 @@ namespace MiniEngine.Gui
             {
                 var cmdList = drawData.CmdListsRange[n];
 
-                fixed (void* vtxDstPtr = &this.vertexData![vtxOffset * GuiVertexDeclaration.Size])
+                fixed (void* vtxDstPtr = &this.vertexData![vtxOffset * sizeof(ImmediateVertex)])
                 fixed (void* idxDstPtr = &this.indexData![idxOffset * sizeof(ushort)])
                 {
-                    Buffer.MemoryCopy((void*)cmdList.VtxBuffer.Data, vtxDstPtr, this.vertexData.Length, cmdList.VtxBuffer.Size * GuiVertexDeclaration.Size);
+                    Buffer.MemoryCopy((void*)cmdList.VtxBuffer.Data, vtxDstPtr, this.vertexData.Length, cmdList.VtxBuffer.Size * sizeof(ImmediateVertex));
                     Buffer.MemoryCopy((void*)cmdList.IdxBuffer.Data, idxDstPtr, this.indexData.Length, cmdList.IdxBuffer.Size * sizeof(ushort));
                 }
 
@@ -301,7 +298,7 @@ namespace MiniEngine.Gui
             }
 
             // Copy the managed byte arrays to the gpu vertex- and index buffers
-            this.vertexBuffer!.SetData(this.vertexData, 0, drawData.TotalVtxCount * GuiVertexDeclaration.Size);
+            this.vertexBuffer!.SetData(this.vertexData, 0, drawData.TotalVtxCount * sizeof(ImmediateVertex));
             this.indexBuffer!.SetData(this.indexData, 0, drawData.TotalIdxCount * sizeof(ushort));
         }
 
@@ -333,23 +330,18 @@ namespace MiniEngine.Gui
                         (int)(drawCmd.ClipRect.W - drawCmd.ClipRect.Y)
                     );
 
-                    var effect = this.UpdateEffect(this.LoadedTextures[drawCmd.TextureId]);
-
-                    foreach (var pass in effect.CurrentTechnique.Passes)
-                    {
-                        pass.Apply();
-
-#pragma warning disable CS0618 
-                        this.GraphicsDevice.DrawIndexedPrimitives(
-                            primitiveType: PrimitiveType.TriangleList,
-                            baseVertex: vtxOffset,
-                            minVertexIndex: 0,
-                            numVertices: cmdList.VtxBuffer.Size,
-                            startIndex: idxOffset,
-                            primitiveCount: (int)drawCmd.ElemCount / 3
-                        );
+                    this.UpdateEffect(this.LoadedTextures[drawCmd.TextureId]);
+                    this.Effect.Apply();
+#pragma warning disable CS0618
+                    this.GraphicsDevice.DrawIndexedPrimitives(
+                        primitiveType: PrimitiveType.TriangleList,
+                        baseVertex: vtxOffset,
+                        minVertexIndex: 0,
+                        numVertices: cmdList.VtxBuffer.Size,
+                        startIndex: idxOffset,
+                        primitiveCount: (int)drawCmd.ElemCount / 3
+                    );
 #pragma warning restore CS0618
-                    }
 
                     idxOffset += (int)drawCmd.ElemCount;
                 }
@@ -359,9 +351,6 @@ namespace MiniEngine.Gui
         }
 
         public void Dispose()
-        {
-            ImGui.DestroyContext();
-            this.Effect?.Dispose();
-        }
+            => ImGui.DestroyContext();
     }
 }

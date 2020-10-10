@@ -1,5 +1,6 @@
 ﻿#include "Includes/Defines.hlsl"
 #include "Includes/Pack.hlsl"
+#include "Includes/Gamma.hlsl"
 
 struct VertexData
 {
@@ -75,7 +76,8 @@ PixelData VS(in VertexData input)
 OutputData PS(PixelData input)
 {
     OutputData output = (OutputData)0;
-    output.Diffuse = tex2D(diffuseSampler, input.Texture);
+    float4 diffuse = tex2D(diffuseSampler, input.Texture);
+    output.Diffuse = ToLinear(diffuse);
     output.Depth = input.Depth.x / input.Depth.y;
     
     float3x3 tbn = float3x3(input.Tangent, input.Binormal, input.Normal);
