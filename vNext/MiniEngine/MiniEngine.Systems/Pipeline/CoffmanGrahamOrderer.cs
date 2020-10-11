@@ -79,19 +79,14 @@ namespace MiniEngine.Systems.Pipeline
             for (var i = 0; i < stages.Count; i++)
             {
                 var stage = stages[i];
-                if (stage.All(systemSpec => systemSpec.AllowParallelism) || stage.All(systemSpec => !systemSpec.AllowParallelism))
-                {
-                    continue;
-                }
-                else
-                {
-                    var sequentialStage = new List<SystemSpec>(stage.Where(systemSpec => !systemSpec.AllowParallelism).ToList());
-                    stages[i] = sequentialStage;
 
-                    var parallelStage = new List<SystemSpec>(stage.Where(systemSpec => systemSpec.AllowParallelism).ToList());
-                    stages.Insert(i, parallelStage); // inserts before the sequential stage
+                while (stage.Count > 1 && stage.Any(s => !s.AllowParallelism))
+                {
+                    var sequentialSystem = stage.First(s => !s.AllowParallelism);
+                    stage.Remove(sequentialSystem);
 
-                    i++;
+                    var sequentialStage = new List<SystemSpec>(new[] { sequentialSystem });
+                    stages.Insert(i++, sequentialStage);
                 }
             }
         }

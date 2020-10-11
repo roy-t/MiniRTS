@@ -9,6 +9,7 @@ using MiniEngine.Editor.Controllers;
 using MiniEngine.Graphics;
 using MiniEngine.Graphics.Effects;
 using MiniEngine.Graphics.Geometry.Generators;
+using MiniEngine.Graphics.Lighting;
 using MiniEngine.Gui;
 using MiniEngine.Systems.Components;
 using MiniEngine.Systems.Entities;
@@ -84,16 +85,22 @@ namespace MiniEngine.Editor
             renderTargetSet.Diffuse.Tag = this.gui.BindTexture(renderTargetSet.Diffuse);
             renderTargetSet.Normal.Tag = this.gui.BindTexture(renderTargetSet.Normal);
             renderTargetSet.Depth.Tag = this.gui.BindTexture(renderTargetSet.Depth);
+            renderTargetSet.Light.Tag = this.gui.BindTexture(renderTargetSet.Light);
             renderTargetSet.Combine.Tag = this.gui.BindTexture(renderTargetSet.Combine);
             renderTargetSet.PostProcess.Tag = this.gui.BindTexture(renderTargetSet.PostProcess);
 
-
             var red = this.Content.Load<Texture2D>(@"Textures\Red");
             var green = this.Content.Load<Texture2D>(@"Textures\Green");
+            var blue = this.Content.Load<Texture2D>(@"Textures\Blue");
             var normal = this.Content.Load<Texture2D>(@"Textures\Bricks_Normal");
 
             this.CreateSphere(red, normal, Matrix.CreateTranslation((Vector3.Forward * 3) + (Vector3.Left * 0.5f)));
             this.CreateSphere(green, normal, Matrix.CreateTranslation((Vector3.Forward * 3) + (Vector3.Right * 0.5f)));
+            this.CreateSphere(blue, normal, Matrix.CreateTranslation((Vector3.Forward * 3) + (Vector3.Down * 0.5f)));
+
+            var entity = this.EntityAdministator.Create();
+            var ambientLight = new AmbientLightComponent(entity, Color.White);
+            this.Components.Add(ambientLight);
         }
 
         private void CreateSphere(Texture2D diffuse, Texture2D normal, Matrix transform)
@@ -151,6 +158,7 @@ namespace MiniEngine.Editor
                 this.RenderToWindow("RenderTargets", this.frameService.RenderTargetSet.Diffuse);
                 this.RenderToWindow("RenderTargets", this.frameService.RenderTargetSet.Depth);
                 this.RenderToWindow("RenderTargets", this.frameService.RenderTargetSet.Normal);
+                this.RenderToWindow("RenderTargets", this.frameService.RenderTargetSet.Light);
                 this.RenderToWindow("RenderTargets", this.frameService.RenderTargetSet.Combine);
             }
             else

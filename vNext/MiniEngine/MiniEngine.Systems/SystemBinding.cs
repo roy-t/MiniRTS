@@ -63,5 +63,7 @@ namespace MiniEngine.Systems
 
         private void InvokeMethod()
             => this.ProcessDelegate.Invoke(this.System, this.Parameters);
+
+        public override string ToString() => $"Binding for: {this.System.GetType().Name}";
     }
 }

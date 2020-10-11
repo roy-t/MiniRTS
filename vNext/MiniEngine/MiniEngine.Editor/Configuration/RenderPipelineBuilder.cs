@@ -1,5 +1,6 @@
 ﻿using MiniEngine.Configuration;
 using MiniEngine.Graphics.Geometry;
+using MiniEngine.Graphics.Lighting;
 using MiniEngine.Graphics.PostProcess;
 using MiniEngine.Graphics.Rendering;
 using MiniEngine.Systems.Pipeline;
@@ -28,11 +29,17 @@ namespace MiniEngine.Editor.Configuration
                 .System<GeometrySystem>()
                     .InSequence()
                     .Requires("GBuffer", "Cleared")
-                    .Produces("GBuffer", "Rendered")
+                    .Produces("GBuffer", "Geometry")
+                    .Build()
+                .System<AmbientLightSystem>()
+                    .InSequence()
+                    .Requires("GBuffer", "Cleared")
+                    .Produces("GBuffer", "Ambient Light")
                     .Build()
                 .System<CombineSystem>()
                     .InSequence()
-                    .Requires("GBuffer", "Rendered")
+                    .Requires("GBuffer", "Geometry")
+                    .Requires("GBuffer", "Ambient Light")
                     .Produces("GBuffer", "Combined")
                     .Build()
                 .System<BlurSystem>()
