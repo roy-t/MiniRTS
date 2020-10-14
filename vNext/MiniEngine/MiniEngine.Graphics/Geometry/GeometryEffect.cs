@@ -18,5 +18,11 @@ namespace MiniEngine.Graphics.Geometry
         public Texture2D Diffuse { set => this.Effect.Parameters["Diffuse"].SetValue(value); }
 
         public Texture2D Normal { set => this.Effect.Parameters["Normal"].SetValue(value); }
+
+        public float Metalicness { set => this.Effect.Parameters["Metalicness"].SetValue(value); }
+
+        public float Roughness { set => this.Effect.Parameters["Roughness"].SetValue(value); }
+
+        public float AmbientOcclusion { set => this.Effect.Parameters["AmbientOcclusion"].SetValue(value); }
     }
 }

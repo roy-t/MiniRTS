@@ -24,8 +24,9 @@ struct PixelData
 struct OutputData
 {
     float4 Diffuse : COLOR0;    
-    float Depth : COLOR1;
-    float4 Normal: COLOR2;
+    float4 Material : COLOR1;
+    float Depth : COLOR2;
+    float4 Normal: COLOR3;
 };
 
 texture Diffuse;
@@ -54,6 +55,9 @@ sampler normalSampler = sampler_state
 
 float4x4 World;
 float4x4 WorldViewProjection;
+float Metalicness;
+float Roughness;
+float AmbientOcclusion;
 
 PixelData VS(in VertexData input)
 {
@@ -78,6 +82,7 @@ OutputData PS(PixelData input)
     OutputData output = (OutputData)0;
     float4 diffuse = tex2D(diffuseSampler, input.Texture);
     output.Diffuse = ToLinear(diffuse);
+    output.Material = float4(Metalicness, Roughness, AmbientOcclusion, 1.0f);
     output.Depth = input.Depth.x / input.Depth.y;
     
     float3x3 tbn = float3x3(input.Tangent, input.Binormal, input.Normal);

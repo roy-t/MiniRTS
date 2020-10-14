@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
 using MiniEngine.Graphics.Effects;
 using MiniEngine.Graphics.PostProcess;
@@ -35,8 +36,7 @@ namespace MiniEngine.Graphics.Lighting
 
         public void Process(AmbientLightComponent ambientLight)
         {
-            this.Effect.Color = new Microsoft.Xna.Framework.Color(ambientLight.DiffuseLight, ambientLight.SpecularLight);
-
+            this.Effect.Color = new Color(ambientLight.DiffuseLight, ambientLight.SpecularLight);
             this.Effect.Apply();
 
             this.FullScreenTriangle.Render(this.Device);

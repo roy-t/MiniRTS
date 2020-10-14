@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Systems;
 
 namespace MiniEngine.Graphics.Geometry.Generators
@@ -11,7 +10,7 @@ namespace MiniEngine.Graphics.Geometry.Generators
     // - https://scaryreasoner.wordpress.com/2016/01/23/thoughts-on-tesselating-a-sphere/
     public static class SpherifiedCubeGenerator
     {
-        public static GeometryComponent Generate(Entity entity, int subdivisions, Texture2D diffuse, Texture2D normal)
+        public static GeometryComponent Generate(Entity entity, int subdivisions, Material material)
         {
             var vertices = new List<GeometryVertex>();
             var indices = new List<int>();
@@ -34,7 +33,7 @@ namespace MiniEngine.Graphics.Geometry.Generators
             // Botom
             GenerateFace(new CoordinateSystem(Vector3.Right, Vector3.Backward, Vector3.Down), subdivisions, vertices, indices);
 
-            return new GeometryComponent(entity, vertices.ToArray(), indices.ToArray(), diffuse, normal);
+            return new GeometryComponent(entity, vertices.ToArray(), indices.ToArray(), material);
         }
 
         private static void GenerateFace(CoordinateSystem coordinateSystem, int subdivisions, List<GeometryVertex> vertices, List<int> indices)

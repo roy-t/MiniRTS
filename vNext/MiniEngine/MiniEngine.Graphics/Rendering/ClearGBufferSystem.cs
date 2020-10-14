@@ -9,6 +9,7 @@ namespace MiniEngine.Graphics.Rendering
     public sealed class ClearGBufferSystem : ISystem
     {
         private static readonly Color NeutralDiffuse = Color.Transparent;
+        private static readonly Color NeutralMaterial = Color.Transparent;
         private static readonly Color NeutralDepth = Color.Transparent;
         private static readonly Color NeutralNormal = new Color(0.5f, 0.5f, 0.5f, 0.0f);
         private static readonly Color NeutralLight = Color.Transparent;
@@ -35,6 +36,7 @@ namespace MiniEngine.Graphics.Rendering
         {
             var renderTargetSet = this.FrameService.RenderTargetSet;
             this.ClearRenderTarget(renderTargetSet.Diffuse, NeutralDiffuse);
+            this.ClearRenderTarget(renderTargetSet.Material, NeutralMaterial);
             this.ClearRenderTarget(renderTargetSet.Depth, NeutralDepth);
             this.ClearRenderTarget(renderTargetSet.Normal, NeutralNormal);
             this.ClearRenderTarget(renderTargetSet.Light, NeutralLight);

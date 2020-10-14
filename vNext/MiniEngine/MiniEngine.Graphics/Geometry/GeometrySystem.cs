@@ -27,15 +27,22 @@ namespace MiniEngine.Graphics.Geometry
             this.Device.SamplerStates[0] = SamplerState.AnisotropicClamp;
             this.Device.SamplerStates[1] = SamplerState.AnisotropicClamp;
 
-            this.Device.SetRenderTargets(this.FrameService.RenderTargetSet.Diffuse, this.FrameService.RenderTargetSet.Depth, this.FrameService.RenderTargetSet.Normal);
+            this.Device.SetRenderTargets(
+                this.FrameService.RenderTargetSet.Diffuse,
+                this.FrameService.RenderTargetSet.Material,
+                this.FrameService.RenderTargetSet.Depth,
+                this.FrameService.RenderTargetSet.Normal);
         }
 
         public void Process(GeometryComponent geometry, TransformComponent transform)
         {
             this.Effect.World = transform.Matrix;
             this.Effect.WorldViewProjection = transform.Matrix * this.FrameService.Camera.ViewProjection;
-            this.Effect.Diffuse = geometry.Diffuse;
-            this.Effect.Normal = geometry.Normal;
+            this.Effect.Diffuse = geometry.Material.Diffuse;
+            this.Effect.Normal = geometry.Material.Normal;
+            this.Effect.Metalicness = geometry.Material.Metalicness;
+            this.Effect.Roughness = geometry.Material.Roughness;
+            this.Effect.AmbientOcclusion = geometry.Material.AmbientOcclusion;
             this.Effect.Apply();
 
             this.Device.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, geometry.Vertices, 0, geometry.Vertices.Length, geometry.Indices, 0, geometry.Primitives);

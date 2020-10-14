@@ -8,6 +8,7 @@ using MiniEngine.Editor.Configuration;
 using MiniEngine.Editor.Controllers;
 using MiniEngine.Graphics;
 using MiniEngine.Graphics.Effects;
+using MiniEngine.Graphics.Geometry;
 using MiniEngine.Graphics.Geometry.Generators;
 using MiniEngine.Graphics.Lighting;
 using MiniEngine.Gui;
@@ -83,30 +84,44 @@ namespace MiniEngine.Editor
 
             var renderTargetSet = this.frameService.RenderTargetSet;
             renderTargetSet.Diffuse.Tag = this.gui.BindTexture(renderTargetSet.Diffuse);
+            renderTargetSet.Material.Tag = this.gui.BindTexture(renderTargetSet.Material);
             renderTargetSet.Normal.Tag = this.gui.BindTexture(renderTargetSet.Normal);
             renderTargetSet.Depth.Tag = this.gui.BindTexture(renderTargetSet.Depth);
             renderTargetSet.Light.Tag = this.gui.BindTexture(renderTargetSet.Light);
             renderTargetSet.Combine.Tag = this.gui.BindTexture(renderTargetSet.Combine);
             renderTargetSet.PostProcess.Tag = this.gui.BindTexture(renderTargetSet.PostProcess);
 
-            var red = this.Content.Load<Texture2D>(@"Textures\Red");
-            var green = this.Content.Load<Texture2D>(@"Textures\Green");
-            var blue = this.Content.Load<Texture2D>(@"Textures\Blue");
-            var normal = this.Content.Load<Texture2D>(@"Textures\Bricks_Normal");
 
-            this.CreateSphere(red, normal, Matrix.CreateTranslation((Vector3.Forward * 3) + (Vector3.Left * 0.5f)));
-            this.CreateSphere(green, normal, Matrix.CreateTranslation((Vector3.Forward * 3) + (Vector3.Right * 0.5f)));
-            this.CreateSphere(blue, normal, Matrix.CreateTranslation((Vector3.Forward * 3) + (Vector3.Down * 0.5f)));
+            var red = new Texture2D(this.GraphicsDevice, 1, 1);
+            red.SetData(new Color[] { Color.Red });
+
+            var normal = new Texture2D(this.GraphicsDevice, 1, 1);
+            normal.SetData(new Color[] { new Color(0.5f, 0.5f, 1.0f) });
+
+            var basis = (Vector3.Forward * 12f) + (Vector3.Left * 10.5f) + (Vector3.Down * 10.5f);
+            for (var y = 0; y < 7; y++)
+            {
+                var metalicness = y * (1.0f / 7.0f);
+
+                for (var x = 0; x < 7; x++)
+                {
+                    var roughness = x * (1.0f / 7.0f);
+
+                    var material = new Material(red, normal, metalicness, roughness);
+                    var transform = Matrix.CreateTranslation(basis + (Vector3.Right * x * 3) + (Vector3.Up * y * 3));
+                    this.CreateSphere(material, transform);
+                }
+            }
 
             var entity = this.EntityAdministator.Create();
             var ambientLight = new AmbientLightComponent(entity, Color.White);
             this.Components.Add(ambientLight);
         }
 
-        private void CreateSphere(Texture2D diffuse, Texture2D normal, Matrix transform)
+        private void CreateSphere(Material material, Matrix transform)
         {
             var entity = this.EntityAdministator.Create();
-            var geometry = SpherifiedCubeGenerator.Generate(entity, 15, diffuse, normal);
+            var geometry = SpherifiedCubeGenerator.Generate(entity, 15, material);
             this.Components.Add(geometry);
 
             var body = new TransformComponent(entity, transform);
@@ -156,9 +171,10 @@ namespace MiniEngine.Editor
                 this.RenderToWindow("PostProcess", this.frameService.RenderTargetSet.Combine);
 
                 this.RenderToWindow("RenderTargets", this.frameService.RenderTargetSet.Diffuse);
+                this.RenderToWindow("RenderTargets", this.frameService.RenderTargetSet.Material);
                 this.RenderToWindow("RenderTargets", this.frameService.RenderTargetSet.Depth);
                 this.RenderToWindow("RenderTargets", this.frameService.RenderTargetSet.Normal);
-                this.RenderToWindow("RenderTargets", this.frameService.RenderTargetSet.Light);
+                this.RenderToWindow("RenderTargets", this.frameService.RenderTargetSet.Light); // TODO: light is invisible because a = 0!
                 this.RenderToWindow("RenderTargets", this.frameService.RenderTargetSet.Combine);
                 this.RenderToWindow("RenderTargets", this.frameService.RenderTargetSet.PostProcess);
             }
@@ -232,7 +248,7 @@ namespace MiniEngine.Editor
                 SpriteSortMode.Immediate,
                 BlendState.Opaque,
                 SamplerState.LinearClamp,
-                DepthStencilState.Default,
+                DepthStencilState.None,
                 RasterizerState.CullCounterClockwise);
 
             this.spriteBatch.Draw(

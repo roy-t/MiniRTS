@@ -7,11 +7,12 @@ namespace MiniEngine.Graphics.Rendering
         public RenderTargetSet(GraphicsDevice device)
         {
             this.Diffuse = BuildRenderTarget(device, SurfaceFormat.ColorSRgb, DepthFormat.Depth24);
-            this.Depth = BuildRenderTarget(device, SurfaceFormat.Single, DepthFormat.Depth24);
-            this.Normal = BuildRenderTarget(device, SurfaceFormat.Color, DepthFormat.Depth24);
-            this.Light = BuildRenderTarget(device, SurfaceFormat.HalfVector4, DepthFormat.Depth24);
-            this.Combine = BuildRenderTarget(device, SurfaceFormat.ColorSRgb, DepthFormat.Depth24);
-            this.PostProcess = BuildRenderTarget(device, SurfaceFormat.ColorSRgb, DepthFormat.Depth24);
+            this.Material = BuildRenderTarget(device, SurfaceFormat.Color);
+            this.Depth = BuildRenderTarget(device, SurfaceFormat.Single);
+            this.Normal = BuildRenderTarget(device, SurfaceFormat.Color);
+            this.Light = BuildRenderTarget(device, SurfaceFormat.HalfVector4);
+            this.Combine = BuildRenderTarget(device, SurfaceFormat.ColorSRgb);
+            this.PostProcess = BuildRenderTarget(device, SurfaceFormat.ColorSRgb);
         }
 
         private static RenderTarget2D BuildRenderTarget(GraphicsDevice device, SurfaceFormat surface, DepthFormat depthFormat = DepthFormat.None)
@@ -22,6 +23,8 @@ namespace MiniEngine.Graphics.Rendering
         }
 
         public RenderTarget2D Diffuse { get; }
+
+        public RenderTarget2D Material { get; }
 
         public RenderTarget2D Depth { get; }
 
