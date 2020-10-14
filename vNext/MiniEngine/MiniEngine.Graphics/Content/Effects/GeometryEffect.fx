@@ -84,7 +84,7 @@ OutputData PS(PixelData input)
     float3 normal = UnpackNormal(tex2D(normalSampler, input.Texture).xyz);
     normal = mul(normal, tbn);
     output.Normal = float4(PackNormal(normal), 1.0f);
-        
+
     return output;
 }
 

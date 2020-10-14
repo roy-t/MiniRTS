@@ -42,11 +42,6 @@ namespace MiniEngine.Editor.Configuration
                     .Requires("GBuffer", "Ambient Light")
                     .Produces("GBuffer", "Combined")
                     .Build()
-                .System<BlurSystem>()
-                    .InSequence()
-                    .Requires("GBuffer", "Combined")
-                    .Produces("GBuffer", "PostProcessed")
-                    .Build()
                 .Build();
         }
     }

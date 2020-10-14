@@ -9,7 +9,7 @@ namespace MiniEngine.Graphics
         public FrameService(GraphicsDevice device)
         {
             this.Camera = new PerspectiveCamera(device.Viewport.AspectRatio);
-            this.RenderTargetSet = new RenderTargetSet(device, device.Viewport.Width, device.Viewport.Height);
+            this.RenderTargetSet = new RenderTargetSet(device);
         }
 
         public ICamera Camera { get; set; }

@@ -4,20 +4,21 @@ namespace MiniEngine.Graphics.Rendering
 {
     public sealed class RenderTargetSet
     {
-        private readonly GraphicsDevice Device;
-
-        public RenderTargetSet(GraphicsDevice device, int width, int height)
+        public RenderTargetSet(GraphicsDevice device)
         {
-            this.Device = device;
+            this.Diffuse = BuildRenderTarget(device, SurfaceFormat.ColorSRgb, DepthFormat.Depth24);
+            this.Depth = BuildRenderTarget(device, SurfaceFormat.Single, DepthFormat.Depth24);
+            this.Normal = BuildRenderTarget(device, SurfaceFormat.Color, DepthFormat.Depth24);
+            this.Light = BuildRenderTarget(device, SurfaceFormat.HalfVector4, DepthFormat.Depth24);
+            this.Combine = BuildRenderTarget(device, SurfaceFormat.ColorSRgb, DepthFormat.Depth24);
+            this.PostProcess = BuildRenderTarget(device, SurfaceFormat.ColorSRgb, DepthFormat.Depth24);
+        }
 
-            this.Diffuse = new RenderTarget2D(this.Device, width, height, false, SurfaceFormat.ColorSRgb, DepthFormat.Depth24);
-            this.Depth = new RenderTarget2D(this.Device, width, height, false, SurfaceFormat.Single, DepthFormat.None);
-            this.Normal = new RenderTarget2D(this.Device, width, height, false, SurfaceFormat.Color, DepthFormat.None);
-
-            this.Light = new RenderTarget2D(this.Device, width, height, false, SurfaceFormat.HalfVector4, DepthFormat.None);
-
-            this.Combine = new RenderTarget2D(this.Device, width, height, false, SurfaceFormat.ColorSRgb, DepthFormat.None);
-            this.PostProcess = new RenderTarget2D(this.Device, width, height, false, SurfaceFormat.ColorSRgb, DepthFormat.None);
+        private static RenderTarget2D BuildRenderTarget(GraphicsDevice device, SurfaceFormat surface, DepthFormat depthFormat = DepthFormat.None)
+        {
+            var width = device.PresentationParameters.BackBufferWidth;
+            var height = device.PresentationParameters.BackBufferHeight;
+            return new RenderTarget2D(device, width, height, false, surface, depthFormat, 0, RenderTargetUsage.PreserveContents);
         }
 
         public RenderTarget2D Diffuse { get; }

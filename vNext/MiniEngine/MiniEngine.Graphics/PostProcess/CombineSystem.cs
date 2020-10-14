@@ -28,7 +28,6 @@ namespace MiniEngine.Graphics.PostProcess
             this.Device.RasterizerState = RasterizerState.CullCounterClockwise;
             this.Device.SamplerStates[0] = SamplerState.LinearClamp;
             this.Device.SamplerStates[1] = SamplerState.LinearClamp;
-            this.Device.SamplerStates[2] = SamplerState.LinearClamp;
 
             this.Device.SetRenderTarget(this.FrameService.RenderTargetSet.Combine);
         }
@@ -38,8 +37,7 @@ namespace MiniEngine.Graphics.PostProcess
             var renderTargets = this.FrameService.RenderTargetSet;
 
             this.Effect.Diffuse = renderTargets.Diffuse;
-            //this.Effect.Normal = renderTargets.Normal;
-            //this.Effect.Depth = renderTargets.Depth;
+            this.Effect.Light = renderTargets.Light;
 
             this.Effect.Apply();
 

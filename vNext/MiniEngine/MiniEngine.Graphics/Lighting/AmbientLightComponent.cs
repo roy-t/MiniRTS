@@ -5,12 +5,15 @@ namespace MiniEngine.Graphics.Lighting
 {
     public sealed class AmbientLightComponent : AComponent
     {
-        public AmbientLightComponent(Entity entity, Color color)
+        public AmbientLightComponent(Entity entity, Color diffuseLight, float specularLight = 0.0f)
             : base(entity)
         {
-            this.Color = color;
+            this.DiffuseLight = diffuseLight;
+            this.SpecularLight = specularLight;
         }
 
-        public Color Color { get; set; }
+        public Color DiffuseLight { get; set; }
+
+        public float SpecularLight { get; set; }
     }
 }

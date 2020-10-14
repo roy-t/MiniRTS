@@ -35,11 +35,7 @@ namespace MiniEngine.Graphics.Lighting
 
         public void Process(AmbientLightComponent ambientLight)
         {
-            //var renderTargets = this.FrameService.RenderTargetSet;
-
-            //this.Effect.Depth = renderTargets.Depth;
-            //this.Effect.Normal = renderTargets.Normal;
-            this.Effect.Color = ambientLight.Color;
+            this.Effect.Color = new Microsoft.Xna.Framework.Color(ambientLight.DiffuseLight, ambientLight.SpecularLight);
 
             this.Effect.Apply();
 

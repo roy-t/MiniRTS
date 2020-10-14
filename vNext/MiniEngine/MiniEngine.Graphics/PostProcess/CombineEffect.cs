@@ -12,8 +12,6 @@ namespace MiniEngine.Graphics.PostProcess
 
         public Texture2D Diffuse { set => this.Effect.Parameters["Diffuse"].SetValue(value); }
 
-        public Texture2D Normal { set => this.Effect.Parameters["Normal"].SetValue(value); }
-
-        public Texture2D Depth { set => this.Effect.Parameters["Depth"].SetValue(value); }
+        public Texture2D Light { set => this.Effect.Parameters["Light"].SetValue(value); }
     }
 }

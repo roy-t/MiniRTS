@@ -153,13 +153,14 @@ namespace MiniEngine.Editor
             if (this.docked)
             {
                 ImGui.DockSpaceOverViewport();
-                this.RenderToWindow("PostProcess", this.frameService.RenderTargetSet.PostProcess);
+                this.RenderToWindow("PostProcess", this.frameService.RenderTargetSet.Combine);
 
                 this.RenderToWindow("RenderTargets", this.frameService.RenderTargetSet.Diffuse);
                 this.RenderToWindow("RenderTargets", this.frameService.RenderTargetSet.Depth);
                 this.RenderToWindow("RenderTargets", this.frameService.RenderTargetSet.Normal);
                 this.RenderToWindow("RenderTargets", this.frameService.RenderTargetSet.Light);
                 this.RenderToWindow("RenderTargets", this.frameService.RenderTargetSet.Combine);
+                this.RenderToWindow("RenderTargets", this.frameService.RenderTargetSet.PostProcess);
             }
             else
             {

@@ -21,34 +21,20 @@ texture Diffuse;
 sampler diffuseSampler = sampler_state
 {
     Texture = (Diffuse);
-    MinFilter = ANISOTROPIC;
-    MagFilter = ANISOTROPIC;
+    MinFilter = LINEAR;
+    MagFilter = LINEAR;
     MipFilter = LINEAR;
-    MaxAnisotropy = 16;
     AddressU = Clamp;
     AddressV = Clamp;
 };
 
-texture Normal;
-sampler normalSampler = sampler_state
+texture Light;
+sampler lightSampler = sampler_state
 {
-    Texture = (Normal);
-    MinFilter = ANISOTROPIC;
-    MagFilter = ANISOTROPIC;
+    Texture = (Light);
+    MinFilter = LINEAR;
+    MagFilter = LINEAR;
     MipFilter = LINEAR;
-    MaxAnisotropy = 16;
-    AddressU = Clamp;
-    AddressV = Clamp;
-};
-
-texture Depth;
-sampler depthSampler = sampler_state
-{
-    Texture = (Depth);
-    MinFilter = POINT;
-    MagFilter = POINT;
-    MipFilter = POINT;
-    MaxAnisotropy = 1;
     AddressU = Clamp;
     AddressV = Clamp;
 };
@@ -66,8 +52,14 @@ PixelData VS(in VertexData input)
 OutputData PS(PixelData input)
 {
     OutputData output = (OutputData)0;
-    output.Diffuse = tex2D(diffuseSampler, input.Texture);
-    
+
+    float4 diffuse = tex2D(diffuseSampler, input.Texture);
+    float4 light = tex2D(lightSampler, input.Texture);
+    float4 diffuseLight = float4(light.rgb, 1.0f);
+    float4 specularLight = (float4(light.a, light.a, light.a, 0.0f));
+
+    output.Diffuse = saturate(float4(diffuse * diffuseLight + specularLight));
+
     return output;
 }
 
