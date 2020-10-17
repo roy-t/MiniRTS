@@ -51,9 +51,9 @@ struct Mat
     float AmbientOcclusion;
 };
 
-float4 ReadDiffuse(float2 texCoord)
+float3 ReadDiffuse(float2 texCoord)
 {
-    return tex2D(diffuseSampler, texCoord);
+    return tex2D(diffuseSampler, texCoord).rgb;
 }
 
 float3 ReadNormal(float2 texCoord)

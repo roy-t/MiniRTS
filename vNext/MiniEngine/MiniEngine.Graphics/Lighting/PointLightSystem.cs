@@ -39,9 +39,13 @@ namespace MiniEngine.Graphics.Lighting
 
         public void Process(PointLightComponent pointLight)
         {
+            // TODO: figure oput how to do HDR and (if needed) GAMMA correction. See: https://learnopengl.com/PBR/Lighting
+
+            this.Effect.CameraPosition = this.FrameService.Camera.Position;
+            this.Effect.Diffuse = this.FrameService.GBuffer.Diffuse;
             this.Effect.Normal = this.FrameService.GBuffer.Normal;
             this.Effect.Depth = this.FrameService.GBuffer.Depth;
-            //this.Effect.Material = this.FrameService.GBuffer.Material;
+            this.Effect.Material = this.FrameService.GBuffer.Material;
             this.Effect.InverseViewProjection = Matrix.Invert(this.FrameService.Camera.ViewProjection);
 
             this.Effect.Position = pointLight.Position;
