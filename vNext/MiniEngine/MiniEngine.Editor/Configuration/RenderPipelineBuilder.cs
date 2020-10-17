@@ -22,7 +22,7 @@ namespace MiniEngine.Editor.Configuration
         {
             var pipeline = this.Builder.Builder();
             return pipeline
-                .System<ClearGBufferSystem>()
+                .System<ClearBuffersSystem>()
                     .InSequence()
                     .Produces("GBuffer", "Cleared")
                     .Build()
@@ -31,15 +31,15 @@ namespace MiniEngine.Editor.Configuration
                     .Requires("GBuffer", "Cleared")
                     .Produces("GBuffer", "Geometry")
                     .Build()
-                .System<AmbientLightSystem>()
+                .System<PointLightSystem>()
                     .InSequence()
                     .Requires("GBuffer", "Cleared")
-                    .Produces("GBuffer", "Ambient Light")
+                    .Produces("GBuffer", "Point Light")
                     .Build()
                 .System<CombineSystem>()
                     .InSequence()
                     .Requires("GBuffer", "Geometry")
-                    .Requires("GBuffer", "Ambient Light")
+                    .Requires("GBuffer", "Point Light")
                     .Produces("GBuffer", "Combined")
                     .Build()
                 .Build();

@@ -82,14 +82,18 @@ namespace MiniEngine.Editor
             this.renderPipeline = this.RenderPipelineBuilder.Build();
             this.spriteBatch = new SpriteBatch(this.Graphics.GraphicsDevice);
 
-            var renderTargetSet = this.frameService.RenderTargetSet;
-            renderTargetSet.Diffuse.Tag = this.gui.BindTexture(renderTargetSet.Diffuse);
-            renderTargetSet.Material.Tag = this.gui.BindTexture(renderTargetSet.Material);
-            renderTargetSet.Normal.Tag = this.gui.BindTexture(renderTargetSet.Normal);
-            renderTargetSet.Depth.Tag = this.gui.BindTexture(renderTargetSet.Depth);
-            renderTargetSet.Light.Tag = this.gui.BindTexture(renderTargetSet.Light);
-            renderTargetSet.Combine.Tag = this.gui.BindTexture(renderTargetSet.Combine);
-            renderTargetSet.PostProcess.Tag = this.gui.BindTexture(renderTargetSet.PostProcess);
+            var gBuffer = this.frameService.GBuffer;
+            gBuffer.Diffuse.Tag = this.gui.BindTexture(gBuffer.Diffuse);
+            gBuffer.Material.Tag = this.gui.BindTexture(gBuffer.Material);
+            gBuffer.Normal.Tag = this.gui.BindTexture(gBuffer.Normal);
+            gBuffer.Depth.Tag = this.gui.BindTexture(gBuffer.Depth);
+
+            var lBuffer = this.frameService.LBuffer;
+            lBuffer.Light.Tag = this.gui.BindTexture(lBuffer.Light);
+
+            var pBuffer = this.frameService.PBuffer;
+            pBuffer.Combine.Tag = this.gui.BindTexture(pBuffer.Combine);
+            pBuffer.PostProcess.Tag = this.gui.BindTexture(pBuffer.PostProcess);
 
 
             var red = new Texture2D(this.GraphicsDevice, 1, 1);
@@ -116,6 +120,9 @@ namespace MiniEngine.Editor
             var entity = this.EntityAdministator.Create();
             var ambientLight = new AmbientLightComponent(entity, Color.White);
             this.Components.Add(ambientLight);
+
+            var pointLightComponent = new PointLightComponent(entity, Vector3.Forward, Color.White);
+            this.Components.Add(pointLightComponent);
         }
 
         private void CreateSphere(Material material, Matrix transform)
@@ -168,19 +175,21 @@ namespace MiniEngine.Editor
             if (this.docked)
             {
                 ImGui.DockSpaceOverViewport();
-                this.RenderToWindow("PostProcess", this.frameService.RenderTargetSet.Combine);
+                this.RenderToWindow("PostProcess", "Combine", this.frameService.PBuffer.Combine);
 
-                this.RenderToWindow("RenderTargets", this.frameService.RenderTargetSet.Diffuse);
-                this.RenderToWindow("RenderTargets", this.frameService.RenderTargetSet.Material);
-                this.RenderToWindow("RenderTargets", this.frameService.RenderTargetSet.Depth);
-                this.RenderToWindow("RenderTargets", this.frameService.RenderTargetSet.Normal);
-                this.RenderToWindow("RenderTargets", this.frameService.RenderTargetSet.Light); // TODO: light is invisible because a = 0!
-                this.RenderToWindow("RenderTargets", this.frameService.RenderTargetSet.Combine);
-                this.RenderToWindow("RenderTargets", this.frameService.RenderTargetSet.PostProcess);
+                this.RenderToWindow("RenderTargets", "Diffuse", this.frameService.GBuffer.Diffuse);
+                this.RenderToWindow("RenderTargets", "Material", this.frameService.GBuffer.Material);
+                this.RenderToWindow("RenderTargets", "Depth", this.frameService.GBuffer.Depth);
+                this.RenderToWindow("RenderTargets", "Normal", this.frameService.GBuffer.Normal);
+
+                this.RenderToWindow("RenderTargets", "Light", this.frameService.LBuffer.Light); // TODO: light is invisible because a = 0!
+
+                this.RenderToWindow("RenderTargets", "Combine", this.frameService.PBuffer.Combine);
+                this.RenderToWindow("RenderTargets", "PostProcess", this.frameService.PBuffer.PostProcess);
             }
             else
             {
-                this.RenderToViewport(this.frameService.RenderTargetSet.PostProcess);
+                this.RenderToViewport(this.frameService.PBuffer.PostProcess);
             }
 
             if (this.showDemoWindow)
@@ -219,14 +228,15 @@ namespace MiniEngine.Editor
             }
         }
 
-        private void RenderToWindow(string title, RenderTarget2D renderTarget)
+        private void RenderToWindow(string window, string label, RenderTarget2D renderTarget)
         {
-            if (ImGui.Begin(title))
+            if (ImGui.Begin(window))
             {
                 var width = ImGui.GetWindowWidth();
                 var height = ImGui.GetWindowHeight() - (ImGui.GetFrameHeightWithSpacing() * 2);
                 var imageSize = FitToBounds(renderTarget.Width, renderTarget.Height, width, height);
 
+                ImGui.Text(label);
                 ImGui.Image((IntPtr)renderTarget.Tag, imageSize);
 
                 ImGui.End();

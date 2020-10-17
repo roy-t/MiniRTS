@@ -1,4 +1,5 @@
 ﻿#include "Includes/Defines.hlsl"
+#include "Includes/GBufferReader.hlsl"
 
 struct VertexData
 {
@@ -14,10 +15,12 @@ struct PixelData
 
 struct OutputData
 {
-    float4 Diffuse : COLOR0;    
+    float4 Light : COLOR0;    
 };
 
 float4 Color;
+float3 Position;
+float4x4 InverseViewProjection;
 
 PixelData VS(in VertexData input)
 {
@@ -32,12 +35,19 @@ PixelData VS(in VertexData input)
 OutputData PS(PixelData input)
 {
     OutputData output = (OutputData)0;
-    output.Diffuse = Color;
+    
+    float3 normal = ReadNormal(input.Texture);
+    Mat material = ReadMaterial(input.Texture);
+    float4 worldPosition = ReadWorldPosition(input.Texture, InverseViewProjection);
+
+    float dist = distance(worldPosition.xyz, Position);
+    float4 color = float4(1 / dist, 0, 0, 1);
+    output.Light = color + float4(normal.xyz, material.Metalicness) * 0.0001f;
     
     return output;
 }
 
-technique AmbientLightTechnique
+technique PointLightTechnique
 {
     pass P0
     {

@@ -6,11 +6,11 @@ using MiniEngine.Systems;
 namespace MiniEngine.Graphics.Rendering
 {
     [System]
-    public sealed class ClearGBufferSystem : ISystem
+    public sealed class ClearBuffersSystem : ISystem
     {
         private static readonly Color NeutralDiffuse = Color.Transparent;
         private static readonly Color NeutralMaterial = Color.Transparent;
-        private static readonly Color NeutralDepth = Color.Transparent;
+        private static readonly Color NeutralDepth = Color.White;
         private static readonly Color NeutralNormal = new Color(0.5f, 0.5f, 0.5f, 0.0f);
         private static readonly Color NeutralLight = Color.Transparent;
         private static readonly Color NeutralCombine = new Color(1.0f, 0.0f, 1.0f, 1.0f);
@@ -19,7 +19,7 @@ namespace MiniEngine.Graphics.Rendering
         private readonly GraphicsDevice Device;
         private readonly FrameService FrameService;
 
-        public ClearGBufferSystem(GraphicsDevice graphicsDevice, FrameService frameService)
+        public ClearBuffersSystem(GraphicsDevice graphicsDevice, FrameService frameService)
         {
             this.Device = graphicsDevice;
             this.FrameService = frameService;
@@ -34,14 +34,18 @@ namespace MiniEngine.Graphics.Rendering
 
         public void Process()
         {
-            var renderTargetSet = this.FrameService.RenderTargetSet;
-            this.ClearRenderTarget(renderTargetSet.Diffuse, NeutralDiffuse);
-            this.ClearRenderTarget(renderTargetSet.Material, NeutralMaterial);
-            this.ClearRenderTarget(renderTargetSet.Depth, NeutralDepth);
-            this.ClearRenderTarget(renderTargetSet.Normal, NeutralNormal);
-            this.ClearRenderTarget(renderTargetSet.Light, NeutralLight);
-            this.ClearRenderTarget(renderTargetSet.Combine, NeutralCombine);
-            this.ClearRenderTarget(renderTargetSet.PostProcess, NeutralPostProcess);
+            var gBuffer = this.FrameService.GBuffer;
+            this.ClearRenderTarget(gBuffer.Diffuse, NeutralDiffuse);
+            this.ClearRenderTarget(gBuffer.Material, NeutralMaterial);
+            this.ClearRenderTarget(gBuffer.Depth, NeutralDepth);
+            this.ClearRenderTarget(gBuffer.Normal, NeutralNormal);
+
+            var lBuffer = this.FrameService.LBuffer;
+            this.ClearRenderTarget(lBuffer.Light, NeutralLight);
+
+            var pBuffer = this.FrameService.PBuffer;
+            this.ClearRenderTarget(pBuffer.Combine, NeutralCombine);
+            this.ClearRenderTarget(pBuffer.PostProcess, NeutralPostProcess);
         }
 
         private void ClearRenderTarget(RenderTarget2D renderTarget, Color clearColor)

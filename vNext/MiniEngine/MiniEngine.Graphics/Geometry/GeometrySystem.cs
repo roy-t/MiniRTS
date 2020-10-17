@@ -28,10 +28,10 @@ namespace MiniEngine.Graphics.Geometry
             this.Device.SamplerStates[1] = SamplerState.AnisotropicClamp;
 
             this.Device.SetRenderTargets(
-                this.FrameService.RenderTargetSet.Diffuse,
-                this.FrameService.RenderTargetSet.Material,
-                this.FrameService.RenderTargetSet.Depth,
-                this.FrameService.RenderTargetSet.Normal);
+                this.FrameService.GBuffer.Diffuse,
+                this.FrameService.GBuffer.Material,
+                this.FrameService.GBuffer.Depth,
+                this.FrameService.GBuffer.Normal);
         }
 
         public void Process(GeometryComponent geometry, TransformComponent transform)

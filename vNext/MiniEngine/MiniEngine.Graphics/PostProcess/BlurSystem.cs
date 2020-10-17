@@ -28,14 +28,12 @@ namespace MiniEngine.Graphics.PostProcess
             this.Device.RasterizerState = RasterizerState.CullCounterClockwise;
             this.Device.SamplerStates[0] = SamplerState.LinearClamp;
 
-            this.Device.SetRenderTarget(this.FrameService.RenderTargetSet.PostProcess);
+            this.Device.SetRenderTarget(this.FrameService.PBuffer.PostProcess);
         }
 
         public void Process()
         {
-            var renderTargets = this.FrameService.RenderTargetSet;
-
-            this.Effect.Diffuse = renderTargets.Combine;
+            this.Effect.Diffuse = this.FrameService.PBuffer.Combine;
             this.Effect.SampleRadius = 0.008f;
             this.Effect.Apply();
 

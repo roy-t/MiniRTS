@@ -31,7 +31,7 @@ namespace MiniEngine.Graphics.Lighting
             this.Device.RasterizerState = RasterizerState.CullCounterClockwise;
             this.Device.SamplerStates[0] = SamplerState.LinearClamp;
 
-            this.Device.SetRenderTarget(this.FrameService.RenderTargetSet.Light);
+            this.Device.SetRenderTarget(this.FrameService.LBuffer.Light);
         }
 
         public void Process(AmbientLightComponent ambientLight)

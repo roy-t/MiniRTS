@@ -29,15 +29,13 @@ namespace MiniEngine.Graphics.PostProcess
             this.Device.SamplerStates[0] = SamplerState.LinearClamp;
             this.Device.SamplerStates[1] = SamplerState.LinearClamp;
 
-            this.Device.SetRenderTarget(this.FrameService.RenderTargetSet.Combine);
+            this.Device.SetRenderTarget(this.FrameService.PBuffer.Combine);
         }
 
         public void Process()
         {
-            var renderTargets = this.FrameService.RenderTargetSet;
-
-            this.Effect.Diffuse = renderTargets.Diffuse;
-            this.Effect.Light = renderTargets.Light;
+            this.Effect.Diffuse = this.FrameService.GBuffer.Diffuse;
+            this.Effect.Light = this.FrameService.LBuffer.Light;
 
             this.Effect.Apply();
 
