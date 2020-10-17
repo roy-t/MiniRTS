@@ -41,11 +41,12 @@ namespace MiniEngine.Graphics.Lighting
         {
             this.Effect.Normal = this.FrameService.GBuffer.Normal;
             this.Effect.Depth = this.FrameService.GBuffer.Depth;
-            this.Effect.Material = this.FrameService.GBuffer.Material;
+            //this.Effect.Material = this.FrameService.GBuffer.Material;
             this.Effect.InverseViewProjection = Matrix.Invert(this.FrameService.Camera.ViewProjection);
 
             this.Effect.Position = pointLight.Position;
             this.Effect.Color = pointLight.Color;
+            this.Effect.Strength = pointLight.Strength;
 
             this.Effect.Apply();
 

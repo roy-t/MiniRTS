@@ -66,7 +66,7 @@ namespace MiniEngine.Editor.Controllers
 
             if (this.KeyboardInput.Held(Keys.R))
             {
-                position = Vector3.Zero;
+                position = Vector3.Backward * 10;
                 forward = Vector3.Forward;
             }
 

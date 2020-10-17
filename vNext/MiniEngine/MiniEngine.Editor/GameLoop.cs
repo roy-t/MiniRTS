@@ -76,6 +76,8 @@ namespace MiniEngine.Editor
             this.frameService = new FrameService(this.Graphics.GraphicsDevice);
             this.RegisterDelegate(this.frameService);
 
+            this.frameService.Camera.Move(Vector3.Backward * 10, Vector3.Forward);
+
             var effectFactory = (EffectFactory)this.ResolveDelegate(typeof(EffectFactory));
             this.gui = new ImGuiRenderer(this.Graphics.GraphicsDevice, this.Window, effectFactory);
 
@@ -102,27 +104,37 @@ namespace MiniEngine.Editor
             var normal = new Texture2D(this.GraphicsDevice, 1, 1);
             normal.SetData(new Color[] { new Color(0.5f, 0.5f, 1.0f) });
 
-            var basis = (Vector3.Forward * 12f) + (Vector3.Left * 10.5f) + (Vector3.Down * 10.5f);
-            for (var y = 0; y < 7; y++)
+            var rows = 7;
+            var columns = 7;
+            var spacing = 2.5f;
+            for (var row = 0; row < rows; row++)
             {
-                var metalicness = y * (1.0f / 7.0f);
-
-                for (var x = 0; x < 7; x++)
+                var metalicness = row / (float)rows;
+                for (var col = 0; col < columns; col++)
                 {
-                    var roughness = x * (1.0f / 7.0f);
-
+                    var roughness = Math.Clamp(col / (float)columns, 0.05f, 1.0f);
                     var material = new Material(red, normal, metalicness, roughness);
-                    var transform = Matrix.CreateTranslation(basis + (Vector3.Right * x * 3) + (Vector3.Up * y * 3));
+
+                    var position = new Vector3((col - (columns / 2.0f)) * spacing, (row - (rows / 2.0f)) * spacing, 0.0f);
+                    var transform = Matrix.CreateTranslation(position);
                     this.CreateSphere(material, transform);
                 }
             }
 
-            var entity = this.EntityAdministator.Create();
-            var ambientLight = new AmbientLightComponent(entity, Color.White);
+            var ambientLight = new AmbientLightComponent(this.EntityAdministator.Create(), Color.White);
             this.Components.Add(ambientLight);
 
-            var pointLightComponent = new PointLightComponent(entity, Vector3.Forward, Color.White);
+            var pointLightComponent = new PointLightComponent(this.EntityAdministator.Create(), new Vector3(-10, 10, 10), Color.White, 300.0f);
             this.Components.Add(pointLightComponent);
+
+            var pointLightComponent2 = new PointLightComponent(this.EntityAdministator.Create(), new Vector3(10, 10, 10), Color.White, 300.0f);
+            this.Components.Add(pointLightComponent2);
+
+            var pointLightComponent3 = new PointLightComponent(this.EntityAdministator.Create(), new Vector3(-10, -10, 10), Color.White, 300.0f);
+            this.Components.Add(pointLightComponent3);
+
+            var pointLightComponent4 = new PointLightComponent(this.EntityAdministator.Create(), new Vector3(10, -10, 10), Color.White, 300.0f);
+            this.Components.Add(pointLightComponent4);
         }
 
         private void CreateSphere(Material material, Matrix transform)

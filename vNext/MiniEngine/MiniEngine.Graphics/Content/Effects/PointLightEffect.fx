@@ -1,5 +1,6 @@
 ﻿#include "Includes/Defines.hlsl"
 #include "Includes/GBufferReader.hlsl"
+#include "Includes/Lights.hlsl"
 
 struct VertexData
 {
@@ -18,7 +19,8 @@ struct OutputData
     float4 Light : COLOR0;    
 };
 
-float4 Color;
+float3 Color;
+float Strength;
 float3 Position;
 float4x4 InverseViewProjection;
 
@@ -26,11 +28,12 @@ PixelData VS(in VertexData input)
 {
     PixelData output = (PixelData)0;
 
-    output.Position = float4(input.Position, 1);
+    output.Position = float4(input.Position, 1.0f);
     output.Texture = input.Texture;
     
     return output;
 }
+
 
 OutputData PS(PixelData input)
 {
@@ -38,11 +41,14 @@ OutputData PS(PixelData input)
     
     float3 normal = ReadNormal(input.Texture);
     Mat material = ReadMaterial(input.Texture);
-    float4 worldPosition = ReadWorldPosition(input.Texture, InverseViewProjection);
+    float3 worldPosition = ReadWorldPosition(input.Texture, InverseViewProjection);
 
-    float dist = distance(worldPosition.xyz, Position);
-    float4 color = float4(1 / dist, 0, 0, 1);
-    output.Light = color + float4(normal.xyz, material.Metalicness) * 0.0001f;
+    float3 light = Color * Strength;
+    float attenuation = CalculateAttenuation(Position, worldPosition);
+    float scale = ScaleLight(Position, worldPosition, normal);    
+    float3 radiance = CalculateRadiance(light, attenuation, scale);
+                 
+    output.Light = float4(radiance, 1.0f);
     
     return output;
 }
