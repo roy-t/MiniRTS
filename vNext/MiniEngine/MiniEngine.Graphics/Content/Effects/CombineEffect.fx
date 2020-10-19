@@ -1,4 +1,5 @@
 ﻿#include "Includes/Defines.hlsl"
+#include "Includes/Gamma.hlsl"
 
 struct VertexData
 {
@@ -53,13 +54,22 @@ OutputData PS(PixelData input)
 {
     OutputData output = (OutputData)0;
 
+    // TODO: take out the diffuse component? Or do all diffuse parts in the light shader target? That might be more efficient?    
+
     float4 diffuse = tex2D(diffuseSampler, input.Texture);
     float4 light = tex2D(lightSampler, input.Texture);
     float4 diffuseLight = float4(light.rgb, 1.0f);
     float4 specularLight = (float4(light.a, light.a, light.a, 0.0f));
 
-    output.Diffuse = saturate(float4(diffuse * diffuseLight + specularLight));
-
+    
+    // This converts the light from HDR to LDR
+    float3 color = light.rgb;
+    color = color / (color + float3(1.0f, 1.0f, 1.0f));    
+   
+    // Until we post-process the light is in linear format.
+    // Always render to an SRgb render target, DirectX will do the right color correction for us
+    float4 colorSRgb = ToGamma(float4(color, 1.0f));
+    output.Diffuse = colorSRgb + (diffuse * 0.000001f);    
     return output;
 }
 

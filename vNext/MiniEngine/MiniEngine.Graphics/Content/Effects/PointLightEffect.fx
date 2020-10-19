@@ -1,4 +1,5 @@
 ﻿#include "Includes/Defines.hlsl"
+#include "Includes/Gamma.hlsl"
 #include "Includes/GBufferReader.hlsl"
 #include "Includes/Lights.hlsl"
 
@@ -19,7 +20,7 @@ struct OutputData
     float4 Light : COLOR0;    
 };
 
-float3 Color;
+float4 Color;
 float Strength;
 float3 Position;
 float3 CameraPosition;
@@ -58,7 +59,7 @@ OutputData PS(PixelData input)
     float3 H = normalize(V + L);
     float dist = distance(Position, worldPosition);
 
-    float attenuation = 1.0f / (dist * dist);
+    float attenuation = 1.0f / (dist * dist);    
     float3 radiance = Color * Strength * attenuation;
 
     // Cook-Torrance BRDF
@@ -94,7 +95,7 @@ OutputData PS(PixelData input)
     
     float3 color = ambient + Lo;  
     
-    output.Light = float4(color, 1.0f);
+    output.Light = ToLinear(float4(color, 1.0f));
 
     return output;
 }

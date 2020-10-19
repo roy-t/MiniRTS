@@ -26,7 +26,7 @@ namespace MiniEngine.Graphics.Lighting
 
         public Vector3 Position { set => this.Effect.Parameters["Position"].SetValue(value); }
 
-        public Color Color { set => this.Effect.Parameters["Color"].SetValue(value.ToVector3()); }
+        public Color Color { set => this.Effect.Parameters["Color"].SetValue(value.ToVector4()); }
 
         public float Strength { set => this.Effect.Parameters["Strength"].SetValue(value); }
     }
