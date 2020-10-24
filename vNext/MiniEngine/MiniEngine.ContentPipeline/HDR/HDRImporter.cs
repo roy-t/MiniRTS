@@ -20,7 +20,7 @@ namespace MiniEngine.ContentPipeline.HDR
             {
                 for (var y = 0; y < height; y++)
                 {
-                    face.SetPixel(x, y, Color.Magenta.ToVector4());
+                    face.SetPixel(x, y, Color.Purple.ToVector4());
                 }
             }
 

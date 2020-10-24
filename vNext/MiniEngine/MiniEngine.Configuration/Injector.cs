@@ -131,7 +131,7 @@ namespace MiniEngine.Configuration
 
         private static bool IsRelevantAssembly(AssemblyName name)
         {
-            var names = new[] { "Microsoft", "MonoGame", "Serilog", "SharpDX", "LightInject", "ImGui.NET" };
+            var names = new[] { "Microsoft", "MonoGame", "MiniEngine.ContentPipeline", "Serilog", "SharpDX", "LightInject", "ImGui.NET" };
             return !names.Any(n => name.FullName.StartsWith(n));
         }
 

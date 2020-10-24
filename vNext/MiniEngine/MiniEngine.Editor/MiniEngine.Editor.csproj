@@ -28,6 +28,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MiniEngine.Configuration\MiniEngine.Configuration.csproj" />
+    <ProjectReference Include="..\MiniEngine.ContentPipeline\MiniEngine.ContentPipeline.csproj" />
     <ProjectReference Include="..\MiniEngine.Graphics\MiniEngine.Graphics.csproj" />
     <ProjectReference Include="..\MiniEngine.Gui\MiniEngine.Gui.csproj" />
     <ProjectReference Include="..\MiniEngine.Systems\MiniEngine.Systems.csproj" />
