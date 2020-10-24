@@ -1,0 +1,4 @@
+sIBL set (c) 2007/08 by chris huf (spatial@huf.org)
+
+released under creative commons Attribution-Noncommercial-Share Alike 3.0 licence
+http://creativecommons.org/licenses/by-nc-sa/3.0/

@@ -1,0 +1,41 @@
+[Header]
+ICOfile = "Newport_Loft_Thumb.jpg"
+PREVIEWfile = "Newport_Loft_preview.jpg"
+Name = "Newport Loft"
+Author = "Blochi"
+Location = "Los Angeles"
+Comment = "Indoor, bright upscale loft, indirect sunlight"
+GEOlat = 33.6196449484317
+GEOlong = -117.92401134967804
+Link = "http://www.hdrlabs.com/sibl/archive.html"
+Date = "2007:10:08"
+Time = "10:44:00"
+Height = 1.5
+North = 0.48
+
+[Background]
+BGfile = "Newport_Loft_8k.jpg"
+BGmap = 1
+BGu = 0.000000
+BGv = 0.000000
+BGheight = 4000
+
+[Enviroment]
+EVfile = "Newport_Loft_Env.hdr"
+EVmap = 1
+EVu = 0.000000
+EVv = 0.000000
+EVheight = 180
+EVmulti = 1.000000
+EVgamma = 1.700000
+
+[Reflection]
+REFfile = "Newport_Loft_Ref.hdr"
+REFmap = 1
+REFu = 0.000000
+REFv = 0.000000
+REFheight = 800
+REFmulti = 1.000000
+REFgamma = 1.700000
+
+

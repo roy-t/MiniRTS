@@ -49,6 +49,12 @@
 /processorParam:DebugMode=Auto
 /build:Effects/PointLightEffect.fx
 
+#begin Effects/SkyboxEffect.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Effects/SkyboxEffect.fx
+
 #begin Textures/Blue.png
 /importer:TextureImporter
 /processor:TextureProcessor

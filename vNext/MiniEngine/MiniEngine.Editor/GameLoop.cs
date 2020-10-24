@@ -11,6 +11,7 @@ using MiniEngine.Graphics.Effects;
 using MiniEngine.Graphics.Geometry;
 using MiniEngine.Graphics.Geometry.Generators;
 using MiniEngine.Graphics.Lighting;
+using MiniEngine.Graphics.Skybox;
 using MiniEngine.Gui;
 using MiniEngine.Systems.Components;
 using MiniEngine.Systems.Entities;
@@ -135,6 +136,11 @@ namespace MiniEngine.Editor
 
             var pointLightComponent4 = new PointLightComponent(this.EntityAdministator.Create(), new Vector3(10, -10, 10), Color.White, 300.0f);
             this.Components.Add(pointLightComponent4);
+
+
+            var milkyway = this.Content.Load<Texture2D>(@"Skyboxes\Milkyway\Milkyway_small");
+            var skyboxComponent = new SkyboxComponent(this.EntityAdministator.Create(), milkyway);
+            this.Components.Add(skyboxComponent);
         }
 
         private void CreateSphere(Material material, Matrix transform)

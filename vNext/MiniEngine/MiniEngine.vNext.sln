@@ -20,7 +20,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "External", "External", "{52
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImGui.NET", "External\ImGui.NET\src\ImGui.NET\ImGui.NET.csproj", "{44BDB27A-2963-4BC7-BAFE-E69D9A2183B9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiniEngine.Gui", "MiniEngine.Gui\MiniEngine.Gui.csproj", "{C8DA7144-50F8-4992-964E-A7CEA97BD1FA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MiniEngine.Gui", "MiniEngine.Gui\MiniEngine.Gui.csproj", "{C8DA7144-50F8-4992-964E-A7CEA97BD1FA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiniEngine.ContentPipeline", "MiniEngine.ContentPipeline\MiniEngine.ContentPipeline.csproj", "{684075B5-3E15-472F-8BE9-41FAE398F7F1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -52,6 +54,10 @@ Global
 		{C8DA7144-50F8-4992-964E-A7CEA97BD1FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C8DA7144-50F8-4992-964E-A7CEA97BD1FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C8DA7144-50F8-4992-964E-A7CEA97BD1FA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{684075B5-3E15-472F-8BE9-41FAE398F7F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{684075B5-3E15-472F-8BE9-41FAE398F7F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{684075B5-3E15-472F-8BE9-41FAE398F7F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{684075B5-3E15-472F-8BE9-41FAE398F7F1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

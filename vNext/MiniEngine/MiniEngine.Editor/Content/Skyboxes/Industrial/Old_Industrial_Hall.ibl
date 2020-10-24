@@ -1,0 +1,39 @@
+[Header]
+ICOfile = "fin4_Thumb.jpg"
+PREVIEWfile = "fin4_preview.jpg"
+Name = "Old Industrial Hall"
+Author = "tischbein3"
+Location = "splotchdog land"
+Comment = "Indoor garage, rather low dynamic range, but good reflections"
+
+[Background]
+BGfile = "fin4_Bg.jpg"
+BGmap = 1
+BGu = 0.000000
+BGv = 0.000000
+BGheight = 4016
+
+[Enviroment]
+EVfile = "fin4_Env.hdr"
+EVmap = 1
+EVu = 0.000000
+EVv = 0.000000
+EVheight = 180
+EVmulti = 1.789474
+EVgamma = 1.859649
+
+[Reflection]
+REFfile = "fin4_Ref.exr"
+REFmap = 1
+REFu = 0.000000
+REFv = 0.000000
+REFheight = 2008
+REFmulti = 1.894737
+REFgamma = 1.578947
+
+[Sun]
+SUNcolor = 85,85,84
+SUNmulti = 2.968750
+SUNu = 0.739500
+SUNv = 0.113048
+

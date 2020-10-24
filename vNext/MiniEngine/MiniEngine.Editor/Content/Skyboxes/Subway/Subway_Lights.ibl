@@ -1,0 +1,39 @@
+[Header]
+ICOfile = "20_Subway_Lights_thumb.jpg"
+PREVIEWfile = "20_Subway_Lights_preview.jpg"
+Name = "Subway Lights"
+Author = "Blochi"
+Location = "Tokyo"
+Comment = "Bright light wall in the Tokyo subway station, great for cars"
+GEOlat = 35.6656470565355410
+GEOlong = 139.7623586654663100
+Link = "http://www.hdrlabs.com/sibl/archive.html"
+Date = "2009:12:18"
+Time = "14:00:00"
+Height = 1.700000
+
+[Background]
+BGfile = "20_Subway_Lights_8k.jpg"
+BGmap = 1
+BGu = 0.000000
+BGv = 0.000000
+BGheight = 4096
+
+[Enviroment]
+EVfile = "20_Subway_Lights_Env.hdr"
+EVmap = 1
+EVu = 0.000000
+EVv = 0.000000
+EVheight = 180
+EVmulti = 1.000000
+EVgamma = 1.900000
+
+[Reflection]
+REFfile = "20_Subway_Lights_3k.hdr"
+REFmap = 1
+REFu = 0.000000
+REFv = 0.000000
+REFheight = 1600
+REFmulti = 1.000000
+REFgamma = 1.900000
+

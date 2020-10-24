@@ -32,4 +32,7 @@
     <ProjectReference Include="..\MiniEngine.Gui\MiniEngine.Gui.csproj" />
     <ProjectReference Include="..\MiniEngine.Systems\MiniEngine.Systems.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Content\Skyboxes\" />
+  </ItemGroup>
 </Project>
