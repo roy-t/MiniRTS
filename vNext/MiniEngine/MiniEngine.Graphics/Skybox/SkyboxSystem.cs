@@ -1,7 +1,7 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
 using MiniEngine.Graphics.Effects;
-using MiniEngine.Graphics.PostProcess;
 using MiniEngine.Systems;
 
 namespace MiniEngine.Graphics.Skybox
@@ -11,14 +11,12 @@ namespace MiniEngine.Graphics.Skybox
     {
         private readonly GraphicsDevice Device;
         private readonly FrameService FrameService;
-        private readonly FullScreenTriangle FullScreenTriangle;
         private readonly SkyboxEffect Effect;
 
         public SkyboxSystem(GraphicsDevice device, EffectFactory effectFactory, FrameService frameService)
         {
             this.Device = device;
             this.FrameService = frameService;
-            this.FullScreenTriangle = new FullScreenTriangle();
 
             this.Effect = effectFactory.Construct<SkyboxEffect>();
         }
@@ -26,8 +24,8 @@ namespace MiniEngine.Graphics.Skybox
         public void OnSet()
         {
             this.Device.BlendState = BlendState.Opaque;
-            this.Device.DepthStencilState = DepthStencilState.None;
-            this.Device.RasterizerState = RasterizerState.CullCounterClockwise;
+            this.Device.DepthStencilState = DepthStencilState.Default; // TODO: either clear the depth buffer after, or don't do depth
+            this.Device.RasterizerState = RasterizerState.CullNone; // TODO: Cull
             this.Device.SamplerStates[0] = SamplerState.LinearClamp;
 
             this.Device.SetRenderTarget(this.FrameService.GBuffer.Diffuse);
@@ -35,13 +33,16 @@ namespace MiniEngine.Graphics.Skybox
 
         public void Process(SkyboxComponent skybox)
         {
-            this.Effect.Skybox = skybox.Texture;
+            var camera = this.FrameService.Camera;
+            var view = Matrix.CreateLookAt(Vector3.Zero, camera.Forward, Vector3.Up);
+            var projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver2, camera.AspectRatio, 0.1f, 250.0f);
 
-            // TODO: do something with camera position/direction
+            this.Effect.Skybox = skybox.Texture;
+            this.Effect.WorldViewProjection = camera.ViewProjection; //view * projection;
 
             this.Effect.Apply();
 
-            this.FullScreenTriangle.Render(this.Device);
+            this.Device.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, skybox.Vertices, 0, skybox.Vertices.Length, skybox.Indices, 0, skybox.Primitives);
         }
     }
 }

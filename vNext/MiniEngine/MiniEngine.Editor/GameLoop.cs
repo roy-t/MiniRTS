@@ -118,7 +118,7 @@ namespace MiniEngine.Editor
 
                     var position = new Vector3((col - (columns / 2.0f)) * spacing, (row - (rows / 2.0f)) * spacing, 0.0f);
                     var transform = Matrix.CreateTranslation(position);
-                    this.CreateSphere(material, transform);
+                    //this.CreateSphere(material, transform);
                 }
             }
 
@@ -137,9 +137,11 @@ namespace MiniEngine.Editor
             var pointLightComponent4 = new PointLightComponent(this.EntityAdministator.Create(), new Vector3(10, -10, 10), Color.White, 300.0f);
             this.Components.Add(pointLightComponent4);
 
-
-            var milkyway = this.Content.Load<Texture2D>(@"Skyboxes\Milkyway\Milkyway_small");
-            var skyboxComponent = new SkyboxComponent(this.EntityAdministator.Create(), milkyway);
+            var milkyway = this.Content.Load<Texture2D>(@"Skyboxes/Industrial/fin4_Bg");
+            //var milkyway = this.Content.Load<Texture2D>(@"Skyboxes\Milkyway\Milkyway_small");
+            //var milkyway = this.Content.Load<Texture2D>(@"Skyboxes\PrellerDrive\preller_drive_4k");
+            //var milkyway = this.Content.Load<Texture2D>(@"Skyboxes\Grid\testgrid");
+            var skyboxComponent = SkyboxGenerator.Generate(this.EntityAdministator.Create(), milkyway);
             this.Components.Add(skyboxComponent);
         }
 

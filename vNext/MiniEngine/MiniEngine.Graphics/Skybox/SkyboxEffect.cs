@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Graphics.Effects;
 
 namespace MiniEngine.Graphics.Skybox
@@ -12,5 +13,7 @@ namespace MiniEngine.Graphics.Skybox
         }
 
         public Texture2D Skybox { set => this.Effect.Parameters["Skybox"].SetValue(value); }
+
+        public Matrix WorldViewProjection { set => this.Effect.Parameters["WorldViewProjection"].SetValue(value); }
     }
 }

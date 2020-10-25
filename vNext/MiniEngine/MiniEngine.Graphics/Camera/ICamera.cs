@@ -10,6 +10,8 @@ namespace MiniEngine.Graphics.Camera
 
         Vector3 Forward { get; }
 
+        float AspectRatio { get; }
+
         void Move(Vector3 position, Vector3 forward);
     }
 }
