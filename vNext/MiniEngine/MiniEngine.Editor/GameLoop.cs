@@ -89,7 +89,7 @@ namespace MiniEngine.Editor
 
             this.skyboxNames = this.skyboxTextures.Select(s => s.Name).ToArray();
 
-            var skybox = SkyboxGenerator.Generate(this.skyboxTextures[0]);
+            var skybox = SkyboxGenerator.Generate(this.GraphicsDevice, this.skyboxTextures[0]);
 
             this.frameService = new FrameService(this.Graphics.GraphicsDevice, skybox);
             this.RegisterDelegate(this.frameService);
@@ -125,6 +125,7 @@ namespace MiniEngine.Editor
             var rows = 7;
             var columns = 7;
             var spacing = 2.5f;
+            var geometry = SpherifiedCubeGenerator.Generate(this.GraphicsDevice, 15);
             for (var row = 0; row < rows; row++)
             {
                 var metalicness = row / (float)rows;
@@ -135,7 +136,7 @@ namespace MiniEngine.Editor
 
                     var position = new Vector3((col - (columns / 2.0f)) * spacing, (row - (rows / 2.0f)) * spacing, 0.0f);
                     var transform = Matrix.CreateTranslation(position);
-                    this.CreateSphere(material, transform);
+                    this.CreateSphere(geometry, material, transform);
                 }
             }
 
@@ -155,11 +156,11 @@ namespace MiniEngine.Editor
             this.Components.Add(pointLightComponent4);
         }
 
-        private void CreateSphere(Material material, Matrix transform)
+        private void CreateSphere(Geometry geometry, Material material, Matrix transform)
         {
             var entity = this.EntityAdministator.Create();
-            var geometry = SpherifiedCubeGenerator.Generate(entity, 15, material);
-            this.Components.Add(geometry);
+            var component = new GeometryComponent(entity, geometry, material);
+            this.Components.Add(component);
 
             var body = new TransformComponent(entity, transform);
             this.Components.Add(body);

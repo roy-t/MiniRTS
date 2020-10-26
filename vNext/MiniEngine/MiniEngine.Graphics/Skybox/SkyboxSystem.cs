@@ -45,7 +45,9 @@ namespace MiniEngine.Graphics.Skybox
 
             this.Effect.Apply();
 
-            this.Device.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, skybox.Vertices, 0, skybox.Vertices.Length, skybox.Indices, 0, skybox.Primitives);
+            this.Device.SetVertexBuffer(skybox.VertexBuffer, 0);
+            this.Device.Indices = skybox.IndexBuffer;
+            this.Device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, skybox.Primitives);
         }
     }
 }

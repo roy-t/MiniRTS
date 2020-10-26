@@ -1,19 +1,17 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 
-namespace MiniEngine.Graphics.Skybox
+namespace MiniEngine.Graphics.Geometry
 {
-    public sealed class SkyboxGeometry
+    public sealed class Geometry
     {
-        public SkyboxGeometry(Texture2D texture, VertexBuffer vertexBuffer, IndexBuffer indexBuffer)
+        public Geometry(VertexBuffer vertexBuffer, IndexBuffer indexBuffer)
         {
-            this.Texture = texture;
             this.VertexBuffer = vertexBuffer;
             this.IndexBuffer = indexBuffer;
 
             this.Primitives = this.IndexBuffer.IndexCount / 3;
         }
 
-        public Texture2D Texture { get; set; }
         public VertexBuffer VertexBuffer { get; }
         public IndexBuffer IndexBuffer { get; }
 

@@ -4,21 +4,13 @@ namespace MiniEngine.Graphics.Geometry
 {
     public sealed class GeometryComponent : AComponent
     {
-        public GeometryComponent(Entity entity, GeometryVertex[] vertices, int[] indices, Material material)
+        public GeometryComponent(Entity entity, Geometry geometry, Material material)
             : base(entity)
         {
-            this.Vertices = vertices;
-            this.Indices = indices;
-            this.Primitives = this.Indices.Length / 3;
-
+            this.Geometry = geometry;
             this.Material = material;
         }
-
-        public GeometryVertex[] Vertices { get; }
-        public int[] Indices { get; }
-
-        public int Primitives { get; }
-
+        public Geometry Geometry { get; }
         public Material Material { get; }
     }
 }

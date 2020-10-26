@@ -45,7 +45,9 @@ namespace MiniEngine.Graphics.Geometry
             this.Effect.AmbientOcclusion = geometry.Material.AmbientOcclusion;
             this.Effect.Apply();
 
-            this.Device.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, geometry.Vertices, 0, geometry.Vertices.Length, geometry.Indices, 0, geometry.Primitives);
+            this.Device.SetVertexBuffer(geometry.Geometry.VertexBuffer, 0);
+            this.Device.Indices = geometry.Geometry.IndexBuffer;
+            this.Device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, geometry.Geometry.Primitives);
         }
     }
 }

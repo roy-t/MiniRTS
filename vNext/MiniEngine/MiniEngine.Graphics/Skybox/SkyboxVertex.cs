@@ -7,7 +7,7 @@ namespace MiniEngine.Graphics.Skybox
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct SkyboxVertex : IVertexType
     {
-        private static readonly VertexDeclaration Declaration = new VertexDeclaration
+        public static readonly VertexDeclaration Declaration = new VertexDeclaration
         (
             new VertexElement(0, VertexElementFormat.Vector3, VertexElementUsage.Position, 0)
         );

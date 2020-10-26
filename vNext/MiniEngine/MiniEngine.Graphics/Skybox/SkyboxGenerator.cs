@@ -4,7 +4,7 @@ namespace MiniEngine.Graphics.Skybox
 {
     public static class SkyboxGenerator
     {
-        public static SkyboxGeometry Generate(Texture2D texture)
+        public static SkyboxGeometry Generate(GraphicsDevice device, Texture2D texture)
         {
             var vertices = new SkyboxVertex[8];
             var indices = new short[36];
@@ -75,7 +75,13 @@ namespace MiniEngine.Graphics.Skybox
             indices[34] = 6;
             indices[35] = 5;
 
-            return new SkyboxGeometry(texture, vertices, indices);
+            var vertexBuffer = new VertexBuffer(device, SkyboxVertex.Declaration, vertices.Length, BufferUsage.None);
+            vertexBuffer.SetData(vertices);
+
+            var indexBuffer = new IndexBuffer(device, IndexElementSize.SixteenBits, indices.Length, BufferUsage.None);
+            indexBuffer.SetData(indices);
+
+            return new SkyboxGeometry(texture, vertexBuffer, indexBuffer);
         }
     }
 }
