@@ -118,7 +118,7 @@ namespace MiniEngine.Editor
 
                     var position = new Vector3((col - (columns / 2.0f)) * spacing, (row - (rows / 2.0f)) * spacing, 0.0f);
                     var transform = Matrix.CreateTranslation(position);
-                    //this.CreateSphere(material, transform);
+                    this.CreateSphere(material, transform);
                 }
             }
 

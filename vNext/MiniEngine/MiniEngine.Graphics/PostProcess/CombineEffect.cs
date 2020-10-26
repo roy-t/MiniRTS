@@ -10,8 +10,6 @@ namespace MiniEngine.Graphics.PostProcess
             this.Effect.CurrentTechnique = this.Effect.Techniques["CombineTechnique"];
         }
 
-        public Texture2D Diffuse { set => this.Effect.Parameters["Diffuse"].SetValue(value); }
-
         public Texture2D Light { set => this.Effect.Parameters["Light"].SetValue(value); }
     }
 }

@@ -43,7 +43,7 @@ OutputData PS(PixelData input)
 {
     OutputData output = (OutputData)0;
     
-    float3 albedo = ReadDiffuse(input.Texture);
+    float3 albedo = ReadDiffuse(input.Texture); // Already in linear color space
     float3 N = ReadNormal(input.Texture);
     Mat material = ReadMaterial(input.Texture);
     
@@ -60,7 +60,7 @@ OutputData PS(PixelData input)
     float dist = distance(Position, worldPosition);
 
     float attenuation = 1.0f / (dist * dist);    
-    float3 radiance = Color * Strength * attenuation;
+    float3 radiance = ToLinear(Color).rgb * Strength * attenuation; // Convert light color to linear color space first
 
     // Cook-Torrance BRDF
     float NDF = DistributionGGX(N, H, material.Roughness);
@@ -95,7 +95,7 @@ OutputData PS(PixelData input)
     
     float3 color = ambient + Lo;  
     
-    output.Light = ToLinear(float4(color, 1.0f));
+    output.Light = float4(color, 1.0f);
 
     return output;
 }

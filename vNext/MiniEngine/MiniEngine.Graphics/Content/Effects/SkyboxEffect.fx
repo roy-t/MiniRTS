@@ -14,7 +14,7 @@ struct PixelData
 
 struct OutputData
 {
-    float4 Diffuse : COLOR0;    
+    float4 Diffuse : COLOR1; // RT0 is only used for its depth buffer
 };
 
 texture Skybox;
@@ -34,7 +34,8 @@ PixelData VS(in VertexData input)
 {
     PixelData output = (PixelData)0;
 
-    output.Position = mul(float4(input.Position, 1), WorldViewProjection);    
+    float4 position = mul(float4(input.Position, 1), WorldViewProjection);
+    output.Position = position.xyww; // always set the distance to 1.0 so the skybox will be drawn behind everything else
     output.Position3D = input.Position;
     
     return output;
@@ -57,6 +58,7 @@ OutputData PS(PixelData input)
     float2 uv = SampleSphericalMap(normalize(input.Position3D));
     float4 diffuse = tex2D(skyboxSampler, uv);
     float4 diffuseLinear = ToLinear(diffuse);
+
     output.Diffuse = diffuseLinear;
       
     return output;

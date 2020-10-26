@@ -34,9 +34,7 @@ namespace MiniEngine.Graphics.PostProcess
 
         public void Process()
         {
-            this.Effect.Diffuse = this.FrameService.GBuffer.Diffuse;
             this.Effect.Light = this.FrameService.LBuffer.Light;
-
             this.Effect.Apply();
 
             this.FullScreenTriangle.Render(this.Device);

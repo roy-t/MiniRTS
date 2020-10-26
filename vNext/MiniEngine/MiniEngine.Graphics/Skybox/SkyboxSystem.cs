@@ -24,21 +24,22 @@ namespace MiniEngine.Graphics.Skybox
         public void OnSet()
         {
             this.Device.BlendState = BlendState.Opaque;
-            this.Device.DepthStencilState = DepthStencilState.Default; // TODO: either clear the depth buffer after, or don't do depth
-            this.Device.RasterizerState = RasterizerState.CullNone; // TODO: Cull
+            this.Device.DepthStencilState = DepthStencilState.DepthRead;
+            this.Device.RasterizerState = RasterizerState.CullCounterClockwise;
             this.Device.SamplerStates[0] = SamplerState.LinearClamp;
 
-            this.Device.SetRenderTarget(this.FrameService.GBuffer.Diffuse);
+            // The diffuse target is only used for the depth buffer
+            this.Device.SetRenderTargets(this.FrameService.GBuffer.Diffuse, this.FrameService.LBuffer.Light);
         }
 
         public void Process(SkyboxComponent skybox)
         {
             var camera = this.FrameService.Camera;
             var view = Matrix.CreateLookAt(Vector3.Zero, camera.Forward, Vector3.Up);
-            var projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver2, camera.AspectRatio, 0.1f, 250.0f);
+            var projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver2, camera.AspectRatio, 0.1f, 1.5f);
 
             this.Effect.Skybox = skybox.Texture;
-            this.Effect.WorldViewProjection = camera.ViewProjection; //view * projection;
+            this.Effect.WorldViewProjection = view * projection;
 
             this.Effect.Apply();
 
