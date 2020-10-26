@@ -1,8 +1,9 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using System;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace MiniEngine.Graphics.Geometry
 {
-    public sealed class Geometry
+    public sealed class Geometry : IDisposable
     {
         public Geometry(VertexBuffer vertexBuffer, IndexBuffer indexBuffer)
         {
@@ -16,5 +17,11 @@ namespace MiniEngine.Graphics.Geometry
         public IndexBuffer IndexBuffer { get; }
 
         public int Primitives { get; }
+
+        public void Dispose()
+        {
+            this.VertexBuffer.Dispose();
+            this.IndexBuffer.Dispose();
+        }
     }
 }

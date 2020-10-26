@@ -7,7 +7,7 @@ namespace MiniEngine.Graphics.PostProcess
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct PostProcessVertex : IVertexType
     {
-        private static readonly VertexDeclaration Declaration = new VertexDeclaration
+        public static readonly VertexDeclaration Declaration = new VertexDeclaration
         (
            new VertexElement(0 * 4, VertexElementFormat.Vector3, VertexElementUsage.Position, 0),
            new VertexElement(3 * 4, VertexElementFormat.Vector2, VertexElementUsage.TextureCoordinate, 0)

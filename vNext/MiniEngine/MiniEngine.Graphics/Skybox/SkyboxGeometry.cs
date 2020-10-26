@@ -1,8 +1,9 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using System;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace MiniEngine.Graphics.Skybox
 {
-    public sealed class SkyboxGeometry
+    public sealed class SkyboxGeometry : IDisposable
     {
         public SkyboxGeometry(Texture2D texture, VertexBuffer vertexBuffer, IndexBuffer indexBuffer)
         {
@@ -18,5 +19,11 @@ namespace MiniEngine.Graphics.Skybox
         public IndexBuffer IndexBuffer { get; }
 
         public int Primitives { get; }
+
+        public void Dispose()
+        {
+            this.VertexBuffer?.Dispose();
+            this.IndexBuffer?.Dispose();
+        }
     }
 }

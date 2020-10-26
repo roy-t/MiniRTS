@@ -1,16 +1,19 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MiniEngine.Configuration;
 
 namespace MiniEngine.Graphics.PostProcess
 {
-    internal sealed class FullScreenTriangle
+    [Service]
+    public sealed class FullScreenTriangle : IDisposable
     {
-        private readonly short[] Indices;
-        private readonly PostProcessVertex[] Vertices;
+        private readonly IndexBuffer Indices;
+        private readonly VertexBuffer Vertices;
 
-        public FullScreenTriangle()
+        public FullScreenTriangle(GraphicsDevice device)
         {
-            this.Vertices = new[]
+            var vertices = new[]
             {
                 new PostProcessVertex(
                     new Vector3(3, -1, 0),
@@ -23,15 +26,31 @@ namespace MiniEngine.Graphics.PostProcess
                     new Vector2(0, -1))
             };
 
-            this.Indices = new short[]
+            var indices = new short[]
             {
                 0,
                 1,
                 2
             };
+
+            this.Vertices = new VertexBuffer(device, PostProcessVertex.Declaration, vertices.Length, BufferUsage.None);
+            this.Vertices.SetData(vertices);
+
+            this.Indices = new IndexBuffer(device, IndexElementSize.SixteenBits, indices.Length, BufferUsage.None);
+            this.Indices.SetData(indices);
         }
 
         public void Render(GraphicsDevice device)
-            => device.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, this.Vertices, 0, 3, this.Indices, 0, 1);
+        {
+            device.SetVertexBuffer(this.Vertices);
+            device.Indices = this.Indices;
+            device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, 1);
+        }
+
+        public void Dispose()
+        {
+            this.Vertices.Dispose();
+            this.Indices.Dispose();
+        }
     }
 }

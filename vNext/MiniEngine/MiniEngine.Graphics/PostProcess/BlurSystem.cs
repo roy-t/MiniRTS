@@ -13,12 +13,12 @@ namespace MiniEngine.Graphics.PostProcess
         private readonly BlurEffect Effect;
         private readonly FullScreenTriangle FullScreenTriangle;
 
-        public BlurSystem(GraphicsDevice device, EffectFactory effectFactory, FrameService frameService)
+        public BlurSystem(GraphicsDevice device, FullScreenTriangle fullScreenTriangle, EffectFactory effectFactory, FrameService frameService)
         {
             this.Device = device;
             this.FrameService = frameService;
             this.Effect = effectFactory.Construct<BlurEffect>();
-            this.FullScreenTriangle = new FullScreenTriangle();
+            this.FullScreenTriangle = fullScreenTriangle;
         }
 
         public void OnSet()

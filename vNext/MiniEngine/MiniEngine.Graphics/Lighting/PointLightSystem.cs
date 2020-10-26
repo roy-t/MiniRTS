@@ -15,13 +15,13 @@ namespace MiniEngine.Graphics.Lighting
         private readonly PointLightEffect Effect;
         private readonly FullScreenTriangle FullScreenTriangle; // TODO: replace with sphere or other geom that better fits the infleunce of the light source
 
-        public PointLightSystem(GraphicsDevice device, EffectFactory effectFactory, FrameService frameService)
+        public PointLightSystem(GraphicsDevice device, FullScreenTriangle fullScreenTriangle, EffectFactory effectFactory, FrameService frameService)
         {
             this.Device = device;
             this.FrameService = frameService;
 
             this.Effect = effectFactory.Construct<PointLightEffect>();
-            this.FullScreenTriangle = new FullScreenTriangle();
+            this.FullScreenTriangle = fullScreenTriangle;
         }
 
         public void OnSet()

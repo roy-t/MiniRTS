@@ -15,13 +15,13 @@ namespace MiniEngine.Graphics.Lighting
         private readonly AmbientLightEffect Effect;
         private readonly FullScreenTriangle FullScreenTriangle;
 
-        public AmbientLightSystem(GraphicsDevice device, EffectFactory effectFactory, FrameService frameService)
+        public AmbientLightSystem(GraphicsDevice device, FullScreenTriangle fullScreenTriangle, EffectFactory effectFactory, FrameService frameService)
         {
             this.Device = device;
             this.FrameService = frameService;
 
             this.Effect = effectFactory.Construct<AmbientLightEffect>();
-            this.FullScreenTriangle = new FullScreenTriangle();
+            this.FullScreenTriangle = fullScreenTriangle;
         }
 
         public void OnSet()

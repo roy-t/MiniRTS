@@ -13,12 +13,12 @@ namespace MiniEngine.Graphics.PostProcess
         private readonly CombineEffect Effect;
         private readonly FullScreenTriangle FullScreenTriangle;
 
-        public CombineSystem(GraphicsDevice device, EffectFactory effectFactory, FrameService frameService)
+        public CombineSystem(GraphicsDevice device, FullScreenTriangle fullScreenTriangle, EffectFactory effectFactory, FrameService frameService)
         {
             this.Device = device;
             this.FrameService = frameService;
             this.Effect = effectFactory.Construct<CombineEffect>();
-            this.FullScreenTriangle = new FullScreenTriangle();
+            this.FullScreenTriangle = fullScreenTriangle;
         }
 
         public void OnSet()
