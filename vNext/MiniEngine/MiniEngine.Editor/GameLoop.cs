@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using ImGuiNET;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -42,6 +43,10 @@ namespace MiniEngine.Editor
         private bool docked = true;
         private bool showDemoWindow = false;
 
+        private int currentSkyboxTexture = 0;
+        private string[] skyboxNames = null!;
+        private Texture2D[] skyboxTextures = null!;
+
         public GameLoop(Register registerDelegate, Resolve resolveDelegate, EntityAdministrator entityAdministator, ComponentAdministrator componentAdministrator, RenderPipelineBuilder renderPipelineBuilder,
             KeyboardController keyboard, MouseController mouse, CameraController cameraController)
         {
@@ -74,7 +79,19 @@ namespace MiniEngine.Editor
             this.RegisterDelegate(this.Graphics.GraphicsDevice);
             this.RegisterDelegate(this.Content);
 
-            this.frameService = new FrameService(this.Graphics.GraphicsDevice);
+            this.skyboxTextures = new Texture2D[]
+            {
+                this.Content.Load<Texture2D>("Skyboxes/Industrial/fin4_Bg"),
+                this.Content.Load<Texture2D>("Skyboxes/Milkyway/Milkyway_small"),
+                this.Content.Load<Texture2D>("Skyboxes/Grid/testgrid"),
+                this.Content.Load<Texture2D>("Skyboxes/Loft/Newport_Loft_Ref")
+            };
+
+            this.skyboxNames = this.skyboxTextures.Select(s => s.Name).ToArray();
+
+            var skybox = SkyboxGenerator.Generate(this.skyboxTextures[0]);
+
+            this.frameService = new FrameService(this.Graphics.GraphicsDevice, skybox);
             this.RegisterDelegate(this.frameService);
 
             this.frameService.Camera.Move(Vector3.Backward * 10, Vector3.Forward);
@@ -136,13 +153,6 @@ namespace MiniEngine.Editor
 
             var pointLightComponent4 = new PointLightComponent(this.EntityAdministator.Create(), new Vector3(10, -10, 10), Color.White, 300.0f);
             this.Components.Add(pointLightComponent4);
-
-            var milkyway = this.Content.Load<Texture2D>(@"Skyboxes/Industrial/fin4_Bg");
-            //var milkyway = this.Content.Load<Texture2D>(@"Skyboxes\Milkyway\Milkyway_small");
-            //var milkyway = this.Content.Load<Texture2D>(@"Skyboxes\PrellerDrive\preller_drive_4k");
-            //var milkyway = this.Content.Load<Texture2D>(@"Skyboxes\Grid\testgrid");
-            var skyboxComponent = SkyboxGenerator.Generate(this.EntityAdministator.Create(), milkyway);
-            this.Components.Add(skyboxComponent);
         }
 
         private void CreateSphere(Material material, Matrix transform)
@@ -242,6 +252,12 @@ namespace MiniEngine.Editor
                     this.Graphics.ApplyChanges();
 
                     ImGui.Checkbox("Show Demo Window", ref this.showDemoWindow);
+
+                    if (ImGui.ListBox("Skybox", ref this.currentSkyboxTexture, this.skyboxNames, this.skyboxTextures.Length))
+                    {
+                        this.frameService.Skybox.Texture = this.skyboxTextures[this.currentSkyboxTexture];
+                    }
+
                     ImGui.EndMenu();
                 }
                 ImGui.EndMainMenuBar();

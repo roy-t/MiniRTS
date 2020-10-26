@@ -50,6 +50,18 @@
 /processorParam:TextureFormat=NoChange
 /build:Skyboxes/Industrial/fin4_Env.hdr
 
+#begin Skyboxes/Loft/Newport_Loft_Ref.hdr
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=NoChange
+/build:Skyboxes/Loft/Newport_Loft_Ref.hdr
+
 #begin Skyboxes/Milkyway/Milkyway_small.hdr
 /importer:TextureImporter
 /processor:TextureProcessor

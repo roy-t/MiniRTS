@@ -1,11 +1,10 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
-using MiniEngine.Systems;
 
 namespace MiniEngine.Graphics.Skybox
 {
     public static class SkyboxGenerator
     {
-        public static SkyboxComponent Generate(Entity entity, Texture2D texture)
+        public static SkyboxGeometry Generate(Texture2D texture)
         {
             var vertices = new SkyboxVertex[8];
             var indices = new short[36];
@@ -76,7 +75,7 @@ namespace MiniEngine.Graphics.Skybox
             indices[34] = 6;
             indices[35] = 5;
 
-            return new SkyboxComponent(entity, texture, vertices, indices);
+            return new SkyboxGeometry(texture, vertices, indices);
         }
     }
 }

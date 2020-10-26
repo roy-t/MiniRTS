@@ -1,12 +1,10 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
-using MiniEngine.Systems;
 
 namespace MiniEngine.Graphics.Skybox
 {
-    public sealed class SkyboxComponent : AComponent
+    public sealed class SkyboxGeometry
     {
-        public SkyboxComponent(Entity entity, Texture2D texture, SkyboxVertex[] vertices, short[] indices)
-            : base(entity)
+        public SkyboxGeometry(Texture2D texture, SkyboxVertex[] vertices, short[] indices)
         {
             this.Texture = texture;
             this.Vertices = vertices;

@@ -28,12 +28,14 @@ namespace MiniEngine.Graphics.Skybox
             this.Device.RasterizerState = RasterizerState.CullCounterClockwise;
             this.Device.SamplerStates[0] = SamplerState.LinearClamp;
 
-            // The diffuse target is only used for the depth buffer
+            // As an optimization we render the skybox last. Using the diffuse depth buffer we can cull most samples
+            // which saves the cost of shading every pixel of the skybox
             this.Device.SetRenderTargets(this.FrameService.GBuffer.Diffuse, this.FrameService.LBuffer.Light);
         }
 
-        public void Process(SkyboxComponent skybox)
+        public void Process()
         {
+            var skybox = this.FrameService.Skybox;
             var camera = this.FrameService.Camera;
             var view = Matrix.CreateLookAt(Vector3.Zero, camera.Forward, Vector3.Up);
             var projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver2, camera.AspectRatio, 0.1f, 1.5f);

@@ -12,6 +12,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{ABD45EB9-BF3F-45DB-8123-010BCCE4A37C}"
 	ProjectSection(SolutionItems) = preProject
 		Directory.Build.props = Directory.Build.props
+		TODO.md = TODO.md
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MiniEngine.Configuration", "MiniEngine.Configuration\MiniEngine.Configuration.csproj", "{70C66765-87D2-4FC5-B431-FB9FC8179D72}"
@@ -22,7 +23,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImGui.NET", "External\ImGui
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MiniEngine.Gui", "MiniEngine.Gui\MiniEngine.Gui.csproj", "{C8DA7144-50F8-4992-964E-A7CEA97BD1FA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiniEngine.ContentPipeline", "MiniEngine.ContentPipeline\MiniEngine.ContentPipeline.csproj", "{684075B5-3E15-472F-8BE9-41FAE398F7F1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MiniEngine.ContentPipeline", "MiniEngine.ContentPipeline\MiniEngine.ContentPipeline.csproj", "{684075B5-3E15-472F-8BE9-41FAE398F7F1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
