@@ -13,6 +13,7 @@ using MiniEngine.Graphics.Geometry;
 using MiniEngine.Graphics.Geometry.Generators;
 using MiniEngine.Graphics.Lighting;
 using MiniEngine.Graphics.Skybox;
+using MiniEngine.Graphics.Utilities;
 using MiniEngine.Gui;
 using MiniEngine.Systems.Components;
 using MiniEngine.Systems.Entities;
@@ -26,7 +27,7 @@ namespace MiniEngine.Editor
         private readonly Register RegisterDelegate;
         private readonly Resolve ResolveDelegate;
         private readonly EntityAdministrator EntityAdministator;
-        private new readonly ComponentAdministrator Components;
+        private readonly ComponentAdministrator ComponentAdministrator;
         private readonly RenderPipelineBuilder RenderPipelineBuilder;
 
         private readonly KeyboardController Keyboard;
@@ -39,6 +40,8 @@ namespace MiniEngine.Editor
         private ParallelPipeline renderPipeline = null!;
         private SpriteBatch spriteBatch = null!;
         private ImGuiRenderer gui = null!;
+
+        private CubeMapGenerator generator = null!;
 
         private bool docked = true;
         private bool showDemoWindow = false;
@@ -53,7 +56,7 @@ namespace MiniEngine.Editor
             this.RegisterDelegate = registerDelegate;
             this.ResolveDelegate = resolveDelegate;
             this.EntityAdministator = entityAdministator;
-            this.Components = componentAdministrator;
+            this.ComponentAdministrator = componentAdministrator;
             this.RenderPipelineBuilder = renderPipelineBuilder;
             this.Keyboard = keyboard;
             this.Mouse = mouse;
@@ -99,6 +102,8 @@ namespace MiniEngine.Editor
             var effectFactory = (EffectFactory)this.ResolveDelegate(typeof(EffectFactory));
             this.gui = new ImGuiRenderer(this.Graphics.GraphicsDevice, this.Window, effectFactory);
 
+            this.generator = (CubeMapGenerator)this.ResolveDelegate(typeof(CubeMapGenerator));
+
             this.renderPipeline = this.RenderPipelineBuilder.Build();
             this.spriteBatch = new SpriteBatch(this.Graphics.GraphicsDevice);
 
@@ -141,29 +146,29 @@ namespace MiniEngine.Editor
             }
 
             var ambientLight = new AmbientLightComponent(this.EntityAdministator.Create(), Color.White);
-            this.Components.Add(ambientLight);
+            this.ComponentAdministrator.Add(ambientLight);
 
             var pointLightComponent = new PointLightComponent(this.EntityAdministator.Create(), new Vector3(-10, 10, 10), Color.White, 300.0f);
-            this.Components.Add(pointLightComponent);
+            this.ComponentAdministrator.Add(pointLightComponent);
 
             var pointLightComponent2 = new PointLightComponent(this.EntityAdministator.Create(), new Vector3(10, 10, 10), Color.White, 300.0f);
-            this.Components.Add(pointLightComponent2);
+            this.ComponentAdministrator.Add(pointLightComponent2);
 
             var pointLightComponent3 = new PointLightComponent(this.EntityAdministator.Create(), new Vector3(-10, -10, 10), Color.White, 300.0f);
-            this.Components.Add(pointLightComponent3);
+            this.ComponentAdministrator.Add(pointLightComponent3);
 
             var pointLightComponent4 = new PointLightComponent(this.EntityAdministator.Create(), new Vector3(10, -10, 10), Color.White, 300.0f);
-            this.Components.Add(pointLightComponent4);
+            this.ComponentAdministrator.Add(pointLightComponent4);
         }
 
         private void CreateSphere(Geometry geometry, Material material, Matrix transform)
         {
             var entity = this.EntityAdministator.Create();
             var component = new GeometryComponent(entity, geometry, material);
-            this.Components.Add(component);
+            this.ComponentAdministrator.Add(component);
 
             var body = new TransformComponent(entity, transform);
-            this.Components.Add(body);
+            this.ComponentAdministrator.Add(body);
         }
 
         protected override void UnloadContent()
@@ -257,6 +262,11 @@ namespace MiniEngine.Editor
                     if (ImGui.ListBox("Skybox", ref this.currentSkyboxTexture, this.skyboxNames, this.skyboxTextures.Length))
                     {
                         this.frameService.Skybox.Texture = this.skyboxTextures[this.currentSkyboxTexture];
+                    }
+
+                    if (ImGui.Button("Cube"))
+                    {
+                        this.generator.Generate(this.skyboxTextures[this.currentSkyboxTexture], 1024);
                     }
 
                     ImGui.EndMenu();

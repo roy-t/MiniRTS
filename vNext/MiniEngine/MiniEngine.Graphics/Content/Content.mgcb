@@ -31,6 +31,12 @@
 /processorParam:DebugMode=Auto
 /build:Effects/CombineEffect.fx
 
+#begin Effects/CubeMapGeneratorEffect.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Effects/CubeMapGeneratorEffect.fx
+
 #begin Effects/GeometryEffect.fx
 /importer:EffectImporter
 /processor:EffectProcessor
