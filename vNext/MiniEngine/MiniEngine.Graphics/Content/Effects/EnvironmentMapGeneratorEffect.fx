@@ -53,7 +53,7 @@ OutputData PS(PixelData input)
     return output;
 }
 
-technique CubeMapGeneratorTechnique
+technique EnvironmentMapGeneratorTechnique
 {
     pass P0
     {

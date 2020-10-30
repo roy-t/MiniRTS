@@ -32,6 +32,7 @@ namespace MiniEngine.Editor
         private readonly FrameService FrameService;
         private readonly ImGuiRenderer Gui;
         private readonly CubeMapGenerator CubeMapGenerator;
+        private readonly EnvironmentMapGenerator EnvironmentMapGenerator;
         private readonly EntityAdministrator Entities;
         private readonly ComponentAdministrator Components;
         private readonly KeyboardController Keyboard;
@@ -50,7 +51,7 @@ namespace MiniEngine.Editor
         private bool docked = true;
         private bool showDemoWindow = false;
 
-        public GameLoop(GraphicsDeviceManager graphics, GraphicsDevice device, SpriteBatch spriteBatch, GameTimer gameTimer, GameWindow window, ContentStack content, FrameService frameService, ImGuiRenderer imGui, CubeMapGenerator cubeMapGenerator, EntityAdministrator entities, ComponentAdministrator components, RenderPipelineBuilder renderPipelineBuilder, KeyboardController keyboard, MouseController mouse, CameraController cameraController)
+        public GameLoop(GraphicsDeviceManager graphics, GraphicsDevice device, SpriteBatch spriteBatch, GameTimer gameTimer, GameWindow window, ContentStack content, FrameService frameService, ImGuiRenderer imGui, CubeMapGenerator cubeMapGenerator, EnvironmentMapGenerator environmentMapGenerator, EntityAdministrator entities, ComponentAdministrator components, RenderPipelineBuilder renderPipelineBuilder, KeyboardController keyboard, MouseController mouse, CameraController cameraController)
         {
             this.Graphics = graphics;
             this.Device = device;
@@ -61,6 +62,7 @@ namespace MiniEngine.Editor
             this.FrameService = frameService;
             this.Gui = imGui;
             this.CubeMapGenerator = cubeMapGenerator;
+            this.EnvironmentMapGenerator = environmentMapGenerator;
             this.Entities = entities;
             this.Components = components;
             this.Keyboard = keyboard;
@@ -82,7 +84,7 @@ namespace MiniEngine.Editor
             {
                 this.Content.Push("generator");
                 var equiRect = this.Content.Load<Texture2D>(this.SkyboxNames[i]);
-                this.SkyboxTextures[i] = this.CubeMapGenerator.Generate(equiRect);
+                this.SkyboxTextures[i] = this.EnvironmentMapGenerator.Generate(equiRect); //environmentmap
                 this.Content.Pop();
 
                 this.Content.Link(this.SkyboxTextures[i]);

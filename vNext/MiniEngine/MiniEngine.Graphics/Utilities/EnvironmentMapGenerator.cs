@@ -5,15 +5,15 @@ using MiniEngine.Graphics.Effects;
 namespace MiniEngine.Graphics.Utilities
 {
     [Service]
-    public sealed class CubeMapGenerator
+    public sealed class EnvironmentMapGenerator
     {
         private readonly GraphicsDevice Device;
-        private readonly CubeMapGeneratorEffect Effect;
+        private readonly EnvironmentMapGeneratorEffect Effect;
 
-        public CubeMapGenerator(GraphicsDevice device, EffectFactory effectFactory)
+        public EnvironmentMapGenerator(GraphicsDevice device, EffectFactory effectFactory)
         {
             this.Device = device;
-            this.Effect = effectFactory.Construct<CubeMapGeneratorEffect>();
+            this.Effect = effectFactory.Construct<EnvironmentMapGeneratorEffect>();
         }
 
         public TextureCube Generate(Texture2D equirectangularTexture)

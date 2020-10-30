@@ -2,7 +2,7 @@
 
 namespace MiniEngine.Graphics.Effects
 {
-    public abstract class EffectWrapper
+    public abstract class EffectWrapper : IEffect
     {
         protected readonly Effect Effect;
 
