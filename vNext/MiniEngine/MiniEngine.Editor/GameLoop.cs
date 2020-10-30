@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using ImGuiNET;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -42,7 +41,7 @@ namespace MiniEngine.Editor
         private readonly FrameCounter FrameCounter;
 
         private readonly string[] SkyboxNames;
-        private readonly Texture2D[] SkyboxTextures;
+        private readonly TextureCube[] SkyboxTextures;
         private int currentSkyboxTexture = 0;
 
 
@@ -69,14 +68,25 @@ namespace MiniEngine.Editor
             this.CameraController = cameraController;
 
             this.Content.Push("basics");
-            this.SkyboxTextures = new Texture2D[]
+
+            this.SkyboxNames = new string[]
             {
-                this.Content.Load<Texture2D>("Skyboxes/Industrial/fin4_Bg"),
-                this.Content.Load<Texture2D>("Skyboxes/Milkyway/Milkyway_small"),
-                this.Content.Load<Texture2D>("Skyboxes/Grid/testgrid"),
-                this.Content.Load<Texture2D>("Skyboxes/Loft/Newport_Loft_Ref")
+                "Skyboxes/Industrial/fin4_Bg",
+                "Skyboxes/Milkyway/Milkyway_small",
+                "Skyboxes/Grid/testgrid",
+                "Skyboxes/Loft/Newport_Loft_Ref"
             };
-            this.SkyboxNames = this.SkyboxTextures.Select(s => s.Name).ToArray();
+
+            this.SkyboxTextures = new TextureCube[this.SkyboxNames.Length];
+            for (var i = 0; i < this.SkyboxNames.Length; i++)
+            {
+                this.Content.Push("generator");
+                var equiRect = this.Content.Load<Texture2D>(this.SkyboxNames[i]);
+                this.SkyboxTextures[i] = this.CubeMapGenerator.Generate(equiRect);
+                this.Content.Pop();
+
+                this.Content.Link(this.SkyboxTextures[i]);
+            }
 
             this.FrameService.Skybox = SkyboxGenerator.Generate(this.Device, this.SkyboxTextures[0]);
             this.FrameService.Camera.Move(Vector3.Backward * 10, Vector3.Forward);
@@ -233,11 +243,6 @@ namespace MiniEngine.Editor
                     if (ImGui.ListBox("Skybox", ref this.currentSkyboxTexture, this.SkyboxNames, this.SkyboxTextures.Length))
                     {
                         this.FrameService.Skybox.Texture = this.SkyboxTextures[this.currentSkyboxTexture];
-                    }
-
-                    if (ImGui.Button("Cube"))
-                    {
-                        this.CubeMapGenerator.Generate(this.SkyboxTextures[this.currentSkyboxTexture], 1024);
                     }
 
                     ImGui.EndMenu();

@@ -12,7 +12,7 @@ namespace MiniEngine.Graphics.Skybox
             this.Effect.CurrentTechnique = this.Effect.Techniques["SkyboxTechnique"];
         }
 
-        public Texture2D Skybox { set => this.Effect.Parameters["Skybox"].SetValue(value); }
+        public TextureCube Skybox { set => this.Effect.Parameters["Skybox"].SetValue(value); }
 
         public Matrix WorldViewProjection { set => this.Effect.Parameters["WorldViewProjection"].SetValue(value); }
     }

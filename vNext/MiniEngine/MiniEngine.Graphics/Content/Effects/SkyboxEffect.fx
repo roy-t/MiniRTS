@@ -18,7 +18,7 @@ struct OutputData
 };
 
 texture Skybox;
-sampler skyboxSampler = sampler_state
+samplerCUBE skyboxSampler = sampler_state
 {
     Texture = (Skybox);
     MinFilter = LINEAR;
@@ -26,6 +26,7 @@ sampler skyboxSampler = sampler_state
     MipFilter = LINEAR;
     AddressU = Clamp;
     AddressV = Clamp;
+    AddressW = Clamp;
 };
 
 float4x4 WorldViewProjection;
@@ -41,26 +42,11 @@ PixelData VS(in VertexData input)
     return output;
 }
 
-float2 SampleSphericalMap(float3 position)
-{    
-    float azimuth = atan2(position.x, position.z);
-    float zenith = asin(position.y);
-    
-    float u = 1.0f - (azimuth * ONE_OVER_TWO_PI + 0.5f);
-    float v = 1.0f - (zenith * ONE_OVER_PI + 0.5f);
-
-    return float2(u, v);
-}
-
 OutputData PS(PixelData input)
 {
     OutputData output = (OutputData)0;    
-    float2 uv = SampleSphericalMap(normalize(input.Position3D));
-    float4 diffuse = tex2D(skyboxSampler, uv);
-    float4 diffuseLinear = ToLinear(diffuse);
+    output.Diffuse = texCUBE(skyboxSampler, input.Position3D);
 
-    output.Diffuse = diffuseLinear;
-      
     return output;
 }
 

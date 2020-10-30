@@ -4,7 +4,7 @@ namespace MiniEngine.Graphics.Skybox
 {
     public static class SkyboxGenerator
     {
-        public static SkyboxGeometry Generate(GraphicsDevice device, Texture2D texture)
+        public static SkyboxGeometry Generate(GraphicsDevice device, TextureCube texture)
         {
             var vertices = new SkyboxVertex[8];
             var indices = new short[36];
