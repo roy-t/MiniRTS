@@ -6,7 +6,7 @@ using MiniEngine.Configuration;
 namespace MiniEngine.SceneManagement
 {
     [System]
-    public sealed class ContentStack
+    public sealed class ContentStack : IDisposable
     {
         private readonly ContentManager Content;
 
@@ -29,9 +29,21 @@ namespace MiniEngine.SceneManagement
             return asset;
         }
 
+        public void Link<T>(T asset)
+            where T : class
+            => this.Stack.Peek().Add(asset);
+
         public void Push(string tag) => this.Stack.Push(new ContentStackFrame(tag));
 
         public void Pop() => this.Stack.Pop();
+
+        public void Dispose()
+        {
+            while (this.Stack.Count > 0)
+            {
+                this.Stack.Pop().Dispose();
+            }
+        }
 
         private sealed class ContentStackFrame : IDisposable
         {

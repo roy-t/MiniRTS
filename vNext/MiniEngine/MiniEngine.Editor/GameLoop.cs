@@ -2,7 +2,6 @@
 using System.Linq;
 using ImGuiNET;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MiniEngine.Configuration;
@@ -15,6 +14,7 @@ using MiniEngine.Graphics.Lighting;
 using MiniEngine.Graphics.Skybox;
 using MiniEngine.Graphics.Utilities;
 using MiniEngine.Gui;
+using MiniEngine.SceneManagement;
 using MiniEngine.Systems.Components;
 using MiniEngine.Systems.Entities;
 using MiniEngine.Systems.Pipeline;
@@ -29,7 +29,7 @@ namespace MiniEngine.Editor
         private readonly SpriteBatch SpriteBatch;
         private readonly GameTimer GameTimer;
         private readonly GameWindow Window;
-        private readonly ContentManager Content;
+        private readonly ContentStack Content;
         private readonly FrameService FrameService;
         private readonly ImGuiRenderer Gui;
         private readonly CubeMapGenerator CubeMapGenerator;
@@ -51,7 +51,7 @@ namespace MiniEngine.Editor
         private bool docked = true;
         private bool showDemoWindow = false;
 
-        public GameLoop(GraphicsDeviceManager graphics, GraphicsDevice device, SpriteBatch spriteBatch, GameTimer gameTimer, GameWindow window, ContentManager content, FrameService frameService, ImGuiRenderer imGui, CubeMapGenerator cubeMapGenerator, EntityAdministrator entities, ComponentAdministrator components, RenderPipelineBuilder renderPipelineBuilder, KeyboardController keyboard, MouseController mouse, CameraController cameraController)
+        public GameLoop(GraphicsDeviceManager graphics, GraphicsDevice device, SpriteBatch spriteBatch, GameTimer gameTimer, GameWindow window, ContentStack content, FrameService frameService, ImGuiRenderer imGui, CubeMapGenerator cubeMapGenerator, EntityAdministrator entities, ComponentAdministrator components, RenderPipelineBuilder renderPipelineBuilder, KeyboardController keyboard, MouseController mouse, CameraController cameraController)
         {
             this.Graphics = graphics;
             this.Device = device;
@@ -68,6 +68,7 @@ namespace MiniEngine.Editor
             this.Mouse = mouse;
             this.CameraController = cameraController;
 
+            this.Content.Push("basics");
             this.SkyboxTextures = new Texture2D[]
             {
                 this.Content.Load<Texture2D>("Skyboxes/Industrial/fin4_Bg"),
@@ -97,9 +98,11 @@ namespace MiniEngine.Editor
 
             var red = new Texture2D(this.Device, 1, 1);
             red.SetData(new Color[] { Color.Red });
+            this.Content.Link(red);
 
             var normal = new Texture2D(this.Device, 1, 1);
             normal.SetData(new Color[] { new Color(0.5f, 0.5f, 1.0f) });
+            this.Content.Link(normal);
 
             var rows = 7;
             var columns = 7;
@@ -289,6 +292,7 @@ namespace MiniEngine.Editor
         {
             this.RenderPipeline.Stop();
             this.Gui.Dispose();
+            this.Content.Dispose();
         }
     }
 }
