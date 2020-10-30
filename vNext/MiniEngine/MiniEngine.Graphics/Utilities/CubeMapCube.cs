@@ -4,9 +4,9 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace MiniEngine.Graphics.Utilities
 {
-    public sealed class Cube : IDisposable
+    public sealed class CubeMapCube : IDisposable
     {
-        public Cube(GraphicsDevice device)
+        public CubeMapCube(GraphicsDevice device)
         {
             var vertices = new VertexPosition[8];
             var indices = new short[36];

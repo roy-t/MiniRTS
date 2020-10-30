@@ -15,5 +15,7 @@ namespace MiniEngine.Graphics.Utilities
         public Texture2D EquirectangularTexture { set => this.Effect.Parameters["EquirectangularTexture"].SetValue(value); }
 
         public Matrix WorldViewProjection { set => this.Effect.Parameters["WorldViewProjection"].SetValue(value); }
+
+        public float SampleDleta { set => this.Effect.Parameters["SampleDelta"].SetValue(value); }
     }
 }

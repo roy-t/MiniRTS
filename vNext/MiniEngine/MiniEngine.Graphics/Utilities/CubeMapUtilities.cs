@@ -16,7 +16,7 @@ namespace MiniEngine.Graphics.Utilities
             var cubeMap = new TextureCube(device, resolution, false, format);
 
             using var faceRenderTarget = new RenderTarget2D(device, resolution, resolution, false, format, DepthFormat.None, 0, RenderTargetUsage.DiscardContents);
-            using var cube = new Cube(device);
+            using var cube = new CubeMapCube(device);
 
             var data = new HalfVector4[resolution * resolution];
             var faces = CubeMapFaces;
