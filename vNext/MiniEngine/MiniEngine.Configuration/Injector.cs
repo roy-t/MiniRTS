@@ -11,6 +11,7 @@ namespace MiniEngine.Configuration
 {
     public delegate object Resolve(Type type);
     public delegate void Register(object instance);
+    public delegate void RegisterAs(object instance, Type type);
 
     public sealed class Injector : IDisposable
     {
@@ -36,6 +37,9 @@ namespace MiniEngine.Configuration
 
             Register registerDelegate = o => this.Container.RegisterInstance(o.GetType(), o);
             this.Container.RegisterInstance(registerDelegate);
+
+            RegisterAs registerAsDelgate = (o, t) => this.Container.RegisterInstance(t, o);
+            this.Container.RegisterInstance(registerAsDelgate);
 
             this.RegisterTypesFromReferencedAssemblies();
         }

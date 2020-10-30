@@ -86,6 +86,10 @@ namespace MiniEngine.Systems.Pipeline
 
                 this.JoinWorkers();
             }
+            else if (this.pipelineState == PipelineState.Stopped)
+            {
+                return;
+            }
             else
             {
                 throw new InvalidOperationException($"Cannot call {nameof(Stop)} while the {nameof(ParallelPipeline)} is in the {this.pipelineState} state");

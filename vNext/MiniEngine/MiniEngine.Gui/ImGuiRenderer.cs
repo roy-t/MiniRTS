@@ -5,11 +5,13 @@ using ImGuiNET;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using MiniEngine.Configuration;
 using MiniEngine.Graphics.Effects;
 using MiniEngine.Graphics.Immediate;
 
 namespace MiniEngine.Gui
 {
+    [Service]
     public sealed class ImGuiRenderer : IDisposable
     {
         // Graphics
@@ -351,6 +353,12 @@ namespace MiniEngine.Gui
         }
 
         public void Dispose()
-            => ImGui.DestroyContext();
+        {
+            var ptr = ImGui.GetCurrentContext();
+            if (ptr != IntPtr.Zero)
+            {
+                ImGui.DestroyContext();
+            }
+        }
     }
 }
