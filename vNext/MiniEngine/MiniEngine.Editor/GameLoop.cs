@@ -43,6 +43,7 @@ namespace MiniEngine.Editor
 
         private readonly string[] SkyboxNames;
         private readonly TextureCube[] SkyboxTextures;
+        private readonly TextureCube[] EnvironmentTextures;
         private int currentSkyboxTexture = 0;
 
 
@@ -80,17 +81,19 @@ namespace MiniEngine.Editor
             };
 
             this.SkyboxTextures = new TextureCube[this.SkyboxNames.Length];
+            this.EnvironmentTextures = new TextureCube[this.SkyboxNames.Length];
             for (var i = 0; i < this.SkyboxNames.Length; i++)
             {
                 this.Content.Push("generator");
                 var equiRect = this.Content.Load<Texture2D>(this.SkyboxNames[i]);
-                this.SkyboxTextures[i] = this.EnvironmentMapGenerator.Generate(equiRect); //environmentmap
+                this.SkyboxTextures[i] = this.CubeMapGenerator.Generate(equiRect);
+                this.EnvironmentTextures[i] = this.EnvironmentMapGenerator.Generate(equiRect);
                 this.Content.Pop();
 
                 this.Content.Link(this.SkyboxTextures[i]);
             }
 
-            this.FrameService.Skybox = SkyboxGenerator.Generate(this.Device, this.SkyboxTextures[0]);
+            this.FrameService.Skybox = SkyboxGenerator.Generate(this.Device, this.SkyboxTextures[0], this.EnvironmentTextures[0]);
             this.FrameService.Camera.Move(Vector3.Backward * 10, Vector3.Forward);
 
             this.RenderPipeline = renderPipelineBuilder.Build();
@@ -242,6 +245,7 @@ namespace MiniEngine.Editor
                     if (ImGui.ListBox("Skybox", ref this.currentSkyboxTexture, this.SkyboxNames, this.SkyboxTextures.Length))
                     {
                         this.FrameService.Skybox.Texture = this.SkyboxTextures[this.currentSkyboxTexture];
+                        this.FrameService.Skybox.Environment = this.EnvironmentTextures[this.currentSkyboxTexture];
                     }
 
                     ImGui.EndMenu();

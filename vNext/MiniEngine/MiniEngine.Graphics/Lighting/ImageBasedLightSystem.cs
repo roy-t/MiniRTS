@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
 using MiniEngine.Graphics.Effects;
 using MiniEngine.Graphics.PostProcess;
@@ -39,12 +40,13 @@ namespace MiniEngine.Graphics.Lighting
 
         public void Process()
         {
-            //this.Effect.CameraPosition = this.FrameService.Camera.Position;
-            //this.Effect.Diffuse = this.FrameService.GBuffer.Diffuse;
-            //this.Effect.Normal = this.FrameService.GBuffer.Normal;
-            //this.Effect.Depth = this.FrameService.GBuffer.Depth;
-            //this.Effect.Material = this.FrameService.GBuffer.Material;
-            //this.Effect.InverseViewProjection = Matrix.Invert(this.FrameService.Camera.ViewProjection);
+            this.Effect.CameraPosition = this.FrameService.Camera.Position;
+            this.Effect.Diffuse = this.FrameService.GBuffer.Diffuse;
+            this.Effect.Normal = this.FrameService.GBuffer.Normal;
+            this.Effect.Depth = this.FrameService.GBuffer.Depth;
+            this.Effect.Material = this.FrameService.GBuffer.Material;
+            this.Effect.Environment = this.FrameService.Skybox.Environment;
+            this.Effect.InverseViewProjection = Matrix.Invert(this.FrameService.Camera.ViewProjection);
 
             this.Effect.Apply();
 

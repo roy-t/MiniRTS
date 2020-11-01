@@ -20,6 +20,8 @@ namespace MiniEngine.Graphics.Lighting
 
         public Texture2D Material { set => this.Effect.Parameters["Material"].SetValue(value); }
 
+        public TextureCube Environment { set => this.Effect.Parameters["Environment"].SetValue(value); }
+
         public Matrix InverseViewProjection { set => this.Effect.Parameters["InverseViewProjection"].SetValue(value); }
 
         public Vector3 CameraPosition { set => this.Effect.Parameters["CameraPosition"].SetValue(value); }

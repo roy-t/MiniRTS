@@ -20,6 +20,18 @@ struct OutputData
     float4 Light : COLOR0;    
 };
 
+texture Environment;
+samplerCUBE environmentSampler = sampler_state
+{
+    Texture = (Environment);
+    MinFilter = LINEAR;
+    MagFilter = LINEAR;
+    MipFilter = LINEAR;
+    AddressU = Clamp;
+    AddressV = Clamp;
+    AddressW = Clamp;
+};
+
 float4 Color;
 float Strength;
 float3 Position;
@@ -42,7 +54,25 @@ PixelData VS(in VertexData input)
 OutputData PS(PixelData input)
 {
     OutputData output = (OutputData)0;            
-    output.Light = float4(0.0f, 0.0f, 0.0f, 1.0f);
+    
+    float3 albedo = ReadDiffuse(input.Texture); // Already in linear color space
+    float3 N = ReadNormal(input.Texture);        
+    Mat material = ReadMaterial(input.Texture);
+    float3 irradiance = texCUBE(environmentSampler, N).rgb; // Already in linear color space
+
+    float3 worldPosition = ReadWorldPosition(input.Texture, InverseViewProjection);
+    float3 V = normalize(CameraPosition - worldPosition);
+
+    float3 F0 = float3(0.04f, 0.04f, 0.04f);
+    F0 = lerp(F0, albedo, material.Metalicness);
+
+    float3 kS = FresnelSchlickRoughness(clamp(dot(N, V), 0.0f, 1.0f), F0, material.Roughness);
+    float3 kD = 1.0f - kS;
+    
+    float3 diffuse = irradiance * albedo;
+    float3 ambient = (kD * diffuse) * material.AmbientOcclusion;
+
+    output.Light = float4(ambient, 1.0f);
 
     return output;
 }
