@@ -14,6 +14,7 @@ namespace MiniEngine.Graphics
         public FrameService(GraphicsDevice device)
         {
             this.Skybox = null!;
+            this.BrdfLutTexture = null!;
             this.Camera = new PerspectiveCamera(device.Viewport.AspectRatio);
             this.GBuffer = new GBuffer(device);
             this.LBuffer = new LBuffer(device);
@@ -26,5 +27,7 @@ namespace MiniEngine.Graphics
         public PBuffer PBuffer { get; set; }
 
         public SkyboxGeometry Skybox { get; set; } // TODO: this field should be move to a scene object and initialized better!
+
+        public Texture2D BrdfLutTexture { get; set; } // TODO: this is a general shader resource that should be somewhere else?
     }
 }

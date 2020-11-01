@@ -22,8 +22,14 @@ namespace MiniEngine.Graphics.Lighting
 
         public TextureCube Irradiance { set => this.Effect.Parameters["Irradiance"].SetValue(value); }
 
+        public TextureCube Environment { set => this.Effect.Parameters["Environment"].SetValue(value); }
+
+        public Texture2D BrdfLut { set => this.Effect.Parameters["BrdfLut"].SetValue(value); }
+
         public Matrix InverseViewProjection { set => this.Effect.Parameters["InverseViewProjection"].SetValue(value); }
 
         public Vector3 CameraPosition { set => this.Effect.Parameters["CameraPosition"].SetValue(value); }
+
+        public int MaxReflectionLod { set => this.Effect.Parameters["MaxReflectionLod"].SetValue(value); }
     }
 }

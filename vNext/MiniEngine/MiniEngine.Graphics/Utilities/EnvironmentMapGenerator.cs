@@ -7,7 +7,7 @@ namespace MiniEngine.Graphics.Utilities
     [Service]
     public sealed class EnvironmentMapGenerator
     {
-        private const int resolution = 256;
+        private const int resolution = 512;
 
         private readonly GraphicsDevice Device;
         private readonly EnvironmentMapGeneratorEffect Effect;
@@ -20,12 +20,16 @@ namespace MiniEngine.Graphics.Utilities
 
         public TextureCube Generate(Texture2D equirectangularTexture)
         {
+            // TODO: I don't seem to have problems with 'Pre-filter convolution artifacts'
+            // but in case of problems check that section: https://learnopengl.com/PBR/IBL/Specular-IBL
+
             this.Device.BlendState = BlendState.Opaque;
             this.Device.DepthStencilState = DepthStencilState.None;
             this.Device.RasterizerState = RasterizerState.CullCounterClockwise;
             this.Device.SamplerStates[0] = SamplerState.LinearClamp;
-
             this.Effect.EquirectangularTexture = equirectangularTexture;
+
+
 
             var cubeMap = new TextureCube(this.Device, resolution, true, SurfaceFormat.HalfVector4);
 

@@ -14,6 +14,18 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#begin Skyboxes/Circus/Circus_Backstage_3k.hdr
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=NoChange
+/build:Skyboxes/Circus/Circus_Backstage_3k.hdr
+
 #begin Skyboxes/Grid/testgrid.jpg
 /importer:TextureImporter
 /processor:TextureProcessor

@@ -34,19 +34,28 @@ namespace MiniEngine.Graphics.Lighting
             this.Device.SamplerStates[1] = SamplerState.LinearClamp;
             this.Device.SamplerStates[2] = SamplerState.LinearClamp;
             this.Device.SamplerStates[3] = SamplerState.LinearClamp;
+            this.Device.SamplerStates[4] = SamplerState.LinearClamp;
+            this.Device.SamplerStates[5] = SamplerState.LinearClamp;
+            this.Device.SamplerStates[6] = SamplerState.LinearClamp;
 
             this.Device.SetRenderTarget(this.FrameService.LBuffer.Light);
         }
 
         public void Process()
         {
+
             this.Effect.CameraPosition = this.FrameService.Camera.Position;
+            this.Effect.InverseViewProjection = Matrix.Invert(this.FrameService.Camera.ViewProjection);
+
             this.Effect.Diffuse = this.FrameService.GBuffer.Diffuse;
             this.Effect.Normal = this.FrameService.GBuffer.Normal;
             this.Effect.Depth = this.FrameService.GBuffer.Depth;
             this.Effect.Material = this.FrameService.GBuffer.Material;
             this.Effect.Irradiance = this.FrameService.Skybox.Irradiance;
-            this.Effect.InverseViewProjection = Matrix.Invert(this.FrameService.Camera.ViewProjection);
+            this.Effect.Environment = this.FrameService.Skybox.Environment;
+            this.Effect.BrdfLut = this.FrameService.BrdfLutTexture;
+
+            this.Effect.MaxReflectionLod = this.FrameService.Skybox.Environment.LevelCount;
 
             this.Effect.Apply();
 

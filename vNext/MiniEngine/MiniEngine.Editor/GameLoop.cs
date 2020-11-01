@@ -34,6 +34,7 @@ namespace MiniEngine.Editor
         private readonly CubeMapGenerator CubeMapGenerator;
         private readonly IrradianceMapGenerator IrradianceMapGenerator;
         private readonly EnvironmentMapGenerator EnvironmentMapGenerator;
+        private readonly BrdfLutGenerator BrdfLutGenerator;
         private readonly EntityAdministrator Entities;
         private readonly ComponentAdministrator Components;
         private readonly KeyboardController Keyboard;
@@ -48,13 +49,12 @@ namespace MiniEngine.Editor
         private readonly TextureCube[] EnvironmentTextures;
         private int currentSkyboxTexture = 0;
 
-
         private readonly ParallelPipeline RenderPipeline;
 
         private bool docked = true;
         private bool showDemoWindow = false;
 
-        public GameLoop(GraphicsDeviceManager graphics, GraphicsDevice device, SpriteBatch spriteBatch, GameTimer gameTimer, GameWindow window, ContentStack content, FrameService frameService, ImGuiRenderer imGui, CubeMapGenerator cubeMapGenerator, IrradianceMapGenerator irradianceMapGenerator, EnvironmentMapGenerator environmentMapGenerator, EntityAdministrator entities, ComponentAdministrator components, RenderPipelineBuilder renderPipelineBuilder, KeyboardController keyboard, MouseController mouse, CameraController cameraController)
+        public GameLoop(GraphicsDeviceManager graphics, GraphicsDevice device, SpriteBatch spriteBatch, GameTimer gameTimer, GameWindow window, ContentStack content, FrameService frameService, ImGuiRenderer imGui, CubeMapGenerator cubeMapGenerator, IrradianceMapGenerator irradianceMapGenerator, EnvironmentMapGenerator environmentMapGenerator, BrdfLutGenerator brdfLutGenerator, EntityAdministrator entities, ComponentAdministrator components, RenderPipelineBuilder renderPipelineBuilder, KeyboardController keyboard, MouseController mouse, CameraController cameraController)
         {
             this.Graphics = graphics;
             this.Device = device;
@@ -67,6 +67,7 @@ namespace MiniEngine.Editor
             this.CubeMapGenerator = cubeMapGenerator;
             this.IrradianceMapGenerator = irradianceMapGenerator;
             this.EnvironmentMapGenerator = environmentMapGenerator;
+            this.BrdfLutGenerator = brdfLutGenerator;
             this.Entities = entities;
             this.Components = components;
             this.Keyboard = keyboard;
@@ -77,6 +78,7 @@ namespace MiniEngine.Editor
 
             this.SkyboxNames = new string[]
             {
+                "Skyboxes/Circus/Circus_Backstage_3k",
                 "Skyboxes/Industrial/fin4_Bg",
                 "Skyboxes/Milkyway/Milkyway_small",
                 "Skyboxes/Grid/testgrid",
@@ -94,14 +96,15 @@ namespace MiniEngine.Editor
                 this.IrradianceTextures[i] = this.IrradianceMapGenerator.Generate(equiRect);
                 this.EnvironmentTextures[i] = this.EnvironmentMapGenerator.Generate(equiRect);
 
-                // Temp Hack:
-                this.SkyboxTextures[i] = this.EnvironmentTextures[i];
                 this.Content.Pop();
 
                 this.Content.Link(this.SkyboxTextures[i]);
             }
 
-            this.FrameService.Skybox = SkyboxGenerator.Generate(this.Device, this.SkyboxTextures[0], this.IrradianceTextures[0]);
+            this.FrameService.BrdfLutTexture = this.BrdfLutGenerator.Generate();
+            this.FrameService.BrdfLutTexture.Tag = this.Gui.BindTexture(this.FrameService.BrdfLutTexture);
+
+            this.FrameService.Skybox = SkyboxGenerator.Generate(this.Device, this.SkyboxTextures[0], this.IrradianceTextures[0], this.EnvironmentTextures[0]);
             this.FrameService.Camera.Move(Vector3.Backward * 10, Vector3.Forward);
 
             this.RenderPipeline = renderPipelineBuilder.Build();
@@ -211,10 +214,12 @@ namespace MiniEngine.Editor
                 this.RenderToWindow("RenderTargets", "Depth", this.FrameService.GBuffer.Depth);
                 this.RenderToWindow("RenderTargets", "Normal", this.FrameService.GBuffer.Normal);
 
-                this.RenderToWindow("RenderTargets", "Light", this.FrameService.LBuffer.Light); // TODO: light is invisible because a = 0!
+                this.RenderToWindow("RenderTargets", "Light", this.FrameService.LBuffer.Light);
 
                 this.RenderToWindow("RenderTargets", "Combine", this.FrameService.PBuffer.Combine);
                 this.RenderToWindow("RenderTargets", "PostProcess", this.FrameService.PBuffer.PostProcess);
+
+                this.RenderToWindow("RenderTargets", "BRDF Lut", this.FrameService.BrdfLutTexture);
             }
             else
             {
@@ -254,6 +259,7 @@ namespace MiniEngine.Editor
                     {
                         this.FrameService.Skybox.Texture = this.SkyboxTextures[this.currentSkyboxTexture];
                         this.FrameService.Skybox.Irradiance = this.IrradianceTextures[this.currentSkyboxTexture];
+                        this.FrameService.Skybox.Environment = this.EnvironmentTextures[this.currentSkyboxTexture];
                     }
 
                     ImGui.EndMenu();
@@ -262,7 +268,7 @@ namespace MiniEngine.Editor
             }
         }
 
-        private void RenderToWindow(string window, string label, RenderTarget2D renderTarget)
+        private void RenderToWindow(string window, string label, Texture2D renderTarget)
         {
             if (ImGui.Begin(window))
             {
