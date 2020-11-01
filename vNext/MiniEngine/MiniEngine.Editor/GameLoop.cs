@@ -33,6 +33,7 @@ namespace MiniEngine.Editor
         private readonly ImGuiRenderer Gui;
         private readonly CubeMapGenerator CubeMapGenerator;
         private readonly IrradianceMapGenerator IrradianceMapGenerator;
+        private readonly EnvironmentMapGenerator EnvironmentMapGenerator;
         private readonly EntityAdministrator Entities;
         private readonly ComponentAdministrator Components;
         private readonly KeyboardController Keyboard;
@@ -44,6 +45,7 @@ namespace MiniEngine.Editor
         private readonly string[] SkyboxNames;
         private readonly TextureCube[] SkyboxTextures;
         private readonly TextureCube[] IrradianceTextures;
+        private readonly TextureCube[] EnvironmentTextures;
         private int currentSkyboxTexture = 0;
 
 
@@ -52,7 +54,7 @@ namespace MiniEngine.Editor
         private bool docked = true;
         private bool showDemoWindow = false;
 
-        public GameLoop(GraphicsDeviceManager graphics, GraphicsDevice device, SpriteBatch spriteBatch, GameTimer gameTimer, GameWindow window, ContentStack content, FrameService frameService, ImGuiRenderer imGui, CubeMapGenerator cubeMapGenerator, IrradianceMapGenerator irradianceMapGenerator, EntityAdministrator entities, ComponentAdministrator components, RenderPipelineBuilder renderPipelineBuilder, KeyboardController keyboard, MouseController mouse, CameraController cameraController)
+        public GameLoop(GraphicsDeviceManager graphics, GraphicsDevice device, SpriteBatch spriteBatch, GameTimer gameTimer, GameWindow window, ContentStack content, FrameService frameService, ImGuiRenderer imGui, CubeMapGenerator cubeMapGenerator, IrradianceMapGenerator irradianceMapGenerator, EnvironmentMapGenerator environmentMapGenerator, EntityAdministrator entities, ComponentAdministrator components, RenderPipelineBuilder renderPipelineBuilder, KeyboardController keyboard, MouseController mouse, CameraController cameraController)
         {
             this.Graphics = graphics;
             this.Device = device;
@@ -64,6 +66,7 @@ namespace MiniEngine.Editor
             this.Gui = imGui;
             this.CubeMapGenerator = cubeMapGenerator;
             this.IrradianceMapGenerator = irradianceMapGenerator;
+            this.EnvironmentMapGenerator = environmentMapGenerator;
             this.Entities = entities;
             this.Components = components;
             this.Keyboard = keyboard;
@@ -82,12 +85,17 @@ namespace MiniEngine.Editor
 
             this.SkyboxTextures = new TextureCube[this.SkyboxNames.Length];
             this.IrradianceTextures = new TextureCube[this.SkyboxNames.Length];
+            this.EnvironmentTextures = new TextureCube[this.SkyboxNames.Length];
             for (var i = 0; i < this.SkyboxNames.Length; i++)
             {
                 this.Content.Push("generator");
                 var equiRect = this.Content.Load<Texture2D>(this.SkyboxNames[i]);
                 this.SkyboxTextures[i] = this.CubeMapGenerator.Generate(equiRect);
                 this.IrradianceTextures[i] = this.IrradianceMapGenerator.Generate(equiRect);
+                this.EnvironmentTextures[i] = this.EnvironmentMapGenerator.Generate(equiRect);
+
+                // Temp Hack:
+                this.SkyboxTextures[i] = this.EnvironmentTextures[i];
                 this.Content.Pop();
 
                 this.Content.Link(this.SkyboxTextures[i]);

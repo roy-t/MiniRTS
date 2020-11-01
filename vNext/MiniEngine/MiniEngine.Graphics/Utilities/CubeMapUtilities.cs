@@ -11,9 +11,9 @@ namespace MiniEngine.Graphics.Utilities
     {
         public static IReadOnlyList<CubeMapFace> CubeMapFaces => (CubeMapFace[])Enum.GetValues(typeof(CubeMapFace));
 
-        public static TextureCube RenderFaces(GraphicsDevice device, I3DEffect effect, int resolution, SurfaceFormat format)
+        public static TextureCube RenderFaces(GraphicsDevice device, I3DEffect effect, int resolution, SurfaceFormat format, bool generateMipMaps = false)
         {
-            var cubeMap = new TextureCube(device, resolution, false, format);
+            var cubeMap = new TextureCube(device, resolution, generateMipMaps, format);
 
             using var faceRenderTarget = new RenderTarget2D(device, resolution, resolution, false, format, DepthFormat.None, 0, RenderTargetUsage.DiscardContents);
             using var cube = new CubeMapCube(device);
