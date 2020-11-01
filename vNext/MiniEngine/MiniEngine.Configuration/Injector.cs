@@ -6,15 +6,29 @@ using System.Reflection;
 using LightInject;
 using Serilog;
 
+/// <summary> Adapter for the LightInject dependency injector. Scans all assemblies in the current
+/// directory for types annotated with one of the attributes defined in this namespace and makes
+/// these available for injection. In MiniEngine dependency injection is mostly used for constructor
+/// injection. As it is relatively expensive. But you can also use late binding by injecting a
+/// factory (Func<>) or one of the Resolve or Register delegates. This should not be done inside the
+/// main game loop. </summary>
 #pragma warning disable IDE0039 // Use local function
+
 namespace MiniEngine.Configuration
 {
     public delegate object Resolve(Type type);
+
     public delegate void Register(object instance);
+
     public delegate void RegisterAs(object instance, Type type);
 
     public sealed class Injector : IDisposable
     {
+        private static readonly string[] IgnoredAssemblies = new[]
+        {
+            "Microsoft", "MonoGame", "MiniEngine.ContentPipeline", "Serilog", "SharpDX", "LightInject", "ImGui.NET"
+        };
+
         private readonly ServiceContainer Container;
         private readonly ILogger Logger;
 
@@ -127,17 +141,17 @@ namespace MiniEngine.Configuration
             return assemblies;
         }
 
-        private static bool IsServiceType(Type type) => (type.IsDefined(typeof(ServiceAttribute), true) || type.IsDefined(typeof(SystemAttribute), true)) && !type.IsAbstract;
+        private static bool IsServiceType(Type type)
+            => (type.IsDefined(typeof(ServiceAttribute), true) || type.IsDefined(typeof(SystemAttribute), true)) && !type.IsAbstract;
 
-        private static bool IsComponentType(Type type) => type.IsDefined(typeof(ComponentAttribute), true) && !type.IsAbstract;
+        private static bool IsComponentType(Type type)
+            => type.IsDefined(typeof(ComponentAttribute), true) && !type.IsAbstract;
 
-        private static bool IsContainerType(Type type) => type.IsDefined(typeof(ComponentContainerAttribute), true) && !type.IsAbstract;
+        private static bool IsContainerType(Type type)
+            => type.IsDefined(typeof(ComponentContainerAttribute), true) && !type.IsAbstract;
 
         private static bool IsRelevantAssembly(AssemblyName name)
-        {
-            var names = new[] { "Microsoft", "MonoGame", "MiniEngine.ContentPipeline", "Serilog", "SharpDX", "LightInject", "ImGui.NET" };
-            return !names.Any(n => name.FullName.StartsWith(n));
-        }
+            => !IgnoredAssemblies.Any(n => name.FullName.StartsWith(n));
 
         private void RegisterComponentContainers(Type containerType, List<Type> componentTypes)
         {
@@ -156,4 +170,5 @@ namespace MiniEngine.Configuration
         }
     }
 }
+
 #pragma warning restore IDE0039 // Use local function
