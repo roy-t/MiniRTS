@@ -4,12 +4,12 @@ using MiniEngine.Graphics.Effects;
 
 namespace MiniEngine.Graphics.Utilities
 {
-    public sealed class EnvironmentMapGeneratorEffect : EffectWrapper, I3DEffect
+    public sealed class IrradianceMapGeneratorEffect : EffectWrapper, I3DEffect
     {
-        public EnvironmentMapGeneratorEffect(Effect effect)
+        public IrradianceMapGeneratorEffect(Effect effect)
             : base(effect)
         {
-            this.Effect.CurrentTechnique = this.Effect.Techniques["EnvironmentMapGeneratorTechnique"];
+            this.Effect.CurrentTechnique = this.Effect.Techniques["IrradianceMapGeneratorTechnique"];
         }
 
         public Texture2D EquirectangularTexture { set => this.Effect.Parameters["EquirectangularTexture"].SetValue(value); }

@@ -5,17 +5,17 @@ using MiniEngine.Graphics.Effects;
 namespace MiniEngine.Graphics.Utilities
 {
     [Service]
-    public sealed class EnvironmentMapGenerator
+    public sealed class IrradianceMapGenerator
     {
         private const int resolution = 32;
 
         private readonly GraphicsDevice Device;
-        private readonly EnvironmentMapGeneratorEffect Effect;
+        private readonly IrradianceMapGeneratorEffect Effect;
 
-        public EnvironmentMapGenerator(GraphicsDevice device, EffectFactory effectFactory)
+        public IrradianceMapGenerator(GraphicsDevice device, EffectFactory effectFactory)
         {
             this.Device = device;
-            this.Effect = effectFactory.Construct<EnvironmentMapGeneratorEffect>();
+            this.Effect = effectFactory.Construct<IrradianceMapGeneratorEffect>();
         }
 
         public TextureCube Generate(Texture2D equirectangularTexture)

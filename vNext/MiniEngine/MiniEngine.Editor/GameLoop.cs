@@ -32,7 +32,7 @@ namespace MiniEngine.Editor
         private readonly FrameService FrameService;
         private readonly ImGuiRenderer Gui;
         private readonly CubeMapGenerator CubeMapGenerator;
-        private readonly EnvironmentMapGenerator EnvironmentMapGenerator;
+        private readonly IrradianceMapGenerator IrradianceMapGenerator;
         private readonly EntityAdministrator Entities;
         private readonly ComponentAdministrator Components;
         private readonly KeyboardController Keyboard;
@@ -43,7 +43,7 @@ namespace MiniEngine.Editor
 
         private readonly string[] SkyboxNames;
         private readonly TextureCube[] SkyboxTextures;
-        private readonly TextureCube[] EnvironmentTextures;
+        private readonly TextureCube[] IrradianceTextures;
         private int currentSkyboxTexture = 0;
 
 
@@ -52,7 +52,7 @@ namespace MiniEngine.Editor
         private bool docked = true;
         private bool showDemoWindow = false;
 
-        public GameLoop(GraphicsDeviceManager graphics, GraphicsDevice device, SpriteBatch spriteBatch, GameTimer gameTimer, GameWindow window, ContentStack content, FrameService frameService, ImGuiRenderer imGui, CubeMapGenerator cubeMapGenerator, EnvironmentMapGenerator environmentMapGenerator, EntityAdministrator entities, ComponentAdministrator components, RenderPipelineBuilder renderPipelineBuilder, KeyboardController keyboard, MouseController mouse, CameraController cameraController)
+        public GameLoop(GraphicsDeviceManager graphics, GraphicsDevice device, SpriteBatch spriteBatch, GameTimer gameTimer, GameWindow window, ContentStack content, FrameService frameService, ImGuiRenderer imGui, CubeMapGenerator cubeMapGenerator, IrradianceMapGenerator irradianceMapGenerator, EntityAdministrator entities, ComponentAdministrator components, RenderPipelineBuilder renderPipelineBuilder, KeyboardController keyboard, MouseController mouse, CameraController cameraController)
         {
             this.Graphics = graphics;
             this.Device = device;
@@ -63,7 +63,7 @@ namespace MiniEngine.Editor
             this.FrameService = frameService;
             this.Gui = imGui;
             this.CubeMapGenerator = cubeMapGenerator;
-            this.EnvironmentMapGenerator = environmentMapGenerator;
+            this.IrradianceMapGenerator = irradianceMapGenerator;
             this.Entities = entities;
             this.Components = components;
             this.Keyboard = keyboard;
@@ -81,19 +81,19 @@ namespace MiniEngine.Editor
             };
 
             this.SkyboxTextures = new TextureCube[this.SkyboxNames.Length];
-            this.EnvironmentTextures = new TextureCube[this.SkyboxNames.Length];
+            this.IrradianceTextures = new TextureCube[this.SkyboxNames.Length];
             for (var i = 0; i < this.SkyboxNames.Length; i++)
             {
                 this.Content.Push("generator");
                 var equiRect = this.Content.Load<Texture2D>(this.SkyboxNames[i]);
                 this.SkyboxTextures[i] = this.CubeMapGenerator.Generate(equiRect);
-                this.EnvironmentTextures[i] = this.EnvironmentMapGenerator.Generate(equiRect);
+                this.IrradianceTextures[i] = this.IrradianceMapGenerator.Generate(equiRect);
                 this.Content.Pop();
 
                 this.Content.Link(this.SkyboxTextures[i]);
             }
 
-            this.FrameService.Skybox = SkyboxGenerator.Generate(this.Device, this.SkyboxTextures[0], this.EnvironmentTextures[0]);
+            this.FrameService.Skybox = SkyboxGenerator.Generate(this.Device, this.SkyboxTextures[0], this.IrradianceTextures[0]);
             this.FrameService.Camera.Move(Vector3.Backward * 10, Vector3.Forward);
 
             this.RenderPipeline = renderPipelineBuilder.Build();
@@ -245,7 +245,7 @@ namespace MiniEngine.Editor
                     if (ImGui.ListBox("Skybox", ref this.currentSkyboxTexture, this.SkyboxNames, this.SkyboxTextures.Length))
                     {
                         this.FrameService.Skybox.Texture = this.SkyboxTextures[this.currentSkyboxTexture];
-                        this.FrameService.Skybox.Environment = this.EnvironmentTextures[this.currentSkyboxTexture];
+                        this.FrameService.Skybox.Irradiance = this.IrradianceTextures[this.currentSkyboxTexture];
                     }
 
                     ImGui.EndMenu();

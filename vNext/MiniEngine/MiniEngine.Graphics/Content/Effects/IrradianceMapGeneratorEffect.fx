@@ -78,7 +78,7 @@ OutputData PS(PixelData input)
     return output;
 }
 
-technique EnvironmentMapGeneratorTechnique
+technique IrradianceMapGeneratorTechnique
 {
     pass P0
     {

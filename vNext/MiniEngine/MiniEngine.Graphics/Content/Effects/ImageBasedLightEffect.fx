@@ -20,10 +20,10 @@ struct OutputData
     float4 Light : COLOR0;    
 };
 
-texture Environment;
-samplerCUBE environmentSampler = sampler_state
+texture Irradiance;
+samplerCUBE irradianceSampler = sampler_state
 {
-    Texture = (Environment);
+    Texture = (Irradiance);
     MinFilter = LINEAR;
     MagFilter = LINEAR;
     MipFilter = LINEAR;
@@ -58,7 +58,7 @@ OutputData PS(PixelData input)
     float3 albedo = ReadDiffuse(input.Texture); // Already in linear color space
     float3 N = ReadNormal(input.Texture);        
     Mat material = ReadMaterial(input.Texture);
-    float3 irradiance = texCUBE(environmentSampler, N).rgb; // Already in linear color space
+    float3 irradiance = texCUBE(irradianceSampler, N).rgb; // Already in linear color space
 
     float3 worldPosition = ReadWorldPosition(input.Texture, InverseViewProjection);
     float3 V = normalize(CameraPosition - worldPosition);

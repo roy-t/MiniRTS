@@ -5,10 +5,10 @@ namespace MiniEngine.Graphics.Skybox
 {
     public sealed class SkyboxGeometry : IDisposable
     {
-        public SkyboxGeometry(TextureCube texture, TextureCube environment, VertexBuffer vertexBuffer, IndexBuffer indexBuffer)
+        public SkyboxGeometry(TextureCube texture, TextureCube irradiance, VertexBuffer vertexBuffer, IndexBuffer indexBuffer)
         {
             this.Texture = texture;
-            this.Environment = environment;
+            this.Irradiance = irradiance;
             this.VertexBuffer = vertexBuffer;
             this.IndexBuffer = indexBuffer;
 
@@ -17,7 +17,7 @@ namespace MiniEngine.Graphics.Skybox
 
         public TextureCube Texture { get; set; }
 
-        public TextureCube Environment { get; set; }
+        public TextureCube Irradiance { get; set; }
         public VertexBuffer VertexBuffer { get; }
         public IndexBuffer IndexBuffer { get; }
 
