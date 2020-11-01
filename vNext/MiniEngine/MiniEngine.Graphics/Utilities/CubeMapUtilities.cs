@@ -11,10 +11,17 @@ namespace MiniEngine.Graphics.Utilities
     {
         public static IReadOnlyList<CubeMapFace> CubeMapFaces => (CubeMapFace[])Enum.GetValues(typeof(CubeMapFace));
 
-        public static TextureCube RenderFaces(GraphicsDevice device, I3DEffect effect, int resolution, SurfaceFormat format, bool generateMipMaps = false)
+        public static TextureCube RenderFaces(GraphicsDevice device, I3DEffect effect, int resolution, SurfaceFormat format)
         {
-            var cubeMap = new TextureCube(device, resolution, generateMipMaps, format);
+            var cubeMap = new TextureCube(device, resolution, false, format);
 
+            RenderFaces(device, cubeMap, effect, resolution, format, 0);
+
+            return cubeMap;
+        }
+
+        public static void RenderFaces(GraphicsDevice device, TextureCube cubeMap, I3DEffect effect, int resolution, SurfaceFormat format, int mipMapLevel)
+        {
             using var faceRenderTarget = new RenderTarget2D(device, resolution, resolution, false, format, DepthFormat.None, 0, RenderTargetUsage.DiscardContents);
             using var cube = new CubeMapCube(device);
 
@@ -39,10 +46,8 @@ namespace MiniEngine.Graphics.Utilities
                 device.SetRenderTarget(null);
 
                 faceRenderTarget.GetData(data);
-                cubeMap.SetData(face, data);
+                cubeMap.SetData(face, mipMapLevel, null, data, 0, data.Length);
             }
-
-            return cubeMap;
         }
 
         public static Matrix GetViewForFace(CubeMapFace face)

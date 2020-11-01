@@ -47,6 +47,10 @@ OutputData PS(PixelData input)
     OutputData output = (OutputData)0;    
     output.Diffuse = texCUBE(skyboxSampler, input.Position3D);
 
+    // TODO: Temp hack to sample different mipmap level
+    //float4 foo = float4(input.Position3D, 1.2f);
+    //output.Diffuse = texCUBElod(skyboxSampler, foo);
+
     return output;
 }
 

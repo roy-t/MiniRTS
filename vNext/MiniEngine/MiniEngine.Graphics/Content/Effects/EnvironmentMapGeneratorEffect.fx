@@ -103,8 +103,8 @@ OutputData PS(PixelData input)
         {
             float2 uv = SampleSphericalMap(L);
             float4 diffuse = tex2D(equirectangularTextureSampler, uv) * NdotL;
-            float4 diffuseLinear = ToLinear(diffuse); // TODO: linearize
-            prefilteredColor += diffuse.rgb;
+            float4 diffuseLinear = ToLinear(diffuse);
+            prefilteredColor += diffuseLinear.rgb;
             totalWeight += NdotL;            
         }        
     }
