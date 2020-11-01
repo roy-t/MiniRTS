@@ -134,9 +134,6 @@ namespace MiniEngine.Editor
                 }
             }
 
-            var ambientLight = new AmbientLightComponent(this.Entities.Create(), Color.White);
-            this.Components.Add(ambientLight);
-
             var pointLightComponent = new PointLightComponent(this.Entities.Create(), new Vector3(-10, 10, 10), Color.White, 300.0f);
             this.Components.Add(pointLightComponent);
 

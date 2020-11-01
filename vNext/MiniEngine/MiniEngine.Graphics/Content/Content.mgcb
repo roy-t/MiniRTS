@@ -49,6 +49,12 @@
 /processorParam:DebugMode=Auto
 /build:Effects/GeometryEffect.fx
 
+#begin Effects/ImageBasedLightEffect.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Effects/ImageBasedLightEffect.fx
+
 #begin Effects/ImmediateEffect.fx
 /importer:EffectImporter
 /processor:EffectProcessor

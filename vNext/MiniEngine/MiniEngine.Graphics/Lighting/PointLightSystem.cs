@@ -19,9 +19,9 @@ namespace MiniEngine.Graphics.Lighting
         {
             this.Device = device;
             this.FrameService = frameService;
+            this.FullScreenTriangle = fullScreenTriangle;
 
             this.Effect = effectFactory.Construct<PointLightEffect>();
-            this.FullScreenTriangle = fullScreenTriangle;
         }
 
         public void OnSet()
@@ -33,14 +33,13 @@ namespace MiniEngine.Graphics.Lighting
             this.Device.SamplerStates[0] = SamplerState.LinearClamp;
             this.Device.SamplerStates[1] = SamplerState.LinearClamp;
             this.Device.SamplerStates[2] = SamplerState.LinearClamp;
+            this.Device.SamplerStates[3] = SamplerState.LinearClamp;
 
             this.Device.SetRenderTarget(this.FrameService.LBuffer.Light);
         }
 
         public void Process(PointLightComponent pointLight)
         {
-            // TODO: figure oput how to do HDR and (if needed) GAMMA correction. See: https://learnopengl.com/PBR/Lighting
-
             this.Effect.CameraPosition = this.FrameService.Camera.Position;
             this.Effect.Diffuse = this.FrameService.GBuffer.Diffuse;
             this.Effect.Normal = this.FrameService.GBuffer.Normal;
