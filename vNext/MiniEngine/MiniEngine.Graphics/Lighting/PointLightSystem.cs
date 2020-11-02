@@ -13,7 +13,7 @@ namespace MiniEngine.Graphics.Lighting
         private readonly GraphicsDevice Device;
         private readonly FrameService FrameService;
         private readonly PointLightEffect Effect;
-        private readonly FullScreenTriangle FullScreenTriangle; // TODO: replace with sphere or other geom that better fits the infleunce of the light source
+        private readonly FullScreenTriangle FullScreenTriangle; // TODO: replace with sphere or other geom that better fits the influence of the light source
 
         public PointLightSystem(GraphicsDevice device, FullScreenTriangle fullScreenTriangle, EffectFactory effectFactory, FrameService frameService)
         {

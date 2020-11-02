@@ -123,7 +123,7 @@ namespace MiniEngine.Editor
             pBuffer.PostProcess.Tag = this.Gui.BindTexture(pBuffer.PostProcess);
 
             var red = new Texture2D(this.Device, 1, 1);
-            red.SetData(new Color[] { Color.Red });
+            red.SetData(new Color[] { Color.White });
             this.Content.Link(red);
 
             var normal = new Texture2D(this.Device, 1, 1);
@@ -148,13 +148,13 @@ namespace MiniEngine.Editor
                 }
             }
 
-            var pointLightComponent = new PointLightComponent(this.Entities.Create(), new Vector3(-10, 10, 10), Color.White, 300.0f);
+            var pointLightComponent = new PointLightComponent(this.Entities.Create(), new Vector3(-10, 10, 10), Color.Red, 300.0f);
             this.Components.Add(pointLightComponent);
 
-            var pointLightComponent2 = new PointLightComponent(this.Entities.Create(), new Vector3(10, 10, 10), Color.White, 300.0f);
+            var pointLightComponent2 = new PointLightComponent(this.Entities.Create(), new Vector3(10, 10, 10), Color.Blue, 300.0f);
             this.Components.Add(pointLightComponent2);
 
-            var pointLightComponent3 = new PointLightComponent(this.Entities.Create(), new Vector3(-10, -10, 10), Color.White, 300.0f);
+            var pointLightComponent3 = new PointLightComponent(this.Entities.Create(), new Vector3(-10, -10, 10), Color.Green, 300.0f);
             this.Components.Add(pointLightComponent3);
 
             var pointLightComponent4 = new PointLightComponent(this.Entities.Create(), new Vector3(10, -10, 10), Color.White, 300.0f);
@@ -172,7 +172,6 @@ namespace MiniEngine.Editor
             var body = new TransformComponent(entity, transform);
             this.Components.Add(body);
         }
-
 
         internal bool Update(GameTime gameTime)
         {
