@@ -10,7 +10,7 @@ namespace MiniEngine.Graphics.Geometry
             this.Diffuse = RenderTargetBuilder.Build(device, SurfaceFormat.ColorSRgb, DepthFormat.Depth24);
             this.Material = RenderTargetBuilder.Build(device, SurfaceFormat.Color);
             this.Depth = RenderTargetBuilder.Build(device, SurfaceFormat.Single);
-            this.Normal = RenderTargetBuilder.Build(device, SurfaceFormat.Color);
+            this.Normal = RenderTargetBuilder.Build(device, SurfaceFormat.HalfVector4);
         }
 
         public RenderTarget2D Diffuse { get; }
@@ -20,7 +20,5 @@ namespace MiniEngine.Graphics.Geometry
         public RenderTarget2D Depth { get; }
 
         public RenderTarget2D Normal { get; }
-
-
     }
 }
