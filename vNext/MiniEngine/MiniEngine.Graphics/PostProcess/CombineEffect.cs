@@ -5,11 +5,15 @@ namespace MiniEngine.Graphics.PostProcess
 {
     public sealed class CombineEffect : EffectWrapper
     {
+        private readonly EffectParameter LightParameter;
+
         public CombineEffect(EffectFactory factory) : base(factory.Load<CombineEffect>())
         {
             this.Effect.CurrentTechnique = this.Effect.Techniques["CombineTechnique"];
+
+            this.LightParameter = this.Effect.Parameters["Light"];
         }
 
-        public Texture2D Light { set => this.Effect.Parameters["Light"].SetValue(value); }
+        public Texture2D Light { set => this.LightParameter.SetValue(value); }
     }
 }

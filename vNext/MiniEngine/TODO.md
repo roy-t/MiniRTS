@@ -9,6 +9,5 @@
 
 # Wishlist
 
-- Unify geometry generation, let users pass ina  vertex declaration and get the components back? (Too early?)
-
+- Unify geometry generation, let users pass in a vertex declaration and get the components back? (Too early?)
 - Write a document explaining design decisions and how everything works?
