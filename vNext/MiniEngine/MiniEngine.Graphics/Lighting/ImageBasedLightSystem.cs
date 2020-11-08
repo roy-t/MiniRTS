@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
-using MiniEngine.Graphics.Effects;
 using MiniEngine.Graphics.PostProcess;
 using MiniEngine.Systems;
 
@@ -15,13 +14,13 @@ namespace MiniEngine.Graphics.Lighting
         private readonly ImageBasedLightEffect Effect;
         private readonly FrameService FrameService;
 
-        public ImageBasedLightSystem(GraphicsDevice device, FullScreenTriangle fullScreenTriangle, EffectFactory effectFactory, FrameService frameService)
+        public ImageBasedLightSystem(GraphicsDevice device, FullScreenTriangle fullScreenTriangle, ImageBasedLightEffect effect, FrameService frameService)
         {
             this.Device = device;
             this.FullScreenTriangle = fullScreenTriangle;
             this.FrameService = frameService;
 
-            this.Effect = effectFactory.Construct<ImageBasedLightEffect>();
+            this.Effect = effect;
         }
 
         public void OnSet()
@@ -43,7 +42,6 @@ namespace MiniEngine.Graphics.Lighting
 
         public void Process()
         {
-
             this.Effect.CameraPosition = this.FrameService.Camera.Position;
             this.Effect.InverseViewProjection = Matrix.Invert(this.FrameService.Camera.ViewProjection);
 

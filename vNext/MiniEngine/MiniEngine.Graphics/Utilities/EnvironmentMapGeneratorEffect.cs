@@ -6,8 +6,7 @@ namespace MiniEngine.Graphics.Utilities
 {
     public sealed class EnvironmentMapGeneratorEffect : EffectWrapper, I3DEffect
     {
-        public EnvironmentMapGeneratorEffect(Effect effect)
-            : base(effect)
+        public EnvironmentMapGeneratorEffect(EffectFactory factory) : base(factory.Load<EnvironmentMapGeneratorEffect>())
         {
             this.Effect.CurrentTechnique = this.Effect.Techniques["EnvironmentMapGeneratorTechnique"];
         }

@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
-using MiniEngine.Graphics.Effects;
 using MiniEngine.Systems;
 
 namespace MiniEngine.Graphics.PostProcess
@@ -13,11 +12,11 @@ namespace MiniEngine.Graphics.PostProcess
         private readonly CombineEffect Effect;
         private readonly FullScreenTriangle FullScreenTriangle;
 
-        public CombineSystem(GraphicsDevice device, FullScreenTriangle fullScreenTriangle, EffectFactory effectFactory, FrameService frameService)
+        public CombineSystem(GraphicsDevice device, FullScreenTriangle fullScreenTriangle, CombineEffect effect, FrameService frameService)
         {
             this.Device = device;
             this.FrameService = frameService;
-            this.Effect = effectFactory.Construct<CombineEffect>();
+            this.Effect = effect;
             this.FullScreenTriangle = fullScreenTriangle;
         }
 

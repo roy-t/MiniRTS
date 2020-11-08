@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
-using MiniEngine.Graphics.Effects;
 
 namespace MiniEngine.Graphics.Utilities
 {
@@ -10,10 +9,10 @@ namespace MiniEngine.Graphics.Utilities
         private readonly GraphicsDevice Device;
         private readonly CubeMapGeneratorEffect Effect;
 
-        public CubeMapGenerator(GraphicsDevice device, EffectFactory effectFactory)
+        public CubeMapGenerator(GraphicsDevice device, CubeMapGeneratorEffect effect)
         {
             this.Device = device;
-            this.Effect = effectFactory.Construct<CubeMapGeneratorEffect>();
+            this.Effect = effect;
         }
 
         public TextureCube Generate(Texture2D equirectangularTexture)

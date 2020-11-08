@@ -6,7 +6,7 @@ namespace MiniEngine.Graphics.Geometry
 {
     public sealed class GeometryEffect : EffectWrapper
     {
-        public GeometryEffect(Effect effect) : base(effect)
+        public GeometryEffect(EffectFactory factory) : base(factory.Load<GeometryEffect>())
         {
             this.Effect.CurrentTechnique = this.Effect.Techniques["GeometryTechnique"];
         }

@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
-using MiniEngine.Graphics.Effects;
 
 namespace MiniEngine.Graphics.Utilities
 {
@@ -12,10 +11,10 @@ namespace MiniEngine.Graphics.Utilities
         private readonly GraphicsDevice Device;
         private readonly IrradianceMapGeneratorEffect Effect;
 
-        public IrradianceMapGenerator(GraphicsDevice device, EffectFactory effectFactory)
+        public IrradianceMapGenerator(GraphicsDevice device, IrradianceMapGeneratorEffect effect)
         {
             this.Device = device;
-            this.Effect = effectFactory.Construct<IrradianceMapGeneratorEffect>();
+            this.Effect = effect;
         }
 
         public TextureCube Generate(Texture2D equirectangularTexture)
@@ -24,7 +23,6 @@ namespace MiniEngine.Graphics.Utilities
             this.Device.DepthStencilState = DepthStencilState.None;
             this.Device.RasterizerState = RasterizerState.CullCounterClockwise;
             this.Device.SamplerStates[0] = SamplerState.LinearClamp;
-
 
             this.Effect.EquirectangularTexture = equirectangularTexture;
             return CubeMapUtilities.RenderFaces(this.Device, this.Effect, resolution, SurfaceFormat.HalfVector4);

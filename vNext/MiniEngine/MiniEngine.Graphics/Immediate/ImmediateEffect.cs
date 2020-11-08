@@ -6,7 +6,7 @@ namespace MiniEngine.Graphics.Immediate
 {
     public sealed class ImmediateEffect : EffectWrapper
     {
-        public ImmediateEffect(Effect effect) : base(effect)
+        public ImmediateEffect(EffectFactory factory) : base(factory.Load<ImmediateEffect>())
         {
             this.Effect.CurrentTechnique = this.Effect.Techniques["ImmediateTechnique"];
         }

@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
-using MiniEngine.Graphics.Effects;
 
 namespace MiniEngine.Graphics.Utilities
 {
@@ -12,24 +11,22 @@ namespace MiniEngine.Graphics.Utilities
         private readonly GraphicsDevice Device;
         private readonly EnvironmentMapGeneratorEffect Effect;
 
-        public EnvironmentMapGenerator(GraphicsDevice device, EffectFactory effectFactory)
+        public EnvironmentMapGenerator(GraphicsDevice device, EnvironmentMapGeneratorEffect effect)
         {
             this.Device = device;
-            this.Effect = effectFactory.Construct<EnvironmentMapGeneratorEffect>();
+            this.Effect = effect;
         }
 
         public TextureCube Generate(Texture2D equirectangularTexture)
         {
-            // TODO: I don't seem to have problems with 'Pre-filter convolution artifacts'
-            // but in case of problems check that section: https://learnopengl.com/PBR/IBL/Specular-IBL
+            // TODO: I don't seem to have problems with 'Pre-filter convolution artifacts' but in
+            // case of problems check that section: https://learnopengl.com/PBR/IBL/Specular-IBL
 
             this.Device.BlendState = BlendState.Opaque;
             this.Device.DepthStencilState = DepthStencilState.None;
             this.Device.RasterizerState = RasterizerState.CullCounterClockwise;
             this.Device.SamplerStates[0] = SamplerState.LinearClamp;
             this.Effect.EquirectangularTexture = equirectangularTexture;
-
-
 
             var cubeMap = new TextureCube(this.Device, resolution, true, SurfaceFormat.HalfVector4);
 

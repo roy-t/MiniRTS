@@ -6,8 +6,7 @@ namespace MiniEngine.Graphics.Lighting
 {
     public sealed class ImageBasedLightEffect : EffectWrapper
     {
-        public ImageBasedLightEffect(Effect effect)
-            : base(effect)
+        public ImageBasedLightEffect(EffectFactory factory) : base(factory.Load<ImageBasedLightEffect>())
         {
             this.Effect.CurrentTechnique = this.Effect.Techniques["ImageBasedLightTechnique"];
         }

@@ -21,25 +21,18 @@ namespace MiniEngine.Graphics.Effects
             this.Loaded = new List<Effect>();
         }
 
-        public T Construct<T>()
+        public Effect Load<T>()
             where T : EffectWrapper
         {
-            var type = typeof(T);
-            var constructor = type.GetConstructor(new Type[] { typeof(Effect) });
-            if (constructor == null)
-            {
-                throw new Exception($"Could not construct {type.FullName} as it does not have a constructor with a single Microsoft.Xna.Framework.Graphics.Effect argument");
-            }
-
             var effect = this.Content.Load<Effect>(Path.Combine(EffectsFolder, typeof(T).Name));
             this.Loaded.Add(effect);
 
-            return (T)constructor.Invoke(new[] { effect });
+            return effect;
         }
 
         public void Dispose()
         {
-            this.Loaded.ForEach(f => f?.Dispose());
+            this.Loaded.ForEach(f => f.Dispose());
             this.Loaded.Clear();
         }
     }

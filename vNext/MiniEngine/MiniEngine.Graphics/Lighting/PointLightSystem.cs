@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
-using MiniEngine.Graphics.Effects;
 using MiniEngine.Graphics.PostProcess;
 using MiniEngine.Systems;
 
@@ -15,13 +14,13 @@ namespace MiniEngine.Graphics.Lighting
         private readonly PointLightEffect Effect;
         private readonly FullScreenTriangle FullScreenTriangle; // TODO: replace with sphere or other geom that better fits the influence of the light source
 
-        public PointLightSystem(GraphicsDevice device, FullScreenTriangle fullScreenTriangle, EffectFactory effectFactory, FrameService frameService)
+        public PointLightSystem(GraphicsDevice device, FullScreenTriangle fullScreenTriangle, PointLightEffect effect, FrameService frameService)
         {
             this.Device = device;
             this.FrameService = frameService;
             this.FullScreenTriangle = fullScreenTriangle;
 
-            this.Effect = effectFactory.Construct<PointLightEffect>();
+            this.Effect = effect;
         }
 
         public void OnSet()

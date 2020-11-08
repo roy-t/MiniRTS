@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
-using MiniEngine.Graphics.Effects;
 using MiniEngine.Systems;
 
 namespace MiniEngine.Graphics.Skybox
@@ -13,12 +12,12 @@ namespace MiniEngine.Graphics.Skybox
         private readonly FrameService FrameService;
         private readonly SkyboxEffect Effect;
 
-        public SkyboxSystem(GraphicsDevice device, EffectFactory effectFactory, FrameService frameService)
+        public SkyboxSystem(GraphicsDevice device, SkyboxEffect effect, FrameService frameService)
         {
             this.Device = device;
             this.FrameService = frameService;
 
-            this.Effect = effectFactory.Construct<SkyboxEffect>();
+            this.Effect = effect;
         }
 
         public void OnSet()
@@ -28,8 +27,8 @@ namespace MiniEngine.Graphics.Skybox
             this.Device.RasterizerState = RasterizerState.CullCounterClockwise;
             this.Device.SamplerStates[0] = SamplerState.LinearClamp;
 
-            // As an optimization we render the skybox last. Using the diffuse depth buffer we can cull most samples
-            // which saves the cost of shading every pixel of the skybox
+            // As an optimization we render the skybox last. Using the diffuse depth buffer we can
+            // cull most samples which saves the cost of shading every pixel of the skybox
             this.Device.SetRenderTargets(this.FrameService.GBuffer.Diffuse, this.FrameService.LBuffer.Light);
         }
 

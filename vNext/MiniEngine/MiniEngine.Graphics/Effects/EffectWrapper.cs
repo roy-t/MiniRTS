@@ -1,7 +1,9 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
+using MiniEngine.Configuration;
 
 namespace MiniEngine.Graphics.Effects
 {
+    [Content]
     public abstract class EffectWrapper : IEffect
     {
         protected readonly Effect Effect;

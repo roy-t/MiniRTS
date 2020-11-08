@@ -6,8 +6,7 @@ namespace MiniEngine.Graphics.Lighting
 {
     public sealed class PointLightEffect : EffectWrapper
     {
-        public PointLightEffect(Effect effect)
-            : base(effect)
+        public PointLightEffect(EffectFactory factory) : base(factory.Load<PointLightEffect>())
         {
             this.Effect.CurrentTechnique = this.Effect.Techniques["PointLightTechnique"];
         }

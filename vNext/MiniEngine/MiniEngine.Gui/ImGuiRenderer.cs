@@ -6,7 +6,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MiniEngine.Configuration;
-using MiniEngine.Graphics.Effects;
 using MiniEngine.Graphics.Immediate;
 
 namespace MiniEngine.Gui
@@ -16,6 +15,7 @@ namespace MiniEngine.Gui
     {
         // Graphics
         private readonly GraphicsDevice GraphicsDevice;
+
         private readonly GameWindow Window;
 
         private readonly ImmediateEffect Effect;
@@ -40,15 +40,14 @@ namespace MiniEngine.Gui
 
         private readonly List<int> Keys = new List<int>();
 
-        public ImGuiRenderer(GraphicsDevice device, GameWindow window, EffectFactory effectFactory)
+        public ImGuiRenderer(GraphicsDevice device, GameWindow window, ImmediateEffect effect)
         {
-            var context = ImGui.CreateContext();
-            ImGui.SetCurrentContext(context);
-
             this.GraphicsDevice = device;
             this.Window = window;
+            this.Effect = effect;
 
-            this.Effect = effectFactory.Construct<ImmediateEffect>();
+            var context = ImGui.CreateContext();
+            ImGui.SetCurrentContext(context);
 
             this.LoadedTextures = new Dictionary<IntPtr, Texture2D>();
 
@@ -70,7 +69,9 @@ namespace MiniEngine.Gui
         }
 
         /// <summary>
-        /// Creates a texture and loads the font data from ImGui. Should be called when the <see cref="Microsoft.Xna.Framework.Graphics.GraphicsDevice" /> is initialized but before any rendering is done
+        /// Creates a texture and loads the font data from ImGui. Should be called when the <see
+        /// cref="Microsoft.Xna.Framework.Graphics.GraphicsDevice"/> is initialized but before any
+        /// rendering is done
         /// </summary>
         private unsafe void RebuildFontAtlas()
         {
@@ -101,7 +102,8 @@ namespace MiniEngine.Gui
         }
 
         /// <summary>
-        /// Creates a pointer to a texture, which can be passed through ImGui calls such as <see cref="ImGui.Image" />. That pointer is then used by ImGui to let us know what texture to draw
+        /// Creates a pointer to a texture, which can be passed through ImGui calls such as <see
+        /// cref="ImGui.Image"/>. That pointer is then used by ImGui to let us know what texture to draw
         /// </summary>
         public IntPtr BindTexture(Texture2D texture)
         {
@@ -113,7 +115,8 @@ namespace MiniEngine.Gui
         }
 
         /// <summary>
-        /// Removes a previously created texture pointer, releasing its reference and allowing it to be deallocated
+        /// Removes a previously created texture pointer, releasing its reference and allowing it to
+        /// be deallocated
         /// </summary>
         public void UnbindTexture(IntPtr textureId) => this.LoadedTextures.Remove(textureId);
 
@@ -130,7 +133,8 @@ namespace MiniEngine.Gui
         }
 
         /// <summary>
-        /// Asks ImGui for the generated geometry data and sends it to the graphics pipeline, should be called after the UI is drawn using ImGui.** calls
+        /// Asks ImGui for the generated geometry data and sends it to the graphics pipeline, should
+        /// be called after the UI is drawn using ImGui.** calls
         /// </summary>
         public void AfterLayout()
         {
@@ -180,7 +184,8 @@ namespace MiniEngine.Gui
         }
 
         /// <summary>
-        /// Updates the <see cref="Microsoft.Xna.Framework.Graphics.Effect" /> to the current matrices and texture
+        /// Updates the <see cref="Microsoft.Xna.Framework.Graphics.Effect"/> to the current
+        /// matrices and texture
         /// </summary>
         private void UpdateEffect(Texture2D texture)
         {
@@ -230,7 +235,8 @@ namespace MiniEngine.Gui
         /// </summary>
         private void RenderDrawData(ImDrawDataPtr drawData)
         {
-            // Setup render state: alpha-blending enabled, no face culling, no depth testing, scissor enabled, vertex/texcoord/color pointers
+            // Setup render state: alpha-blending enabled, no face culling, no depth testing,
+            // scissor enabled, vertex/texcoord/color pointers
             var lastViewport = this.GraphicsDevice.Viewport;
             var lastScissorBox = this.GraphicsDevice.ScissorRectangle;
 

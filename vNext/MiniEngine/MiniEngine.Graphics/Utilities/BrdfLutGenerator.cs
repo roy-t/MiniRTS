@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
-using MiniEngine.Graphics.Effects;
 using MiniEngine.Graphics.PostProcess;
 
 namespace MiniEngine.Graphics.Utilities
@@ -15,12 +14,11 @@ namespace MiniEngine.Graphics.Utilities
         private readonly FullScreenTriangle FullScreenTriangle;
         private readonly BrdfLutGeneratorEffect Effect;
 
-        public BrdfLutGenerator(GraphicsDevice device, FullScreenTriangle fullScreenTriangle, EffectFactory effectFactory)
+        public BrdfLutGenerator(GraphicsDevice device, FullScreenTriangle fullScreenTriangle, BrdfLutGeneratorEffect effect)
         {
             this.Device = device;
             this.FullScreenTriangle = fullScreenTriangle;
-
-            this.Effect = effectFactory.Construct<BrdfLutGeneratorEffect>();
+            this.Effect = effect;
         }
 
         public Texture2D Generate()

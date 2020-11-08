@@ -6,8 +6,7 @@ namespace MiniEngine.Graphics.Utilities
 {
     public sealed class CubeMapGeneratorEffect : EffectWrapper, I3DEffect
     {
-        public CubeMapGeneratorEffect(Effect effect)
-            : base(effect)
+        public CubeMapGeneratorEffect(EffectFactory factory) : base(factory.Load<CubeMapGeneratorEffect>())
         {
             this.Effect.CurrentTechnique = this.Effect.Techniques["CubeMapGeneratorTechnique"];
         }

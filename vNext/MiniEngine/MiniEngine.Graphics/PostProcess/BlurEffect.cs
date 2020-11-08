@@ -5,7 +5,7 @@ namespace MiniEngine.Graphics.PostProcess
 {
     public sealed class BlurEffect : EffectWrapper
     {
-        public BlurEffect(Effect effect) : base(effect)
+        public BlurEffect(EffectFactory factory) : base(factory.Load<BlurEffect>())
         {
             this.Effect.CurrentTechnique = this.Effect.Techniques["BlurTechnique"];
         }

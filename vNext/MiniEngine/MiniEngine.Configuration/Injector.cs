@@ -76,14 +76,20 @@ namespace MiniEngine.Configuration
             {
                 this.Container.RegisterAssembly(assembly, (serviceType, concreteType) =>
                 {
-                    if (IsComponentType(concreteType) && serviceType == concreteType)
+                    // Do not register services as an implementation of an abstract class or interface
+                    if (serviceType != concreteType)
+                    {
+                        return false;
+                    }
+
+                    if (IsComponentType(concreteType))
                     {
                         componentTypes.Add(concreteType);
                         this.Logger.Debug("Registered component {@component}", concreteType.FullName);
                         return false;
                     }
 
-                    if (IsContainerType(concreteType) && serviceType == concreteType)
+                    if (IsContainerType(concreteType))
                     {
                         containerType = concreteType;
                         this.Logger.Debug("Registered container {@container}", concreteType.FullName);
@@ -93,6 +99,12 @@ namespace MiniEngine.Configuration
                     if (IsServiceType(concreteType))
                     {
                         this.Logger.Debug("Registered service {@service}", concreteType.FullName);
+                        return true;
+                    }
+
+                    if (IsContentType(concreteType))
+                    {
+                        this.Logger.Debug("Registered content {@content}", concreteType.FullName);
                         return true;
                     }
 
@@ -149,6 +161,9 @@ namespace MiniEngine.Configuration
 
         private static bool IsContainerType(Type type)
             => type.IsDefined(typeof(ComponentContainerAttribute), true) && !type.IsAbstract;
+
+        private static bool IsContentType(Type type)
+            => type.IsDefined(typeof(ContentAttribute), true) && !type.IsAbstract;
 
         private static bool IsRelevantAssembly(AssemblyName name)
             => !IgnoredAssemblies.Any(n => name.FullName.StartsWith(n));

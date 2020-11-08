@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
-using MiniEngine.Graphics.Effects;
 using MiniEngine.Systems;
 
 namespace MiniEngine.Graphics.Geometry
@@ -12,11 +11,11 @@ namespace MiniEngine.Graphics.Geometry
         private readonly FrameService FrameService;
         private readonly GeometryEffect Effect;
 
-        public GeometrySystem(GraphicsDevice device, EffectFactory effectFactory, FrameService frameService)
+        public GeometrySystem(GraphicsDevice device, GeometryEffect effect, FrameService frameService)
         {
             this.Device = device;
             this.FrameService = frameService;
-            this.Effect = effectFactory.Construct<GeometryEffect>();
+            this.Effect = effect;
         }
 
         public void OnSet()

@@ -6,8 +6,7 @@ namespace MiniEngine.Graphics.Skybox
 {
     public sealed class SkyboxEffect : EffectWrapper
     {
-        public SkyboxEffect(Effect effect)
-            : base(effect)
+        public SkyboxEffect(EffectFactory factory) : base(factory.Load<SkyboxEffect>())
         {
             this.Effect.CurrentTechnique = this.Effect.Techniques["SkyboxTechnique"];
         }

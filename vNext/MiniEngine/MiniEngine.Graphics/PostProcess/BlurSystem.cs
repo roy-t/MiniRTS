@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
-using MiniEngine.Graphics.Effects;
 using MiniEngine.Systems;
 
 namespace MiniEngine.Graphics.PostProcess
@@ -13,11 +12,11 @@ namespace MiniEngine.Graphics.PostProcess
         private readonly BlurEffect Effect;
         private readonly FullScreenTriangle FullScreenTriangle;
 
-        public BlurSystem(GraphicsDevice device, FullScreenTriangle fullScreenTriangle, EffectFactory effectFactory, FrameService frameService)
+        public BlurSystem(GraphicsDevice device, FullScreenTriangle fullScreenTriangle, BlurEffect effect, FrameService frameService)
         {
             this.Device = device;
             this.FrameService = frameService;
-            this.Effect = effectFactory.Construct<BlurEffect>();
+            this.Effect = effect;
             this.FullScreenTriangle = fullScreenTriangle;
         }
 

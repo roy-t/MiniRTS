@@ -5,7 +5,7 @@ namespace MiniEngine.Graphics.PostProcess
 {
     public sealed class CombineEffect : EffectWrapper
     {
-        public CombineEffect(Effect effect) : base(effect)
+        public CombineEffect(EffectFactory factory) : base(factory.Load<CombineEffect>())
         {
             this.Effect.CurrentTechnique = this.Effect.Techniques["CombineTechnique"];
         }

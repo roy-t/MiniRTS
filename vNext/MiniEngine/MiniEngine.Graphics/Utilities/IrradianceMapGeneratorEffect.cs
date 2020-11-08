@@ -6,8 +6,7 @@ namespace MiniEngine.Graphics.Utilities
 {
     public sealed class IrradianceMapGeneratorEffect : EffectWrapper, I3DEffect
     {
-        public IrradianceMapGeneratorEffect(Effect effect)
-            : base(effect)
+        public IrradianceMapGeneratorEffect(EffectFactory factory) : base(factory.Load<IrradianceMapGeneratorEffect>())
         {
             this.Effect.CurrentTechnique = this.Effect.Techniques["IrradianceMapGeneratorTechnique"];
         }
