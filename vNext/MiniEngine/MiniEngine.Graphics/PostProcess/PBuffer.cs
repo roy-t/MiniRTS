@@ -7,12 +7,9 @@ namespace MiniEngine.Graphics.PostProcess
     {
         public PBuffer(GraphicsDevice device)
         {
-            this.Combine = RenderTargetBuilder.Build(device, SurfaceFormat.ColorSRgb);
-            this.PostProcess = RenderTargetBuilder.Build(device, SurfaceFormat.ColorSRgb);
+            this.ToneMap = RenderTargetBuilder.Build(device, SurfaceFormat.ColorSRgb);
         }
 
-        public RenderTarget2D Combine { get; }
-
-        public RenderTarget2D PostProcess { get; }
+        public RenderTarget2D ToneMap { get; }
     }
 }

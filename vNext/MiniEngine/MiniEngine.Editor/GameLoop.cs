@@ -119,8 +119,7 @@ namespace MiniEngine.Editor
             lBuffer.Light.Tag = this.Gui.BindTexture(lBuffer.Light);
 
             var pBuffer = this.FrameService.PBuffer;
-            pBuffer.Combine.Tag = this.Gui.BindTexture(pBuffer.Combine);
-            pBuffer.PostProcess.Tag = this.Gui.BindTexture(pBuffer.PostProcess);
+            pBuffer.ToneMap.Tag = this.Gui.BindTexture(pBuffer.ToneMap);
 
             var red = new Texture2D(this.Device, 1, 1);
             red.SetData(new Color[] { Color.White });
@@ -206,7 +205,7 @@ namespace MiniEngine.Editor
             if (this.docked)
             {
                 ImGui.DockSpaceOverViewport();
-                this.RenderToWindow("PostProcess", "Combine", this.FrameService.PBuffer.Combine);
+                this.RenderToWindow("PostProcess", "ToneMap", this.FrameService.PBuffer.ToneMap);
 
                 this.RenderToWindow("RenderTargets", "Diffuse", this.FrameService.GBuffer.Diffuse);
                 this.RenderToWindow("RenderTargets", "Material", this.FrameService.GBuffer.Material);
@@ -215,14 +214,13 @@ namespace MiniEngine.Editor
 
                 this.RenderToWindow("RenderTargets", "Light", this.FrameService.LBuffer.Light);
 
-                this.RenderToWindow("RenderTargets", "Combine", this.FrameService.PBuffer.Combine);
-                this.RenderToWindow("RenderTargets", "PostProcess", this.FrameService.PBuffer.PostProcess);
+                this.RenderToWindow("RenderTargets", "ToneMap", this.FrameService.PBuffer.ToneMap);
 
                 this.RenderToWindow("RenderTargets", "BRDF Lut", this.FrameService.BrdfLutTexture);
             }
             else
             {
-                this.RenderToViewport(this.FrameService.PBuffer.PostProcess);
+                this.RenderToViewport(this.FrameService.PBuffer.ToneMap);
             }
 
             if (this.showDemoWindow)

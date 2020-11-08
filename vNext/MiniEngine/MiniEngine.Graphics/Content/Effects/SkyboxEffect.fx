@@ -14,7 +14,8 @@ struct PixelData
 
 struct OutputData
 {
-    float4 Diffuse : COLOR1; // RT0 is only used for its depth buffer
+    // COLOR0 is only set so we can sample its depth buffer
+    float4 Diffuse : COLOR1;
 };
 
 texture Skybox;
@@ -36,20 +37,17 @@ PixelData VS(in VertexData input)
     PixelData output = (PixelData)0;
 
     float4 position = mul(float4(input.Position, 1), WorldViewProjection);
-    output.Position = position.xyww; // always set the distance to 1.0 so the skybox will be drawn behind everything else
+    // always set the distance to 1.0 so the skybox will be drawn behind everything else
+    output.Position = position.xyww;
     output.Position3D = input.Position;
-    
+
     return output;
 }
 
 OutputData PS(PixelData input)
 {
-    OutputData output = (OutputData)0;    
+    OutputData output = (OutputData)0;
     output.Diffuse = texCUBE(skyboxSampler, input.Position3D);
-
-    // TODO: Temp hack to sample different mipmap level
-    //float4 foo = float4(input.Position3D, 4.0f);
-    //output.Diffuse = texCUBElod(skyboxSampler, foo);
 
     return output;
 }

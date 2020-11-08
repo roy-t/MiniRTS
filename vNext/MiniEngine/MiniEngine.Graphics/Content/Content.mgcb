@@ -13,23 +13,11 @@
 
 #---------------------------------- Content ---------------------------------#
 
-#begin Effects/BlurEffect.fx
-/importer:EffectImporter
-/processor:EffectProcessor
-/processorParam:DebugMode=Auto
-/build:Effects/BlurEffect.fx
-
 #begin Effects/BrdfLutGeneratorEffect.fx
 /importer:EffectImporter
 /processor:EffectProcessor
 /processorParam:DebugMode=Auto
 /build:Effects/BrdfLutGeneratorEffect.fx
-
-#begin Effects/CombineEffect.fx
-/importer:EffectImporter
-/processor:EffectProcessor
-/processorParam:DebugMode=Auto
-/build:Effects/CombineEffect.fx
 
 #begin Effects/CubeMapGeneratorEffect.fx
 /importer:EffectImporter
@@ -78,6 +66,12 @@
 /processor:EffectProcessor
 /processorParam:DebugMode=Auto
 /build:Effects/SkyboxEffect.fx
+
+#begin Effects/ToneMapEffect.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Effects/ToneMapEffect.fx
 
 #begin Textures/Blue.png
 /importer:TextureImporter

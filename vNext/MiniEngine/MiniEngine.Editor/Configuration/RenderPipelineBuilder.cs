@@ -48,7 +48,7 @@ namespace MiniEngine.Editor.Configuration
                     .Requires("LBuffer", "Image Light")
                     .Produces("LBuffer", "Skybox")
                     .Build()
-                .System<CombineSystem>()
+                .System<ToneMapSystem>()
                     .InSequence()
                     .Requires("LBuffer", "Skybox")
                     .Produces("PBuffer", "Combined")

@@ -15,24 +15,13 @@ struct PixelData
 
 struct OutputData
 {
-    float4 Diffuse : COLOR0;    
+    float4 Color : COLOR0;
 };
 
-texture Diffuse;
-sampler diffuseSampler = sampler_state
+texture Color;
+sampler colorSampler = sampler_state
 {
-    Texture = (Diffuse);
-    MinFilter = LINEAR;
-    MagFilter = LINEAR;
-    MipFilter = LINEAR;
-    AddressU = Clamp;
-    AddressV = Clamp;
-};
-
-texture Light;
-sampler lightSampler = sampler_state
-{
-    Texture = (Light);
+    Texture = (Color);
     MinFilter = LINEAR;
     MagFilter = LINEAR;
     MipFilter = LINEAR;
@@ -46,27 +35,22 @@ PixelData VS(in VertexData input)
 
     output.Position = float4(input.Position, 1);
     output.Texture = input.Texture;
-    
+
     return output;
 }
 
 OutputData PS(PixelData input)
 {
     OutputData output = (OutputData)0;
-    
-    float4 diffuse = tex2D(diffuseSampler, input.Texture);
-    float4 light = tex2D(lightSampler, input.Texture);
-    float4 diffuseLight = float4(light.rgb, 1.0f);    
-    
-    // Tonemap from HDR to LDR
-    float3 color = light.rgb;
-    color = color / (color + float3(1.0f, 1.0f, 1.0f));    
-   
-    output.Diffuse = float4(color, 1.0f);
+
+    float3 color = tex2D(colorSampler, input.Texture).rgb;
+    color = color / (color + float3(1.0f, 1.0f, 1.0f));
+
+    output.Color = float4(color, 1.0f);
     return output;
 }
 
-technique CombineTechnique
+technique ToneMapTechnique
 {
     pass P0
     {

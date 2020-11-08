@@ -7,6 +7,8 @@
 - I need a name for mesh data that doesn't clash with MonoGame, geometry is too broad
 
 
+- Replace 'Diffuse' with 'Albedo'
+
 # Wishlist
 
 - Unify geometry generation, let users pass in a vertex declaration and get the components back? (Too early?)

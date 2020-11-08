@@ -35,21 +35,21 @@ PixelData VS(in VertexData input)
 {
     PixelData output = (PixelData)0;
 
-    output.Position = mul(float4(input.Position, 1), WorldViewProjection);     
+    output.Position = mul(float4(input.Position, 1), WorldViewProjection);
     output.Position3D = input.Position;
-    
+
     return output;
 }
 
 OutputData PS(PixelData input)
 {
-    OutputData output = (OutputData)0;    
+    OutputData output = (OutputData)0;
     float2 uv = SampleSphericalMap(normalize(input.Position3D));
     float4 diffuse = tex2D(equirectangularTextureSampler, uv);
     float4 diffuseLinear = ToLinear(diffuse);
 
     output.Diffuse = diffuseLinear;
-      
+
     return output;
 }
 

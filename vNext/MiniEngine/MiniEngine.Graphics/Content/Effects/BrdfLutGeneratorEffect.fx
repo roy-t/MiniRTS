@@ -25,10 +25,11 @@ PixelData VS(in VertexData input)
 
     output.Position = float4(input.Position, 1);
     output.Texture = float2(input.Texture.x, 1.0f - input.Texture.y);
-    
+
     return output;
 }
 
+// Generates a lookup-table for the BRDF (bidirectional reflectance distribution function)
 OutputData PS(PixelData input)
 {
     OutputData output = (OutputData)0;
@@ -58,7 +59,7 @@ OutputData PS(PixelData input)
         float VdotH = max(dot(V, H), 0.0f);
 
         if (NdotL > 0.0f)
-        {          
+        {
             float G = GeometrySmithIBL(N, V, L, roughness);
             float G_Vis = (G * VdotH) / (NdotH * NdotV);
             float Fc = pow(1.0f - VdotH, 5.0f);

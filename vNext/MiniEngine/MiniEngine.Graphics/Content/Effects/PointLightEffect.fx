@@ -52,7 +52,7 @@ OutputData PS(PixelData input)
     // original reflection direction the stronger the specular reflection.
     float3 V = normalize(CameraPosition - worldPosition);
 
-    // F0 is the basis reflecticity of the material at a 0 degree angle. Dia-electric materials,
+    // F0 is the basis reflectivity of the material at a 0 degree angle. Dia-electric materials,
     // like plastic, in general have a low reflectivity. While metals, which are conductors, have a
     // high reflectivity that is tinted by surface color The reflectance at normal incidence depends
     // on the metalicness of the material.
@@ -101,7 +101,7 @@ OutputData PS(PixelData input)
     float3 kD = float3(1.0f, 1.0f, 1.0f) - kS;
 
     // Metalic objects do not have a diffuse light component, instead they produce mirror like
-    // reflections, which is taken care of in the ImageBasedLight effect shader.
+    // reflections, which is taken care of in the ImageBasedLightEffect shader.
     kD *= 1.0f - material.Metalicness;
 
     // scale light by NdotL

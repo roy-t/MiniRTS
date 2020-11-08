@@ -5,14 +5,14 @@ using MiniEngine.Systems;
 namespace MiniEngine.Graphics.PostProcess
 {
     [System]
-    public sealed class CombineSystem : ISystem
+    public sealed class ToneMapSystem : ISystem
     {
         private readonly GraphicsDevice Device;
         private readonly FrameService FrameService;
-        private readonly CombineEffect Effect;
+        private readonly TonemapEffect Effect;
         private readonly FullScreenTriangle FullScreenTriangle;
 
-        public CombineSystem(GraphicsDevice device, FullScreenTriangle fullScreenTriangle, CombineEffect effect, FrameService frameService)
+        public ToneMapSystem(GraphicsDevice device, FullScreenTriangle fullScreenTriangle, TonemapEffect effect, FrameService frameService)
         {
             this.Device = device;
             this.FrameService = frameService;
@@ -26,14 +26,13 @@ namespace MiniEngine.Graphics.PostProcess
             this.Device.DepthStencilState = DepthStencilState.None;
             this.Device.RasterizerState = RasterizerState.CullCounterClockwise;
             this.Device.SamplerStates[0] = SamplerState.LinearClamp;
-            this.Device.SamplerStates[1] = SamplerState.LinearClamp;
 
-            this.Device.SetRenderTarget(this.FrameService.PBuffer.Combine);
+            this.Device.SetRenderTarget(this.FrameService.PBuffer.ToneMap);
         }
 
         public void Process()
         {
-            this.Effect.Light = this.FrameService.LBuffer.Light;
+            this.Effect.Color = this.FrameService.LBuffer.Light;
             this.Effect.Apply();
 
             this.FullScreenTriangle.Render(this.Device);

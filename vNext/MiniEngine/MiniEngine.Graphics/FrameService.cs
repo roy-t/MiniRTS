@@ -32,11 +32,10 @@ namespace MiniEngine.Graphics
         {
             var gBufferSize = this.BufferSize(this.GBuffer.Depth, this.GBuffer.Diffuse, this.GBuffer.Material, this.GBuffer.Normal);
             var lBufferSize = this.BufferSize(this.LBuffer.Light);
-            var pBufferSize = this.BufferSize(this.PBuffer.Combine, this.PBuffer.PostProcess);
             var lutSize = this.TextureSize(this.BrdfLutTexture);
             var skyboxSize = this.BufferSize(this.Skybox.Environment, this.Skybox.Irradiance, this.Skybox.Texture);
 
-            return gBufferSize + lBufferSize + pBufferSize + lutSize + skyboxSize;
+            return gBufferSize + lBufferSize + lutSize + skyboxSize;
         }
 
         private int BufferSize(params TextureCube[] textures)

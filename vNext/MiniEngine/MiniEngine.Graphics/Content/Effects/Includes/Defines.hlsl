@@ -1,12 +1,5 @@
-#if OPENGL
-	#define SV_POSITION POSITION
-	#define VS_SHADERMODEL vs_5_0
-	#define PS_SHADERMODEL ps_5_0
-#else
-	#define VS_SHADERMODEL vs_5_0
-	#define PS_SHADERMODEL ps_5_0
-#endif
-
+#define VS_SHADERMODEL vs_5_0
+#define PS_SHADERMODEL ps_5_0
 
 static const float PI_OVER_TWO = 1.5707963267948966192313216916398;
 static const float PI = 3.1415926535897932384626433832795f;

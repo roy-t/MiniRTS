@@ -13,8 +13,7 @@ namespace MiniEngine.Graphics.Rendering
         private static readonly Color NeutralDepth = Color.White;
         private static readonly Color NeutralNormal = new Color(0.5f, 0.5f, 0.5f, 0.0f);
         private static readonly Color NeutralLight = Color.Transparent;
-        private static readonly Color NeutralCombine = new Color(1.0f, 0.0f, 1.0f, 1.0f);
-        private static readonly Color NeutralPostProcess = new Color(1.0f, 0.0f, 1.0f, 1.0f);
+        private static readonly Color NeutralToneMap = Color.Transparent;
 
         private readonly GraphicsDevice Device;
         private readonly FrameService FrameService;
@@ -44,8 +43,7 @@ namespace MiniEngine.Graphics.Rendering
             this.ClearRenderTarget(lBuffer.Light, NeutralLight);
 
             var pBuffer = this.FrameService.PBuffer;
-            this.ClearRenderTarget(pBuffer.Combine, NeutralCombine);
-            this.ClearRenderTarget(pBuffer.PostProcess, NeutralPostProcess);
+            this.ClearRenderTarget(pBuffer.ToneMap, NeutralToneMap);
         }
 
         private void ClearRenderTarget(RenderTarget2D renderTarget, Color clearColor)
@@ -53,6 +51,5 @@ namespace MiniEngine.Graphics.Rendering
             this.Device.SetRenderTarget(renderTarget);
             this.Device.Clear(clearColor);
         }
-
     }
 }
