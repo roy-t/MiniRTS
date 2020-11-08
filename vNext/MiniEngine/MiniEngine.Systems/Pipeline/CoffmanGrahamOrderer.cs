@@ -9,7 +9,18 @@ namespace MiniEngine.Systems.Pipeline
     /// </summary>
     public static class CoffmanGrahamOrderer
     {
-        public static List<SystemSpec> Order(IReadOnlyList<SystemSpec> systemSpecs)
+        public static List<List<SystemSpec>> DivideIntoStages(List<SystemSpec> systemSpecs)
+        {
+            var expanded = ExpandRequirements(systemSpecs);
+            var ordered = Order(expanded);
+            var stages = CreateStages(ordered);
+
+            SplitStagesWithMixedParallelism(stages);
+
+            return stages;
+        }
+
+        private static List<SystemSpec> Order(IReadOnlyList<SystemSpec> systemSpecs)
         {
             var orderedSystemSpecs = systemSpecs.Where(systemSpec => systemSpec.RequiredResources.Count == 0).ToList();
             var unorderedSystemSpecs = systemSpecs.Where(systemSpec => systemSpec.RequiredResources.Count > 0).ToList();
@@ -20,7 +31,7 @@ namespace MiniEngine.Systems.Pipeline
 
                 if (candidate == null)
                 {
-                    throw new Exception("Dependency cycle detected");
+                    throw new Exception("Unsatisfiable dependency or cycle detected");
                 }
 
                 orderedSystemSpecs.Add(candidate);
@@ -30,12 +41,23 @@ namespace MiniEngine.Systems.Pipeline
             return orderedSystemSpecs;
         }
 
-        public static List<List<SystemSpec>> DivideIntoStages(List<SystemSpec> orderedSystemSpecs)
+        private static IReadOnlyList<SystemSpec> ExpandRequirements(IReadOnlyList<SystemSpec> systemSpecs)
         {
-            var stages = CreateStages(orderedSystemSpecs);
-            SplitStagesWithMixedParallelism(stages);
+            var producedResources = systemSpecs.SelectMany(s => s.ProducedResources)
+                                               .GroupBy(r => r.Resource)
+                                               .ToDictionary(gr => gr.Key, gr => gr.ToList());
 
-            return stages;
+            var expanded = new List<SystemSpec>();
+            foreach (var spec in systemSpecs)
+            {
+                if (spec.RequiredResources.Any(r => r.SubResource == SystemSpec.MatchAllSubResources))
+                {
+                    spec.ExpandRequiredResource(producedResources);
+                }
+
+                expanded.Add(spec);
+            }
+            return expanded;
         }
 
         private static List<List<SystemSpec>> CreateStages(List<SystemSpec> orderedSystemSpecs)
@@ -104,8 +126,8 @@ namespace MiniEngine.Systems.Pipeline
 
             foreach (var systemSpec in unorderedSystemSpecs)
             {
-                // The best candidate has the largest distance from the items that produce their requirements
-                // so that it does not have to wait long for what it needs.
+                // The best candidate has the largest distance from the items that produce their
+                // requirements so that it does not have to wait long for what it needs.
                 var minDistance = int.MaxValue;
                 foreach (var requirement in systemSpec.RequiredResources)
                 {

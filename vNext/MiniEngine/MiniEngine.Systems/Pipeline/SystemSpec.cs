@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace MiniEngine.Systems.Pipeline
 {
@@ -7,6 +8,8 @@ namespace MiniEngine.Systems.Pipeline
     {
         private readonly List<ResourceState> RequiresList;
         private readonly List<ResourceState> ProducesList;
+
+        public const string MatchAllSubResources = "*";
 
         private SystemSpec(Type systemType)
         {
@@ -27,24 +30,29 @@ namespace MiniEngine.Systems.Pipeline
         internal IReadOnlyList<ResourceState> RequiredResources => this.RequiresList;
         internal IReadOnlyList<ResourceState> ProducedResources => this.ProducesList;
 
-        public SystemSpec Requires(string resource, string state)
+        public SystemSpec Requires(string resource, string subResource)
         {
-            this.RequiresList.Add(new ResourceState(resource, state));
+            this.RequiresList.Add(new ResourceState(resource, subResource));
             return this;
         }
 
-        public SystemSpec Produces(string resource, string state)
+        public SystemSpec RequiresAll(string resource)
+            => this.Requires(resource, MatchAllSubResources);
+
+        public SystemSpec Produces(string resource, string? state)
         {
             this.ProducesList.Add(new ResourceState(resource, state));
             return this;
         }
+
+        public SystemSpec Produces(string resource)
+            => this.Produces(resource, null);
 
         public SystemSpec Parallel()
         {
             this.AllowParallelism = true;
             return this;
         }
-
 
         public SystemSpec InSequence()
         {
@@ -57,5 +65,20 @@ namespace MiniEngine.Systems.Pipeline
             $"allow parallelism: {this.AllowParallelism}, " +
             $"requires: [{string.Join(", ", this.RequiredResources)}], " +
             $"produces: [{string.Join(", ", this.ProducedResources)}]";
+
+        internal void ExpandRequiredResource(Dictionary<string, List<ResourceState>> producedResources)
+        {
+            for (var i = this.RequiresList.Count - 1; i >= 0; i--)
+            {
+                var resource = this.RequiresList[i];
+                if (resource.SubResource == MatchAllSubResources)
+                {
+                    this.RequiresList.RemoveAt(i);
+                }
+
+                var produces = producedResources[resource.Resource].Select(s => new ResourceState(s.Resource, s.SubResource));
+                this.RequiresList.AddRange(produces);
+            }
+        }
     }
 }

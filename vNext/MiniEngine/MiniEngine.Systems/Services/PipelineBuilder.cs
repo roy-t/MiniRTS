@@ -50,8 +50,7 @@ namespace MiniEngine.Systems.Services
 
             public ParallelPipeline Build()
             {
-                var ordered = CoffmanGrahamOrderer.Order(this.SystemSpecs);
-                var stages = CoffmanGrahamOrderer.DivideIntoStages(ordered);
+                var stages = CoffmanGrahamOrderer.DivideIntoStages(this.SystemSpecs);
 
                 var pipelineStages = new List<PipelineStage>();
                 for (var i = 0; i < stages.Count; i++)
@@ -64,7 +63,6 @@ namespace MiniEngine.Systems.Services
 
                         var system = (ISystem)this.ResolveDelegate(systemSpec.SystemType);
                         systemBindings.AddRange(SystemBinder.BindSystem(system, this.ComponentContainers));
-
                     }
 
                     pipelineStages.Add(new PipelineStage(systemBindings));
@@ -91,9 +89,21 @@ namespace MiniEngine.Systems.Services
                 return this;
             }
 
+            public SystemSpecifier RequiresAll(string resource)
+            {
+                this.Spec.RequiresAll(resource);
+                return this;
+            }
+
             public SystemSpecifier Produces(string resource, string state)
             {
                 this.Spec.Produces(resource, state);
+                return this;
+            }
+
+            public SystemSpecifier Produces(string resource)
+            {
+                this.Spec.Produces(resource);
                 return this;
             }
 
