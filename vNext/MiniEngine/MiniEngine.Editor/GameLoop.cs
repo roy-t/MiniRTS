@@ -6,7 +6,6 @@ using Microsoft.Xna.Framework.Input;
 using MiniEngine.Configuration;
 using MiniEngine.Editor.Configuration;
 using MiniEngine.Editor.Controllers;
-using MiniEngine.Editor.Editors;
 using MiniEngine.Graphics;
 using MiniEngine.Graphics.Geometry;
 using MiniEngine.Graphics.Geometry.Generators;
@@ -288,22 +287,13 @@ namespace MiniEngine.Editor
             {
                 var width = ImGui.GetWindowWidth();
                 var height = ImGui.GetWindowHeight() - (ImGui.GetFrameHeightWithSpacing() * 2);
-                var imageSize = FitToBounds(renderTarget.Width, renderTarget.Height, width, height);
+                var imageSize = ImageUtilities.FitToBounds(renderTarget.Width, renderTarget.Height, width, height);
 
                 ImGui.Text(label);
                 ImGui.Image((IntPtr)renderTarget.Tag, imageSize);
 
                 ImGui.End();
             }
-        }
-
-        private static Vector2 FitToBounds(float sourceWidth, float sourceHeight, float boundsWidth, float boundsHeight)
-        {
-            var widthRatio = boundsWidth / sourceWidth;
-            var heightRatio = boundsHeight / sourceHeight;
-
-            var ratio = Math.Min(widthRatio, heightRatio);
-            return new Vector2(sourceWidth * ratio, sourceHeight * ratio);
         }
 
         private void RenderToViewport(RenderTarget2D renderTarget)
