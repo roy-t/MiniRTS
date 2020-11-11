@@ -20,5 +20,19 @@ namespace MiniEngine.Systems.Components
 
         public void Add<T>(T component)
             where T : AComponent => this.ComponentContainers[typeof(T)].AddUnsafe(component);
+
+        public IReadOnlyList<AComponent> GetComponents(Entity entity)
+        {
+            var components = new List<AComponent>();
+            foreach (var container in this.ComponentContainers.Values)
+            {
+                if (container.Contains(entity))
+                {
+                    components.Add(container[entity]);
+                }
+            }
+
+            return components;
+        }
     }
 }

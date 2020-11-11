@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Input;
 using MiniEngine.Configuration;
 using MiniEngine.Editor.Configuration;
 using MiniEngine.Editor.Controllers;
+using MiniEngine.Editor.Editors;
 using MiniEngine.Graphics;
 using MiniEngine.Graphics.Geometry;
 using MiniEngine.Graphics.Geometry.Generators;
@@ -40,7 +41,7 @@ namespace MiniEngine.Editor
         private readonly KeyboardController Keyboard;
         private readonly MouseController Mouse;
         private readonly CameraController CameraController;
-
+        private readonly EntityEditor EntityEditor;
         private readonly FrameCounter FrameCounter;
 
         private readonly string[] SkyboxNames;
@@ -54,7 +55,7 @@ namespace MiniEngine.Editor
         private bool docked = true;
         private bool showDemoWindow = false;
 
-        public GameLoop(GraphicsDeviceManager graphics, GraphicsDevice device, SpriteBatch spriteBatch, GameTimer gameTimer, GameWindow window, ContentStack content, FrameService frameService, ImGuiRenderer imGui, CubeMapGenerator cubeMapGenerator, IrradianceMapGenerator irradianceMapGenerator, EnvironmentMapGenerator environmentMapGenerator, BrdfLutGenerator brdfLutGenerator, EntityAdministrator entities, ComponentAdministrator components, RenderPipelineBuilder renderPipelineBuilder, KeyboardController keyboard, MouseController mouse, CameraController cameraController)
+        public GameLoop(GraphicsDeviceManager graphics, GraphicsDevice device, SpriteBatch spriteBatch, GameTimer gameTimer, GameWindow window, ContentStack content, FrameService frameService, ImGuiRenderer imGui, CubeMapGenerator cubeMapGenerator, IrradianceMapGenerator irradianceMapGenerator, EnvironmentMapGenerator environmentMapGenerator, BrdfLutGenerator brdfLutGenerator, EntityAdministrator entities, ComponentAdministrator components, RenderPipelineBuilder renderPipelineBuilder, KeyboardController keyboard, MouseController mouse, CameraController cameraController, EntityEditor entityEditor)
         {
             this.Graphics = graphics;
             this.Device = device;
@@ -73,7 +74,7 @@ namespace MiniEngine.Editor
             this.Keyboard = keyboard;
             this.Mouse = mouse;
             this.CameraController = cameraController;
-
+            this.EntityEditor = entityEditor;
             this.Content.Push("basics");
 
             this.SkyboxNames = new string[]
@@ -151,7 +152,7 @@ namespace MiniEngine.Editor
             }
 
             var backgroundGeometry = CubeGenerator.Generate(this.Device);
-            this.CreateSphere(backgroundGeometry, new Material(blue, bumps, 1.0f, 0.1f), Matrix.CreateScale(20) * Matrix.CreateTranslation(Vector3.Forward * 20));
+            this.CreateSphere(backgroundGeometry, new Material(blue, bumps, 1.0f, 0.1f), Matrix.CreateScale(20, 20, 1) * Matrix.CreateTranslation(Vector3.Forward * 20));
 
             var pointLightComponent = new PointLightComponent(this.Entities.Create(), new Vector3(-10, 10, 10), Color.Red, 300.0f);
             this.Components.Add(pointLightComponent);
@@ -223,6 +224,8 @@ namespace MiniEngine.Editor
                 this.RenderToWindow("RenderTargets", "ToneMap", this.FrameService.PBuffer.ToneMap);
 
                 this.RenderToWindow("RenderTargets", "BRDF Lut", this.FrameService.BrdfLutTexture);
+
+                this.EntityEditor.Draw();
             }
             else
             {
@@ -246,6 +249,14 @@ namespace MiniEngine.Editor
         {
             if (ImGui.BeginMainMenuBar())
             {
+                if (ImGui.BeginMenu("Windows"))
+                {
+                    ImGui.Checkbox("Entity Window", ref this.EntityEditor.ShowEntityWindow);
+                    ImGui.Checkbox("Component Window", ref this.EntityEditor.ShowComponentWindow);
+
+                    ImGui.EndMenu();
+                }
+
                 if (ImGui.BeginMenu("View"))
                 {
                     ImGui.Checkbox("Docked", ref this.docked);

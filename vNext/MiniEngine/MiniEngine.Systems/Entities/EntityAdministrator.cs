@@ -8,12 +8,14 @@ namespace MiniEngine.Systems.Entities
     public sealed class EntityAdministrator
     {
         private readonly ConcurrentBag<Entity> Entities;
-        private int nextId = 1;
+        private int nextId = 0;
 
         public EntityAdministrator()
         {
             this.Entities = new ConcurrentBag<Entity>();
         }
+
+        public Entity[] Copy() => this.Entities.ToArray();
 
         public Entity Create()
         {

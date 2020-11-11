@@ -15,6 +15,8 @@ namespace MiniEngine.Systems.Components
         Type ComponentType { get; }
 
         void AddUnsafe(AComponent component);
+
+        bool Contains(Entity entity);
     }
 
     [ComponentContainer]
@@ -60,5 +62,7 @@ namespace MiniEngine.Systems.Components
         public T Get(Entity entity) => this.LookUp[entity];
 
         public int Count => this.Components.Count;
+
+        public bool Contains(Entity entity) => this.LookUp.ContainsKey(entity);
     }
 }
