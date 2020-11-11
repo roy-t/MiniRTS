@@ -128,7 +128,9 @@ namespace MiniEngine.Editor
             var normal = new Texture2D(this.Device, 1, 1);
             normal.SetData(new Color[] { new Color(0.5f, 0.5f, 1.0f) });
             this.Content.Link(normal);
-            //var normal = this.Content.Load<Texture2D>("Textures/Bricks_Normal");
+
+            var blue = this.Content.Load<Texture2D>("Textures/Blue");
+            var bumps = this.Content.Load<Texture2D>("Textures/Bricks_Normal");
 
             var rows = 7;
             var columns = 7;
@@ -148,8 +150,8 @@ namespace MiniEngine.Editor
                 }
             }
 
-            var backgroundGeometry = SphereGenerator.Generate(this.Device, 0);
-            this.CreateSphere(backgroundGeometry, new Material(red, normal, 1.0f, 0.0f), Matrix.CreateScale(20) * Matrix.CreateTranslation(Vector3.Forward * 20));
+            var backgroundGeometry = CubeGenerator.Generate(this.Device);
+            this.CreateSphere(backgroundGeometry, new Material(blue, bumps, 1.0f, 0.1f), Matrix.CreateScale(20) * Matrix.CreateTranslation(Vector3.Forward * 20));
 
             var pointLightComponent = new PointLightComponent(this.Entities.Create(), new Vector3(-10, 10, 10), Color.Red, 300.0f);
             this.Components.Add(pointLightComponent);
