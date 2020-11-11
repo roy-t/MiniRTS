@@ -6,6 +6,7 @@ namespace MiniEngine.Graphics.Geometry
 {
     public sealed class GeometryEffect : EffectWrapper
     {
+        private readonly EffectParameter CameraPositionParameter;
         private readonly EffectParameter WorldParameter;
         private readonly EffectParameter WorldViewProjectionParameter;
         private readonly EffectParameter DiffuseParameter;
@@ -18,6 +19,7 @@ namespace MiniEngine.Graphics.Geometry
         {
             this.Effect.CurrentTechnique = this.Effect.Techniques["GeometryTechnique"];
 
+            this.CameraPositionParameter = this.Effect.Parameters["CameraPosition"];
             this.WorldParameter = this.Effect.Parameters["World"];
             this.WorldViewProjectionParameter = this.Effect.Parameters["WorldViewProjection"];
             this.DiffuseParameter = this.Effect.Parameters["Diffuse"];
@@ -26,6 +28,8 @@ namespace MiniEngine.Graphics.Geometry
             this.RoughnessParameter = this.Effect.Parameters["Roughness"];
             this.AmbientOcclusionParameter = this.Effect.Parameters["AmbientOcclusion"];
         }
+
+        public Vector3 CameraPosition { set => this.CameraPositionParameter.SetValue(value); }
 
         public Matrix World { set => this.WorldParameter.SetValue(value); }
 

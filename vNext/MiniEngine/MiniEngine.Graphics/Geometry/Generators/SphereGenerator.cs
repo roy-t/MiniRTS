@@ -5,10 +5,10 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace MiniEngine.Graphics.Geometry.Generators
 {
-    // Inspiration: 
+    // Uses the spherified cube algorithm to generate a sphere Inspiration:
     // - https://medium.com/game-dev-daily/four-ways-to-create-a-mesh-for-a-sphere-d7956b825db4
     // - https://scaryreasoner.wordpress.com/2016/01/23/thoughts-on-tesselating-a-sphere/
-    public static class SpherifiedCubeGenerator
+    public static class SphereGenerator
     {
         public static Geometry Generate(GraphicsDevice device, int subdivisions)
         {
@@ -45,7 +45,6 @@ namespace MiniEngine.Graphics.Geometry.Generators
         private static void GenerateFace(CoordinateSystem coordinateSystem, int subdivisions, List<GeometryVertex> vertices, List<int> indices)
         {
             var quads = new List<Quad>();
-            var start = vertices.Count;
             var currentIndex = indices.Append(-1).Max() + 1;
 
             var maxX = coordinateSystem.UnitX;
@@ -70,9 +69,9 @@ namespace MiniEngine.Graphics.Geometry.Generators
                     var centerLeft = Vector3.Lerp(topLeft, bottomLeft, y);
                     var r = Vector3.Lerp(topRight, bottomRight, y);
 
-                    var position = Vector3.Lerp(centerLeft, r, x);
+                    var position = Vector3.Normalize(Vector3.Lerp(centerLeft, r, x));
                     var texture = new Vector2(x, y);
-                    vertices.Add(new GeometryVertex(position, texture, Vector3.Normalize(position), Vector3.Zero, Vector3.Zero));
+                    vertices.Add(new GeometryVertex(position, texture, position));
 
                     indexLookup[column, row] = currentIndex++;
 
@@ -88,8 +87,6 @@ namespace MiniEngine.Graphics.Geometry.Generators
                 }
             }
 
-            var length = vertices.Count - start;
-            SpherifyFace(vertices, start, length, coordinateSystem.UnitY);
             TriangulateFace(vertices, quads, indices);
         }
 
@@ -113,23 +110,6 @@ namespace MiniEngine.Graphics.Geometry.Generators
             var partialLength = Vector3.Distance(v0, position);
 
             return partialLength / fullLength;
-        }
-
-        private static void SpherifyFace(List<GeometryVertex> vertices, int startIndex, int length, Vector3 pole)
-        {
-            for (var i = startIndex; i < startIndex + length; i++)
-            {
-                var vertex = vertices[i];
-
-                var position = new Vector3(vertex.Position.X, vertex.Position.Y, vertex.Position.Z);
-
-                var normal = Vector3.Normalize(position);
-
-                var tangent = Vector3.Normalize(Vector3.Cross(pole, normal));
-                var binormal = Vector3.Normalize(Vector3.Cross(normal, tangent));
-
-                vertices[i] = new GeometryVertex(normal, vertices[i].Texture, normal, binormal, tangent);
-            }
         }
 
         private static void TriangulateFace(List<GeometryVertex> vertices, List<Quad> quads, List<int> indices)

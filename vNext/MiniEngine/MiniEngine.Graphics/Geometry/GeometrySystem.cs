@@ -35,6 +35,7 @@ namespace MiniEngine.Graphics.Geometry
 
         public void Process(GeometryComponent geometry, TransformComponent transform)
         {
+            this.Effect.CameraPosition = this.FrameService.Camera.Position;
             this.Effect.World = transform.Matrix;
             this.Effect.WorldViewProjection = transform.Matrix * this.FrameService.Camera.ViewProjection;
             this.Effect.Diffuse = geometry.Material.Diffuse;

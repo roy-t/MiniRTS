@@ -6,24 +6,20 @@ struct VertexData
 {
     float3 Position : POSITION0;
     float2 Texture : TEXCOORD0;
-    float3 Normal : NORMAL0;    
-    float3 Binormal : BINORMAL0;
-    float3 Tangent : TANGENT0;
+    float3 Normal : NORMAL0;
 };
 
 struct PixelData
 {
-    float4 Position : POSITION0;
-    float2 Texture : TEXCOORD0;
-    float2 Depth: TEXCOORD1;
-    float3 Normal : NORMAL0;    
-    float3 Binormal : BINORMAL0;
-    float3 Tangent : TANGENT0;    
+    float4 Position : SV_POSITION;
+    float4 WorldPosition: TEXCOORD0;
+    float2 Texture : TEXCOORD1;
+    float3 Normal : NORMAL0;
 };
 
 struct OutputData
 {
-    float4 Diffuse : COLOR0;    
+    float4 Diffuse : COLOR0;
     float4 Material : COLOR1;
     float Depth : COLOR2;
     float4 Normal: COLOR3;
@@ -53,6 +49,7 @@ sampler normalSampler = sampler_state
     AddressV = Clamp;
 };
 
+float3 CameraPosition;
 float4x4 World;
 float4x4 WorldViewProjection;
 float Metalicness;
@@ -65,29 +62,53 @@ PixelData VS(in VertexData input)
 
     output.Position = mul(float4(input.Position, 1), WorldViewProjection);
     output.Texture = input.Texture;
-    output.Depth.x = output.Position.z;
-    output.Depth.y = output.Position.w;
+    output.WorldPosition = output.Position;
 
     float3x3 rotation = (float3x3)World;
+    output.Normal = normalize(mul(input.Normal, rotation));
 
-    output.Normal = mul(input.Normal, rotation);
-    output.Binormal = mul(input.Tangent, rotation);
-    output.Tangent = mul(input.Binormal, rotation);
-    
     return output;
+}
+
+// Normal mapping as described by Christian Schüler in
+// http://www.thetenthplanet.de/archives/1180
+float3x3 CotangentFrame(float3 N, float3 p, float2 uv)
+{
+    // get edge vectors of the pixel triangle
+    float3 dp1 = ddx(p);
+    float3 dp2 = ddy(p);
+    float2 duv1 = ddx(uv);
+    float2 duv2 = ddy(uv);
+
+    // solve the linear system
+    float3 dp2perp = cross(dp2, N);
+    float3 dp1perp = cross(N, dp1);
+    float3 T = dp2perp * duv1.x + dp1perp * duv2.x;
+    float3 B = dp2perp * duv1.y + dp1perp * duv2.y;
+
+    // construct a scale-invariant frame
+    float invmax = rsqrt(max(dot(T, T), dot(B, B)));
+    return float3x3(T * invmax, B * invmax, N);
+}
+
+float3 PerturbNormal(float3 normal, float3 view, float2 uv)
+{
+    float3 map = UnpackNormal(tex2D(normalSampler, uv).xyz);
+    float3x3 tbn = CotangentFrame(normal, -view, uv);
+    return mul(map, tbn);
 }
 
 OutputData PS(PixelData input)
 {
     OutputData output = (OutputData)0;
+
     float4 diffuse = tex2D(diffuseSampler, input.Texture);
     output.Diffuse = ToLinear(diffuse);
     output.Material = float4(Metalicness, Roughness, AmbientOcclusion, 1.0f);
-    output.Depth = input.Depth.x / input.Depth.y;
-    
-    float3x3 tbn = float3x3(input.Tangent, input.Binormal, input.Normal);
-    float3 normal = UnpackNormal(tex2D(normalSampler, input.Texture).xyz);
-    normal = mul(normal, tbn);
+    output.Depth = input.WorldPosition.z / input.WorldPosition.w;
+
+    float3 V = normalize(CameraPosition - input.WorldPosition.xyz);
+    float3 normal = PerturbNormal(input.Normal, V, input.Texture);
     output.Normal = float4(PackNormal(normal), 1.0f);
 
     return output;

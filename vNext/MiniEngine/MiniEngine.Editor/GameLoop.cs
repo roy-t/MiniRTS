@@ -128,11 +128,12 @@ namespace MiniEngine.Editor
             var normal = new Texture2D(this.Device, 1, 1);
             normal.SetData(new Color[] { new Color(0.5f, 0.5f, 1.0f) });
             this.Content.Link(normal);
+            //var normal = this.Content.Load<Texture2D>("Textures/Bricks_Normal");
 
             var rows = 7;
             var columns = 7;
             var spacing = 2.5f;
-            var geometry = SpherifiedCubeGenerator.Generate(this.Device, 15);
+            var geometry = SphereGenerator.Generate(this.Device, 15);
             for (var row = 0; row < rows; row++)
             {
                 var metalicness = row / (float)rows;
@@ -146,6 +147,9 @@ namespace MiniEngine.Editor
                     this.CreateSphere(geometry, material, transform);
                 }
             }
+
+            var backgroundGeometry = SphereGenerator.Generate(this.Device, 0);
+            this.CreateSphere(backgroundGeometry, new Material(red, normal, 1.0f, 0.0f), Matrix.CreateScale(20) * Matrix.CreateTranslation(Vector3.Forward * 20));
 
             var pointLightComponent = new PointLightComponent(this.Entities.Create(), new Vector3(-10, 10, 10), Color.Red, 300.0f);
             this.Components.Add(pointLightComponent);
