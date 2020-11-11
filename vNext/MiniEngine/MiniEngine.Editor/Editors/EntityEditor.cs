@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using ImGuiNET;
 using MiniEngine.Configuration;
+using MiniEngine.Gui;
 using MiniEngine.Systems;
 using MiniEngine.Systems.Components;
 using MiniEngine.Systems.Entities;
@@ -15,7 +16,6 @@ namespace MiniEngine.Editor.Editors
         private readonly ComponentAdministrator Components;
         private Entity? selectedEntity;
         private int entityIndex;
-        private int componentIndex;
 
         public EntityEditor(ComponentEditor componentEditor, EntityAdministrator entities, ComponentAdministrator components)
         {

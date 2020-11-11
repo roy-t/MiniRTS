@@ -41,7 +41,7 @@ namespace MiniEngine.Editor
         private readonly KeyboardController Keyboard;
         private readonly MouseController Mouse;
         private readonly CameraController CameraController;
-        private readonly EntityEditor EntityEditor;
+        private readonly Editors.EntityEditor EntityEditor;
         private readonly FrameCounter FrameCounter;
 
         private readonly string[] SkyboxNames;
@@ -55,7 +55,7 @@ namespace MiniEngine.Editor
         private bool docked = true;
         private bool showDemoWindow = false;
 
-        public GameLoop(GraphicsDeviceManager graphics, GraphicsDevice device, SpriteBatch spriteBatch, GameTimer gameTimer, GameWindow window, ContentStack content, FrameService frameService, ImGuiRenderer imGui, CubeMapGenerator cubeMapGenerator, IrradianceMapGenerator irradianceMapGenerator, EnvironmentMapGenerator environmentMapGenerator, BrdfLutGenerator brdfLutGenerator, EntityAdministrator entities, ComponentAdministrator components, RenderPipelineBuilder renderPipelineBuilder, KeyboardController keyboard, MouseController mouse, CameraController cameraController, EntityEditor entityEditor)
+        public GameLoop(GraphicsDeviceManager graphics, GraphicsDevice device, SpriteBatch spriteBatch, GameTimer gameTimer, GameWindow window, ContentStack content, FrameService frameService, ImGuiRenderer imGui, CubeMapGenerator cubeMapGenerator, IrradianceMapGenerator irradianceMapGenerator, EnvironmentMapGenerator environmentMapGenerator, BrdfLutGenerator brdfLutGenerator, EntityAdministrator entities, ComponentAdministrator components, RenderPipelineBuilder renderPipelineBuilder, KeyboardController keyboard, MouseController mouse, CameraController cameraController, Editors.EntityEditor entityEditor)
         {
             this.Graphics = graphics;
             this.Device = device;

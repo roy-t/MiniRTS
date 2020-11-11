@@ -18,10 +18,10 @@ namespace MiniEngine.Graphics.Geometry
 
         public Texture2D Normal { get; set; }
 
-        public float Metalicness { get; }
+        public float Metalicness { get; set; }
 
-        public float Roughness { get; }
+        public float Roughness { get; set; }
 
-        public float AmbientOcclusion { get; }
+        public float AmbientOcclusion { get; set; }
     }
 }

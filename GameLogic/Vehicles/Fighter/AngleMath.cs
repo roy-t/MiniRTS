@@ -63,7 +63,6 @@ namespace MiniEngine.GameLogic.Vehicles.Fighter
             return angle;
         }
 
-
         // TODO: do not allow straight up!
         public static float YawFromVector(Vector3 targetDirection)
         {
