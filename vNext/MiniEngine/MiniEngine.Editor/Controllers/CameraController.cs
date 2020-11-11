@@ -74,7 +74,7 @@ namespace MiniEngine.Editor.Controllers
             {
                 var mouseMovement = new Vector2(this.MouseInput.Movement.X, this.MouseInput.Movement.Y) * this.RadiansPerPixel;
                 var rotation = Matrix.CreateFromAxisAngle(Vector3.Up, mouseMovement.X) * Matrix.CreateFromAxisAngle(left, -mouseMovement.Y);
-                forward = Vector3.TransformNormal(forward, rotation);
+                forward = Vector3.Normalize(Vector3.Transform(forward, rotation));
             }
 
             if (this.MouseInput.ScrolledUp)

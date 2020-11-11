@@ -22,6 +22,8 @@ namespace MiniEngine.Graphics.Camera
 
         public Vector3 Forward { get; private set; }
 
+        public Matrix ViewProjection { get; private set; }
+
         public void Move(Vector3 position, Vector3 forward)
         {
             this.Position = position;
@@ -32,7 +34,5 @@ namespace MiniEngine.Graphics.Camera
 
             this.ViewProjection = view * projection;
         }
-
-        public Matrix ViewProjection { get; private set; }
     }
 }
