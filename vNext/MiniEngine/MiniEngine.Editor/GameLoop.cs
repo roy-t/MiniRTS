@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Input;
 using MiniEngine.Configuration;
 using MiniEngine.Editor.Configuration;
 using MiniEngine.Editor.Controllers;
+using MiniEngine.Editor.Workspaces;
 using MiniEngine.Graphics;
 using MiniEngine.Graphics.Geometry;
 using MiniEngine.Graphics.Geometry.Generators;
@@ -21,9 +22,10 @@ using MiniEngine.Systems.Pipeline;
 namespace MiniEngine.Editor
 {
     [Service]
-    internal sealed class GameLoop : IDisposable
+    internal sealed class GameLoop
     {
         private readonly GraphicsDeviceManager Graphics;
+        private readonly ModelViewerWorkspace Workspace;
         private readonly GraphicsDevice Device;
         private readonly SpriteBatch SpriteBatch;
         private readonly GameTimer GameTimer;
@@ -54,9 +56,10 @@ namespace MiniEngine.Editor
         private bool docked = true;
         private bool showDemoWindow = false;
 
-        public GameLoop(GraphicsDeviceManager graphics, GraphicsDevice device, SpriteBatch spriteBatch, GameTimer gameTimer, GameWindow window, ContentStack content, FrameService frameService, ImGuiRenderer imGui, CubeMapGenerator cubeMapGenerator, IrradianceMapGenerator irradianceMapGenerator, EnvironmentMapGenerator environmentMapGenerator, BrdfLutGenerator brdfLutGenerator, EntityAdministrator entities, ComponentAdministrator components, RenderPipelineBuilder renderPipelineBuilder, KeyboardController keyboard, MouseController mouse, CameraController cameraController, Editors.EntityEditor entityEditor)
+        public GameLoop(GraphicsDeviceManager graphics, ModelViewerWorkspace workspace, GraphicsDevice device, SpriteBatch spriteBatch, GameTimer gameTimer, GameWindow window, ContentStack content, FrameService frameService, ImGuiRenderer imGui, CubeMapGenerator cubeMapGenerator, IrradianceMapGenerator irradianceMapGenerator, EnvironmentMapGenerator environmentMapGenerator, BrdfLutGenerator brdfLutGenerator, EntityAdministrator entities, ComponentAdministrator components, RenderPipelineBuilder renderPipelineBuilder, KeyboardController keyboard, MouseController mouse, CameraController cameraController, Editors.EntityEditor entityEditor)
         {
             this.Graphics = graphics;
+            this.Workspace = workspace;
             this.Device = device;
             this.SpriteBatch = spriteBatch;
             this.GameTimer = gameTimer;
@@ -105,8 +108,6 @@ namespace MiniEngine.Editor
             this.FrameService.BrdfLutTexture.Tag = this.Gui.BindTexture(this.FrameService.BrdfLutTexture);
 
             this.FrameService.Skybox = SkyboxGenerator.Generate(this.Device, this.SkyboxTextures[0], this.IrradianceTextures[0], this.EnvironmentTextures[0]);
-            this.FrameService.Camera.Move(Vector3.Backward * 10, Vector3.Forward);
-
             this.RenderPipeline = renderPipelineBuilder.Build();
 
             var gBuffer = this.FrameService.GBuffer;
@@ -211,18 +212,18 @@ namespace MiniEngine.Editor
             if (this.docked)
             {
                 ImGui.DockSpaceOverViewport();
-                this.RenderToWindow("PostProcess", "ToneMap", this.FrameService.PBuffer.ToneMap);
+                RenderToWindow("PostProcess", "ToneMap", this.FrameService.PBuffer.ToneMap);
 
-                this.RenderToWindow("RenderTargets", "Diffuse", this.FrameService.GBuffer.Diffuse);
-                this.RenderToWindow("RenderTargets", "Material", this.FrameService.GBuffer.Material);
-                this.RenderToWindow("RenderTargets", "Depth", this.FrameService.GBuffer.Depth);
-                this.RenderToWindow("RenderTargets", "Normal", this.FrameService.GBuffer.Normal);
+                RenderToWindow("RenderTargets", "Diffuse", this.FrameService.GBuffer.Diffuse);
+                RenderToWindow("RenderTargets", "Material", this.FrameService.GBuffer.Material);
+                RenderToWindow("RenderTargets", "Depth", this.FrameService.GBuffer.Depth);
+                RenderToWindow("RenderTargets", "Normal", this.FrameService.GBuffer.Normal);
 
-                this.RenderToWindow("RenderTargets", "Light", this.FrameService.LBuffer.Light);
+                RenderToWindow("RenderTargets", "Light", this.FrameService.LBuffer.Light);
 
-                this.RenderToWindow("RenderTargets", "ToneMap", this.FrameService.PBuffer.ToneMap);
+                RenderToWindow("RenderTargets", "ToneMap", this.FrameService.PBuffer.ToneMap);
 
-                this.RenderToWindow("RenderTargets", "BRDF Lut", this.FrameService.BrdfLutTexture);
+                RenderToWindow("RenderTargets", "BRDF Lut", this.FrameService.BrdfLutTexture);
 
                 this.EntityEditor.Draw();
             }
@@ -281,7 +282,7 @@ namespace MiniEngine.Editor
             }
         }
 
-        private void RenderToWindow(string window, string label, Texture2D renderTarget)
+        private static void RenderToWindow(string window, string label, Texture2D renderTarget)
         {
             if (ImGui.Begin(window))
             {
@@ -314,11 +315,10 @@ namespace MiniEngine.Editor
             this.SpriteBatch.End();
         }
 
-        public void Dispose()
+        public void Stop()
         {
+            this.Workspace.Save();
             this.RenderPipeline.Stop();
-            this.Gui.Dispose();
-            this.Content.Dispose();
         }
     }
 }

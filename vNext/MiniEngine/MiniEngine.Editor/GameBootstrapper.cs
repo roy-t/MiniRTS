@@ -51,7 +51,7 @@ namespace MiniEngine.Editor
 
         protected override void UnloadContent()
         {
-            this.gameLoop.Dispose();
+            this.gameLoop.Stop();
             base.UnloadContent();
         }
 

@@ -48,9 +48,6 @@ namespace MiniEngine.Editor.Editors
                 if (this.selectedEntity.HasValue)
                 {
                     var components = this.Components.GetComponents(this.selectedEntity.Value);
-                    //var componentNames = components.Select(c => c.GetType().Name).ToArray();
-                    //ImGui.ListBox("Components", ref this.componentIndex, componentNames, componentNames.Length);
-
                     foreach (var component in components)
                     {
                         this.ComponentEditor.DrawComponent(component);
