@@ -10,6 +10,7 @@
 
 #-------------------------------- References --------------------------------#
 
+/reference:..\bin\Debug\net5.0-windows\MiniEngine.ContentPipeline.dll
 
 #---------------------------------- Content ---------------------------------#
 
