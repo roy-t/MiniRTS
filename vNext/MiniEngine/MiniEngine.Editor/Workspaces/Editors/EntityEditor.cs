@@ -6,7 +6,7 @@ using MiniEngine.Systems;
 using MiniEngine.Systems.Components;
 using MiniEngine.Systems.Entities;
 
-namespace MiniEngine.Editor.Editors
+namespace MiniEngine.Editor.Workspaces.Editors
 {
     [Service]
     public sealed class EntityEditor
@@ -24,26 +24,16 @@ namespace MiniEngine.Editor.Editors
             this.Components = components;
         }
 
-        public bool ShowEntityWindow = true;
-        public bool ShowComponentWindow = true;
-
         public void Draw()
         {
-            if (this.ShowEntityWindow)
+            this.RenderEntities();
+            this.RenderComponents();
+        }
+
+        private void RenderComponents()
+        {
+            if (ImGui.Begin("Components"))
             {
-                ImGui.Begin("Entities", ref this.ShowEntityWindow);
-                var entities = this.Entities.Copy();
-                var entityNames = entities.Select(e => $"{e.Id}").ToArray();
-                ImGui.ListBox("Entities", ref this.entityIndex, entityNames, entityNames.Length);
-
-                this.selectedEntity = entities[this.entityIndex];
-
-                ImGui.End();
-            }
-
-            if (this.ShowComponentWindow)
-            {
-                ImGui.Begin("Components", ref this.ShowComponentWindow);
                 ImGui.Text($"Selected: {this.selectedEntity?.ToString()}");
                 if (this.selectedEntity.HasValue)
                 {
@@ -54,6 +44,21 @@ namespace MiniEngine.Editor.Editors
                         ImGui.Separator();
                     }
                 }
+                ImGui.End();
+            }
+        }
+
+        private void RenderEntities()
+        {
+            if (ImGui.Begin("Entities"))
+            {
+                var entities = this.Entities.Copy();
+                var entityNames = entities.Select(e => $"{e.Id}").ToArray();
+                ImGui.ListBox("Entities", ref this.entityIndex, entityNames, entityNames.Length);
+
+                this.selectedEntity = entities[this.entityIndex];
+
+                ImGui.End();
             }
         }
     }

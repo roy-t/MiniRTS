@@ -42,7 +42,6 @@ namespace MiniEngine.Editor
         private readonly KeyboardController Keyboard;
         private readonly MouseController Mouse;
         private readonly CameraController CameraController;
-        private readonly Editors.EntityEditor EntityEditor;
         private readonly FrameCounter FrameCounter;
 
         private readonly string[] SkyboxNames;
@@ -55,7 +54,7 @@ namespace MiniEngine.Editor
 
         private bool renderUi = true;
 
-        public GameLoop(GraphicsDeviceManager graphics, WorkspaceManager workspace, GraphicsDevice device, SpriteBatch spriteBatch, GameTimer gameTimer, GameWindow window, ContentStack content, FrameService frameService, ImGuiRenderer imGui, CubeMapGenerator cubeMapGenerator, IrradianceMapGenerator irradianceMapGenerator, EnvironmentMapGenerator environmentMapGenerator, BrdfLutGenerator brdfLutGenerator, EntityAdministrator entities, ComponentAdministrator components, RenderPipelineBuilder renderPipelineBuilder, KeyboardController keyboard, MouseController mouse, CameraController cameraController, Editors.EntityEditor entityEditor)
+        public GameLoop(GraphicsDeviceManager graphics, WorkspaceManager workspace, GraphicsDevice device, SpriteBatch spriteBatch, GameTimer gameTimer, GameWindow window, ContentStack content, FrameService frameService, ImGuiRenderer imGui, CubeMapGenerator cubeMapGenerator, IrradianceMapGenerator irradianceMapGenerator, EnvironmentMapGenerator environmentMapGenerator, BrdfLutGenerator brdfLutGenerator, EntityAdministrator entities, ComponentAdministrator components, RenderPipelineBuilder renderPipelineBuilder, KeyboardController keyboard, MouseController mouse, CameraController cameraController)
         {
             this.Graphics = graphics;
             this.WorkspaceManager = workspace;
@@ -75,7 +74,6 @@ namespace MiniEngine.Editor
             this.Keyboard = keyboard;
             this.Mouse = mouse;
             this.CameraController = cameraController;
-            this.EntityEditor = entityEditor;
             this.Content.Push("basics");
 
             this.SkyboxNames = new string[]
@@ -201,12 +199,9 @@ namespace MiniEngine.Editor
             if (this.renderUi)
             {
                 this.Gui.BeforeLayout(gameTime);
-                this.ShowMainMenuBar();
-
                 ImGui.DockSpaceOverViewport(ImGui.GetMainViewport(), ImGuiDockNodeFlags.PassthruCentralNode);
+                this.ShowMainMenuBar();
                 this.WorkspaceManager.RenderWindows();
-
-                this.EntityEditor.Draw();
 
                 this.Gui.AfterLayout();
             }
@@ -222,21 +217,15 @@ namespace MiniEngine.Editor
         {
             if (ImGui.BeginMainMenuBar())
             {
-                if (ImGui.BeginMenu("Windows"))
-                {
-                    ImGui.Checkbox("Entity Window", ref this.EntityEditor.ShowEntityWindow);
-                    ImGui.Checkbox("Component Window", ref this.EntityEditor.ShowComponentWindow);
-
-                    ImGui.EndMenu();
-                }
-
                 if (ImGui.BeginMenu("View"))
                 {
                     var vsync = this.Graphics.SynchronizeWithVerticalRetrace;
-                    ImGui.Checkbox("VSync", ref vsync);
-                    this.Graphics.SynchronizeWithVerticalRetrace = vsync;
-                    this.GameTimer.IsFixedTimeStep = vsync;
-                    this.Graphics.ApplyChanges();
+                    if (ImGui.Checkbox("VSync", ref vsync))
+                    {
+                        this.Graphics.SynchronizeWithVerticalRetrace = vsync;
+                        this.GameTimer.IsFixedTimeStep = vsync;
+                        this.Graphics.ApplyChanges();
+                    }
 
                     if (ImGui.ListBox("Skybox", ref this.currentSkyboxTexture, this.SkyboxNames, this.SkyboxTextures.Length))
                     {

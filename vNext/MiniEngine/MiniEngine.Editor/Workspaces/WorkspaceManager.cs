@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using ImGuiNET;
+using Microsoft.Xna.Framework.Input;
 using MiniEngine.Configuration;
+using MiniEngine.Editor.Controllers;
 using MiniEngine.Graphics;
 
 namespace MiniEngine.Editor.Workspaces
@@ -11,48 +13,49 @@ namespace MiniEngine.Editor.Workspaces
     {
         private readonly EditorStateSerializer Serializer;
         private readonly FrameService FrameService;
+        private readonly KeyboardController Keyboard;
         private readonly EditorState State;
-        private readonly Dictionary<string, IWorkspace> Workspaces;
-        private IWorkspace workspace;
+        private readonly List<WorkspaceBinding> Workspaces;
+        private WorkspaceBinding workspace;
 
-        public WorkspaceManager(IEnumerable<IWorkspace> workspaces, EditorStateSerializer serializer, FrameService frameService)
+        public WorkspaceManager(IEnumerable<IWorkspace> workspaces, EditorStateSerializer serializer, FrameService frameService, KeyboardController keyboard)
         {
             this.Serializer = serializer;
             this.FrameService = frameService;
+            this.Keyboard = keyboard;
             this.State = this.Serializer.Deserialize();
-            this.Workspaces = workspaces.ToDictionary(w => w.GetKey(), w => w);
+            this.Workspaces = workspaces.Select(w => new WorkspaceBinding(w.GetKey(), w)).ToList();
 
             this.FrameService.Camera.Move(this.State.CameraPosition, this.State.CameraForward);
 
-            if (this.Workspaces.TryGetValue(this.State.CurrentWorkspace ?? string.Empty, out var workspace))
-            {
-                this.workspace = workspace;
-            }
-            else
-            {
-                this.workspace = this.Workspaces.Values.First();
-            }
+            this.workspace = this.Workspaces.FirstOrDefault(w => w.Key == this.State.CurrentWorkspace)
+                ?? this.Workspaces.First();
         }
 
         public void RenderMainMenuItems()
         {
-            if (ImGui.BeginMenu("Workspaces"))
+            if (this.Keyboard.Held(Keys.LeftControl) && this.Keyboard.Released(Keys.Tab))
             {
-                foreach (var pair in this.Workspaces)
+                this.workspace = this.Workspaces.Next(this.workspace);
+            }
+
+            if (ImGui.BeginMenu($"Workspaces ({this.workspace.Key})"))
+            {
+                foreach (var workspace in this.Workspaces)
                 {
-                    if (ImGui.MenuItem(pair.Key, "", this.workspace == pair.Value))
+                    if (ImGui.MenuItem(workspace.Key, "", this.workspace == workspace))
                     {
-                        this.workspace = pair.Value;
+                        this.workspace = workspace;
                     }
                 }
                 ImGui.EndMenu();
             }
 
-            this.workspace.RenderMainMenuItems();
+            this.workspace.Workspace.RenderMainMenuItems();
         }
 
         public void RenderWindows()
-            => this.workspace.RenderWindows();
+            => this.workspace.Workspace.RenderWindows();
 
         public void Save()
         {
@@ -60,9 +63,11 @@ namespace MiniEngine.Editor.Workspaces
             {
                 CameraPosition = this.FrameService.Camera.Position,
                 CameraForward = this.FrameService.Camera.Forward,
-                CurrentWorkspace = this.workspace.GetKey()
+                CurrentWorkspace = this.workspace.Key
             };
             this.Serializer.Serialize(state);
         }
+
+        private record WorkspaceBinding(string Key, IWorkspace Workspace);
     }
 }
