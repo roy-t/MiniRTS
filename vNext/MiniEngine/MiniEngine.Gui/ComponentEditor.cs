@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.Xna.Framework;
+using System.Linq;
 using MiniEngine.Configuration;
-using MiniEngine.Graphics.Geometry;
-using MiniEngine.Gui.Editors;
 using MiniEngine.Gui.Templates;
 using MiniEngine.Systems;
 
@@ -15,15 +13,9 @@ namespace MiniEngine.Gui
         private readonly Dictionary<Type, IPropertyEditor> PropertyEditors;
         private readonly Dictionary<Type, ComponentTemplate> Templates;
 
-        public ComponentEditor(ImGuiRenderer imGui)
+        public ComponentEditor(IEnumerable<IPropertyEditor> editors)
         {
-            this.PropertyEditors = new Dictionary<Type, IPropertyEditor>
-            {
-                { typeof(Matrix), new MatrixEditor() },
-                { typeof(Entity), new EntityEditor() },
-                { typeof(Material), new MaterialEditor(imGui)}
-            };
-
+            this.PropertyEditors = editors.ToDictionary(e => e.TargetType);
             this.Templates = new Dictionary<Type, ComponentTemplate>();
         }
 

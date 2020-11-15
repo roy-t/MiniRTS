@@ -1,25 +1,33 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using ImGuiNET;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using MiniEngine.Configuration;
 using MiniEngine.Editor.Controllers;
 using MiniEngine.Graphics;
+using MiniEngine.Gui;
 
 namespace MiniEngine.Editor.Workspaces
 {
     [Service]
     public sealed class WorkspaceManager
     {
+        private record WorkspaceBinding(string Key, IWorkspace Workspace);
+
+        private readonly ImGuiRenderer Gui;
         private readonly EditorStateSerializer Serializer;
         private readonly FrameService FrameService;
         private readonly KeyboardController Keyboard;
         private readonly EditorState State;
         private readonly List<WorkspaceBinding> Workspaces;
-        private WorkspaceBinding workspace;
 
-        public WorkspaceManager(IEnumerable<IWorkspace> workspaces, EditorStateSerializer serializer, FrameService frameService, KeyboardController keyboard)
+        private WorkspaceBinding workspace;
+        private int selectedSkybox;
+
+        public WorkspaceManager(IEnumerable<IWorkspace> workspaces, ImGuiRenderer gui, EditorStateSerializer serializer, FrameService frameService, KeyboardController keyboard)
         {
+            this.Gui = gui;
             this.Serializer = serializer;
             this.FrameService = frameService;
             this.Keyboard = keyboard;
@@ -32,26 +40,52 @@ namespace MiniEngine.Editor.Workspaces
                 ?? this.Workspaces.First();
         }
 
-        public void RenderMainMenuItems()
+        public void Render(GameTime gameTime)
         {
             if (this.Keyboard.Held(Keys.LeftControl) && this.Keyboard.Released(Keys.Tab))
             {
                 this.workspace = this.Workspaces.Next(this.workspace);
             }
 
-            if (ImGui.BeginMenu($"Workspaces ({this.workspace.Key})"))
+            this.Gui.BeforeLayout(gameTime);
+            ImGui.DockSpaceOverViewport(ImGui.GetMainViewport(), ImGuiDockNodeFlags.PassthruCentralNode);
+
+            this.RenderMainMenuItems();
+            this.RenderWindows();
+
+            this.Gui.AfterLayout();
+        }
+
+        public void RenderMainMenuItems()
+        {
+            if (ImGui.BeginMainMenuBar())
             {
-                foreach (var workspace in this.Workspaces)
+                if (ImGui.BeginMenu("View"))
                 {
-                    if (ImGui.MenuItem(workspace.Key, "", this.workspace == workspace))
+                    // TODO: move all skybox stuff to the scene's menu
+                    var names = this.FrameService.Textures.Select(t => t.Name).ToArray();
+                    if (ImGui.ListBox("Skybox", ref this.selectedSkybox, names, names.Length))
                     {
-                        this.workspace = workspace;
+                        this.FrameService.SetSkyboxTexture(this.FrameService.Textures[this.selectedSkybox]);
                     }
                 }
-                ImGui.EndMenu();
-            }
 
-            this.workspace.Workspace.RenderMainMenuItems();
+                if (ImGui.BeginMenu($"Workspaces ({this.workspace.Key})"))
+                {
+                    foreach (var workspace in this.Workspaces)
+                    {
+                        if (ImGui.MenuItem(workspace.Key, "", this.workspace == workspace))
+                        {
+                            this.workspace = workspace;
+                        }
+                    }
+                    ImGui.EndMenu();
+                }
+
+                this.workspace.Workspace.RenderMainMenuItems();
+
+                ImGui.EndMainMenuBar();
+            }
         }
 
         public void RenderWindows()
@@ -67,7 +101,5 @@ namespace MiniEngine.Editor.Workspaces
             };
             this.Serializer.Serialize(state);
         }
-
-        private record WorkspaceBinding(string Key, IWorkspace Workspace);
     }
 }

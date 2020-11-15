@@ -2,10 +2,12 @@
 using ImGuiNET;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MiniEngine.Configuration;
 using MiniEngine.Graphics.Geometry;
 
 namespace MiniEngine.Gui.Editors
 {
+    [Service]
     public sealed class MaterialEditor : AEditor<Material>
     {
         private readonly ImGuiRenderer GuiRenderer;

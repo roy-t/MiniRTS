@@ -1,5 +1,4 @@
 ﻿using System;
-using ImGuiNET;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -13,7 +12,6 @@ using MiniEngine.Graphics.Geometry.Generators;
 using MiniEngine.Graphics.Lighting;
 using MiniEngine.Graphics.Skybox;
 using MiniEngine.Graphics.Utilities;
-using MiniEngine.Gui;
 using MiniEngine.SceneManagement;
 using MiniEngine.Systems.Components;
 using MiniEngine.Systems.Entities;
@@ -32,7 +30,6 @@ namespace MiniEngine.Editor
         private readonly GameWindow Window;
         private readonly ContentStack Content;
         private readonly FrameService FrameService;
-        private readonly ImGuiRenderer Gui;
         private readonly CubeMapGenerator CubeMapGenerator;
         private readonly IrradianceMapGenerator IrradianceMapGenerator;
         private readonly EnvironmentMapGenerator EnvironmentMapGenerator;
@@ -44,17 +41,11 @@ namespace MiniEngine.Editor
         private readonly CameraController CameraController;
         private readonly FrameCounter FrameCounter;
 
-        private readonly string[] SkyboxNames;
-        private readonly TextureCube[] SkyboxTextures;
-        private readonly TextureCube[] IrradianceTextures;
-        private readonly TextureCube[] EnvironmentTextures;
-        private int currentSkyboxTexture = 0;
-
         private readonly ParallelPipeline RenderPipeline;
 
         private bool renderUi = true;
 
-        public GameLoop(GraphicsDeviceManager graphics, WorkspaceManager workspace, GraphicsDevice device, SpriteBatch spriteBatch, GameTimer gameTimer, GameWindow window, ContentStack content, FrameService frameService, ImGuiRenderer imGui, CubeMapGenerator cubeMapGenerator, IrradianceMapGenerator irradianceMapGenerator, EnvironmentMapGenerator environmentMapGenerator, BrdfLutGenerator brdfLutGenerator, EntityAdministrator entities, ComponentAdministrator components, RenderPipelineBuilder renderPipelineBuilder, KeyboardController keyboard, MouseController mouse, CameraController cameraController)
+        public GameLoop(GraphicsDeviceManager graphics, WorkspaceManager workspace, GraphicsDevice device, SpriteBatch spriteBatch, GameTimer gameTimer, GameWindow window, ContentStack content, FrameService frameService, CubeMapGenerator cubeMapGenerator, IrradianceMapGenerator irradianceMapGenerator, EnvironmentMapGenerator environmentMapGenerator, BrdfLutGenerator brdfLutGenerator, EntityAdministrator entities, ComponentAdministrator components, RenderPipelineBuilder renderPipelineBuilder, KeyboardController keyboard, MouseController mouse, CameraController cameraController)
         {
             this.Graphics = graphics;
             this.WorkspaceManager = workspace;
@@ -64,7 +55,6 @@ namespace MiniEngine.Editor
             this.Window = window;
             this.Content = content;
             this.FrameService = frameService;
-            this.Gui = imGui;
             this.CubeMapGenerator = cubeMapGenerator;
             this.IrradianceMapGenerator = irradianceMapGenerator;
             this.EnvironmentMapGenerator = environmentMapGenerator;
@@ -76,7 +66,8 @@ namespace MiniEngine.Editor
             this.CameraController = cameraController;
             this.Content.Push("basics");
 
-            this.SkyboxNames = new string[]
+            // TODO: move all of this content to a scene
+            var skyboxNames = new string[]
             {
                 "Skyboxes/Circus/Circus_Backstage_3k",
                 "Skyboxes/Industrial/fin4_Bg",
@@ -85,25 +76,28 @@ namespace MiniEngine.Editor
                 "Skyboxes/Loft/Newport_Loft_Ref"
             };
 
-            this.SkyboxTextures = new TextureCube[this.SkyboxNames.Length];
-            this.IrradianceTextures = new TextureCube[this.SkyboxNames.Length];
-            this.EnvironmentTextures = new TextureCube[this.SkyboxNames.Length];
-            for (var i = 0; i < this.SkyboxNames.Length; i++)
+            foreach (var name in skyboxNames)
             {
                 this.Content.Push("generator");
-                var equiRect = this.Content.Load<Texture2D>(this.SkyboxNames[i]);
-                this.SkyboxTextures[i] = this.CubeMapGenerator.Generate(equiRect);
-                this.IrradianceTextures[i] = this.IrradianceMapGenerator.Generate(equiRect);
-                this.EnvironmentTextures[i] = this.EnvironmentMapGenerator.Generate(equiRect);
+                var equiRect = this.Content.Load<Texture2D>(name);
+                var albedo = this.CubeMapGenerator.Generate(equiRect);
+                var irradiance = this.IrradianceMapGenerator.Generate(equiRect);
+                var environment = this.EnvironmentMapGenerator.Generate(equiRect);
 
                 this.Content.Pop();
+                this.Content.Link(albedo);
+                this.Content.Link(irradiance);
+                this.Content.Link(environment);
 
-                this.Content.Link(this.SkyboxTextures[i]);
+                this.FrameService.Textures.Add(new SkyboxTextures(name, albedo, irradiance, environment));
             }
+
+            this.FrameService.Skybox = SkyboxGenerator.Generate(this.Device, this.FrameService.Textures[0].Albedo,
+                this.FrameService.Textures[0].Irradiance,
+                this.FrameService.Textures[0].Environment);
 
             this.FrameService.BrdfLutTexture = this.BrdfLutGenerator.Generate();
 
-            this.FrameService.Skybox = SkyboxGenerator.Generate(this.Device, this.SkyboxTextures[0], this.IrradianceTextures[0], this.EnvironmentTextures[0]);
             this.RenderPipeline = renderPipelineBuilder.Build();
 
             var red = new Texture2D(this.Device, 1, 1);
@@ -173,6 +167,13 @@ namespace MiniEngine.Editor
                 return false;
             }
 
+            if (this.Keyboard.Released(Keys.F11))
+            {
+                this.Graphics.SynchronizeWithVerticalRetrace = !this.Graphics.SynchronizeWithVerticalRetrace;
+                this.GameTimer.IsFixedTimeStep = !this.GameTimer.IsFixedTimeStep;
+                this.Graphics.ApplyChanges();
+            }
+
             if (this.Keyboard.Released(Keys.F12))
             {
                 this.renderUi = !this.renderUi;
@@ -192,18 +193,11 @@ namespace MiniEngine.Editor
         internal void Draw(GameTime gameTime)
         {
             this.RunPipeline();
-
-            this.Device.SetRenderTarget(null);
-
             this.RenderToViewport(this.FrameService.PBuffer.ToneMap);
+
             if (this.renderUi)
             {
-                this.Gui.BeforeLayout(gameTime);
-                ImGui.DockSpaceOverViewport(ImGui.GetMainViewport(), ImGuiDockNodeFlags.PassthruCentralNode);
-                this.ShowMainMenuBar();
-                this.WorkspaceManager.RenderWindows();
-
-                this.Gui.AfterLayout();
+                this.WorkspaceManager.Render(gameTime);
             }
         }
 
@@ -213,38 +207,9 @@ namespace MiniEngine.Editor
             this.RenderPipeline.Wait();
         }
 
-        private void ShowMainMenuBar()
-        {
-            if (ImGui.BeginMainMenuBar())
-            {
-                if (ImGui.BeginMenu("View"))
-                {
-                    var vsync = this.Graphics.SynchronizeWithVerticalRetrace;
-                    if (ImGui.Checkbox("VSync", ref vsync))
-                    {
-                        this.Graphics.SynchronizeWithVerticalRetrace = vsync;
-                        this.GameTimer.IsFixedTimeStep = vsync;
-                        this.Graphics.ApplyChanges();
-                    }
-
-                    if (ImGui.ListBox("Skybox", ref this.currentSkyboxTexture, this.SkyboxNames, this.SkyboxTextures.Length))
-                    {
-                        this.FrameService.Skybox.Texture = this.SkyboxTextures[this.currentSkyboxTexture];
-                        this.FrameService.Skybox.Irradiance = this.IrradianceTextures[this.currentSkyboxTexture];
-                        this.FrameService.Skybox.Environment = this.EnvironmentTextures[this.currentSkyboxTexture];
-                    }
-
-                    ImGui.EndMenu();
-                }
-
-                this.WorkspaceManager.RenderMainMenuItems();
-
-                ImGui.EndMainMenuBar();
-            }
-        }
-
         private void RenderToViewport(RenderTarget2D renderTarget)
         {
+            this.Device.SetRenderTarget(null);
             this.SpriteBatch.Begin(
                 SpriteSortMode.Immediate,
                 BlendState.Opaque,

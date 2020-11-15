@@ -12,6 +12,8 @@ namespace MiniEngine.Gui.Editors
             this.Draw(name, typedGet, typedSet);
         }
 
+        public Type TargetType => typeof(T);
+
         public abstract void Draw(string name, Func<T> get, Action<T> set);
     }
 }

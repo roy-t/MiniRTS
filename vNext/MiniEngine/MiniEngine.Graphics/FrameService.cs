@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
@@ -10,6 +11,9 @@ using MiniEngine.Graphics.Skybox;
 
 namespace MiniEngine.Graphics
 {
+    // TODO: move this and all other skybox stuff to the actual scene, then give the frameservice a reference to the current scene?
+    public sealed record SkyboxTextures(string Name, TextureCube Albedo, TextureCube Irradiance, TextureCube Environment);
+
     [Service]
     public sealed class FrameService
     {
@@ -21,12 +25,27 @@ namespace MiniEngine.Graphics
             this.GBuffer = new GBuffer(device);
             this.LBuffer = new LBuffer(device);
             this.PBuffer = new PBuffer(device);
+
+            this.Textures = new List<SkyboxTextures>();
         }
 
         public ICamera Camera { get; set; }
         public GBuffer GBuffer { get; set; }
         public LBuffer LBuffer { get; set; }
         public PBuffer PBuffer { get; set; }
+
+        public SkyboxGeometry Skybox { get; set; } // TODO: this field should be move to a scene object and initialized better!
+
+        public List<SkyboxTextures> Textures { get; }
+
+        public Texture2D BrdfLutTexture { get; set; } // TODO: this is a general shader resource that should be somewhere else?
+
+        public void SetSkyboxTexture(SkyboxTextures texture)
+        {
+            this.Skybox.Texture = texture.Albedo;
+            this.Skybox.Irradiance = texture.Irradiance;
+            this.Skybox.Environment = texture.Environment;
+        }
 
         public int GetBufferSize()
         {
@@ -72,9 +91,5 @@ namespace MiniEngine.Graphics
                 SurfaceFormat.ColorSRgb => 4,
                 _ => throw new ArgumentOutOfRangeException(nameof(format)),
             };
-
-        public SkyboxGeometry Skybox { get; set; } // TODO: this field should be move to a scene object and initialized better!
-
-        public Texture2D BrdfLutTexture { get; set; } // TODO: this is a general shader resource that should be somewhere else?
     }
 }

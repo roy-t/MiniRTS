@@ -1,9 +1,11 @@
 ﻿using System;
 using ImGuiNET;
 using Microsoft.Xna.Framework;
+using MiniEngine.Configuration;
 
 namespace MiniEngine.Gui.Editors
 {
+    [Service]
     public sealed class MatrixEditor : AEditor<Matrix>
     {
         public override void Draw(string name, Func<Matrix> get, Action<Matrix> set)

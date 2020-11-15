@@ -11,5 +11,7 @@ namespace MiniEngine.Gui.Editors
             var value = get(component);
             ImGui.Text($"{name}: {value} : {value.GetType().Name}");
         }
+
+        public Type TargetType => typeof(object);
     }
 }
