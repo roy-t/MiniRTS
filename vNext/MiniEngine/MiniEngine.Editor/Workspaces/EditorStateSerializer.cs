@@ -26,7 +26,7 @@ namespace MiniEngine.Editor.Workspaces
         }
 
         public EditorState Deserialize()
-            => this.Deserialize(Filename, Encoding.UTF8) ?? new EditorState(Entity.Zero, Vector3.Zero, Vector3.Forward);
+            => this.Deserialize(Filename, Encoding.UTF8) ?? new EditorState(Entity.Zero, Vector3.Zero, Vector3.Forward, null);
 
         public void Serialize(EditorState editorState)
             => this.Serialize(editorState, Filename, Encoding.UTF8);

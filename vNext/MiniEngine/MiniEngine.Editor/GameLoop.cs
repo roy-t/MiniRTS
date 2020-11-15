@@ -25,7 +25,7 @@ namespace MiniEngine.Editor
     internal sealed class GameLoop
     {
         private readonly GraphicsDeviceManager Graphics;
-        private readonly ModelViewerWorkspace Workspace;
+        private readonly WorkspaceManager WorkspaceManager;
         private readonly GraphicsDevice Device;
         private readonly SpriteBatch SpriteBatch;
         private readonly GameTimer GameTimer;
@@ -53,13 +53,12 @@ namespace MiniEngine.Editor
 
         private readonly ParallelPipeline RenderPipeline;
 
-        private bool docked = true;
-        private bool showDemoWindow = false;
+        private bool renderUi = true;
 
-        public GameLoop(GraphicsDeviceManager graphics, ModelViewerWorkspace workspace, GraphicsDevice device, SpriteBatch spriteBatch, GameTimer gameTimer, GameWindow window, ContentStack content, FrameService frameService, ImGuiRenderer imGui, CubeMapGenerator cubeMapGenerator, IrradianceMapGenerator irradianceMapGenerator, EnvironmentMapGenerator environmentMapGenerator, BrdfLutGenerator brdfLutGenerator, EntityAdministrator entities, ComponentAdministrator components, RenderPipelineBuilder renderPipelineBuilder, KeyboardController keyboard, MouseController mouse, CameraController cameraController, Editors.EntityEditor entityEditor)
+        public GameLoop(GraphicsDeviceManager graphics, WorkspaceManager workspace, GraphicsDevice device, SpriteBatch spriteBatch, GameTimer gameTimer, GameWindow window, ContentStack content, FrameService frameService, ImGuiRenderer imGui, CubeMapGenerator cubeMapGenerator, IrradianceMapGenerator irradianceMapGenerator, EnvironmentMapGenerator environmentMapGenerator, BrdfLutGenerator brdfLutGenerator, EntityAdministrator entities, ComponentAdministrator components, RenderPipelineBuilder renderPipelineBuilder, KeyboardController keyboard, MouseController mouse, CameraController cameraController, Editors.EntityEditor entityEditor)
         {
             this.Graphics = graphics;
-            this.Workspace = workspace;
+            this.WorkspaceManager = workspace;
             this.Device = device;
             this.SpriteBatch = spriteBatch;
             this.GameTimer = gameTimer;
@@ -105,22 +104,9 @@ namespace MiniEngine.Editor
             }
 
             this.FrameService.BrdfLutTexture = this.BrdfLutGenerator.Generate();
-            this.FrameService.BrdfLutTexture.Tag = this.Gui.BindTexture(this.FrameService.BrdfLutTexture);
 
             this.FrameService.Skybox = SkyboxGenerator.Generate(this.Device, this.SkyboxTextures[0], this.IrradianceTextures[0], this.EnvironmentTextures[0]);
             this.RenderPipeline = renderPipelineBuilder.Build();
-
-            var gBuffer = this.FrameService.GBuffer;
-            gBuffer.Diffuse.Tag = this.Gui.BindTexture(gBuffer.Diffuse);
-            gBuffer.Material.Tag = this.Gui.BindTexture(gBuffer.Material);
-            gBuffer.Normal.Tag = this.Gui.BindTexture(gBuffer.Normal);
-            gBuffer.Depth.Tag = this.Gui.BindTexture(gBuffer.Depth);
-
-            var lBuffer = this.FrameService.LBuffer;
-            lBuffer.Light.Tag = this.Gui.BindTexture(lBuffer.Light);
-
-            var pBuffer = this.FrameService.PBuffer;
-            pBuffer.ToneMap.Tag = this.Gui.BindTexture(pBuffer.ToneMap);
 
             var red = new Texture2D(this.Device, 1, 1);
             red.SetData(new Color[] { Color.White });
@@ -189,6 +175,11 @@ namespace MiniEngine.Editor
                 return false;
             }
 
+            if (this.Keyboard.Released(Keys.F12))
+            {
+                this.renderUi = !this.renderUi;
+            }
+
             var elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
             this.CameraController.Update(this.FrameService.Camera, elapsed);
 
@@ -206,37 +197,19 @@ namespace MiniEngine.Editor
 
             this.Device.SetRenderTarget(null);
 
-            this.Gui.BeforeLayout(gameTime);
-            this.ShowMainMenuBar();
-
-            if (this.docked)
+            this.RenderToViewport(this.FrameService.PBuffer.ToneMap);
+            if (this.renderUi)
             {
-                ImGui.DockSpaceOverViewport();
-                RenderToWindow("PostProcess", "ToneMap", this.FrameService.PBuffer.ToneMap);
+                this.Gui.BeforeLayout(gameTime);
+                this.ShowMainMenuBar();
 
-                RenderToWindow("RenderTargets", "Diffuse", this.FrameService.GBuffer.Diffuse);
-                RenderToWindow("RenderTargets", "Material", this.FrameService.GBuffer.Material);
-                RenderToWindow("RenderTargets", "Depth", this.FrameService.GBuffer.Depth);
-                RenderToWindow("RenderTargets", "Normal", this.FrameService.GBuffer.Normal);
-
-                RenderToWindow("RenderTargets", "Light", this.FrameService.LBuffer.Light);
-
-                RenderToWindow("RenderTargets", "ToneMap", this.FrameService.PBuffer.ToneMap);
-
-                RenderToWindow("RenderTargets", "BRDF Lut", this.FrameService.BrdfLutTexture);
+                ImGui.DockSpaceOverViewport(ImGui.GetMainViewport(), ImGuiDockNodeFlags.PassthruCentralNode);
+                this.WorkspaceManager.RenderWindows();
 
                 this.EntityEditor.Draw();
-            }
-            else
-            {
-                this.RenderToViewport(this.FrameService.PBuffer.ToneMap);
-            }
 
-            if (this.showDemoWindow)
-            {
-                ImGui.ShowDemoWindow();
+                this.Gui.AfterLayout();
             }
-            this.Gui.AfterLayout();
         }
 
         private void RunPipeline()
@@ -259,15 +232,11 @@ namespace MiniEngine.Editor
 
                 if (ImGui.BeginMenu("View"))
                 {
-                    ImGui.Checkbox("Docked", ref this.docked);
-
                     var vsync = this.Graphics.SynchronizeWithVerticalRetrace;
                     ImGui.Checkbox("VSync", ref vsync);
                     this.Graphics.SynchronizeWithVerticalRetrace = vsync;
                     this.GameTimer.IsFixedTimeStep = vsync;
                     this.Graphics.ApplyChanges();
-
-                    ImGui.Checkbox("Show Demo Window", ref this.showDemoWindow);
 
                     if (ImGui.ListBox("Skybox", ref this.currentSkyboxTexture, this.SkyboxNames, this.SkyboxTextures.Length))
                     {
@@ -278,22 +247,10 @@ namespace MiniEngine.Editor
 
                     ImGui.EndMenu();
                 }
+
+                this.WorkspaceManager.RenderMainMenuItems();
+
                 ImGui.EndMainMenuBar();
-            }
-        }
-
-        private static void RenderToWindow(string window, string label, Texture2D renderTarget)
-        {
-            if (ImGui.Begin(window))
-            {
-                var width = ImGui.GetWindowWidth();
-                var height = ImGui.GetWindowHeight() - (ImGui.GetFrameHeightWithSpacing() * 2);
-                var imageSize = ImageUtilities.FitToBounds(renderTarget.Width, renderTarget.Height, width, height);
-
-                ImGui.Text(label);
-                ImGui.Image((IntPtr)renderTarget.Tag, imageSize);
-
-                ImGui.End();
             }
         }
 
@@ -317,7 +274,7 @@ namespace MiniEngine.Editor
 
         public void Stop()
         {
-            this.Workspace.Save();
+            this.WorkspaceManager.Save();
             this.RenderPipeline.Stop();
         }
     }
