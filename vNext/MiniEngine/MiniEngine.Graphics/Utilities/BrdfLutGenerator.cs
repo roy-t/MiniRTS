@@ -23,7 +23,6 @@ namespace MiniEngine.Graphics.Utilities
 
         public Texture2D Generate()
         {
-            // TODO: maybe we do not need preserve?
             var brdfLut = new RenderTarget2D(this.Device, resolution, resolution, false, SurfaceFormat.HalfVector2, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
 
             this.Device.BlendState = BlendState.Opaque;

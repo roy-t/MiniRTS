@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
 using MiniEngine.Graphics.PostProcess;
+using MiniEngine.Graphics.Utilities;
 using MiniEngine.Systems;
 
 namespace MiniEngine.Graphics.Lighting
@@ -12,15 +13,17 @@ namespace MiniEngine.Graphics.Lighting
         private readonly GraphicsDevice Device;
         private readonly FullScreenTriangle FullScreenTriangle;
         private readonly ImageBasedLightEffect Effect;
+        private readonly Texture2D BrdfLutTexture;
         private readonly FrameService FrameService;
 
-        public ImageBasedLightSystem(GraphicsDevice device, FullScreenTriangle fullScreenTriangle, ImageBasedLightEffect effect, FrameService frameService)
+        public ImageBasedLightSystem(GraphicsDevice device, BrdfLutGenerator brdfLutGenerator, FullScreenTriangle fullScreenTriangle, ImageBasedLightEffect effect, FrameService frameService)
         {
             this.Device = device;
             this.FullScreenTriangle = fullScreenTriangle;
             this.FrameService = frameService;
-
             this.Effect = effect;
+
+            this.BrdfLutTexture = brdfLutGenerator.Generate();
         }
 
         public void OnSet()
@@ -51,7 +54,7 @@ namespace MiniEngine.Graphics.Lighting
             this.Effect.Material = this.FrameService.GBuffer.Material;
             this.Effect.Irradiance = this.FrameService.Skybox.Irradiance;
             this.Effect.Environment = this.FrameService.Skybox.Environment;
-            this.Effect.BrdfLut = this.FrameService.BrdfLutTexture;
+            this.Effect.BrdfLut = this.BrdfLutTexture;
 
             this.Effect.MaxReflectionLod = this.FrameService.Skybox.Environment.LevelCount;
 

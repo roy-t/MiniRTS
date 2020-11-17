@@ -56,6 +56,12 @@
 /processorParam:DebugMode=Auto
 /build:Effects/IrradianceMapGeneratorEffect.fx
 
+#begin Effects/OpaqueEffect.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Effects/OpaqueEffect.fx
+
 #begin Effects/PointLightEffect.fx
 /importer:EffectImporter
 /processor:EffectProcessor

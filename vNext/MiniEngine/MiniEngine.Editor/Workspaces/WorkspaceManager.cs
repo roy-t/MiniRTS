@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using MiniEngine.Configuration;
 using MiniEngine.Editor.Controllers;
+using MiniEngine.Editor.Scenes;
 using MiniEngine.Graphics;
 using MiniEngine.Gui;
 
@@ -15,6 +16,7 @@ namespace MiniEngine.Editor.Workspaces
     {
         private record WorkspaceBinding(string Key, IWorkspace Workspace);
 
+        private readonly SceneManager SceneManager;
         private readonly ImGuiRenderer Gui;
         private readonly EditorStateSerializer Serializer;
         private readonly FrameService FrameService;
@@ -23,10 +25,10 @@ namespace MiniEngine.Editor.Workspaces
         private readonly List<WorkspaceBinding> Workspaces;
 
         private WorkspaceBinding workspace;
-        private int selectedSkybox;
 
-        public WorkspaceManager(IEnumerable<IWorkspace> workspaces, ImGuiRenderer gui, EditorStateSerializer serializer, FrameService frameService, KeyboardController keyboard)
+        public WorkspaceManager(IEnumerable<IWorkspace> workspaces, SceneManager sceneManager, ImGuiRenderer gui, EditorStateSerializer serializer, FrameService frameService, KeyboardController keyboard)
         {
+            this.SceneManager = sceneManager;
             this.Gui = gui;
             this.Serializer = serializer;
             this.FrameService = frameService;
@@ -50,26 +52,16 @@ namespace MiniEngine.Editor.Workspaces
             this.Gui.BeforeLayout(gameTime);
             ImGui.DockSpaceOverViewport(ImGui.GetMainViewport(), ImGuiDockNodeFlags.PassthruCentralNode);
 
-            this.RenderMainMenuItems();
+            this.RenderMainMenu();
             this.RenderWindows();
 
             this.Gui.AfterLayout();
         }
 
-        public void RenderMainMenuItems()
+        private void RenderMainMenu()
         {
             if (ImGui.BeginMainMenuBar())
             {
-                if (ImGui.BeginMenu("View"))
-                {
-                    // TODO: move all skybox stuff to the scene's menu
-                    var names = this.FrameService.Textures.Select(t => t.Name).ToArray();
-                    if (ImGui.ListBox("Skybox", ref this.selectedSkybox, names, names.Length))
-                    {
-                        this.FrameService.SetSkyboxTexture(this.FrameService.Textures[this.selectedSkybox]);
-                    }
-                }
-
                 if (ImGui.BeginMenu($"Workspaces ({this.workspace.Key})"))
                 {
                     foreach (var workspace in this.Workspaces)
@@ -82,6 +74,7 @@ namespace MiniEngine.Editor.Workspaces
                     ImGui.EndMenu();
                 }
 
+                this.SceneManager.RenderMainMenuItems();
                 this.workspace.Workspace.RenderMainMenuItems();
 
                 ImGui.EndMainMenuBar();

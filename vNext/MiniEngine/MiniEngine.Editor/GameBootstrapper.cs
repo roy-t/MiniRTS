@@ -40,9 +40,6 @@ namespace MiniEngine.Editor
             this.RegisterDelegate(this.Content);
             this.RegisterAsDelegate(this.Window, typeof(GameWindow));
 
-            var spriteBatch = new SpriteBatch(this.Graphics.GraphicsDevice);
-            this.RegisterDelegate(spriteBatch);
-
             var gameTimer = new GameTimer(this);
             this.RegisterDelegate(gameTimer);
 
