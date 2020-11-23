@@ -44,7 +44,7 @@ namespace MiniEngine.Systems
 
             for (var i = 0; i < primaryComponentContainer.Count; i++)
             {
-                var primaryComponent = primaryComponentContainer[i];
+                var primaryComponent = primaryComponentContainer.GetComponent(i);
                 this.InvokeMethodForEntity(primaryComponent.Entity);
             }
         }
@@ -54,7 +54,7 @@ namespace MiniEngine.Systems
             for (var i = 0; i < this.ComponentContainers.Count; i++)
             {
                 var componentContainer = this.ComponentContainers[i];
-                var component = componentContainer[entity];
+                var component = componentContainer.GetComponent(entity);
                 this.Parameters[i] = component;
             }
 

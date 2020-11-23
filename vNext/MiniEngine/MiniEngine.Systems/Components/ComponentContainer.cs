@@ -6,63 +6,131 @@ namespace MiniEngine.Systems.Components
 {
     public interface IComponentContainer
     {
-        AComponent this[int index] { get; }
+        public Type ComponentType { get; }
 
-        AComponent this[Entity entity] { get; }
+        public abstract int Count { get; }
 
-        int Count { get; }
+        public abstract void Flush();
 
-        Type ComponentType { get; }
+        public AComponent GetComponent(int index);
 
-        void AddUnsafe(AComponent component);
+        public AComponent GetComponent(Entity entity);
 
-        bool Contains(Entity entity);
+        public abstract bool Contains(Entity entity);
+
+        public IComponentContainer<T> Specialize<T>()
+            where T : AComponent
+            => (IComponentContainer<T>)this;
+    }
+
+    public interface IComponentContainer<T> : IComponentContainer
+        where T : AComponent
+    {
+        public IReadOnlyList<T> New { get; }
+
+        public IReadOnlyList<T> Changed { get; }
+
+        public IReadOnlyList<T> Unchanged { get; }
+
+        public T Get(int index);
+
+        public T Get(Entity entity);
+
+        public void Add(T component);
+
+        public void MarkChanged(T component);
     }
 
     [ComponentContainer]
-    public class ComponentContainer<T> : IComponentContainer
+    public sealed class ComponentContainer<T> : IComponentContainer<T>
         where T : AComponent
     {
-        private readonly List<T> Components;
-        private readonly Dictionary<Entity, T> LookUp;
+        private readonly List<T> NewComponents;
+        private readonly List<T> ChangedComponents;
+        private readonly List<T> UnchangedComponents;
+        private readonly Dictionary<Entity, T> Components;
+
+        private readonly List<T> ToBeChangedComponents;
 
         public ComponentContainer()
         {
-            this.Components = new List<T>();
-            this.LookUp = new Dictionary<Entity, T>();
+            this.NewComponents = new List<T>(); this.ChangedComponents =
+new List<T>(); this.UnchangedComponents = new List<T>(); this.Components = new
+Dictionary<Entity, T>();
+
+            this.ToBeChangedComponents = new List<T>();
         }
 
         public Type ComponentType => typeof(T);
 
-        public T this[int index] => this.Components[index];
+        public IReadOnlyList<T> New => this.NewComponents;
 
-        AComponent IComponentContainer.this[int index] => this[index];
+        public IReadOnlyList<T> Changed => this.ChangedComponents;
 
-        public T this[Entity entity] => this.LookUp[entity];
+        public IReadOnlyList<T> Unchanged => this.UnchangedComponents;
 
-        AComponent IComponentContainer.this[Entity entity] => this[entity];
-
-        public void AddUnsafe(AComponent component) => this.Add((T)component);
-
-        public void Add(T item)
+        public T Get(int index)
         {
-            this.Components.Add(item);
-            this.LookUp.Add(item.Entity, item);
-        }
-
-        public void Remove(Entity entity)
-        {
-            if (this.LookUp.TryGetValue(entity, out var component))
+            if (index < this.NewComponents.Count)
             {
-                this.Components.Remove(component);
-                this.LookUp.Remove(entity);
+                return this.NewComponents[index];
             }
+
+            index -= this.NewComponents.Count; if (index < this.ChangedComponents.Count)
+            {
+                return this.ChangedComponents[index];
+            }
+
+            index -= this.ChangedComponents.Count; return this.UnchangedComponents[index];
         }
 
-        public T Get(Entity entity) => this.LookUp[entity];
+        public T Get(Entity entity) => this.Components[entity];
+
+        // TODO: Replace once https://github.com/dotnet/runtime/issues/45037 is fixed
+        public AComponent GetComponent(int index) => this.Get(index);
+
+        // TODO: Replace once https://github.com/dotnet/runtime/issues/45037 is fixed
+        public AComponent GetComponent(Entity entity) => this.Get(entity);
 
         public int Count => this.Components.Count;
 
-        public bool Contains(Entity entity) => this.LookUp.ContainsKey(entity);
+        public void Flush()
+        {
+            for (var i = 0; i < this.NewComponents.Count; i++)
+            {
+                this.UnchangedComponents.Add(this.NewComponents[i]);
+            }
+            this.NewComponents.Clear();
+
+            for (var i = 0; i < this.ChangedComponents.Count; i++)
+            {
+                this.UnchangedComponents.Add(this.ChangedComponents[i]);
+            }
+            this.ChangedComponents.Clear();
+
+            for (var i = 0; i < this.ToBeChangedComponents.Count; i++)
+            {
+                this.ChangedComponents.Add(this.ToBeChangedComponents[i]);
+            }
+        }
+
+        public void Add(T component)
+        {
+            this.NewComponents.Add(component);
+            this.Components.Add(component.Entity, component);
+        }
+
+        public void MarkChanged(T component)
+        {
+            // TODO: we can optimized this by creating a HashSet
+            //that has a garbage free way to iterate over all contained elements
+            if (!this.ToBeChangedComponents.Contains(component))
+            {
+                this.ToBeChangedComponents.Add(component);
+            }
+        }
+
+        public bool Contains(Entity entity)
+            => this.Components.ContainsKey(entity);
     }
 }

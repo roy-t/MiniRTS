@@ -76,6 +76,7 @@ namespace MiniEngine.Configuration
             {
                 this.Container.RegisterAssembly(assembly, (serviceType, concreteType) =>
                 {
+                    this.Logger.Debug($"HELLO AT {serviceType.Name}, {concreteType.Name}");
                     // Do not register services as an implementation of an abstract class or interface
                     if (serviceType != concreteType)
                     {

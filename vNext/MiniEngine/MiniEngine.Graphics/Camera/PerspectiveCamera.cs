@@ -10,11 +10,11 @@ namespace MiniEngine.Graphics.Camera
             this.Move(Vector3.Zero, Vector3.Forward);
         }
 
-        public float NearPlane => 0.1f;
+        public float NearPlane { get; } = 0.1f;
 
-        public float FarPlane => 250.0f;
+        public float FarPlane { get; } = 250.0f;
 
-        public float FieldOfView => MathHelper.PiOver2;
+        public float FieldOfView { get; } = MathHelper.PiOver2;
 
         public float AspectRatio { get; }
 

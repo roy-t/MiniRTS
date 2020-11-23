@@ -19,7 +19,8 @@ namespace MiniEngine.Systems.Components
         }
 
         public void Add<T>(T component)
-            where T : AComponent => this.ComponentContainers[typeof(T)].AddUnsafe(component);
+            where T : AComponent
+            => this.ComponentContainers[typeof(T)].Specialize<T>().Add(component);
 
         public IReadOnlyList<AComponent> GetComponents(Entity entity)
         {
@@ -28,7 +29,7 @@ namespace MiniEngine.Systems.Components
             {
                 if (container.Contains(entity))
                 {
-                    components.Add(container[entity]);
+                    components.Add(container.GetComponent(entity));
                 }
             }
 
