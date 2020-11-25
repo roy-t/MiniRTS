@@ -4,6 +4,7 @@ using MiniEngine.Graphics.Lighting;
 using MiniEngine.Graphics.PostProcess;
 using MiniEngine.Graphics.Rendering;
 using MiniEngine.Graphics.Skybox;
+using MiniEngine.Systems.Components;
 using MiniEngine.Systems.Pipeline;
 using MiniEngine.Systems.Services;
 
@@ -23,13 +24,18 @@ namespace MiniEngine.Editor.Configuration
         {
             var pipeline = this.Builder.Builder();
             return pipeline
+                .System<ComponentFlushSystem>()
+                    .Parallel()
+                    .Produces("Containers")
+                    .Build()
                 .System<ClearBuffersSystem>()
-                    .InSequence()
+                    .Parallel()
                     .Produces("Buffers")
                     .Build()
                 .System<GeometrySystem>()
                     .InSequence()
                     .RequiresAll("Buffers")
+                    .RequiresAll("Containers")
                     .Produces("Meshes", "Geometry")
                     .Build()
                 .System<ImageBasedLightSystem>()
@@ -41,6 +47,7 @@ namespace MiniEngine.Editor.Configuration
                 .System<PointLightSystem>()
                     .InSequence()
                     .RequiresAll("Buffers")
+                    .RequiresAll("Containers")
                     .RequiresAll("Meshes")
                     .Produces("Lights", "Point")
                     .Build()

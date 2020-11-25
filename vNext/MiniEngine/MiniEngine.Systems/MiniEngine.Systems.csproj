@@ -1,5 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
     <ProjectReference Include="..\MiniEngine.Configuration\MiniEngine.Configuration.csproj" />
+    <ProjectReference Include="..\MiniEngine.Systems.Generators\MiniEngine.Systems.Generators.csproj" OutputItemType="Analyzer" />
   </ItemGroup>
 </Project>

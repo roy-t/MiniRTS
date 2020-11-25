@@ -102,11 +102,17 @@ namespace {nameSpace}
                     .Select(t => $"\t\t\t\tvar p{t.Item1} = this.{t.Item2}Container.Get(p0.Entity);"));
             }
 
+            var assignment = "";
+            if (!Utilities.ReturnsVoid(this.Compilation, method))
+            {
+                assignment = "p0.ChangeState.NextState = ";
+            }
+
             var pocessMethod = $@"
             for (var i = 0; i < this.{containers[0]}.Count; i++)
             {{
                 var p0 = this.{containers[0]}[i]; {related}
-                this.System.Process({parameterNames});
+                {assignment}this.System.Process({parameterNames});
             }}";
             return pocessMethod;
         }
@@ -116,9 +122,7 @@ namespace {nameSpace}
             var processorList = new List<string>();
             foreach (var processor in target.ProcessAllMethods)
             {
-                processorList.Add(this.GenerateProcessMethod(processor, "New"));
-                processorList.Add(this.GenerateProcessMethod(processor, "Changed"));
-                processorList.Add(this.GenerateProcessMethod(processor, "Unchanged"));
+                processorList.Add(this.GenerateProcessMethod(processor, "All"));
             }
 
             foreach (var processor in target.ProcessChangedMethods)

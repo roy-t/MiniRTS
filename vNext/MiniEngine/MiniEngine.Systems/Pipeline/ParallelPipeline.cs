@@ -32,7 +32,11 @@ namespace MiniEngine.Systems.Pipeline
             this.Threads = new Thread[this.MaxConcurrency];
             for (var i = 0; i < this.MaxConcurrency; i++)
             {
-                this.Threads[i] = new Thread(threadIndex => this.ThreadStart(threadIndex!));
+                this.Threads[i] = new Thread(threadIndex => this.ThreadStart(threadIndex!))
+                {
+                    Name = $"ParallelPipelineThread - {i}",
+                    IsBackground = true
+                };
                 this.Threads[i].Start(i);
             }
 
