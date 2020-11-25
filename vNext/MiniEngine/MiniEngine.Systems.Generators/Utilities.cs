@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace MiniEngine.Systems.Generators
 {
-    public static class Utilities
+    internal static class Utilities
     {
         public static string GetNamespace(Compilation compilation, TypeDeclarationSyntax type)
         {

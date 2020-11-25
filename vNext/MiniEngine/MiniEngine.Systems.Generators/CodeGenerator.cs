@@ -8,14 +8,17 @@ using Microsoft.CodeAnalysis.Text;
 
 namespace MiniEngine.Systems.Generators
 {
-    public class CodeGenerator
+    internal class CodeGenerator
     {
         private readonly Compilation Compilation;
 
         public CodeGenerator(Compilation compilation)
         {
             this.Compilation = compilation;
+            this.Diagnostics = new List<Diagnostic>();
         }
+
+        public List<Diagnostic> Diagnostics { get; }
 
         public SourceText Generate(TargetClass target)
         {
@@ -47,6 +50,7 @@ namespace {nameSpace}
 
         public void Process()
         {{
+            this.System.OnSet();
             {processors}
         }}
     }}
@@ -63,9 +67,30 @@ namespace {nameSpace}
             return sourceText;
         }
 
+        private string GenerateNoComponentProcessor(MethodDeclarationSyntax method)
+        {
+            var parameters = Utilities.GetMethodParameters(this.Compilation, method);
+            if (parameters.Count > 0)
+            {
+                this.Report($"Method {method.Identifier} is marked with {nameof(ProcessAttribute)} but has parameters, did you mean to used {nameof(ProcessAllAttribute)}?");
+                return "";
+            }
+
+            var pocessMethod = $@"
+            this.System.Process();";
+            return pocessMethod;
+        }
+
         private string GenerateProcessMethod(MethodDeclarationSyntax method, string subList)
         {
             var parameters = Utilities.GetMethodParameters(this.Compilation, method);
+
+            if (parameters.Count == 0)
+            {
+                this.Report($"Method {method.Identifier} has no parameters, in which case the {nameof(ProcessAttribute)} attribute should be used.");
+                return "";
+            }
+
             var containers = parameters.Select(p => $"{p}Container.{subList}").ToList();
             var parameterNames = string.Join(", ", Enumerable.Range(0, parameters.Count).Select(i => $"p{i}"));
 
@@ -106,6 +131,11 @@ namespace {nameSpace}
                 processorList.Add(this.GenerateProcessMethod(processor, "New"));
             }
 
+            foreach (var processor in target.ProcessMethods)
+            {
+                processorList.Add(this.GenerateNoComponentProcessor(processor));
+            }
+
             return string.Join(Environment.NewLine, processorList);
         }
 
@@ -122,6 +152,13 @@ namespace {nameSpace}
                 allParameters.Select(type => $"this.{type}Container = containers[typeof({type})].Specialize<{type}>();"));
 
             return (containers, assignments);
+        }
+
+        private void Report(string message)
+        {
+            var diagnostic = Diagnostic.Create(
+                                new DiagnosticDescriptor("GEN002", "Generated Problem", message, "Generator", DiagnosticSeverity.Error, true), null);
+            this.Diagnostics.Add(diagnostic);
         }
     }
 }

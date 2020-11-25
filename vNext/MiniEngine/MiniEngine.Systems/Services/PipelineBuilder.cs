@@ -60,9 +60,8 @@ namespace MiniEngine.Systems.Services
                     for (var j = 0; j < stage.Count; j++)
                     {
                         var systemSpec = stage[j];
-
                         var system = (ISystem)this.ResolveDelegate(systemSpec.SystemType);
-                        systemBindings.AddRange(SystemBinder.BindSystem(system, this.ComponentContainers));
+                        systemBindings.Add(system.Bind(this.ComponentContainers));
                     }
 
                     pipelineStages.Add(new PipelineStage(systemBindings));

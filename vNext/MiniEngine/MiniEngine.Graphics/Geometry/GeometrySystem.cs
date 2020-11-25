@@ -1,11 +1,12 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
 using MiniEngine.Systems;
+using MiniEngine.Systems.Generators;
 
 namespace MiniEngine.Graphics.Geometry
 {
     [System]
-    public sealed class GeometrySystem : ISystem
+    public partial class GeometrySystem : ISystem
     {
         private readonly GraphicsDevice Device;
         private readonly FrameService FrameService;
@@ -33,6 +34,7 @@ namespace MiniEngine.Graphics.Geometry
                 this.FrameService.GBuffer.Normal);
         }
 
+        [ProcessAll]
         public void Process(GeometryComponent geometry, TransformComponent transform)
         {
             this.Effect.CameraPosition = this.FrameService.Camera.Position;

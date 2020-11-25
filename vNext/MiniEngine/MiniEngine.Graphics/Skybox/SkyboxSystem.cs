@@ -2,11 +2,12 @@
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
 using MiniEngine.Systems;
+using MiniEngine.Systems.Generators;
 
 namespace MiniEngine.Graphics.Skybox
 {
     [System]
-    public sealed class SkyboxSystem : ISystem
+    public partial class SkyboxSystem : ISystem
     {
         private readonly GraphicsDevice Device;
         private readonly FrameService FrameService;
@@ -32,6 +33,7 @@ namespace MiniEngine.Graphics.Skybox
             this.Device.SetRenderTargets(this.FrameService.GBuffer.Diffuse, this.FrameService.LBuffer.Light);
         }
 
+        [Process]
         public void Process()
         {
             var skybox = this.FrameService.Skybox;

@@ -2,11 +2,12 @@
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
 using MiniEngine.Systems;
+using MiniEngine.Systems.Generators;
 
 namespace MiniEngine.Graphics.Rendering
 {
     [System]
-    public sealed class ClearBuffersSystem : ISystem
+    public partial class ClearBuffersSystem : ISystem
     {
         private static readonly Color NeutralDiffuse = Color.Transparent;
         private static readonly Color NeutralMaterial = Color.Transparent;
@@ -31,6 +32,7 @@ namespace MiniEngine.Graphics.Rendering
             this.Device.RasterizerState = RasterizerState.CullCounterClockwise;
         }
 
+        [Process]
         public void Process()
         {
             var gBuffer = this.FrameService.GBuffer;

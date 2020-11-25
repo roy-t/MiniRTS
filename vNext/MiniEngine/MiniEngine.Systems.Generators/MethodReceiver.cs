@@ -5,12 +5,13 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace MiniEngine.Systems.Generators
 {
-    public sealed class MethodReceiver : ISyntaxReceiver
+    internal sealed class MethodReceiver : ISyntaxReceiver
     {
         public readonly Dictionary<ClassDeclarationSyntax, TargetClass> Targets = new Dictionary<ClassDeclarationSyntax, TargetClass>();
         private readonly Type ProcessAllType = typeof(ProcessAllAttribute);
         private readonly Type ProcessNewType = typeof(ProcessNewAttribute);
         private readonly Type ProcessChangedType = typeof(ProcessChangedAttribute);
+        private readonly Type ProcessType = typeof(ProcessAttribute);
 
         public void OnVisitSyntaxNode(SyntaxNode syntaxNode)
         {
@@ -31,6 +32,10 @@ namespace MiniEngine.Systems.Generators
                         else if (this.MatchesAttribute(attribute, this.ProcessNewType))
                         {
                             this.GetTargetClass(method).ProcessNewMethods.Add(method);
+                        }
+                        else if (this.MatchesAttribute(attribute, this.ProcessType))
+                        {
+                            this.GetTargetClass(method).ProcessMethods.Add(method);
                         }
                     }
                 }

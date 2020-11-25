@@ -3,12 +3,13 @@
 namespace MiniEngine.Systems.Generators
 {
     [Generator]
-    public class ExampleGenerator : ISourceGenerator
+    public class ProcessorGenerator : ISourceGenerator
     {
         public void Execute(GeneratorExecutionContext context)
         {
             if (context.SyntaxReceiver is MethodReceiver receiver)
             {
+                var generator = new CodeGenerator(context.Compilation);
                 foreach (var target in receiver.Targets.Values)
                 {
                     var diagnostic = Diagnostic.Create(
@@ -16,8 +17,13 @@ namespace MiniEngine.Systems.Generators
                     context.ReportDiagnostic(diagnostic);
 
                     //System.Diagnostics.Debugger.Launch();
-                    var generator = new CodeGenerator(context.Compilation);
                     var sourceText = generator.Generate(target);
+
+                    foreach (var generateorDiagnostic in generator.Diagnostics)
+                    {
+                        context.ReportDiagnostic(generateorDiagnostic);
+                    }
+
                     context.AddSource($"{target.Class.Identifier}.Generated.cs", sourceText);
                 }
             }

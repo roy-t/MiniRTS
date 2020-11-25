@@ -8,7 +8,6 @@ using MiniEngine.Systems.Generators;
 namespace MiniEngine.Graphics.Lighting
 {
     [System]
-    [GenerateBindings]
     public partial class PointLightSystem : ISystem
     {
         private readonly GraphicsDevice Device;

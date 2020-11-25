@@ -1,11 +1,12 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
 using MiniEngine.Systems;
+using MiniEngine.Systems.Generators;
 
 namespace MiniEngine.Graphics.PostProcess
 {
     [System]
-    public sealed class ToneMapSystem : ISystem
+    public partial class ToneMapSystem : ISystem
     {
         private readonly GraphicsDevice Device;
         private readonly FrameService FrameService;
@@ -30,6 +31,7 @@ namespace MiniEngine.Graphics.PostProcess
             this.Device.SetRenderTarget(this.FrameService.PBuffer.ToneMap);
         }
 
+        [Process]
         public void Process()
         {
             this.Effect.Color = this.FrameService.LBuffer.Light;

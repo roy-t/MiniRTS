@@ -4,11 +4,12 @@ using MiniEngine.Configuration;
 using MiniEngine.Graphics.PostProcess;
 using MiniEngine.Graphics.Utilities;
 using MiniEngine.Systems;
+using MiniEngine.Systems.Generators;
 
 namespace MiniEngine.Graphics.Lighting
 {
     [System]
-    public sealed class ImageBasedLightSystem : ISystem
+    public partial class ImageBasedLightSystem : ISystem
     {
         private readonly GraphicsDevice Device;
         private readonly FullScreenTriangle FullScreenTriangle;
@@ -43,6 +44,7 @@ namespace MiniEngine.Graphics.Lighting
             this.Device.SetRenderTarget(this.FrameService.LBuffer.Light);
         }
 
+        [Process]
         public void Process()
         {
             this.Effect.CameraPosition = this.FrameService.Camera.Position;

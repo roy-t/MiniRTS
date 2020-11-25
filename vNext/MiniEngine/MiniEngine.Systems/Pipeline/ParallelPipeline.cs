@@ -43,7 +43,6 @@ namespace MiniEngine.Systems.Pipeline
 
         public int ActiveThreads => this.Threads.Sum(x => x.IsAlive ? 1 : 0);
 
-
         public void Run()
         {
             if (this.pipelineState == PipelineState.ReadyForNextRun)
