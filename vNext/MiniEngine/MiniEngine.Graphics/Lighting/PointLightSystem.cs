@@ -3,11 +3,13 @@ using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
 using MiniEngine.Graphics.PostProcess;
 using MiniEngine.Systems;
+using MiniEngine.Systems.Generators;
 
 namespace MiniEngine.Graphics.Lighting
 {
     [System]
-    public sealed class PointLightSystem : ISystem
+    [GenerateBindings]
+    public partial class PointLightSystem : ISystem
     {
         private readonly GraphicsDevice Device;
         private readonly FrameService FrameService;
@@ -37,6 +39,7 @@ namespace MiniEngine.Graphics.Lighting
             this.Device.SetRenderTarget(this.FrameService.LBuffer.Light);
         }
 
+        [ProcessAll]
         public void Process(PointLightComponent pointLight)
         {
             this.Effect.CameraPosition = this.FrameService.Camera.Position;

@@ -4,11 +4,6 @@ using MiniEngine.Systems.Components;
 
 namespace MiniEngine.Systems
 {
-    public interface ISystemBinding
-    {
-        public void Process();
-    }
-
     public class SystemBinding : ISystemBinding
     {
         private readonly MethodInfo ProcessDelegate;
