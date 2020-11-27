@@ -22,7 +22,7 @@ namespace MiniEngine.Systems.Generators
             return string.Join(".", names);
         }
 
-        public static IReadOnlyList<string> GetMethodParameters(Compilation compilation, MethodDeclarationSyntax method)
+        public static IReadOnlyList<string> GetParameters(Compilation compilation, MethodDeclarationSyntax method)
         {
             var model = compilation.GetSemanticModel(method.SyntaxTree);
             var symbol = model.GetDeclaredSymbol(method) as IMethodSymbol;
@@ -36,12 +36,14 @@ namespace MiniEngine.Systems.Generators
             return parameters;
         }
 
-        public static bool ReturnsVoid(Compilation compilation, MethodDeclarationSyntax method)
+        public static ITypeSymbol GetReturnType(Compilation compilation, MethodDeclarationSyntax method)
         {
             var model = compilation.GetSemanticModel(method.SyntaxTree);
             var symbol = model.GetDeclaredSymbol(method) as IMethodSymbol;
-
-            return symbol.ReturnType.SpecialType == SpecialType.System_Void;
+            return symbol.ReturnType;
         }
+
+        public static bool ReturnsVoid(Compilation compilation, MethodDeclarationSyntax method)
+            => GetReturnType(compilation, method).SpecialType == SpecialType.System_Void;
     }
 }

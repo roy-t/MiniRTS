@@ -2,11 +2,11 @@
 using System.Linq;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace MiniEngine.Systems.Generators
+namespace MiniEngine.Systems.Generators.System
 {
-    internal sealed class TargetClass
+    internal sealed class SystemClass
     {
-        public TargetClass(ClassDeclarationSyntax parent)
+        public SystemClass(ClassDeclarationSyntax parent)
         {
             this.Class = parent;
             this.ProcessAllMethods = new List<MethodDeclarationSyntax>();

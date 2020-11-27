@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace MiniEngine.Systems.Generators
+namespace MiniEngine.Systems.Generators.System
 {
-    internal sealed class MethodReceiver : ISyntaxReceiver
+    internal sealed class SyntaxReceiver : ISyntaxReceiver
     {
-        public readonly Dictionary<ClassDeclarationSyntax, TargetClass> Targets = new Dictionary<ClassDeclarationSyntax, TargetClass>();
+        public readonly Dictionary<ClassDeclarationSyntax, SystemClass> Targets = new Dictionary<ClassDeclarationSyntax, SystemClass>();
         private readonly Type ProcessAllType = typeof(ProcessAllAttribute);
         private readonly Type ProcessNewType = typeof(ProcessNewAttribute);
         private readonly Type ProcessChangedType = typeof(ProcessChangedAttribute);
@@ -42,12 +42,12 @@ namespace MiniEngine.Systems.Generators
             }
         }
 
-        private TargetClass GetTargetClass(MethodDeclarationSyntax syntaxNode)
+        private SystemClass GetTargetClass(MethodDeclarationSyntax syntaxNode)
         {
             var parent = syntaxNode.Parent as ClassDeclarationSyntax;
             if (!this.Targets.TryGetValue(parent, out var target))
             {
-                target = new TargetClass(parent);
+                target = new SystemClass(parent);
                 this.Targets.Add(parent, target);
             }
 
