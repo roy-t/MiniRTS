@@ -6,28 +6,53 @@
 
         private ComponentChangeState()
         {
-            this.CurrentState = ChangeState.Initialized;
-            this.NextState = ChangeState.New;
+            this.CurrentState = LifetimeState.Created;
+            this.NextState = LifetimeState.New;
         }
 
-        public ChangeState CurrentState { get; private set; }
-        public ChangeState NextState { get; set; }
+        internal LifetimeState CurrentState { get; private set; }
+        internal LifetimeState NextState { get; set; }
 
-        public void MarkChanged()
-            => this.NextState = ChangeState.Changed;
+        public void Change()
+            => this.NextState = LifetimeState.Changed;
+
+        public void Remove()
+            => this.NextState = LifetimeState.Removed;
 
         public void Next()
         {
             this.CurrentState = this.NextState;
-            this.NextState = ChangeState.Unchanged;
+            this.NextState = LifetimeState.Unchanged;
         }
+
+        public void Update(ChangeState state)
+        {
+            switch (state)
+            {
+                case ChangeState.Changed:
+                    this.Change();
+                    break;
+
+                case ChangeState.Removed:
+                    this.Remove();
+                    break;
+            }
+        }
+    }
+
+    internal enum LifetimeState
+    {
+        Created,
+        New,
+        Changed,
+        Unchanged,
+        Removed
     }
 
     public enum ChangeState
     {
-        Initialized,
-        New,
-        Changed,
         Unchanged,
+        Changed,
+        Removed
     }
 }

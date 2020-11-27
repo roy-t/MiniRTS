@@ -7,6 +7,12 @@ namespace MiniEngine.Systems.Generators
 {
     internal static class Utilities
     {
+        public static IEnumerable<string> GetUsings(TypeDeclarationSyntax type)
+        {
+            var usings = SearchUpForNodesOfType<UsingDirectiveSyntax>(type);
+            return usings.Select(u => u.ToString());
+        }
+
         public static string GetNamespace(Compilation compilation, TypeDeclarationSyntax type)
         {
             var space = type.Ancestors().OfType<NamespaceDeclarationSyntax>().FirstOrDefault();
@@ -45,5 +51,20 @@ namespace MiniEngine.Systems.Generators
 
         public static bool ReturnsVoid(Compilation compilation, MethodDeclarationSyntax method)
             => GetReturnType(compilation, method).SpecialType == SpecialType.System_Void;
+
+        public static List<T> SearchUpForNodesOfType<T>(SyntaxNode node)
+        {
+            while (node != null)
+            {
+                var ofType = node.ChildNodes().OfType<T>();
+                if (ofType.Any())
+                {
+                    return ofType.ToList();
+                }
+                node = node.Parent;
+            }
+
+            return new List<T>(0);
+        }
     }
 }

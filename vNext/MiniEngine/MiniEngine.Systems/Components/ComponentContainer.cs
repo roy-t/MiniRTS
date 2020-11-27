@@ -34,6 +34,8 @@ namespace MiniEngine.Systems.Components
 
         public IReadOnlyList<T> Unchanged { get; }
 
+        public IReadOnlyList<T> Removed { get; }
+
         public T Get(int index);
 
         public T Get(Entity entity);
@@ -50,14 +52,20 @@ namespace MiniEngine.Systems.Components
         private readonly List<T> NewComponents;
         private readonly List<T> ChangedComponents;
         private readonly List<T> UnchangedComponents;
+        private readonly List<T> RemovedComponents;
+
         private readonly Dictionary<Entity, T> Components;
 
         public ComponentContainer()
         {
             this.AllComponents = new List<T>();
+
             this.NewComponents = new List<T>();
             this.ChangedComponents = new List<T>();
-            this.UnchangedComponents = new List<T>(); this.Components = new Dictionary<Entity, T>();
+            this.UnchangedComponents = new List<T>();
+            this.RemovedComponents = new List<T>();
+
+            this.Components = new Dictionary<Entity, T>();
         }
 
         public Type ComponentType => typeof(T);
@@ -69,6 +77,8 @@ namespace MiniEngine.Systems.Components
         public IReadOnlyList<T> Changed => this.ChangedComponents;
 
         public IReadOnlyList<T> Unchanged => this.UnchangedComponents;
+
+        public IReadOnlyList<T> Removed => this.RemovedComponents;
 
         public T Get(int index)
             => this.AllComponents[index];
@@ -90,26 +100,38 @@ namespace MiniEngine.Systems.Components
             this.ChangedComponents.Clear();
             this.UnchangedComponents.Clear();
 
-            for (var i = 0; i < this.AllComponents.Count; i++)
+            for (var i = this.AllComponents.Count - 1; i >= 0; i--)
             {
                 var component = this.AllComponents[i];
-                component.ChangeState.Next();
 
-                switch (component.ChangeState.CurrentState)
+                if (component.ChangeState.CurrentState == LifetimeState.Removed)
                 {
-                    case ChangeState.Initialized:
-                        throw new InvalidOperationException();
-                    case ChangeState.New:
-                        this.NewComponents.Add(component);
-                        break;
+                    this.AllComponents.RemoveAt(i);
+                    this.Components.Remove(component.Entity);
+                }
+                else
+                {
+                    component.ChangeState.Next();
+                    switch (component.ChangeState.CurrentState)
+                    {
+                        case LifetimeState.Created:
+                            throw new InvalidOperationException();
+                        case LifetimeState.New:
+                            this.NewComponents.Add(component);
+                            break;
 
-                    case ChangeState.Changed:
-                        this.ChangedComponents.Add(component);
-                        break;
+                        case LifetimeState.Changed:
+                            this.ChangedComponents.Add(component);
+                            break;
 
-                    case ChangeState.Unchanged:
-                        this.UnchangedComponents.Add(component);
-                        break;
+                        case LifetimeState.Unchanged:
+                            this.UnchangedComponents.Add(component);
+                            break;
+
+                        case LifetimeState.Removed:
+                            this.RemovedComponents.Add(component);
+                            break;
+                    }
                 }
             }
         }

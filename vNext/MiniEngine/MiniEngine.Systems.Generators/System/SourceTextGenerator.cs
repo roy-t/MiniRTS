@@ -22,6 +22,7 @@ namespace MiniEngine.Systems.Generators.System
 
         public SourceText Generate(SystemClass target)
         {
+            var usings = Utilities.GetUsings(target.Class);
             var nameSpace = Utilities.GetNamespace(this.Compilation, target.Class);
 
             (var fields, var assignments) = this.Constructor(target);
@@ -30,7 +31,7 @@ namespace MiniEngine.Systems.Generators.System
             var systemClassName = $"{ target.Class.Identifier}";
             var generatedClassName = $"{ target.Class.Identifier }Binding";
 
-            return SystemBindingSnippet.Format(nameSpace, generatedClassName, systemClassName, fields, assignments, processors);
+            return SystemBindingSnippet.Format(usings, nameSpace, generatedClassName, systemClassName, fields, assignments, processors);
         }
 
         private (string fields, string assignments) Constructor(SystemClass target)
@@ -66,6 +67,11 @@ namespace MiniEngine.Systems.Generators.System
                 processorList.Add(this.GenerateProcessMethod(processor, "New"));
             }
 
+            foreach (var processor in target.ProcessRemovedMethods)
+            {
+                processorList.Add(this.GenerateProcessMethod(processor, "Removed"));
+            }
+
             foreach (var processor in target.ProcessMethods)
             {
                 processorList.Add(this.GenerateNoComponentProcessor(processor));
@@ -95,19 +101,20 @@ namespace MiniEngine.Systems.Generators.System
                     .Select(t => $"\t\t\t\tvar p{t.Item1} = this.{t.Item2}Container.Get(p0.Entity);"));
             }
 
-            var assignment = string.Empty;
+            var execute = $"this.System.{method.Identifier}({parameterNames});";
             if (!Utilities.ReturnsVoid(this.Compilation, method))
             {
-                assignment = "p0.ChangeState.NextState = ";
+                execute = $"p0.ChangeState.Update(this.System.{method.Identifier}({parameterNames});";
             }
 
-            var pocessMethod = $@"
+            var processMethod = $@"
             for (var i = 0; i < this.{containers[0]}.Count; i++)
             {{
                 var p0 = this.{containers[0]}[i]; {related}
-                {assignment}this.System.Process({parameterNames});
+                {execute}
             }}";
-            return pocessMethod;
+
+            return processMethod;
         }
 
         private string GenerateNoComponentProcessor(MethodDeclarationSyntax method)

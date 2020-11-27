@@ -11,6 +11,7 @@ namespace MiniEngine.Systems.Generators.System
         private readonly Type ProcessAllType = typeof(ProcessAllAttribute);
         private readonly Type ProcessNewType = typeof(ProcessNewAttribute);
         private readonly Type ProcessChangedType = typeof(ProcessChangedAttribute);
+        private readonly Type ProcessRemovedType = typeof(ProcessRemovedAttribute);
         private readonly Type ProcessType = typeof(ProcessAttribute);
 
         public void OnVisitSyntaxNode(SyntaxNode syntaxNode)
@@ -32,6 +33,10 @@ namespace MiniEngine.Systems.Generators.System
                         else if (this.MatchesAttribute(attribute, this.ProcessNewType))
                         {
                             this.GetTargetClass(method).ProcessNewMethods.Add(method);
+                        }
+                        else if (this.MatchesAttribute(attribute, this.ProcessRemovedType))
+                        {
+                            this.GetTargetClass(method).ProcessRemovedMethods.Add(method);
                         }
                         else if (this.MatchesAttribute(attribute, this.ProcessType))
                         {

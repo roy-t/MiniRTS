@@ -11,6 +11,7 @@ namespace MiniEngine.Systems.Generators.System
             this.Class = parent;
             this.ProcessAllMethods = new List<MethodDeclarationSyntax>();
             this.ProcessNewMethods = new List<MethodDeclarationSyntax>();
+            this.ProcessRemovedMethods = new List<MethodDeclarationSyntax>();
             this.ProcessChangedMethods = new List<MethodDeclarationSyntax>();
             this.ProcessMethods = new List<MethodDeclarationSyntax>();
         }
@@ -19,6 +20,8 @@ namespace MiniEngine.Systems.Generators.System
 
         public List<MethodDeclarationSyntax> ProcessAllMethods { get; }
         public List<MethodDeclarationSyntax> ProcessNewMethods { get; }
+
+        public List<MethodDeclarationSyntax> ProcessRemovedMethods { get; }
         public List<MethodDeclarationSyntax> ProcessChangedMethods { get; }
 
         public List<MethodDeclarationSyntax> ProcessMethods { get; }
@@ -26,6 +29,7 @@ namespace MiniEngine.Systems.Generators.System
         public IReadOnlyList<MethodDeclarationSyntax> Methods
             => this.ProcessAllMethods
                 .Union(this.ProcessNewMethods)
+                .Union(this.ProcessRemovedMethods)
                 .Union(this.ProcessChangedMethods)
                 .Union(this.ProcessMethods).ToList();
     }
