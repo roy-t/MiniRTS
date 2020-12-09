@@ -3,6 +3,7 @@ using MiniEngine.Graphics.Geometry;
 using MiniEngine.Graphics.Lighting;
 using MiniEngine.Graphics.PostProcess;
 using MiniEngine.Graphics.Rendering;
+using MiniEngine.Graphics.Shadows;
 using MiniEngine.Graphics.Skybox;
 using MiniEngine.Graphics.Visibility;
 using MiniEngine.Systems.Components;
@@ -44,6 +45,13 @@ namespace MiniEngine.Editor.Configuration
                     .RequiresAll("Containers")
                     .RequiresAll("Poses")
                     .Produces("Meshes", "Geometry")
+                    .Build()
+                .System<ShadowMapSystem>()
+                    .InSequence()
+                    .RequiresAll("Buffers")
+                    .RequiresAll("Containers")
+                    .RequiresAll("Poses")
+                    .Produces("Lights", "Shadows")
                     .Build()
                 .System<ImageBasedLightSystem>()
                     .InSequence()

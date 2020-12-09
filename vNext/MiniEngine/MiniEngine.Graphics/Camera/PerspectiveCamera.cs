@@ -5,9 +5,12 @@ namespace MiniEngine.Graphics.Camera
     public sealed class PerspectiveCamera : ICamera
     {
         public PerspectiveCamera(float aspectRatio)
+            : this(aspectRatio, Vector3.Zero, Vector3.Forward) { }
+
+        public PerspectiveCamera(float aspectRatio, Vector3 position, Vector3 forward)
         {
             this.AspectRatio = aspectRatio;
-            this.Move(Vector3.Zero, Vector3.Forward);
+            this.Move(position, forward);
         }
 
         public float NearPlane { get; } = 0.1f;

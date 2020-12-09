@@ -6,9 +6,11 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
 using MiniEngine.Graphics;
+using MiniEngine.Graphics.Camera;
 using MiniEngine.Graphics.Geometry;
 using MiniEngine.Graphics.Geometry.Generators;
 using MiniEngine.Graphics.Lighting;
+using MiniEngine.Graphics.Shadows;
 using MiniEngine.Graphics.Skybox;
 using MiniEngine.Graphics.Utilities;
 using MiniEngine.SceneManagement;
@@ -22,6 +24,8 @@ namespace MiniEngine.Editor.Scenes
     {
         private sealed record SkyboxTextures(string Name, TextureCube Albedo, TextureCube Irradiance, TextureCube Environment);
 
+        private readonly GraphicsDevice Device;
+        private readonly ContentStack Content;
         private readonly FrameService FrameService;
         private readonly EntityAdministrator Entities;
         private readonly ComponentAdministrator Components;
@@ -31,6 +35,8 @@ namespace MiniEngine.Editor.Scenes
 
         public SphereScene(GraphicsDevice device, ContentStack content, FrameService frameService, CubeMapGenerator cubeMapGenerator, IrradianceMapGenerator irradianceMapGenerator, EnvironmentMapGenerator environmentMapGenerator, EntityAdministrator entities, ComponentAdministrator components)
         {
+            this.Device = device;
+            this.Content = content;
             this.FrameService = frameService;
             this.Entities = entities;
             this.Components = components;
@@ -77,6 +83,8 @@ namespace MiniEngine.Editor.Scenes
             this.CreateLight(new Vector3(10, 10, 10), Color.Blue, 300.0f);
             this.CreateLight(new Vector3(-10, -10, 10), Color.Green, 300.0f);
             this.CreateLight(new Vector3(10, -10, 10), Color.White, 300.0f);
+
+            this.CreateShadow(new Vector3(10, -10, 10), Vector3.Normalize(Vector3.Zero - new Vector3(10, -10, 10)));
         }
 
         public void RenderMainMenuItems()
@@ -104,6 +112,13 @@ namespace MiniEngine.Editor.Scenes
             var entity = this.Entities.Create();
             this.Components.Add(new PointLightComponent(entity, color, strength));
             this.Components.Add(new TransformComponent(entity, Matrix.CreateTranslation(position)));
+        }
+
+        private void CreateShadow(Vector3 position, Vector3 forward)
+        {
+            var entity = this.Entities.Create();
+            this.Components.Add(ShadowMapComponent.Create(this.Device, entity, 1024));
+            this.Components.Add(new CameraComponent(entity, new PerspectiveCamera(this.Device.Viewport.AspectRatio, position, forward)));
         }
 
         private void SetSkyboxTexture(SkyboxTextures texture)

@@ -5,7 +5,7 @@ namespace MiniEngine.Gui
 {
     public interface IPropertyEditor
     {
-        void Draw(string name, Func<object, object> get, Action<object, object?> set, AComponent component);
+        bool Draw(string name, Func<object, object> get, Action<object, object?> set, AComponent component);
 
         Type TargetType { get; }
     }

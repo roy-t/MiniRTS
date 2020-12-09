@@ -7,13 +7,15 @@ namespace MiniEngine.Gui.Editors
     [Service]
     public sealed class FloatEditor : AEditor<float>
     {
-        public override void Draw(string name, Func<float> get, Action<float> set)
+        public override bool Draw(string name, Func<float> get, Action<float> set)
         {
             var f = get();
             if (ImGui.DragFloat(name, ref f))
             {
                 set(f);
+                return true;
             }
+            return false;
         }
     }
 }

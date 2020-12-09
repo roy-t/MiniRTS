@@ -6,10 +6,12 @@ namespace MiniEngine.Gui.Editors
 {
     public sealed class UnknownPropertyTypeEditor : IPropertyEditor
     {
-        public void Draw(string name, Func<object, object> get, Action<object, object?> set, AComponent component)
+        public bool Draw(string name, Func<object, object> get, Action<object, object?> set, AComponent component)
         {
             var value = get(component);
-            ImGui.Text($"{name}: {value} : {value.GetType().Name}");
+            ImGui.Text($"{name}: {value}");
+
+            return false;
         }
 
         public Type TargetType => typeof(object);

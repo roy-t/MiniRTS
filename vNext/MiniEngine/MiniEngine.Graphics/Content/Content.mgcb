@@ -68,6 +68,12 @@
 /processorParam:DebugMode=Auto
 /build:Effects/PointLightEffect.fx
 
+#begin Effects/ShadowMapEffect.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Effects/ShadowMapEffect.fx
+
 #begin Effects/SkyboxEffect.fx
 /importer:EffectImporter
 /processor:EffectProcessor

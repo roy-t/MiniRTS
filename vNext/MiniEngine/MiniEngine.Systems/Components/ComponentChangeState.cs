@@ -38,6 +38,9 @@
                     break;
             }
         }
+
+        public override string ToString()
+            => $"{this.CurrentState} -> {this.NextState}";
     }
 
     internal enum LifetimeState

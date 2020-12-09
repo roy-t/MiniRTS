@@ -5,15 +5,15 @@ namespace MiniEngine.Gui.Editors
 {
     public abstract class AEditor<T> : IPropertyEditor
     {
-        public void Draw(string name, Func<object, object> get, Action<object, object?> set, AComponent component)
+        public bool Draw(string name, Func<object, object> get, Action<object, object?> set, AComponent component)
         {
             T typedGet() => (T)get(component);
             void typedSet(T it) => set(component, it);
-            this.Draw(name, typedGet, typedSet);
+            return this.Draw(name, typedGet, typedSet);
         }
 
         public Type TargetType => typeof(T);
 
-        public abstract void Draw(string name, Func<T> get, Action<T> set);
+        public abstract bool Draw(string name, Func<T> get, Action<T> set);
     }
 }

@@ -8,13 +8,16 @@ namespace MiniEngine.Gui.Editors
     [Service]
     public sealed class ColorEditor : AEditor<Color>
     {
-        public override void Draw(string name, Func<Color> get, Action<Color> set)
+        public override bool Draw(string name, Func<Color> get, Action<Color> set)
         {
             var color = get().ToVector4();
             if (ImGui.ColorPicker4(name, ref color))
             {
                 set(new Color(color));
+                return true;
             }
+
+            return false;
         }
     }
 }

@@ -12,7 +12,7 @@ namespace MiniEngine.Gui.Templates
         private readonly List<PropertyTemplate> Properties;
         private readonly string Name;
 
-        public ComponentTemplate(Type type, Dictionary<Type, IPropertyEditor> editors)
+        public ComponentTemplate(Type type, List<IPropertyEditor> editors)
         {
             this.Name = type.Name;
             this.Properties = new List<PropertyTemplate>();
@@ -23,7 +23,9 @@ namespace MiniEngine.Gui.Templates
                 var property = properties[i];
                 object getter(object c) => property.GetMethod!.Invoke(c, null)!;
                 void setter(object c, object? m) => property.GetSetMethod()!.Invoke(c, new object?[] { m });
-                if (editors.TryGetValue(property.PropertyType, out var editor))
+
+                var editor = GetEditor(editors, property);
+                if (editor != null)
                 {
                     this.Properties.Add(new PropertyTemplate(property.Name, getter, setter, editor));
                 }
@@ -34,13 +36,33 @@ namespace MiniEngine.Gui.Templates
             }
         }
 
+        private static IPropertyEditor? GetEditor(List<IPropertyEditor> editors, PropertyInfo property)
+        {
+            for (var j = 0; j < editors.Count; j++)
+            {
+                var editor = editors[j];
+                if (editor.TargetType.IsAssignableFrom(property.PropertyType))
+                {
+                    return editor;
+                }
+            }
+
+            return null;
+        }
+
         public void Draw(AComponent component)
         {
             if (ImGui.CollapsingHeader(this.Name))
             {
+                var changed = false;
                 foreach (var property in this.Properties)
                 {
-                    property.Editor.Draw(property.Name, property.Getter, property.Setter, component);
+                    changed |= property.Editor.Draw(property.Name, property.Getter, property.Setter, component);
+                }
+
+                if (changed)
+                {
+                    component.ChangeState.Change();
                 }
             }
         }

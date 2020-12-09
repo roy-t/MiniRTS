@@ -19,16 +19,33 @@ namespace MiniEngine.Gui.Editors
             this.GuiRenderer = guiRenderer;
         }
 
-        public override void Draw(string name, Func<Material> get, Action<Material> set)
+        public override bool Draw(string name, Func<Material> get, Action<Material> set)
         {
             var material = get();
 
-            material.Metalicness = DrawSlider(nameof(material.Metalicness), material.Metalicness);
-            material.Roughness = DrawSlider(nameof(material.Roughness), material.Roughness);
-            material.AmbientOcclusion = DrawSlider(nameof(material.AmbientOcclusion), material.AmbientOcclusion);
+            var metalicness = DrawSlider(nameof(material.Metalicness), material.Metalicness);
+            var roughness = DrawSlider(nameof(material.Roughness), material.Roughness);
+            var ambientOcclusion = DrawSlider(nameof(material.AmbientOcclusion), material.AmbientOcclusion);
 
-            material.Diffuse = this.DrawTexture(nameof(Material.Diffuse), material.Diffuse);
-            material.Normal = this.DrawTexture(nameof(Material.Normal), material.Normal);
+            var diffuse = this.DrawTexture(nameof(Material.Diffuse), material.Diffuse);
+            var normal = this.DrawTexture(nameof(Material.Normal), material.Normal);
+
+            if (metalicness != material.Metalicness ||
+                roughness != material.Roughness ||
+                ambientOcclusion != material.AmbientOcclusion ||
+                diffuse != material.Diffuse ||
+                normal != material.Normal)
+            {
+                material.Metalicness = metalicness;
+                material.Roughness = roughness;
+                material.AmbientOcclusion = ambientOcclusion;
+                material.Diffuse = diffuse;
+                material.Normal = normal;
+
+                return true;
+            }
+
+            return false;
         }
 
         private Texture2D DrawTexture(string name, Texture2D texture)

@@ -8,7 +8,7 @@ namespace MiniEngine.Gui.Editors
     [Service]
     public sealed class MatrixEditor : AEditor<Matrix>
     {
-        public override void Draw(string name, Func<Matrix> get, Action<Matrix> set)
+        public override bool Draw(string name, Func<Matrix> get, Action<Matrix> set)
         {
             var matrix = get();
 
@@ -25,7 +25,10 @@ namespace MiniEngine.Gui.Editors
             if (changed)
             {
                 set(Matrix.CreateScale(scale) * Matrix.CreateFromYawPitchRoll(yaw, pitch, roll) * Matrix.CreateTranslation(translation));
+                return true;
             }
+
+            return false;
         }
 
         public static void Decompose(Quaternion r, out float yaw, out float pitch, out float roll)

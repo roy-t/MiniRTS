@@ -10,12 +10,12 @@ namespace MiniEngine.Gui
     [Service]
     public sealed class ComponentEditor
     {
-        private readonly Dictionary<Type, IPropertyEditor> PropertyEditors;
+        private readonly List<IPropertyEditor> PropertyEditors;
         private readonly Dictionary<Type, ComponentTemplate> Templates;
 
         public ComponentEditor(IEnumerable<IPropertyEditor> editors)
         {
-            this.PropertyEditors = editors.ToDictionary(e => e.TargetType);
+            this.PropertyEditors = editors.ToList();
             this.Templates = new Dictionary<Type, ComponentTemplate>();
         }
 
