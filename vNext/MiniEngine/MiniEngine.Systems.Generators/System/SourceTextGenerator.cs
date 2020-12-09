@@ -98,7 +98,7 @@ namespace MiniEngine.Systems.Generators.System
             {
                 related = Environment.NewLine + string.Join(Environment.NewLine,
                     Enumerable.Range(1, parameters.Count).Zip(parameters.Skip(1), (i, p) => new Tuple<int, string>(i, p))
-                    .Select(t => $"\t\t\t\tvar p{t.Item1} = this.{t.Item2}Container.Get(p0.Entity);"));
+                    .Select(t => $"\t\t\t\tif(!this.{t.Item2}Container.Contains(p0.Entity)) {{ continue; }}\n\t\t\t\tvar p{t.Item1} = this.{t.Item2}Container.Get(p0.Entity);"));
             }
 
             var execute = $"this.System.{method.Identifier}({parameterNames});";
