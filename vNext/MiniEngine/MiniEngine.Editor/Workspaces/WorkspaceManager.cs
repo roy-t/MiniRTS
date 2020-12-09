@@ -36,7 +36,7 @@ namespace MiniEngine.Editor.Workspaces
             this.State = this.Serializer.Deserialize();
             this.Workspaces = workspaces.Select(w => new WorkspaceBinding(w.GetKey(), w)).ToList();
 
-            this.FrameService.Camera.Move(this.State.CameraPosition, this.State.CameraForward);
+            this.FrameService.CamereComponent.Camera.Move(this.State.CameraPosition, this.State.CameraForward);
 
             this.workspace = this.Workspaces.FirstOrDefault(w => w.Key == this.State.CurrentWorkspace)
                 ?? this.Workspaces.First();
@@ -88,8 +88,8 @@ namespace MiniEngine.Editor.Workspaces
         {
             var state = this.State with
             {
-                CameraPosition = this.FrameService.Camera.Position,
-                CameraForward = this.FrameService.Camera.Forward,
+                CameraPosition = this.FrameService.CamereComponent.Camera.Position,
+                CameraForward = this.FrameService.CamereComponent.Camera.Forward,
                 CurrentWorkspace = this.workspace.Key
             };
             this.Serializer.Serialize(state);

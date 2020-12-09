@@ -39,16 +39,16 @@ namespace MiniEngine.Graphics.Lighting
         }
 
         [ProcessAll]
-        public void Process(PointLightComponent pointLight)
+        public void Process(PointLightComponent pointLight, TransformComponent transform)
         {
-            this.Effect.CameraPosition = this.FrameService.Camera.Position;
+            this.Effect.CameraPosition = this.FrameService.CamereComponent.Camera.Position;
             this.Effect.Diffuse = this.FrameService.GBuffer.Diffuse;
             this.Effect.Normal = this.FrameService.GBuffer.Normal;
             this.Effect.Depth = this.FrameService.GBuffer.Depth;
             this.Effect.Material = this.FrameService.GBuffer.Material;
-            this.Effect.InverseViewProjection = Matrix.Invert(this.FrameService.Camera.ViewProjection);
+            this.Effect.InverseViewProjection = Matrix.Invert(this.FrameService.CamereComponent.Camera.ViewProjection);
 
-            this.Effect.Position = pointLight.Position;
+            this.Effect.Position = transform.Matrix.Translation;
             this.Effect.Color = pointLight.Color;
             this.Effect.Strength = pointLight.Strength;
 

@@ -4,6 +4,7 @@ using MiniEngine.Graphics.Lighting;
 using MiniEngine.Graphics.PostProcess;
 using MiniEngine.Graphics.Rendering;
 using MiniEngine.Graphics.Skybox;
+using MiniEngine.Graphics.Visibility;
 using MiniEngine.Systems.Components;
 using MiniEngine.Systems.Pipeline;
 using MiniEngine.Systems.Services;
@@ -32,10 +33,16 @@ namespace MiniEngine.Editor.Configuration
                     .Parallel()
                     .Produces("Buffers")
                     .Build()
+                .System<VisibilitySystem>()
+                    .Parallel()
+                    .Produces("Poses")
+                    .RequiresAll("Containers")
+                    .Build()
                 .System<GeometrySystem>()
                     .InSequence()
                     .RequiresAll("Buffers")
                     .RequiresAll("Containers")
+                    .RequiresAll("Poses")
                     .Produces("Meshes", "Geometry")
                     .Build()
                 .System<ImageBasedLightSystem>()

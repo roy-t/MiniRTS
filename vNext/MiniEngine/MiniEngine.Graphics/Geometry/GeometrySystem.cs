@@ -1,5 +1,7 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
+using MiniEngine.Graphics.Camera;
 using MiniEngine.Systems;
 using MiniEngine.Systems.Generators;
 
@@ -34,22 +36,32 @@ namespace MiniEngine.Graphics.Geometry
                 this.FrameService.GBuffer.Normal);
         }
 
-        [ProcessAll]
-        public void Process(GeometryComponent geometry, TransformComponent transform)
+        [Process]
+        public void ProcessVisibleGeometry()
         {
-            this.Effect.CameraPosition = this.FrameService.Camera.Position;
-            this.Effect.World = transform.Matrix;
-            this.Effect.WorldViewProjection = transform.Matrix * this.FrameService.Camera.ViewProjection;
-            this.Effect.Diffuse = geometry.Material.Diffuse;
-            this.Effect.Normal = geometry.Material.Normal;
-            this.Effect.Metalicness = geometry.Material.Metalicness;
-            this.Effect.Roughness = geometry.Material.Roughness;
-            this.Effect.AmbientOcclusion = geometry.Material.AmbientOcclusion;
+            var inView = this.FrameService.CamereComponent.InView;
+            for (var i = 0; i < inView.Count; i++)
+            {
+                var pose = inView[i];
+                this.Draw(this.FrameService.CamereComponent.Camera, pose.Geometry, pose.Material, pose.Transform);
+            }
+        }
+
+        private void Draw(ICamera camera, GeometryData geometry, Material material, Matrix transform)
+        {
+            this.Effect.CameraPosition = camera.Position;
+            this.Effect.World = transform;
+            this.Effect.WorldViewProjection = transform * camera.ViewProjection;
+            this.Effect.Diffuse = material.Diffuse;
+            this.Effect.Normal = material.Normal;
+            this.Effect.Metalicness = material.Metalicness;
+            this.Effect.Roughness = material.Roughness;
+            this.Effect.AmbientOcclusion = material.AmbientOcclusion;
             this.Effect.Apply();
 
-            this.Device.SetVertexBuffer(geometry.Geometry.VertexBuffer, 0);
-            this.Device.Indices = geometry.Geometry.IndexBuffer;
-            this.Device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, geometry.Geometry.Primitives);
+            this.Device.SetVertexBuffer(geometry.VertexBuffer, 0);
+            this.Device.Indices = geometry.IndexBuffer;
+            this.Device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, geometry.Primitives);
         }
     }
 }

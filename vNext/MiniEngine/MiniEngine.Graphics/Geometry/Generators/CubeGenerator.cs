@@ -6,7 +6,9 @@ namespace MiniEngine.Graphics.Geometry.Generators
 {
     public static class CubeGenerator
     {
-        public static Geometry Generate(GraphicsDevice device)
+        private const float BoundingRadius = 1.41421356237f; // square root of 2
+
+        public static GeometryData Generate(GraphicsDevice device)
         {
             var vertices = new List<GeometryVertex>(4 * 6);
             var indices = new List<short>(6 * 6);
@@ -34,7 +36,7 @@ namespace MiniEngine.Graphics.Geometry.Generators
 
             var indexBuffer = new IndexBuffer(device, IndexElementSize.SixteenBits, indices.Count, BufferUsage.None);
             indexBuffer.SetData(indices.ToArray());
-            return new Geometry(vertexBuffer, indexBuffer);
+            return new GeometryData(vertexBuffer, indexBuffer, new BoundingSphere(Vector3.Zero, BoundingRadius));
         }
 
         private static void GenerateFace(CoordinateSystem coordinateSystem, List<GeometryVertex> vertices, List<short> indices)

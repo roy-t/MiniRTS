@@ -22,12 +22,19 @@ namespace MiniEngine.Editor.Scenes
     {
         private sealed record SkyboxTextures(string Name, TextureCube Albedo, TextureCube Irradiance, TextureCube Environment);
 
-        private readonly List<SkyboxTextures> Textures;
         private readonly FrameService FrameService;
+        private readonly EntityAdministrator Entities;
+        private readonly ComponentAdministrator Components;
+
+        private readonly List<SkyboxTextures> Textures;
         private int selectedSkybox;
 
         public SphereScene(GraphicsDevice device, ContentStack content, FrameService frameService, CubeMapGenerator cubeMapGenerator, IrradianceMapGenerator irradianceMapGenerator, EnvironmentMapGenerator environmentMapGenerator, EntityAdministrator entities, ComponentAdministrator components)
         {
+            this.FrameService = frameService;
+            this.Entities = entities;
+            this.Components = components;
+
             this.Textures = new List<SkyboxTextures>();
 
             content.Push("sphere-scene");
@@ -59,32 +66,17 @@ namespace MiniEngine.Editor.Scenes
 
                     var position = new Vector3((col - (columns / 2.0f)) * spacing, (row - (rows / 2.0f)) * spacing, 0.0f);
                     var transform = Matrix.CreateTranslation(position);
-                    CreateSphere(entities, components, geometry, material, transform);
+                    this.CreateSphere(geometry, material, transform);
                 }
             }
 
             var backgroundGeometry = CubeGenerator.Generate(device);
-            CreateSphere(entities, components, backgroundGeometry, new Material(blue, bumps, 1.0f, 0.1f), Matrix.CreateScale(20, 20, 1) * Matrix.CreateTranslation(Vector3.Forward * 20));
+            this.CreateSphere(backgroundGeometry, new Material(blue, bumps, 1.0f, 0.1f), Matrix.CreateScale(20, 20, 1) * Matrix.CreateTranslation(Vector3.Forward * 20));
 
-            var pointLightComponent = new PointLightComponent(entities.Create(), new Vector3(-10, 10, 10), Color.Red, 300.0f);
-            components.Add(pointLightComponent);
-
-            var pointLightComponent2 = new PointLightComponent(entities.Create(), new Vector3(10, 10, 10), Color.Blue, 300.0f);
-            components.Add(pointLightComponent2);
-
-            var pointLightComponent3 = new PointLightComponent(entities.Create(), new Vector3(-10, -10, 10), Color.Green, 300.0f);
-            components.Add(pointLightComponent3);
-
-            var pointLightComponent4 = new PointLightComponent(entities.Create(), new Vector3(10, -10, 10), Color.White, 300.0f);
-            components.Add(pointLightComponent4);
-            this.FrameService = frameService;
-        }
-
-        private void SetSkyboxTexture(SkyboxTextures texture)
-        {
-            this.FrameService.Skybox.Texture = texture.Albedo;
-            this.FrameService.Skybox.Irradiance = texture.Irradiance;
-            this.FrameService.Skybox.Environment = texture.Environment;
+            this.CreateLight(new Vector3(-10, 10, 10), Color.Red, 300.0f);
+            this.CreateLight(new Vector3(10, 10, 10), Color.Blue, 300.0f);
+            this.CreateLight(new Vector3(-10, -10, 10), Color.Green, 300.0f);
+            this.CreateLight(new Vector3(10, -10, 10), Color.White, 300.0f);
         }
 
         public void RenderMainMenuItems()
@@ -98,6 +90,27 @@ namespace MiniEngine.Editor.Scenes
                 }
                 ImGui.EndMenu();
             }
+        }
+
+        private void CreateSphere(GeometryData geometry, Material material, Matrix transform)
+        {
+            var entity = this.Entities.Create();
+            this.Components.Add(new GeometryComponent(entity, geometry, material));
+            this.Components.Add(new TransformComponent(entity, transform));
+        }
+
+        private void CreateLight(Vector3 position, Color color, float strength)
+        {
+            var entity = this.Entities.Create();
+            this.Components.Add(new PointLightComponent(entity, color, strength));
+            this.Components.Add(new TransformComponent(entity, Matrix.CreateTranslation(position)));
+        }
+
+        private void SetSkyboxTexture(SkyboxTextures texture)
+        {
+            this.FrameService.Skybox.Texture = texture.Albedo;
+            this.FrameService.Skybox.Irradiance = texture.Irradiance;
+            this.FrameService.Skybox.Environment = texture.Environment;
         }
 
         private void CreateSkyboxes(GraphicsDevice device, ContentStack content, FrameService frameService, CubeMapGenerator cubeMapGenerator, IrradianceMapGenerator irradianceMapGenerator, EnvironmentMapGenerator environmentMapGenerator)
@@ -130,16 +143,6 @@ namespace MiniEngine.Editor.Scenes
             frameService.Skybox = SkyboxGenerator.Generate(device, this.Textures[0].Albedo,
                 this.Textures[0].Irradiance,
                 this.Textures[0].Environment);
-        }
-
-        private static void CreateSphere(EntityAdministrator entities, ComponentAdministrator components, Geometry geometry, Material material, Matrix transform)
-        {
-            var entity = entities.Create();
-            var component = new GeometryComponent(entity, geometry, material);
-            components.Add(component);
-
-            var body = new TransformComponent(entity, transform);
-            components.Add(body);
         }
     }
 }

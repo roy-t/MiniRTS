@@ -10,7 +10,7 @@ namespace MiniEngine.Graphics.Geometry.Generators
     // - https://scaryreasoner.wordpress.com/2016/01/23/thoughts-on-tesselating-a-sphere/
     public static class SphereGenerator
     {
-        public static Geometry Generate(GraphicsDevice device, int subdivisions)
+        public static GeometryData Generate(GraphicsDevice device, int subdivisions)
         {
             var vertices = new List<GeometryVertex>();
             var indices = new List<int>();
@@ -39,7 +39,7 @@ namespace MiniEngine.Graphics.Geometry.Generators
             var indexBuffer = new IndexBuffer(device, IndexElementSize.ThirtyTwoBits, indices.Count, BufferUsage.None);
             indexBuffer.SetData(indices.ToArray());
 
-            return new Geometry(vertexBuffer, indexBuffer);
+            return new GeometryData(vertexBuffer, indexBuffer, new BoundingSphere(Vector3.Zero, 1.0f));
         }
 
         private static void GenerateFace(CoordinateSystem coordinateSystem, int subdivisions, List<GeometryVertex> vertices, List<int> indices)

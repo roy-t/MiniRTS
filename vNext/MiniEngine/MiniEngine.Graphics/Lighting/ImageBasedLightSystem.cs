@@ -47,8 +47,8 @@ namespace MiniEngine.Graphics.Lighting
         [Process]
         public void Process()
         {
-            this.Effect.CameraPosition = this.FrameService.Camera.Position;
-            this.Effect.InverseViewProjection = Matrix.Invert(this.FrameService.Camera.ViewProjection);
+            this.Effect.CameraPosition = this.FrameService.CamereComponent.Camera.Position;
+            this.Effect.InverseViewProjection = Matrix.Invert(this.FrameService.CamereComponent.Camera.ViewProjection);
 
             this.Effect.Diffuse = this.FrameService.GBuffer.Diffuse;
             this.Effect.Normal = this.FrameService.GBuffer.Normal;

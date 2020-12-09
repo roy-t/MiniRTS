@@ -7,22 +7,26 @@ using MiniEngine.Graphics.Geometry;
 using MiniEngine.Graphics.Lighting;
 using MiniEngine.Graphics.PostProcess;
 using MiniEngine.Graphics.Skybox;
+using MiniEngine.Systems.Components;
+using MiniEngine.Systems.Entities;
 
 namespace MiniEngine.Graphics
 {
     [Service]
     public sealed class FrameService
     {
-        public FrameService(GraphicsDevice device)
+        public FrameService(EntityAdministrator entities, ComponentAdministrator components, GraphicsDevice device)
         {
             this.Skybox = null!;
-            this.Camera = new PerspectiveCamera(device.Viewport.AspectRatio);
             this.GBuffer = new GBuffer(device);
             this.LBuffer = new LBuffer(device);
             this.PBuffer = new PBuffer(device);
+
+            this.CamereComponent = new CameraComponent(entities.Create(), new PerspectiveCamera(device.Viewport.AspectRatio));
+            components.Add(this.CamereComponent);
         }
 
-        public ICamera Camera { get; set; }
+        public CameraComponent CamereComponent { get; set; }
         public GBuffer GBuffer { get; set; }
         public LBuffer LBuffer { get; set; }
         public PBuffer PBuffer { get; set; }

@@ -87,7 +87,7 @@ namespace MiniEngine.Editor
             }
 
             var elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
-            this.CameraController.Update(this.FrameService.Camera, elapsed);
+            this.CameraController.Update(this.FrameService.CamereComponent.Camera, elapsed);
 
             if (this.FrameCounter.Update(gameTime))
             {

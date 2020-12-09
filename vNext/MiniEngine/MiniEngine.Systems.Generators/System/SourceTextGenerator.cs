@@ -127,7 +127,7 @@ namespace MiniEngine.Systems.Generators.System
             }
 
             var pocessMethod = $@"
-            this.System.Process();";
+            this.System.{method.Identifier}();";
             return pocessMethod;
         }
 
