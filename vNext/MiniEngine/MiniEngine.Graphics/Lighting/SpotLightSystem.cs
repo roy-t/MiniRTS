@@ -1,26 +1,40 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
+using MiniEngine.Graphics.Camera;
 using MiniEngine.Graphics.PostProcess;
+using MiniEngine.Graphics.Shadows;
 using MiniEngine.Systems;
 using MiniEngine.Systems.Generators;
 
 namespace MiniEngine.Graphics.Lighting
 {
     [System]
-    public partial class PointLightSystem : ISystem
+    public partial class SpotLightSystem : ISystem
     {
         private readonly GraphicsDevice Device;
         private readonly FrameService FrameService;
-        private readonly PointLightEffect Effect;
+        private readonly SpotLightEffect Effect;
         private readonly FullScreenTriangle FullScreenTriangle; // TODO: replace with sphere or other geom that better fits the influence of the light source
 
-        public PointLightSystem(GraphicsDevice device, FullScreenTriangle fullScreenTriangle, PointLightEffect effect, FrameService frameService)
+        private readonly SamplerState ShadowMapSampler;
+
+        public SpotLightSystem(GraphicsDevice device, FullScreenTriangle fullScreenTriangle, SpotLightEffect effect, FrameService frameService)
         {
             this.Device = device;
             this.FrameService = frameService;
             this.FullScreenTriangle = fullScreenTriangle;
             this.Effect = effect;
+
+            this.ShadowMapSampler = new SamplerState
+            {
+                AddressU = TextureAddressMode.Clamp,
+                AddressV = TextureAddressMode.Clamp,
+                AddressW = TextureAddressMode.Clamp,
+                Filter = TextureFilter.Anisotropic,
+                ComparisonFunction = CompareFunction.LessEqual,
+                FilterMode = TextureFilterMode.Comparison
+            };
         }
 
         public void OnSet()
@@ -29,16 +43,17 @@ namespace MiniEngine.Graphics.Lighting
             this.Device.DepthStencilState = DepthStencilState.None;
             this.Device.RasterizerState = RasterizerState.CullCounterClockwise;
 
-            this.Device.SamplerStates[0] = SamplerState.LinearClamp;
+            this.Device.SamplerStates[0] = this.ShadowMapSampler;
             this.Device.SamplerStates[1] = SamplerState.LinearClamp;
             this.Device.SamplerStates[2] = SamplerState.LinearClamp;
             this.Device.SamplerStates[3] = SamplerState.LinearClamp;
+            this.Device.SamplerStates[4] = SamplerState.LinearClamp;
 
             this.Device.SetRenderTarget(this.FrameService.LBuffer.Light);
         }
 
         [ProcessAll]
-        public void Process(PointLightComponent pointLight, TransformComponent transform)
+        public void Process(SpotLightComponent spotLight, ShadowMapComponent shadowMap, CameraComponent shadowMapCamera)
         {
             this.Effect.CameraPosition = this.FrameService.CamereComponent.Camera.Position;
             this.Effect.Diffuse = this.FrameService.GBuffer.Diffuse;
@@ -47,9 +62,12 @@ namespace MiniEngine.Graphics.Lighting
             this.Effect.Material = this.FrameService.GBuffer.Material;
             this.Effect.InverseViewProjection = Matrix.Invert(this.FrameService.CamereComponent.Camera.ViewProjection);
 
-            this.Effect.Position = transform.Matrix.Translation;
-            this.Effect.Color = pointLight.Color;
-            this.Effect.Strength = pointLight.Strength;
+            this.Effect.Position = shadowMapCamera.Camera.Position;
+            this.Effect.Color = spotLight.Color;
+            this.Effect.Strength = spotLight.Strength;
+
+            this.Effect.ShadowMap = shadowMap.DepthMap;
+            this.Effect.ShadowViewProjection = shadowMapCamera.Camera.ViewProjection;
 
             this.Effect.Apply();
 

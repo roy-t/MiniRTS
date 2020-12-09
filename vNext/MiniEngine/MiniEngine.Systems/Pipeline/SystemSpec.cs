@@ -74,10 +74,9 @@ namespace MiniEngine.Systems.Pipeline
                 if (resource.SubResource == MatchAllSubResources)
                 {
                     this.RequiresList.RemoveAt(i);
+                    var produces = producedResources[resource.Resource].Select(s => new ResourceState(s.Resource, s.SubResource));
+                    this.RequiresList.AddRange(produces);
                 }
-
-                var produces = producedResources[resource.Resource].Select(s => new ResourceState(s.Resource, s.SubResource));
-                this.RequiresList.AddRange(produces);
             }
         }
     }

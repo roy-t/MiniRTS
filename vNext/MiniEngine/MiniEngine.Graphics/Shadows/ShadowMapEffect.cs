@@ -10,6 +10,8 @@ namespace MiniEngine.Graphics.Shadows
 
         public ShadowMapEffect(EffectFactory factory) : base(factory.Load<ShadowMapEffect>())
         {
+            this.Effect.CurrentTechnique = this.Effect.Techniques["ShadowMapTechnique"];
+
             this.WorldViewProjectionParameter = this.Effect.Parameters["WorldViewProjection"];
         }
 

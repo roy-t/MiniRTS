@@ -77,14 +77,14 @@ namespace MiniEngine.Editor.Scenes
             }
 
             var backgroundGeometry = CubeGenerator.Generate(device);
-            this.CreateSphere(backgroundGeometry, new Material(blue, bumps, 1.0f, 0.1f), Matrix.CreateScale(20, 20, 1) * Matrix.CreateTranslation(Vector3.Forward * 20));
+            this.CreateSphere(backgroundGeometry, new Material(blue, bumps, 0.0f, 1.0f), Matrix.CreateScale(20, 20, 1) * Matrix.CreateTranslation(Vector3.Forward * 20));
 
-            this.CreateLight(new Vector3(-10, 10, 10), Color.Red, 300.0f);
-            this.CreateLight(new Vector3(10, 10, 10), Color.Blue, 300.0f);
-            this.CreateLight(new Vector3(-10, -10, 10), Color.Green, 300.0f);
-            this.CreateLight(new Vector3(10, -10, 10), Color.White, 300.0f);
+            this.CreateLight(new Vector3(-10, 10, 10), Color.Red, 30.0f);
+            this.CreateLight(new Vector3(10, 10, 10), Color.Blue, 30.0f);
+            this.CreateLight(new Vector3(-10, -10, 10), Color.Green, 30.0f);
+            this.CreateLight(new Vector3(10, -10, 10), Color.White, 30.0f);
 
-            this.CreateShadow(new Vector3(10, -10, 10), Vector3.Normalize(Vector3.Zero - new Vector3(10, -10, 10)));
+            this.CreateSpotLight(new Vector3(0, 0, 10), Vector3.Forward, 1500.0f);
         }
 
         public void RenderMainMenuItems()
@@ -114,11 +114,12 @@ namespace MiniEngine.Editor.Scenes
             this.Components.Add(new TransformComponent(entity, Matrix.CreateTranslation(position)));
         }
 
-        private void CreateShadow(Vector3 position, Vector3 forward)
+        private void CreateSpotLight(Vector3 position, Vector3 forward, float strength)
         {
             var entity = this.Entities.Create();
             this.Components.Add(ShadowMapComponent.Create(this.Device, entity, 1024));
             this.Components.Add(new CameraComponent(entity, new PerspectiveCamera(this.Device.Viewport.AspectRatio, position, forward)));
+            this.Components.Add(new SpotLightComponent(entity, Color.Yellow, strength));
         }
 
         private void SetSkyboxTexture(SkyboxTextures texture)

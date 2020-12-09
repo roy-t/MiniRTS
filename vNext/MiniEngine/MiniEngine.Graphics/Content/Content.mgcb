@@ -80,6 +80,12 @@
 /processorParam:DebugMode=Auto
 /build:Effects/SkyboxEffect.fx
 
+#begin Effects/SpotLightEffect.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Effects/SpotLightEffect.fx
+
 #begin Effects/ToneMapEffect.fx
 /importer:EffectImporter
 /processor:EffectProcessor
