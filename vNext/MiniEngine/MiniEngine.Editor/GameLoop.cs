@@ -19,7 +19,7 @@ namespace MiniEngine.Editor
         private readonly GraphicsDeviceManager Graphics;
         private readonly GraphicsDevice Device;
         private readonly OpaqueEffect Effect;
-        private readonly FullScreenTriangle FullScreenTriangle;
+        private readonly PostProcessTriangle PostProcessTriangle;
         private readonly FrameService FrameService;
         private readonly WorkspaceManager WorkspaceManager;
         private readonly SceneManager SceneManager;
@@ -37,7 +37,7 @@ namespace MiniEngine.Editor
             GraphicsDeviceManager graphics,
             GraphicsDevice device,
             OpaqueEffect effect,
-            FullScreenTriangle fullScreenTriangle,
+            PostProcessTriangle postProcessTriangle,
             FrameService frameService,
             WorkspaceManager workspaceManager,
             SceneManager sceneManager,
@@ -51,7 +51,7 @@ namespace MiniEngine.Editor
             this.Graphics = graphics;
             this.Device = device;
             this.Effect = effect;
-            this.FullScreenTriangle = fullScreenTriangle;
+            this.PostProcessTriangle = postProcessTriangle;
             this.FrameService = frameService;
             this.WorkspaceManager = workspaceManager;
             this.SceneManager = sceneManager;
@@ -126,7 +126,7 @@ namespace MiniEngine.Editor
 
             this.Effect.Texture = renderTarget;
             this.Effect.Apply();
-            this.FullScreenTriangle.Render(this.Device);
+            this.PostProcessTriangle.Render(this.Device);
         }
 
         public void Stop()

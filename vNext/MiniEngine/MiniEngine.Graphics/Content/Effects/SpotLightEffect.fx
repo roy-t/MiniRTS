@@ -123,6 +123,8 @@ OutputData PS(PixelData input)
     float lightFactor = ComputeLightFactor(worldPosition);
     Mat material = ReadMaterial(input.Texture);
 
+    // TODO: all of the below (minus the *lightFactor) is copied from the point light shader!
+
     // The view vector points from the object to the camera. The closer the view vector is to the
     // original reflection direction the stronger the specular reflection.
     float3 V = normalize(CameraPosition - worldPosition);
@@ -188,7 +190,8 @@ OutputData PS(PixelData input)
     float3 Lo = (kD * diffuse / PI + specular) * radiance * NdotL;
 
     output.Light = float4(Lo, 1.0f) * lightFactor;
-
+    /*output.Light.rgb += 100.0f;
+    output.Light.a = 1.0f;*/
     return output;
 }
 

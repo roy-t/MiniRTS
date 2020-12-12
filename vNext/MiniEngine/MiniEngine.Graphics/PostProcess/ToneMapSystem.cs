@@ -11,14 +11,14 @@ namespace MiniEngine.Graphics.PostProcess
         private readonly GraphicsDevice Device;
         private readonly FrameService FrameService;
         private readonly TonemapEffect Effect;
-        private readonly FullScreenTriangle FullScreenTriangle;
+        private readonly PostProcessTriangle PostProcessTriangle;
 
-        public ToneMapSystem(GraphicsDevice device, FullScreenTriangle fullScreenTriangle, TonemapEffect effect, FrameService frameService)
+        public ToneMapSystem(GraphicsDevice device, PostProcessTriangle postProcessTriangle, TonemapEffect effect, FrameService frameService)
         {
             this.Device = device;
             this.FrameService = frameService;
             this.Effect = effect;
-            this.FullScreenTriangle = fullScreenTriangle;
+            this.PostProcessTriangle = postProcessTriangle;
         }
 
         public void OnSet()
@@ -37,7 +37,7 @@ namespace MiniEngine.Graphics.PostProcess
             this.Effect.Color = this.FrameService.LBuffer.Light;
             this.Effect.Apply();
 
-            this.FullScreenTriangle.Render(this.Device);
+            this.PostProcessTriangle.Render(this.Device);
         }
     }
 }

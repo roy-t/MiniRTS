@@ -15,16 +15,18 @@ namespace MiniEngine.Graphics.Lighting
         private readonly GraphicsDevice Device;
         private readonly FrameService FrameService;
         private readonly SpotLightEffect Effect;
-        private readonly FullScreenTriangle FullScreenTriangle; // TODO: replace with sphere or other geom that better fits the influence of the light source
+        private readonly PostProcessQuad PostProcessQuad;
+        private readonly PostProcessTriangle PostProcessTriangle;
 
         private readonly SamplerState ShadowMapSampler;
 
-        public SpotLightSystem(GraphicsDevice device, FullScreenTriangle fullScreenTriangle, SpotLightEffect effect, FrameService frameService)
+        public SpotLightSystem(GraphicsDevice device, PostProcessTriangle postProcessTriangle, PostProcessQuad postProcessQuad, SpotLightEffect effect, FrameService frameService)
         {
             this.Device = device;
             this.FrameService = frameService;
-            this.FullScreenTriangle = fullScreenTriangle;
+            this.PostProcessQuad = postProcessQuad;
             this.Effect = effect;
+            this.PostProcessTriangle = postProcessTriangle;
 
             this.ShadowMapSampler = new SamplerState
             {
@@ -41,7 +43,7 @@ namespace MiniEngine.Graphics.Lighting
         {
             this.Device.BlendState = BlendState.Additive;
             this.Device.DepthStencilState = DepthStencilState.None;
-            this.Device.RasterizerState = RasterizerState.CullCounterClockwise;
+            this.Device.RasterizerState = RasterizerState.CullNone;
 
             this.Device.SamplerStates[0] = this.ShadowMapSampler;
             this.Device.SamplerStates[1] = SamplerState.LinearClamp;
@@ -70,8 +72,9 @@ namespace MiniEngine.Graphics.Lighting
             this.Effect.ShadowViewProjection = shadowMapCamera.Camera.ViewProjection;
 
             this.Effect.Apply();
-
-            this.FullScreenTriangle.Render(this.Device);
+            var frustum = new BoundingFrustum(shadowMapCamera.Camera.ViewProjection);
+            //this.PostProcessQuad.RenderOutline(this.Device, frustum, this.FrameService.CamereComponent.Camera);
+            this.PostProcessTriangle.Render(this.Device);
         }
     }
 }

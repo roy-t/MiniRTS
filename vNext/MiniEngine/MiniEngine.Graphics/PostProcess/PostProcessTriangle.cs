@@ -6,12 +6,12 @@ using MiniEngine.Configuration;
 namespace MiniEngine.Graphics.PostProcess
 {
     [Service]
-    public sealed class FullScreenTriangle : IDisposable
+    public sealed class PostProcessTriangle : IDisposable
     {
         private readonly IndexBuffer Indices;
         private readonly VertexBuffer Vertices;
 
-        public FullScreenTriangle(GraphicsDevice device)
+        public PostProcessTriangle(GraphicsDevice device)
         {
             var vertices = new[]
             {

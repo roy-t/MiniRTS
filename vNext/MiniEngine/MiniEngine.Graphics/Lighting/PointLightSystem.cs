@@ -13,13 +13,13 @@ namespace MiniEngine.Graphics.Lighting
         private readonly GraphicsDevice Device;
         private readonly FrameService FrameService;
         private readonly PointLightEffect Effect;
-        private readonly FullScreenTriangle FullScreenTriangle; // TODO: replace with sphere or other geom that better fits the influence of the light source
+        private readonly PostProcessTriangle PostProcessTriangle; // TODO: replace with sphere or other geom that better fits the influence of the light source
 
-        public PointLightSystem(GraphicsDevice device, FullScreenTriangle fullScreenTriangle, PointLightEffect effect, FrameService frameService)
+        public PointLightSystem(GraphicsDevice device, PostProcessTriangle postProcessTriangle, PointLightEffect effect, FrameService frameService)
         {
             this.Device = device;
             this.FrameService = frameService;
-            this.FullScreenTriangle = fullScreenTriangle;
+            this.PostProcessTriangle = postProcessTriangle;
             this.Effect = effect;
         }
 
@@ -53,7 +53,7 @@ namespace MiniEngine.Graphics.Lighting
 
             this.Effect.Apply();
 
-            this.FullScreenTriangle.Render(this.Device);
+            this.PostProcessTriangle.Render(this.Device);
         }
     }
 }

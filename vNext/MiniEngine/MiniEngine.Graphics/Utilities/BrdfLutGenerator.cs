@@ -11,13 +11,13 @@ namespace MiniEngine.Graphics.Utilities
         private const int resolution = 512;
 
         private readonly GraphicsDevice Device;
-        private readonly FullScreenTriangle FullScreenTriangle;
+        private readonly PostProcessTriangle PostProcessTriangleullScreenTriangle;
         private readonly BrdfLutGeneratorEffect Effect;
 
-        public BrdfLutGenerator(GraphicsDevice device, FullScreenTriangle fullScreenTriangle, BrdfLutGeneratorEffect effect)
+        public BrdfLutGenerator(GraphicsDevice device, PostProcessTriangle postProcessTriangle, BrdfLutGeneratorEffect effect)
         {
             this.Device = device;
-            this.FullScreenTriangle = fullScreenTriangle;
+            this.PostProcessTriangleullScreenTriangle = postProcessTriangle;
             this.Effect = effect;
         }
 
@@ -33,7 +33,7 @@ namespace MiniEngine.Graphics.Utilities
             this.Device.Clear(Color.Black);
 
             this.Effect.Apply();
-            this.FullScreenTriangle.Render(this.Device);
+            this.PostProcessTriangleullScreenTriangle.Render(this.Device);
 
             this.Device.SetRenderTarget(null);
 

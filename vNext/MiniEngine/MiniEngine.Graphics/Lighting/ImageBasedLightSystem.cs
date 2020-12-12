@@ -12,15 +12,15 @@ namespace MiniEngine.Graphics.Lighting
     public partial class ImageBasedLightSystem : ISystem
     {
         private readonly GraphicsDevice Device;
-        private readonly FullScreenTriangle FullScreenTriangle;
+        private readonly PostProcessTriangle PostProcessTriangle;
         private readonly ImageBasedLightEffect Effect;
         private readonly Texture2D BrdfLutTexture;
         private readonly FrameService FrameService;
 
-        public ImageBasedLightSystem(GraphicsDevice device, BrdfLutGenerator brdfLutGenerator, FullScreenTriangle fullScreenTriangle, ImageBasedLightEffect effect, FrameService frameService)
+        public ImageBasedLightSystem(GraphicsDevice device, BrdfLutGenerator brdfLutGenerator, PostProcessTriangle postProcessTriangle, ImageBasedLightEffect effect, FrameService frameService)
         {
             this.Device = device;
-            this.FullScreenTriangle = fullScreenTriangle;
+            this.PostProcessTriangle = postProcessTriangle;
             this.FrameService = frameService;
             this.Effect = effect;
 
@@ -62,7 +62,7 @@ namespace MiniEngine.Graphics.Lighting
 
             this.Effect.Apply();
 
-            this.FullScreenTriangle.Render(this.Device);
+            this.PostProcessTriangle.Render(this.Device);
         }
     }
 }
