@@ -24,7 +24,7 @@ github_username:  roy-t
 
 # Build settings
 markdown: kramdown
-theme: minima
+theme: jekyll-theme-slate
 plugins:
   - jekyll-feed
 
