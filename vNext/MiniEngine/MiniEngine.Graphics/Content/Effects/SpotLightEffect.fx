@@ -2,17 +2,17 @@
 #include "Includes/Gamma.hlsl"
 #include "Includes/GBufferReader.hlsl"
 #include "Includes/Lights.hlsl"
+#include "Includes/Coordinates.hlsl"
 
 struct VertexData
 {
     float3 Position : POSITION0;
-    float2 Texture : TEXCOORD0;
 };
 
 struct PixelData
 {
     float4 Position : POSITION0;
-    float2 Texture : TEXCOORD0;
+    noperspective float2 Texture : TEXCOORD0;
 };
 
 struct OutputData
@@ -21,8 +21,9 @@ struct OutputData
 };
 
 // Bias to prevent shadow acne
-static const float bias = 0.0001f;
+static const float bias = 0.0005f;
 
+float4x4 WorldViewProjection;
 float4 Color;
 float Strength;
 float3 Position;
@@ -37,9 +38,8 @@ PixelData VS(in VertexData input)
 {
     PixelData output = (PixelData)0;
 
-    output.Position = float4(input.Position, 1.0f);
-    output.Texture = input.Texture;
-
+    output.Position = mul(float4(input.Position, 1), WorldViewProjection);
+    output.Texture = ScreenToTexture(output.Position.xy / output.Position.w);
     return output;
 }
 
@@ -124,6 +124,7 @@ OutputData PS(PixelData input)
     Mat material = ReadMaterial(input.Texture);
 
     // TODO: all of the below (minus the *lightFactor) is copied from the point light shader!
+    // TODO: we don't need to do all these calculations if something is in pitch black shadows
 
     // The view vector points from the object to the camera. The closer the view vector is to the
     // original reflection direction the stronger the specular reflection.
@@ -189,9 +190,8 @@ OutputData PS(PixelData input)
     // of the viewer. Or in other words how much the light is shining in the viewer's direction.
     float3 Lo = (kD * diffuse / PI + specular) * radiance * NdotL;
 
+    // Scale the light intensity with the shadow (inv light) factor
     output.Light = float4(Lo, 1.0f) * lightFactor;
-    /*output.Light.rgb += 100.0f;
-    output.Light.a = 1.0f;*/
     return output;
 }
 

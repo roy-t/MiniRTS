@@ -6,6 +6,7 @@ namespace MiniEngine.Graphics.Lighting
 {
     public sealed class SpotLightEffect : EffectWrapper
     {
+        private readonly EffectParameter WorldViewProjectionParameter;
         private readonly EffectParameter DiffuseParameter;
         private readonly EffectParameter NormalParameter;
         private readonly EffectParameter DepthParameter;
@@ -22,6 +23,7 @@ namespace MiniEngine.Graphics.Lighting
         {
             this.Effect.CurrentTechnique = this.Effect.Techniques["SpotLightTechnique"];
 
+            this.WorldViewProjectionParameter = this.Effect.Parameters["WorldViewProjection"];
             this.DiffuseParameter = this.Effect.Parameters["Diffuse"];
             this.NormalParameter = this.Effect.Parameters["Normal"];
             this.DepthParameter = this.Effect.Parameters["Depth"];
@@ -34,6 +36,8 @@ namespace MiniEngine.Graphics.Lighting
             this.ShadowMapParameter = this.Effect.Parameters["ShadowMap"];
             this.ShadowViewProjectionParameter = this.Effect.Parameters["ShadowViewProjection"];
         }
+
+        public Matrix WorldViewProjection { set => this.WorldViewProjectionParameter.SetValue(value); }
 
         public Texture2D Diffuse { set => this.DiffuseParameter.SetValue(value); }
 

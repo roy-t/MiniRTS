@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
 using MiniEngine.Graphics.Camera;
-using MiniEngine.Graphics.PostProcess;
+using MiniEngine.Graphics.Lighting.Volumes;
 using MiniEngine.Graphics.Shadows;
 using MiniEngine.Systems;
 using MiniEngine.Systems.Generators;
@@ -15,18 +15,23 @@ namespace MiniEngine.Graphics.Lighting
         private readonly GraphicsDevice Device;
         private readonly FrameService FrameService;
         private readonly SpotLightEffect Effect;
-        private readonly PostProcessQuad PostProcessQuad;
-        private readonly PostProcessTriangle PostProcessTriangle;
+        private readonly FrustumLightVolume FrustumLightVolume;
 
+        private readonly RasterizerState SpotLightRasterizer;
         private readonly SamplerState ShadowMapSampler;
 
-        public SpotLightSystem(GraphicsDevice device, PostProcessTriangle postProcessTriangle, PostProcessQuad postProcessQuad, SpotLightEffect effect, FrameService frameService)
+        public SpotLightSystem(GraphicsDevice device, FrustumLightVolume frustumLightVolume, SpotLightEffect effect, FrameService frameService)
         {
             this.Device = device;
             this.FrameService = frameService;
-            this.PostProcessQuad = postProcessQuad;
+            this.FrustumLightVolume = frustumLightVolume;
             this.Effect = effect;
-            this.PostProcessTriangle = postProcessTriangle;
+
+            this.SpotLightRasterizer = new RasterizerState()
+            {
+                CullMode = CullMode.CullCounterClockwiseFace,
+                DepthClipEnable = false
+            };
 
             this.ShadowMapSampler = new SamplerState
             {
@@ -43,8 +48,7 @@ namespace MiniEngine.Graphics.Lighting
         {
             this.Device.BlendState = BlendState.Additive;
             this.Device.DepthStencilState = DepthStencilState.None;
-            this.Device.RasterizerState = RasterizerState.CullNone;
-
+            this.Device.RasterizerState = this.SpotLightRasterizer;
             this.Device.SamplerStates[0] = this.ShadowMapSampler;
             this.Device.SamplerStates[1] = SamplerState.LinearClamp;
             this.Device.SamplerStates[2] = SamplerState.LinearClamp;
@@ -57,6 +61,9 @@ namespace MiniEngine.Graphics.Lighting
         [ProcessAll]
         public void Process(SpotLightComponent spotLight, ShadowMapComponent shadowMap, CameraComponent shadowMapCamera)
         {
+            var world = Matrix.Invert(shadowMapCamera.Camera.ViewProjection);
+
+            this.Effect.WorldViewProjection = world * this.FrameService.CamereComponent.Camera.ViewProjection;
             this.Effect.CameraPosition = this.FrameService.CamereComponent.Camera.Position;
             this.Effect.Diffuse = this.FrameService.GBuffer.Diffuse;
             this.Effect.Normal = this.FrameService.GBuffer.Normal;
@@ -72,9 +79,7 @@ namespace MiniEngine.Graphics.Lighting
             this.Effect.ShadowViewProjection = shadowMapCamera.Camera.ViewProjection;
 
             this.Effect.Apply();
-            var frustum = new BoundingFrustum(shadowMapCamera.Camera.ViewProjection);
-            //this.PostProcessQuad.RenderOutline(this.Device, frustum, this.FrameService.CamereComponent.Camera);
-            this.PostProcessTriangle.Render(this.Device);
+            this.FrustumLightVolume.Render(this.Device);
         }
     }
 }

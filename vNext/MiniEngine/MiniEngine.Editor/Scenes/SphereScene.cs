@@ -77,7 +77,7 @@ namespace MiniEngine.Editor.Scenes
             }
 
             var backgroundGeometry = CubeGenerator.Generate(device);
-            this.CreateSphere(backgroundGeometry, new Material(blue, bumps, 0.0f, 1.0f), Matrix.CreateScale(20, 20, 1) * Matrix.CreateTranslation(Vector3.Forward * 20));
+            this.CreateSphere(backgroundGeometry, new Material(blue, bumps, 0.0f, 1.0f), Matrix.CreateScale(200, 200, 1) * Matrix.CreateTranslation(Vector3.Forward * 20));
 
             this.CreateLight(new Vector3(-10, 10, 10), Color.Red, 30.0f);
             this.CreateLight(new Vector3(10, 10, 10), Color.Blue, 30.0f);

@@ -27,15 +27,19 @@ namespace MiniEngine.Graphics.Camera
 
         public Matrix ViewProjection { get; private set; }
 
+        public Matrix View { get; private set; }
+
+        public Matrix Projection { get; private set; }
+
         public void Move(Vector3 position, Vector3 forward)
         {
             this.Position = position;
             this.Forward = forward;
 
-            var view = Matrix.CreateLookAt(position, position + forward, Vector3.Up);
-            var projection = Matrix.CreatePerspectiveFieldOfView(this.FieldOfView, this.AspectRatio, this.NearPlane, this.FarPlane);
+            this.View = Matrix.CreateLookAt(position, position + forward, Vector3.Up);
+            this.Projection = Matrix.CreatePerspectiveFieldOfView(this.FieldOfView, this.AspectRatio, this.NearPlane, this.FarPlane);
 
-            this.ViewProjection = view * projection;
+            this.ViewProjection = this.View * this.Projection;
         }
     }
 }

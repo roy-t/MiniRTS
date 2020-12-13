@@ -91,7 +91,7 @@ namespace MiniEngine.Editor
 
             if (this.FrameCounter.Update(gameTime))
             {
-                this.Window.Title = $"Editor :: {this.FrameCounter.MillisecondsPerFrame:F2}ms, {this.FrameCounter.FramesPerSecond} fps, {this.FrameService.GetBufferSize() * 0.000001f} MB";
+                this.Window.Title = $"Editor :: {this.FrameCounter.MillisecondsPerFrame:F2}ms, {this.FrameCounter.FramesPerSecond} fps, {this.FrameService.GetBufferSize() * 0.000001f} MB. position: {this.FrameService.CamereComponent.Camera.Position}";
             }
 
             this.SceneManager.Update(gameTime);
