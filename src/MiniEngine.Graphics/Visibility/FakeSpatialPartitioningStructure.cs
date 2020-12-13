@@ -25,7 +25,7 @@ namespace MiniEngine.Graphics.Visibility
 
         public void Update(Entity entity, Matrix transform)
         {
-            for (var i = this.Entries.Count - 1; i >= 0; i++)
+            for (var i = this.Entries.Count - 1; i >= 0; i--)
             {
                 var pose = this.Entries[i];
                 if (pose.Entity == entity)
@@ -38,7 +38,7 @@ namespace MiniEngine.Graphics.Visibility
 
         public void Remove(Entity entity)
         {
-            for (var i = this.Entries.Count - 1; i >= 0; i++)
+            for (var i = this.Entries.Count - 1; i >= 0; i--)
             {
                 if (this.Entries[i].Entity == entity)
                 {
