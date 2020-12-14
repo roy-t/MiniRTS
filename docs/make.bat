@@ -33,4 +33,5 @@ goto end
 popd
 
 echo copying html output to current directory
-xcopy .\build\html\ .\* /E /Y
+xcopy .\build\html\ .\* /E /Y /Q
+if %ErrorLevel% equ 0 (echo Success) else (echo Error)

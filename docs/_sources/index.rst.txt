@@ -6,15 +6,10 @@
 Welcome to MiniEngine's documentation!
 ======================================
 
+.. image:: _images/window.png
+
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: Table of contents
 
-.. image:: assets/window.png
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+   components
