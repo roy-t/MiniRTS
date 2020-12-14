@@ -10,6 +10,8 @@ Welcome to MiniEngine's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+.. image:: assets/window.png
+
 Indices and tables
 ==================
 

@@ -17,7 +17,7 @@ In 2019 I gave a presentation on real-time rendering where I talk about techniqu
 
 With a few light primitives already there it seems that the I'm able accomplish these goals. And though the editor still lacks a lot of features the basics for something great are there in the engine. 
 
-![Screenshot of the editor](docs/title.PNG "MiniEngine")
+![Screenshot of the editor](docs/_images/window.png "MiniEngine")
 
 # Requirements
 - Windows 10 64 bit
@@ -28,6 +28,5 @@ Simply open the `.sln` file, compile and run the `MiniEngine.Editor` project and
 
 # Technologies
 
-MiniRTS uses:
-
-[![MonoGame logo](docs/monogame.png "MonoGame")](https://www.monogame.net/)
+MiniRTS uses: 
+- [MonoGame](https://www.monogame.net/)
