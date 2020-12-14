@@ -32,5 +32,5 @@ goto end
 :end
 popd
 
-echo copying html output to ..\docs-html
-xcopy .\build\html\ ..\docs-html\* /E /Y
+echo copying html output to current directory
+xcopy .\build\html\ .\* /E /Y
