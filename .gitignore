@@ -3,6 +3,9 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+# Ignore intermediate directories for Sphinx
+docs/build/
+
 # Ignore prometheus and grafana folder
 [Pp]rometheus/
 [Gg]rafana/
