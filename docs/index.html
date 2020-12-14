@@ -37,7 +37,7 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Components" href="components.html" /> 
+    <link rel="next" title="Systems" href="systems.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -84,6 +84,7 @@
             
               <p class="caption"><span class="caption-text">Table of contents</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="systems.html">Systems</a></li>
 <li class="toctree-l1"><a class="reference internal" href="components.html">Components</a></li>
 </ul>
 
@@ -137,7 +138,9 @@
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+            
+              <a href="https://github.com/roy-t/MiniRTS/blob/master/docs/source/index.rst" class="fa fa-github"> Edit on GitHub</a>
+            
           
         
       </li>
@@ -153,14 +156,47 @@
   <div class="section" id="welcome-to-miniengine-s-documentation">
 <h1>Welcome to MiniEngine’s documentation!<a class="headerlink" href="#welcome-to-miniengine-s-documentation" title="Permalink to this headline">¶</a></h1>
 <img alt="_images/window.png" src="_images/window.png" />
+<p>The goal of this document is to explain how certain aspects of MiniEngine work. Included are design rationales and technical documentation. The intended reader is anybody who is interested in how game engines work.</p>
+<p>This document should not be considered a complete user manual. Currently MiniEngine is neither stable nor feature complete. This is also not the goal of MiniEngine, it is a one-man hobby project which others can use to learn and be inspired.</p>
+<div class="section" id="features">
+<h2>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Entity-component-system (ECS) with queries for entities that have a specific component signature and state (new, changed, unchanged, removed)</p></li>
+<li><p>Multi-threaded pipeline <a class="footnote-reference brackets" href="#id2" id="id1">1</a> with automatic job scheduling</p></li>
+<li><p>Inversion of Control (IoC/DI) provided via <a class="reference external" href="https://www.lightinject.net/">LightInject</a></p></li>
+<li><dl class="simple">
+<dt>Physically Based Rendering (PBR)</dt><dd><ul>
+<li><p>Linear workflow</p></li>
+<li><p>HDR ready</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+<dl class="footnote brackets">
+<dt class="label" id="id2"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
+<dd><p>Systems that use the graphics device execute sequential.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="dependencies">
+<h2>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h2>
+<p>MiniEngine is written in <cite>C#</cite> and is built on top of <cite>.NET 5.0</cite>. It uses many of its new features, such as forbidding implicit nullability, records, and source generators.</p>
+<p>MiniEngine depends on only a few libraries. The most important one is <a class="reference external" href="https://www.monogame.net">MonoGame</a>, which provides a light abstraction over DirectX (and OpenGL) and a pluggable content-pipline. <a class="reference external" href="https://www.lightinject.net/">LightInject</a> provides the inversion of control / dependency injection. <a class="reference external" href="https://www.serilog.net/">Serilog</a> is used as a logging abstaction.</p>
+<p>The UI library used in MiniEngine is a <a class="reference external" href="https://github.com/roy-t/ImGui.NET">custom fork</a> of the popular <a class="reference external" href="https://github.com/ocornut/imgui">Dear ImGui</a>. The fork makes it easier to use with MonoGame’s vector and color types.</p>
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">Table of contents</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="systems.html">Systems</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="systems.html#designing-new-systems">Designing new systems</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="components.html">Components</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="components/spotlight.html">Spotlight</a></li>
 </ul>
 </li>
 </ul>
+</div>
 </div>
 </div>
 
@@ -172,7 +208,7 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="components.html" class="btn btn-neutral float-right" title="Components" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="systems.html" class="btn btn-neutral float-right" title="Systems" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
     </div>

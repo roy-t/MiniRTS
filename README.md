@@ -1,6 +1,12 @@
 # MiniRTS
 The name of this repository is MiniRTS, because when I started out I wanted to make an RTS game, inspired by games like Total Annihilation,  Supreme Commander: Forged Alliance, or Age of Empires (1, 2). But I got stuck in making a game engine! Which is what this repository is now focused on.
 
+# Manual
+
+The manual for the game engine can be found at https://roy-t.github.io/MiniRTS/, the source code for it lives in the `/docs` directory of the master branch. 
+
+The manual is intended as a tutorial on how the techniques in MiniEngine work. It is not meant as an actual manual for a completed product (which MiniEngine isn't).
+
 # MiniEngine
 
 This repository actually contains two (work-in-progress) rendering engines. In the end of 2017 I started on the first version, which now resides in the `./vOld/` folder. The vOld engine is a standard deferred rendering engine, using a Blinn-Phong rendering model. It contains a lot of different light and particle primitives and the editor is quite feature rich. 
