@@ -45,10 +45,17 @@ exclude_patterns = []
 
 # -- Options for HTML output -------------------------------------------------
 
+html_logo = 'favicon.ico'
+html_favicon = 'favicon.ico'
+
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
 html_theme = 'sphinx_rtd_theme'
+
+html_theme_options = {
+    'logo_only': True,
+}
 
 html_context = {
     'display_github': True,
