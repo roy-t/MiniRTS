@@ -5,7 +5,7 @@
 
 Welcome to MiniEngine's documentation!
 ======================================
-.. image:: _images/window.png
+.. image:: _images/logo.jpg
 
 
 The goal of this document is to explain how certain aspects of MiniEngine work. Including design rationales and technical documentation. The intended reader is anybody who is interested in how game engines work.

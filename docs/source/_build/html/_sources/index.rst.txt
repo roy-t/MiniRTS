@@ -5,16 +5,37 @@
 
 Welcome to MiniEngine's documentation!
 ======================================
+.. image:: _images/logo.jpg
+
+
+The goal of this document is to explain how certain aspects of MiniEngine work. Including design rationales and technical documentation. The intended reader is anybody who is interested in how game engines work.
+
+This document should not be considered a complete user manual. Currently MiniEngine is neither stable nor feature complete. This is also not the goal of MiniEngine, it is a one-man hobby project which others can use to learn and be inspired.
+
+Features
+--------
+- Entity-component-system (ECS) with queries for entities that have a specific component signature and state (new, changed, unchanged, removed)
+- Multi-threaded pipeline [#]_ with automatic job scheduling
+- Inversion of Control (IoC/DI) provided via `LightInject <https://www.lightinject.net/>`_
+- Physically Based Rendering (PBR)
+
+   - Linear workflow
+   - HDR ready
+
+.. [#] Systems that use the graphics device execute sequential.
+
+
+Dependencies
+------------
+MiniEngine is written in `C#` and is built on top of `.NET 5.0`. It uses many of its new features, such as forbidding implicit nullability, records, and source generators. 
+
+MiniEngine depends on only a few libraries. The most important one is `MonoGame <https://www.monogame.net>`_, which provides a light abstraction over DirectX (and OpenGL) and a pluggable content-pipline. `LightInject <https://www.lightinject.net/>`_ provides the inversion of control / dependency injection. `Serilog <https://www.serilog.net/>`_ is used as a logging abstaction. 
+
+The UI library used in MiniEngine is a `custom fork <https://github.com/roy-t/ImGui.NET>`_ of the popular `Dear ImGui <https://github.com/ocornut/imgui>`_. The fork makes it easier to use with MonoGame's vector and color types.
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: Table of contents
 
-.. image:: assets/window.png
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+   systems
+   components
