@@ -1,5 +1,5 @@
 ﻿#include "Includes/Defines.hlsl"
-#include "Includes/Spherical.hlsl"
+#include "Includes/Coordinates.hlsl"
 #include "Includes/Gamma.hlsl"
 #include "Includes/BRDF.hlsl"
 
@@ -37,15 +37,15 @@ PixelData VS(in VertexData input)
 {
     PixelData output = (PixelData)0;
 
-    output.Position = mul(float4(input.Position, 1), WorldViewProjection);     
+    output.Position = mul(float4(input.Position, 1), WorldViewProjection);
     output.Position3D = input.Position;
-    
+
     return output;
 }
 
 OutputData PS(PixelData input)
 {
-    OutputData output = (OutputData)0;   
+    OutputData output = (OutputData)0;
 
     float3 N = normalize(input.Position3D);
     float3 R = N;
@@ -64,16 +64,16 @@ OutputData PS(PixelData input)
         float NdotL = dot(N, L);
         if (NdotL > 0.0f)
         {
-            float2 uv = SampleSphericalMap(L);
+            float2 uv = WorldToSpherical(L);
             float4 diffuse = tex2D(equirectangularTextureSampler, uv) * NdotL;
             float4 diffuseLinear = ToLinear(diffuse);
             prefilteredColor += diffuseLinear.rgb;
-            totalWeight += NdotL;            
-        }        
+            totalWeight += NdotL;
+        }
     }
     prefilteredColor = prefilteredColor / totalWeight;
 
-    output.Color = float4(prefilteredColor, 1.0f);    
+    output.Color = float4(prefilteredColor, 1.0f);
     return output;
 }
 

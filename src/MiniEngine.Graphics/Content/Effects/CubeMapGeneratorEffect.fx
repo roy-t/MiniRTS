@@ -1,5 +1,5 @@
 ﻿#include "Includes/Defines.hlsl"
-#include "Includes/Spherical.hlsl"
+#include "Includes/Coordinates.hlsl"
 #include "Includes/Gamma.hlsl"
 
 struct VertexData
@@ -44,7 +44,7 @@ PixelData VS(in VertexData input)
 OutputData PS(PixelData input)
 {
     OutputData output = (OutputData)0;
-    float2 uv = SampleSphericalMap(normalize(input.Position3D));
+    float2 uv = WorldToSpherical(normalize(input.Position3D));
     float4 diffuse = tex2D(equirectangularTextureSampler, uv);
     float4 diffuseLinear = ToLinear(diffuse);
 
