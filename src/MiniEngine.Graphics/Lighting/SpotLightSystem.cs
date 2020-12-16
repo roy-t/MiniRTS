@@ -15,16 +15,16 @@ namespace MiniEngine.Graphics.Lighting
         private readonly GraphicsDevice Device;
         private readonly FrameService FrameService;
         private readonly SpotLightEffect Effect;
-        private readonly FrustumLightVolume FrustumLightVolume;
+        private readonly FrustumLightVolume Volume;
 
         private readonly RasterizerState SpotLightRasterizer;
         private readonly SamplerState ShadowMapSampler;
 
-        public SpotLightSystem(GraphicsDevice device, FrustumLightVolume frustumLightVolume, SpotLightEffect effect, FrameService frameService)
+        public SpotLightSystem(GraphicsDevice device, FrustumLightVolume volume, SpotLightEffect effect, FrameService frameService)
         {
             this.Device = device;
             this.FrameService = frameService;
-            this.FrustumLightVolume = frustumLightVolume;
+            this.Volume = volume;
             this.Effect = effect;
 
             this.SpotLightRasterizer = new RasterizerState()
@@ -79,7 +79,7 @@ namespace MiniEngine.Graphics.Lighting
             this.Effect.ShadowViewProjection = shadowMapCamera.Camera.ViewProjection;
 
             this.Effect.Apply();
-            this.FrustumLightVolume.Render(this.Device);
+            this.Volume.Render(this.Device);
         }
     }
 }
