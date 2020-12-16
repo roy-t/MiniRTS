@@ -1,4 +1,8 @@
+#ifndef __GBUFFERREADER
+#define __GBUFFERREADER
+
 #include "Pack.hlsl"
+#include "Material.hlsl"
 
 texture Diffuse;
 sampler diffuseSampler = sampler_state
@@ -42,13 +46,6 @@ sampler materialSampler = sampler_state
     MipFilter = LINEAR;
     AddressU = Clamp;
     AddressV = Clamp;
-};
-
-struct Mat
-{
-    float Metalicness;
-    float Roughness;
-    float AmbientOcclusion;
 };
 
 float3 ReadDiffuse(float2 texCoord)
@@ -98,3 +95,5 @@ Mat ReadMaterial(float2 texCoord)
 
     return material;
 }
+
+#endif

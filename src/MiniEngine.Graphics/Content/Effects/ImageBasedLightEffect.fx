@@ -74,6 +74,7 @@ PixelData VS(in VertexData input)
 OutputData PS(PixelData input)
 {
     OutputData output = (OutputData)0;
+    // Note: this function differs slightly from the genral light calculations in Lights.hlsl
 
     // Read data from G-Buffer
     float3 albedo = ReadDiffuse(input.Texture);

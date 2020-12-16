@@ -1,3 +1,5 @@
+#ifndef __BRDF
+#define __BRDF
 float RadicalInverse_VdC(uint bits)
 {
     bits = (bits << 16u) | (bits >> 16u);
@@ -35,3 +37,4 @@ float3 ImportanceSampleGGX(float2 Xi, float3 N, float roughness)
     float3 sampleVec = tangent * H.x + bitangent * H.y + N * H.z;
     return normalize(sampleVec);
 }
+#endif

@@ -1,3 +1,6 @@
+#ifndef __COORDINATES
+#define __COORDINATES
+
 float2 ScreenToTexture(float2 screenPosition)
 {
     return 0.5f * float2(screenPosition.x, -screenPosition.y) + 0.5f;
@@ -13,3 +16,4 @@ float2 WorldToSpherical(float3 position)
 
     return float2(u, v);
 }
+#endif
