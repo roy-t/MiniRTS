@@ -55,12 +55,11 @@ namespace MiniEngine.Gui.Editors
                 texture.Tag = this.GuiRenderer.BindTexture(texture);
             }
 
-            // TODO: clean-up a little bit
-
             ImGui.Text($"{name} : {texture.Format} ({texture.Width}x{texture.Height}x{texture.LevelCount})");
 
             var maxWidth = Math.Min(ImGui.CalcItemWidth(), 1024);
             var size = ImageUtilities.FitToBounds(texture.Width, texture.Height, maxWidth, 1024);
+
             if (ImGui.ImageButton((IntPtr)texture.Tag, size, Vector2.Zero, Vector2.One, 1))
             {
                 this.popup = (IntPtr)texture.Tag;
@@ -68,26 +67,33 @@ namespace MiniEngine.Gui.Editors
 
             if (this.popup == (IntPtr)texture.Tag)
             {
-                ImGui.OpenPopup($"Color Picker");
-                if (ImGui.BeginPopup($"Color Picker"))
-                {
-                    ImGui.ColorPicker3("Color", ref this.colorPicker);
-                    if (ImGui.Button("Apply"))
-                    {
-                        texture = new Texture2D(texture.GraphicsDevice, 1, 1, false, SurfaceFormat.Color);
-                        texture.SetData(new Color[] { new Color(this.colorPicker) });
+                texture = this.PickTexture(texture);
+            }
 
-                        ImGui.CloseCurrentPopup();
-                        this.popup = IntPtr.Zero;
-                    }
-                    ImGui.SameLine();
-                    if (ImGui.Button("Cancel"))
-                    {
-                        ImGui.CloseCurrentPopup();
-                        this.popup = IntPtr.Zero;
-                    }
-                    ImGui.EndPopup();
+            return texture;
+        }
+
+        private Texture2D PickTexture(Texture2D texture)
+        {
+            ImGui.OpenPopup($"Color Picker");
+            if (ImGui.BeginPopup($"Color Picker"))
+            {
+                ImGui.ColorPicker3("Color", ref this.colorPicker);
+                if (ImGui.Button("Apply"))
+                {
+                    texture = new Texture2D(texture.GraphicsDevice, 1, 1, false, SurfaceFormat.Color);
+                    texture.SetData(new Color[] { new Color(this.colorPicker) });
+
+                    ImGui.CloseCurrentPopup();
+                    this.popup = IntPtr.Zero;
                 }
+                ImGui.SameLine();
+                if (ImGui.Button("Cancel"))
+                {
+                    ImGui.CloseCurrentPopup();
+                    this.popup = IntPtr.Zero;
+                }
+                ImGui.EndPopup();
             }
 
             return texture;

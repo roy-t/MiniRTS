@@ -19,8 +19,8 @@ namespace MiniEngine.Graphics.Utilities
 
         public TextureCube Generate(Texture2D equirectangularTexture)
         {
-            // TODO: I don't seem to have problems with 'Pre-filter convolution artifacts' but in
-            // case of problems check that section: https://learnopengl.com/PBR/IBL/Specular-IBL
+            // I don't seem to have problems with 'Pre-filter convolution artifacts' but in case of
+            // problems check that section: https://learnopengl.com/PBR/IBL/Specular-IBL
 
             this.Device.BlendState = BlendState.Opaque;
             this.Device.DepthStencilState = DepthStencilState.None;
