@@ -27,19 +27,19 @@ namespace MiniEngine.Gui.Editors
             var roughness = DrawSlider(nameof(material.Roughness), material.Roughness);
             var ambientOcclusion = DrawSlider(nameof(material.AmbientOcclusion), material.AmbientOcclusion);
 
-            var diffuse = this.DrawTexture(nameof(Material.Diffuse), material.Diffuse);
+            var albedo = this.DrawTexture(nameof(Material.Albedo), material.Albedo);
             var normal = this.DrawTexture(nameof(Material.Normal), material.Normal);
 
             if (metalicness != material.Metalicness ||
                 roughness != material.Roughness ||
                 ambientOcclusion != material.AmbientOcclusion ||
-                diffuse != material.Diffuse ||
+                albedo != material.Albedo ||
                 normal != material.Normal)
             {
                 material.Metalicness = metalicness;
                 material.Roughness = roughness;
                 material.AmbientOcclusion = ambientOcclusion;
-                material.Diffuse = diffuse;
+                material.Albedo = albedo;
                 material.Normal = normal;
 
                 return true;

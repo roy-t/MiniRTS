@@ -35,7 +35,7 @@ namespace MiniEngine.Graphics
 
         public int GetBufferSize()
         {
-            var gBufferSize = BufferSize(this.GBuffer.Depth, this.GBuffer.Diffuse, this.GBuffer.Material, this.GBuffer.Normal);
+            var gBufferSize = BufferSize(this.GBuffer.Depth, this.GBuffer.Albedo, this.GBuffer.Material, this.GBuffer.Normal);
             var lBufferSize = BufferSize(this.LBuffer.Light);
             var skyboxSize = BufferSize(this.Skybox.Environment, this.Skybox.Irradiance, this.Skybox.Texture);
 

@@ -82,7 +82,7 @@ float3 FresnelSchlickRoughness(float cosTheta, float3 F0, float roughness)
 
 float3 ComputeLight(
     // Object properties
-    float3 diffuse,
+    float3 albedo,
     float3 N,
     Mat material,
     float3 worldPosition,
@@ -102,7 +102,7 @@ float3 ComputeLight(
     // high reflectivity that is tinted by surface color The reflectance at normal incidence depends
     // on the metalicness of the material.
     float3 F0 = float3(0.04f, 0.04f, 0.04f);
-    F0 = lerp(F0, diffuse, material.Metalicness);
+    F0 = lerp(F0, albedo, material.Metalicness);
 
     // The light vector points from the object to the light
     float3 L = normalize(lightPosition - worldPosition);
@@ -155,7 +155,7 @@ float3 ComputeLight(
     // The final light color is based on a diffuse component and a specular component. It is scaled
     // by radiance (light strength) and how much the outgoing light vector aligns in the direction
     // of the viewer. Or in other words how much the light is shining in the viewer's direction.
-    float3 Lo = (kD * diffuse / PI + specular) * radiance * NdotL;
+    float3 Lo = (kD * albedo / PI + specular) * radiance * NdotL;
 
     return Lo;
 }

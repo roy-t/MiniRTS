@@ -15,7 +15,7 @@ struct PixelData
 struct OutputData
 {
     // COLOR0 is only set so we can sample its depth buffer
-    float4 Diffuse : COLOR1;
+    float4 Color : COLOR1;
 };
 
 texture Skybox;
@@ -47,7 +47,7 @@ PixelData VS(in VertexData input)
 OutputData PS(PixelData input)
 {
     OutputData output = (OutputData)0;
-    output.Diffuse = texCUBE(skyboxSampler, input.Position3D);
+    output.Color = texCUBE(skyboxSampler, input.Position3D);
 
     return output;
 }

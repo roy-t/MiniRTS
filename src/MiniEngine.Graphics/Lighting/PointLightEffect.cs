@@ -7,7 +7,7 @@ namespace MiniEngine.Graphics.Lighting
     public sealed class PointLightEffect : EffectWrapper
     {
         private readonly EffectParameter WorldViewProjectionParameter;
-        private readonly EffectParameter DiffuseParameter;
+        private readonly EffectParameter AlbedoParameter;
         private readonly EffectParameter NormalParameter;
         private readonly EffectParameter DepthParameter;
         private readonly EffectParameter MaterialParameter;
@@ -22,7 +22,7 @@ namespace MiniEngine.Graphics.Lighting
             this.Effect.CurrentTechnique = this.Effect.Techniques["PointLightTechnique"];
 
             this.WorldViewProjectionParameter = this.Effect.Parameters["WorldViewProjection"];
-            this.DiffuseParameter = this.Effect.Parameters["Diffuse"];
+            this.AlbedoParameter = this.Effect.Parameters["Albedo"];
             this.NormalParameter = this.Effect.Parameters["Normal"];
             this.DepthParameter = this.Effect.Parameters["Depth"];
             this.MaterialParameter = this.Effect.Parameters["Material"];
@@ -35,7 +35,7 @@ namespace MiniEngine.Graphics.Lighting
 
         public Matrix WorldViewProjection { set => this.WorldViewProjectionParameter.SetValue(value); }
 
-        public Texture2D Diffuse { set => this.DiffuseParameter.SetValue(value); }
+        public Texture2D Albedo { set => this.AlbedoParameter.SetValue(value); }
 
         public Texture2D Normal { set => this.NormalParameter.SetValue(value); }
 

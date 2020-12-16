@@ -77,7 +77,7 @@ OutputData PS(PixelData input)
     // Note: this function differs slightly from the genral light calculations in Lights.hlsl
 
     // Read data from G-Buffer
-    float3 albedo = ReadDiffuse(input.Texture);
+    float3 albedo = ReadAlbedo(input.Texture);
     float3 N = ReadNormal(input.Texture);
     float3 worldPosition = ReadWorldPosition(input.Texture, InverseViewProjection);
     Mat material = ReadMaterial(input.Texture);

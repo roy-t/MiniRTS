@@ -192,7 +192,7 @@ namespace MiniEngine.Gui
             var io = ImGui.GetIO();
 
             this.Effect.WorldViewProjection = Matrix.CreateOrthographicOffCenter(0, io.DisplaySize.X, io.DisplaySize.Y, 0, -1f, 1f);
-            this.Effect.Diffuse = texture;
+            this.Effect.Color = texture;
             this.Effect.ConvertColorsToLinear = texture.Format != SurfaceFormat.ColorSRgb;
         }
 

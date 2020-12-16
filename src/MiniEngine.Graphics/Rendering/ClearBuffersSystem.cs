@@ -9,7 +9,7 @@ namespace MiniEngine.Graphics.Rendering
     [System]
     public partial class ClearBuffersSystem : ISystem
     {
-        private static readonly Color NeutralDiffuse = Color.Transparent;
+        private static readonly Color NeutralAlbedo = Color.Transparent;
         private static readonly Color NeutralMaterial = Color.Transparent;
         private static readonly Color NeutralDepth = Color.White;
         private static readonly Color NeutralNormal = new Color(0.5f, 0.5f, 0.5f, 0.0f);
@@ -36,7 +36,7 @@ namespace MiniEngine.Graphics.Rendering
         public void Process()
         {
             var gBuffer = this.FrameService.GBuffer;
-            this.ClearRenderTarget(gBuffer.Diffuse, NeutralDiffuse);
+            this.ClearRenderTarget(gBuffer.Albedo, NeutralAlbedo);
             this.ClearRenderTarget(gBuffer.Material, NeutralMaterial);
             this.ClearRenderTarget(gBuffer.Depth, NeutralDepth);
             this.ClearRenderTarget(gBuffer.Normal, NeutralNormal);

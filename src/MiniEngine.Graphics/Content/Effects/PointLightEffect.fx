@@ -43,12 +43,12 @@ OutputData PS(PixelData input)
     OutputData output = (OutputData)0;
 
     // Read data from G-Buffer
-    float3 diffuse = ReadDiffuse(input.Texture);
+    float3 albedo = ReadAlbedo(input.Texture);
     float3 N = ReadNormal(input.Texture);
     float3 worldPosition = ReadWorldPosition(input.Texture, InverseViewProjection);
     Mat material = ReadMaterial(input.Texture);
 
-    float3 Lo = ComputeLight(diffuse, N, material, worldPosition, CameraPosition, Position, Color, Strength);
+    float3 Lo = ComputeLight(albedo, N, material, worldPosition, CameraPosition, Position, Color, Strength);
     output.Light = float4(Lo, 1.0f);
 
     return output;

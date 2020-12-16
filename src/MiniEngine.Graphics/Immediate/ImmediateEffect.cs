@@ -6,7 +6,7 @@ namespace MiniEngine.Graphics.Immediate
 {
     public sealed class ImmediateEffect : EffectWrapper
     {
-        private readonly EffectParameter DiffuseParameter;
+        private readonly EffectParameter ColorParameter;
         private readonly EffectParameter WorldViewProjectionParameter;
         private readonly EffectParameter ConvertColorsToLinearParameter;
 
@@ -14,12 +14,12 @@ namespace MiniEngine.Graphics.Immediate
         {
             this.Effect.CurrentTechnique = this.Effect.Techniques["ImmediateTechnique"];
 
-            this.DiffuseParameter = this.Effect.Parameters["Diffuse"];
+            this.ColorParameter = this.Effect.Parameters["Color"];
             this.WorldViewProjectionParameter = this.Effect.Parameters["WorldViewProjection"];
             this.ConvertColorsToLinearParameter = this.Effect.Parameters["ConvertColorsToLinear"];
         }
 
-        public Texture2D Diffuse { set => this.DiffuseParameter.SetValue(value); }
+        public Texture2D Color { set => this.ColorParameter.SetValue(value); }
 
         public Matrix WorldViewProjection { set => this.WorldViewProjectionParameter.SetValue(value); }
 

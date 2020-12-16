@@ -65,9 +65,8 @@ OutputData PS(PixelData input)
         if (NdotL > 0.0f)
         {
             float2 uv = WorldToSpherical(L);
-            float4 diffuse = tex2D(equirectangularTextureSampler, uv) * NdotL;
-            float4 diffuseLinear = ToLinear(diffuse);
-            prefilteredColor += diffuseLinear.rgb;
+            float4 color = tex2D(equirectangularTextureSampler, uv) * NdotL;
+            prefilteredColor += ToLinear(color).rgb;
             totalWeight += NdotL;
         }
     }

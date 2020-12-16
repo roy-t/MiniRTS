@@ -19,16 +19,16 @@ struct PixelData
 
 struct OutputData
 {
-    float4 Diffuse : COLOR0;
+    float4 Albedo : COLOR0;
     float4 Material : COLOR1;
     float Depth : COLOR2;
     float4 Normal: COLOR3;
 };
 
-texture Diffuse;
-sampler diffuseSampler = sampler_state
+texture Albedo;
+sampler albedoSampler = sampler_state
 {
-    Texture = (Diffuse);
+    Texture = (Albedo);
     MinFilter = ANISOTROPIC;
     MagFilter = ANISOTROPIC;
     MipFilter = LINEAR;
@@ -102,8 +102,8 @@ OutputData PS(PixelData input)
 {
     OutputData output = (OutputData)0;
 
-    float4 diffuse = tex2D(diffuseSampler, input.Texture);
-    output.Diffuse = ToLinear(diffuse);
+    float4 albedo = tex2D(albedoSampler, input.Texture);
+    output.Albedo = ToLinear(albedo);
     output.Material = float4(Metalicness, Roughness, AmbientOcclusion, 1.0f);
     output.Depth = input.WorldPosition.z / input.WorldPosition.w;
 

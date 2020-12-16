@@ -50,7 +50,7 @@ namespace MiniEngine.Graphics.Lighting
             this.Effect.CameraPosition = this.FrameService.CamereComponent.Camera.Position;
             this.Effect.InverseViewProjection = Matrix.Invert(this.FrameService.CamereComponent.Camera.ViewProjection);
 
-            this.Effect.Diffuse = this.FrameService.GBuffer.Diffuse;
+            this.Effect.Albedo = this.FrameService.GBuffer.Albedo;
             this.Effect.Normal = this.FrameService.GBuffer.Normal;
             this.Effect.Depth = this.FrameService.GBuffer.Depth;
             this.Effect.Material = this.FrameService.GBuffer.Material;

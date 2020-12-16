@@ -20,7 +20,7 @@ namespace MiniEngine.Editor.Workspaces
             this.Renderer = renderer;
             this.Buffers = new List<(string, Texture2D)>();
 
-            this.RegisterTexture(nameof(frameService.GBuffer.Diffuse), frameService.GBuffer.Diffuse);
+            this.RegisterTexture(nameof(frameService.GBuffer.Albedo), frameService.GBuffer.Albedo);
             this.RegisterTexture(nameof(frameService.GBuffer.Normal), frameService.GBuffer.Normal);
             this.RegisterTexture(nameof(frameService.GBuffer.Material), frameService.GBuffer.Material);
             this.RegisterTexture(nameof(frameService.LBuffer.Light), frameService.LBuffer.Light);

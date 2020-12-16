@@ -4,10 +4,10 @@
 #include "Pack.hlsl"
 #include "Material.hlsl"
 
-texture Diffuse;
-sampler diffuseSampler = sampler_state
+texture Albedo;
+sampler albedoSampler = sampler_state
 {
-    Texture = (Diffuse);
+    Texture = (Albedo);
     MinFilter = LINEAR;
     MagFilter = LINEAR;
     MipFilter = LINEAR;
@@ -48,9 +48,9 @@ sampler materialSampler = sampler_state
     AddressV = Clamp;
 };
 
-float3 ReadDiffuse(float2 texCoord)
+float3 ReadAlbedo(float2 texCoord)
 {
-    return tex2D(diffuseSampler, texCoord).rgb;
+    return tex2D(albedoSampler, texCoord).rgb;
 }
 
 float3 ReadNormal(float2 texCoord)

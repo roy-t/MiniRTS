@@ -28,9 +28,9 @@ namespace MiniEngine.Graphics.Skybox
             this.Device.RasterizerState = RasterizerState.CullCounterClockwise;
             this.Device.SamplerStates[0] = SamplerState.LinearClamp;
 
-            // As an optimization we render the skybox last. Using the diffuse depth buffer we can
+            // As an optimization we render the skybox last. Using the albedo depth buffer we can
             // cull most samples which saves the cost of shading every pixel of the skybox
-            this.Device.SetRenderTargets(this.FrameService.GBuffer.Diffuse, this.FrameService.LBuffer.Light);
+            this.Device.SetRenderTargets(this.FrameService.GBuffer.Albedo, this.FrameService.LBuffer.Light);
         }
 
         [Process]

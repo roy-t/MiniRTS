@@ -66,9 +66,9 @@ OutputData PS(PixelData input)
             float3 sampleVec = tangentSample.x * right + tangentSample.y * up + tangentSample.z * normal;
 
             float2 uv = WorldToSpherical(sampleVec);
-            float4 diffuse = tex2D(equirectangularTextureSampler, uv);
-            float4 diffuseLinear = ToLinear(diffuse);
-            irradiance += diffuseLinear.rgb;
+            float4 albedo = tex2D(equirectangularTextureSampler, uv);
+            float4 albedoLinear = ToLinear(albedo);
+            irradiance += albedoLinear.rgb;
             nrSamples++;
         }
     }

@@ -7,13 +7,13 @@ namespace MiniEngine.Graphics.Geometry
     {
         public GBuffer(GraphicsDevice device)
         {
-            this.Diffuse = RenderTargetBuilder.Build(device, SurfaceFormat.ColorSRgb, DepthFormat.Depth24);
+            this.Albedo = RenderTargetBuilder.Build(device, SurfaceFormat.ColorSRgb, DepthFormat.Depth24);
             this.Material = RenderTargetBuilder.Build(device, SurfaceFormat.Color);
             this.Depth = RenderTargetBuilder.Build(device, SurfaceFormat.Single);
             this.Normal = RenderTargetBuilder.Build(device, SurfaceFormat.HalfVector4);
         }
 
-        public RenderTarget2D Diffuse { get; }
+        public RenderTarget2D Albedo { get; }
 
         public RenderTarget2D Material { get; }
 

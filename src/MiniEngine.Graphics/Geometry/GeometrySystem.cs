@@ -30,7 +30,7 @@ namespace MiniEngine.Graphics.Geometry
             this.Device.SamplerStates[1] = SamplerState.AnisotropicClamp;
 
             this.Device.SetRenderTargets(
-                this.FrameService.GBuffer.Diffuse,
+                this.FrameService.GBuffer.Albedo,
                 this.FrameService.GBuffer.Material,
                 this.FrameService.GBuffer.Depth,
                 this.FrameService.GBuffer.Normal);
@@ -52,7 +52,7 @@ namespace MiniEngine.Graphics.Geometry
             this.Effect.CameraPosition = camera.Position;
             this.Effect.World = transform;
             this.Effect.WorldViewProjection = transform * camera.ViewProjection;
-            this.Effect.Diffuse = material.Diffuse;
+            this.Effect.Albedo = material.Albedo;
             this.Effect.Normal = material.Normal;
             this.Effect.Metalicness = material.Metalicness;
             this.Effect.Roughness = material.Roughness;

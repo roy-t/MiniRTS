@@ -15,7 +15,7 @@ struct PixelData
 
 struct OutputData
 {
-    float4 Diffuse : COLOR0;
+    float4 Color : COLOR0;
 };
 
 texture EquirectangularTexture;
@@ -45,10 +45,8 @@ OutputData PS(PixelData input)
 {
     OutputData output = (OutputData)0;
     float2 uv = WorldToSpherical(normalize(input.Position3D));
-    float4 diffuse = tex2D(equirectangularTextureSampler, uv);
-    float4 diffuseLinear = ToLinear(diffuse);
-
-    output.Diffuse = diffuseLinear;
+    float4 color = tex2D(equirectangularTextureSampler, uv);
+    output.Color = ToLinear(color);
 
     return output;
 }

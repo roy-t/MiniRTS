@@ -4,9 +4,9 @@ namespace MiniEngine.Graphics.Geometry
 {
     public sealed class Material
     {
-        public Material(Texture2D diffuse, Texture2D normal, float metalicness, float roughness, float ambientOcclusion = 1.0f)
+        public Material(Texture2D albedo, Texture2D normal, float metalicness, float roughness, float ambientOcclusion = 1.0f)
         {
-            this.Diffuse = diffuse;
+            this.Albedo = albedo;
             this.Normal = normal;
 
             this.Metalicness = metalicness;
@@ -14,7 +14,7 @@ namespace MiniEngine.Graphics.Geometry
             this.AmbientOcclusion = ambientOcclusion;
         }
 
-        public Texture2D Diffuse { get; set; }
+        public Texture2D Albedo { get; set; }
 
         public Texture2D Normal { get; set; }
 
