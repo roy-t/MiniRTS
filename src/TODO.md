@@ -17,3 +17,13 @@
 - One GometryComponent should have a List<> of poses, geometry system should work through that list
     - Every Pose should have a relative offset matrix
 - Add support for mask textures
+
+
+
+
+
+
+- GeometryData
+- Material
+- Model = GeometryData + Offset + Material
+- Pose = Model + Position

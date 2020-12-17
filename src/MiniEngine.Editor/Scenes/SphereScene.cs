@@ -46,7 +46,7 @@ namespace MiniEngine.Editor.Scenes
 
             content.Push("sphere-scene");
 
-            var model = content.Load<Pose>("sponza/sponza");
+            //var model = content.Load<Pose>("sponza/sponza");
 
             this.CreateSkyboxes(device, content, frameService, cubeMapGenerator, irradianceMapGenerator, environmentMapGenerator);
 
@@ -105,8 +105,12 @@ namespace MiniEngine.Editor.Scenes
 
         private void CreateSphere(GeometryData geometry, Material material, Matrix transform)
         {
+            var mesh = new GeometryMesh(geometry, material, Matrix.Identity);
+            var model = new GeometryModel();
+            model.Add(mesh);
+
             var entity = this.Entities.Create();
-            this.Components.Add(new GeometryComponent(entity, geometry, material));
+            this.Components.Add(new GeometryComponent(entity, model, material));
             this.Components.Add(new TransformComponent(entity, transform));
         }
 

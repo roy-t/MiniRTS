@@ -44,7 +44,11 @@ namespace MiniEngine.Graphics.Geometry
             for (var i = 0; i < inView.Count; i++)
             {
                 var pose = inView[i];
-                this.Draw(this.FrameService.CamereComponent.Camera, pose.Geometry, pose.Material, pose.Transform);
+                for (var j = 0; j < pose.Model.Meshes.Count; j++)
+                {
+                    var mesh = pose.Model.Meshes[j];
+                    this.Draw(this.FrameService.CamereComponent.Camera, mesh.Geometry, mesh.Material, mesh.Offset * pose.Transform);
+                }
             }
         }
 

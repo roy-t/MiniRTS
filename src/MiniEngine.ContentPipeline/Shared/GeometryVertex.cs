@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace MiniEngine.ContentPipeline.Shared
 {
+    // TODO: move back to Graphics project?
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct GeometryVertex : IVertexType
     {

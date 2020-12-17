@@ -29,14 +29,14 @@ namespace MiniEngine.Graphics.Visibility
 
         [ProcessNew]
         public void ProcessNew(TransformComponent transform, GeometryComponent geometry)
-            => this.Partition.Add(transform.Entity, geometry.Geometry, geometry.Material, transform.Matrix);
+            => this.Partition.Add(transform.Entity, geometry.Geometry, transform.Matrix);
 
         [ProcessChanged]
-        public void ProcessChanged(TransformComponent transform, GeometryComponent geometry)
+        public void ProcessChanged(TransformComponent transform, GeometryComponent _)
             => this.Partition.Update(transform.Entity, transform.Matrix);
 
         [ProcessRemoved]
-        public void ProcessRemoved(TransformComponent transform, GeometryComponent geometry)
+        public void ProcessRemoved(TransformComponent transform, GeometryComponent _)
             => this.Partition.Remove(transform.Entity);
     }
 }

@@ -3,7 +3,6 @@ using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
 using MiniEngine.ContentPipeline.Shared;
 using MiniEngine.Graphics.Camera;
-using MiniEngine.Graphics.Geometry;
 using MiniEngine.Systems;
 using MiniEngine.Systems.Generators;
 
@@ -45,7 +44,11 @@ namespace MiniEngine.Graphics.Shadows
             for (var i = 0; i < camera.InView.Count; i++)
             {
                 var pose = camera.InView[i];
-                this.Draw(camera.Camera, pose.Geometry, pose.Transform);
+                for (var j = 0; j < pose.Model.Meshes.Count; j++)
+                {
+                    var mesh = pose.Model.Meshes[j];
+                    this.Draw(camera.Camera, mesh.Geometry, mesh.Offset * pose.Transform);
+                }
             }
         }
 

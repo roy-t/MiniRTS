@@ -2,14 +2,13 @@
 using Microsoft.Xna.Framework;
 using MiniEngine.ContentPipeline.Shared;
 using MiniEngine.Graphics.Camera;
-using MiniEngine.Graphics.Geometry;
 using MiniEngine.Systems;
 
 namespace MiniEngine.Graphics.Visibility
 {
     public sealed class FakeSpatialPartitioningStructure
     {
-        private record Entry(Entity Entity, GeometryData Geometry, Material Material, Matrix Transform);
+        private record Entry(Entity Entity, GeometryModel Model, Matrix Transform);
 
         private readonly List<Entry> Entries;
 
@@ -18,9 +17,9 @@ namespace MiniEngine.Graphics.Visibility
             this.Entries = new List<Entry>();
         }
 
-        public void Add(Entity entity, GeometryData geometry, Material material, Matrix transform)
+        public void Add(Entity entity, GeometryModel model, Matrix transform)
         {
-            var entry = new Entry(entity, geometry, material, transform);
+            var entry = new Entry(entity, model, transform);
             this.Entries.Add(entry);
         }
 
@@ -31,7 +30,7 @@ namespace MiniEngine.Graphics.Visibility
                 var pose = this.Entries[i];
                 if (pose.Entity == entity)
                 {
-                    this.Entries[i] = new Entry(entity, pose.Geometry, pose.Material, transform);
+                    this.Entries[i] = new Entry(entity, pose.Model, transform);
                     return;
                 }
             }
@@ -56,10 +55,10 @@ namespace MiniEngine.Graphics.Visibility
             {
                 var entry = this.Entries[i];
 
-                var bounds = entry.Geometry.Bounds.Transform(entry.Transform);
+                var bounds = entry.Model.Bounds.Transform(entry.Transform);
                 if (frustum.Contains(bounds) != ContainmentType.Disjoint)
                 {
-                    outVisible.Add(new Pose(entry.Geometry, entry.Material, entry.Transform));
+                    outVisible.Add(new Pose(entry.Model, entry.Transform));
                 }
             }
         }
