@@ -33,8 +33,8 @@ sampler albedoSampler = sampler_state
     MagFilter = ANISOTROPIC;
     MipFilter = LINEAR;
     MaxAnisotropy = 16;
-    AddressU = Clamp;
-    AddressV = Clamp;
+    AddressU = Wrap;
+    AddressV = Wrap;
 };
 
 texture Normal;
@@ -45,8 +45,8 @@ sampler normalSampler = sampler_state
     MagFilter = ANISOTROPIC;
     MipFilter = LINEAR;
     MaxAnisotropy = 16;
-    AddressU = Clamp;
-    AddressV = Clamp;
+    AddressU = Wrap;
+    AddressV = Wrap;
 };
 
 float3 CameraPosition;

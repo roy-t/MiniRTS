@@ -33,6 +33,13 @@ namespace MiniEngine.ContentPipeline
 
         private readonly MaterialBuilder MaterialBuilder;
 
+        private static readonly IList<string> AcceptableVertexChannelNames =
+           new[]
+           {
+                VertexChannelNames.TextureCoordinate(0),
+                VertexChannelNames.Normal(0)
+           };
+
         public PBRModelProcessor()
         {
             this.MaterialBuilder = new MaterialBuilder(new MaterialLookup(this.FallbackAlbedo, this.FallbackMetalicness, this.FallbackNormal, this.FallbackRoughness, this.FallbackMask));
@@ -59,6 +66,8 @@ namespace MiniEngine.ContentPipeline
                     var geometryName = string.IsNullOrWhiteSpace(geometry.Name) ? $"{geometryCounter}" : geometry.Name;
                     geometryCounter++;
 
+                    StripVertexChannels(geometry);
+
                     var name = string.Join(".", meshName, geometryName);
                     var vertexBuffer = geometry.Vertices.CreateVertexBuffer();
                     var indices = geometry.Indices;
@@ -74,6 +83,21 @@ namespace MiniEngine.ContentPipeline
             }
 
             return model;
+        }
+
+        private static void StripVertexChannels(GeometryContent geometry)
+        {
+            var channels = geometry.Vertices.Channels;
+            for (var i = channels.Count - 1; i >= 0; i--)
+            {
+                var vertexChannelName =
+               geometry.Vertices.Channels[i].Name;
+
+                if (!AcceptableVertexChannelNames.Contains(vertexChannelName))
+                {
+                    geometry.Vertices.Channels.Remove(vertexChannelName);
+                }
+            }
         }
 
         private Dictionary<X.GeometryContent, M.MaterialContent> ProcessMaterials(List<MeshContent> meshes, ContentProcessorContext context)
