@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Content.Pipeline;
+﻿using System.IO;
+using Microsoft.Xna.Framework.Content.Pipeline;
 using Microsoft.Xna.Framework.Content.Pipeline.Graphics;
 
 namespace MiniEngine.ContentPipeline.Models
@@ -13,11 +14,11 @@ namespace MiniEngine.ContentPipeline.Models
 
         public MaterialLookup(string fallbackAlbedo, string fallbackMetalicness, string fallbackNormal, string fallbackRoughness, string fallbackMask)
         {
-            this.FallbackAlbedo = fallbackAlbedo;
-            this.FallbackMetalicness = fallbackMetalicness;
-            this.FallbackNormal = fallbackNormal;
-            this.FallbackRoughness = fallbackRoughness;
-            this.FallbackMask = fallbackMask;
+            this.FallbackAlbedo = Path.GetFullPath(fallbackAlbedo);
+            this.FallbackMetalicness = Path.GetFullPath(fallbackMetalicness);
+            this.FallbackNormal = Path.GetFullPath(fallbackNormal);
+            this.FallbackRoughness = Path.GetFullPath(fallbackRoughness);
+            this.FallbackMask = Path.GetFullPath(fallbackMask);
         }
 
         public ExternalReference<TextureContent> GetAlbedo(MaterialContent material)

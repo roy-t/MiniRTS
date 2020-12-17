@@ -25,7 +25,6 @@ namespace MiniEngine.ContentPipeline.Shared
 
         public BoundingSphere Bounds { get; private set; }
 
-        // TODO: double check bound transformation is correct!
         public void Add(GeometryMesh mesh)
         {
             this.MeshList.Add(mesh);

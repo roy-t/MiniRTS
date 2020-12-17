@@ -5,14 +5,17 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content.Pipeline;
 using Microsoft.Xna.Framework.Content.Pipeline.Graphics;
-using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.ContentPipeline.Models;
-using MiniEngine.ContentPipeline.Shared;
+using MiniEngine.ContentPipeline.Serialization;
+
+using M = MiniEngine.ContentPipeline.Serialization;
+
+using X = Microsoft.Xna.Framework.Content.Pipeline.Graphics;
 
 namespace MiniEngine.ContentPipeline
 {
     [ContentProcessor(DisplayName = "MiniEngine :: Model with PBR textures")]
-    public class PBRModelProcessor : ContentProcessor<NodeContent, PoseContent>
+    internal sealed class PBRModelProcessor : ContentProcessor<NodeContent, GeometryModelContent>
     {
         [DisplayName("Fallback - Albedo")]
         public string FallbackAlbedo { get; set; } = "materials/albedo.tga";
@@ -29,48 +32,62 @@ namespace MiniEngine.ContentPipeline
         [DisplayName("Fallback - Mask")]
         public string FallbackMask { get; set; } = "materials/mask.tga";
 
-        public override PoseContent Process(NodeContent input, ContentProcessorContext context)
-        {
-            var content = new PoseContent
-            {
-                Bounds = new BoundingSphere(Vector3.Up, 10.0f)
-            };
-            content.Indices.AddRange(new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 });
-            content.Vertices.VertexDeclaration = GeometryVertex.GetContent();
-            content.Vertices.Write(0, 4, typeof(Vector4), new Vector4[] { Vector4.One, Vector4.Zero, Vector4.One });
-            content.Material = this.ProcessMaterials(input, context);
+        private readonly MaterialBuilder MaterialBuilder;
 
-            return content;
+        public PBRModelProcessor()
+        {
+            this.MaterialBuilder = new MaterialBuilder(new MaterialLookup(this.FallbackAlbedo, this.FallbackMetalicness, this.FallbackNormal, this.FallbackRoughness, this.FallbackMask));
         }
 
-        private MaterialReferences ProcessMaterials(NodeContent input, ContentProcessorContext context)
+        public override GeometryModelContent Process(NodeContent input, ContentProcessorContext context)
         {
-            // TODO:
-            // - Build all distinct materials found that we're going to use
-            // - Store their references so we can easily look them up when generating the geometry
-            // (so we can store them in the MaterialReferences/PoseContent
-            var lookUp = new MaterialLookup(this.FallbackAlbedo, this.FallbackMetalicness, this.FallbackNormal, this.FallbackRoughness, this.FallbackMask);
-
             var nodes = input.AsEnumerable().SelectDeep(n => n.Children).ToList();
             var meshes = nodes.FindAll(n => n is MeshContent).Cast<MeshContent>().ToList();
-            var geometries = meshes.SelectMany(m => m.Geometry).ToList();
-            var materials = geometries.Select(g => g.Material).Distinct().ToList();
 
-            var foo = materials.First(x => x.Textures.Count == 5);
+            var materials = this.ProcessMaterials(meshes, context);
 
-            var albedo = lookUp.GetAlbedo(foo);
-            var normal = lookUp.GetNormal(foo);
+            var model = new GeometryModelContent();
 
-            var albedoBuild = context.BuildAsset<TextureContent, Texture2D>(albedo, "TextureProcessor");
-            var normalBuild = context.BuildAsset<TextureContent, Texture2D>(normal, "TextureProcessor");
+            var meshCounter = 0;
+            foreach (var mesh in meshes)
+            {
+                var meshName = string.IsNullOrWhiteSpace(mesh.Name) ? $"{meshCounter}" : mesh.Name;
+                meshCounter++;
 
-            var material = new MaterialReferences(albedoBuild, normalBuild);
+                var geometryCounter = 0;
+                foreach (var geometry in mesh.Geometry)
+                {
+                    var geometryName = string.IsNullOrWhiteSpace(geometry.Name) ? $"{geometryCounter}" : geometry.Name;
+                    geometryCounter++;
 
-            var bar = geometries.Where(g => g.Material == foo).First();
-            var vertexBuffer = bar.Vertices.CreateVertexBuffer();
-            //vertexBuffer.Write(bar.)
+                    var name = string.Join(".", meshName, geometryName);
+                    var vertexBuffer = geometry.Vertices.CreateVertexBuffer();
+                    var indices = geometry.Indices;
+                    var bounds = BoundingSphere.CreateFromPoints(mesh.Positions);
 
-            return material;
+                    var geometryData = new GeometryDataContent(name, vertexBuffer, indices, bounds);
+
+                    var material = materials[geometry];
+                    model.Add(new GeometryMeshContent(geometryData, material, mesh.AbsoluteTransform));
+                }
+            }
+            return model;
+        }
+
+        private Dictionary<X.GeometryContent, M.MaterialContent> ProcessMaterials(List<MeshContent> meshes, ContentProcessorContext context)
+        {
+            var cache = new Dictionary<X.GeometryContent, M.MaterialContent>();
+
+            foreach (var mesh in meshes)
+            {
+                foreach (var geometry in mesh.Geometry)
+                {
+                    var material = this.MaterialBuilder.Build(geometry.Material, context);
+                    cache.Add(geometry, material);
+                }
+            }
+
+            return cache;
         }
     }
 

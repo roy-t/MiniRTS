@@ -46,7 +46,8 @@ namespace MiniEngine.Editor.Scenes
 
             content.Push("sphere-scene");
 
-            //var model = content.Load<Pose>("sponza/sponza");
+            var maaa = content.Load<Material>("sponza/sponza");
+            var model = content.Load<GeometryModel>("sponza/sponza");
 
             this.CreateSkyboxes(device, content, frameService, cubeMapGenerator, irradianceMapGenerator, environmentMapGenerator);
 
