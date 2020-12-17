@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Content.Pipeline;
 using Microsoft.Xna.Framework.Content.Pipeline.Serialization.Compiler;
+using MiniEngine.ContentPipeline.Serialization.Readers;
 using MiniEngine.ContentPipeline.Shared;
 
 namespace MiniEngine.ContentPipeline.Serialization.Writers
@@ -8,7 +9,7 @@ namespace MiniEngine.ContentPipeline.Serialization.Writers
     internal sealed class GeometryModelWriter : ContentTypeWriter<GeometryModelContent>
     {
         public override string GetRuntimeReader(TargetPlatform targetPlatform)
-         => typeof(GeometryModel).AssemblyQualifiedName;
+         => typeof(GeometryModelReader).AssemblyQualifiedName;
 
         public override string GetRuntimeType(TargetPlatform targetPlatform)
             => typeof(GeometryModel).AssemblyQualifiedName;

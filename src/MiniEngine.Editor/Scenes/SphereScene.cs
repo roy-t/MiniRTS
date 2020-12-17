@@ -46,10 +46,11 @@ namespace MiniEngine.Editor.Scenes
 
             content.Push("sphere-scene");
 
-            var maaa = content.Load<Material>("sponza/sponza");
-            var model = content.Load<GeometryModel>("sponza/sponza");
+            var sponza = content.Load<GeometryModel>("sponza/sponza");
+            CreateModel(sponza, Matrix.CreateScale(0.05f));
 
             this.CreateSkyboxes(device, content, frameService, cubeMapGenerator, irradianceMapGenerator, environmentMapGenerator);
+            return;
 
             var red = new Texture2D(device, 1, 1);
             red.SetData(new Color[] { Color.White });
@@ -110,8 +111,13 @@ namespace MiniEngine.Editor.Scenes
             var model = new GeometryModel();
             model.Add(mesh);
 
+            CreateModel(model, transform);
+        }
+
+        private void CreateModel(GeometryModel model, Matrix transform)
+        {
             var entity = this.Entities.Create();
-            this.Components.Add(new GeometryComponent(entity, model, material));
+            this.Components.Add(new GeometryComponent(entity, model));
             this.Components.Add(new TransformComponent(entity, transform));
         }
 

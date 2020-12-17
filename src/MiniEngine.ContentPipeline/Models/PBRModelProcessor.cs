@@ -6,7 +6,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content.Pipeline;
 using Microsoft.Xna.Framework.Content.Pipeline.Graphics;
 using MiniEngine.ContentPipeline.Models;
-using MiniEngine.ContentPipeline.Serialization;
 
 using M = MiniEngine.ContentPipeline.Serialization;
 
@@ -15,7 +14,7 @@ using X = Microsoft.Xna.Framework.Content.Pipeline.Graphics;
 namespace MiniEngine.ContentPipeline
 {
     [ContentProcessor(DisplayName = "MiniEngine :: Model with PBR textures")]
-    internal sealed class PBRModelProcessor : ContentProcessor<NodeContent, GeometryModelContent>
+    internal sealed class PBRModelProcessor : ContentProcessor<NodeContent, M.GeometryModelContent>
     {
         [DisplayName("Fallback - Albedo")]
         public string FallbackAlbedo { get; set; } = "materials/albedo.tga";
@@ -39,14 +38,14 @@ namespace MiniEngine.ContentPipeline
             this.MaterialBuilder = new MaterialBuilder(new MaterialLookup(this.FallbackAlbedo, this.FallbackMetalicness, this.FallbackNormal, this.FallbackRoughness, this.FallbackMask));
         }
 
-        public override GeometryModelContent Process(NodeContent input, ContentProcessorContext context)
+        public override M.GeometryModelContent Process(NodeContent input, ContentProcessorContext context)
         {
             var nodes = input.AsEnumerable().SelectDeep(n => n.Children).ToList();
             var meshes = nodes.FindAll(n => n is MeshContent).Cast<MeshContent>().ToList();
 
             var materials = this.ProcessMaterials(meshes, context);
 
-            var model = new GeometryModelContent();
+            var model = new M.GeometryModelContent();
 
             var meshCounter = 0;
             foreach (var mesh in meshes)
@@ -65,12 +64,15 @@ namespace MiniEngine.ContentPipeline
                     var indices = geometry.Indices;
                     var bounds = BoundingSphere.CreateFromPoints(mesh.Positions);
 
-                    var geometryData = new GeometryDataContent(name, vertexBuffer, indices, bounds);
+                    var geometryData = new M.GeometryDataContent(name, vertexBuffer, indices, bounds);
 
                     var material = materials[geometry];
-                    model.Add(new GeometryMeshContent(geometryData, material, mesh.AbsoluteTransform));
+                    var geometryMesh = new M.GeometryMeshContent(geometryData, material, mesh.AbsoluteTransform);
+
+                    model.Add(geometryMesh);
                 }
             }
+
             return model;
         }
 
