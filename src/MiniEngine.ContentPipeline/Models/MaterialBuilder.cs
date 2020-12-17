@@ -23,7 +23,7 @@ namespace MiniEngine.ContentPipeline.Models
         public M.MaterialContent Build(X.MaterialContent content, ContentProcessorContext context)
         {
             var albedo = this.LoadTexture(this.LookUp.GetAlbedo(content), context);
-            var normal = this.LoadTexture(this.LookUp.GetAlbedo(content), context);
+            var normal = this.LoadTexture(this.LookUp.GetNormal(content), context);
 
             return new M.MaterialContent(albedo, normal, 0.0f, 1.0f, 1.0f);
         }

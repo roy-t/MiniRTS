@@ -71,6 +71,23 @@ newmtl Material__298
 	bump textures_pbr\Background_Normal.tga
 	map_NS textures_pbr\Background_roughness.tga
 
+newmtl 16___Default
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.5880 0.5880 0.5880
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka textures_pbr\Sponza_Curtain_metallic.tga
+	map_Kd textures_pbr\Sponza_Curtain_Blue_diffuse.tga
+	map_bump textures_pbr\Sponza_Curtain_Blue_normal.tga
+	bump textures_pbr\Sponza_Curtain_Blue_normal.tga
+	map_Ns textures_pbr\Sponza_Curtain_roughness.tga
+
 newmtl bricks
 	Ns 10.0000
 	Ni 1.5000
@@ -206,6 +223,18 @@ newmtl column_b
 	map_bump textures_pbr\Sponza_Column_b_normal.tga
 	bump textures_pbr\Sponza_Column_b_normal.tga
 	map_Ns textures_pbr\Sponza_Column_b_roughness.tga
+
+newmtl Material__47
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.5880 0.5880 0.5880
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
 
 newmtl flagpole
 	Ns 10.0000

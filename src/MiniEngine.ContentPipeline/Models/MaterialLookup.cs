@@ -63,7 +63,7 @@ namespace MiniEngine.ContentPipeline.Models
         };
 
         private static string[] NormalTextureNames => new[]
-{
+        {
             "Normal",
             "Height",
             "Bump"
