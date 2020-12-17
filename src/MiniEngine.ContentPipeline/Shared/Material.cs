@@ -1,0 +1,27 @@
+﻿using Microsoft.Xna.Framework.Graphics;
+
+namespace MiniEngine.ContentPipeline.Shared
+{
+    public sealed class Material
+    {
+        public Material(Texture2D albedo, Texture2D normal, float metalicness, float roughness, float ambientOcclusion = 1.0f)
+        {
+            this.Albedo = albedo;
+            this.Normal = normal;
+
+            this.Metalicness = metalicness;
+            this.Roughness = roughness;
+            this.AmbientOcclusion = ambientOcclusion;
+        }
+
+        public Texture2D Albedo { get; set; }
+
+        public Texture2D Normal { get; set; }
+
+        public float Metalicness { get; set; }
+
+        public float Roughness { get; set; }
+
+        public float AmbientOcclusion { get; set; }
+    }
+}

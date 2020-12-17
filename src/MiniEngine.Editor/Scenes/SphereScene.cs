@@ -5,6 +5,7 @@ using ImGuiNET;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
+using MiniEngine.ContentPipeline.Shared;
 using MiniEngine.Graphics;
 using MiniEngine.Graphics.Camera;
 using MiniEngine.Graphics.Geometry;
@@ -44,6 +45,8 @@ namespace MiniEngine.Editor.Scenes
             this.Textures = new List<SkyboxTextures>();
 
             content.Push("sphere-scene");
+
+            var model = content.Load<Pose>("sponza/sponza");
 
             this.CreateSkyboxes(device, content, frameService, cubeMapGenerator, irradianceMapGenerator, environmentMapGenerator);
 

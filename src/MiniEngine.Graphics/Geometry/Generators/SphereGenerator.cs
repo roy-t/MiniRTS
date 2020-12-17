@@ -2,6 +2,7 @@
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MiniEngine.ContentPipeline.Shared;
 
 namespace MiniEngine.Graphics.Geometry.Generators
 {

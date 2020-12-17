@@ -1,4 +1,5 @@
 ﻿using System;
+using MiniEngine.ContentPipeline.Shared;
 using MiniEngine.Systems;
 
 namespace MiniEngine.Graphics.Geometry
@@ -11,6 +12,7 @@ namespace MiniEngine.Graphics.Geometry
             this.Geometry = geometry;
             this.Material = material;
         }
+
         public GeometryData Geometry { get; }
         public Material Material { get; }
 

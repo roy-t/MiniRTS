@@ -3,6 +3,7 @@ using ImGuiNET;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
+using MiniEngine.ContentPipeline.Shared;
 using MiniEngine.Graphics.Geometry;
 
 namespace MiniEngine.Gui.Editors

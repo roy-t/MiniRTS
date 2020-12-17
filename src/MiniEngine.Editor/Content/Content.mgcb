@@ -10,7 +10,7 @@
 
 #-------------------------------- References --------------------------------#
 
-/reference:..\bin\Debug\net5.0-windows\MiniEngine.ContentPipeline.dll
+/reference:..\..\MiniEngine.ContentPipeline\bin\Debug\netstandard2.0\MiniEngine.ContentPipeline.dll
 
 #---------------------------------- Content ---------------------------------#
 
@@ -73,4 +73,9 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=NoChange
 /build:Skyboxes/Milkyway/Milkyway_small.hdr
+
+#begin sponza/sponza.obj
+/importer:OpenAssetImporter
+/processor:PBRModelProcessor
+/build:sponza/sponza.obj
 
