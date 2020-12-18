@@ -45,8 +45,10 @@ namespace MiniEngine.ContentPipeline.Models
         {
             var albedo = this.LoadTexture(AlbedoTextureParameters, this.LookUp.GetAlbedo(content), context);
             var normal = this.LoadTexture(SpecialTextureParameters, this.LookUp.GetNormal(content), context);
-
-            return new M.MaterialContent(albedo, normal, 0.0f, 1.0f, 1.0f);
+            var metalicness = this.LoadTexture(SpecialTextureParameters, this.LookUp.GetMetalicness(content), context);
+            var roughness = this.LoadTexture(SpecialTextureParameters, this.LookUp.GetRoughness(content), context);
+            var ambientOcclusion = this.LoadTexture(SpecialTextureParameters, this.LookUp.GetAmbientOcclusion(content), context);
+            return new M.MaterialContent(albedo, normal, metalicness, roughness, ambientOcclusion);
         }
 
         public ExternalReference<TextureContent> LoadTexture(OpaqueDataDictionary parameters, ExternalReference<TextureContent> reference, ContentProcessorContext context)

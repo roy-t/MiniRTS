@@ -4,7 +4,7 @@ namespace MiniEngine.ContentPipeline.Shared
 {
     public sealed class Material
     {
-        public Material(Texture2D albedo, Texture2D normal, float metalicness, float roughness, float ambientOcclusion = 1.0f)
+        public Material(Texture2D albedo, Texture2D normal, Texture2D metalicness, Texture2D roughness, Texture2D ambientOcclusion)
         {
             this.Albedo = albedo;
             this.Normal = normal;
@@ -18,10 +18,10 @@ namespace MiniEngine.ContentPipeline.Shared
 
         public Texture2D Normal { get; set; }
 
-        public float Metalicness { get; set; }
+        public Texture2D Metalicness { get; set; }
 
-        public float Roughness { get; set; }
+        public Texture2D Roughness { get; set; }
 
-        public float AmbientOcclusion { get; set; }
+        public Texture2D AmbientOcclusion { get; set; }
     }
 }

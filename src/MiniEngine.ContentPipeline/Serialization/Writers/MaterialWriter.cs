@@ -21,9 +21,9 @@ namespace MiniEngine.ContentPipeline.Serialization.Writers
         {
             output.WriteExternalReference(value.Albedo);
             output.WriteExternalReference(value.Normal);
-            output.Write(value.Metalicness);
-            output.Write(value.Roughness);
-            output.Write(value.AmbientOcclusion);
+            output.WriteExternalReference(value.Metalicness);
+            output.WriteExternalReference(value.Roughness);
+            output.WriteExternalReference(value.AmbientOcclusion);
         }
     }
 }

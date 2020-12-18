@@ -39,10 +39,10 @@ namespace MiniEngine.Graphics.Geometry
 
         public Texture2D Normal { set => this.NormalParameter.SetValue(value); }
 
-        public float Metalicness { set => this.MetalicnessParameter.SetValue(value); }
+        public Texture2D Metalicness { set => this.MetalicnessParameter.SetValue(value); }
 
-        public float Roughness { set => this.RoughnessParameter.SetValue(value); }
+        public Texture2D Roughness { set => this.RoughnessParameter.SetValue(value); }
 
-        public float AmbientOcclusion { set => this.AmbientOcclusionParameter.SetValue(value); }
+        public Texture2D AmbientOcclusion { set => this.AmbientOcclusionParameter.SetValue(value); }
     }
 }

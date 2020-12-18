@@ -4,7 +4,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
 using MiniEngine.ContentPipeline.Shared;
-using MiniEngine.Graphics.Geometry;
 
 namespace MiniEngine.Gui.Editors
 {
@@ -24,12 +23,11 @@ namespace MiniEngine.Gui.Editors
         {
             var material = get();
 
-            var metalicness = DrawSlider(nameof(material.Metalicness), material.Metalicness);
-            var roughness = DrawSlider(nameof(material.Roughness), material.Roughness);
-            var ambientOcclusion = DrawSlider(nameof(material.AmbientOcclusion), material.AmbientOcclusion);
-
             var albedo = this.DrawTexture(nameof(Material.Albedo), material.Albedo);
             var normal = this.DrawTexture(nameof(Material.Normal), material.Normal);
+            var metalicness = this.DrawTexture(nameof(Material.Metalicness), material.Metalicness);
+            var roughness = this.DrawTexture(nameof(Material.Roughness), material.Roughness);
+            var ambientOcclusion = this.DrawTexture(nameof(Material.AmbientOcclusion), material.AmbientOcclusion);
 
             if (metalicness != material.Metalicness ||
                 roughness != material.Roughness ||

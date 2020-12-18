@@ -94,7 +94,6 @@ namespace MiniEngine.Editor
                 this.Window.Title = $"Editor :: {this.FrameCounter.MillisecondsPerFrame:F2}ms, {this.FrameCounter.FramesPerSecond} fps, {this.FrameService.GetBufferSize() * 0.000001f} MB. position: {this.FrameService.CamereComponent.Camera.Position}";
             }
 
-            this.SceneManager.Update(gameTime);
             return true;
         }
 
@@ -103,6 +102,7 @@ namespace MiniEngine.Editor
             this.RunPipeline();
             this.RenderToViewport(this.FrameService.PBuffer.ToneMap);
 
+            this.SceneManager.Update(gameTime);
             if (this.renderUi)
             {
                 this.WorkspaceManager.Render(gameTime);

@@ -35,5 +35,16 @@ namespace MiniEngine.Systems.Components
 
             return components;
         }
+
+        public void MarkForRemoval(Entity entity)
+        {
+            foreach (var container in this.ComponentContainers.Values)
+            {
+                if (container.Contains(entity))
+                {
+                    container.GetComponent(entity).ChangeState.Remove();
+                }
+            }
+        }
     }
 }

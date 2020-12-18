@@ -49,12 +49,45 @@ sampler normalSampler = sampler_state
     AddressV = Wrap;
 };
 
+texture Metalicness;
+sampler metalicnessSampler = sampler_state
+{
+    Texture = (Metalicness);
+    MinFilter = ANISOTROPIC;
+    MagFilter = ANISOTROPIC;
+    MipFilter = LINEAR;
+    MaxAnisotropy = 16;
+    AddressU = Wrap;
+    AddressV = Wrap;
+};
+
+texture Roughness;
+sampler roughnessSampler = sampler_state
+{
+    Texture = (Roughness);
+    MinFilter = ANISOTROPIC;
+    MagFilter = ANISOTROPIC;
+    MipFilter = LINEAR;
+    MaxAnisotropy = 16;
+    AddressU = Wrap;
+    AddressV = Wrap;
+};
+
+texture AmbientOcclusion;
+sampler ambientOcclusionSampler = sampler_state
+{
+    Texture = (AmbientOcclusion);
+    MinFilter = ANISOTROPIC;
+    MagFilter = ANISOTROPIC;
+    MipFilter = LINEAR;
+    MaxAnisotropy = 16;
+    AddressU = Wrap;
+    AddressV = Wrap;
+};
+
 float3 CameraPosition;
 float4x4 World;
 float4x4 WorldViewProjection;
-float Metalicness;
-float Roughness;
-float AmbientOcclusion;
 
 PixelData VS(in VertexData input)
 {
@@ -105,8 +138,12 @@ OutputData PS(PixelData input)
     float4 albedo = tex2D(albedoSampler, input.Texture);
     clip(albedo.a - 1);
 
+    float metalicness = tex2D(metalicnessSampler, input.Texture).r;
+    float roughness = tex2D(roughnessSampler, input.Texture).r;
+    float ambientOcclusion = tex2D(ambientOcclusionSampler, input.Texture).r;
+
     output.Albedo = ToLinear(albedo);
-    output.Material = float4(Metalicness, Roughness, AmbientOcclusion, 1.0f);
+    output.Material = float4(metalicness, roughness, ambientOcclusion, 1.0f);
     output.Depth = input.WorldPosition.z / input.WorldPosition.w;
 
     float3 V = normalize(CameraPosition - input.WorldPosition.xyz);

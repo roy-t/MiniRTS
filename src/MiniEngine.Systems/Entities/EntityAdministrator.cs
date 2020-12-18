@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Threading;
 using MiniEngine.Configuration;
 
@@ -25,5 +26,8 @@ namespace MiniEngine.Systems.Entities
 
             return entity;
         }
+
+        public IReadOnlyList<Entity> GetAllEntities()
+            => this.Entities.ToArray();
     }
 }

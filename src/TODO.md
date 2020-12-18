@@ -4,26 +4,10 @@
     - How to make a class that unifies this, but at the same time doesn't confuse the vertex declaration?
     - Speed :D
 
-- I need a name for mesh data that doesn't clash with MonoGame, geometry is too broad
-
 - Unify geometry generation, let users pass in a vertex declaration and get the components back, or maybe just the vertex and index buffer?
 
 
-## Importing sponza
 
-- Complete the model processor
-
-- Convert metalicness and roughness to textures
-- One GometryComponent should have a List<> of poses, geometry system should work through that list
-    - Every Pose should have a relative offset matrix
-- Add support for mask textures
-
-
-
-
-
-
-- GeometryData
-- Material
-- Model = GeometryData + Offset + Material
-- Pose = Model + Position
+# Bug
+- Crash when switching scenes multiple times! Either some component doesn't get removed or 
+something gets disposed too soo, rething scene loading/unloading!

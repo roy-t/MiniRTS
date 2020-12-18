@@ -5,7 +5,7 @@ namespace MiniEngine.ContentPipeline.Serialization
 {
     internal sealed class MaterialContent
     {
-        public MaterialContent(ExternalReference<TextureContent> albedo, ExternalReference<TextureContent> normal, float metalicness, float roughness, float ambientOcclusion)
+        public MaterialContent(ExternalReference<TextureContent> albedo, ExternalReference<TextureContent> normal, ExternalReference<TextureContent> metalicness, ExternalReference<TextureContent> roughness, ExternalReference<TextureContent> ambientOcclusion)
         {
             this.Albedo = albedo;
             this.Normal = normal;
@@ -18,10 +18,10 @@ namespace MiniEngine.ContentPipeline.Serialization
 
         public ExternalReference<TextureContent> Normal { get; }
 
-        public float Metalicness { get; }
+        public ExternalReference<TextureContent> Metalicness { get; }
 
-        public float Roughness { get; }
+        public ExternalReference<TextureContent> Roughness { get; }
 
-        public float AmbientOcclusion { get; }
+        public ExternalReference<TextureContent> AmbientOcclusion { get; }
     }
 }

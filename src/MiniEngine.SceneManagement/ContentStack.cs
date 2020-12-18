@@ -35,7 +35,11 @@ namespace MiniEngine.SceneManagement
 
         public void Push(string tag) => this.Stack.Push(new ContentStackFrame(tag));
 
-        public void Pop() => this.Stack.Pop();
+        public void Pop()
+        {
+            var content = this.Stack.Pop();
+            content.Dispose();
+        }
 
         public void Dispose()
         {

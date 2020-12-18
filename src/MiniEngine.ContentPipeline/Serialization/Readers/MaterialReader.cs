@@ -13,9 +13,9 @@ namespace MiniEngine.ContentPipeline.Serialization.Readers
         {
             var albedo = input.ReadExternalReference<Texture2D>();
             var normal = input.ReadExternalReference<Texture2D>();
-            var metalicness = input.ReadSingle();
-            var roughness = input.ReadSingle();
-            var ambientOcclusion = input.ReadSingle();
+            var metalicness = input.ReadExternalReference<Texture2D>();
+            var roughness = input.ReadExternalReference<Texture2D>();
+            var ambientOcclusion = input.ReadExternalReference<Texture2D>();
 
             return new Material(albedo, normal, metalicness, roughness, ambientOcclusion);
         }

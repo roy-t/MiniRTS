@@ -6,17 +6,19 @@ namespace MiniEngine.ContentPipeline.Models
 {
     public class MaterialLookup
     {
-        public readonly string FallbackAlbedo;
-        public readonly string FallbackMetalicness;
-        public readonly string FallbackNormal;
-        public readonly string FallbackRoughness;
+        private readonly string FallbackAlbedo;
+        private readonly string FallbackMetalicness;
+        private readonly string FallbackNormal;
+        private readonly string FallbackRoughness;
+        private readonly string FallbackAmbientOcclusion;
 
-        public MaterialLookup(string fallbackAlbedo, string fallbackMetalicness, string fallbackNormal, string fallbackRoughness)
+        public MaterialLookup(string fallbackAlbedo, string fallbackMetalicness, string fallbackNormal, string fallbackRoughness, string fallbackAmbientOcclusion)
         {
             this.FallbackAlbedo = Path.GetFullPath(fallbackAlbedo);
             this.FallbackMetalicness = Path.GetFullPath(fallbackMetalicness);
             this.FallbackNormal = Path.GetFullPath(fallbackNormal);
             this.FallbackRoughness = Path.GetFullPath(fallbackRoughness);
+            this.FallbackAmbientOcclusion = Path.GetFullPath(fallbackAmbientOcclusion);
         }
 
         public ExternalReference<TextureContent> GetAlbedo(MaterialContent material)
@@ -30,6 +32,9 @@ namespace MiniEngine.ContentPipeline.Models
 
         public ExternalReference<TextureContent> GetRoughness(MaterialContent material)
             => GetBestMatch(material, this.FallbackRoughness, RoughnessTextureNames);
+
+        public ExternalReference<TextureContent> GetAmbientOcclusion(MaterialContent material)
+            => GetBestMatch(material, this.FallbackAmbientOcclusion, AmbientOcclusionTextureNames);
 
         private static ExternalReference<TextureContent> GetBestMatch(MaterialContent material, string fallback, string[] keys)
         {
@@ -68,6 +73,11 @@ namespace MiniEngine.ContentPipeline.Models
         {
             "Roughness",
             "Shininess"
+        };
+
+        private static string[] AmbientOcclusionTextureNames => new[]
+       {
+            "AmbientOcclusion",
         };
     }
 }

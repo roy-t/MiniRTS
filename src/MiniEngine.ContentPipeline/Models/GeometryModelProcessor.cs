@@ -28,6 +28,9 @@ namespace MiniEngine.ContentPipeline
         [DisplayName("Fallback - Roughness")]
         public string FallbackRoughness { get; set; } = "materials/roughness.tga";
 
+        [DisplayName("Fallback - Ambient Occlusion")]
+        public string FallbackAmbientOcclusion { get; set; } = "materials/ao.tga";
+
         private readonly MaterialBuilder MaterialBuilder;
 
         private static readonly IList<string> AcceptableVertexChannelNames =
@@ -39,7 +42,7 @@ namespace MiniEngine.ContentPipeline
 
         public GeometryModelProcessor()
         {
-            this.MaterialBuilder = new MaterialBuilder(new MaterialLookup(this.FallbackAlbedo, this.FallbackMetalicness, this.FallbackNormal, this.FallbackRoughness));
+            this.MaterialBuilder = new MaterialBuilder(new MaterialLookup(this.FallbackAlbedo, this.FallbackMetalicness, this.FallbackNormal, this.FallbackRoughness, this.FallbackAmbientOcclusion));
         }
 
         public override M.GeometryModelContent Process(NodeContent input, ContentProcessorContext context)
