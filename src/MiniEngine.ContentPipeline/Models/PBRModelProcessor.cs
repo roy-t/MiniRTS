@@ -28,9 +28,6 @@ namespace MiniEngine.ContentPipeline
         [DisplayName("Fallback - Roughness")]
         public string FallbackRoughness { get; set; } = "materials/roughness.tga";
 
-        [DisplayName("Fallback - Mask")]
-        public string FallbackMask { get; set; } = "materials/mask.tga";
-
         private readonly MaterialBuilder MaterialBuilder;
 
         private static readonly IList<string> AcceptableVertexChannelNames =
@@ -42,7 +39,7 @@ namespace MiniEngine.ContentPipeline
 
         public PBRModelProcessor()
         {
-            this.MaterialBuilder = new MaterialBuilder(new MaterialLookup(this.FallbackAlbedo, this.FallbackMetalicness, this.FallbackNormal, this.FallbackRoughness, this.FallbackMask));
+            this.MaterialBuilder = new MaterialBuilder(new MaterialLookup(this.FallbackAlbedo, this.FallbackMetalicness, this.FallbackNormal, this.FallbackRoughness));
         }
 
         public override M.GeometryModelContent Process(NodeContent input, ContentProcessorContext context)

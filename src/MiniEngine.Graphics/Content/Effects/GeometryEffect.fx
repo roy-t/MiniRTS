@@ -103,6 +103,8 @@ OutputData PS(PixelData input)
     OutputData output = (OutputData)0;
 
     float4 albedo = tex2D(albedoSampler, input.Texture);
+    clip(albedo.a - 1);
+
     output.Albedo = ToLinear(albedo);
     output.Material = float4(Metalicness, Roughness, AmbientOcclusion, 1.0f);
     output.Depth = input.WorldPosition.z / input.WorldPosition.w;

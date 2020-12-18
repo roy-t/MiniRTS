@@ -1,11 +1,11 @@
 ﻿using Microsoft.Xna.Framework.Content.Pipeline;
-using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Content.Pipeline.Graphics;
 
 namespace MiniEngine.ContentPipeline.Serialization
 {
     internal sealed class MaterialContent
     {
-        public MaterialContent(ExternalReference<Texture2D> albedo, ExternalReference<Texture2D> normal, float metalicness, float roughness, float ambientOcclusion)
+        public MaterialContent(ExternalReference<TextureContent> albedo, ExternalReference<TextureContent> normal, float metalicness, float roughness, float ambientOcclusion)
         {
             this.Albedo = albedo;
             this.Normal = normal;
@@ -14,9 +14,9 @@ namespace MiniEngine.ContentPipeline.Serialization
             this.AmbientOcclusion = ambientOcclusion;
         }
 
-        public ExternalReference<Texture2D> Albedo { get; }
+        public ExternalReference<TextureContent> Albedo { get; }
 
-        public ExternalReference<Texture2D> Normal { get; }
+        public ExternalReference<TextureContent> Normal { get; }
 
         public float Metalicness { get; }
 

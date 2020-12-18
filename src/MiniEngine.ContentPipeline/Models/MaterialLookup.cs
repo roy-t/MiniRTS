@@ -10,15 +10,13 @@ namespace MiniEngine.ContentPipeline.Models
         public readonly string FallbackMetalicness;
         public readonly string FallbackNormal;
         public readonly string FallbackRoughness;
-        public readonly string FallbackMask;
 
-        public MaterialLookup(string fallbackAlbedo, string fallbackMetalicness, string fallbackNormal, string fallbackRoughness, string fallbackMask)
+        public MaterialLookup(string fallbackAlbedo, string fallbackMetalicness, string fallbackNormal, string fallbackRoughness)
         {
             this.FallbackAlbedo = Path.GetFullPath(fallbackAlbedo);
             this.FallbackMetalicness = Path.GetFullPath(fallbackMetalicness);
             this.FallbackNormal = Path.GetFullPath(fallbackNormal);
             this.FallbackRoughness = Path.GetFullPath(fallbackRoughness);
-            this.FallbackMask = Path.GetFullPath(fallbackMask);
         }
 
         public ExternalReference<TextureContent> GetAlbedo(MaterialContent material)
@@ -32,9 +30,6 @@ namespace MiniEngine.ContentPipeline.Models
 
         public ExternalReference<TextureContent> GetRoughness(MaterialContent material)
             => GetBestMatch(material, this.FallbackRoughness, RoughnessTextureNames);
-
-        public ExternalReference<TextureContent> GetMask(MaterialContent material)
-            => GetBestMatch(material, this.FallbackMask, MaskTextureNames);
 
         private static ExternalReference<TextureContent> GetBestMatch(MaterialContent material, string fallback, string[] keys)
         {
@@ -73,12 +68,6 @@ namespace MiniEngine.ContentPipeline.Models
         {
             "Roughness",
             "Shininess"
-        };
-
-        private static string[] MaskTextureNames => new[]
-        {
-            "Mask",
-            "Opacity"
         };
     }
 }
