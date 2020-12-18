@@ -12,10 +12,7 @@ namespace MiniEngine.ContentPipeline.Models
 {
     internal sealed class MaterialBuilder
     {
-        private readonly Dictionary<string, ExternalReference<TextureContent>> Cache;
-        private readonly MaterialLookup LookUp;
-
-        private OpaqueDataDictionary AlbedoParameters = new OpaqueDataDictionary
+        private static readonly OpaqueDataDictionary AlbedoTextureParameters = new OpaqueDataDictionary
         {
             { "ColorKeyColor", Color.Magenta },
             { "ColorKeyEnabled", false },
@@ -25,15 +22,18 @@ namespace MiniEngine.ContentPipeline.Models
             { "TextureFormat", TextureProcessorOutputFormat.Color }
         };
 
-        private OpaqueDataDictionary Parameters = new OpaqueDataDictionary
+        private static readonly OpaqueDataDictionary SpecialTextureParameters = new OpaqueDataDictionary
         {
             { "ColorKeyColor", Color.Magenta },
             { "ColorKeyEnabled", false },
             { "GenerateMipmaps", true },
             { "PremultiplyAlpha", false },
             { "ResizeToPowerOfTwo", false },
-            { "TextureFormat", TextureProcessorOutputFormat.Color16Bit }
+            { "TextureFormat", TextureProcessorOutputFormat.NoChange }
         };
+
+        private readonly Dictionary<string, ExternalReference<TextureContent>> Cache;
+        private readonly MaterialLookup LookUp;
 
         public MaterialBuilder(MaterialLookup lookup)
         {
@@ -43,8 +43,8 @@ namespace MiniEngine.ContentPipeline.Models
 
         public M.MaterialContent Build(X.MaterialContent content, ContentProcessorContext context)
         {
-            var albedo = this.LoadTexture(this.AlbedoParameters, this.LookUp.GetAlbedo(content), context);
-            var normal = this.LoadTexture(this.Parameters, this.LookUp.GetNormal(content), context);
+            var albedo = this.LoadTexture(AlbedoTextureParameters, this.LookUp.GetAlbedo(content), context);
+            var normal = this.LoadTexture(SpecialTextureParameters, this.LookUp.GetNormal(content), context);
 
             return new M.MaterialContent(albedo, normal, 0.0f, 1.0f, 1.0f);
         }
@@ -63,7 +63,7 @@ namespace MiniEngine.ContentPipeline.Models
             return value;
         }
 
-        private ExternalReference<TextureContent> BuildTexture(OpaqueDataDictionary parameters, ExternalReference<TextureContent> texture, ContentProcessorContext context)
+        private static ExternalReference<TextureContent> BuildTexture(OpaqueDataDictionary parameters, ExternalReference<TextureContent> texture, ContentProcessorContext context)
             => context.BuildAsset<TextureContent, TextureContent>(texture, "TextureProcessor", parameters, "TextureImporter", null);
     }
 }
