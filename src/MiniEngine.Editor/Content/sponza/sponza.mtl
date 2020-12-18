@@ -233,6 +233,9 @@ newmtl Material__47
 	Kd 0.5880 0.5880 0.5880
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
+	map_Ka textures_pbr\mirror_metallic.tga
+	map_Kd textures_pbr\mirror_albedo.tga
+	map_Ns textures_pbr\mirror_roughness.tga
 
 newmtl flagpole
 	Ns 10.0000
