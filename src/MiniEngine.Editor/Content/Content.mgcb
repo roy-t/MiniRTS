@@ -76,6 +76,10 @@
 
 #begin sponza/sponza.obj
 /importer:OpenAssetImporter
-/processor:PBRModelProcessor
+/processor:GeometryModelProcessor
+/processorParam:FallbackAlbedo=materials/albedo.tga
+/processorParam:FallbackMetalicness=materials/metalicness.tga
+/processorParam:FallbackNormal=materials/normal.tga
+/processorParam:FallbackRoughness=materials/roughness.tga
 /build:sponza/sponza.obj
 

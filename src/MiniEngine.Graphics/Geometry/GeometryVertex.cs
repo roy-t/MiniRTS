@@ -1,27 +1,12 @@
 ﻿using System.Runtime.InteropServices;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content.Pipeline.Processors;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace MiniEngine.ContentPipeline.Shared
+namespace MiniEngine.Graphics.Geometry
 {
-    // TODO: move back to Graphics project?
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct GeometryVertex : IVertexType
     {
-        internal static VertexDeclarationContent GetContent()
-        {
-            var declaration = new VertexDeclarationContent();
-            foreach (var element in Declaration.GetVertexElements())
-            {
-                declaration.VertexElements.Add(element);
-            }
-
-            declaration.VertexStride = 8 * 4;
-
-            return declaration;
-        }
-
         public static readonly VertexDeclaration Declaration = new VertexDeclaration
         (
            new VertexElement(0 * 4, VertexElementFormat.Vector3, VertexElementUsage.Position, 0),

@@ -14,7 +14,6 @@ newmtl leaf
 	Ke 0.0000 0.0000 0.0000
 	map_Ka textures_pbr\Dielectric_metallic.tga
 	map_Kd textures_pbr\Sponza_Thorn_diffuse.tga
-	map_d textures_pbr\sponza_thorn_mask.tga
 	map_bump textures_pbr\Sponza_Thorn_normal.tga
 	bump textures_pbr\Sponza_Thorn_normal.tga
 	map_Ns textures_pbr\Sponza_Thorn_roughness.tga
@@ -52,7 +51,6 @@ newmtl Material__57
 	map_bump textures_pbr\VasePlant_normal.tga
 	bump textures_pbr\VasePlant_normal.tga
 	map_Ns textures_pbr\VasePlant_roughness.tga
-	map_d textures_pbr\vase_plant_mask.tga
 
 newmtl Material__298
 	Ns 10.0000
@@ -368,7 +366,6 @@ newmtl chain
 	Ke 0.0000 0.0000 0.0000
 	map_Ka textures_pbr\ChainTexture_Metallic.tga
 	map_Kd textures_pbr\ChainTexture_Albedo.tga
-	map_d textures_pbr\chain_texture_mask.tga
 	map_bump textures_pbr\ChainTexture_Normal.tga
 	bump textures_pbr\ChainTexture_Normal.tga
 	map_Ns textures_pbr\ChainTexture_Roughness.tga

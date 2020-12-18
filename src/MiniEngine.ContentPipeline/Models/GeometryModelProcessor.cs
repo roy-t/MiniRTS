@@ -13,8 +13,8 @@ using X = Microsoft.Xna.Framework.Content.Pipeline.Graphics;
 
 namespace MiniEngine.ContentPipeline
 {
-    [ContentProcessor(DisplayName = "MiniEngine :: Model with PBR textures")]
-    internal sealed class PBRModelProcessor : ContentProcessor<NodeContent, M.GeometryModelContent>
+    [ContentProcessor(DisplayName = "GeometryModel - MiniEngine")]
+    internal sealed class GeometryModelProcessor : ContentProcessor<NodeContent, M.GeometryModelContent>
     {
         [DisplayName("Fallback - Albedo")]
         public string FallbackAlbedo { get; set; } = "materials/albedo.tga";
@@ -37,7 +37,7 @@ namespace MiniEngine.ContentPipeline
                 VertexChannelNames.Normal(0)
            };
 
-        public PBRModelProcessor()
+        public GeometryModelProcessor()
         {
             this.MaterialBuilder = new MaterialBuilder(new MaterialLookup(this.FallbackAlbedo, this.FallbackMetalicness, this.FallbackNormal, this.FallbackRoughness));
         }
@@ -108,7 +108,7 @@ namespace MiniEngine.ContentPipeline
                     var material = this.MaterialBuilder.Build(geometry.Material, context);
                     cache.Add(geometry, material);
                 }
-            }
+            };
 
             return cache;
         }
