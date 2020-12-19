@@ -7,7 +7,5 @@
 - Unify geometry generation, let users pass in a vertex declaration and get the components back, or maybe just the vertex and index buffer?
 
 
+- Create a better multi-threaded render pipeline. Maybe have one worker thread that pushes an entire pipeline to a queue, and then have the workers handling those systems. Uses a semaphore or something to sync? 
 
-# Bug
-- Crash when switching scenes multiple times! Either some component doesn't get removed or 
-something gets disposed too soo, rething scene loading/unloading!

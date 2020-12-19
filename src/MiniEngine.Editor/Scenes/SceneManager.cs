@@ -39,7 +39,7 @@ namespace MiniEngine.Editor.Scenes
                     this.Content.Pop();
                 }
 
-                this.Content.Push("scene");
+                this.Content.Push($"scene - {this.nextScene.GetKey()}");
                 this.scene = this.nextScene;
                 this.scene.Load(this.Content);
 
@@ -79,6 +79,8 @@ namespace MiniEngine.Editor.Scenes
                     this.Components.MarkForRemoval(entity);
                 }
             }
+
+            // TODO: remove entities that have no components?
         }
     }
 }
