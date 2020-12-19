@@ -8,6 +8,7 @@ namespace MiniEngine.Editor
     internal sealed class GameBootstrapper : Game
     {
         private readonly GraphicsDeviceManager Graphics;
+
         private readonly Register RegisterDelegate;
         private readonly RegisterAs RegisterAsDelegate;
         private readonly Func<GameLoop> GameLoopFactory;

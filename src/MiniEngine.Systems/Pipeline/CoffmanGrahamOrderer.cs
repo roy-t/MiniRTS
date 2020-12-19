@@ -15,9 +15,25 @@ namespace MiniEngine.Systems.Pipeline
             var ordered = Order(expanded);
             var stages = CreateStages(ordered);
 
-            SplitStagesWithMixedParallelism(stages);
+            //return SingleThreaded(stages);
 
+            SplitStagesWithMixedParallelism(stages);
             return stages;
+        }
+
+        private static List<List<SystemSpec>> SingleThreaded(List<List<SystemSpec>> stages)
+        {
+            var single = new List<List<SystemSpec>>();
+
+            foreach (var stage in stages)
+            {
+                foreach (var system in stage)
+                {
+                    var sequentialStage = new List<SystemSpec>(new[] { system });
+                    single.Add(sequentialStage);
+                }
+            }
+            return single;
         }
 
         private static List<SystemSpec> Order(IReadOnlyList<SystemSpec> systemSpecs)

@@ -8,32 +8,26 @@ namespace MiniEngine.SceneManagement
     [System]
     public sealed class ContentStack : IDisposable
     {
-        private readonly ContentManager Content;
+        private readonly ContentManager Root;
 
         private readonly Stack<ContentStackFrame> Stack;
 
-        public ContentStack(ContentManager content)
+        public ContentStack(ContentManager root)
         {
-            this.Content = content;
+            this.Root = root;
             this.Stack = new Stack<ContentStackFrame>();
 
-            this.Stack.Push(new ContentStackFrame("root"));
+            this.Stack.Push(this.CreateStackFrame("root"));
         }
 
         public T Load<T>(string assetName)
-            where T : class
-        {
-            var asset = this.Content.Load<T>(assetName);
-            this.Stack.Peek().Add(asset);
-
-            return asset;
-        }
+            where T : class => this.Stack.Peek().Load<T>(assetName);
 
         public void Link<T>(T asset)
-            where T : class
-            => this.Stack.Peek().Add(asset);
+            where T : class => this.Stack.Peek().Link(asset);
 
-        public void Push(string tag) => this.Stack.Push(new ContentStackFrame(tag));
+        public void Push(string tag)
+            => this.Stack.Push(this.CreateStackFrame(tag));
 
         public void Pop()
         {
@@ -49,32 +43,43 @@ namespace MiniEngine.SceneManagement
             }
         }
 
+        private ContentStackFrame CreateStackFrame(string tag)
+        {
+            var contentManager = new ContentManager(this.Root.ServiceProvider, this.Root.RootDirectory);
+            return new ContentStackFrame(contentManager, tag);
+        }
+
         private sealed class ContentStackFrame : IDisposable
         {
-            private readonly List<object> Content;
+            private readonly ContentManager Content;
+            private readonly List<object> Linked;
 
-            public ContentStackFrame(string tag)
+            public ContentStackFrame(ContentManager content, string tag)
             {
+                this.Content = content;
+                this.Linked = new List<object>();
                 this.Tag = tag;
-                this.Content = new List<object>();
             }
 
             public string Tag { get; }
 
-            public void Add(object content) => this.Content.Add(content);
+            public T Load<T>(string assetName)
+                => this.Content.Load<T>(assetName);
+
+            public void Link(object content)
+                => this.Linked.Add(content);
 
             public void Dispose()
             {
-                for (var i = 0; i < this.Content.Count; i++)
+                this.Content.Unload();
+
+                for (var i = 0; i < this.Linked.Count; i++)
                 {
-                    var content = this.Content[i];
-                    if (content is IDisposable disposable)
-                    {
-                        disposable.Dispose();
-                    }
+                    var disposable = this.Linked[i] as IDisposable;
+                    disposable?.Dispose();
                 }
 
-                this.Content.Clear();
+                this.Linked.Clear();
             }
         }
     }

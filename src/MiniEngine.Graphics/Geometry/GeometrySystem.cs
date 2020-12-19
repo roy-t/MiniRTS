@@ -29,6 +29,9 @@ namespace MiniEngine.Graphics.Geometry
             this.Device.RasterizerState = RasterizerState.CullCounterClockwise;
             this.Device.SamplerStates[0] = SamplerState.AnisotropicWrap;
             this.Device.SamplerStates[1] = SamplerState.AnisotropicWrap;
+            this.Device.SamplerStates[2] = SamplerState.AnisotropicWrap;
+            this.Device.SamplerStates[3] = SamplerState.AnisotropicWrap;
+            this.Device.SamplerStates[4] = SamplerState.AnisotropicWrap;
 
             this.Device.SetRenderTargets(
                 this.FrameService.GBuffer.Albedo,
