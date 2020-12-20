@@ -52,7 +52,7 @@ namespace MiniEngine.Editor.Workspaces.Editors
         {
             if (ImGui.Begin("Entities"))
             {
-                var entities = this.Entities.Copy();
+                var entities = this.Entities.GetAllEntities();
                 var entityNames = entities.Select(e => $"{e.Id}").ToArray();
                 ImGui.ListBox("Entities", ref this.entityIndex, entityNames, entityNames.Length);
 

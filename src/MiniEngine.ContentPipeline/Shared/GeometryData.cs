@@ -1,13 +1,12 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace MiniEngine.ContentPipeline.Shared
 {
-    public sealed class GeometryData : IDisposable
+    public sealed class GeometryData
     {
         public GeometryData(VertexBuffer vertexBuffer, IndexBuffer indexBuffer, BoundingSphere bounds)
-            : this("", vertexBuffer, indexBuffer, bounds) { }
+            : this(string.Empty, vertexBuffer, indexBuffer, bounds) { }
 
         public GeometryData(string name, VertexBuffer vertexBuffer, IndexBuffer indexBuffer, BoundingSphere bounds)
         {
@@ -27,11 +26,5 @@ namespace MiniEngine.ContentPipeline.Shared
         public BoundingSphere Bounds { get; }
 
         public int Primitives { get; }
-
-        public void Dispose()
-        {
-            this.VertexBuffer.Dispose();
-            this.IndexBuffer.Dispose();
-        }
     }
 }

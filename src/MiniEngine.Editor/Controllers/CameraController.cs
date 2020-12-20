@@ -9,8 +9,8 @@ namespace MiniEngine.Editor.Controllers
     [Service]
     public sealed class CameraController
     {
-        private const float MinVelocity = 1.0f;
-        private const float MaxVelocity = 21.0f;
+        private const float MinVelocity = 0.5f;
+        private const float MaxVelocity = 25.0f;
 
         private readonly KeyboardController KeyboardInput;
         private readonly MouseController MouseInput;

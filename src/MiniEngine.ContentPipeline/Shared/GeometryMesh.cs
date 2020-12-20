@@ -1,9 +1,8 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 
 namespace MiniEngine.ContentPipeline.Shared
 {
-    public sealed class GeometryMesh : IDisposable
+    public sealed class GeometryMesh
     {
         public GeometryMesh(GeometryData geometry, Material material, Matrix offset)
         {
@@ -15,8 +14,5 @@ namespace MiniEngine.ContentPipeline.Shared
         public GeometryData Geometry { get; }
         public Material Material { get; }
         public Matrix Offset { get; }
-
-        public void Dispose()
-            => this.Geometry.Dispose();
     }
 }

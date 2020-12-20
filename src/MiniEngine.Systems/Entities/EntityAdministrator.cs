@@ -1,5 +1,4 @@
-﻿using System.Collections.Concurrent;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading;
 using MiniEngine.Configuration;
 
@@ -8,15 +7,13 @@ namespace MiniEngine.Systems.Entities
     [Service]
     public sealed class EntityAdministrator
     {
-        private readonly ConcurrentBag<Entity> Entities;
+        private readonly List<Entity> Entities;
         private int nextId = 0;
 
         public EntityAdministrator()
         {
-            this.Entities = new ConcurrentBag<Entity>();
+            this.Entities = new List<Entity>();
         }
-
-        public Entity[] Copy() => this.Entities.ToArray();
 
         public Entity Create()
         {
@@ -29,5 +26,8 @@ namespace MiniEngine.Systems.Entities
 
         public IReadOnlyList<Entity> GetAllEntities()
             => this.Entities.ToArray();
+
+        public void Remove(Entity entity)
+            => this.Entities.Remove(entity);
     }
 }

@@ -52,13 +52,13 @@ namespace MiniEngine.Editor.Scenes
         private void CreateSkyboxes(GraphicsDevice device, ContentStack content, FrameService frameService, CubeMapGenerator cubeMapGenerator, IrradianceMapGenerator irradianceMapGenerator, EnvironmentMapGenerator environmentMapGenerator)
         {
             var skyboxNames = new string[]
-                        {
+            {
                 "Skyboxes/Circus/Circus_Backstage_3k",
                 "Skyboxes/Industrial/fin4_Bg",
                 "Skyboxes/Milkyway/Milkyway_small",
                 "Skyboxes/Grid/testgrid",
                 "Skyboxes/Loft/Newport_Loft_Ref"
-                        };
+            };
 
             foreach (var name in skyboxNames)
             {

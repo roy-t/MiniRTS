@@ -16,11 +16,12 @@ namespace MiniEngine.Gui.Editors
             Decompose(quaternion, out var yaw, out var pitch, out var roll);
 
             var changed = false;
-            changed |= ImGui.DragFloat3($"{name}.Translation", ref translation);
-            changed |= ImGui.DragFloat3($"{name}.Scale", ref scale);
-            changed |= ImGui.SliderAngle($"{name}.Yaw", ref yaw);
-            changed |= ImGui.SliderAngle($"{name}.Pitch", ref pitch);
-            changed |= ImGui.SliderAngle($"{name}.Roll", ref roll);
+            ImGui.Text(name);
+            changed |= ImGui.DragFloat3($"Translation", ref translation);
+            changed |= ImGui.DragFloat3($"Scale", ref scale);
+            changed |= ImGui.SliderAngle($"Yaw", ref yaw);
+            changed |= ImGui.SliderAngle($"Pitch", ref pitch);
+            changed |= ImGui.SliderAngle($"Roll", ref roll);
 
             if (changed)
             {

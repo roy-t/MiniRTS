@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using MiniEngine.Configuration;
 
 namespace MiniEngine.Systems.Components
@@ -11,11 +12,7 @@ namespace MiniEngine.Systems.Components
 
         public ComponentAdministrator(IEnumerable<IComponentContainer> componentContainers)
         {
-            this.ComponentContainers = new Dictionary<Type, IComponentContainer>();
-            foreach (var componentContainer in componentContainers)
-            {
-                this.ComponentContainers.Add(componentContainer.ComponentType, componentContainer);
-            }
+            this.ComponentContainers = componentContainers.ToDictionary(x => x.ComponentType);
         }
 
         public void Add<T>(T component)

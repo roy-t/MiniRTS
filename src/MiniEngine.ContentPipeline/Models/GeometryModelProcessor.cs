@@ -30,14 +30,14 @@ namespace MiniEngine.ContentPipeline
         [DisplayName("Fallback - Ambient Occlusion")]
         public string FallbackAmbientOcclusion { get; set; } = "materials/ao.tga";
 
-        private readonly MaterialBuilder MaterialBuilder;
-
         private static readonly IList<string> AcceptableVertexChannelNames =
            new[]
            {
                 VertexChannelNames.TextureCoordinate(0),
                 VertexChannelNames.Normal(0)
            };
+
+        private readonly MaterialBuilder MaterialBuilder;
 
         public GeometryModelProcessor()
         {
@@ -51,6 +51,29 @@ namespace MiniEngine.ContentPipeline
             var model = BuildModel(meshes, materials);
 
             return model;
+        }
+
+        private static List<MeshContent> BuildMeshList(NodeContent input)
+        {
+            var nodes = input.AsEnumerable().SelectDeep(n => n.Children).ToList();
+            var meshes = nodes.FindAll(n => n is MeshContent).Cast<MeshContent>().ToList();
+            return meshes;
+        }
+
+        private Dictionary<X.GeometryContent, M.MaterialContent> ProcessMaterials(List<MeshContent> meshes, ContentProcessorContext context)
+        {
+            var cache = new Dictionary<X.GeometryContent, M.MaterialContent>();
+
+            foreach (var mesh in meshes)
+            {
+                foreach (var geometry in mesh.Geometry)
+                {
+                    var material = this.MaterialBuilder.Build(geometry.Material, context);
+                    cache.Add(geometry, material);
+                }
+            };
+
+            return cache;
         }
 
         private static M.GeometryModelContent BuildModel(List<MeshContent> meshes, Dictionary<GeometryContent, M.MaterialContent> materials)
@@ -88,13 +111,6 @@ namespace MiniEngine.ContentPipeline
             return model;
         }
 
-        private static List<MeshContent> BuildMeshList(NodeContent input)
-        {
-            var nodes = input.AsEnumerable().SelectDeep(n => n.Children).ToList();
-            var meshes = nodes.FindAll(n => n is MeshContent).Cast<MeshContent>().ToList();
-            return meshes;
-        }
-
         private static void StripVertexChannels(GeometryContent geometry)
         {
             var channels = geometry.Vertices.Channels;
@@ -110,20 +126,6 @@ namespace MiniEngine.ContentPipeline
             }
         }
 
-        private Dictionary<X.GeometryContent, M.MaterialContent> ProcessMaterials(List<MeshContent> meshes, ContentProcessorContext context)
-        {
-            var cache = new Dictionary<X.GeometryContent, M.MaterialContent>();
 
-            foreach (var mesh in meshes)
-            {
-                foreach (var geometry in mesh.Geometry)
-                {
-                    var material = this.MaterialBuilder.Build(geometry.Material, context);
-                    cache.Add(geometry, material);
-                }
-            };
-
-            return cache;
-        }
     }
 }

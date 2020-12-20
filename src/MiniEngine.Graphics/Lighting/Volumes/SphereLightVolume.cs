@@ -1,14 +1,12 @@
-﻿using System;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
 using MiniEngine.ContentPipeline.Shared;
-using MiniEngine.Graphics.Geometry;
 using MiniEngine.Graphics.Geometry.Generators;
 
 namespace MiniEngine.Graphics.Lighting.Volumes
 {
     [Service]
-    public sealed class SphereLightVolume : IDisposable
+    public sealed class SphereLightVolume
     {
         private readonly GeometryData Sphere;
 
@@ -23,8 +21,5 @@ namespace MiniEngine.Graphics.Lighting.Volumes
             device.Indices = this.Sphere.IndexBuffer;
             device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, this.Sphere.Primitives);
         }
-
-        public void Dispose()
-            => this.Sphere.Dispose();
     }
 }

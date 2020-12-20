@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 
 namespace MiniEngine.ContentPipeline.Shared
 {
-    public sealed class GeometryModel : IDisposable
+    public sealed class GeometryModel
     {
         private readonly List<GeometryMesh> MeshList;
 
@@ -39,14 +38,6 @@ namespace MiniEngine.ContentPipeline.Shared
             else
             {
                 this.Bounds = BoundingSphere.CreateMerged(this.Bounds, bounds);
-            }
-        }
-
-        public void Dispose()
-        {
-            for (var i = 0; i < this.Meshes.Count; i++)
-            {
-                this.Meshes[i].Dispose();
             }
         }
     }

@@ -1,10 +1,9 @@
-﻿using System;
-using MiniEngine.ContentPipeline.Shared;
+﻿using MiniEngine.ContentPipeline.Shared;
 using MiniEngine.Systems;
 
 namespace MiniEngine.Graphics.Geometry
 {
-    public sealed class GeometryComponent : AComponent, IDisposable
+    public sealed class GeometryComponent : AComponent
     {
         public GeometryComponent(Entity entity, GeometryModel model)
             : base(entity)
@@ -13,7 +12,5 @@ namespace MiniEngine.Graphics.Geometry
         }
 
         public GeometryModel Geometry { get; }
-
-        public void Dispose() => this.Geometry.Dispose();
     }
 }

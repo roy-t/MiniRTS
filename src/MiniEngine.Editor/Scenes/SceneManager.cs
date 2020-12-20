@@ -77,10 +77,9 @@ namespace MiniEngine.Editor.Scenes
                 if (entity.Id > 1)
                 {
                     this.Components.MarkForRemoval(entity);
+                    this.Entities.Remove(entity);
                 }
             }
-
-            // TODO: remove entities that have no components?
         }
     }
 }

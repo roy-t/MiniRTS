@@ -37,17 +37,19 @@ namespace MiniEngine.ContentPipeline.Models
 
         public MaterialBuilder(MaterialLookup lookup)
         {
-            this.LookUp = lookup;
             this.Cache = new Dictionary<string, ExternalReference<TextureContent>>();
+            this.LookUp = lookup;
         }
 
         public M.MaterialContent Build(X.MaterialContent content, ContentProcessorContext context)
         {
             var albedo = this.LoadTexture(AlbedoTextureParameters, this.LookUp.GetAlbedo(content), context);
+
             var normal = this.LoadTexture(SpecialTextureParameters, this.LookUp.GetNormal(content), context);
             var metalicness = this.LoadTexture(SpecialTextureParameters, this.LookUp.GetMetalicness(content), context);
             var roughness = this.LoadTexture(SpecialTextureParameters, this.LookUp.GetRoughness(content), context);
             var ambientOcclusion = this.LoadTexture(SpecialTextureParameters, this.LookUp.GetAmbientOcclusion(content), context);
+
             return new M.MaterialContent(albedo, normal, metalicness, roughness, ambientOcclusion);
         }
 
