@@ -119,7 +119,7 @@ namespace MiniEngine.Editor.Scenes
         private void CreateSpotLight(Vector3 position, Vector3 forward, float strength)
         {
             var entity = this.Entities.Create();
-            this.Components.Add(ShadowMapComponent.Create(this.Device, entity, 1024));
+            this.Components.Add(ShadowMapComponent.Create(entity, this.Device, 1024));
             this.Components.Add(new CameraComponent(entity, new PerspectiveCamera(this.Device.Viewport.AspectRatio, position, forward)));
             this.Components.Add(new SpotLightComponent(entity, Color.Yellow, strength));
         }

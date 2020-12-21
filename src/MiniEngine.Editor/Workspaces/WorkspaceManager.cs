@@ -37,9 +37,10 @@ namespace MiniEngine.Editor.Workspaces
             this.Workspaces = workspaces.Select(w => new WorkspaceBinding(w.GetKey(), w)).ToList();
 
             this.FrameService.CamereComponent.Camera.Move(this.State.CameraPosition, this.State.CameraForward);
-
             this.workspace = this.Workspaces.FirstOrDefault(w => w.Key == this.State.CurrentWorkspace)
                 ?? this.Workspaces.First();
+
+            this.SceneManager.SetScene(this.State.Scene);
         }
 
         public void Render(GameTime gameTime)
@@ -90,7 +91,8 @@ namespace MiniEngine.Editor.Workspaces
             {
                 CameraPosition = this.FrameService.CamereComponent.Camera.Position,
                 CameraForward = this.FrameService.CamereComponent.Camera.Forward,
-                CurrentWorkspace = this.workspace.Key
+                CurrentWorkspace = this.workspace.Key,
+                Scene = this.SceneManager.CurrentScene
             };
             this.Serializer.Serialize(state);
         }

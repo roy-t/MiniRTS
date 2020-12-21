@@ -14,9 +14,9 @@ namespace MiniEngine.Graphics.Shadows
 
         public RenderTarget2D DepthMap { get; }
 
-        public static ShadowMapComponent Create(GraphicsDevice device, Entity entity, int resolution)
+        public static ShadowMapComponent Create(Entity entity, GraphicsDevice device, int resolution)
         {
-            var renderTarget = new RenderTarget2D(device, resolution, resolution, false, SurfaceFormat.Single, DepthFormat.Depth24, 0, RenderTargetUsage.PreserveContents);
+            var renderTarget = new RenderTarget2D(device, resolution, resolution, false, SurfaceFormat.Single, DepthFormat.Depth24, 0, RenderTargetUsage.PlatformContents);
             return new ShadowMapComponent(entity, renderTarget);
         }
 

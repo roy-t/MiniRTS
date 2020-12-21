@@ -67,8 +67,10 @@ namespace MiniEngine.Pipeline.Shadows.Components
 
         public ShadowMap[] ShadowMaps { get; }
 
+        [Editor(nameof(DepthMapArray))]
         public RenderTarget2D DepthMapArray { get; }
 
+        [Editor(nameof(ColorMapArray))]
         public RenderTarget2D ColorMapArray { get; }
 
         public CascadeCamera[] ShadowCameras { get; }

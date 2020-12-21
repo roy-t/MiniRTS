@@ -55,11 +55,13 @@ namespace MiniEngine.Graphics.Visibility
             {
                 var entry = this.Entries[i];
 
-                var bounds = entry.Model.Bounds.Transform(entry.Transform);
-                if (frustum.Contains(bounds) != ContainmentType.Disjoint)
-                {
-                    outVisible.Add(new Pose(entry.Model, entry.Transform));
-                }
+                outVisible.Add(new Pose(entry.Model, entry.Transform));
+                // TODO: how to fix for sunlight?
+                //var bounds = entry.Model.Bounds.Transform(entry.Transform);
+                //if (frustum.Contains(bounds) != ContainmentType.Disjoint)
+                //{
+                //    outVisible.Add(new Pose(entry.Model, entry.Transform));
+                //}
             }
         }
     }

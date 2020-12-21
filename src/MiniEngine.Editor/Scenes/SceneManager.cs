@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using ImGuiNET;
 using Microsoft.Xna.Framework;
@@ -30,6 +31,17 @@ namespace MiniEngine.Editor.Scenes
             this.nextScene = this.Scenes[0];
         }
 
+        public string CurrentScene => this.scene?.GetKey() ?? string.Empty;
+
+        public void SetScene(string key)
+        {
+            var scene = this.Scenes.FirstOrDefault(s => s.GetKey().Equals(key, StringComparison.OrdinalIgnoreCase));
+            if (scene != null)
+            {
+                this.SetScene(scene);
+            }
+        }
+
         public void Update(GameTime gameTime)
         {
             if (this.nextScene != null)
@@ -57,8 +69,7 @@ namespace MiniEngine.Editor.Scenes
                 {
                     if (ImGui.MenuItem(scene.GetKey(), "", this.scene == scene))
                     {
-                        this.nextScene = scene;
-                        this.CleanUp();
+                        SetScene(scene);
                     }
                 }
 
@@ -66,6 +77,12 @@ namespace MiniEngine.Editor.Scenes
             }
 
             this.scene?.RenderMainMenuItems();
+        }
+
+        private void SetScene(IScene scene)
+        {
+            this.nextScene = scene;
+            this.CleanUp();
         }
 
         private void CleanUp()

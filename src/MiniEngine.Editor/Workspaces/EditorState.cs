@@ -8,6 +8,7 @@ namespace MiniEngine.Editor.Workspaces
         Entity Entity,
         Vector3 CameraPosition,
         Vector3 CameraForward,
-        string? CurrentWorkspace
+        string? CurrentWorkspace,
+        string Scene
     );
 }

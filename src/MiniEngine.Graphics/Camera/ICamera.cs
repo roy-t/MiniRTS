@@ -16,6 +16,9 @@ namespace MiniEngine.Graphics.Camera
 
         float AspectRatio { get; }
 
+        float NearPlane { get; }
+        float FarPlane { get; }
+
         void Move(Vector3 position, Vector3 forward);
     }
 }
