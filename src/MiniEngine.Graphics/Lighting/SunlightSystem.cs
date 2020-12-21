@@ -15,23 +15,16 @@ namespace MiniEngine.Graphics.Lighting
         private readonly GraphicsDevice Device;
         private readonly FrameService FrameService;
         private readonly SunlightEffect Effect;
-        private readonly PostProcessTriangle Volume;
+        private readonly PostProcessTriangle PostProcessTriangle;
 
-        private readonly RasterizerState SunlightRasterizer;
         private readonly SamplerState ShadowMapSampler;
 
-        public SunlightSystem(GraphicsDevice device, PostProcessTriangle volume, SunlightEffect effect, FrameService frameService)
+        public SunlightSystem(GraphicsDevice device, PostProcessTriangle postProcessTriangle, SunlightEffect effect, FrameService frameService)
         {
             this.Device = device;
             this.FrameService = frameService;
-            this.Volume = volume;
+            this.PostProcessTriangle = postProcessTriangle;
             this.Effect = effect;
-
-            this.SunlightRasterizer = new RasterizerState()
-            {
-                CullMode = CullMode.CullCounterClockwiseFace,
-                DepthClipEnable = false
-            };
 
             this.ShadowMapSampler = new SamplerState
             {
@@ -48,7 +41,7 @@ namespace MiniEngine.Graphics.Lighting
         {
             this.Device.BlendState = BlendState.Additive;
             this.Device.DepthStencilState = DepthStencilState.None;
-            this.Device.RasterizerState = this.SunlightRasterizer;
+            this.Device.RasterizerState = RasterizerState.CullCounterClockwise;
             this.Device.SamplerStates[0] = this.ShadowMapSampler;
             this.Device.SamplerStates[1] = SamplerState.LinearClamp;
             this.Device.SamplerStates[2] = SamplerState.LinearClamp;
@@ -61,8 +54,6 @@ namespace MiniEngine.Graphics.Lighting
         [ProcessAll]
         public void Process(SunlightComponent sunlight, CascadedShadowMapComponent shadowMap, CameraComponent shadowMapCamera)
         {
-            var world = Matrix.Invert(shadowMapCamera.Camera.ViewProjection);
-
             this.Effect.CameraPosition = this.FrameService.CamereComponent.Camera.Position;
             this.Effect.Albedo = this.FrameService.GBuffer.Albedo;
             this.Effect.Normal = this.FrameService.GBuffer.Normal;
@@ -82,9 +73,7 @@ namespace MiniEngine.Graphics.Lighting
             this.Effect.Scales = shadowMap.Scales;
 
             this.Effect.Apply();
-            this.Volume.Render(this.Device);
-
-            // TODO: try with full-screen triangle instead, as the volume won't match anyways
+            this.PostProcessTriangle.Render(this.Device);
         }
     }
 }

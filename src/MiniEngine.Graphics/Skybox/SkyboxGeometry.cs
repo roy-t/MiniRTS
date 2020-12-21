@@ -15,6 +15,8 @@ namespace MiniEngine.Graphics.Skybox
             this.IndexBuffer = indexBuffer;
 
             this.Primitives = this.IndexBuffer.IndexCount / 3;
+
+            this.AmbientLightFactor = 1.0f;
         }
 
         public TextureCube Texture { get; set; }
@@ -24,6 +26,9 @@ namespace MiniEngine.Graphics.Skybox
         public TextureCube Environment { get; set; }
         public VertexBuffer VertexBuffer { get; }
         public IndexBuffer IndexBuffer { get; }
+
+        public float AmbientLightFactor { get; set; }
+
 
         public int Primitives { get; }
 

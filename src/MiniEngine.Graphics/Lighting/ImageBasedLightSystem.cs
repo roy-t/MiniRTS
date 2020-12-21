@@ -60,6 +60,8 @@ namespace MiniEngine.Graphics.Lighting
 
             this.Effect.MaxReflectionLod = this.FrameService.Skybox.Environment.LevelCount;
 
+            this.Effect.AmbientLightFactor = this.FrameService.Skybox.AmbientLightFactor;
+
             this.Effect.Apply();
 
             this.PostProcessTriangle.Render(this.Device);

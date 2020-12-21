@@ -58,6 +58,7 @@ sampler brdfLutSampler = sampler_state
 float3 CameraPosition;
 float4x4 InverseViewProjection;
 int MaxReflectionLod;
+float AmbientLightFactor;
 
 PixelData VS(in VertexData input)
 {
@@ -74,7 +75,7 @@ PixelData VS(in VertexData input)
 OutputData PS(PixelData input)
 {
     OutputData output = (OutputData)0;
-    // Note: this function differs slightly from the genral light calculations in Lights.hlsl
+    // Note: this function differs slightly from the general light calculations in Lights.hlsl
 
     // Read data from G-Buffer
     float3 albedo = ReadAlbedo(input.Texture);
@@ -128,7 +129,7 @@ OutputData PS(PixelData input)
     // Combine the light (diffuse) and reflections (specular) and modify them by the general occlusion
     float3 ambient = (kD * diffuse + specular) * material.AmbientOcclusion;
 
-    output.Light = float4(ambient, 1.0f);
+    output.Light = float4(ambient * AmbientLightFactor, 1.0f);
 
     return output;
 }

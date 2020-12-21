@@ -48,7 +48,7 @@ namespace MiniEngine.Graphics.Shadows
             var view = this.FrameService.CamereComponent.Camera;
             var shadowCamera = camera.Camera;
 
-            var surfaceToLight = Vector3.Normalize(shadowCamera.Position - (shadowCamera.Position + shadowCamera.Forward));
+            var surfaceToLight = -shadowCamera.Forward;
 
             this.Frustum.TransformToCameraFrustumInWorldSpace(view);
             shadowMap.GlobalShadowMatrix = CreateGlobalShadowMatrix(surfaceToLight, this.Frustum);

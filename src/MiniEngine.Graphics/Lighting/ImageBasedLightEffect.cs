@@ -16,6 +16,7 @@ namespace MiniEngine.Graphics.Lighting
         private readonly EffectParameter EnvironmentParameter;
         private readonly EffectParameter BrdfLutParameter;
         private readonly EffectParameter MaxReflectionLodParameter;
+        private readonly EffectParameter AmbientLightFactorParameter;
 
         public ImageBasedLightEffect(EffectFactory factory) : base(factory.Load<ImageBasedLightEffect>())
         {
@@ -31,6 +32,7 @@ namespace MiniEngine.Graphics.Lighting
             this.EnvironmentParameter = this.Effect.Parameters["Environment"];
             this.BrdfLutParameter = this.Effect.Parameters["BrdfLut"];
             this.MaxReflectionLodParameter = this.Effect.Parameters["MaxReflectionLod"];
+            this.AmbientLightFactorParameter = this.Effect.Parameters["AmbientLightFactor"];
         }
 
         public Texture2D Albedo { set => this.AlbedoParameter.SetValue(value); }
@@ -52,5 +54,7 @@ namespace MiniEngine.Graphics.Lighting
         public Vector3 CameraPosition { set => this.CameraPositionParameter.SetValue(value); }
 
         public int MaxReflectionLod { set => this.MaxReflectionLodParameter.SetValue(value); }
+
+        public float AmbientLightFactor { set => this.AmbientLightFactorParameter.SetValue(value); }
     }
 }

@@ -38,6 +38,13 @@ namespace MiniEngine.Editor.Scenes
                 {
                     this.SetSkyboxTexture(this.Textures[this.selectedSkybox]);
                 }
+
+                var value = this.FrameService.Skybox.AmbientLightFactor;
+                if (ImGui.SliderFloat("Ambient Light", ref value, 0.0f, 2.0f))
+                {
+                    this.FrameService.Skybox.AmbientLightFactor = value;
+                }
+
                 ImGui.EndMenu();
             }
         }
