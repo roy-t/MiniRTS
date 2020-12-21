@@ -49,7 +49,7 @@ namespace MiniEngine.Editor.Scenes
             // Vector3.Up, (Vector3.Left * 0.75f) + (Vector3.Backward * 0.1f));
 
             var entity = this.Entities.Create();
-            this.Components.Add(new SunlightComponent(entity, Color.White, 100));
+            this.Components.Add(new SunlightComponent(entity, Color.White, 3));
             this.Components.Add(CascadedShadowMapComponent.Create(entity, this.Device, 2048, DefaultCascadeDistances));
 
             var position = Vector3.Up;

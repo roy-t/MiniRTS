@@ -80,6 +80,15 @@ float3 FresnelSchlickRoughness(float cosTheta, float3 F0, float roughness)
     return F0 + (max(float3(invRoughness, invRoughness, invRoughness), F0) - F0) * pow(1.0 - cosTheta, 5.0);
 }
 
+// Attenuation models how the influence of a light grows weaker over distance due to scattering
+// in the air.
+float Attenuation(float3 lightPosition, float3 worldPosition)
+{
+    float dist = distance(lightPosition, worldPosition);
+    float attenuation = 1.0f / (dist * dist);
+    return attenuation;
+}
+
 float3 ComputeLight(
     // Object properties
     float3 albedo,
@@ -89,7 +98,7 @@ float3 ComputeLight(
     // Camera properties
     float3 cameraPosition,
     // Light properties
-    float3 lightPosition,
+    float3 L, // points from the surface to the light
     float4 color,
     float strength)
 {
@@ -104,24 +113,16 @@ float3 ComputeLight(
     float3 F0 = float3(0.04f, 0.04f, 0.04f);
     F0 = lerp(F0, albedo, material.Metalicness);
 
-    // The light vector points from the object to the light
-    float3 L = normalize(lightPosition - worldPosition);
-
     // The halfway vector sits halfway between the L and V vectors. The closer it aligns with the
     // normal vector (including the modelled roughness of the material) the closer the view
     // direction is to the original reflection direction, which leads to a stronger specular reflection.
     float3 H = normalize(V + L);
 
-    // Attenuation models how the influence of a light grows weaker over distance due to scattering
-    // in the air.
-    float dist = distance(lightPosition, worldPosition);
-    float attenuation = 1.0f / (dist * dist);
-
     // The input color is in sRGB color space and needs to convert to linear color space first
 
     // Radiance is how much light the light source is producing. Strength in this case does not have
     // a real unit. But think of it as the amount of Lumen produced by the light.
-    float3 radiance = ToLinear(color).rgb * strength * attenuation;
+    float3 radiance = ToLinear(color).rgb * strength;
 
     // Compute the distribution of the diffuse and specular reflection using the Cook-Torrance BRDF model
 

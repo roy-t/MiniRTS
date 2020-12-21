@@ -6,12 +6,13 @@
 struct VertexData
 {
     float3 Position : POSITION0;
+    float2 Texture : TEXCOORD0;
 };
 
 struct PixelData
 {
     float4 Position : POSITION0;
-    noperspective float2 Texture : TEXCOORD0;
+    float2 Texture : TEXCOORD0;
 };
 
 struct OutputData
@@ -20,13 +21,12 @@ struct OutputData
 };
 
 static const float BlendThreshold = 0.3f;
-static const float bias = 0.0005f; // Bias to prevent shadow acne
+static const float bias = 0.005f; // Bias to prevent shadow acne
 static const uint NumCascades = 4;
 
-float4x4 WorldViewProjection;
 float4 Color;
 float Strength;
-float3 Position;
+float3 SurfaceToLight;
 float3 CameraPosition;
 float4x4 InverseViewProjection;
 
@@ -42,8 +42,8 @@ PixelData VS(in VertexData input)
 {
     PixelData output = (PixelData)0;
 
-    output.Position = mul(float4(input.Position, 1), WorldViewProjection);
-    output.Texture = ScreenToTexture(output.Position.xy / output.Position.w);
+    output.Position = float4(input.Position, 1);
+    output.Texture = input.Texture;
     return output;
 }
 
@@ -111,43 +111,33 @@ float SampleShadowCascade(float3 shadowPosition, uint cascadeIndex)
 {
     shadowPosition += Offsets[cascadeIndex].xyz;
     shadowPosition *= Scales[cascadeIndex].xyz;
-
-    /*if (visualizeCascades) {
-
-        const float3 CascadeColors[NumCascades] =
-        {
-            float3(1.0f, 0.0f, 0.0f),
-            float3(0.0f, 1.0f, 0.0f),
-            float3(0.0f, 0.0f, 1.0f),
-            float3(1.0f, 1.0f, 0.0f)
-        };
-
-        return CascadeColors[cascadeIndex];
-    }*/
-
+   
     return SampleShadowMapPCF(shadowPosition, cascadeIndex);
 }
 
-float ComputeLightFactor(float3 worldPosition, float depth)
+uint GetCascadeIndex(float depth)
 {
-    float4 position = mul(float4(worldPosition, 1.0f), ShadowMatrix);
-    float2 uv = 0.5f * (float2(position.x / position.w, -position.y / position.w) + 1);
-
-    if (uv.x < 0.0f || uv.x > 1.0f || uv.y < 0.0f || uv.y > 1.0f)
-    {
-        return 0.0f;
-    }
-
     uint cascadeIndex = 0;
     [unroll]
     for (uint i = 0; i < NumCascades - 1; ++i)
     {
         [flatten]
         if (depth > Splits[i])
+        {
             cascadeIndex = i + 1;
+        }
     }
 
-    float shadowVisibility = SampleShadowCascade(position.xyz, cascadeIndex);
+    return cascadeIndex;
+}
+
+float ComputeLightFactor(float3 worldPosition, float depth)
+{
+    float3 position = mul(float4(worldPosition, 1.0f), ShadowMatrix).xyz;
+
+    uint cascadeIndex = GetCascadeIndex(depth);
+
+    float shadowVisibility = SampleShadowCascade(position, cascadeIndex);
 
     float nextSplit = Splits[cascadeIndex];
     float splitSize = cascadeIndex == 0 ? nextSplit : nextSplit - Splits[cascadeIndex - 1];
@@ -156,7 +146,7 @@ float ComputeLightFactor(float3 worldPosition, float depth)
     [branch]
     if (splitDist <= BlendThreshold && cascadeIndex != NumCascades - 1)
     {
-        float nextSplitVisibility = SampleShadowCascade(position.xyz, cascadeIndex + 1);
+        float nextSplitVisibility = SampleShadowCascade(position, cascadeIndex + 1);
         float lerpAmt = smoothstep(0.0f, BlendThreshold, splitDist);
         shadowVisibility = lerp(nextSplitVisibility, shadowVisibility, lerpAmt);
     }
@@ -172,7 +162,7 @@ OutputData PS(PixelData input)
     float3 albedo = ReadAlbedo(input.Texture);
     float3 N = ReadNormal(input.Texture);
     float3 worldPosition = ReadWorldPosition(input.Texture, InverseViewProjection);
-    float depth = ReadDepth(input.Texture);
+    float depth = distance(worldPosition, CameraPosition);
 
     Mat material = ReadMaterial(input.Texture);
 
@@ -180,18 +170,49 @@ OutputData PS(PixelData input)
     float3 Lo = float3(0.0f, 0.0f, 0.0f);
     if (lightFactor > 0)
     {
-        Lo = ComputeLight(albedo, N, material, worldPosition, CameraPosition, Position, Color, Strength);
+        Lo = ComputeLight(albedo, N, material, worldPosition, CameraPosition, SurfaceToLight, Color, Strength);
+        // Ignore attenuation since sunlight has already crossed an extreme distance
     }
 
     output.Light = float4(Lo, 1.0f) * lightFactor;
     return output;
 }
 
-technique SpotLightTechnique
+
+
+OutputData DEBUG_PS(PixelData input)
+{
+    OutputData output = (OutputData)0;
+
+    float3 worldPosition = ReadWorldPosition(input.Texture, InverseViewProjection);
+    float depth = distance(worldPosition, CameraPosition);
+    
+    uint cascadeIndex = GetCascadeIndex(depth);
+    const float3 CascadeColors[NumCascades] =
+    {
+        float3(1.0f, 0.0f, 0.0f),
+        float3(0.0f, 1.0f, 0.0f),
+        float3(0.0f, 0.0f, 1.0f),
+        float3(1.0f, 1.0f, 0.0f)
+    };
+    output.Light = float4(CascadeColors[cascadeIndex], 1.0f);
+    return output;
+}
+
+technique SunlightTechnique
 {
     pass P0
     {
         VertexShader = compile VS_SHADERMODEL VS();
         PixelShader = compile PS_SHADERMODEL PS();
+    }
+}
+
+technique DebugTechnique
+{
+    pass P0
+    {
+        VertexShader = compile VS_SHADERMODEL VS();
+        PixelShader = compile PS_SHADERMODEL DEBUG_PS();
     }
 }

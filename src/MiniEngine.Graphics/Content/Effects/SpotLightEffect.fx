@@ -125,7 +125,9 @@ OutputData PS(PixelData input)
     float3 Lo = float3(0.0f, 0.0f, 0.0f);
     if (lightFactor > 0)
     {
-        Lo = ComputeLight(albedo, N, material, worldPosition, CameraPosition, Position, Color, Strength);
+        float3 L = normalize(Position - worldPosition);
+        Lo = ComputeLight(albedo, N, material, worldPosition, CameraPosition, L, Color, Strength);
+        Lo *= Attenuation(Position, worldPosition);
     }
 
     output.Light = float4(Lo, 1.0f) * lightFactor;

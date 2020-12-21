@@ -48,7 +48,9 @@ OutputData PS(PixelData input)
     float3 worldPosition = ReadWorldPosition(input.Texture, InverseViewProjection);
     Mat material = ReadMaterial(input.Texture);
 
-    float3 Lo = ComputeLight(albedo, N, material, worldPosition, CameraPosition, Position, Color, Strength);
+    float3 L = normalize(Position - worldPosition);
+    float3 Lo = ComputeLight(albedo, N, material, worldPosition, CameraPosition, L, Color, Strength);
+    Lo *= Attenuation(Position, worldPosition);
     output.Light = float4(Lo, 1.0f);
 
     return output;

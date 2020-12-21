@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
 using MiniEngine.Graphics.Camera;
-using MiniEngine.Graphics.Lighting.Volumes;
+using MiniEngine.Graphics.PostProcess;
 using MiniEngine.Graphics.Shadows;
 using MiniEngine.Systems;
 using MiniEngine.Systems.Generators;
@@ -15,12 +15,12 @@ namespace MiniEngine.Graphics.Lighting
         private readonly GraphicsDevice Device;
         private readonly FrameService FrameService;
         private readonly SunlightEffect Effect;
-        private readonly FrustumLightVolume Volume;
+        private readonly PostProcessTriangle Volume;
 
         private readonly RasterizerState SunlightRasterizer;
         private readonly SamplerState ShadowMapSampler;
 
-        public SunlightSystem(GraphicsDevice device, FrustumLightVolume volume, SunlightEffect effect, FrameService frameService)
+        public SunlightSystem(GraphicsDevice device, PostProcessTriangle volume, SunlightEffect effect, FrameService frameService)
         {
             this.Device = device;
             this.FrameService = frameService;
@@ -63,7 +63,6 @@ namespace MiniEngine.Graphics.Lighting
         {
             var world = Matrix.Invert(shadowMapCamera.Camera.ViewProjection);
 
-            this.Effect.WorldViewProjection = world * this.FrameService.CamereComponent.Camera.ViewProjection;
             this.Effect.CameraPosition = this.FrameService.CamereComponent.Camera.Position;
             this.Effect.Albedo = this.FrameService.GBuffer.Albedo;
             this.Effect.Normal = this.FrameService.GBuffer.Normal;
@@ -71,7 +70,7 @@ namespace MiniEngine.Graphics.Lighting
             this.Effect.Material = this.FrameService.GBuffer.Material;
             this.Effect.InverseViewProjection = Matrix.Invert(this.FrameService.CamereComponent.Camera.ViewProjection);
 
-            this.Effect.Position = shadowMapCamera.Camera.Position;
+            this.Effect.SurfaceToLight = -shadowMapCamera.Camera.Forward;
             this.Effect.Color = sunlight.Color;
             this.Effect.Strength = sunlight.Strength;
 
