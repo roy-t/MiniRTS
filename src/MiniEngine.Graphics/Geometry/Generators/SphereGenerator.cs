@@ -34,10 +34,10 @@ namespace MiniEngine.Graphics.Geometry.Generators
             // Botom
             GenerateFace(new CoordinateSystem(Vector3.Right, Vector3.Backward, Vector3.Down), subdivisions, vertices, indices);
 
-            var vertexBuffer = new VertexBuffer(device, GeometryVertex.Declaration, vertices.Count, BufferUsage.None);
+            var vertexBuffer = new VertexBuffer(device, GeometryVertex.Declaration, vertices.Count, BufferUsage.WriteOnly);
             vertexBuffer.SetData(vertices.ToArray());
 
-            var indexBuffer = new IndexBuffer(device, IndexElementSize.ThirtyTwoBits, indices.Count, BufferUsage.None);
+            var indexBuffer = new IndexBuffer(device, IndexElementSize.ThirtyTwoBits, indices.Count, BufferUsage.WriteOnly);
             indexBuffer.SetData(indices.ToArray());
 
             return new GeometryData(vertexBuffer, indexBuffer, new BoundingSphere(Vector3.Zero, 1.0f));

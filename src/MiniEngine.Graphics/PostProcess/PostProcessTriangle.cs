@@ -33,10 +33,10 @@ namespace MiniEngine.Graphics.PostProcess
                 2
             };
 
-            this.Vertices = new VertexBuffer(device, PostProcessVertex.Declaration, vertices.Length, BufferUsage.None);
+            this.Vertices = new VertexBuffer(device, PostProcessVertex.Declaration, vertices.Length, BufferUsage.WriteOnly);
             this.Vertices.SetData(vertices);
 
-            this.Indices = new IndexBuffer(device, IndexElementSize.SixteenBits, indices.Length, BufferUsage.None);
+            this.Indices = new IndexBuffer(device, IndexElementSize.SixteenBits, indices.Length, BufferUsage.WriteOnly);
             this.Indices.SetData(indices);
         }
 

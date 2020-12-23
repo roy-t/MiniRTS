@@ -75,10 +75,10 @@ namespace MiniEngine.Graphics.Skybox
             indices[34] = 6;
             indices[35] = 5;
 
-            var vertexBuffer = new VertexBuffer(device, SkyboxVertex.Declaration, vertices.Length, BufferUsage.None);
+            var vertexBuffer = new VertexBuffer(device, SkyboxVertex.Declaration, vertices.Length, BufferUsage.WriteOnly);
             vertexBuffer.SetData(vertices);
 
-            var indexBuffer = new IndexBuffer(device, IndexElementSize.SixteenBits, indices.Length, BufferUsage.None);
+            var indexBuffer = new IndexBuffer(device, IndexElementSize.SixteenBits, indices.Length, BufferUsage.WriteOnly);
             indexBuffer.SetData(indices);
 
             return new SkyboxGeometry(texture, irradiance, environment, vertexBuffer, indexBuffer);

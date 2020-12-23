@@ -37,7 +37,7 @@ namespace MiniEngine.ContentPipeline.Serialization.Readers
             var data = new byte[dataSize];
             input.Read(data, 0, dataSize);
 
-            var buffer = new VertexBuffer(device, declaration, vertexCount, BufferUsage.None);
+            var buffer = new VertexBuffer(device, declaration, vertexCount, BufferUsage.WriteOnly);
 
             buffer.SetData(data, 0, dataSize);
             return buffer;
@@ -52,7 +52,7 @@ namespace MiniEngine.ContentPipeline.Serialization.Readers
 
             var indexBuffer = new IndexBuffer(device,
                 sixteenBits ? IndexElementSize.SixteenBits : IndexElementSize.ThirtyTwoBits,
-                dataSize / (sixteenBits ? 2 : 4), BufferUsage.None);
+                dataSize / (sixteenBits ? 2 : 4), BufferUsage.WriteOnly);
 
             indexBuffer.SetData(data, 0, dataSize);
             return indexBuffer;

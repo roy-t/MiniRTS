@@ -27,7 +27,7 @@ namespace MiniEngine.Graphics.Geometry
             this.Instances = instances;
             this.FrameService = frameService;
             this.Effect = effect;
-            this.InstanceBuffer = new VertexBuffer(device, InstancingVertex.Declaration, MaxInstances, BufferUsage.None);
+            this.InstanceBuffer = new VertexBuffer(device, InstancingVertex.Declaration, MaxInstances, BufferUsage.WriteOnly);
         }
 
         public void OnSet()

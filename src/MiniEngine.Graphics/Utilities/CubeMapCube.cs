@@ -76,10 +76,10 @@ namespace MiniEngine.Graphics.Utilities
             indices[34] = 6;
             indices[35] = 5;
 
-            this.VertexBuffer = new VertexBuffer(device, VertexPosition.VertexDeclaration, vertices.Length, BufferUsage.None);
+            this.VertexBuffer = new VertexBuffer(device, VertexPosition.VertexDeclaration, vertices.Length, BufferUsage.WriteOnly);
             this.VertexBuffer.SetData(vertices);
 
-            this.IndexBuffer = new IndexBuffer(device, IndexElementSize.SixteenBits, indices.Length, BufferUsage.None);
+            this.IndexBuffer = new IndexBuffer(device, IndexElementSize.SixteenBits, indices.Length, BufferUsage.WriteOnly);
             this.IndexBuffer.SetData(indices);
 
             this.Primitives = indices.Length / 3;

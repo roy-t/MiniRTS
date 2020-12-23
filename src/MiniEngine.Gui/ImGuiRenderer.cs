@@ -273,7 +273,7 @@ namespace MiniEngine.Gui
                 this.vertexBuffer?.Dispose();
 
                 this.vertexBufferSize = (int)(drawData.TotalVtxCount * 1.5f);
-                this.vertexBuffer = new VertexBuffer(this.GraphicsDevice, ImmediateVertex.Declaration, this.vertexBufferSize, BufferUsage.None);
+                this.vertexBuffer = new VertexBuffer(this.GraphicsDevice, ImmediateVertex.Declaration, this.vertexBufferSize, BufferUsage.WriteOnly);
                 this.vertexData = new byte[this.vertexBufferSize * sizeof(ImmediateVertex)];
             }
 
@@ -282,7 +282,7 @@ namespace MiniEngine.Gui
                 this.indexBuffer?.Dispose();
 
                 this.indexBufferSize = (int)(drawData.TotalIdxCount * 1.5f);
-                this.indexBuffer = new IndexBuffer(this.GraphicsDevice, IndexElementSize.SixteenBits, this.indexBufferSize, BufferUsage.None);
+                this.indexBuffer = new IndexBuffer(this.GraphicsDevice, IndexElementSize.SixteenBits, this.indexBufferSize, BufferUsage.WriteOnly);
                 this.indexData = new byte[this.indexBufferSize * sizeof(ushort)];
             }
 
