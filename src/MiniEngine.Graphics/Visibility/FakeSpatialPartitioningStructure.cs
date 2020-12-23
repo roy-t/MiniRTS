@@ -55,8 +55,10 @@ namespace MiniEngine.Graphics.Visibility
             {
                 var entry = this.Entries[i];
 
-                outVisible.Add(new Pose(entry.Model, entry.Transform));
+                outVisible.Add(new Pose(entry.Entity, entry.Model, entry.Transform));
                 // TODO: how to fix for sunlight?
+                // TODO: how to fix for instancing?
+
                 //var bounds = entry.Model.Bounds.Transform(entry.Transform);
                 //if (frustum.Contains(bounds) != ContainmentType.Disjoint)
                 //{

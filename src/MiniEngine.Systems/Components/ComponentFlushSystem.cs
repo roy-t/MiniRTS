@@ -12,7 +12,7 @@ namespace MiniEngine.Systems.Components
 
         public ComponentFlushSystem(IEnumerable<IComponentContainer> containers)
         {
-            this.Containers = containers.ToList();
+            this.Containers = containers.Distinct().ToList();
         }
 
         public void OnSet()

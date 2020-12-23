@@ -34,7 +34,7 @@ namespace MiniEngine.Configuration
 
         public Injector()
         {
-            this.Container = new ServiceContainer(ContainerOptions.Default);
+            this.Container = new ServiceContainer();
             this.Container.SetDefaultLifetime<PerContainerLifetime>();
 
             Log.Logger = new LoggerConfiguration()
@@ -180,6 +180,11 @@ namespace MiniEngine.Configuration
         {
             containerType = containerType.MakeGenericType(componentType);
             var instance = Activator.CreateInstance(containerType);
+
+            foreach (var interfaceType in containerType.GetInterfaces())
+            {
+                this.Container.RegisterInstance(interfaceType, instance);
+            }
 
             this.Container.RegisterInstance(containerType, instance);
         }

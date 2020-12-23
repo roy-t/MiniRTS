@@ -9,6 +9,11 @@ struct VertexData
     float3 Normal : NORMAL0;
 };
 
+struct InstancingData
+{
+    float4x4 Offset : TEXCOORD1;
+};
+
 struct PixelData
 {
     float4 Position : SV_POSITION;
@@ -103,6 +108,22 @@ PixelData VS(in VertexData input)
     return output;
 }
 
+PixelData VS_INSTANCED(in VertexData input, in InstancingData instance)
+{
+    PixelData output = (PixelData)0;
+
+    float4x4 offsetT = transpose(instance.Offset);
+
+    output.Position = mul(mul(float4(input.Position, 1), offsetT), WorldViewProjection);
+    output.Texture = input.Texture;
+    output.WorldPosition = output.Position;
+
+    float3x3 rotation = (float3x3)World;
+    output.Normal = normalize(mul(input.Normal, rotation));
+
+    return output;
+}
+
 // Normal mapping as described by Christian Schüler in
 // http://www.thetenthplanet.de/archives/1180
 float3x3 CotangentFrame(float3 N, float3 p, float2 uv)
@@ -161,3 +182,13 @@ technique GeometryTechnique
         PixelShader = compile PS_SHADERMODEL PS();
     }
 }
+
+technique InstancedGeometryTechnique
+{
+    pass P0
+    {
+        VertexShader = compile VS_SHADERMODEL VS_INSTANCED();
+        PixelShader = compile PS_SHADERMODEL PS();
+    }
+}
+

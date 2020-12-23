@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using MiniEngine.Configuration;
 using MiniEngine.Systems.Components;
 using MiniEngine.Systems.Pipeline;
@@ -15,7 +16,7 @@ namespace MiniEngine.Systems.Services
         public PipelineBuilder(Resolve resolveDelegate, IEnumerable<IComponentContainer> componentContainers)
         {
             this.ResolveDelegate = resolveDelegate;
-            this.ComponentContainers = componentContainers;
+            this.ComponentContainers = componentContainers.Distinct();
         }
 
         public PipelineSpecifier Builder() => new PipelineSpecifier(this.ResolveDelegate, this.ComponentContainers);
@@ -29,13 +30,7 @@ namespace MiniEngine.Systems.Services
             public PipelineSpecifier(Resolve resolveDelegate, IEnumerable<IComponentContainer> componentContainers)
             {
                 this.SystemSpecs = new List<SystemSpec>();
-
-                this.ComponentContainers = new Dictionary<Type, IComponentContainer>();
-                foreach (var componentContainer in componentContainers)
-                {
-                    this.ComponentContainers.Add(componentContainer.ComponentType, componentContainer);
-                }
-
+                this.ComponentContainers = componentContainers.Distinct().ToDictionary(c => c.ComponentType);
                 this.ResolveDelegate = resolveDelegate;
             }
 

@@ -4,6 +4,7 @@ using MiniEngine.Configuration;
 using MiniEngine.ContentPipeline.Shared;
 using MiniEngine.Graphics.Camera;
 using MiniEngine.Systems;
+using MiniEngine.Systems.Components;
 using MiniEngine.Systems.Generators;
 
 namespace MiniEngine.Graphics.Geometry
@@ -11,15 +12,22 @@ namespace MiniEngine.Graphics.Geometry
     [System]
     public partial class GeometrySystem : ISystem
     {
+        public const int MaxInstances = 1024;
+
         private readonly GraphicsDevice Device;
+        private readonly IComponentContainer<InstancingComponent> Instances;
         private readonly FrameService FrameService;
         private readonly GeometryEffect Effect;
 
-        public GeometrySystem(GraphicsDevice device, GeometryEffect effect, FrameService frameService)
+        private readonly VertexBuffer InstanceBuffer;
+
+        public GeometrySystem(GraphicsDevice device, IComponentContainer<InstancingComponent> instances, GeometryEffect effect, FrameService frameService)
         {
             this.Device = device;
+            this.Instances = instances;
             this.FrameService = frameService;
             this.Effect = effect;
+            this.InstanceBuffer = new VertexBuffer(device, InstancingVertex.Declaration, MaxInstances, BufferUsage.None);
         }
 
         public void OnSet()
@@ -50,12 +58,43 @@ namespace MiniEngine.Graphics.Geometry
                 for (var j = 0; j < pose.Model.Meshes.Count; j++)
                 {
                     var mesh = pose.Model.Meshes[j];
-                    this.Draw(this.FrameService.CamereComponent.Camera, mesh.Geometry, mesh.Material, mesh.Offset * pose.Transform);
+                    this.SetEffectParameters(this.FrameService.CamereComponent.Camera, mesh.Material, mesh.Offset * pose.Transform);
+
+                    if (this.Instances.Contains(pose.Entity))
+                    {
+                        var instances = this.Instances.Get(pose.Entity);
+                        this.DrawIndexed(mesh.Geometry, instances);
+                    }
+                    else
+                    {
+                        this.Draw(mesh.Geometry);
+                    }
                 }
             }
         }
 
-        private void Draw(ICamera camera, GeometryData geometry, Material material, Matrix transform)
+        private void DrawIndexed(GeometryData geometry, InstancingComponent instances)
+        {
+            this.InstanceBuffer.SetData(instances.VertexData);
+
+            this.Device.SetVertexBuffers(new VertexBufferBinding(geometry.VertexBuffer), new VertexBufferBinding(this.InstanceBuffer, 0, 1));
+            this.Device.Indices = geometry.IndexBuffer;
+
+            this.Effect.Apply(GeometryTechnique.Instanced);
+
+            this.Device.DrawInstancedPrimitives(PrimitiveType.TriangleList, 0, 0, geometry.Primitives, instances.Instances);
+        }
+
+        private void Draw(GeometryData geometry)
+        {
+            this.Device.SetVertexBuffer(geometry.VertexBuffer);
+            this.Device.Indices = geometry.IndexBuffer;
+
+            this.Effect.Apply(GeometryTechnique.Default);
+            this.Device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, geometry.Primitives);
+        }
+
+        private void SetEffectParameters(ICamera camera, Material material, Matrix transform)
         {
             this.Effect.CameraPosition = camera.Position;
             this.Effect.World = transform;
@@ -65,11 +104,8 @@ namespace MiniEngine.Graphics.Geometry
             this.Effect.Metalicness = material.Metalicness;
             this.Effect.Roughness = material.Roughness;
             this.Effect.AmbientOcclusion = material.AmbientOcclusion;
-            this.Effect.Apply();
 
-            this.Device.SetVertexBuffer(geometry.VertexBuffer);
-            this.Device.Indices = geometry.IndexBuffer;
-            this.Device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, geometry.Primitives);
+
         }
     }
 }

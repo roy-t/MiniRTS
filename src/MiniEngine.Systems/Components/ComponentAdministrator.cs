@@ -12,7 +12,7 @@ namespace MiniEngine.Systems.Components
 
         public ComponentAdministrator(IEnumerable<IComponentContainer> componentContainers)
         {
-            this.ComponentContainers = componentContainers.ToDictionary(x => x.ComponentType);
+            this.ComponentContainers = componentContainers.Distinct().ToDictionary(x => x.ComponentType);
         }
 
         public void Add<T>(T component)

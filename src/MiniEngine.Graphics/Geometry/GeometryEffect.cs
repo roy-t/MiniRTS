@@ -44,5 +44,26 @@ namespace MiniEngine.Graphics.Geometry
         public Texture2D Roughness { set => this.RoughnessParameter.SetValue(value); }
 
         public Texture2D AmbientOcclusion { set => this.AmbientOcclusionParameter.SetValue(value); }
+
+        public void Apply(GeometryTechnique technique)
+        {
+            switch (technique)
+            {
+                case GeometryTechnique.Default:
+                    this.Effect.CurrentTechnique = this.Effect.Techniques["GeometryTechnique"];
+                    break;
+                case GeometryTechnique.Instanced:
+                    this.Effect.CurrentTechnique = this.Effect.Techniques["InstancedGeometryTechnique"];
+                    break;
+            }
+
+            this.Apply();
+        }
+    }
+
+    public enum GeometryTechnique
+    {
+        Default,
+        Instanced
     }
 }
