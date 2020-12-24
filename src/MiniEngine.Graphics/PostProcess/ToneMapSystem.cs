@@ -34,7 +34,7 @@ namespace MiniEngine.Graphics.PostProcess
         [Process]
         public void Process()
         {
-            this.Effect.Color = this.FrameService.LBuffer.Light;
+            this.Effect.Color = this.FrameService.LBuffer.LightPostProcess;
             this.Effect.Apply();
 
             this.PostProcessTriangle.Render(this.Device);

@@ -23,9 +23,6 @@ namespace MiniEngine.Graphics.Lighting
         private readonly EffectParameter OffsetsParameter;
         private readonly EffectParameter ScalesParameter;
 
-        private readonly EffectParameter MediaParameter;
-        private readonly EffectParameter ShadowViewProjectionParameter;
-
         public SunlightEffect(EffectFactory factory) : base(factory.Load<SunlightEffect>())
         {
             this.Effect.CurrentTechnique = this.Effect.Techniques["SunlightTechnique"];
@@ -45,9 +42,6 @@ namespace MiniEngine.Graphics.Lighting
             this.SplitsParameter = this.Effect.Parameters["Splits"];
             this.OffsetsParameter = this.Effect.Parameters["Offsets"];
             this.ScalesParameter = this.Effect.Parameters["Scales"];
-
-            this.MediaParameter = this.Effect.Parameters["Media"];
-            this.ShadowViewProjectionParameter = this.Effect.Parameters["ShadowViewProjection"];
         }
 
         public Texture2D Albedo { set => this.AlbedoParameter.SetValue(value); }
@@ -72,14 +66,11 @@ namespace MiniEngine.Graphics.Lighting
 
         public Matrix ShadowMatrix { set => this.ShadowMatrixParameter.SetValue(value); }
 
-        public Matrix ShadowViewProjection { set => this.ShadowViewProjectionParameter.SetValue(value); }
-
         public float[] Splits { set => this.SplitsParameter.SetValue(value); }
 
         public Vector4[] Offsets { set => this.OffsetsParameter.SetValue(value); }
 
         public Vector4[] Scales { set => this.ScalesParameter.SetValue(value); }
 
-        public Texture2D Media { set => this.MediaParameter.SetValue(value); }
     }
 }

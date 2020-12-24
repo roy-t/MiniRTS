@@ -64,11 +64,8 @@ float ReadDepth(float2 texCoord)
     return tex2D(depthSampler, texCoord).r;
 }
 
-float3 ReadWorldPosition(float2 texCoord, float4x4 inverseViewProjection)
+float3 ReadWorldPosition(float2 texCoord, float depthVal, float4x4 inverseViewProjection)
 {
-    // Read depth
-    float depthVal = ReadDepth(texCoord);
-
     // Compute screen-space position
     float4 position;
     position.x = texCoord.x * 2.0f - 1.0f;
@@ -81,6 +78,12 @@ float3 ReadWorldPosition(float2 texCoord, float4x4 inverseViewProjection)
     position /= position.w;
 
     return position.xyz;
+}
+
+float3 ReadWorldPosition(float2 texCoord, float4x4 inverseViewProjection)
+{
+    float depthVal = ReadDepth(texCoord);
+    return ReadWorldPosition(texCoord, depthVal, inverseViewProjection);
 }
 
 Mat ReadMaterial(float2 texCoord)

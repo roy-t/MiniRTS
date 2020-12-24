@@ -56,6 +56,12 @@
 /processorParam:DebugMode=Auto
 /build:Effects/IrradianceMapGeneratorEffect.fx
 
+#begin Effects/LightPostProcessEffect.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Effects/LightPostProcessEffect.fx
+
 #begin Effects/MediaEffect.fx
 /importer:EffectImporter
 /processor:EffectProcessor

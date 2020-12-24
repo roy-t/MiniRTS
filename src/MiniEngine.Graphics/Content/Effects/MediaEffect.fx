@@ -36,7 +36,7 @@ struct DensityPixelData
 
 struct DensityOutputData
 {
-    float Depth : COLOR0;
+    float2 Depth : COLOR0;
 };
 
 DensityPixelData VS_DENSITY(in DensityVertexData input)
@@ -53,41 +53,18 @@ DensityOutputData PS_DENSITY(DensityPixelData input)
 {
     DensityOutputData output = (DensityOutputData)0;
 
-    float f = tex2D(volumeFrontSampler, input.Texture).r;
+    float f = tex2D(volumeFrontSampler, input.Texture).r;    
     float b = tex2D(volumeBackSampler, input.Texture).r;
-
-    // 4 scenarios
-    // no faces  f:1 b:1
-    // - depth should be 0
-    // only back faces f:1, b:<1
-    // - we're inside the fog, depth should be the distance to the back face
-    // only front faces f:<1, b:1
-    // - ??
-    // back and front faces f:<1, b:<1    
-    // - depth should be b - f
-
-    float depth = 0.0f;
-    if(f >= 1.0f && b >= 1.0f)
-    { 
-        depth = 0.0f;
-    }
-
-    if (f >= 1.0f && b < 1.0f)
-    {
-        depth = b;
-    }
     
-    if (f < 1.0f && b >= 1.0f)
-    {
-        depth = 1.0f; // WTF scenario
-    }
+    // If we don't have a distance to the front, but have a distance to the back
+    // we're inside the medium
+    if (f >= 1.0f && b < 1.0f) { f = 0.0f; }
 
-    if (f < 1.0f && b < 1.0f)
-    {
-        depth = b - f;
-    }
 
-    output.Depth = depth;
+    // TODO: we can run nice density variations here?
+    output.Depth.x = f;
+    output.Depth.y = b;
+    
     return output;
 }
 

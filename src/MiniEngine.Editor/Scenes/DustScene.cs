@@ -54,7 +54,7 @@ namespace MiniEngine.Editor.Scenes
         private void AddAsteroids()
         {
             var geometry = SphereGenerator.Generate(this.Device, 15);
-            var material = new Material(this.Assets.WhitePixel, this.Assets.NormalPixel(), this.Assets.MetalicnessPixel(0.3f), this.Assets.RoughnessPixel(0.5f), this.Assets.AmbientOcclussionPixel(1.0f));
+            var material = new Material(this.Assets.AlbedoPixel(Color.Red), this.Assets.NormalPixel(), this.Assets.MetalicnessPixel(0.3f), this.Assets.RoughnessPixel(0.5f), this.Assets.AmbientOcclussionPixel(1.0f));
             var transform = Matrix.Identity;
 
             var entity = this.Entities.Create();
@@ -92,9 +92,10 @@ namespace MiniEngine.Editor.Scenes
             this.Components.Add(new CameraComponent(entity, camera));
 
             // Add dust
+            var dustEntity = this.Entities.Create();
             var cube = CubeGenerator.Generate(this.Device);
-            this.Components.Add(DustComponent.Create(entity, this.Device, cube));
-            this.Components.Add(new TransformComponent(entity, Matrix.CreateScale(300.0f, 50.0f, 30.0f)));
+            this.Components.Add(DustComponent.Create(dustEntity, this.Device, cube));
+            this.Components.Add(new TransformComponent(dustEntity, Matrix.CreateScale(300.0f, 50.0f, 30.0f)));
         }
     }
 }

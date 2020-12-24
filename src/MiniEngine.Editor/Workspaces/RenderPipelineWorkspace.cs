@@ -24,6 +24,8 @@ namespace MiniEngine.Editor.Workspaces
             this.RegisterTexture(nameof(frameService.GBuffer.Normal), frameService.GBuffer.Normal);
             this.RegisterTexture(nameof(frameService.GBuffer.Material), frameService.GBuffer.Material);
             this.RegisterTexture(nameof(frameService.LBuffer.Light), frameService.LBuffer.Light);
+            this.RegisterTexture(nameof(frameService.LBuffer.ParticipatingMedia), frameService.LBuffer.ParticipatingMedia);
+            this.RegisterTexture(nameof(frameService.LBuffer.LightPostProcess), frameService.LBuffer.LightPostProcess);
             this.RegisterTexture(nameof(frameService.PBuffer.ToneMap), frameService.PBuffer.ToneMap);
         }
 

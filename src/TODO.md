@@ -1,9 +1,5 @@
 # TODO
 
-- The Geometry, class PostProcessTriangle class, and SkyboxGeometry class, and how their draw call looks is extremely similar
-    - How to make a class that unifies this, but at the same time doesn't confuse the vertex declaration?
-    - Speed :D
-
 - Unify geometry generation, let users pass in a vertex declaration and get the vertex and index buffer?
 
 - Create a better multi-threaded render pipeline. Maybe have one worker thread that pushes an entire pipeline to a queue, and then have the workers handling those systems. Uses a semaphore or something to sync? 
@@ -18,9 +14,10 @@ Make a scene with many asteroids (like 10 variations instanced in different orie
 - Fog/Dust, Ravendarke at Monogame discord: https://www.slideshare.net/BenjaminGlatzel/volumetric-lighting-for-many-lights-in-lords-of-the-fallen
 
 
+# WIP - Fog
+- Can we add some scattering/*bloom*? <---- BLOOM might actually fake ray scattering a bit?
 
-# WIP
-- Got a density and volume rendered
-- Messed with SunlightEffect and SunlightSystem to actually show the volume being rendered
-- Density still seems wrong (all full red?)
-- How to have a sunlight without participating media?
+- Fog added 2 full screen render targets to the LBuffer, can we optimize this
+- How can we give more parameters to tweak the fog?
+- How can we have different parameters for different volumes (do we need that) at the same time..?
+- Right now it only supports concave geometry as a volume?
