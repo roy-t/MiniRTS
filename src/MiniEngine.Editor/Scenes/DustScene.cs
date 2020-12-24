@@ -8,6 +8,7 @@ using MiniEngine.Graphics.Camera;
 using MiniEngine.Graphics.Geometry;
 using MiniEngine.Graphics.Geometry.Generators;
 using MiniEngine.Graphics.Lighting;
+using MiniEngine.Graphics.ParticipatingMedia;
 using MiniEngine.Graphics.Shadows;
 using MiniEngine.SceneManagement;
 using MiniEngine.Systems.Components;
@@ -89,6 +90,11 @@ namespace MiniEngine.Editor.Scenes
 
             var camera = new PerspectiveCamera(1.0f, position, forward);
             this.Components.Add(new CameraComponent(entity, camera));
+
+            // Add dust
+            var cube = CubeGenerator.Generate(this.Device);
+            this.Components.Add(DustComponent.Create(entity, this.Device, cube));
+            this.Components.Add(new TransformComponent(entity, Matrix.CreateScale(3.0f, 1.0f, 3.0f)));
         }
     }
 }

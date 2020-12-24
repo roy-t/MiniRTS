@@ -1,6 +1,7 @@
 ﻿using MiniEngine.Configuration;
 using MiniEngine.Graphics.Geometry;
 using MiniEngine.Graphics.Lighting;
+using MiniEngine.Graphics.ParticipatingMedia;
 using MiniEngine.Graphics.PostProcess;
 using MiniEngine.Graphics.Rendering;
 using MiniEngine.Graphics.Shadows;
@@ -53,6 +54,13 @@ namespace MiniEngine.Editor.Configuration
                     .RequiresAll("Poses")
                     .Produces("Lights", "Shadows")
                     .Build()
+                .System<DustSystem>()
+                    .InSequence()
+                    .RequiresAll("Buffers")
+                    .RequiresAll("Containers")
+                    .RequiresAll("Poses")
+                    .Produces("Lights", "Media")
+                    .Build()
                 .System<CascadedShadowMapSystem>()
                     .InSequence()
                     .RequiresAll("Buffers")
@@ -86,6 +94,7 @@ namespace MiniEngine.Editor.Configuration
                     .RequiresAll("Buffers")
                     .RequiresAll("Containers")
                     .RequiresAll("Meshes")
+                    .Requires("Lights", "Media")
                     .Requires("Lights", "CascadedShadows")
                     .Produces("Lights", "Sun")
                     .Build()
