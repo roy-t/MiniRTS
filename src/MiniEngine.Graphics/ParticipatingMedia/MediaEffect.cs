@@ -1,49 +1,23 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Graphics.Effects;
 
 namespace MiniEngine.Graphics.Shadows
 {
     public sealed class MediaEffect : EffectWrapper
     {
-        private readonly EffectParameter WorldViewProjectionParameter;
-        private readonly EffectParameter ChannelParameter;
-        private readonly EffectParameter VolumeTextureParameter;
+        private readonly EffectParameter VolumeFrontParameter;
+        private readonly EffectParameter VolumeBackParameter;
 
         public MediaEffect(EffectFactory factory) : base(factory.Load<MediaEffect>())
         {
-            this.Effect.CurrentTechnique = this.Effect.Techniques["VolumeMediaTechnique"];
+            this.Effect.CurrentTechnique = this.Effect.Techniques["DensityMediaTechnique"];
 
-            this.WorldViewProjectionParameter = this.Effect.Parameters["WorldViewProjection"];
-            this.ChannelParameter = this.Effect.Parameters["Channel"];
-            this.VolumeTextureParameter = this.Effect.Parameters["VolumeTexture"];
+            this.VolumeFrontParameter = this.Effect.Parameters["VolumeFront"];
+            this.VolumeBackParameter = this.Effect.Parameters["VolumeBack"];
         }
 
-        public Matrix WorldViewProjection { set => this.WorldViewProjectionParameter.SetValue(value); }
+        public Texture2D VolumeFront { set => this.VolumeFrontParameter.SetValue(value); }
 
-        public Vector2 Channel { set => this.ChannelParameter.SetValue(value); }
-
-        public Texture2D VolumeTexture { set => this.VolumeTextureParameter.SetValue(value); }
-
-        public void Apply(MediaTechnique technique)
-        {
-            switch (technique)
-            {
-                case MediaTechnique.Volume:
-                    this.Effect.CurrentTechnique = this.Effect.Techniques["VolumeMediaTechnique"];
-                    break;
-                case MediaTechnique.Density:
-                    this.Effect.CurrentTechnique = this.Effect.Techniques["DensityMediaTechnique"];
-                    break;
-            }
-
-            this.Apply();
-        }
-    }
-
-    public enum MediaTechnique
-    {
-        Volume,
-        Density
+        public Texture2D VolumeBack { set => this.VolumeBackParameter.SetValue(value); }
     }
 }

@@ -1,59 +1,20 @@
 ﻿#include "Includes/Defines.hlsl"
 
-struct VertexData
+texture VolumeFront;
+sampler volumeFrontSampler = sampler_state
 {
-    float3 Position : POSITION0;
+    Texture = (VolumeFront);
+    MinFilter = LINEAR;
+    MagFilter = LINEAR;
+    MipFilter = LINEAR;
+    AddressU = Clamp;
+    AddressV = Clamp;
 };
 
-struct PixelData
+texture VolumeBack;
+sampler volumeBackSampler = sampler_state
 {
-    float4 Position : SV_POSITION;
-    float4 WorldPosition: TEXCOORD0;
-};
-
-struct OutputData
-{
-    float4 Depth : COLOR0;
-};
-
-float4x4 WorldViewProjection;
-float2 Channel;
-
-PixelData VS(in VertexData input)
-{
-    PixelData output = (PixelData)0;
-
-    output.Position = mul(float4(input.Position, 1), WorldViewProjection);
-    output.WorldPosition = output.Position;
-
-    return output;
-}
-
-OutputData PS(PixelData input)
-{
-    OutputData output = (OutputData)0;
-
-    float depth = input.WorldPosition.z / input.WorldPosition.w;
-    output.Depth.xy = Channel * depth;
-    output.Depth.a = 1.0f;
-    return output;
-}
-
-technique VolumeMediaTechnique
-{
-    pass P0
-    {
-        VertexShader = compile VS_SHADERMODEL VS();
-        PixelShader = compile PS_SHADERMODEL PS();
-    }
-}
-
-// --------------------
-
-texture VolumeTexture;
-sampler volumeTextureSampler = sampler_state
-{
-    Texture = (VolumeTexture);
+    Texture = (VolumeBack);
     MinFilter = LINEAR;
     MagFilter = LINEAR;
     MipFilter = LINEAR;
@@ -73,6 +34,11 @@ struct DensityPixelData
     float2 Texture : TEXCOORD0;
 };
 
+struct DensityOutputData
+{
+    float Depth : COLOR0;
+};
+
 DensityPixelData VS_DENSITY(in DensityVertexData input)
 {
     DensityPixelData output = (DensityPixelData)0;
@@ -83,24 +49,47 @@ DensityPixelData VS_DENSITY(in DensityVertexData input)
     return output;
 }
 
-float4 PS_DENSITY(DensityPixelData input) : COLOR0
+DensityOutputData PS_DENSITY(DensityPixelData input)
 {
-    float2 distances = tex2D(volumeTextureSampler, input.Texture).xy;
+    DensityOutputData output = (DensityOutputData)0;
 
-    // We clear to a black screen if the minimum is 0 we're inside the media
-    // if the minimum and maximum are 0 we're not looking at the media
-    // in other cases max - min will give us the density of the media
-    float ma = max(distances.x, distances.y);
-    float mi = min(distances.x, distances.y);
-    float density = ma - mi;
+    float f = tex2D(volumeFrontSampler, input.Texture).r;
+    float b = tex2D(volumeBackSampler, input.Texture).r;
 
-    float4 all;
-    all.r = density;
-    all.gb = 0.0f;
-    all.a = 1.0f;
-    return all;
+    // 4 scenarios
+    // no faces  f:1 b:1
+    // - depth should be 0
+    // only back faces f:1, b:<1
+    // - we're inside the fog, depth should be the distance to the back face
+    // only front faces f:<1, b:1
+    // - ??
+    // back and front faces f:<1, b:<1    
+    // - depth should be b - f
+
+    float depth = 0.0f;
+    if(f >= 1.0f && b >= 1.0f)
+    { 
+        depth = 0.0f;
+    }
+
+    if (f >= 1.0f && b < 1.0f)
+    {
+        depth = b;
+    }
+    
+    if (f < 1.0f && b >= 1.0f)
+    {
+        depth = 1.0f; // WTF scenario
+    }
+
+    if (f < 1.0f && b < 1.0f)
+    {
+        depth = b - f;
+    }
+
+    output.Depth = depth;
+    return output;
 }
-
 
 technique DensityMediaTechnique
 {

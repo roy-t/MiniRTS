@@ -193,11 +193,12 @@ OutputData PS(PixelData input)
     if (lightFactor > 0)
     {
         Lo = ComputeLight(albedo, N, material, worldPosition, CameraPosition, SurfaceToLight, Color, Strength);
-        Lo = (1.0f - mediaDensity) * Lo;
+        //Lo = (1.0f - mediaDensity) * Lo;
+        Lo = lerp(Lo, float3(0.1f, 0.1f, 0.1f), clamp(mediaDensity * 1000, 0, 1));
         // Ignore attenuation since sunlight has already crossed an extreme distance
     }
-
-    output.Light = float4(Lo, 1.0f) * lightFactor;
+    
+    output.Light = float4(Lo, 1.0f) * lightFactor;    
     return output;
 }
 

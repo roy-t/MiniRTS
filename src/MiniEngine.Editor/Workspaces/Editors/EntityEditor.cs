@@ -56,7 +56,15 @@ namespace MiniEngine.Editor.Workspaces.Editors
                 var entityNames = entities.Select(e => $"{e.Id}").ToArray();
                 ImGui.ListBox("Entities", ref this.entityIndex, entityNames, entityNames.Length);
 
-                this.selectedEntity = entities[this.entityIndex];
+
+                if (this.entityIndex < entities.Count)
+                {
+                    this.selectedEntity = entities[this.entityIndex];
+                }
+                else
+                {
+                    this.selectedEntity = null;
+                }
 
                 ImGui.End();
             }
