@@ -44,7 +44,7 @@ namespace MiniEngine.Systems.Generators.System
                 allParameters.Select(type => $"private readonly IComponentContainer<{type}> {type}Container;"));
 
             var assignments = string.Join(Environment.NewLine + "\t\t\t",
-                allParameters.Select(type => $"this.{type}Container = containers[typeof({type})].Specialize<{type}>();"));
+                allParameters.Select(type => $"this.{type}Container = containerStore.GetContainer<{type}>();"));
 
             return (fields, assignments);
         }

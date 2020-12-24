@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.IO;
+using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 
@@ -19,6 +20,9 @@ namespace MiniEngine.Systems.Generators.System
                 {
                     ReportProgress(context, target);
                     var sourceText = GenerateSourceText(generator, target);
+
+                    var temp = Path.Combine(Path.GetTempPath(), $"{target.Class.Identifier}.Generated.cs");
+                    File.WriteAllText(temp, sourceText.ToString());
                     context.AddSource($"{target.Class.Identifier}.Generated.cs", sourceText);
 
                     ReportGeneratorDiagnostics(context, generator);

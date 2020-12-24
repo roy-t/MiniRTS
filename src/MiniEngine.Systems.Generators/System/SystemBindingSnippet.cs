@@ -31,7 +31,7 @@ namespace {nameSpace}
     {{
         private readonly {systemClassName} System;
         {fields}
-        public {generatedClassName}({systemClassName} system, Dictionary<Type, IComponentContainer> containers)
+        public {generatedClassName}({systemClassName} system, ContainerStore containerStore)
         {{
             this.System = system;
             {assignments}
@@ -46,9 +46,9 @@ namespace {nameSpace}
 
     public partial class {systemClassName} : ISystemBindingProvider
     {{
-        public ISystemBinding Bind(Dictionary<Type, IComponentContainer> containers)
+        public ISystemBinding Bind(ContainerStore containerStore)
         {{
-            return new { generatedClassName }(this, containers);
+            return new { generatedClassName }(this, containerStore);
         }}
     }}
 }}", Encoding.UTF8);

@@ -10,10 +10,6 @@
 
 - Sunlight and Spotlight both use a shadow map, but the sampling is subtely different because one uses an array and the other not, can we unify this?
 
+# Idea
 
-
-# Gotchas
-- If you inject a IEnumerable<IComponentContainer> you get everything 2 or 3 times because of how the injector 
-registers all those types as ComponentContainer<>, IComponentContainer<> and IComponentContainer. 
-If the class that gets this injected  is unware of this they might not work well. Fix it with a variance filter? How?
-See: https://www.lightinject.net/#ienumerablet
+Make a scene with many asteroids (like 10 variations instanced in different orientations). Put some sort of 'fog' in between to simulate space dust. Take the thickness from this fog from a RT where I draw over black swatches when a rocket goes over it. At sun rays?

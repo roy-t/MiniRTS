@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using MiniEngine.Configuration;
 using MiniEngine.Systems.Components;
 using MiniEngine.Systems.Pipeline;
@@ -11,27 +9,27 @@ namespace MiniEngine.Systems.Services
     public sealed class PipelineBuilder
     {
         private readonly Resolve ResolveDelegate;
-        private readonly IEnumerable<IComponentContainer> ComponentContainers;
+        private readonly ContainerStore ContainerStore;
 
-        public PipelineBuilder(Resolve resolveDelegate, IEnumerable<IComponentContainer> componentContainers)
+        public PipelineBuilder(Resolve resolveDelegate, ContainerStore containerStore)
         {
             this.ResolveDelegate = resolveDelegate;
-            this.ComponentContainers = componentContainers.Distinct();
+            this.ContainerStore = containerStore;
         }
 
-        public PipelineSpecifier Builder() => new PipelineSpecifier(this.ResolveDelegate, this.ComponentContainers);
+        public PipelineSpecifier Builder() => new PipelineSpecifier(this.ResolveDelegate, this.ContainerStore);
 
         public class PipelineSpecifier
         {
-            private readonly Dictionary<Type, IComponentContainer> ComponentContainers;
             private readonly Resolve ResolveDelegate;
+            private readonly ContainerStore ContainerStore;
             private readonly List<SystemSpec> SystemSpecs;
 
-            public PipelineSpecifier(Resolve resolveDelegate, IEnumerable<IComponentContainer> componentContainers)
+            public PipelineSpecifier(Resolve resolveDelegate, ContainerStore containerStore)
             {
                 this.SystemSpecs = new List<SystemSpec>();
-                this.ComponentContainers = componentContainers.Distinct().ToDictionary(c => c.ComponentType);
                 this.ResolveDelegate = resolveDelegate;
+                this.ContainerStore = containerStore;
             }
 
             public SystemSpecifier System<T>()
@@ -56,7 +54,7 @@ namespace MiniEngine.Systems.Services
                     {
                         var systemSpec = stage[j];
                         var system = (ISystem)this.ResolveDelegate(systemSpec.SystemType);
-                        systemBindings.Add(system.Bind(this.ComponentContainers));
+                        systemBindings.Add(system.Bind(this.ContainerStore));
                     }
 
                     pipelineStages.Add(new PipelineStage(systemBindings));

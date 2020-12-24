@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using MiniEngine.Configuration;
+﻿using MiniEngine.Configuration;
 using MiniEngine.Systems.Generators;
 
 namespace MiniEngine.Systems.Components
@@ -8,11 +6,11 @@ namespace MiniEngine.Systems.Components
     [System]
     public partial class ComponentFlushSystem : ISystem
     {
-        private readonly IReadOnlyList<IComponentContainer> Containers;
+        private readonly ContainerStore ContainerStore;
 
-        public ComponentFlushSystem(IEnumerable<IComponentContainer> containers)
+        public ComponentFlushSystem(ContainerStore containerStore)
         {
-            this.Containers = containers.Distinct().ToList();
+            this.ContainerStore = containerStore;
         }
 
         public void OnSet()
@@ -22,9 +20,10 @@ namespace MiniEngine.Systems.Components
         [Process]
         public void Process()
         {
-            for (var i = 0; i < this.Containers.Count; i++)
+            var containers = this.ContainerStore.GetAllContainers();
+            for (var i = 0; i < containers.Count; i++)
             {
-                this.Containers[i].Flush();
+                containers[i].Flush();
             }
         }
     }

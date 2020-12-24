@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using MiniEngine.Configuration;
 
 namespace MiniEngine.Systems.Components
@@ -8,22 +6,25 @@ namespace MiniEngine.Systems.Components
     [Service]
     public sealed class ComponentAdministrator
     {
-        private readonly Dictionary<Type, IComponentContainer> ComponentContainers;
+        private readonly ContainerStore ContainerStore;
 
-        public ComponentAdministrator(IEnumerable<IComponentContainer> componentContainers)
+        public ComponentAdministrator(ContainerStore containerStore)
         {
-            this.ComponentContainers = componentContainers.Distinct().ToDictionary(x => x.ComponentType);
+            this.ContainerStore = containerStore;
         }
 
         public void Add<T>(T component)
             where T : AComponent
-            => this.ComponentContainers[typeof(T)].Specialize<T>().Add(component);
+            => this.ContainerStore.GetContainer<T>().Add(component);
 
         public IReadOnlyList<AComponent> GetComponents(Entity entity)
         {
             var components = new List<AComponent>();
-            foreach (var container in this.ComponentContainers.Values)
+
+            var containers = this.ContainerStore.GetAllContainers();
+            for (var i = 0; i < containers.Count; i++)
             {
+                var container = containers[i];
                 if (container.Contains(entity))
                 {
                     components.Add(container.GetComponent(entity));
@@ -35,8 +36,10 @@ namespace MiniEngine.Systems.Components
 
         public void MarkForRemoval(Entity entity)
         {
-            foreach (var container in this.ComponentContainers.Values)
+            var containers = this.ContainerStore.GetAllContainers();
+            for (var i = 0; i < containers.Count; i++)
             {
+                var container = containers[i];
                 if (container.Contains(entity))
                 {
                     container.GetComponent(entity).ChangeState.Remove();
