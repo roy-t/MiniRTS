@@ -1,4 +1,5 @@
 ﻿#include "Includes/Defines.hlsl"
+#include "Includes/Instancing.hlsl"
 
 struct VertexData
 {
@@ -28,6 +29,19 @@ PixelData VS(in VertexData input)
     return output;
 }
 
+
+PixelData VS_INSTANCED(in VertexData input, in InstancingData instance)
+{
+    PixelData output = (PixelData)0;
+
+    float4x4 offsetT = transpose(instance.Offset);
+
+    output.Position = mul(mul(float4(input.Position, 1), offsetT), WorldViewProjection);
+    output.WorldPosition = output.Position;
+
+    return output;
+}
+
 OutputData PS(PixelData input)
 {
     OutputData output = (OutputData)0;
@@ -41,6 +55,15 @@ technique ShadowMapTechnique
     pass P0
     {
         VertexShader = compile VS_SHADERMODEL VS();
+        PixelShader = compile PS_SHADERMODEL PS();
+    }
+}
+
+technique InstancedShadowMapTechnique
+{
+    pass P0
+    {
+        VertexShader = compile VS_SHADERMODEL VS_INSTANCED();
         PixelShader = compile PS_SHADERMODEL PS();
     }
 }

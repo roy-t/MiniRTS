@@ -1,17 +1,13 @@
 ﻿#include "Includes/Defines.hlsl"
 #include "Includes/Pack.hlsl"
 #include "Includes/Gamma.hlsl"
+#include "Includes/Instancing.hlsl"
 
 struct VertexData
 {
     float3 Position : POSITION0;
     float2 Texture : TEXCOORD0;
     float3 Normal : NORMAL0;
-};
-
-struct InstancingData
-{
-    float4x4 Offset : TEXCOORD1;
 };
 
 struct PixelData

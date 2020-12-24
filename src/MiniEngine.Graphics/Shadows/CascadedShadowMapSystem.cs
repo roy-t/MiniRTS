@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
 using MiniEngine.ContentPipeline.Shared;
 using MiniEngine.Graphics.Camera;
+using MiniEngine.Graphics.Geometry;
 using MiniEngine.Graphics.Visibility;
 using MiniEngine.Systems;
 using MiniEngine.Systems.Generators;
@@ -12,18 +13,20 @@ using MiniEngine.Systems.Generators;
 namespace MiniEngine.Graphics.Shadows
 {
     [System]
-    public partial class CascadedShadowMapSystem : ISystem
+    public partial class CascadedShadowMapSystem : ISystem, IGeometryRendererUser<Matrix>
     {
         private readonly GraphicsDevice Device;
+        private readonly GeometryRenderer Renderer;
         private readonly FrameService FrameService;
         private readonly ShadowMapEffect Effect;
 
         private readonly Frustum Frustum;
         private readonly RasterizerState RasterizerState;
 
-        public CascadedShadowMapSystem(GraphicsDevice device, FrameService frameService, ShadowMapEffect effect)
+        public CascadedShadowMapSystem(GraphicsDevice device, GeometryRenderer renderer, FrameService frameService, ShadowMapEffect effect)
         {
             this.Device = device;
+            this.Renderer = renderer;
             this.FrameService = frameService;
             this.Effect = effect;
             this.Frustum = new Frustum();
@@ -82,26 +85,15 @@ namespace MiniEngine.Graphics.Shadows
             this.Device.SetRenderTarget(shadowMap, index);
             this.Device.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.White, 1.0f, 0);
 
-            for (var i = 0; i < inView.Count; i++)
-            {
-                var pose = inView[i];
-                for (var j = 0; j < pose.Model.Meshes.Count; j++)
-                {
-                    var mesh = pose.Model.Meshes[j];
-                    this.Draw(viewProjection, mesh.Geometry, mesh.Offset * pose.Transform);
-                }
-            }
+            this.Renderer.Draw(inView, this, viewProjection);
         }
 
-        private void Draw(Matrix viewProjection, GeometryData geometry, Matrix transform)
-        {
-            this.Effect.WorldViewProjection = transform * viewProjection;
-            this.Effect.Apply();
+        public void SetEffectParameters(Material material, Matrix transform, Matrix viewProjection)
+            => this.Effect.WorldViewProjection = transform * viewProjection;
 
-            this.Device.SetVertexBuffer(geometry.VertexBuffer, 0);
-            this.Device.Indices = geometry.IndexBuffer;
-            this.Device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, geometry.Primitives);
-        }
+        public void ApplyEffect(GeometryTechnique technique)
+            => this.Effect.Apply(technique);
+
 
         private static readonly Matrix TexScaleTransform = Matrix.CreateScale(0.5f, -0.5f, 1.0f) * Matrix.CreateTranslation(0.5f, 0.5f, 0.0f);
 

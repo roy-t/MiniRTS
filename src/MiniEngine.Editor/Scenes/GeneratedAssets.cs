@@ -8,47 +8,58 @@ namespace MiniEngine.Editor.Scenes
     [Service]
     public sealed class GeneratedAssets
     {
+        private GraphicsDevice Device;
+        private readonly ContentStack Content;
+
         public GeneratedAssets(GraphicsDevice device, ContentStack content)
         {
-            content.Push("generated assets");
-
-            this.WhitePixel = CreatePixel(device, Color.White, content);
-            this.BlackPixel = CreatePixel(device, Color.Black, content);
-            this.RedPixel = CreatePixel(device, Color.Red, content);
-            this.GreenPixel = CreatePixel(device, Color.Green, content);
-            this.BluePixel = CreatePixel(device, Color.Blue, content);
-            this.NormalPixel = CreatePixel(device, new Color(0.5f, 0.5f, 1.0f), content);
-
-            this.MetallicPixel = this.WhitePixel;
-            this.PlasticPixel = this.BlackPixel;
+            this.Device = device;
+            this.Content = content;
         }
 
-        public Texture2D WhitePixel { get; }
+        public Texture2D WhitePixel => this.CreatePixel(Color.White);
 
-        public Texture2D BlackPixel { get; }
+        public Texture2D BlackPixel => this.CreatePixel(Color.Black);
 
-        public Texture2D RedPixel { get; }
+        public Texture2D RedPixel => this.CreatePixel(Color.Red);
 
-        public Texture2D GreenPixel { get; }
+        public Texture2D GreenPixel => this.CreatePixel(Color.Green);
 
-        public Texture2D BluePixel { get; }
+        public Texture2D BluePixel => this.CreatePixel(Color.Blue);
 
-        public Texture2D NormalPixel { get; }
+        public Texture2D MetallicPixel => this.CreatePixel(Color.White);
 
-        public Texture2D MetallicPixel { get; }
+        public Texture2D PlasticPixel => this.CreatePixel(Color.Black);
 
-        public Texture2D PlasticPixel { get; }
+        public Texture2D AlbedoPixel(Color color)
+            => this.CreatePixel(color);
 
+        public Texture2D NormalPixel()
+            => this.NormalPixel(Vector3.UnitZ);
 
-        private static Texture2D CreatePixel(GraphicsDevice device, Color color, ContentStack content)
+        public Texture2D NormalPixel(Vector3 direction)
+            => this.CreatePixel(new Color(Pack(direction)));
+
+        public Texture2D MetalicnessPixel(float metalicness)
+            => this.CreatePixel(new Color(metalicness, metalicness, metalicness));
+
+        public Texture2D RoughnessPixel(float roughness)
+            => this.CreatePixel(new Color(roughness, roughness, roughness));
+
+        public Texture2D AmbientOcclussionPixel(float ao)
+            => this.CreatePixel(new Color(ao, ao, ao));
+
+        private Texture2D CreatePixel(Color color)
         {
-            var pixel = new Texture2D(device, 1, 1, false, SurfaceFormat.Color);
+            var pixel = new Texture2D(this.Device, 1, 1, false, SurfaceFormat.Color);
             pixel.SetData(new[] { color });
 
-            content.Link(pixel);
+            this.Content.Link(pixel);
 
             return pixel;
         }
+
+        private static Vector3 Pack(Vector3 direction) => 0.5f * (Vector3.Normalize(direction) + Vector3.One);
 
     }
 }

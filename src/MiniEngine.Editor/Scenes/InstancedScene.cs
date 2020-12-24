@@ -35,7 +35,7 @@ namespace MiniEngine.Editor.Scenes
         public void Load(ContentStack content)
         {
             var geometry = SphereGenerator.Generate(this.Device, 15);
-            var material = new Material(this.Assets.WhitePixel, this.Assets.NormalPixel, this.Assets.MetallicPixel, this.Assets.BlackPixel, this.Assets.WhitePixel);
+            var material = new Material(this.Assets.WhitePixel, this.Assets.NormalPixel(), this.Assets.MetalicnessPixel(1.0f), this.Assets.RoughnessPixel(0.0f), this.Assets.AmbientOcclussionPixel(1.0f));
             var transform = Matrix.Identity;
 
             var entity = this.Entities.Create();

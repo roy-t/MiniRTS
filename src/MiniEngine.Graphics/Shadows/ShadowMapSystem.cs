@@ -3,22 +3,25 @@ using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
 using MiniEngine.ContentPipeline.Shared;
 using MiniEngine.Graphics.Camera;
+using MiniEngine.Graphics.Geometry;
 using MiniEngine.Systems;
 using MiniEngine.Systems.Generators;
 
 namespace MiniEngine.Graphics.Shadows
 {
     [System]
-    public partial class ShadowMapSystem : ISystem
+    public partial class ShadowMapSystem : ISystem, IGeometryRendererUser<Matrix>
     {
         private readonly GraphicsDevice Device;
+        private readonly GeometryRenderer Renderer;
         private readonly ShadowMapEffect Effect;
 
         private readonly RasterizerState RasterizerState;
 
-        public ShadowMapSystem(GraphicsDevice device, ShadowMapEffect effect)
+        public ShadowMapSystem(GraphicsDevice device, GeometryRenderer renderer, ShadowMapEffect effect)
         {
             this.Device = device;
+            this.Renderer = renderer;
             this.Effect = effect;
 
             this.RasterizerState = new RasterizerState
@@ -41,25 +44,13 @@ namespace MiniEngine.Graphics.Shadows
             this.Device.SetRenderTarget(shadowMap.DepthMap);
             this.Device.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.White, 1.0f, 0);
 
-            for (var i = 0; i < camera.InView.Count; i++)
-            {
-                var pose = camera.InView[i];
-                for (var j = 0; j < pose.Model.Meshes.Count; j++)
-                {
-                    var mesh = pose.Model.Meshes[j];
-                    this.Draw(camera.Camera, mesh.Geometry, mesh.Offset * pose.Transform);
-                }
-            }
+            this.Renderer.Draw(camera.InView, this, camera.Camera.ViewProjection);
         }
 
-        private void Draw(ICamera camera, GeometryData geometry, Matrix transform)
-        {
-            this.Effect.WorldViewProjection = transform * camera.ViewProjection;
-            this.Effect.Apply();
+        public void SetEffectParameters(Material material, Matrix transform, Matrix viewProjection)
+            => this.Effect.WorldViewProjection = transform * viewProjection;
 
-            this.Device.SetVertexBuffer(geometry.VertexBuffer, 0);
-            this.Device.Indices = geometry.IndexBuffer;
-            this.Device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, geometry.Primitives);
-        }
+        public void ApplyEffect(GeometryTechnique technique)
+            => this.Effect.Apply(technique);
     }
 }

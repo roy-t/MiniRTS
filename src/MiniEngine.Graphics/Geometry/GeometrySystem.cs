@@ -2,32 +2,27 @@
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
 using MiniEngine.ContentPipeline.Shared;
-using MiniEngine.Graphics.Camera;
 using MiniEngine.Systems;
-using MiniEngine.Systems.Components;
 using MiniEngine.Systems.Generators;
 
 namespace MiniEngine.Graphics.Geometry
 {
     [System]
-    public partial class GeometrySystem : ISystem
+    public partial class GeometrySystem : ISystem, IGeometryRendererUser
     {
         public const int MaxInstances = 1024;
 
         private readonly GraphicsDevice Device;
-        private readonly IComponentContainer<InstancingComponent> Instances;
         private readonly FrameService FrameService;
+        private readonly GeometryRenderer Renderer;
         private readonly GeometryEffect Effect;
 
-        private readonly VertexBuffer InstanceBuffer;
-
-        public GeometrySystem(GraphicsDevice device, IComponentContainer<InstancingComponent> instances, GeometryEffect effect, FrameService frameService)
+        public GeometrySystem(GraphicsDevice device, GeometryRenderer renderer, GeometryEffect effect, FrameService frameService)
         {
             this.Device = device;
-            this.Instances = instances;
             this.FrameService = frameService;
+            this.Renderer = renderer;
             this.Effect = effect;
-            this.InstanceBuffer = new VertexBuffer(device, InstancingVertex.Declaration, MaxInstances, BufferUsage.WriteOnly);
         }
 
         public void OnSet()
@@ -52,50 +47,13 @@ namespace MiniEngine.Graphics.Geometry
         public void ProcessVisibleGeometry()
         {
             var inView = this.FrameService.CamereComponent.InView;
-            for (var i = 0; i < inView.Count; i++)
-            {
-                var pose = inView[i];
-                for (var j = 0; j < pose.Model.Meshes.Count; j++)
-                {
-                    var mesh = pose.Model.Meshes[j];
-                    this.SetEffectParameters(this.FrameService.CamereComponent.Camera, mesh.Material, mesh.Offset * pose.Transform);
-
-                    if (this.Instances.Contains(pose.Entity))
-                    {
-                        var instances = this.Instances.Get(pose.Entity);
-                        this.DrawIndexed(mesh.Geometry, instances);
-                    }
-                    else
-                    {
-                        this.Draw(mesh.Geometry);
-                    }
-                }
-            }
+            this.Renderer.Draw(inView, this);
         }
 
-        private void DrawIndexed(GeometryData geometry, InstancingComponent instances)
+        public void SetEffectParameters(Material material, Matrix transform)
         {
-            this.InstanceBuffer.SetData(instances.VertexData);
+            var camera = this.FrameService.CamereComponent.Camera;
 
-            this.Device.SetVertexBuffers(new VertexBufferBinding(geometry.VertexBuffer), new VertexBufferBinding(this.InstanceBuffer, 0, 1));
-            this.Device.Indices = geometry.IndexBuffer;
-
-            this.Effect.Apply(GeometryTechnique.Instanced);
-
-            this.Device.DrawInstancedPrimitives(PrimitiveType.TriangleList, 0, 0, geometry.Primitives, instances.Instances);
-        }
-
-        private void Draw(GeometryData geometry)
-        {
-            this.Device.SetVertexBuffer(geometry.VertexBuffer);
-            this.Device.Indices = geometry.IndexBuffer;
-
-            this.Effect.Apply(GeometryTechnique.Default);
-            this.Device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, geometry.Primitives);
-        }
-
-        private void SetEffectParameters(ICamera camera, Material material, Matrix transform)
-        {
             this.Effect.CameraPosition = camera.Position;
             this.Effect.World = transform;
             this.Effect.WorldViewProjection = transform * camera.ViewProjection;
@@ -104,8 +62,9 @@ namespace MiniEngine.Graphics.Geometry
             this.Effect.Metalicness = material.Metalicness;
             this.Effect.Roughness = material.Roughness;
             this.Effect.AmbientOcclusion = material.AmbientOcclusion;
-
-
         }
+
+        public void ApplyEffect(GeometryTechnique technique)
+            => this.Effect.Apply(technique);
     }
 }

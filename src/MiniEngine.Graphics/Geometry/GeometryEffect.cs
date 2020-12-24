@@ -60,10 +60,4 @@ namespace MiniEngine.Graphics.Geometry
             this.Apply();
         }
     }
-
-    public enum GeometryTechnique
-    {
-        Default,
-        Instanced
-    }
 }
