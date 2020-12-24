@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
 using MiniEngine.Graphics.Camera;
+using MiniEngine.Graphics.ParticipatingMedia;
 using MiniEngine.Graphics.PostProcess;
 using MiniEngine.Graphics.Shadows;
 using MiniEngine.Systems;
@@ -52,7 +53,7 @@ namespace MiniEngine.Graphics.Lighting
         }
 
         [ProcessAll]
-        public void Process(SunlightComponent sunlight, CascadedShadowMapComponent shadowMap, CameraComponent shadowMapCamera)
+        public void Process(SunlightComponent sunlight, DustComponent dust, CascadedShadowMapComponent shadowMap, CameraComponent shadowMapCamera)
         {
             this.Effect.CameraPosition = this.FrameService.CamereComponent.Camera.Position;
             this.Effect.Albedo = this.FrameService.GBuffer.Albedo;
@@ -67,10 +68,13 @@ namespace MiniEngine.Graphics.Lighting
 
             this.Effect.ShadowMap = shadowMap.DepthMapArray;
 
+            this.Effect.ShadowViewProjection = shadowMapCamera.Camera.ViewProjection;
             this.Effect.ShadowMatrix = shadowMap.GlobalShadowMatrix;
             this.Effect.Splits = shadowMap.Splits;
             this.Effect.Offsets = shadowMap.Offsets;
             this.Effect.Scales = shadowMap.Scales;
+
+            this.Effect.Media = dust.DensityBuffer;
 
             this.Effect.Apply();
             this.PostProcessTriangle.Render(this.Device);

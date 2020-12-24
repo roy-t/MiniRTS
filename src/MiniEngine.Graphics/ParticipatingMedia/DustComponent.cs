@@ -22,8 +22,8 @@ namespace MiniEngine.Graphics.ParticipatingMedia
 
         public static DustComponent Create(Entity entity, GraphicsDevice device, GeometryData geometry)
         {
-            var bufferA = new RenderTarget2D(device, 1024, 1024, false, SurfaceFormat.Vector2, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
-            var bufferB = new RenderTarget2D(device, 1024, 1024, false, SurfaceFormat.Single, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+            var bufferA = new RenderTarget2D(device, 1024, 1024, false, SurfaceFormat.Vector4, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+            var bufferB = new RenderTarget2D(device, 1024, 1024, false, SurfaceFormat.Vector4, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
             return new DustComponent(entity, geometry, bufferA, bufferB);
         }
     }

@@ -29,6 +29,7 @@ float Strength;
 float3 SurfaceToLight;
 float3 CameraPosition;
 float4x4 InverseViewProjection;
+float4x4 ShadowViewProjection;
 
 float4x4 ShadowMatrix;
 float Splits[NumCascades];
@@ -37,6 +38,17 @@ float4 Scales[NumCascades];
 
 Texture2DArray ShadowMap : register(t0);
 SamplerComparisonState ShadowSampler : register(s0);
+
+texture Media;
+sampler mediaSampler = sampler_state
+{
+    Texture = (Media);
+    MinFilter = LINEAR;
+    MagFilter = LINEAR;
+    MipFilter = LINEAR;
+    AddressU = Clamp;
+    AddressV = Clamp;
+};
 
 PixelData VS(in VertexData input)
 {
@@ -163,6 +175,16 @@ OutputData PS(PixelData input)
     float3 N = ReadNormal(input.Texture);
     float3 worldPosition = ReadWorldPosition(input.Texture, InverseViewProjection);
     float depth = distance(worldPosition, CameraPosition);
+    
+    // TODO: WIP rendering a volume!
+    float4 mediaPosition = mul(float4(worldPosition, 1.0f), ShadowViewProjection);
+    mediaPosition /= mediaPosition.w;
+    float2 tp = ScreenToTexture(mediaPosition.xy);
+    float mediaDensity = 0.0f;
+    if (tp.x >= 0 && tp.x <= 1 && tp.y >= 0 && tp.y <= 1)
+    {
+        mediaDensity = tex2D(mediaSampler, tp).r;
+    }
 
     Mat material = ReadMaterial(input.Texture);
 
@@ -171,13 +193,13 @@ OutputData PS(PixelData input)
     if (lightFactor > 0)
     {
         Lo = ComputeLight(albedo, N, material, worldPosition, CameraPosition, SurfaceToLight, Color, Strength);
+        Lo = (1.0f - mediaDensity) * Lo;
         // Ignore attenuation since sunlight has already crossed an extreme distance
     }
 
     output.Light = float4(Lo, 1.0f) * lightFactor;
     return output;
 }
-
 
 
 OutputData DEBUG_PS(PixelData input)

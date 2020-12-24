@@ -16,3 +16,11 @@ Make a scene with many asteroids (like 10 variations instanced in different orie
 
 
 - Fog/Dust, Ravendarke at Monogame discord: https://www.slideshare.net/BenjaminGlatzel/volumetric-lighting-for-many-lights-in-lords-of-the-fallen
+
+
+
+# WIP
+- Got a density and volume rendered
+- Messed with SunlightEffect and SunlightSystem to actually show the volume being rendered
+- Density still seems wrong (all full red?)
+- How to have a sunlight without participating media?

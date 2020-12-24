@@ -13,7 +13,7 @@ struct PixelData
 
 struct OutputData
 {
-    float2 Depth : COLOR0;
+    float4 Depth : COLOR0;
 };
 
 float4x4 WorldViewProjection;
@@ -35,6 +35,7 @@ OutputData PS(PixelData input)
 
     float depth = input.WorldPosition.z / input.WorldPosition.w;
     output.Depth.xy = Channel * depth;
+    output.Depth.a = 1.0f;
     return output;
 }
 
@@ -82,12 +83,22 @@ DensityPixelData VS_DENSITY(in DensityVertexData input)
     return output;
 }
 
-float PS_DENSITY(DensityPixelData input) : COLOR0
-{    
+float4 PS_DENSITY(DensityPixelData input) : COLOR0
+{
     float2 distances = tex2D(volumeTextureSampler, input.Texture).xy;
+
+    // We clear to a black screen if the minimum is 0 we're inside the media
+    // if the minimum and maximum are 0 we're not looking at the media
+    // in other cases max - min will give us the density of the media
     float ma = max(distances.x, distances.y);
     float mi = min(distances.x, distances.y);
-    return ma - mi;
+    float density = ma - mi;
+
+    float4 all;
+    all.r = density;
+    all.gb = 0.0f;
+    all.a = 1.0f;
+    return all;
 }
 
 
