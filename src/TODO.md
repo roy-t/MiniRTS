@@ -13,3 +13,6 @@
 # Idea
 
 Make a scene with many asteroids (like 10 variations instanced in different orientations). Put some sort of 'fog' in between to simulate space dust. Take the thickness from this fog from a RT where I draw over black swatches when a rocket goes over it. At sun rays?
+
+
+- Fog/Dust, Ravendarke at Monogame discord: https://www.slideshare.net/BenjaminGlatzel/volumetric-lighting-for-many-lights-in-lords-of-the-fallen
