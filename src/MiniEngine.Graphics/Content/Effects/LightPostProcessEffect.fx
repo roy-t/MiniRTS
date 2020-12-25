@@ -183,9 +183,15 @@ OutputData PS(PixelData input)
 {
     OutputData output = (OutputData)0;
 
-    float3 world = ReadWorldPosition(input.Texture, InverseViewProjection);
+    float4 color = tex2D(lightSampler, input.Texture).rgba;
+        float2 fb = tex2D(volumeSampler, input.Texture).xy;
+    if (fb.x >= 1.0f && fb.y >= 1.0f)
+    {
+        output.Color = color;
+        return output;
+    }
 
-    float2 fb = tex2D(volumeSampler, input.Texture).xy;
+    float3 world = ReadWorldPosition(input.Texture, InverseViewProjection);
     float3 volumeFront = ReadWorldPosition(input.Texture, fb.x, InverseViewProjection);
     float3 volumeBack = ReadWorldPosition(input.Texture, fb.y, InverseViewProjection);
 
@@ -193,7 +199,7 @@ OutputData PS(PixelData input)
     float dFront = distance(volumeFront, CameraPosition);
     float dBack = distance(volumeBack, CameraPosition);
 
-    float4 color = tex2D(lightSampler, input.Texture).rgba;
+    
     float3 c = color.rgb;        
 
     float dMax = 100.0f;// max(dWorld, max(dFront, dBack));
@@ -217,7 +223,7 @@ OutputData PS(PixelData input)
     if (dWorld > dFront)
     {                
         lightness = 0.0f;
-        const uint steps = 10;        
+        const uint steps = 20;        
         float3 startPosition = dWorld < dBack ? world : volumeBack;
         float3 surfaceToLight = normalize(CameraPosition - startPosition);
         float totalDistance = distance(startPosition, volumeFront);

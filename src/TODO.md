@@ -21,3 +21,13 @@ Make a scene with many asteroids (like 10 variations instanced in different orie
 - How can we give more parameters to tweak the fog?
 - How can we have different parameters for different volumes (do we need that) at the same time..?
 - Right now it only supports concave geometry as a volume?
+
+
+- Any scene without a sunlight wont render all the way now OOPS :P
+
+- Performance
+    - Get rid of PCF
+    - Sample at lower resolution, then bilateral upscale
+    - More samples
+    - Dithering
+    
