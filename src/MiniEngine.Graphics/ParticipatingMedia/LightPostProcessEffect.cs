@@ -20,6 +20,8 @@ namespace MiniEngine.Graphics.Shadows
         private readonly EffectParameter OffsetsParameter;
         private readonly EffectParameter ScalesParameter;
 
+        private readonly EffectParameter ViewDistanceParameter;
+
         public LightPostProcessEffect(EffectFactory factory) : base(factory.Load<LightPostProcessEffect>())
         {
             this.Effect.CurrentTechnique = this.Effect.Techniques["LightPostProcessTechnique"];
@@ -31,12 +33,12 @@ namespace MiniEngine.Graphics.Shadows
             this.CameraPositionParameter = this.Effect.Parameters["CameraPosition"];
             this.FogColorParameter = this.Effect.Parameters["FogColor"];
             this.StrengthParameter = this.Effect.Parameters["Strength"];
-
             this.ShadowMapParameter = this.Effect.Parameters["ShadowMap"];
             this.ShadowMatrixParameter = this.Effect.Parameters["ShadowMatrix"];
             this.SplitsParameter = this.Effect.Parameters["Splits"];
             this.OffsetsParameter = this.Effect.Parameters["Offsets"];
             this.ScalesParameter = this.Effect.Parameters["Scales"];
+            this.ViewDistanceParameter = this.Effect.Parameters["ViewDistance"];
         }
 
         public Texture2D Light { set => this.LightParameter.SetValue(value); }
@@ -62,6 +64,8 @@ namespace MiniEngine.Graphics.Shadows
         public Vector4[] Offsets { set => this.OffsetsParameter.SetValue(value); }
 
         public Vector4[] Scales { set => this.ScalesParameter.SetValue(value); }
+
+        public float ViewDistance { set => this.ViewDistanceParameter.SetValue(value); }
     }
 }
 

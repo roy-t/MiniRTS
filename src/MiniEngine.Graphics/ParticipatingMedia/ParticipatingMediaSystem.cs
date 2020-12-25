@@ -58,13 +58,14 @@ namespace MiniEngine.Graphics.ParticipatingMedia
             this.Effect.InverseViewProjection = Matrix.Invert(camera.ViewProjection);
             this.Effect.CameraPosition = camera.Position;
             this.Effect.FogColor = new Color(0.1f, 0.1f, 0.1f);
-            this.Effect.Strength = 1.5f;
+            this.Effect.Strength = 4.0f;
 
             this.Effect.ShadowMap = shadowMap.DepthMapArray;
             this.Effect.ShadowMatrix = shadowMap.GlobalShadowMatrix;
             this.Effect.Splits = shadowMap.Splits;
             this.Effect.Offsets = shadowMap.Offsets;
             this.Effect.Scales = shadowMap.Scales;
+            this.Effect.ViewDistance = camera.FarPlane;
 
             this.Effect.Apply();
             this.PostProcessTriangle.Render(this.Device);

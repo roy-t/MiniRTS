@@ -42,6 +42,8 @@ float Splits[NumCascades];
 float4 Offsets[NumCascades];
 float4 Scales[NumCascades];
 
+float ViewDistance;
+
 struct VertexData
 {
     float3 Position : POSITION0;
@@ -177,14 +179,12 @@ float ComputeLightFactor(float3 worldPosition, float depth)
     return shadowVisibility;
 }
 
-
-
 OutputData PS(PixelData input)
 {
     OutputData output = (OutputData)0;
 
     float4 color = tex2D(lightSampler, input.Texture).rgba;
-        float2 fb = tex2D(volumeSampler, input.Texture).xy;
+    float2 fb = tex2D(volumeSampler, input.Texture).xy;
     if (fb.x >= 1.0f && fb.y >= 1.0f)
     {
         output.Color = color;
@@ -198,11 +198,9 @@ OutputData PS(PixelData input)
     float dWorld = distance(world, CameraPosition);
     float dFront = distance(volumeFront, CameraPosition);
     float dBack = distance(volumeBack, CameraPosition);
-
     
     float3 c = color.rgb;        
 
-    float dMax = 100.0f;// max(dWorld, max(dFront, dBack));
     if (dWorld > dFront)
     {
         float dInside = 0;
@@ -215,7 +213,7 @@ OutputData PS(PixelData input)
             dInside = dBack - dFront;
         }
 
-        c = lerp(c, FogColor, clamp(dInside * Strength / dMax, 0.0f, 1.0f));        
+        c = lerp(c, FogColor, clamp(dInside * Strength / ViewDistance, 0.0f, 1.0f));
     }
 
     // Compute fog shadows
@@ -228,11 +226,11 @@ OutputData PS(PixelData input)
         float3 surfaceToLight = normalize(CameraPosition - startPosition);
         float totalDistance = distance(startPosition, volumeFront);
         float step = totalDistance / steps;
-
+                
         [unroll]
         for (uint i = 0; i < steps; i++)
-        {
-            float3 worldPosition = startPosition + (surfaceToLight * step * i);
+        {          
+            float3 worldPosition = startPosition + (surfaceToLight * (step * i));
             float depth = distance(worldPosition, CameraPosition);
             lightness += ComputeLightFactor(worldPosition, depth);
         }

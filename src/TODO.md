@@ -29,5 +29,5 @@ Make a scene with many asteroids (like 10 variations instanced in different orie
     - Get rid of PCF
     - Sample at lower resolution, then bilateral upscale
     - More samples
-    - Dithering
+    - Dithering -> starting at slightly different offsets seems to mess with self shadowing
     
