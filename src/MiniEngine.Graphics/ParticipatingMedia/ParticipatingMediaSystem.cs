@@ -15,6 +15,7 @@ namespace MiniEngine.Graphics.ParticipatingMedia
         private readonly LightPostProcessEffect Effect;
         private readonly PostProcessTriangle PostProcessTriangle;
         private readonly FrameService FrameService;
+        private readonly SamplerState ShadowMapSampler;
 
         public ParticipatingMediaSystem(GraphicsDevice device, LightPostProcessEffect effect, PostProcessTriangle postProcessTriangle, FrameService frameService)
         {
@@ -22,17 +23,29 @@ namespace MiniEngine.Graphics.ParticipatingMedia
             this.Effect = effect;
             this.PostProcessTriangle = postProcessTriangle;
             this.FrameService = frameService;
+
+            this.ShadowMapSampler = new SamplerState
+            {
+                AddressU = TextureAddressMode.Clamp,
+                AddressV = TextureAddressMode.Clamp,
+                AddressW = TextureAddressMode.Clamp,
+                Filter = TextureFilter.Anisotropic,
+                ComparisonFunction = CompareFunction.LessEqual,
+                FilterMode = TextureFilterMode.Comparison
+            };
         }
 
         public void OnSet()
         {
             this.Device.BlendState = BlendState.Opaque;
             this.Device.DepthStencilState = DepthStencilState.None;
-            this.Device.SamplerStates[0] = SamplerState.LinearClamp;
+            this.Device.SamplerStates[0] = this.ShadowMapSampler;
+            this.Device.SamplerStates[1] = SamplerState.LinearClamp;
+            this.Device.SamplerStates[2] = SamplerState.LinearClamp;
         }
 
-        [Process]
-        public void Process()
+        [ProcessAll]
+        public void Process(CascadedShadowMapComponent shadowMap)
         {
             this.Device.SetRenderTarget(this.FrameService.LBuffer.LightPostProcess);
             this.Device.Clear(ClearOptions.Target, Color.Black, 1.0f, 0);
@@ -46,6 +59,12 @@ namespace MiniEngine.Graphics.ParticipatingMedia
             this.Effect.CameraPosition = camera.Position;
             this.Effect.FogColor = new Color(0.1f, 0.1f, 0.1f);
             this.Effect.Strength = 1.5f;
+
+            this.Effect.ShadowMap = shadowMap.DepthMapArray;
+            this.Effect.ShadowMatrix = shadowMap.GlobalShadowMatrix;
+            this.Effect.Splits = shadowMap.Splits;
+            this.Effect.Offsets = shadowMap.Offsets;
+            this.Effect.Scales = shadowMap.Scales;
 
             this.Effect.Apply();
             this.PostProcessTriangle.Render(this.Device);

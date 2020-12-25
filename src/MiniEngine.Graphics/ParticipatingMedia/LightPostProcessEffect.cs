@@ -14,6 +14,12 @@ namespace MiniEngine.Graphics.Shadows
         private readonly EffectParameter FogColorParameter;
         private readonly EffectParameter StrengthParameter;
 
+        private readonly EffectParameter ShadowMapParameter;
+        private readonly EffectParameter ShadowMatrixParameter;
+        private readonly EffectParameter SplitsParameter;
+        private readonly EffectParameter OffsetsParameter;
+        private readonly EffectParameter ScalesParameter;
+
         public LightPostProcessEffect(EffectFactory factory) : base(factory.Load<LightPostProcessEffect>())
         {
             this.Effect.CurrentTechnique = this.Effect.Techniques["LightPostProcessTechnique"];
@@ -25,6 +31,12 @@ namespace MiniEngine.Graphics.Shadows
             this.CameraPositionParameter = this.Effect.Parameters["CameraPosition"];
             this.FogColorParameter = this.Effect.Parameters["FogColor"];
             this.StrengthParameter = this.Effect.Parameters["Strength"];
+
+            this.ShadowMapParameter = this.Effect.Parameters["ShadowMap"];
+            this.ShadowMatrixParameter = this.Effect.Parameters["ShadowMatrix"];
+            this.SplitsParameter = this.Effect.Parameters["Splits"];
+            this.OffsetsParameter = this.Effect.Parameters["Offsets"];
+            this.ScalesParameter = this.Effect.Parameters["Scales"];
         }
 
         public Texture2D Light { set => this.LightParameter.SetValue(value); }
@@ -40,6 +52,16 @@ namespace MiniEngine.Graphics.Shadows
         public Color FogColor { set => this.FogColorParameter.SetValue(value.ToVector3()); }
 
         public float Strength { set => this.StrengthParameter.SetValue(value); }
+
+        public Texture2D ShadowMap { set => this.ShadowMapParameter.SetValue(value); }
+
+        public Matrix ShadowMatrix { set => this.ShadowMatrixParameter.SetValue(value); }
+
+        public float[] Splits { set => this.SplitsParameter.SetValue(value); }
+
+        public Vector4[] Offsets { set => this.OffsetsParameter.SetValue(value); }
+
+        public Vector4[] Scales { set => this.ScalesParameter.SetValue(value); }
     }
 }
 

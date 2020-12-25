@@ -75,6 +75,8 @@ namespace MiniEngine.Editor.Scenes
                 }
             }
 
+            transforms[0] = Matrix.CreateScale(new Vector3(2.0f, 0.1f, 2.0f)) * Matrix.CreateTranslation(Vector3.Up * 30);
+
             this.Components.Add(InstancingComponent.Create(entity, transforms));
         }
 
