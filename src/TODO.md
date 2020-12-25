@@ -26,8 +26,14 @@ Make a scene with many asteroids (like 10 variations instanced in different orie
 - Any scene without a sunlight wont render all the way now OOPS :P
 
 - Performance
-    - Get rid of PCF
-    - Sample at lower resolution, then bilateral upscale
-    - More samples
+    - Get rid of PCF -> without affecting looks?
+    - Sample at lower resolution, then bilateral upscale    
+       
+- Artefacts
     - Dithering -> starting at slightly different offsets seems to mess with self shadowing
-    
+    - More samples
+    - Blur/upscale?
+
+Weirdness
+    - Although the shadowmap only applies darkness to the fog colour it still doesn't incorporate ambient light
+    making the fog much darker than it should be.

@@ -199,11 +199,11 @@ OutputData PS(PixelData input)
     float dFront = distance(volumeFront, CameraPosition);
     float dBack = distance(volumeBack, CameraPosition);
     
-    float3 c = color.rgb;        
+    float3 c = color.rgb;                
 
+    float dInside = 0;
     if (dWorld > dFront)
-    {
-        float dInside = 0;
+    {        
         if (dWorld < dBack)
         {                       
             dInside = dWorld - dFront;            
@@ -213,15 +213,16 @@ OutputData PS(PixelData input)
             dInside = dBack - dFront;
         }
 
-        c = lerp(c, FogColor, clamp(dInside * Strength / ViewDistance, 0.0f, 1.0f));
+        dInside = clamp(dInside * Strength / ViewDistance, 0.0f, 1.0f);        
     }
 
     // Compute fog shadows
-    float lightness = 1.0f;
+    float lightness = 1.0f;    
     if (dWorld > dFront)
     {                
         lightness = 0.0f;
-        const uint steps = 20;        
+        const uint steps = 100;        
+
         float3 startPosition = dWorld < dBack ? world : volumeBack;
         float3 surfaceToLight = normalize(CameraPosition - startPosition);
         float totalDistance = distance(startPosition, volumeFront);
@@ -232,13 +233,19 @@ OutputData PS(PixelData input)
         {          
             float3 worldPosition = startPosition + (surfaceToLight * (step * i));
             float depth = distance(worldPosition, CameraPosition);
-            lightness += ComputeLightFactor(worldPosition, depth);
+            float lightFactor = ComputeLightFactor(worldPosition, depth);
+            lightness += lightFactor;
         }
 
-        lightness /= steps;
-    }
+        lightness /= steps;        
+    }   
 
-    output.Color = float4(c * lightness, color.a);    
+    float shadowFallOff = 1.0f - pow(4, -10 * dInside);
+    lightness = lerp(1.0f, lightness, shadowFallOff);
+    c = lerp(c, FogColor * lightness, dInside);    
+
+    
+    output.Color = float4(c, color.a);    
     return output;
 }
 
