@@ -240,11 +240,13 @@ OutputData PS(PixelData input)
         lightness /= steps;        
     }   
 
+    // SOMEHOW DOESN"T SHOW FOG WITH NOTHING
+
     // Don't show the fog if there's no light shining on it?
     // alternatively  don't modify dInside and use: 
-    // c = lerp(c, FogColor * lightness, dInside); 
+     //c = lerp(c, FogColor * lightness, dInside); 
     // but that causes strange light-dark changes when moving
-    dInside = lerp(dInside, 0, lightness);
+    dInside = lerp(0, dInside, lightness);
     c = lerp(c, FogColor, dInside);    
 
     output.Color = float4(c, color.a);    
