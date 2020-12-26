@@ -45,7 +45,7 @@ namespace MiniEngine.Graphics.ParticipatingMedia
         }
 
         [ProcessAll]
-        public void Process(CascadedShadowMapComponent shadowMap)
+        public void Process(ParticipatingMediaComponent media, CascadedShadowMapComponent shadowMap)
         {
             this.Device.SetRenderTarget(this.FrameService.LBuffer.LightPostProcess);
             this.Device.Clear(ClearOptions.Target, Color.Black, 1.0f, 0);
@@ -53,7 +53,7 @@ namespace MiniEngine.Graphics.ParticipatingMedia
             var camera = this.FrameService.CamereComponent.Camera;
 
             this.Effect.Light = this.FrameService.LBuffer.Light;
-            this.Effect.Volume = this.FrameService.LBuffer.ParticipatingMedia;
+            this.Effect.Volume = media.DensityBuffer;
             this.Effect.Depth = this.FrameService.GBuffer.Depth;
             this.Effect.InverseViewProjection = Matrix.Invert(camera.ViewProjection);
             this.Effect.CameraPosition = camera.Position;

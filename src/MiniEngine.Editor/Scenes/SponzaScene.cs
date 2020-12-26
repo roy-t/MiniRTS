@@ -62,10 +62,9 @@ namespace MiniEngine.Editor.Scenes
             this.Components.Add(new CameraComponent(entity, camera));
 
             // Add dust
-            var dustEntity = this.Entities.Create();
             var cube = CubeGenerator.Generate(this.Device);
-            this.Components.Add(DustComponent.Create(dustEntity, this.Device, cube));
-            this.Components.Add(new TransformComponent(dustEntity, Matrix.CreateScale(200, 150.0f, 120.0f)));
+            this.Components.Add(ParticipatingMediaComponent.Create(entity, this.Device, cube));
+            this.Components.Add(new TransformComponent(entity, Matrix.CreateScale(200, 150.0f, 120.0f)));
         }
 
         private void CreateModel(GeometryModel model, Matrix transform)

@@ -33,16 +33,11 @@ namespace MiniEngine.Graphics.ParticipatingMedia
             this.Device.BlendState = BlendState.Opaque;
             this.Device.DepthStencilState = DepthStencilState.None;
             this.Device.SamplerStates[0] = SamplerState.LinearClamp;
-
-            // Even if there are no participating media make sure that the LBuffer
-            // has the right data
-            this.Device.SetRenderTarget(this.FrameService.LBuffer.ParticipatingMedia);
-            this.Device.Clear(ClearOptions.Target, Color.White, 1.0f, 0);
         }
 
 
         [ProcessAll]
-        public void Process(DustComponent media, TransformComponent transform)
+        public void Process(ParticipatingMediaComponent media, TransformComponent transform)
         {
             var camera = this.FrameService.CamereComponent.Camera;
 
@@ -50,7 +45,9 @@ namespace MiniEngine.Graphics.ParticipatingMedia
             this.DrawDistance(RasterizerState.CullClockwise, media.VolumeBackBuffer, media.Geometry);
             this.DrawDistance(RasterizerState.CullCounterClockwise, media.VolumeFrontBuffer, media.Geometry);
 
-            this.Device.SetRenderTarget(this.FrameService.LBuffer.ParticipatingMedia);
+            this.Device.SetRenderTarget(media.DensityBuffer);
+            this.Device.Clear(ClearOptions.Target, Color.White, 1.0f, 0);
+
             this.MediaEffect.VolumeBack = media.VolumeBackBuffer;
             this.MediaEffect.VolumeFront = media.VolumeFrontBuffer;
 
