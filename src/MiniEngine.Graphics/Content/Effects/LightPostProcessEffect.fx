@@ -228,7 +228,7 @@ OutputData PS(PixelData input)
         float totalDistance = distance(startPosition, volumeFront);
         float step = totalDistance / steps;
                 
-        [unroll]
+        //[unroll] // uncomment for slower compile time but faster shader
         for (uint i = 0; i < steps; i++)
         {          
             float3 worldPosition = startPosition + (surfaceToLight * (step * i));
@@ -240,11 +240,13 @@ OutputData PS(PixelData input)
         lightness /= steps;        
     }   
 
-    float shadowFallOff = 1.0f - pow(4, -10 * dInside);
-    lightness = lerp(1.0f, lightness, shadowFallOff);
-    c = lerp(c, FogColor * lightness, dInside);    
+    // Don't show the fog if there's no light shining on it?
+    // alternatively  don't modify dInside and use: 
+    // c = lerp(c, FogColor * lightness, dInside); 
+    // but that causes strange light-dark changes when moving
+    dInside = lerp(dInside, 0, lightness);
+    c = lerp(c, FogColor, dInside);    
 
-    
     output.Color = float4(c, color.a);    
     return output;
 }

@@ -34,6 +34,13 @@ Make a scene with many asteroids (like 10 variations instanced in different orie
     - More samples
     - Blur/upscale?
 
-Weirdness
+- Weirdness
     - Although the shadowmap only applies darkness to the fog colour it still doesn't incorporate ambient light
-    making the fog much darker than it should be.
+    making the fog much darker than it should be. Maybe calculate the real ambient light at that position, 
+    (could even colour the fog, since fog gets light from 360 degrees its one value for everything? 
+    AKA average colour * strength of lightmap?)
+
+
+- Things to try
+    - Maybe try a true fog formula instead of a lerp
+    - Make it possible to change the strength and colour
