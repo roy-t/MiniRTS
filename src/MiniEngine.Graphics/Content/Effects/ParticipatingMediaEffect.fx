@@ -223,7 +223,7 @@ OutputData PS(PixelData input)
     if (dWorld > dFront)
     {                
         lightness = 0.0f;
-        const uint steps = 10;        
+        const uint steps = 50;
 
         float3 startPosition = dWorld < dBack ? world : volumeBack;
         float3 surfaceToLight = normalize(CameraPosition - startPosition);
