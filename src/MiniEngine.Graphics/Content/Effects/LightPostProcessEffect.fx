@@ -27,6 +27,17 @@ sampler volumeSampler = sampler_state
     AddressV = Clamp;
 };
 
+texture Noise;
+sampler noiseSampler = sampler_state
+{
+    Texture = (Noise);
+    MinFilter = POINT;
+    MagFilter = POINT;
+    MipFilter = POINT;
+    AddressU = Wrap;
+    AddressV = Wrap;
+};
+
 float4x4 InverseViewProjection;
 float3 CameraPosition;
 float3 FogColor;
@@ -179,6 +190,12 @@ float ComputeLightFactor(float3 worldPosition, float depth)
     return shadowVisibility;
 }
 
+float random(float2 uv)
+{    
+    float4 sa = float4(uv * 17, 0, 0);
+    return tex2Dlod(noiseSampler, sa).r;
+}
+
 OutputData PS(PixelData input)
 {
     OutputData output = (OutputData)0;
@@ -221,34 +238,30 @@ OutputData PS(PixelData input)
     if (dWorld > dFront)
     {                
         lightness = 0.0f;
-        const uint steps = 100;        
+        const uint steps = 10;        
 
         float3 startPosition = dWorld < dBack ? world : volumeBack;
         float3 surfaceToLight = normalize(CameraPosition - startPosition);
         float totalDistance = distance(startPosition, volumeFront);
-        float step = totalDistance / steps;
+        float step = totalDistance / steps;        
                 
         //[unroll] // uncomment for slower compile time but faster shader
         for (uint i = 0; i < steps; i++)
         {          
-            float3 worldPosition = startPosition + (surfaceToLight * (step * i));
+            float fudge = random(input.Texture) * step;
+            float3 worldPosition = startPosition + (surfaceToLight * (fudge + (step * i)));
             float depth = distance(worldPosition, CameraPosition);
             float lightFactor = ComputeLightFactor(worldPosition, depth);
             lightness += lightFactor;
         }
 
-        lightness /= steps;        
+        lightness /= steps; 
+        lightness = max(lightness, 0.1f); // To simulate ambient light hitting mist? Try more values
     }   
 
-    // SOMEHOW DOESN"T SHOW FOG WITH NOTHING
-
-    // Don't show the fog if there's no light shining on it?
-    // alternatively  don't modify dInside and use: 
-     //c = lerp(c, FogColor * lightness, dInside); 
-    // but that causes strange light-dark changes when moving
+    // Don't show the fog if there's no light shining on it
     dInside = lerp(0, dInside, lightness);
     c = lerp(c, FogColor, dInside);    
-
     output.Color = float4(c, color.a);    
     return output;
 }

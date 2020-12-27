@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
 using MiniEngine.Graphics.PostProcess;
@@ -16,13 +17,16 @@ namespace MiniEngine.Graphics.ParticipatingMedia
         private readonly PostProcessTriangle PostProcessTriangle;
         private readonly FrameService FrameService;
         private readonly SamplerState ShadowMapSampler;
+        private readonly Texture2D Noise;
 
-        public ParticipatingMediaSystem(GraphicsDevice device, LightPostProcessEffect effect, PostProcessTriangle postProcessTriangle, FrameService frameService)
+        public ParticipatingMediaSystem(GraphicsDevice device, LightPostProcessEffect effect, ContentManager content, PostProcessTriangle postProcessTriangle, FrameService frameService)
         {
             this.Device = device;
             this.Effect = effect;
             this.PostProcessTriangle = postProcessTriangle;
             this.FrameService = frameService;
+
+            this.Noise = content.Load<Texture2D>("Textures/BlueNoise");
 
             this.ShadowMapSampler = new SamplerState
             {
@@ -42,16 +46,27 @@ namespace MiniEngine.Graphics.ParticipatingMedia
             this.Device.SamplerStates[0] = this.ShadowMapSampler;
             this.Device.SamplerStates[1] = SamplerState.LinearClamp;
             this.Device.SamplerStates[2] = SamplerState.LinearClamp;
+            this.Device.SamplerStates[3] = SamplerState.LinearClamp;
+            this.Device.SamplerStates[4] = SamplerState.PointWrap;
         }
 
         [ProcessAll]
         public void Process(ParticipatingMediaComponent media, CascadedShadowMapComponent shadowMap)
         {
+            // TODO:
+            // - Draw the fog at a lower resolution to a buffer A. Store only how much fog there should be
+            // - Draw the fog to the light buffer using alpha blending. the alpha channel is how much 
+            //   fog there should be while the RGB channel is the colour of the fog.
+            // - Improvement use some sort of bilinear upfiltering?
+
+
+
             this.Device.SetRenderTarget(this.FrameService.LBuffer.LightPostProcess);
             this.Device.Clear(ClearOptions.Target, Color.Black, 1.0f, 0);
 
             var camera = this.FrameService.CamereComponent.Camera;
 
+            this.Effect.Noise = this.Noise;
             this.Effect.Light = this.FrameService.LBuffer.Light;
             this.Effect.Volume = media.DensityBuffer;
             this.Effect.Depth = this.FrameService.GBuffer.Depth;
