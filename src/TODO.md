@@ -14,5 +14,6 @@ Make a scene with many asteroids (like 10 variations instanced in different orie
 - Things to try
 - Get rid of PCF -> without affecting looks?
 - Maybe try a true fog formula instead of a lerp
-- Something else than a linear upscale of the media `ParticipatingMediaBuffer`, bilateral-blur? Using the depth to detect differences?
+- Add depth/normal input to weigh bilinear upscale in ParticipatingMediaPostProcessEffect.fx
 - Experiment with sample count
+- Clear banding when fog is really high, even though fog is computed in a 32bit format. What's going on?
