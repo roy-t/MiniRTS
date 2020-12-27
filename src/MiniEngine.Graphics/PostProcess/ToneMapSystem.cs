@@ -35,7 +35,7 @@ namespace MiniEngine.Graphics.PostProcess
         public void Process()
         {
             // TODO: always sample from Light buffer, the fog system should make sure the right data is there
-            this.Effect.Color = this.FrameService.LBuffer.LightPostProcess;
+            this.Effect.Color = this.FrameService.LBuffer.Light;
             this.Effect.Apply();
 
             this.PostProcessTriangle.Render(this.Device);

@@ -7,7 +7,6 @@ namespace MiniEngine.Graphics.Shadows
     public sealed class LightPostProcessEffect : EffectWrapper
     {
         private readonly EffectParameter NoiseParameter;
-        private readonly EffectParameter LightParameter;
         private readonly EffectParameter VolumeParameter;
         private readonly EffectParameter InverseViewProjectionParameter;
         private readonly EffectParameter DepthParameter;
@@ -28,7 +27,6 @@ namespace MiniEngine.Graphics.Shadows
             this.Effect.CurrentTechnique = this.Effect.Techniques["LightPostProcessTechnique"];
 
             this.NoiseParameter = this.Effect.Parameters["Noise"];
-            this.LightParameter = this.Effect.Parameters["Light"];
             this.VolumeParameter = this.Effect.Parameters["Volume"];
             this.InverseViewProjectionParameter = this.Effect.Parameters["InverseViewProjection"];
             this.DepthParameter = this.Effect.Parameters["Depth"];
@@ -44,8 +42,6 @@ namespace MiniEngine.Graphics.Shadows
         }
 
         public Texture2D Noise { set => this.NoiseParameter.SetValue(value); }
-
-        public Texture2D Light { set => this.LightParameter.SetValue(value); }
 
         public Texture2D Volume { set => this.VolumeParameter.SetValue(value); }
 

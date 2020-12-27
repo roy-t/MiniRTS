@@ -5,17 +5,6 @@ static const float BlendThreshold = 0.3f;
 static const float bias = 0.005f; // Bias to prevent shadow acne
 static const uint NumCascades = 4;
 
-texture Light;
-sampler lightSampler = sampler_state
-{
-    Texture = (Light);
-    MinFilter = LINEAR;
-    MagFilter = LINEAR;
-    MipFilter = LINEAR;
-    AddressU = Clamp;
-    AddressV = Clamp;
-};
-
 texture Volume;
 sampler volumeSampler = sampler_state
 {
@@ -43,7 +32,6 @@ float3 CameraPosition;
 float3 FogColor;
 float Strength;
 
-
 Texture2DArray ShadowMap : register(t0);
 SamplerComparisonState ShadowSampler : register(s0);
 float4x4 ShadowViewProjection;
@@ -69,7 +57,7 @@ struct PixelData
 
 struct OutputData
 {
-    float4 Color : COLOR0;
+    float Media : COLOR0;
 };
 
 PixelData VS(in VertexData input)
@@ -199,12 +187,11 @@ float random(float2 uv)
 OutputData PS(PixelData input)
 {
     OutputData output = (OutputData)0;
-
-    float4 color = tex2D(lightSampler, input.Texture).rgba;
+    
     float2 fb = tex2D(volumeSampler, input.Texture).xy;
     if (fb.x >= 1.0f && fb.y >= 1.0f)
     {
-        output.Color = color;
+        output.Media = 0.0f;
         return output;
     }
 
@@ -216,7 +203,6 @@ OutputData PS(PixelData input)
     float dFront = distance(volumeFront, CameraPosition);
     float dBack = distance(volumeBack, CameraPosition);
     
-    float3 c = color.rgb;                
 
     float dInside = 0;
     if (dWorld > dFront)
@@ -256,13 +242,11 @@ OutputData PS(PixelData input)
         }
 
         lightness /= steps; 
-        lightness = max(lightness, 0.1f); // To simulate ambient light hitting mist? Try more values
-    }   
+        lightness = max(lightness, 0.1f); // To simulate ambient light hitting media? Try more values
+    }
 
-    // Don't show the fog if there's no light shining on it
-    dInside = lerp(0, dInside, lightness);
-    c = lerp(c, FogColor, dInside);    
-    output.Color = float4(c, color.a);    
+    // Don't show the fog if there's no light shining on it     
+    output.Media = lerp(0, dInside, lightness);
     return output;
 }
 
