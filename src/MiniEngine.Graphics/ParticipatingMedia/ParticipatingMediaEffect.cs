@@ -20,6 +20,7 @@ namespace MiniEngine.Graphics.Shadows
         private readonly EffectParameter ScalesParameter;
 
         private readonly EffectParameter ViewDistanceParameter;
+        private readonly EffectParameter MinLightParameter;
 
         public ParticipatingMediaEffect(EffectFactory factory) : base(factory.Load<ParticipatingMediaEffect>())
         {
@@ -37,6 +38,7 @@ namespace MiniEngine.Graphics.Shadows
             this.OffsetsParameter = this.Effect.Parameters["Offsets"];
             this.ScalesParameter = this.Effect.Parameters["Scales"];
             this.ViewDistanceParameter = this.Effect.Parameters["ViewDistance"];
+            this.MinLightParameter = this.Effect.Parameters["MinLight"];
         }
 
         public Texture2D Noise { set => this.NoiseParameter.SetValue(value); }
@@ -63,6 +65,8 @@ namespace MiniEngine.Graphics.Shadows
         public Vector4[] Scales { set => this.ScalesParameter.SetValue(value); }
 
         public float ViewDistance { set => this.ViewDistanceParameter.SetValue(value); }
+
+        public float MinLight { set => this.MinLightParameter.SetValue(value); }
     }
 }
 

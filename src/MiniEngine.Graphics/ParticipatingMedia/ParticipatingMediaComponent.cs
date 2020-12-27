@@ -27,7 +27,7 @@ namespace MiniEngine.Graphics.ParticipatingMedia
 
         public Color Color { get; set; }
 
-        public float Quality { get => this.quality; set => ChangeQuality(value); }
+        public float Quality { get => this.quality; set => this.ChangeQuality(value); }
 
         public GeometryData Geometry { get; }
 

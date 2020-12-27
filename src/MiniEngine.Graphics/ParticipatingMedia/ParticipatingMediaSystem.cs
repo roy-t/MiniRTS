@@ -99,6 +99,7 @@ namespace MiniEngine.Graphics.ParticipatingMedia
             this.MediaEffect.Offsets = shadowMap.Offsets;
             this.MediaEffect.Scales = shadowMap.Scales;
             this.MediaEffect.ViewDistance = camera.FarPlane;
+            this.MediaEffect.MinLight = 0.1f;
 
             this.MediaEffect.Apply();
             this.PostProcessTriangle.Render(this.Device);
