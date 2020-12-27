@@ -16,20 +16,20 @@ namespace MiniEngine.Graphics.ParticipatingMedia
     public partial class ParticipatingMediaSystem : ISystem
     {
         private readonly GraphicsDevice Device;
-        private readonly LightPostProcessEffect Effect;
-        private readonly MediaEffect MediaEffect;
         private readonly ShadowMapEffect ShadowMapEffect;
+        private readonly VolumeEffect VolumeEffect;
+        private readonly ParticipatingMediaEffect MediaEffect;
         private readonly ParticipatingMediaPostProcessEffect PostProcessEffect;
         private readonly PostProcessTriangle PostProcessTriangle;
         private readonly FrameService FrameService;
         private readonly SamplerState ShadowMapSampler;
         private readonly Texture2D Noise;
 
-        public ParticipatingMediaSystem(GraphicsDevice device, ContentManager content, LightPostProcessEffect effect, MediaEffect mediaEffect, ShadowMapEffect shadowMapEffect, ParticipatingMediaPostProcessEffect postProcessEffect, PostProcessTriangle postProcessTriangle, FrameService frameService)
+        public ParticipatingMediaSystem(GraphicsDevice device, ContentManager content, ShadowMapEffect shadowMapEffect, VolumeEffect volumeEffect, ParticipatingMediaEffect mediaEffect, ParticipatingMediaPostProcessEffect postProcessEffect, PostProcessTriangle postProcessTriangle, FrameService frameService)
         {
             this.Device = device;
-            this.Effect = effect;
             this.MediaEffect = mediaEffect;
+            this.VolumeEffect = volumeEffect;
             this.ShadowMapEffect = shadowMapEffect;
             this.PostProcessEffect = postProcessEffect;
             this.PostProcessTriangle = postProcessTriangle;
@@ -58,71 +58,70 @@ namespace MiniEngine.Graphics.ParticipatingMedia
             this.Device.SamplerStates[4] = SamplerState.PointWrap;
         }
 
-
         [ProcessAll]
         public void Process(ParticipatingMediaComponent media, CascadedShadowMapComponent shadowMap, TransformComponent transform)
         {
             var camera = this.FrameService.CamereComponent.Camera;
-            this.ComputeDensity(media, transform, camera);
-            this.ComputeMedia(media, shadowMap, camera);
-            this.DrawMediaToLightTarget(media);
+            this.RenderDensity(media, transform, camera);
+            this.RenderMedia(media, shadowMap, camera);
+            this.RenderMediaToLightTarget(media);
         }
 
-        private void DrawMediaToLightTarget(ParticipatingMediaComponent media)
+        private void RenderMediaToLightTarget(ParticipatingMediaComponent media)
         {
             this.Device.SetRenderTarget(this.FrameService.LBuffer.Light);
             this.Device.BlendState = BlendState.AlphaBlend;
 
             this.PostProcessEffect.Media = media.ParticipatingMediaBuffer;
-            this.PostProcessEffect.Color = new Color(0.1f, 0.1f, 0.1f);
+            this.PostProcessEffect.Color = media.Color;
             this.PostProcessEffect.Apply();
 
             this.PostProcessTriangle.Render(this.Device);
         }
 
-        private void ComputeMedia(ParticipatingMediaComponent media, CascadedShadowMapComponent shadowMap, ICamera camera)
+        private void RenderMedia(ParticipatingMediaComponent media, CascadedShadowMapComponent shadowMap, ICamera camera)
         {
             this.Device.SamplerStates[0] = this.ShadowMapSampler;
 
             this.Device.SetRenderTarget(media.ParticipatingMediaBuffer);
             this.Device.Clear(ClearOptions.Target, Color.Black, 1.0f, 0);
 
-            this.Effect.Noise = this.Noise;
-            this.Effect.Volume = media.DensityBuffer;
-            this.Effect.Depth = this.FrameService.GBuffer.Depth;
-            this.Effect.InverseViewProjection = Matrix.Invert(camera.ViewProjection);
-            this.Effect.CameraPosition = camera.Position;
-            this.Effect.FogColor = new Color(0.1f, 0.1f, 0.1f);
-            this.Effect.Strength = 4.0f;
+            this.MediaEffect.Noise = this.Noise;
+            this.MediaEffect.Volume = media.DensityBuffer;
+            this.MediaEffect.Depth = this.FrameService.GBuffer.Depth;
+            this.MediaEffect.InverseViewProjection = Matrix.Invert(camera.ViewProjection);
+            this.MediaEffect.CameraPosition = camera.Position;
+            this.MediaEffect.Strength = media.Strength;
 
-            this.Effect.ShadowMap = shadowMap.DepthMapArray;
-            this.Effect.ShadowMatrix = shadowMap.GlobalShadowMatrix;
-            this.Effect.Splits = shadowMap.Splits;
-            this.Effect.Offsets = shadowMap.Offsets;
-            this.Effect.Scales = shadowMap.Scales;
-            this.Effect.ViewDistance = camera.FarPlane;
-
-            this.Effect.Apply();
-            this.PostProcessTriangle.Render(this.Device);
-        }
-
-        private void ComputeDensity(ParticipatingMediaComponent media, TransformComponent transform, Camera.ICamera camera)
-        {
-            this.ShadowMapEffect.WorldViewProjection = transform.Matrix * camera.ViewProjection;
-            this.DrawDistance(RasterizerState.CullClockwise, media.VolumeBackBuffer, media.Geometry);
-            this.DrawDistance(RasterizerState.CullCounterClockwise, media.VolumeFrontBuffer, media.Geometry);
-
-            this.Device.SetRenderTarget(media.DensityBuffer);
-            this.Device.Clear(ClearOptions.Target, Color.White, 1.0f, 0);
-
-            this.MediaEffect.VolumeBack = media.VolumeBackBuffer;
-            this.MediaEffect.VolumeFront = media.VolumeFrontBuffer;
+            this.MediaEffect.ShadowMap = shadowMap.DepthMapArray;
+            this.MediaEffect.ShadowMatrix = shadowMap.GlobalShadowMatrix;
+            this.MediaEffect.Splits = shadowMap.Splits;
+            this.MediaEffect.Offsets = shadowMap.Offsets;
+            this.MediaEffect.Scales = shadowMap.Scales;
+            this.MediaEffect.ViewDistance = camera.FarPlane;
 
             this.MediaEffect.Apply();
             this.PostProcessTriangle.Render(this.Device);
         }
 
-        private void DrawDistance(RasterizerState rasterizerState, RenderTarget2D renderTarget, GeometryData geometry)
+        private void RenderDensity(ParticipatingMediaComponent media, TransformComponent transform, Camera.ICamera camera)
+        {
+            // TODO: we might be able to only have a density buffer and draw to that directly wtih additive blending?
+            this.ShadowMapEffect.WorldViewProjection = transform.Matrix * camera.ViewProjection;
+            this.RenderDistance(RasterizerState.CullClockwise, media.VolumeBackBuffer, media.Geometry);
+            this.RenderDistance(RasterizerState.CullCounterClockwise, media.VolumeFrontBuffer, media.Geometry);
+
+            this.Device.SetRenderTarget(media.DensityBuffer);
+            this.Device.Clear(ClearOptions.Target, Color.White, 1.0f, 0);
+
+            this.VolumeEffect.VolumeBack = media.VolumeBackBuffer;
+            this.VolumeEffect.VolumeFront = media.VolumeFrontBuffer;
+
+            this.VolumeEffect.Apply();
+            this.PostProcessTriangle.Render(this.Device);
+        }
+
+        private void RenderDistance(RasterizerState rasterizerState, RenderTarget2D renderTarget, GeometryData geometry)
         {
             this.Device.SetRenderTarget(renderTarget);
             this.Device.Clear(ClearOptions.Target, Color.White, 1.0f, 0);

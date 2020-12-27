@@ -56,23 +56,17 @@
 /processorParam:DebugMode=Auto
 /build:Effects/IrradianceMapGeneratorEffect.fx
 
-#begin Effects/LightPostProcessEffect.fx
-/importer:EffectImporter
-/processor:EffectProcessor
-/processorParam:DebugMode=Auto
-/build:Effects/LightPostProcessEffect.fx
-
-#begin Effects/MediaEffect.fx
-/importer:EffectImporter
-/processor:EffectProcessor
-/processorParam:DebugMode=Auto
-/build:Effects/MediaEffect.fx
-
 #begin Effects/OpaqueEffect.fx
 /importer:EffectImporter
 /processor:EffectProcessor
 /processorParam:DebugMode=Auto
 /build:Effects/OpaqueEffect.fx
+
+#begin Effects/ParticipatingMediaEffect.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Effects/ParticipatingMediaEffect.fx
 
 #begin Effects/ParticipatingMediaPostProcessEffect.fx
 /importer:EffectImporter
@@ -115,6 +109,12 @@
 /processor:EffectProcessor
 /processorParam:DebugMode=Auto
 /build:Effects/ToneMapEffect.fx
+
+#begin Effects/VolumeEffect.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Effects/VolumeEffect.fx
 
 #begin Textures/Blue.png
 /importer:TextureImporter

@@ -4,14 +4,13 @@ using MiniEngine.Graphics.Effects;
 
 namespace MiniEngine.Graphics.Shadows
 {
-    public sealed class LightPostProcessEffect : EffectWrapper
+    public sealed class ParticipatingMediaEffect : EffectWrapper
     {
         private readonly EffectParameter NoiseParameter;
         private readonly EffectParameter VolumeParameter;
         private readonly EffectParameter InverseViewProjectionParameter;
         private readonly EffectParameter DepthParameter;
         private readonly EffectParameter CameraPositionParameter;
-        private readonly EffectParameter FogColorParameter;
         private readonly EffectParameter StrengthParameter;
 
         private readonly EffectParameter ShadowMapParameter;
@@ -22,16 +21,15 @@ namespace MiniEngine.Graphics.Shadows
 
         private readonly EffectParameter ViewDistanceParameter;
 
-        public LightPostProcessEffect(EffectFactory factory) : base(factory.Load<LightPostProcessEffect>())
+        public ParticipatingMediaEffect(EffectFactory factory) : base(factory.Load<ParticipatingMediaEffect>())
         {
-            this.Effect.CurrentTechnique = this.Effect.Techniques["LightPostProcessTechnique"];
+            this.Effect.CurrentTechnique = this.Effect.Techniques["ParticipatingMediaTechnique"];
 
             this.NoiseParameter = this.Effect.Parameters["Noise"];
             this.VolumeParameter = this.Effect.Parameters["Volume"];
             this.InverseViewProjectionParameter = this.Effect.Parameters["InverseViewProjection"];
             this.DepthParameter = this.Effect.Parameters["Depth"];
             this.CameraPositionParameter = this.Effect.Parameters["CameraPosition"];
-            this.FogColorParameter = this.Effect.Parameters["FogColor"];
             this.StrengthParameter = this.Effect.Parameters["Strength"];
             this.ShadowMapParameter = this.Effect.Parameters["ShadowMap"];
             this.ShadowMatrixParameter = this.Effect.Parameters["ShadowMatrix"];
@@ -51,7 +49,6 @@ namespace MiniEngine.Graphics.Shadows
 
         public Vector3 CameraPosition { set => this.CameraPositionParameter.SetValue(value); }
 
-        public Color FogColor { set => this.FogColorParameter.SetValue(value.ToVector3()); }
 
         public float Strength { set => this.StrengthParameter.SetValue(value); }
 

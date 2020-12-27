@@ -3,14 +3,14 @@ using MiniEngine.Graphics.Effects;
 
 namespace MiniEngine.Graphics.Shadows
 {
-    public sealed class MediaEffect : EffectWrapper
+    public sealed class VolumeEffect : EffectWrapper
     {
         private readonly EffectParameter VolumeFrontParameter;
         private readonly EffectParameter VolumeBackParameter;
 
-        public MediaEffect(EffectFactory factory) : base(factory.Load<MediaEffect>())
+        public VolumeEffect(EffectFactory factory) : base(factory.Load<VolumeEffect>())
         {
-            this.Effect.CurrentTechnique = this.Effect.Techniques["DensityMediaTechnique"];
+            this.Effect.CurrentTechnique = this.Effect.Techniques["VolumeTechnique"];
 
             this.VolumeFrontParameter = this.Effect.Parameters["VolumeFront"];
             this.VolumeBackParameter = this.Effect.Parameters["VolumeBack"];

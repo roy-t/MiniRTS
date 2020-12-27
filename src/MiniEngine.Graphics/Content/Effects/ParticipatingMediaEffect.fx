@@ -2,7 +2,7 @@
 #include "Includes/GBufferReader.hlsl"
 
 static const float BlendThreshold = 0.3f;
-static const float bias = 0.005f; // Bias to prevent shadow acne
+static const float Bias = 0.005f; // Bias to prevent shadow acne
 static const uint NumCascades = 4;
 
 texture Volume;
@@ -29,7 +29,6 @@ sampler noiseSampler = sampler_state
 
 float4x4 InverseViewProjection;
 float3 CameraPosition;
-float3 FogColor;
 float Strength;
 
 Texture2DArray ShadowMap : register(t0);
@@ -83,7 +82,7 @@ float SampleShadowMapPCF(float3 shadowPosition, uint cascadeIndex)
     float _;
     ShadowMap.GetDimensions(shadowMapSize.x, shadowMapSize.y, _);
 
-    float lightDepth = shadowPosition.z - bias;
+    float lightDepth = shadowPosition.z - Bias;
 
     float2 uv = shadowPosition.xy * shadowMapSize;
     float2 shadowMapSizeInv = 1.0f / shadowMapSize;
@@ -250,7 +249,7 @@ OutputData PS(PixelData input)
     return output;
 }
 
-technique LightPostProcessTechnique
+technique ParticipatingMediaTechnique
 {
     pass P0
     {

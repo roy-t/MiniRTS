@@ -68,7 +68,7 @@ DensityOutputData PS_DENSITY(DensityPixelData input)
     return output;
 }
 
-technique DensityMediaTechnique
+technique VolumeTechnique
 {
     pass P0
     {
