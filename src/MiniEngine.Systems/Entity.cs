@@ -6,7 +6,7 @@ namespace MiniEngine.Systems
     {
         public static readonly Entity Zero = new Entity(0);
 
-        internal Entity(int id)
+        public Entity(int id)
         {
             this.Id = id;
         }

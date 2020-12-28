@@ -1,4 +1,5 @@
 ﻿using System;
+using ImGuiNET;
 using Microsoft.Xna.Framework;
 
 namespace MiniEngine.Gui
@@ -12,6 +13,14 @@ namespace MiniEngine.Gui
 
             var ratio = Math.Min(widthRatio, heightRatio);
             return new Vector2(sourceWidth * ratio, sourceHeight * ratio);
+        }
+
+        public static Vector2 GetWindowSize()
+        {
+            var width = ImGui.GetWindowWidth();
+            var height = ImGui.GetWindowHeight() - (ImGui.GetFrameHeightWithSpacing() * 2);
+
+            return new Vector2(width, height);
         }
     }
 }

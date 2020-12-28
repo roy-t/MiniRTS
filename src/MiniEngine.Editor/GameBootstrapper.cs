@@ -39,6 +39,7 @@ namespace MiniEngine.Editor
             this.RegisterDelegate(this.Graphics);
             this.RegisterDelegate(this.Graphics.GraphicsDevice);
             this.RegisterDelegate(this.Content);
+            this.RegisterAsDelegate(this, typeof(Game));
             this.RegisterAsDelegate(this.Window, typeof(GameWindow));
 
             var gameTimer = new GameTimer(this);

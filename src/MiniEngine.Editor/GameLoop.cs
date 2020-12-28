@@ -103,6 +103,7 @@ namespace MiniEngine.Editor
             this.RenderToViewport(this.FrameService.PBuffer.ToneMap);
 
             this.SceneManager.Update(gameTime);
+
             if (this.renderUi)
             {
                 this.WorkspaceManager.Render(gameTime);

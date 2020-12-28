@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Input;
 using MiniEngine.Configuration;
 using MiniEngine.Editor.Controllers;
 using MiniEngine.Editor.Scenes;
+using MiniEngine.Editor.Workspaces.Editors;
 using MiniEngine.Graphics;
 using MiniEngine.Gui;
 
@@ -23,10 +24,12 @@ namespace MiniEngine.Editor.Workspaces
         private readonly KeyboardController Keyboard;
         private readonly EditorState State;
         private readonly List<WorkspaceBinding> Workspaces;
+        private readonly ImageInspector Inspector;
+
 
         private WorkspaceBinding workspace;
 
-        public WorkspaceManager(IEnumerable<IWorkspace> workspaces, SceneManager sceneManager, ImGuiRenderer gui, EditorStateSerializer serializer, FrameService frameService, KeyboardController keyboard)
+        public WorkspaceManager(IEnumerable<IWorkspace> workspaces, SceneManager sceneManager, ImGuiRenderer gui, ImageInspector inspector, EditorStateSerializer serializer, FrameService frameService, KeyboardController keyboard)
         {
             this.SceneManager = sceneManager;
             this.Gui = gui;
@@ -35,6 +38,12 @@ namespace MiniEngine.Editor.Workspaces
             this.Keyboard = keyboard;
             this.State = this.Serializer.Deserialize();
             this.Workspaces = workspaces.Select(w => new WorkspaceBinding(w.GetKey(), w)).ToList();
+            this.Inspector = inspector;
+
+            foreach (var workpace in workspaces)
+            {
+                workpace.Load(this.State);
+            }
 
             this.FrameService.CamereComponent.Camera.Move(this.State.CameraPosition, this.State.CameraForward);
             this.workspace = this.Workspaces.FirstOrDefault(w => w.Key == this.State.CurrentWorkspace)
@@ -56,6 +65,11 @@ namespace MiniEngine.Editor.Workspaces
             this.RenderMainMenu();
             this.RenderWindows();
 
+            if (this.Inspector.IsOpen)
+            {
+                this.Inspector.Render();
+            }
+
             this.Gui.AfterLayout();
         }
 
@@ -75,6 +89,16 @@ namespace MiniEngine.Editor.Workspaces
                     ImGui.EndMenu();
                 }
 
+                if (ImGui.BeginMenu($"Inspector"))
+                {
+                    var open = this.Inspector.IsOpen;
+                    if (ImGui.MenuItem("Images", string.Empty, open))
+                    {
+                        this.Inspector.IsOpen = !open;
+                    }
+                    ImGui.EndMenu();
+                }
+
                 this.SceneManager.RenderMainMenuItems();
                 this.workspace.Workspace.RenderMainMenuItems();
 
@@ -87,7 +111,13 @@ namespace MiniEngine.Editor.Workspaces
 
         public void Save()
         {
-            var state = this.State with
+            var state = this.State;
+            foreach (var workspace in this.Workspaces)
+            {
+                state = workspace.Workspace.Save(state);
+            }
+
+            state = state with
             {
                 CameraPosition = this.FrameService.CamereComponent.Camera.Position,
                 CameraForward = this.FrameService.CamereComponent.Camera.Forward,

@@ -16,7 +16,7 @@ namespace MiniEngine.Gui
         // Graphics
         private readonly GraphicsDevice GraphicsDevice;
 
-        private readonly GameWindow Window;
+        private readonly Game Game;
 
         private readonly ImmediateEffect Effect;
         private readonly RasterizerState RasterizerState;
@@ -40,10 +40,10 @@ namespace MiniEngine.Gui
 
         private readonly List<int> Keys = new List<int>();
 
-        public ImGuiRenderer(GraphicsDevice device, GameWindow window, ImmediateEffect effect)
+        public ImGuiRenderer(GraphicsDevice device, Game game, ImmediateEffect effect)
         {
             this.GraphicsDevice = device;
-            this.Window = window;
+            this.Game = game;
             this.Effect = effect;
 
             var context = ImGui.CreateContext();
@@ -127,7 +127,10 @@ namespace MiniEngine.Gui
         {
             ImGui.GetIO().DeltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-            this.UpdateInput();
+            if (this.Game.IsActive)
+            {
+                this.UpdateInput();
+            }
 
             ImGui.NewFrame();
         }
@@ -170,7 +173,7 @@ namespace MiniEngine.Gui
             this.Keys.Add(io.KeyMap[(int)ImGuiKey.Y] = (int)Microsoft.Xna.Framework.Input.Keys.Y);
             this.Keys.Add(io.KeyMap[(int)ImGuiKey.Z] = (int)Microsoft.Xna.Framework.Input.Keys.Z);
 
-            this.Window.TextInput += (s, a) =>
+            this.Game.Window.TextInput += (s, a) =>
             {
                 if (a.Character == '\t')
                 {

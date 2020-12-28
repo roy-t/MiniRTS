@@ -46,7 +46,7 @@ OutputData PS(PixelData input)
 {
     OutputData output = (OutputData)0;
 
-    output.Depth = input.WorldPosition.z / input.WorldPosition.w;
+    output.Depth = input.WorldPosition.z / input.WorldPosition.w;    
     return output;
 }
 

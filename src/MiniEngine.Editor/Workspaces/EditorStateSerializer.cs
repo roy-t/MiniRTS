@@ -22,6 +22,7 @@ namespace MiniEngine.Editor.Workspaces
             this.Logger = logger;
 
             this.Options = new JsonSerializerOptions();
+            this.Options.Converters.Add(new EntityConverter());
             this.Options.Converters.Add(new Vector3Converter());
         }
 

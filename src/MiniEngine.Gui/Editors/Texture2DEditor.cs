@@ -10,12 +10,14 @@ namespace MiniEngine.Gui.Editors
     public sealed class Texture2DEditor : AEditor<Texture2D>
     {
         private readonly ImGuiRenderer GuiRenderer;
+        private readonly PropertyInspector PropertyInspector;
         private Vector3 colorPicker;
         private IntPtr popup;
 
-        public Texture2DEditor(ImGuiRenderer guiRenderer)
+        public Texture2DEditor(ImGuiRenderer guiRenderer, PropertyInspector propertyInspector)
         {
             this.GuiRenderer = guiRenderer;
+            this.PropertyInspector = propertyInspector;
         }
 
         public override bool Draw(string name, Func<Texture2D> get, Action<Texture2D> set)
@@ -47,6 +49,11 @@ namespace MiniEngine.Gui.Editors
             if (ImGui.ImageButton((IntPtr)texture.Tag, size, Vector2.Zero, Vector2.One, 1))
             {
                 this.popup = (IntPtr)texture.Tag;
+            }
+
+            if (ImGui.Button($"inspect {name}"))
+            {
+                this.PropertyInspector.Textures.Add(texture);
             }
 
             if (this.popup == (IntPtr)texture.Tag)
