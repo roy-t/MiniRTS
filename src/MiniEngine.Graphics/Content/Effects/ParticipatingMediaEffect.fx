@@ -106,14 +106,16 @@ OutputData PS(PixelData input)
     float3 startPosition = dWorld < dBack ? world : volumeBack;
     float3 surfaceToLight = normalize(CameraPosition - startPosition);
     float totalDistance = distance(startPosition, volumeFront);
-    float step = totalDistance / steps;        
+    float step = totalDistance / steps;
+
+    // Randomize starting offset to reduce artefacts
+    float fudge = random(input.Texture) * step;
                 
     [unroll] // comment for faster compile times when trying stuff out
     for (uint i = 0; i < steps; i++)
     {          
         // Take samples along a ray from the object/back of the volume (which ever is closer)
-        // to the front of the volume. 
-        float fudge = random(input.Texture) * step;
+        // to the front of the volume.         
         float3 worldPosition = startPosition + (surfaceToLight * (fudge + (step * i)));
         float depth = distance(worldPosition, CameraPosition);
         float lightFactor = ComputeLightFactor(worldPosition, depth);

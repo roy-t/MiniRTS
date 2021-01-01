@@ -68,6 +68,7 @@ namespace MiniEngine.Graphics
             => format switch
             {
                 SurfaceFormat.Color => 4,
+                SurfaceFormat.HalfSingle => 2,
                 SurfaceFormat.Single => 4,
                 SurfaceFormat.Vector2 => 8,
                 SurfaceFormat.Vector4 => 32,
