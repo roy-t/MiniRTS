@@ -152,6 +152,18 @@
 /processorParam:TextureFormat=Color
 /build:Textures/Bricks_Normal.jpg
 
+#begin Textures/DitherPattern.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Textures/DitherPattern.png
+
 #begin Textures/Green.png
 /importer:TextureImporter
 /processor:TextureProcessor

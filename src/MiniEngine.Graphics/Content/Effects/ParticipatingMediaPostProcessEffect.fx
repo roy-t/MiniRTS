@@ -30,6 +30,17 @@ sampler mediaSampler = sampler_state
     AddressV = Clamp;
 };
 
+Texture2D DitherPattern;
+sampler ditherPatternSampler = sampler_state
+{
+    Texture = (DitherPattern);
+    MinFilter = POINT;
+    MagFilter = POINT;
+    MipFilter = POINT;
+    AddressU = Wrap;
+    AddressV = Wrap;
+};
+
 PixelData VS(in VertexData input)
 {
     PixelData output = (PixelData)0;
@@ -81,14 +92,31 @@ float Bilinear(float2 uv)
     return lerp(top, bottom, wVertical);        
 }
 
+float Dither(float2 uv)
+{
+    float2 screenDimensions = float2(1920, 1080);
+    float2 ditherDimensions = float2(8, 8);
+    float2 ditherCoordinate = uv * screenDimensions / ditherDimensions;
+    float ditherValue = tex2D(ditherPatternSampler, ditherCoordinate).r;
+
+    return ditherValue;
+}
 
 OutputData PS(PixelData input)
 {
     OutputData output = (OutputData)0;
 
-    float visibility = Bilinear(input.Texture);
-  
-    output.Color = float4(MediaColor * visibility, visibility);
+    float visibility = Bilinear(input.Texture);  
+    float dither = Dither(input.Texture);
+    float visibilityDithered = visibility * dither;
+
+    // TODO: figure out when to dither!
+    float vReal = lerp(visibilityDithered, visibility, saturate(visibility * 4));
+    if (input.Texture.x < 0.5f)
+    {
+        vReal = visibility;
+    }
+    output.Color = float4(MediaColor * vReal, vReal);
     return output;
 }
 

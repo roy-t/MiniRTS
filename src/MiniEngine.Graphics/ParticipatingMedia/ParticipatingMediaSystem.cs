@@ -24,6 +24,7 @@ namespace MiniEngine.Graphics.ParticipatingMedia
         private readonly FrameService FrameService;
         private readonly SamplerState ShadowMapSampler;
         private readonly Texture2D Noise;
+        private readonly Texture2D DitherPattern;
 
         public ParticipatingMediaSystem(GraphicsDevice device, ContentManager content, ShadowMapEffect shadowMapEffect, VolumeEffect volumeEffect, ParticipatingMediaEffect mediaEffect, ParticipatingMediaPostProcessEffect postProcessEffect, PostProcessTriangle postProcessTriangle, FrameService frameService)
         {
@@ -36,6 +37,7 @@ namespace MiniEngine.Graphics.ParticipatingMedia
             this.FrameService = frameService;
 
             this.Noise = content.Load<Texture2D>("Textures/BlueNoise");
+            this.DitherPattern = content.Load<Texture2D>("Textures/DitherPattern");
             this.ShadowMapSampler = new SamplerState
             {
                 AddressU = TextureAddressMode.Clamp,
@@ -74,6 +76,7 @@ namespace MiniEngine.Graphics.ParticipatingMedia
 
             this.PostProcessEffect.Media = media.ParticipatingMediaBuffer;
             this.PostProcessEffect.Color = media.Color;
+            this.PostProcessEffect.DitherPattern = this.DitherPattern;
             this.PostProcessEffect.Apply();
 
             this.PostProcessTriangle.Render(this.Device);

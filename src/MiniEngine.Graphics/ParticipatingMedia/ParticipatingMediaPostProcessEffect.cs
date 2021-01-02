@@ -8,6 +8,7 @@ namespace MiniEngine.Graphics.Shadows
     {
         private readonly EffectParameter MediaParameter;
         private readonly EffectParameter MediaColorParameter;
+        private readonly EffectParameter DitherPatternParameter;
 
         public ParticipatingMediaPostProcessEffect(EffectFactory factory) : base(factory.Load<ParticipatingMediaPostProcessEffect>())
         {
@@ -15,10 +16,13 @@ namespace MiniEngine.Graphics.Shadows
 
             this.MediaParameter = this.Effect.Parameters["Media"];
             this.MediaColorParameter = this.Effect.Parameters["MediaColor"];
+            this.DitherPatternParameter = this.Effect.Parameters["DitherPattern"];
         }
 
         public Texture2D Media { set => this.MediaParameter.SetValue(value); }
 
         public Color Color { set => this.MediaColorParameter.SetValue(value.ToVector3()); }
+
+        public Texture2D DitherPattern { set => this.DitherPatternParameter.SetValue(value); }
     }
 }
