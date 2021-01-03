@@ -1,5 +1,7 @@
 ﻿#include "Includes/Defines.hlsl"
 
+static const float2 DitherDimensions = float2(8, 8);
+
 struct VertexData
 {
     float3 Position : POSITION0;
@@ -18,6 +20,8 @@ struct OutputData
 };
 
 float3 MediaColor;
+
+float2 ScreenDimensions;
 
 Texture2D Media;
 sampler mediaSampler = sampler_state
@@ -93,30 +97,25 @@ float Bilinear(float2 uv)
 }
 
 float Dither(float2 uv)
-{
-    float2 screenDimensions = float2(1920, 1080);
-    float2 ditherDimensions = float2(8, 8);
-    float2 ditherCoordinate = uv * screenDimensions / ditherDimensions;
+{    
+    float2 ditherCoordinate = uv * ScreenDimensions / DitherDimensions;
     float ditherValue = tex2D(ditherPatternSampler, ditherCoordinate).r;
 
-    return ditherValue;
+    return (ditherValue * 0.125f) + 0.9375; 
 }
 
 OutputData PS(PixelData input)
 {
     OutputData output = (OutputData)0;
-
+    // Compute the visibility using a bilinear upscale
     float visibility = Bilinear(input.Texture);  
-    float dither = Dither(input.Texture);
-    float visibilityDithered = visibility * dither;
 
-    // TODO: figure out when to dither!
-    float vReal = lerp(visibilityDithered, visibility, saturate(visibility * 4));
-    if (input.Texture.x < 0.5f)
-    {
-        vReal = visibility;
-    }
-    output.Color = float4(MediaColor * vReal, vReal);
+    // Subtely dither the upscaled values because we often lack enough colours 
+    // to represent a smooth gradient when inside thick participating media.
+    float dither = Dither(input.Texture);
+    float visibilityDithered = visibility * dither;    
+
+    output.Color = float4(MediaColor * visibilityDithered, visibilityDithered);
     return output;
 }
 

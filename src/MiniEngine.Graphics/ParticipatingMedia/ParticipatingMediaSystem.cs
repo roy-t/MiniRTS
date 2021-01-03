@@ -77,6 +77,7 @@ namespace MiniEngine.Graphics.ParticipatingMedia
             this.PostProcessEffect.Media = media.ParticipatingMediaBuffer;
             this.PostProcessEffect.Color = media.Color;
             this.PostProcessEffect.DitherPattern = this.DitherPattern;
+            this.PostProcessEffect.ScreenDimensions = new Vector2(this.FrameService.LBuffer.Light.Width, this.FrameService.LBuffer.Light.Height);
             this.PostProcessEffect.Apply();
 
             this.PostProcessTriangle.Render(this.Device);
