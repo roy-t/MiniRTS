@@ -20,6 +20,8 @@ struct OutputData
 };
 
 float3 MediaColor;
+float3 LightColor;
+float LightInfluence;
 
 float2 ScreenDimensions;
 
@@ -115,7 +117,9 @@ OutputData PS(PixelData input)
     float dither = Dither(input.Texture);
     float visibilityDithered = visibility * dither;    
 
-    output.Color = float4(MediaColor * visibilityDithered, visibilityDithered);
+    float3 color = lerp(MediaColor, LightColor, visibility * LightInfluence);
+
+    output.Color = float4(color * visibilityDithered, visibilityDithered);
     return output;
 }
 

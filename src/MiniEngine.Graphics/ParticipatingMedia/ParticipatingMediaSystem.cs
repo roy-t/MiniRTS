@@ -5,6 +5,7 @@ using MiniEngine.Configuration;
 using MiniEngine.ContentPipeline.Shared;
 using MiniEngine.Graphics.Camera;
 using MiniEngine.Graphics.Geometry;
+using MiniEngine.Graphics.Lighting;
 using MiniEngine.Graphics.PostProcess;
 using MiniEngine.Graphics.Shadows;
 using MiniEngine.Systems;
@@ -75,21 +76,23 @@ namespace MiniEngine.Graphics.ParticipatingMedia
         }
 
         [ProcessAll]
-        public void Process(ParticipatingMediaComponent media, CascadedShadowMapComponent shadowMap, TransformComponent transform)
+        public void Process(ParticipatingMediaComponent media, SunlightComponent sunlight, CascadedShadowMapComponent shadowMap, TransformComponent transform)
         {
             var camera = this.FrameService.CamereComponent.Camera;
             this.RenderDensity(media, transform, camera);
             this.RenderMedia(media, shadowMap, camera);
-            this.RenderMediaToLightTarget(media);
+            this.RenderMediaToLightTarget(media, sunlight);
         }
 
-        private void RenderMediaToLightTarget(ParticipatingMediaComponent media)
+        private void RenderMediaToLightTarget(ParticipatingMediaComponent media, SunlightComponent sunlight)
         {
             this.Device.SetRenderTarget(this.FrameService.LBuffer.Light);
             this.Device.BlendState = BlendState.AlphaBlend;
 
             this.PostProcessEffect.Media = media.ParticipatingMediaBuffer;
             this.PostProcessEffect.Color = media.Color;
+            this.PostProcessEffect.LightColor = sunlight.Color;
+            this.PostProcessEffect.LightInfluence = media.LightInfluence;
             this.PostProcessEffect.DitherPattern = this.DitherPattern;
             this.PostProcessEffect.ScreenDimensions = new Vector2(this.FrameService.LBuffer.Light.Width, this.FrameService.LBuffer.Light.Height);
             this.PostProcessEffect.Apply();

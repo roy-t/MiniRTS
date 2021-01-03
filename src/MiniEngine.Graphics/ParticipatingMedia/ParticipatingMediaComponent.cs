@@ -20,12 +20,14 @@ namespace MiniEngine.Graphics.ParticipatingMedia
             this.VolumeBackBuffer = volumeBackBuffer;
             this.DensityBuffer = densityBuffer;
             this.ParticipatingMediaBuffer = participatingMediaBuffer;
-
+            this.LightInfluence = 0.4f;
         }
 
         public float Strength { get; set; }
 
         public Color Color { get; set; }
+
+        public float LightInfluence { get; set; }
 
         public float Quality { get => this.quality; set => this.ChangeQuality(value); }
 

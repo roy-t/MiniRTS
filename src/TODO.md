@@ -16,4 +16,3 @@ Make a scene with many asteroids (like 10 variations instanced in different orie
 - Maybe try a true fog formula instead of a lerp
 - Add depth/normal input to weigh bilinear upscale in ParticipatingMediaPostProcessEffect.fx
 - Experiment with sample count
-- Clear banding when fog is really high, even though fog is computed in a 32bit format. What's going on?
