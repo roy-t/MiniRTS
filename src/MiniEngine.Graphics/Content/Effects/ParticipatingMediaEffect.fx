@@ -67,9 +67,9 @@ OutputData PS(PixelData input)
 {
     OutputData output = (OutputData)0;
 
-    // The media is only visible if it starts at less then max distance
+    // The media is only visible if it ends somewhere
     float2 fb = tex2D(volumeSampler, input.Texture).xy;
-    if (fb.x >= 1.0f)
+    if (fb.y == 0.0f)
     {
         output.Media = 0.0f;
         return output;

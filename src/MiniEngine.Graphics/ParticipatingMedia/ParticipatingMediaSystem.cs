@@ -25,6 +25,8 @@ namespace MiniEngine.Graphics.ParticipatingMedia
         private readonly SamplerState ShadowMapSampler;
         private readonly Texture2D Noise;
         private readonly Texture2D DitherPattern;
+        private readonly RasterizerState FrontRasterizerState;
+        private readonly RasterizerState BackRasterizerState;
 
         public ParticipatingMediaSystem(GraphicsDevice device, ContentManager content, ShadowMapEffect shadowMapEffect, VolumeEffect volumeEffect, ParticipatingMediaEffect mediaEffect, ParticipatingMediaPostProcessEffect postProcessEffect, PostProcessTriangle postProcessTriangle, FrameService frameService)
         {
@@ -46,6 +48,18 @@ namespace MiniEngine.Graphics.ParticipatingMedia
                 Filter = TextureFilter.Anisotropic,
                 ComparisonFunction = CompareFunction.LessEqual,
                 FilterMode = TextureFilterMode.Comparison
+            };
+
+            this.FrontRasterizerState = new RasterizerState
+            {
+                CullMode = CullMode.CullCounterClockwiseFace,
+                DepthClipEnable = false
+            };
+
+            this.BackRasterizerState = new RasterizerState
+            {
+                CullMode = CullMode.CullClockwiseFace,
+                DepthClipEnable = false
             };
         }
 
@@ -111,10 +125,11 @@ namespace MiniEngine.Graphics.ParticipatingMedia
 
         private void RenderDensity(ParticipatingMediaComponent media, TransformComponent transform, Camera.ICamera camera)
         {
-            // TODO: we might be able to only have a density buffer and draw to that directly wtih additive blending?
+            // TODO: if we're inside a very large media the front buffer and back buffer will contain distance == 1
+            // which leads to a hole in the fog
             this.ShadowMapEffect.WorldViewProjection = transform.Matrix * camera.ViewProjection;
-            this.RenderDistance(RasterizerState.CullClockwise, media.VolumeBackBuffer, media.Geometry);
-            this.RenderDistance(RasterizerState.CullCounterClockwise, media.VolumeFrontBuffer, media.Geometry);
+            this.RenderDistance(this.BackRasterizerState, media.VolumeBackBuffer, media.Geometry);
+            this.RenderDistance(this.FrontRasterizerState, media.VolumeFrontBuffer, media.Geometry);
 
             this.Device.SetRenderTarget(media.DensityBuffer);
             this.Device.Clear(ClearOptions.Target, Color.White, 1.0f, 0);
@@ -129,7 +144,7 @@ namespace MiniEngine.Graphics.ParticipatingMedia
         private void RenderDistance(RasterizerState rasterizerState, RenderTarget2D renderTarget, GeometryData geometry)
         {
             this.Device.SetRenderTarget(renderTarget);
-            this.Device.Clear(ClearOptions.Target, Color.White, 1.0f, 0);
+            this.Device.Clear(ClearOptions.Target, Color.Black, 0.0f, 0);
 
             this.Device.SetVertexBuffer(geometry.VertexBuffer);
             this.Device.Indices = geometry.IndexBuffer;
