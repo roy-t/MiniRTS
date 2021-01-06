@@ -103,7 +103,7 @@ float3 ComputeLight(
     float strength)
 {
     // The view vector points from the object to the camera. The closer the view vector is to the
-   // original reflection direction the stronger the specular reflection.
+    // original reflection direction the stronger the specular reflection.
     float3 V = normalize(cameraPosition - worldPosition);
 
     // F0 is the basis reflectivity of the material at a 0 degree angle. Dia-electric materials,

@@ -55,7 +55,7 @@ namespace MiniEngine.Configuration
             RegisterAs registerAsDelgate = (o, t) => this.Container.RegisterInstance(t, o);
             this.Container.RegisterInstance(registerAsDelgate);
 
-            this.RegisterTypesFromReferencedAssemblies();
+            this.RegisterTypesFromAssembliesInWorkingDirectory();
         }
 
         public T Get<T>()
@@ -65,9 +65,9 @@ namespace MiniEngine.Configuration
         public void Dispose()
             => this.Container?.Dispose();
 
-        private void RegisterTypesFromReferencedAssemblies()
+        private void RegisterTypesFromAssembliesInWorkingDirectory()
         {
-            var assemblies = this.LoadAssemblies();
+            var assemblies = this.LoadAssembliesInCurrentDirectory();
 
             var componentTypes = new List<Type>();
             Type? containerType = null;
@@ -122,7 +122,7 @@ namespace MiniEngine.Configuration
             this.Logger.Information("Registered {@count} services", this.Container.AvailableServices.Count());
         }
 
-        private IEnumerable<Assembly> LoadAssemblies()
+        private IEnumerable<Assembly> LoadAssembliesInCurrentDirectory()
         {
             var cwd = Directory.GetCurrentDirectory();
             this.Logger.Information("Loading assemblies from {@directory}", cwd);
