@@ -49,6 +49,11 @@ namespace MiniEngine.Editor.Scenes
         {
             this.AddAsteroids();
             this.AddSunlight();
+
+            var geometry = content.Load<GeometryModel>("AsteroidField/Asteroid001");
+            var entity = this.Entities.Create();
+            this.Components.Add(new GeometryComponent(entity, geometry));
+            this.Components.Add(new TransformComponent(entity, Matrix.Identity));
         }
 
         private void AddAsteroids()

@@ -14,6 +14,16 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#begin AsteroidField/Asteroid001.obj
+/importer:OpenAssetImporter
+/processor:GeometryModelProcessor
+/processorParam:FallbackAlbedo=materials/albedo.tga
+/processorParam:FallbackMetalicness=materials/metalicness.tga
+/processorParam:FallbackNormal=materials/normal.tga
+/processorParam:FallbackRoughness=materials/roughness.tga
+/processorParam:FallbackAmbientOcclusion=materials/ao.tga
+/build:AsteroidField/Asteroid001.obj
+
 #begin Skyboxes/Circus/Circus_Backstage_3k.hdr
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -81,5 +91,6 @@
 /processorParam:FallbackMetalicness=materials/metalicness.tga
 /processorParam:FallbackNormal=materials/normal.tga
 /processorParam:FallbackRoughness=materials/roughness.tga
+/processorParam:FallbackAmbientOcclusion=materials/ao.tga
 /build:sponza/sponza.obj
 
