@@ -6,7 +6,9 @@
 
 - Sunlight and Spotlight both use a shadow map, but the sampling is subtely different because one uses an array and the other not, can we unify this?
 
-# Idea
+- Rework UI, make editors for every primitive, store in a file the path to the primitive (so component.property.value....) and the range it should have. If an unknown property comes up try to find the closest match
+
+# Ideas
 
 Make a scene with many asteroids (like 10 variations instanced in different orientations). Put some sort of 'fog' in between to simulate space dust. Take the thickness from this fog from a RT where I draw over black swatches when a rocket goes over it. Add sun rays?
 

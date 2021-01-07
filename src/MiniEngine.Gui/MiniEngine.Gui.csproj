@@ -16,4 +16,8 @@
     <ProjectReference Include="..\MiniEngine.Graphics\MiniEngine.Graphics.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Editors\Primitives\" />
+  </ItemGroup>
+
 </Project>
