@@ -59,6 +59,9 @@ namespace MiniEngine.Gui
             }
         }
 
+        public void Clear()
+            => this.RootNode.Outgoing.Clear();
+
         public string FindTextWithLongestCommonPrefix(string text)
         {
             var currentNode = this.RootNode;
