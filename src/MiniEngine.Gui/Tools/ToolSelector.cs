@@ -57,6 +57,7 @@ namespace MiniEngine.Gui.Tools
             }
             ImGui.PopStyleColor();
 
+
             if (this.IsActive(property))
             {
                 this.ChangeTool<T>(property);

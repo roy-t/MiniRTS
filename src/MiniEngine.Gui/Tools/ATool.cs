@@ -10,6 +10,6 @@ namespace MiniEngine.Gui.Tools
 
         public abstract T Select(T value, Property property, ToolState tool);
 
-        public abstract ToolState Configure(ToolState tool);
+        public virtual ToolState Configure(ToolState tool) => tool;
     }
 }
