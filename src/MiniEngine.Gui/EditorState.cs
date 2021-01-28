@@ -1,6 +1,6 @@
 ﻿using ImGuiNET;
 using MiniEngine.Configuration;
-using MiniEngine.Gui.Next;
+using MiniEngine.Gui.Tools;
 using Serilog;
 
 namespace MiniEngine.Gui
@@ -10,9 +10,9 @@ namespace MiniEngine.Gui
     {
         private readonly ILogger Logger;
         private readonly ToolSelector ToolSelector;
-        private readonly ToolState ToolState;
+        private readonly ToolLinker ToolState;
 
-        public EditorState(ILogger logger, ToolSelector toolSelector, ToolState toolState)
+        public EditorState(ILogger logger, ToolSelector toolSelector, ToolLinker toolState)
         {
             this.Logger = logger;
             this.ToolSelector = toolSelector;

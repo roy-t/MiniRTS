@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace MiniEngine.Gui.Next
+namespace MiniEngine.Gui.Tools
 {
     public class Property
     {

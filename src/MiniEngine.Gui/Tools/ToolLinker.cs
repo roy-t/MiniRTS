@@ -3,30 +3,32 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using MiniEngine.Configuration;
 using Serilog;
 
-namespace MiniEngine.Gui.Next
+namespace MiniEngine.Gui.Tools
 {
     [Service]
-    public sealed class ToolState : IDisposable
+    public sealed class ToolLinker : IDisposable
     {
-        private record ToolPair(string Key, Tool Value);
+        private record ToolPair(string Key, ToolState Value);
 
         private readonly ILogger Logger;
         private readonly Trie KnownTools;
-        private readonly Dictionary<string, Tool> Tools;
+        private readonly Dictionary<string, ToolState> Tools;
         private readonly JsonSerializerOptions Options;
         private static readonly string Filename = "Tools.json";
 
-        public ToolState(ILogger logger)
+        public ToolLinker(ILogger logger)
         {
             this.Logger = logger;
             this.KnownTools = new Trie();
-            this.Tools = new Dictionary<string, Tool>();
+            this.Tools = new Dictionary<string, ToolState>();
             this.Options = new JsonSerializerOptions
             {
-                IncludeFields = true
+                IncludeFields = true,
+                NumberHandling = JsonNumberHandling.AllowNamedFloatingPointLiterals
             };
 
             this.Deserialize();
@@ -46,28 +48,28 @@ namespace MiniEngine.Gui.Next
             }
         }
 
-        public void Set(Property property, Tool tool)
-            => this.Set(property.SortKey, tool);
+        public void Link(Property property, ToolState tool)
+            => this.Link(property.SortKey, tool);
 
-        public Tool Get(Property property)
+        public ToolState Get(Property property)
         {
             var bestMatch = this.KnownTools.FindTextWithLongestCommonPrefix(property.SortKey);
             if (bestMatch != property.SortKey)
             {
                 if (bestMatch != string.Empty)
                 {
-                    this.Set(property, this.Tools[bestMatch]);
+                    this.Link(property, this.Tools[bestMatch]);
                 }
                 else
                 {
-                    this.Set(property, new Tool(string.Empty, 0.0f, 1.0f, 0.0f));
+                    this.Link(property, new ToolState(string.Empty, 0.0f, 1.0f, 0.0f));
                 }
             }
 
             return this.Tools[property.SortKey];
         }
 
-        private void Set(string sortKey, Tool tool)
+        private void Link(string sortKey, ToolState tool)
         {
             this.KnownTools.Add(sortKey);
             this.Tools[sortKey] = tool;
@@ -97,7 +99,7 @@ namespace MiniEngine.Gui.Next
 
                 foreach (var tuple in values)
                 {
-                    this.Set(tuple.Key, tuple.Value);
+                    this.Link(tuple.Key, tuple.Value);
                 }
             }
             catch (Exception ex)
