@@ -13,13 +13,15 @@ namespace MiniEngine.Gui.Tools
 
         public abstract string Name { get; }
 
-        public abstract T HeaderValue(T value, ToolState tool);
+        public abstract bool HeaderValue(ref T value, ToolState tool);
 
-        public virtual T Details(T value, ToolState tool) => value;
+        public virtual bool Details(ref T value, ToolState tool) => false;
 
         public virtual ToolState Configure(ToolState tool) => tool;
 
-        protected E DetailsRow<E>(string name, Func<E> selector)
+        public delegate bool RowDelegate<TValue>(ref TValue value);
+
+        protected bool DetailsRow<E>(string name, ref E value, RowDelegate<E> selector)
         {
             ImGui.PushID(name.GetHashCode());
 
@@ -28,12 +30,12 @@ namespace MiniEngine.Gui.Tools
             ImGui.NextColumn();
             ImGui.SetNextItemWidth(-1);
 
-            var value = selector();
+            var changed = selector(ref value);
 
             ImGui.NextColumn();
             ImGui.PopID();
 
-            return value;
+            return changed;
         }
     }
 }

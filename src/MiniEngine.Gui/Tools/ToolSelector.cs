@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using ImGuiNET;
 using MiniEngine.Configuration;
 
@@ -14,10 +15,13 @@ namespace MiniEngine.Gui.Tools
         private readonly ToolLinker LinkedTools;
         private readonly Dictionary<Type, TypedTools> AvailableTools;
 
+        private readonly MethodInfo SelectMethod;
+
         public ToolSelector(ToolLinker linkedTools, IEnumerable<ITool> tools)
         {
             this.LinkedTools = linkedTools;
             this.AvailableTools = new Dictionary<Type, TypedTools>();
+            this.SelectMethod = typeof(ToolSelector).GetMethods().First(m => m.Name.Contains(nameof(Select)) && m.GetParameters().Length == 2);
 
             foreach (var tool in tools)
             {
@@ -39,18 +43,28 @@ namespace MiniEngine.Gui.Tools
         private IntPtr activeProperty = IntPtr.Zero;
         private ToolState changingState;
 
-        public T Select<T>(T value, Property property)
+        public bool Select(Type type, ref object? value, Property property)
+        {
+            var parameters = new[] { value, property };
+            var method = this.SelectMethod.MakeGenericMethod(type);
+            var changed = method.Invoke(this, parameters) is true;
+
+            value = parameters[0];
+            return changed;
+        }
+
+        public bool Select<T>(ref T value, Property property)
         {
             BeginTable(property);
 
             var toolState = this.LinkedTools.Get(property);
             var tool = this.GetBestTool<T>(toolState);
 
-            var showDetails = Header(ref value, property, tool, toolState);
-
+            var showDetails = false;
+            var changed = Header(ref value, out showDetails, property, tool, toolState);
             if (showDetails)
             {
-                value = tool.Details(value, toolState);
+                changed = tool.Details(ref value, toolState);
                 this.ToolRow(property, toolState, tool);
                 ImGui.TreePop();
             }
@@ -61,7 +75,7 @@ namespace MiniEngine.Gui.Tools
             }
 
             EndTable();
-            return value;
+            return changed;
         }
 
         private void ToolRow<T>(Property property, ToolState state, ATool<T> tool)
@@ -82,18 +96,18 @@ namespace MiniEngine.Gui.Tools
             ImGui.NextColumn();
         }
 
-        private static bool Header<T>(ref T value, Property property, ATool<T> tool, ToolState toolState)
+        private static bool Header<T>(ref T value, out bool open, Property property, ATool<T> tool, ToolState toolState)
         {
             // Header
             ImGui.AlignTextToFramePadding();
-            var open = ImGui.TreeNode(property.Name);
+            open = ImGui.TreeNode(property.Name);
 
             ImGui.NextColumn();
             ImGui.AlignTextToFramePadding();
-            value = tool.HeaderValue(value, toolState);
+            var changed = tool.HeaderValue(ref value, toolState);
 
             ImGui.NextColumn();
-            return open;
+            return changed;
         }
 
         private static void EndTable()

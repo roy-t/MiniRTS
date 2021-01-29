@@ -9,10 +9,7 @@ namespace MiniEngine.Gui.Tools.Floats
     {
         public override string Name => "Angle";
 
-        public override float HeaderValue(float value, ToolState tool)
-        {
-            ImGui.SliderFloat(NoLabel, ref value, -MathHelper.PiOver2, MathHelper.PiOver2, "%f rad");
-            return value;
-        }
+        public override bool HeaderValue(ref float value, ToolState tool)
+            => ImGui.SliderFloat(NoLabel, ref value, -MathHelper.PiOver2, MathHelper.PiOver2, "%f rad");
     }
 }

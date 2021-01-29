@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using MiniEngine.Configuration;
 using MiniEngine.Gui.Templates;
+using MiniEngine.Gui.Tools;
 using MiniEngine.Systems;
 
 namespace MiniEngine.Gui
@@ -10,12 +10,12 @@ namespace MiniEngine.Gui
     [Service]
     public sealed class ComponentEditor
     {
-        private readonly List<IPropertyEditor> PropertyEditors;
         private readonly Dictionary<Type, ComponentTemplate> Templates;
+        private readonly ToolSelector Tools;
 
-        public ComponentEditor(IEnumerable<IPropertyEditor> editors)
+        public ComponentEditor(ToolSelector tools)
         {
-            this.PropertyEditors = editors.ToList();
+            this.Tools = tools;
             this.Templates = new Dictionary<Type, ComponentTemplate>();
         }
 
@@ -24,10 +24,10 @@ namespace MiniEngine.Gui
             var type = component.GetType();
             if (!this.Templates.ContainsKey(type))
             {
-                this.Templates.Add(type, new ComponentTemplate(type, this.PropertyEditors));
+                this.Templates.Add(type, new ComponentTemplate(type));
             }
 
-            this.Templates[type].Draw(component);
+            this.Templates[type].Draw(component, this.Tools);
         }
     }
 }

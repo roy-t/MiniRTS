@@ -33,9 +33,9 @@ namespace MiniEngine.Gui
 
             if (ImGui.Begin("Window3"))
             {
-                foo = this.ToolSelector.Select(foo, p1);
-                normal = this.ToolSelector.Select(normal, p3);
-                bar = this.ToolSelector.Select(bar, p2);
+                this.ToolSelector.Select(ref this.foo, p1);
+                this.ToolSelector.Select(ref this.normal, p3);
+                this.ToolSelector.Select(ref this.bar, p2);
 
                 if (ImGui.Button("Demo"))
                 {

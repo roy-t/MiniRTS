@@ -2,17 +2,19 @@
 using System.Collections.Generic;
 using System.Reflection;
 using ImGuiNET;
-using MiniEngine.Gui.Editors;
+using MiniEngine.Gui.Tools;
 using MiniEngine.Systems;
 
 namespace MiniEngine.Gui.Templates
 {
     public sealed class ComponentTemplate
     {
+        private record PropertyTemplate(string Name, Type Type, MethodInfo? Getter, MethodInfo? Setter);
+
         private readonly List<PropertyTemplate> Properties;
         private readonly string Name;
 
-        public ComponentTemplate(Type type, List<IPropertyEditor> editors)
+        public ComponentTemplate(Type type)
         {
             this.Name = type.Name;
             this.Properties = new List<PropertyTemplate>();
@@ -21,43 +23,26 @@ namespace MiniEngine.Gui.Templates
             for (var i = 0; i < properties.Length; i++)
             {
                 var property = properties[i];
-                object getter(object c) => property.GetMethod!.Invoke(c, null)!;
-                void setter(object c, object? m) => property.GetSetMethod()!.Invoke(c, new object?[] { m });
-
-                var editor = GetEditor(editors, property);
-                if (editor != null)
-                {
-                    this.Properties.Add(new PropertyTemplate(property.Name, getter, setter, editor));
-                }
-                else
-                {
-                    this.Properties.Add(new PropertyTemplate(property.Name, getter, setter, new UnknownPropertyTypeEditor()));
-                }
-            }
-        }
-
-        private static IPropertyEditor? GetEditor(List<IPropertyEditor> editors, PropertyInfo property)
-        {
-            for (var j = 0; j < editors.Count; j++)
-            {
-                var editor = editors[j];
-                if (editor.TargetType.IsAssignableFrom(property.PropertyType))
-                {
-                    return editor;
-                }
+                this.Properties.Add(new PropertyTemplate(property.Name, property.PropertyType, property.GetGetMethod(), property.GetSetMethod()));
             }
 
-            return null;
+
         }
 
-        public void Draw(AComponent component)
+        public void Draw(AComponent component, ToolSelector tools)
         {
             if (ImGui.CollapsingHeader(this.Name))
             {
                 var changed = false;
                 foreach (var property in this.Properties)
                 {
-                    changed |= property.Editor.Draw(property.Name, property.Getter, property.Setter, component);
+                    var value = property.Getter?.Invoke(component, null);
+                    changed |= tools.Select(property.Type, ref value, new Property(component.GetType().Name, property.Name));
+
+                    if (changed)
+                    {
+                        property.Setter?.Invoke(component, new[] { value });
+                    }
                 }
 
                 if (changed)
