@@ -10,7 +10,7 @@ namespace MiniEngine.Gui.Tools
 
         public override T Details(T value, ToolState tool) => value;
 
-        public override T HeaderValue(T value)
+        public override T HeaderValue(T value, ToolState state)
         {
             ImGui.Text(value?.ToString() ?? string.Empty);
             return value;

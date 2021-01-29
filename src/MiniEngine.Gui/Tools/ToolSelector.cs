@@ -43,15 +43,15 @@ namespace MiniEngine.Gui.Tools
         {
             BeginTable(property);
 
-            var state = this.LinkedTools.Get(property);
-            var tool = this.GetBestTool<T>(state);
+            var toolState = this.LinkedTools.Get(property);
+            var tool = this.GetBestTool<T>(toolState);
 
-            var showDetails = Header(ref value, property, tool);
+            var showDetails = Header(ref value, property, tool, toolState);
 
             if (showDetails)
             {
-                value = tool.Details(value, state);
-                this.ToolRow(property, state, tool);
+                value = tool.Details(value, toolState);
+                this.ToolRow(property, toolState, tool);
                 ImGui.TreePop();
             }
 
@@ -82,7 +82,7 @@ namespace MiniEngine.Gui.Tools
             ImGui.NextColumn();
         }
 
-        private static bool Header<T>(ref T value, Property property, ATool<T> tool)
+        private static bool Header<T>(ref T value, Property property, ATool<T> tool, ToolState toolState)
         {
             // Header
             ImGui.AlignTextToFramePadding();
@@ -90,7 +90,7 @@ namespace MiniEngine.Gui.Tools
 
             ImGui.NextColumn();
             ImGui.AlignTextToFramePadding();
-            value = tool.HeaderValue(value);
+            value = tool.HeaderValue(value, toolState);
 
             ImGui.NextColumn();
             return open;

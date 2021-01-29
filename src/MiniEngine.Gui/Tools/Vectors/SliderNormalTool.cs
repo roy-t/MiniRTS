@@ -10,9 +10,9 @@ namespace MiniEngine.Gui.Tools.Vectors
     {
         public override string Name => "Normal";
 
-        public override Vector3 HeaderValue(Vector3 value)
+        public override Vector3 HeaderValue(Vector3 value, ToolState tool)
         {
-            ImGui.Text(value.ToString());
+            ImGui.Text($"{{X: {value.X:F2} Y: {value.Y:F2} Z: {value.Z:F2}}}");
             return value;
         }
 
@@ -20,59 +20,21 @@ namespace MiniEngine.Gui.Tools.Vectors
         {
             var pitch = (float)Math.Asin(-value.Y);
             var yaw = (float)Math.Atan2(value.X, value.Z);
-            yaw = ColumnValue("Yaw", yaw);
-            pitch = ColumnValue("Pitch", pitch);
+            yaw = this.DetailsRow("Yaw", yaw);
+            pitch = this.DetailsRow("Pitch", pitch);
 
             var rotation = Matrix.CreateFromYawPitchRoll(yaw, pitch, 0.0f);
             return -Vector3.TransformNormal(Vector3.Forward, rotation);
         }
 
-        //public override Vector3 Select(Vector3 value, Property property, ToolState tool)
-        //{
-        //    ImGui.Columns(2);
-        //    ImGui.Separator();
-
-        //    ImGui.AlignTextToFramePadding();
-        //    bool open = ImGui.TreeNode(property.Name);
-        //    ImGui.NextColumn();
-        //    ImGui.AlignTextToFramePadding();
-        //    ImGui.Text(value.ToString());
-
-        //    ImGui.NextColumn();
-        //    if (open)
-        //    {
-
-        //        var pitch = (float)Math.Asin(-value.Y);
-        //        var yaw = (float)Math.Atan2(value.X, value.Z);
-        //        yaw = ColumnValue("Yaw", yaw);
-        //        pitch = ColumnValue("Pitch", pitch);
-
-        //        var rotation = Matrix.CreateFromYawPitchRoll(yaw, pitch, 0.0f);
-        //        value = -Vector3.TransformNormal(Vector3.Forward, rotation);
-
-        //        ImGui.TreePop();
-        //    }
-
-        //    ImGui.Columns(1);
-        //    ImGui.Separator();
-        //    return value;
-        //}
-
-        private static float ColumnValue(string name, float value)
+        private float DetailsRow(string name, float value)
         {
-            ImGui.PushID(name.GetHashCode());
-
-            ImGui.AlignTextToFramePadding();
-            var flags = ImGuiTreeNodeFlags.Leaf | ImGuiTreeNodeFlags.NoTreePushOnOpen | ImGuiTreeNodeFlags.Bullet;
-            ImGui.TreeNodeEx(name, flags);
-            ImGui.NextColumn();
-            ImGui.SetNextItemWidth(-1);
-            ImGui.SliderFloat("##value", ref value, -MathHelper.PiOver2, MathHelper.PiOver2);
-
-            ImGui.NextColumn();
-
-            ImGui.PopID();
-            return value;
+            float action()
+            {
+                ImGui.SliderFloat(NoLabel, ref value, -MathHelper.PiOver2, MathHelper.PiOver2);
+                return value;
+            }
+            return this.DetailsRow(name, action);
         }
     }
 }
