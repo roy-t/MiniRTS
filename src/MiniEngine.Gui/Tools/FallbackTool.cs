@@ -7,9 +7,12 @@ namespace MiniEngine.Gui.Tools
         public override string Name => "Fallback";
 
         public override ToolState Configure(ToolState tool) => tool;
-        public override T Select(T value, Property property, ToolState tool)
+
+        public override T Details(T value, ToolState tool) => value;
+
+        public override T HeaderValue(T value)
         {
-            ImGui.Text($"{value}");
+            ImGui.Text(value?.ToString() ?? string.Empty);
             return value;
         }
     }

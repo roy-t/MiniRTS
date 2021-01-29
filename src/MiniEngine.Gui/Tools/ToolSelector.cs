@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using ImGuiNET;
-using Microsoft.Xna.Framework;
 using MiniEngine.Configuration;
 
 namespace MiniEngine.Gui.Tools
@@ -42,49 +41,103 @@ namespace MiniEngine.Gui.Tools
 
         public T Select<T>(T value, Property property)
         {
-            ImGui.PushID(property.Id);
+            BeginTable(property);
 
             var state = this.LinkedTools.Get(property);
-            var tool = this.GetTool<T>(state);
-            value = tool.Select(value, property, state);
+            var tool = this.GetBestTool<T>(state);
 
-            ImGui.SameLine();
-            ImGui.PushStyleColor(ImGuiCol.Button, Color.Black.ToVector4());
-            if (ImGui.SmallButton("\u00BB"))
+            var showDetails = Header(ref value, property, tool);
+
+            if (showDetails)
             {
-                this.Activate(property);
-                this.changingState = state;
+                value = tool.Details(value, state);
+                this.ToolRow(property, state, tool);
+                ImGui.TreePop();
             }
-            ImGui.PopStyleColor();
-
 
             if (this.IsActive(property))
             {
                 this.ChangeTool<T>(property);
             }
 
-            ImGui.PopID();
-
+            EndTable();
             return value;
         }
 
-        private ATool<T> GetTool<T>(ToolState tool)
+        private void ToolRow<T>(Property property, ToolState state, ATool<T> tool)
+        {
+            ImGui.AlignTextToFramePadding();
+            ImGui.Text($"Type: {typeof(T).Name}, Tool: {tool.Name}");
+            ImGui.NextColumn();
+
+            if (!(tool is FallbackTool<T>))
+            {
+                if (ImGui.Button("change tool"))
+                {
+                    this.Activate(property);
+                    this.changingState = state;
+                }
+            }
+
+            ImGui.NextColumn();
+        }
+
+        private static bool Header<T>(ref T value, Property property, ATool<T> tool)
+        {
+            // Header
+            ImGui.AlignTextToFramePadding();
+            var open = ImGui.TreeNode(property.Name);
+
+            ImGui.NextColumn();
+            ImGui.AlignTextToFramePadding();
+            value = tool.HeaderValue(value);
+
+            ImGui.NextColumn();
+            return open;
+        }
+
+        private static void EndTable()
+        {
+            ImGui.PopID();
+            ImGui.Columns(1);
+        }
+
+        private static void BeginTable(Property property)
+        {
+            ImGui.Columns(2, "ToolSelectorColumns");
+            ImGui.PushID(property.Id);
+            ImGui.Separator();
+        }
+
+        private ATool<T> GetBestTool<T>(ToolState toolState)
+        {
+            var tools = this.GetAllTools<T>();
+            if (tools.Length > 0)
+            {
+                for (var i = 0; i < tools.Length; i++)
+                {
+                    var tool = tools[i];
+                    if (tool.Name == toolState.Name)
+                    {
+                        return tool;
+                    }
+                }
+
+                return tools[0];
+            }
+
+            return new FallbackTool<T>();
+        }
+
+        private ATool<T>[] GetAllTools<T>()
         {
             var type = typeof(T);
             if (this.AvailableTools.TryGetValue(type, out var typedTools))
             {
-                for (var i = 0; i < typedTools.Tools.Length; i++)
-                {
-                    if (typedTools.Tools[i].Name == tool.Name)
-                    {
-                        return (ATool<T>)typedTools.Tools[i];
-                    }
-                }
-
-                return (ATool<T>)typedTools.Tools[0];
+                return typedTools.Tools.OfType<ATool<T>>().ToArray();
             }
 
-            return new FallbackTool<T>();
+            return Array.Empty<ATool<T>>();
         }
 
         private void ChangeTool<T>(Property property)
@@ -92,7 +145,7 @@ namespace MiniEngine.Gui.Tools
             ImGui.OpenPopup("Tool Picker");
             if (ImGui.BeginPopup("Tool Picker"))
             {
-                var tool = this.GetTool<T>(this.changingState);
+                var tool = this.GetBestTool<T>(this.changingState);
                 var allTools = this.AvailableTools[typeof(T)];
                 var index = Array.IndexOf(allTools.Tools, tool);
                 if (ImGui.Combo("Tools", ref index, allTools.Names, allTools.Names.Length))
