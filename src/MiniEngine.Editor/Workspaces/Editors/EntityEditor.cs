@@ -3,6 +3,7 @@ using System.Linq;
 using ImGuiNET;
 using MiniEngine.Configuration;
 using MiniEngine.Gui.Tools;
+using MiniEngine.Gui.Tools.Generic;
 using MiniEngine.Systems;
 using MiniEngine.Systems.Components;
 using MiniEngine.Systems.Entities;
@@ -34,7 +35,8 @@ namespace MiniEngine.Editor.Workspaces.Editors
         {
             if (ImGui.Begin("Components"))
             {
-                ImGui.Text($"Selected: {this.SelectedEntity?.ToString()}");
+                ImGui.Text($"Selected entity: {this.SelectedEntity?.ToString()}");
+                ImGui.Checkbox("Show readonly properties", ref ObjectTool.ShowReadOnlyProperties);
                 Tool.BeginTable("components");
                 if (this.SelectedEntity.HasValue)
                 {

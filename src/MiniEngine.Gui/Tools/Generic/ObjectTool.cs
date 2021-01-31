@@ -5,6 +5,8 @@ namespace MiniEngine.Gui.Tools.Generic
 {
     public class ObjectTool : ITool
     {
+        public static bool ShowReadOnlyProperties = true;
+
         private readonly ObjectTemplater Templater;
         private readonly Tool Tool;
 
@@ -49,7 +51,22 @@ namespace MiniEngine.Gui.Tools.Generic
                 var propertyValue = property.Getter.Invoke(value, null);
                 if (propertyValue != null)
                 {
+                    if (property.Setter == null && !ShowReadOnlyProperties)
+                    {
+                        continue;
+                    }
+
+                    if (property.Setter == null)
+                    {
+                        ImGui.PushStyleVar(ImGuiStyleVar.Alpha, 0.4f);
+                    }
+
                     changed |= this.Tool.Change(property.Type, ref propertyValue, new Property(property.Name));
+
+                    if (property.Setter == null)
+                    {
+                        ImGui.PopStyleVar();
+                    }
                 }
 
                 if (changed)
