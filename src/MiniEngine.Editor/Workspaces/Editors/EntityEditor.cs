@@ -2,7 +2,7 @@
 using System.Linq;
 using ImGuiNET;
 using MiniEngine.Configuration;
-using MiniEngine.Gui;
+using MiniEngine.Gui.Tools;
 using MiniEngine.Systems;
 using MiniEngine.Systems.Components;
 using MiniEngine.Systems.Entities;
@@ -12,13 +12,13 @@ namespace MiniEngine.Editor.Workspaces.Editors
     [Service]
     public sealed class EntityEditor
     {
-        private readonly ComponentEditor ComponentEditor;
+        private readonly ToolSelector ToolSelector;
         private readonly EntityAdministrator Entities;
         private readonly ComponentAdministrator Components;
 
-        public EntityEditor(ComponentEditor componentEditor, EntityAdministrator entities, ComponentAdministrator components)
+        public EntityEditor(ToolSelector toolSelector, EntityAdministrator entities, ComponentAdministrator components)
         {
-            this.ComponentEditor = componentEditor;
+            this.ToolSelector = toolSelector;
             this.Entities = entities;
             this.Components = components;
         }
@@ -35,16 +35,28 @@ namespace MiniEngine.Editor.Workspaces.Editors
             if (ImGui.Begin("Components"))
             {
                 ImGui.Text($"Selected: {this.SelectedEntity?.ToString()}");
+                this.ToolSelector.BeginTable("components");
                 if (this.SelectedEntity.HasValue)
                 {
                     var components = this.Components.GetComponents(this.SelectedEntity.Value);
                     foreach (var component in components)
                     {
-                        this.ComponentEditor.DrawComponent(component);
+                        this.DrawComponent(component);
                     }
                 }
-                ImGui.Separator();
+                this.ToolSelector.EndTable();
+
                 ImGui.End();
+            }
+        }
+
+        private void DrawComponent(AComponent component)
+        {
+            var type = component.GetType();
+            var changed = this.ToolSelector.Select(ref component, new Property(type.Name));
+            if (changed)
+            {
+                component.ChangeState.Change();
             }
         }
 

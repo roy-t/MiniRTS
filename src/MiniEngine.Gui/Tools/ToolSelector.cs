@@ -46,6 +46,15 @@ namespace MiniEngine.Gui.Tools
         private IntPtr activeProperty = IntPtr.Zero;
         private ToolState changingState;
 
+        public void BeginTable(string name)
+            => ImGui.Columns(2, name);
+
+        public void EndTable()
+        {
+            ImGui.Columns(1);
+            ImGui.Separator();
+        }
+
         public bool Select(Type type, ref object? value, Property property)
         {
             var parameters = new[] { value, property };
@@ -58,8 +67,9 @@ namespace MiniEngine.Gui.Tools
 
         public bool Select<T>(ref T value, Property property)
         {
-            // TODO: pass if a field is readonly, then just show textual value
-            BeginTable(property);
+            // TODO: pass if a field is readonly, then just show textual value            
+            ImGui.PushID(property.Id);
+            ImGui.Separator();
 
             var toolState = this.LinkedTools.Get(property);
             var tool = this.GetBestTool<T>(toolState);
@@ -80,8 +90,7 @@ namespace MiniEngine.Gui.Tools
             {
                 this.ChangeTool<T>(property);
             }
-
-            EndTable();
+            ImGui.PopID();
             return changed;
         }
 
@@ -91,7 +100,7 @@ namespace MiniEngine.Gui.Tools
             ImGui.Text($"Type: {value?.GetType().Name ?? typeof(T).Name}, Tool: {tool.Name}");
             ImGui.NextColumn();
 
-            if (!IsSpecialTool(tool))
+            if (!this.IsSpecialTool(tool))
             {
                 if (ImGui.Button("change tool"))
                 {
@@ -125,19 +134,6 @@ namespace MiniEngine.Gui.Tools
 
             ImGui.NextColumn();
             return changed;
-        }
-
-        private static void EndTable()
-        {
-            ImGui.PopID();
-            ImGui.Columns(1);
-        }
-
-        private static void BeginTable(Property property)
-        {
-            ImGui.Columns(2, "ToolSelectorColumns");
-            ImGui.PushID(property.Id);
-            ImGui.Separator();
         }
 
         private ATool<T> GetBestTool<T>(ToolState toolState)

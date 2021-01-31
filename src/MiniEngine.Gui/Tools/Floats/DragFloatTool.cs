@@ -9,7 +9,7 @@ namespace MiniEngine.Gui.Tools.Floats
         public override string Name => "Drag";
 
         public override bool HeaderValue(ref float value, ToolState tool)
-            => ImGui.DragFloat("##value", ref value, tool.Z, tool.X, tool.Y);
+            => ImGui.DragFloat(NoLabel, ref value, tool.Z, tool.X, tool.Y);
 
         public override ToolState Configure(ToolState tool)
         {

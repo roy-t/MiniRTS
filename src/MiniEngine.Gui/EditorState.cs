@@ -33,10 +33,13 @@ namespace MiniEngine.Gui
 
             if (ImGui.Begin("Window3"))
             {
+                this.ToolSelector.BeginTable("window");
+
                 this.ToolSelector.Select(ref this.foo, p1);
                 this.ToolSelector.Select(ref this.normal, p3);
                 this.ToolSelector.Select(ref this.bar, p2);
 
+                this.ToolSelector.EndTable();
                 if (ImGui.Button("Demo"))
                 {
                     demo = !demo;
@@ -52,6 +55,7 @@ namespace MiniEngine.Gui
                 {
                     this.ToolState.Reset();
                 }
+
 
                 ImGui.End();
             }

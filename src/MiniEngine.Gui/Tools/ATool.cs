@@ -3,6 +3,8 @@ using ImGuiNET;
 
 namespace MiniEngine.Gui.Tools
 {
+    public record ToolResult<T>(bool Changed, T Value);
+
     public abstract class ATool<T> : ITool
     {
         public delegate bool RowDelegate<TValue>(ref TValue value);
