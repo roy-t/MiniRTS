@@ -48,7 +48,7 @@ namespace MiniEngine.Gui.Tools
             var changed = Header(ref value, out var showDetails, property, tool, toolState);
             if (showDetails)
             {
-                changed = tool.Details(ref value, toolState);
+                changed |= tool.Details(ref value, toolState);
                 this.ToolRow(property, toolState, tool, type);
                 ImGui.TreePop();
             }

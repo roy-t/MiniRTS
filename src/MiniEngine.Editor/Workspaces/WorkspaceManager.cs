@@ -17,7 +17,6 @@ namespace MiniEngine.Editor.Workspaces
     {
         private record WorkspaceBinding(string Key, IWorkspace Workspace);
 
-        private readonly Gui.EditorState editorState;
         private readonly SceneManager SceneManager;
         private readonly ImGuiRenderer Gui;
         private readonly EditorStateSerializer Serializer;
@@ -30,9 +29,8 @@ namespace MiniEngine.Editor.Workspaces
 
         private WorkspaceBinding workspace;
 
-        public WorkspaceManager(MiniEngine.Gui.EditorState editorState, IEnumerable<IWorkspace> workspaces, SceneManager sceneManager, ImGuiRenderer gui, ImageInspector inspector, EditorStateSerializer serializer, FrameService frameService, KeyboardController keyboard)
+        public WorkspaceManager(IEnumerable<IWorkspace> workspaces, SceneManager sceneManager, ImGuiRenderer gui, ImageInspector inspector, EditorStateSerializer serializer, FrameService frameService, KeyboardController keyboard)
         {
-            this.editorState = editorState;
             this.SceneManager = sceneManager;
             this.Gui = gui;
             this.Serializer = serializer;
@@ -66,8 +64,6 @@ namespace MiniEngine.Editor.Workspaces
 
             this.RenderMainMenu();
             this.RenderWindows();
-
-            this.editorState.Update();
 
             if (this.Inspector.IsOpen)
             {
