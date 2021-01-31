@@ -12,11 +12,11 @@ namespace MiniEngine.Editor.Workspaces.Editors
     [Service]
     public sealed class EntityEditor
     {
-        private readonly ToolSelector ToolSelector;
+        private readonly Tool ToolSelector;
         private readonly EntityAdministrator Entities;
         private readonly ComponentAdministrator Components;
 
-        public EntityEditor(ToolSelector toolSelector, EntityAdministrator entities, ComponentAdministrator components)
+        public EntityEditor(Tool toolSelector, EntityAdministrator entities, ComponentAdministrator components)
         {
             this.ToolSelector = toolSelector;
             this.Entities = entities;
@@ -35,7 +35,7 @@ namespace MiniEngine.Editor.Workspaces.Editors
             if (ImGui.Begin("Components"))
             {
                 ImGui.Text($"Selected: {this.SelectedEntity?.ToString()}");
-                this.ToolSelector.BeginTable("components");
+                Tool.BeginTable("components");
                 if (this.SelectedEntity.HasValue)
                 {
                     var components = this.Components.GetComponents(this.SelectedEntity.Value);
@@ -44,7 +44,7 @@ namespace MiniEngine.Editor.Workspaces.Editors
                         this.DrawComponent(component);
                     }
                 }
-                this.ToolSelector.EndTable();
+                Tool.EndTable();
 
                 ImGui.End();
             }
@@ -53,7 +53,7 @@ namespace MiniEngine.Editor.Workspaces.Editors
         private void DrawComponent(AComponent component)
         {
             var type = component.GetType();
-            var changed = this.ToolSelector.Select(ref component, new Property(type.Name));
+            var changed = this.ToolSelector.Change(ref component, new Property(type.Name));
             if (changed)
             {
                 component.ChangeState.Change();

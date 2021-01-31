@@ -6,7 +6,7 @@ using MiniEngine.Configuration;
 
 namespace MiniEngine.Gui.Tools
 {
-    public record PropertyTemplate(string Name, Type Type, MethodInfo? Getter, MethodInfo? Setter);
+    public record PropertyTemplate(string Name, Type Type, MethodInfo Getter, MethodInfo? Setter);
     public record ObjectTemplate(Type Type, bool ValueHeader, IReadOnlyList<PropertyTemplate> Properties);
 
     [Service]
@@ -36,7 +36,9 @@ namespace MiniEngine.Gui.Tools
 
             var toString = type.GetMethod("ToString", Array.Empty<Type>())?.DeclaringType == type;
 
-            var list = properties.Select(p => new PropertyTemplate(p.Name, p.PropertyType, p.GetGetMethod(), p.GetSetMethod()))
+            var list = properties
+                .Where(p => p.GetGetMethod() != null)
+                .Select(p => new PropertyTemplate(p.Name, p.PropertyType, p.GetGetMethod()!, p.GetSetMethod()))
                 .OrderBy(x => x.Setter == null ? 1 : 0)
                 .ThenBy(x => x.Name)
                 .ToArray();

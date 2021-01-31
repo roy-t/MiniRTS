@@ -10,10 +10,10 @@ namespace MiniEngine.Gui
     public sealed class EditorState
     {
         private readonly ILogger Logger;
-        private readonly ToolSelector ToolSelector;
+        private readonly Tool ToolSelector;
         private readonly ToolLinker ToolState;
 
-        public EditorState(ILogger logger, ToolSelector toolSelector, ToolLinker toolState)
+        public EditorState(ILogger logger, Tool toolSelector, ToolLinker toolState)
         {
             this.Logger = logger;
             this.ToolSelector = toolSelector;
@@ -33,13 +33,13 @@ namespace MiniEngine.Gui
 
             if (ImGui.Begin("Window3"))
             {
-                this.ToolSelector.BeginTable("window");
+                Tool.BeginTable("window");
 
-                this.ToolSelector.Select(ref this.foo, p1);
-                this.ToolSelector.Select(ref this.normal, p3);
-                this.ToolSelector.Select(ref this.bar, p2);
+                this.ToolSelector.Change(ref this.foo, p1);
+                this.ToolSelector.Change(ref this.normal, p3);
+                this.ToolSelector.Change(ref this.bar, p2);
 
-                this.ToolSelector.EndTable();
+                Tool.EndTable();
                 if (ImGui.Button("Demo"))
                 {
                     demo = !demo;
