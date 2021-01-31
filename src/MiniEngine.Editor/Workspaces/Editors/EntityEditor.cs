@@ -41,9 +41,9 @@ namespace MiniEngine.Editor.Workspaces.Editors
                     foreach (var component in components)
                     {
                         this.ComponentEditor.DrawComponent(component);
-                        ImGui.Separator();
                     }
                 }
+                ImGui.Separator();
                 ImGui.End();
             }
         }

@@ -20,7 +20,7 @@ namespace MiniEngine.Gui.Tools
         public override bool HeaderValue(ref T value, ToolState state)
         {
             var header = string.Empty;
-            var type = value?.GetType() ?? typeof(object);
+            var type = value?.GetType() ?? typeof(T);
             var template = this.Templater.GetTemplate(type);
 
             if (template.ValueHeader)
@@ -35,7 +35,7 @@ namespace MiniEngine.Gui.Tools
         public override bool Details(ref T value, ToolState tool)
         {
             var changed = false;
-            var type = value?.GetType() ?? typeof(object);
+            var type = value?.GetType() ?? typeof(T);
             var template = this.Templater.GetTemplate(type);
 
             for (var i = 0; i < template.Properties.Count; i++)

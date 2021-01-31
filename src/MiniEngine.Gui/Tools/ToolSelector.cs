@@ -58,6 +58,7 @@ namespace MiniEngine.Gui.Tools
 
         public bool Select<T>(ref T value, Property property)
         {
+            // TODO: pass if a field is readonly, then just show textual value
             BeginTable(property);
 
             var toolState = this.LinkedTools.Get(property);
@@ -71,7 +72,7 @@ namespace MiniEngine.Gui.Tools
                 {
                     changed = tool.Details(ref value, toolState);
                 }
-                this.ToolRow(property, toolState, tool);
+                this.ToolRow(property, toolState, tool, value);
                 ImGui.TreePop();
             }
 
@@ -84,13 +85,13 @@ namespace MiniEngine.Gui.Tools
             return changed;
         }
 
-        private void ToolRow<T>(Property property, ToolState state, ATool<T> tool)
+        private void ToolRow<T>(Property property, ToolState state, ATool<T> tool, T value)
         {
             ImGui.AlignTextToFramePadding();
-            ImGui.Text($"Type: {typeof(T).Name}, Tool: {tool.Name}");
+            ImGui.Text($"Type: {value?.GetType().Name ?? typeof(T).Name}, Tool: {tool.Name}");
             ImGui.NextColumn();
 
-            if (!(tool is ComplexObjectTool<T>))
+            if (!IsSpecialTool(tool))
             {
                 if (ImGui.Button("change tool"))
                 {
@@ -101,6 +102,8 @@ namespace MiniEngine.Gui.Tools
 
             ImGui.NextColumn();
         }
+
+        private bool IsSpecialTool<T>(ATool<T> tool) => tool is ComplexObjectTool<T> || tool is EnumerableTool<T>;
 
         private static bool Header<T>(ref T value, out bool open, Property property, ATool<T> tool, ToolState toolState)
         {
@@ -159,7 +162,6 @@ namespace MiniEngine.Gui.Tools
                 return new EnumerableTool<T>(this);
             }
 
-            // TODO: pass if a field is readonly, then just show textual value
             return new ComplexObjectTool<T>(this.Templater, this);
         }
 

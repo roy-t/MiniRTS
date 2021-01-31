@@ -36,7 +36,11 @@ namespace MiniEngine.Gui.Tools
 
             var toString = type.GetMethod("ToString", Array.Empty<Type>())?.DeclaringType == type;
 
-            var list = properties.Select(p => new PropertyTemplate(p.Name, p.PropertyType, p.GetGetMethod(), p.GetSetMethod())).ToArray();
+            var list = properties.Select(p => new PropertyTemplate(p.Name, p.PropertyType, p.GetGetMethod(), p.GetSetMethod()))
+                .OrderBy(x => x.Setter == null ? 1 : 0)
+                .ThenBy(x => x.Name)
+                .ToArray();
+
             var template = new ObjectTemplate(type, toString, list);
             this.Templates.Add(type, template);
         }
