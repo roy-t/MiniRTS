@@ -5,6 +5,8 @@ namespace MiniEngine.Gui.Tools
 {
     public abstract class ATool<T> : ITool
     {
+        public delegate bool RowDelegate<TValue>(ref TValue value);
+
         public static readonly string NoLabel = "##value";
 
         private const ImGuiTreeNodeFlags RowFlags = ImGuiTreeNodeFlags.Leaf | ImGuiTreeNodeFlags.NoTreePushOnOpen | ImGuiTreeNodeFlags.Bullet;
@@ -18,8 +20,6 @@ namespace MiniEngine.Gui.Tools
         public virtual bool Details(ref T value, ToolState tool) => false;
 
         public virtual ToolState Configure(ToolState tool) => tool;
-
-        public delegate bool RowDelegate<TValue>(ref TValue value);
 
         protected bool DetailsRow<E>(string name, ref E value, RowDelegate<E> selector)
         {
@@ -36,6 +36,18 @@ namespace MiniEngine.Gui.Tools
             ImGui.PopID();
 
             return changed;
+        }
+
+        protected void TextRow(string name, string value)
+        {
+            ImGui.AlignTextToFramePadding();
+            ImGui.TreeNodeEx(name, RowFlags);
+            ImGui.NextColumn();
+            ImGui.SetNextItemWidth(-1);
+
+            ImGui.Text(value);
+
+            ImGui.NextColumn();
         }
     }
 }

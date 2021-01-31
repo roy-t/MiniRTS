@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using MiniEngine.Configuration;
-using MiniEngine.Gui.Templates;
+﻿using MiniEngine.Configuration;
 using MiniEngine.Gui.Tools;
 using MiniEngine.Systems;
 
@@ -10,24 +7,23 @@ namespace MiniEngine.Gui
     [Service]
     public sealed class ComponentEditor
     {
-        private readonly Dictionary<Type, ComponentTemplate> Templates;
         private readonly ToolSelector Tools;
 
         public ComponentEditor(ToolSelector tools)
         {
             this.Tools = tools;
-            this.Templates = new Dictionary<Type, ComponentTemplate>();
         }
 
         public void DrawComponent(AComponent component)
         {
             var type = component.GetType();
-            if (!this.Templates.ContainsKey(type))
+            var o = (object?)component;
+            //var changed = this.Tools.Select(type, ref o, new Property(type.Name));
+            var changed = this.Tools.Select(ref component, new Property(type.Name));
+            if (changed)
             {
-                this.Templates.Add(type, new ComponentTemplate(type));
+                component.ChangeState.Change();
             }
-
-            this.Templates[type].Draw(component, this.Tools);
         }
     }
 }

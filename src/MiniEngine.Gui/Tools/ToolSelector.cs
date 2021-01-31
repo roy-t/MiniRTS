@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -13,13 +14,15 @@ namespace MiniEngine.Gui.Tools
         private record TypedTools(Type Type, string[] Names, ITool[] Tools);
 
         private readonly ToolLinker LinkedTools;
+        private readonly ObjectTemplater Templater;
         private readonly Dictionary<Type, TypedTools> AvailableTools;
 
         private readonly MethodInfo SelectMethod;
 
-        public ToolSelector(ToolLinker linkedTools, IEnumerable<ITool> tools)
+        public ToolSelector(ToolLinker linkedTools, ObjectTemplater templater, IEnumerable<ITool> tools)
         {
             this.LinkedTools = linkedTools;
+            this.Templater = templater;
             this.AvailableTools = new Dictionary<Type, TypedTools>();
             this.SelectMethod = typeof(ToolSelector).GetMethods().First(m => m.Name.Contains(nameof(Select)) && m.GetParameters().Length == 2);
 
@@ -60,11 +63,14 @@ namespace MiniEngine.Gui.Tools
             var toolState = this.LinkedTools.Get(property);
             var tool = this.GetBestTool<T>(toolState);
 
-            var showDetails = false;
+            bool showDetails;
             var changed = Header(ref value, out showDetails, property, tool, toolState);
             if (showDetails)
             {
-                changed = tool.Details(ref value, toolState);
+                if (value != null)
+                {
+                    changed = tool.Details(ref value, toolState);
+                }
                 this.ToolRow(property, toolState, tool);
                 ImGui.TreePop();
             }
@@ -84,7 +90,7 @@ namespace MiniEngine.Gui.Tools
             ImGui.Text($"Type: {typeof(T).Name}, Tool: {tool.Name}");
             ImGui.NextColumn();
 
-            if (!(tool is FallbackTool<T>))
+            if (!(tool is ComplexObjectTool<T>))
             {
                 if (ImGui.Button("change tool"))
                 {
@@ -104,7 +110,15 @@ namespace MiniEngine.Gui.Tools
 
             ImGui.NextColumn();
             ImGui.AlignTextToFramePadding();
-            var changed = tool.HeaderValue(ref value, toolState);
+            var changed = false;
+            if (value == null)
+            {
+                ImGui.Text("null");
+            }
+            else
+            {
+                changed = tool.HeaderValue(ref value, toolState);
+            }
 
             ImGui.NextColumn();
             return changed;
@@ -140,7 +154,13 @@ namespace MiniEngine.Gui.Tools
                 return tools[0];
             }
 
-            return new FallbackTool<T>();
+            if (typeof(T).IsAssignableTo(typeof(IEnumerable)))
+            {
+                return new EnumerableTool<T>(this);
+            }
+
+            // TODO: pass if a field is readonly, then just show textual value
+            return new ComplexObjectTool<T>(this.Templater, this);
         }
 
         private ATool<T>[] GetAllTools<T>()

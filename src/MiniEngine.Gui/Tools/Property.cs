@@ -5,8 +5,11 @@ namespace MiniEngine.Gui.Tools
 {
     public class Property
     {
-        public Property(params string[] path)
-            : this(string.Join('.', path)) { }
+        public Property(string name, string path)
+            : this(path)
+        {
+            this.Name = name;
+        }
 
         public Property(string path)
         {
