@@ -60,13 +60,14 @@ namespace MiniEngine.Gui.Tools.Generic
                     {
                         ImGui.PushStyleVar(ImGuiStyleVar.Alpha, 0.4f);
                     }
+                    else
+                    {
+                        ImGui.PushStyleVar(ImGuiStyleVar.Alpha, 1.0f);
+                    }
 
                     changed |= this.Tool.Change(property.Type, ref propertyValue, new Property(property.Name));
 
-                    if (property.Setter == null)
-                    {
-                        ImGui.PopStyleVar();
-                    }
+                    ImGui.PopStyleVar();
                 }
 
                 if (changed)

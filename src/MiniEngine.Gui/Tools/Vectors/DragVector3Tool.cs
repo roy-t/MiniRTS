@@ -10,6 +10,6 @@ namespace MiniEngine.Gui.Tools.Vectors
         public override string Name => "Drag";
 
         public override bool HeaderValue(ref Vector3 value, ToolState tool)
-            => ImGui.DragFloat3(NoLabel, ref value);
+            => ImGui.DragFloat3(ToolUtils.NoLabel, ref value);
     }
 }

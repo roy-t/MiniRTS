@@ -16,7 +16,7 @@ namespace MiniEngine.Gui.Tools.Generic
             var names = Enum.GetNames(enumType);
             var index = Array.IndexOf(names, name);
 
-            if (ImGui.Combo(NoLabel, ref index, names, names.Length))
+            if (ImGui.Combo(ToolUtils.NoLabel, ref index, names, names.Length))
             {
                 var values = Enum.GetValues(enumType);
                 value = (Enum)values.GetValue(index)!;

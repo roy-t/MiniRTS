@@ -12,7 +12,7 @@ namespace MiniEngine.Gui.Tools.Colors
         public override bool HeaderValue(ref Color value, ToolState tool)
         {
             var color = value.ToVector4();
-            if (ImGui.ColorEdit4(NoLabel, ref color))
+            if (ImGui.ColorEdit4(ToolUtils.NoLabel, ref color))
             {
                 value = new Color(color);
                 return true;

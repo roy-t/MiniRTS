@@ -11,7 +11,7 @@ namespace MiniEngine.Gui.Tools.Floats
         public override int Priority => 10;
 
         public override bool HeaderValue(ref float value, ToolState tool)
-            => ImGui.DragFloat(NoLabel, ref value, tool.Z, tool.X, tool.Y);
+            => ImGui.DragFloat(ToolUtils.NoLabel, ref value, tool.Z, tool.X, tool.Y);
 
         public override ToolState Configure(ToolState tool)
         {

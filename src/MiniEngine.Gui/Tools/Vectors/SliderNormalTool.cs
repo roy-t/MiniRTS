@@ -20,18 +20,18 @@ namespace MiniEngine.Gui.Tools.Vectors
         {
             var pitch = (float)Math.Asin(-value.Y);
             var yaw = (float)Math.Atan2(value.X, value.Z);
-            var changed = this.DetailsRow("Yaw", ref yaw);
-            changed |= this.DetailsRow("Pitch", ref pitch);
+            var changed = DetailsRow("Yaw", ref yaw);
+            changed |= DetailsRow("Pitch", ref pitch);
 
             var rotation = Matrix.CreateFromYawPitchRoll(yaw, pitch, 0.0f);
             value = -Vector3.TransformNormal(Vector3.Forward, rotation);
             return changed;
         }
 
-        private bool DetailsRow(string name, ref float value)
+        private static bool DetailsRow(string name, ref float value)
         {
-            static bool action(ref float v) => ImGui.SliderFloat(NoLabel, ref v, -MathHelper.PiOver2, MathHelper.PiOver2);
-            return this.DetailsRow(name, ref value, action);
+            static bool action(ref float v) => ImGui.SliderFloat(ToolUtils.NoLabel, ref v, -MathHelper.PiOver2, MathHelper.PiOver2);
+            return ToolUtils.DetailsRow(name, ref value, action);
         }
     }
 }

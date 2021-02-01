@@ -9,7 +9,7 @@ namespace MiniEngine.Gui.Tools.Floats
         public override string Name => "Slider";
 
         public override bool HeaderValue(ref float value, ToolState tool)
-            => ImGui.SliderFloat(NoLabel, ref value, tool.X, tool.Y);
+            => ImGui.SliderFloat(ToolUtils.NoLabel, ref value, tool.X, tool.Y);
 
         public override ToolState Configure(ToolState tool)
         {

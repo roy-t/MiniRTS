@@ -130,17 +130,11 @@ namespace MiniEngine.Gui.Tools
 
         private void ToolRow(Property property, ToolState state, ITool tool, Type type)
         {
-            ImGui.AlignTextToFramePadding();
-            ImGui.Text($"Type: {type.Name}, Tool: {tool.Name}");
-            ImGui.NextColumn();
-
-            if (ImGui.Button("change tool"))
+            if (ToolUtils.ButtonRow($"Type: {type.Name}, Tool: {tool.Name}", "change tool"))
             {
                 this.Activate(property);
                 this.changingState = state;
             }
-
-            ImGui.NextColumn();
         }
 
         private void Activate(Property property)
