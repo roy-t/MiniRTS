@@ -1,136 +1,104 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
 namespace MiniEngine.Systems.Pipeline
 {
-    public sealed class ParallelPipeline
+    public sealed class ParallelPipeline : IDisposable
     {
-        private readonly int MaxConcurrency;
-        private readonly int ExternalThreadIndex;
+        private readonly ConcurrentQueue<ISystemBinding> Work;
         private readonly Thread[] Threads;
-        private readonly StageLockPrimitive StartFramePrimitive;
-        private readonly StageLockPrimitive EndFramePrimitive;
-        private readonly StageLockPrimitive StageStartPrimitive;
-        private readonly StageLockPrimitive StageEndPrimitive;
 
-        private PipelineState pipelineState;
+        private readonly ManualResetEventSlim StageStartEvent;
+        private readonly CountdownEvent WorkCountdownEvent;
+        private readonly CancellationTokenSource CancellationToken;
 
-        public ParallelPipeline(IReadOnlyList<PipelineStage> pipelineStages)
+        public ParallelPipeline(IReadOnlyList<PipelineStage> stages)
         {
-            this.PipelineStages = pipelineStages;
-            this.MaxConcurrency = this.PipelineStages.Max(stage => stage.Systems.Count);
-            this.ExternalThreadIndex = this.MaxConcurrency;
+            this.Stages = stages;
+            this.Work = new ConcurrentQueue<ISystemBinding>();
 
-            this.StartFramePrimitive = new StageLockPrimitive(this.MaxConcurrency + 1);
-            this.EndFramePrimitive = new StageLockPrimitive(this.MaxConcurrency + 1);
+            this.StageStartEvent = new ManualResetEventSlim(false);
+            this.WorkCountdownEvent = new CountdownEvent(0);
+            this.CancellationToken = new CancellationTokenSource();
 
-            this.StageStartPrimitive = new StageLockPrimitive(this.MaxConcurrency);
-            this.StageEndPrimitive = new StageLockPrimitive(this.MaxConcurrency);
-
-            this.Threads = new Thread[this.MaxConcurrency];
-            for (var i = 0; i < this.MaxConcurrency; i++)
+            var maxThreads = stages.Max(stage => stage.Systems.Count);
+            this.Threads = new Thread[maxThreads];
+            for (var i = 0; i < this.Threads.Length; i++)
             {
-                this.Threads[i] = new Thread(threadIndex => this.ThreadStart(threadIndex!))
+                this.Threads[i] = new Thread(this.Process)
                 {
-                    Name = $"ParallelPipelineThread - {i}",
+                    Name = $"PipelineThread {i}",
                     IsBackground = true
                 };
-                this.Threads[i].Start(i);
-            }
 
-            this.pipelineState = PipelineState.ReadyForNextRun;
-        }
-
-        public IReadOnlyList<PipelineStage> PipelineStages { get; }
-
-        public int ActiveThreads => this.Threads.Sum(x => x.IsAlive ? 1 : 0);
-
-        public void Run()
-        {
-            if (this.pipelineState == PipelineState.ReadyForNextRun)
-            {
-                this.StartFramePrimitive.DecrementAndWait(this.ExternalThreadIndex);
-                this.pipelineState = PipelineState.Running;
-            }
-            else
-            {
-                throw new InvalidOperationException($"Cannot call {nameof(Run)} while the {nameof(ParallelPipeline)} is in the {this.pipelineState} state");
+                this.Threads[i].Start();
             }
         }
 
-        public void Wait()
+        public IReadOnlyList<PipelineStage> Stages { get; }
+
+        public void Frame()
         {
-            if (this.pipelineState == PipelineState.Running)
+            try
             {
-                this.EndFramePrimitive.DecrementAndWait(this.ExternalThreadIndex);
-                this.pipelineState = PipelineState.ReadyForNextRun;
-            }
-            else
-            {
-                throw new InvalidOperationException($"Cannot call {nameof(Wait)} while the {nameof(ParallelPipeline)} is in the {this.pipelineState} state");
-            }
-        }
+                this.WorkCountdownEvent.Wait(this.CancellationToken.Token);
 
-        public void Stop()
-        {
-            if (this.pipelineState == PipelineState.Running)
-            {
-                this.pipelineState = PipelineState.Stopped;
-                this.EndFramePrimitive.DecrementAndWait(this.ExternalThreadIndex);
-
-                this.JoinWorkers();
-            }
-            else if (this.pipelineState == PipelineState.ReadyForNextRun)
-            {
-                this.pipelineState = PipelineState.Stopped;
-                this.StartFramePrimitive.DecrementAndWait(this.ExternalThreadIndex);
-
-                this.JoinWorkers();
-            }
-            else if (this.pipelineState == PipelineState.Stopped)
-            {
-                return;
-            }
-            else
-            {
-                throw new InvalidOperationException($"Cannot call {nameof(Stop)} while the {nameof(ParallelPipeline)} is in the {this.pipelineState} state");
-            }
-        }
-
-        private void ThreadStart(object threadIndexObj)
-        {
-            var threadIndex = (int)threadIndexObj;
-
-            while (this.pipelineState != PipelineState.Stopped)
-            {
-                this.StartFramePrimitive.DecrementAndWait(threadIndex);
-                if (this.pipelineState == PipelineState.Stopped) { return; }
-
-                for (var currentStage = 0; currentStage < this.PipelineStages.Count; currentStage++)
+                for (var i = 0; i < this.Stages.Count; i++)
                 {
-                    this.StageStartPrimitive.DecrementAndWait(threadIndex);
-
-                    var stage = this.PipelineStages[currentStage];
-                    if (threadIndex < stage.Systems.Count)
+                    var stage = this.Stages[i];
+                    for (var j = 0; j < stage.Systems.Count; j++)
                     {
-                        var system = stage.Systems[threadIndex];
-                        system.Process();
+                        this.Work.Enqueue(stage.Systems[j]);
                     }
 
-                    this.StageEndPrimitive.DecrementAndWait(threadIndex);
-                }
+                    this.WorkCountdownEvent.Reset(stage.Systems.Count);
 
-                this.EndFramePrimitive.DecrementAndWait(threadIndex);
+                    this.StageStartEvent.Set();
+
+                    this.WorkCountdownEvent.Wait(this.CancellationToken.Token);
+
+                    this.StageStartEvent.Reset();
+                }
             }
+            catch (OperationCanceledException) { }
         }
 
-        private void JoinWorkers()
+        public void Dispose()
         {
+            this.CancellationToken.Cancel();
             for (var i = 0; i < this.Threads.Length; i++)
             {
                 this.Threads[i].Join();
+            }
+
+            this.CancellationToken.Dispose();
+            this.StageStartEvent.Dispose();
+            this.WorkCountdownEvent.Dispose();
+        }
+
+        private void Process()
+        {
+            try
+            {
+                while (true)
+                {
+
+                    this.StageStartEvent.Wait(this.CancellationToken.Token);
+
+                    if (this.Work.TryDequeue(out var system))
+                    {
+                        system.Process();
+                        this.WorkCountdownEvent.Signal();
+                    }
+                }
+
+            }
+            catch (OperationCanceledException)
+            {
+                return;
             }
         }
     }

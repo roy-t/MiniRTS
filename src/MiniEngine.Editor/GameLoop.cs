@@ -99,7 +99,7 @@ namespace MiniEngine.Editor
 
         internal void Draw(GameTime gameTime)
         {
-            this.RunPipeline();
+            this.RenderPipeline.Frame();
             this.RenderToViewport(this.FrameService.PBuffer.ToneMap);
 
             this.SceneManager.Update(gameTime);
@@ -108,12 +108,6 @@ namespace MiniEngine.Editor
             {
                 this.WorkspaceManager.Render(gameTime);
             }
-        }
-
-        private void RunPipeline()
-        {
-            this.RenderPipeline.Run();
-            this.RenderPipeline.Wait();
         }
 
         private void RenderToViewport(RenderTarget2D renderTarget)
@@ -133,7 +127,7 @@ namespace MiniEngine.Editor
         public void Stop()
         {
             this.WorkspaceManager.Save();
-            this.RenderPipeline.Stop();
+            this.RenderPipeline.Dispose();
         }
     }
 }
