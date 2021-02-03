@@ -49,18 +49,25 @@ namespace MiniEngine.Systems.Pipeline
                 for (var i = 0; i < this.Stages.Count; i++)
                 {
                     var stage = this.Stages[i];
-                    for (var j = 0; j < stage.Systems.Count; j++)
+                    if (stage.Systems.Count == 1)
                     {
-                        this.Work.Enqueue(stage.Systems[j]);
+                        stage.Systems[0].Process();
                     }
+                    else
+                    {
+                        for (var j = 0; j < stage.Systems.Count; j++)
+                        {
+                            this.Work.Enqueue(stage.Systems[j]);
+                        }
 
-                    this.WorkCountdownEvent.Reset(stage.Systems.Count);
+                        this.WorkCountdownEvent.Reset(stage.Systems.Count);
 
-                    this.StageStartEvent.Set();
+                        this.StageStartEvent.Set();
 
-                    this.WorkCountdownEvent.Wait(this.CancellationToken.Token);
+                        this.WorkCountdownEvent.Wait(this.CancellationToken.Token);
 
-                    this.StageStartEvent.Reset();
+                        this.StageStartEvent.Reset();
+                    }
                 }
             }
             catch (OperationCanceledException) { }

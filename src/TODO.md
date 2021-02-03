@@ -2,8 +2,6 @@
 
 - Unify geometry generation, let users pass in a vertex declaration and get the vertex and index buffer?
 
-- Create a better multi-threaded render pipeline. Maybe have one worker thread that pushes an entire pipeline to a queue, and then have the workers handling those systems. Uses a semaphore or something to sync? 
-
 - Sunlight and Spotlight both use a shadow map, but the sampling is subtely different because one uses an array and the other not, can we unify this?
 
 - Create a better editor tool for angles/yaw-pitch-roll
