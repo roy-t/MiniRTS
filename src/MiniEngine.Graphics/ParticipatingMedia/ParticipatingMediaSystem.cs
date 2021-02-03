@@ -18,7 +18,6 @@ namespace MiniEngine.Graphics.ParticipatingMedia
     {
         private readonly GraphicsDevice Device;
         private readonly ShadowMapEffect ShadowMapEffect;
-        private readonly VolumeEffect VolumeEffect;
         private readonly ParticipatingMediaEffect MediaEffect;
         private readonly ParticipatingMediaPostProcessEffect PostProcessEffect;
         private readonly PostProcessTriangle PostProcessTriangle;
@@ -29,11 +28,10 @@ namespace MiniEngine.Graphics.ParticipatingMedia
         private readonly RasterizerState FrontRasterizerState;
         private readonly RasterizerState BackRasterizerState;
 
-        public ParticipatingMediaSystem(GraphicsDevice device, ContentManager content, ShadowMapEffect shadowMapEffect, VolumeEffect volumeEffect, ParticipatingMediaEffect mediaEffect, ParticipatingMediaPostProcessEffect postProcessEffect, PostProcessTriangle postProcessTriangle, FrameService frameService)
+        public ParticipatingMediaSystem(GraphicsDevice device, ContentManager content, ShadowMapEffect shadowMapEffect, ParticipatingMediaEffect mediaEffect, ParticipatingMediaPostProcessEffect postProcessEffect, PostProcessTriangle postProcessTriangle, FrameService frameService)
         {
             this.Device = device;
             this.MediaEffect = mediaEffect;
-            this.VolumeEffect = volumeEffect;
             this.ShadowMapEffect = shadowMapEffect;
             this.PostProcessEffect = postProcessEffect;
             this.PostProcessTriangle = postProcessTriangle;
@@ -108,7 +106,8 @@ namespace MiniEngine.Graphics.ParticipatingMedia
             this.Device.Clear(ClearOptions.Target, Color.Black, 1.0f, 0);
 
             this.MediaEffect.Noise = this.Noise;
-            this.MediaEffect.Volume = media.DensityBuffer;
+            this.MediaEffect.VolumeBack = media.VolumeBackBuffer;
+            this.MediaEffect.VolumeFront = media.VolumeFrontBuffer;
             this.MediaEffect.Depth = this.FrameService.GBuffer.Depth;
             this.MediaEffect.InverseViewProjection = Matrix.Invert(camera.ViewProjection);
             this.MediaEffect.CameraPosition = camera.Position;
@@ -128,20 +127,9 @@ namespace MiniEngine.Graphics.ParticipatingMedia
 
         private void RenderDensity(ParticipatingMediaComponent media, TransformComponent transform, Camera.ICamera camera)
         {
-            // TODO: if we're inside a very large media the front buffer and back buffer will contain distance == 1
-            // which leads to a hole in the fog
             this.ShadowMapEffect.WorldViewProjection = transform.Matrix * camera.ViewProjection;
             this.RenderDistance(this.BackRasterizerState, media.VolumeBackBuffer, media.Geometry);
             this.RenderDistance(this.FrontRasterizerState, media.VolumeFrontBuffer, media.Geometry);
-
-            this.Device.SetRenderTarget(media.DensityBuffer);
-            this.Device.Clear(ClearOptions.Target, Color.White, 1.0f, 0);
-
-            this.VolumeEffect.VolumeBack = media.VolumeBackBuffer;
-            this.VolumeEffect.VolumeFront = media.VolumeFrontBuffer;
-
-            this.VolumeEffect.Apply();
-            this.PostProcessTriangle.Render(this.Device);
         }
 
         private void RenderDistance(RasterizerState rasterizerState, RenderTarget2D renderTarget, GeometryData geometry)

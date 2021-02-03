@@ -92,7 +92,6 @@ namespace MiniEngine.Systems.Pipeline
             {
                 while (true)
                 {
-
                     this.StageStartEvent.Wait(this.CancellationToken.Token);
 
                     if (this.Work.TryDequeue(out var system))
@@ -103,10 +102,7 @@ namespace MiniEngine.Systems.Pipeline
                 }
 
             }
-            catch (OperationCanceledException)
-            {
-                return;
-            }
+            catch (OperationCanceledException) { }
         }
     }
 }

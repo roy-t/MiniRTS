@@ -110,12 +110,6 @@
 /processorParam:DebugMode=Auto
 /build:Effects/ToneMapEffect.fx
 
-#begin Effects/VolumeEffect.fx
-/importer:EffectImporter
-/processor:EffectProcessor
-/processorParam:DebugMode=Auto
-/build:Effects/VolumeEffect.fx
-
 #begin Textures/Blue.png
 /importer:TextureImporter
 /processor:TextureProcessor

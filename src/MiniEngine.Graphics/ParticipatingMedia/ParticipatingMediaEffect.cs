@@ -7,7 +7,8 @@ namespace MiniEngine.Graphics.Shadows
     public sealed class ParticipatingMediaEffect : EffectWrapper
     {
         private readonly EffectParameter NoiseParameter;
-        private readonly EffectParameter VolumeParameter;
+        private readonly EffectParameter VolumeBackParameter;
+        private readonly EffectParameter VolumeFrontParameter;
         private readonly EffectParameter InverseViewProjectionParameter;
         private readonly EffectParameter DepthParameter;
         private readonly EffectParameter CameraPositionParameter;
@@ -27,7 +28,8 @@ namespace MiniEngine.Graphics.Shadows
             this.Effect.CurrentTechnique = this.Effect.Techniques["ParticipatingMediaTechnique"];
 
             this.NoiseParameter = this.Effect.Parameters["Noise"];
-            this.VolumeParameter = this.Effect.Parameters["Volume"];
+            this.VolumeBackParameter = this.Effect.Parameters["VolumeBack"];
+            this.VolumeFrontParameter = this.Effect.Parameters["VolumeFront"];
             this.InverseViewProjectionParameter = this.Effect.Parameters["InverseViewProjection"];
             this.DepthParameter = this.Effect.Parameters["Depth"];
             this.CameraPositionParameter = this.Effect.Parameters["CameraPosition"];
@@ -43,7 +45,9 @@ namespace MiniEngine.Graphics.Shadows
 
         public Texture2D Noise { set => this.NoiseParameter.SetValue(value); }
 
-        public Texture2D Volume { set => this.VolumeParameter.SetValue(value); }
+        public Texture2D VolumeBack { set => this.VolumeBackParameter.SetValue(value); }
+
+        public Texture2D VolumeFront { set => this.VolumeFrontParameter.SetValue(value); }
 
         public Matrix InverseViewProjection { set => this.InverseViewProjectionParameter.SetValue(value); }
 

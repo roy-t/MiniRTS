@@ -29,9 +29,9 @@ Texture2D Media;
 sampler mediaSampler = sampler_state
 {
     Texture = (Media);
-    MinFilter = POINT;
-    MagFilter = POINT;
-    MipFilter = POINT;
+    MinFilter = LINEAR;
+    MagFilter = LINEAR;
+    MipFilter = LINEAR;
     AddressU = Clamp;
     AddressV = Clamp;
 };

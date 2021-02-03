@@ -2,10 +2,21 @@
 #include "Includes/GBufferReader.hlsl"
 #include "Includes/Shadows.hlsl"
 
-texture Volume;
-sampler volumeSampler = sampler_state
+texture VolumeFront;
+sampler volumeFrontSampler = sampler_state
 {
-    Texture = (Volume);
+    Texture = (VolumeFront);
+    MinFilter = LINEAR;
+    MagFilter = LINEAR;
+    MipFilter = LINEAR;
+    AddressU = Clamp;
+    AddressV = Clamp;
+};
+
+texture VolumeBack;
+sampler volumeBackSampler = sampler_state
+{
+    Texture = (VolumeBack);
     MinFilter = LINEAR;
     MagFilter = LINEAR;
     MipFilter = LINEAR;
@@ -63,12 +74,25 @@ float random(float2 uv)
     return tex2Dlod(noiseSampler, sa).r;
 }
 
+
+float2 ReadVolume(float2 uv)
+{
+    float f = tex2D(volumeFrontSampler, uv).r;
+    float b = tex2D(volumeBackSampler, uv).r;
+
+    // If we don't have a distance to the front, but have a distance to the back
+    // we're inside the medium
+    if (f >= 1.0f && b < 1.0f) { f = 0.0f; }    
+
+    return float2(f, b);
+}
+
 OutputData PS(PixelData input)
 {
     OutputData output = (OutputData)0;
 
     // The media is only visible if it ends somewhere
-    float2 fb = tex2D(volumeSampler, input.Texture).xy;
+    float2 fb = ReadVolume(input.Texture);
     if (fb.y == 0.0f)
     {
         output.Media = 0.0f;
