@@ -25,9 +25,9 @@ namespace MiniEngine.Graphics.Shadows
             this.Scales = new Vector4[cascades.Length];
         }
 
-        public float Resolution => this.DepthMapArray.Width;
+        public int Resolution { get => this.DepthMapArray.Width; set => this.ChangeResolution(value); }
 
-        public RenderTarget2D DepthMapArray { get; }
+        public RenderTarget2D DepthMapArray { get; private set; }
 
         public float[] Cascades { get; }
 
@@ -46,6 +46,15 @@ namespace MiniEngine.Graphics.Shadows
         {
             var depthMapArray = new RenderTarget2D(device, resolution, resolution, false, SurfaceFormat.Single, DepthFormat.Depth24, 0, RenderTargetUsage.PlatformContents, false, cascades.Length);
             return new CascadedShadowMapComponent(entity, depthMapArray, cascades);
+        }
+
+        private void ChangeResolution(int value)
+        {
+            value = Math.Clamp(value, 128, 4096);
+            var depthMapArray = new RenderTarget2D(this.DepthMapArray.GraphicsDevice, value, value, false, SurfaceFormat.Single, DepthFormat.Depth24, 0, RenderTargetUsage.PlatformContents, false, this.Cascades.Length);
+
+            this.DepthMapArray.Dispose();
+            this.DepthMapArray = depthMapArray;
         }
     }
 }

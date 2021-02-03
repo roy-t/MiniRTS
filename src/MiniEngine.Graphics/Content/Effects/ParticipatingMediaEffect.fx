@@ -148,7 +148,6 @@ OutputData PS(PixelData input)
 
     lightness /= steps; 
     lightness = max(lightness, MinLight);
-    
 
     // Don't show the fog if there's no light shining on it     
     output.Media = lerp(0, mediaDensity, lightness);
