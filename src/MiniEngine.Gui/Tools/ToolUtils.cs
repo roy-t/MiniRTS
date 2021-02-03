@@ -36,7 +36,7 @@ namespace MiniEngine.Gui.Tools
             ImGui.NextColumn();
             ImGui.SetNextItemWidth(-1);
 
-            var clicked = ImGui.Button(button);
+            var clicked = ImGui.SmallButton(button);
 
             ImGui.NextColumn();
             ImGui.PopID();

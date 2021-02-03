@@ -12,7 +12,7 @@ namespace MiniEngine.Gui.Tools.Vectors
 
         public override bool HeaderValue(ref Vector3 value, ToolState tool)
         {
-            ImGui.Text($"{{X: {value.X:F2} Y: {value.Y:F2} Z: {value.Z:F2}}}");
+            ImGui.Text(VectorUtils.ToShortString(value));
             return false;
         }
 

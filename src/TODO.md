@@ -6,9 +6,7 @@
 
 - Sunlight and Spotlight both use a shadow map, but the sampling is subtely different because one uses an array and the other not, can we unify this?
 
-- Rework UI, make editors for every primitive, store in a file the path to the primitive (so component.property.value....) and the range it should have. If an unknown property comes up try to find the closest match
-
-- Use ImGui.PushID("A"); and PopID to be able to use shorter names for labels without imgui thinking its the same thing!
+- Create a better editor tool for angles/yaw-pitch-roll
 
 # Ideas
 
