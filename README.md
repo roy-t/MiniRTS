@@ -28,21 +28,21 @@ In commercial game engines code is often optimized to get that last percentage o
 When I implement a technique I want to focus purely on that technique and worry as little as possible about integrating it into the game engine. In the previous version of MiniEngine I often had to write a lot of boilerplate code to integrate a new technique. This boilerplate code does not contribute to my main or sub-goals so is effectively waste. In the latest version of MiniEngine I use techniques like source-generators and dependency injection to make my life as easy as possible.
 
 # Current state
-MiniEngine is an ongoing project, I've got a lot of plans for new features, and at the same time I still have to port a few old features from the old version. 
+MiniEngine is an ongoing project, I've got a lot of plans for new features, and at the same time I still have to port the last few features from the old version.
 
 ## What's implemented?
 - An Entity/Component/System (ECS) with queries based on an entity's component signature and state (new, unchanged, changed, removed)
 - Physically Based Rendering using a linear, HDR compatible, workflow
-- Several light primitives: point, spot, image
-- Filtered shadows using PCF
+- Several light primitives: sun, point, spot, image
+- Cascaded shadow mapping, filtered using PCF
 - Tone mapping
+- Anti-aliasing using the FXAA 3.11 algorithm
+- Participating media (like fog) with shadows
 
 ## What's on the roadmap?
 - Start on documentation
-- Add all light primitives that are in vOld (directional, sun)
-- Cascaded shadow maps (already implemented in vOld)
-- FXAA (already implemented in vOld)
 - Particles (already implemented in vOld)
+- Create an example game to show how everything ties together
 
 # Running MiniEngine
 
@@ -76,7 +76,7 @@ While writing MiniEngine I consulted hundreds of blogs to figure out how to impl
 - [Tim Jones](http://timjones.io/blog/archive/2015/04/13/cascaded-shadow-maps-sample-for-monogame), especially his article and source code for cascaded shadow maps
 - [Bevy](https://bevyengine.org/news/introducing-bevy/) for their focus on being 'the most ergonomic ECS in existence'
 - [Coding Adventures](https://www.youtube.com/watch?v=r_It_X7v-1E&list=PLFt_AvWsXl0ehjAfLFsp1PGaatzAwo0uK) great video series by Sebastian Lague
-- Ziggyware, ConkerJo, CatalinZima and all the other great blogs about XNA that have are now defunct
+- Ziggyware, ConkerJo, CatalinZima and all the other great blogs about XNA that are now defunct
 
 I also get a lot of my inspiration from books, like the [Real Time Rendering](http://www.realtimerendering.com/) book and Eric Lengyel's [Foundations of Game Engine Development](http://terathon.com/blog/) series.
 
