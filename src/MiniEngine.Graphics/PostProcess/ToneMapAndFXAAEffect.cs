@@ -3,13 +3,13 @@ using MiniEngine.Graphics.Effects;
 
 namespace MiniEngine.Graphics.PostProcess
 {
-    public sealed class TonemapEffect : EffectWrapper
+    public sealed class ToneMapAndFXAAEffect : EffectWrapper
     {
         private readonly EffectParameter ColorParameter;
 
-        public TonemapEffect(EffectFactory factory) : base(factory.Load<TonemapEffect>())
+        public ToneMapAndFXAAEffect(EffectFactory factory) : base(factory.Load<ToneMapAndFXAAEffect>())
         {
-            this.Effect.CurrentTechnique = this.Effect.Techniques["ToneMapTechnique"];
+            this.Effect.CurrentTechnique = this.Effect.Techniques["ToneMapAndFXAATechnique"];
 
             this.ColorParameter = this.Effect.Parameters["Color"];
         }

@@ -10,10 +10,10 @@ namespace MiniEngine.Graphics.PostProcess
     {
         private readonly GraphicsDevice Device;
         private readonly FrameService FrameService;
-        private readonly TonemapEffect Effect;
+        private readonly ToneMapAndFXAAEffect Effect;
         private readonly PostProcessTriangle PostProcessTriangle;
 
-        public ToneMapSystem(GraphicsDevice device, PostProcessTriangle postProcessTriangle, TonemapEffect effect, FrameService frameService)
+        public ToneMapSystem(GraphicsDevice device, PostProcessTriangle postProcessTriangle, ToneMapAndFXAAEffect effect, FrameService frameService)
         {
             this.Device = device;
             this.FrameService = frameService;
@@ -34,7 +34,6 @@ namespace MiniEngine.Graphics.PostProcess
         [Process]
         public void Process()
         {
-            // TODO: always sample from Light buffer, the fog system should make sure the right data is there
             this.Effect.Color = this.FrameService.LBuffer.Light;
             this.Effect.Apply();
 

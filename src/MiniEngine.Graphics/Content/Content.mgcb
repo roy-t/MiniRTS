@@ -104,11 +104,11 @@
 /processorParam:DebugMode=Auto
 /build:Effects/SunlightEffect.fx
 
-#begin Effects/ToneMapEffect.fx
+#begin Effects/ToneMapAndFXAAEffect.fx
 /importer:EffectImporter
 /processor:EffectProcessor
 /processorParam:DebugMode=Auto
-/build:Effects/ToneMapEffect.fx
+/build:Effects/ToneMapAndFXAAEffect.fx
 
 #begin Textures/Blue.png
 /importer:TextureImporter
