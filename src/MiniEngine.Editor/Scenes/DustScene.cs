@@ -100,7 +100,7 @@ namespace MiniEngine.Editor.Scenes
 
             // Add dust
             var cube = CubeGenerator.Generate(this.Device);
-            this.Components.Add(ParticipatingMediaComponent.Create(entity, this.Device, cube, 0.5f, 4.0f, new Color(0.1f, 0.1f, 0.1f)));
+            this.Components.Add(ParticipatingMediaComponent.Create(entity, this.Device, cube, this.Device.Viewport.Width, this.Device.Viewport.Height, 4.0f, new Color(0.1f, 0.1f, 0.1f)));
             this.Components.Add(new TransformComponent(entity, Matrix.CreateScale(300.0f, 50.0f, 30.0f)));
         }
     }

@@ -124,7 +124,7 @@ OutputData PS(PixelData input)
     
     // Compute how much light is hitting the media (so how visible it is)
     float lightness = 0.0f;            
-    const uint steps = 50;
+    const uint steps = 75;
 
     // Start inside the volume
     float3 startPosition = dWorld < dBack ? world : volumeBack;

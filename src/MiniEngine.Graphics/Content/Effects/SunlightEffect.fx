@@ -48,7 +48,7 @@ OutputData PS(PixelData input)
     
     Mat material = ReadMaterial(input.Texture);
 
-    float lightFactor = ComputeLightFactor(worldPosition, depth);
+    float lightFactor = ComputeLightFactorPCF(worldPosition, depth);
     float3 Lo = float3(0.0f, 0.0f, 0.0f);
     if (lightFactor > 0)
     {

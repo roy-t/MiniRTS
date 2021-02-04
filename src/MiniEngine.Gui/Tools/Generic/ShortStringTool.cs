@@ -1,7 +1,7 @@
 ﻿using ImGuiNET;
 using MiniEngine.Configuration;
 
-namespace MiniEngine.Gui.Tools.Strings
+namespace MiniEngine.Gui.Tools.Generic
 {
     [Service]
     public sealed class ShortStringTool : ATool<string>

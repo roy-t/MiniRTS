@@ -8,7 +8,6 @@ namespace MiniEngine.Graphics.ParticipatingMedia
 {
     public sealed class ParticipatingMediaComponent : AComponent, IDisposable
     {
-        private float quality = 1.0f;
 
         public ParticipatingMediaComponent(Entity entity, Color color, float strength, GeometryData geometry, RenderTarget2D volumeFrontBuffer, RenderTarget2D volumeBackBuffer, RenderTarget2D participatingMediaBuffer)
             : base(entity)
@@ -28,7 +27,12 @@ namespace MiniEngine.Graphics.ParticipatingMedia
 
         public float LightInfluence { get; set; }
 
-        public float Quality { get => this.quality; set => this.ChangeQuality(value); }
+        public float Quality
+        {
+            get => this.ParticipatingMediaBuffer.Width / (float)this.ParticipatingMediaBuffer.GraphicsDevice.Viewport.Width;
+            set => this.ChangeResolution(value);
+        }
+
 
         public GeometryData Geometry { get; }
 
@@ -38,9 +42,9 @@ namespace MiniEngine.Graphics.ParticipatingMedia
 
         public RenderTarget2D ParticipatingMediaBuffer { get; private set; }
 
-        public static ParticipatingMediaComponent Create(Entity entity, GraphicsDevice device, GeometryData geometry, float quality, float strength, Color color)
+        public static ParticipatingMediaComponent Create(Entity entity, GraphicsDevice device, GeometryData geometry, int width, int height, float strength, Color color)
         {
-            var (front, back, media) = CreateRenderTargets(device, quality);
+            var (front, back, media) = CreateRenderTargets(device, width, height);
             return new ParticipatingMediaComponent(entity, color, strength, geometry, front, back, media);
         }
 
@@ -51,25 +55,24 @@ namespace MiniEngine.Graphics.ParticipatingMedia
             this.ParticipatingMediaBuffer.Dispose();
         }
 
-        private void ChangeQuality(float quality)
+        private void ChangeResolution(float quality)
         {
-            this.quality = Math.Clamp(quality, 0.2f, 2.0f);
-
             var device = this.ParticipatingMediaBuffer.GraphicsDevice;
+            quality = Math.Clamp(quality, 0.2f, 1.0f);
 
             this.Dispose();
 
-            var (front, back, buffer) = CreateRenderTargets(device, this.quality);
+            var width = (int)(device.Viewport.Width * quality);
+            var height = (int)(device.Viewport.Height * quality);
+
+            var (front, back, buffer) = CreateRenderTargets(device, width, height);
             this.VolumeFrontBuffer = front;
             this.VolumeBackBuffer = back;
             this.ParticipatingMediaBuffer = buffer;
         }
 
-        private static (RenderTarget2D front, RenderTarget2D back, RenderTarget2D media) CreateRenderTargets(GraphicsDevice device, float quality)
+        private static (RenderTarget2D front, RenderTarget2D back, RenderTarget2D media) CreateRenderTargets(GraphicsDevice device, int width, int height)
         {
-            var width = (int)Math.Ceiling(device.PresentationParameters.BackBufferWidth * quality);
-            var height = (int)Math.Ceiling(device.PresentationParameters.BackBufferHeight * quality);
-
             var front = new RenderTarget2D(device, width, height, false, SurfaceFormat.Single, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
             var back = new RenderTarget2D(device, width, height, false, SurfaceFormat.Single, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
             var media = new RenderTarget2D(device, width, height, false, SurfaceFormat.Single, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);

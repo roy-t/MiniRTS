@@ -46,10 +46,6 @@ namespace MiniEngine.Editor.Scenes
             var sponza = content.Load<GeometryModel>("sponza/sponza");
             this.CreateModel(sponza, Matrix.CreateScale(0.05f));
 
-            //var entity = this.EntityController.CreateEntity();
-            //return this.GetFactory<SunlightFactory>().Construct(entity, Color.White, 
-            // Vector3.Up, (Vector3.Left * 0.75f) + (Vector3.Backward * 0.1f));
-
             var entity = this.Entities.Create();
             this.Components.Add(new SunlightComponent(entity, Color.White, 3));
             this.Components.Add(CascadedShadowMapComponent.Create(entity, this.Device, 2048, DefaultCascadeDistances));
@@ -63,7 +59,7 @@ namespace MiniEngine.Editor.Scenes
 
             // Add dust
             var cube = CubeGenerator.Generate(this.Device);
-            this.Components.Add(ParticipatingMediaComponent.Create(entity, this.Device, cube, 0.5f, 4.0f, new Color(0.1f, 0.1f, 0.1f)));
+            this.Components.Add(ParticipatingMediaComponent.Create(entity, this.Device, cube, this.Device.Viewport.Width, this.Device.Viewport.Height, 4.0f, new Color(0.1f, 0.1f, 0.1f)));
             this.Components.Add(new TransformComponent(entity, Matrix.CreateScale(200, 150.0f, 120.0f)));
         }
 

@@ -43,7 +43,7 @@ float SampleShadowMapPCF(float3 shadowPosition, uint cascadeIndex)
     baseUv *= shadowMapSizeInv;
 
     float sum = 0.0f;
-
+    
     float uw0 = (4 - 3 * s);
     float uw1 = 7;
     float uw2 = (1 + 3 * s);
@@ -75,12 +75,20 @@ float SampleShadowMapPCF(float3 shadowPosition, uint cascadeIndex)
     return sum * 1.0f / 144;
 }
 
-float SampleShadowCascade(float3 shadowPosition, uint cascadeIndex)
+float SampleShadowCascade(float3 shadowPosition, uint cascadeIndex, bool filter)
 {
     shadowPosition += Offsets[cascadeIndex].xyz;
     shadowPosition *= Scales[cascadeIndex].xyz;
 
-    return SampleShadowMapPCF(shadowPosition, cascadeIndex);
+    if (filter)
+    {
+        return SampleShadowMapPCF(shadowPosition, cascadeIndex);
+    }
+    else
+    {
+        float lightDepth = shadowPosition.z - Bias;
+        return ShadowMap.SampleCmpLevelZero(ShadowSampler, float3(shadowPosition.xy, cascadeIndex), lightDepth);
+    }
 }
 
 uint GetCascadeIndex(float depth)
@@ -99,13 +107,13 @@ uint GetCascadeIndex(float depth)
     return cascadeIndex;
 }
 
-float ComputeLightFactor(float3 worldPosition, float depth)
+float ComputeLightFactorInternal(float3 worldPosition, float depth, bool filter)
 {
     float3 position = mul(float4(worldPosition, 1.0f), ShadowMatrix).xyz;
 
     uint cascadeIndex = GetCascadeIndex(depth);
 
-    float shadowVisibility = SampleShadowCascade(position, cascadeIndex);
+    float shadowVisibility = SampleShadowCascade(position, cascadeIndex, filter);
 
     float nextSplit = Splits[cascadeIndex];
     float splitSize = cascadeIndex == 0 ? nextSplit : nextSplit - Splits[cascadeIndex - 1];
@@ -114,12 +122,22 @@ float ComputeLightFactor(float3 worldPosition, float depth)
     [branch]
     if (splitDist <= BlendThreshold && cascadeIndex != NumCascades - 1)
     {
-        float nextSplitVisibility = SampleShadowCascade(position, cascadeIndex + 1);
+        float nextSplitVisibility = SampleShadowCascade(position, cascadeIndex + 1, filter);
         float lerpAmt = smoothstep(0.0f, BlendThreshold, splitDist);
         shadowVisibility = lerp(nextSplitVisibility, shadowVisibility, lerpAmt);
     }
 
     return shadowVisibility;
+}
+
+float ComputeLightFactor(float3 worldPosition, float depth)
+{
+    return ComputeLightFactorInternal(worldPosition, depth, false);
+}
+
+float ComputeLightFactorPCF(float3 worldPosition, float depth)
+{
+    return ComputeLightFactorInternal(worldPosition, depth, true);
 }
 
 #endif
