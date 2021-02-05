@@ -22,11 +22,13 @@ namespace MiniEngine.Graphics
             this.LBuffer = new LBuffer(device);
             this.PBuffer = new PBuffer(device);
 
-            this.CamereComponent = new CameraComponent(entities.Create(), new PerspectiveCamera(device.Viewport.AspectRatio));
-            components.Add(this.CamereComponent);
+            this.CameraComponent = new CameraComponent(entities.Create(), new PerspectiveCamera(device.Viewport.AspectRatio));
+            components.Add(this.CameraComponent);
         }
 
-        public CameraComponent CamereComponent { get; set; }
+        public float Elapsed { get; set; }
+
+        public CameraComponent CameraComponent { get; set; }
         public GBuffer GBuffer { get; set; }
         public LBuffer LBuffer { get; set; }
         public PBuffer PBuffer { get; set; }

@@ -56,7 +56,7 @@ namespace MiniEngine.Graphics.Geometry
             if (this.Instances.Contains(pose.Entity))
             {
                 var instances = this.Instances.Get(pose.Entity);
-                this.DrawIndexed(user, mesh.Geometry, instances);
+                this.DrawInstanced(user, mesh.Geometry, instances);
             }
             else
             {
@@ -64,7 +64,7 @@ namespace MiniEngine.Graphics.Geometry
             }
         }
 
-        private void DrawIndexed(IGeometryRendererUserBase user, GeometryData geometry, InstancingComponent instances)
+        private void DrawInstanced(IGeometryRendererUserBase user, GeometryData geometry, InstancingComponent instances)
         {
             this.InstanceBuffer.SetData(instances.VertexData);
 

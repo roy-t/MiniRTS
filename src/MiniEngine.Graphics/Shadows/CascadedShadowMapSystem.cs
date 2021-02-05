@@ -48,7 +48,7 @@ namespace MiniEngine.Graphics.Shadows
         [ProcessAll]
         public void Process(CascadedShadowMapComponent shadowMap, CameraComponent camera)
         {
-            var view = this.FrameService.CamereComponent.Camera;
+            var view = this.FrameService.CameraComponent.Camera;
             var shadowCamera = camera.Camera;
 
             var surfaceToLight = -shadowCamera.Forward;

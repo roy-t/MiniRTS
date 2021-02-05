@@ -8,6 +8,8 @@ using MiniEngine.Graphics.Geometry;
 using MiniEngine.Graphics.Geometry.Generators;
 using MiniEngine.Graphics.Lighting;
 using MiniEngine.Graphics.ParticipatingMedia;
+using MiniEngine.Graphics.Particles;
+using MiniEngine.Graphics.Particles.Functions;
 using MiniEngine.Graphics.Shadows;
 using MiniEngine.SceneManagement;
 using MiniEngine.Systems.Components;
@@ -61,6 +63,14 @@ namespace MiniEngine.Editor.Scenes
             var cube = CubeGenerator.Generate(this.Device);
             this.Components.Add(ParticipatingMediaComponent.Create(entity, this.Device, cube, this.Device.Viewport.Width, this.Device.Viewport.Height, 4.0f, new Color(0.1f, 0.1f, 0.1f)));
             this.Components.Add(new TransformComponent(entity, Matrix.CreateScale(200, 150.0f, 120.0f)));
+
+            // Add particles
+            var particle = content.Load<Texture2D>("Textures/Blue");
+            var particleEntity = this.Entities.Create();
+            this.Components.Add(new TransformComponent(particleEntity, Matrix.Identity));
+            var spawn = new IntervalSpawnFunction();
+            var update = new LinearUpdateFunction();
+            this.Components.Add(new ParticleEmitterComponent(particleEntity, spawn, update, particle.GraphicsDevice, particle));
         }
 
         private void CreateModel(GeometryModel model, Matrix transform)

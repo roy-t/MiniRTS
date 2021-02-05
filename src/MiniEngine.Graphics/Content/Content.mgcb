@@ -74,6 +74,12 @@
 /processorParam:DebugMode=Auto
 /build:Effects/ParticipatingMediaPostProcessEffect.fx
 
+#begin Effects/ParticleEffect.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Effects/ParticleEffect.fx
+
 #begin Effects/PointLightEffect.fx
 /importer:EffectImporter
 /processor:EffectProcessor

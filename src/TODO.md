@@ -6,6 +6,8 @@
 
 - Create a better editor tool for angles/yaw-pitch-roll
 
+- Real paritioning/culling: https://www.slideshare.net/DICEStudio/culling-the-battlefield-data-oriented-design-in-practice
+
 # Ideas
 
 Make a scene with many asteroids (like 10 variations instanced in different orientations). Put some sort of 'fog' in between to simulate space dust. Take the thickness from this fog from a RT where I draw over black swatches when a rocket goes over it. Add sun rays?

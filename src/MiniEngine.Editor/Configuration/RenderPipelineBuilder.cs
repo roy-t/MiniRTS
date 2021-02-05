@@ -2,6 +2,7 @@
 using MiniEngine.Graphics.Geometry;
 using MiniEngine.Graphics.Lighting;
 using MiniEngine.Graphics.ParticipatingMedia;
+using MiniEngine.Graphics.Particles;
 using MiniEngine.Graphics.PostProcess;
 using MiniEngine.Graphics.Rendering;
 using MiniEngine.Graphics.Shadows;
@@ -91,12 +92,21 @@ namespace MiniEngine.Editor.Configuration
                     .RequiresAll(Skybox)
                     .Produces(ParticipatingMedia)
                     .Build()
+                .System<ParticleSystem>()
+                    .InSequence()
+                    .RequiresAll(RenderShadows)
+                    .RequiresAll(RenderLights)
+                    .RequiresAll(Skybox)
+                    .RequiresAll(ParticipatingMedia)
+                    .Produces(Particles)
+                    .Build()
                 .System<ToneMapSystem>()
                     .InSequence()
                     .RequiresAll(RenderGeometry)
                     .RequiresAll(RenderLights)
                     .RequiresAll(ParticipatingMedia)
                     .RequiresAll(Skybox)
+                    .RequiresAll(Particles)
                     .Produces(PostProcess)
                     .Build()
                 .Build();

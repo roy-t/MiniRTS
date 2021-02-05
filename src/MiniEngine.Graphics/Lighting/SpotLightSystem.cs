@@ -63,13 +63,13 @@ namespace MiniEngine.Graphics.Lighting
         {
             var world = Matrix.Invert(shadowMapCamera.Camera.ViewProjection);
 
-            this.Effect.WorldViewProjection = world * this.FrameService.CamereComponent.Camera.ViewProjection;
-            this.Effect.CameraPosition = this.FrameService.CamereComponent.Camera.Position;
+            this.Effect.WorldViewProjection = world * this.FrameService.CameraComponent.Camera.ViewProjection;
+            this.Effect.CameraPosition = this.FrameService.CameraComponent.Camera.Position;
             this.Effect.Albedo = this.FrameService.GBuffer.Albedo;
             this.Effect.Normal = this.FrameService.GBuffer.Normal;
             this.Effect.Depth = this.FrameService.GBuffer.Depth;
             this.Effect.Material = this.FrameService.GBuffer.Material;
-            this.Effect.InverseViewProjection = Matrix.Invert(this.FrameService.CamereComponent.Camera.ViewProjection);
+            this.Effect.InverseViewProjection = Matrix.Invert(this.FrameService.CameraComponent.Camera.ViewProjection);
 
             this.Effect.Position = shadowMapCamera.Camera.Position;
             this.Effect.Color = spotLight.Color;

@@ -28,7 +28,7 @@ namespace MiniEngine.Gui.Tools.Components
         {
             if (ToolUtils.ButtonRow("Camera", "Align to view"))
             {
-                var frameCamera = this.FrameService.CamereComponent.Camera;
+                var frameCamera = this.FrameService.CameraComponent.Camera;
                 value.Move(frameCamera.Position, frameCamera.Forward);
                 return true;
             }

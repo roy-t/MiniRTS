@@ -37,7 +37,7 @@ namespace MiniEngine.Graphics.Skybox
         public void Process()
         {
             var skybox = this.FrameService.Skybox;
-            var camera = this.FrameService.CamereComponent.Camera;
+            var camera = this.FrameService.CameraComponent.Camera;
             var view = Matrix.CreateLookAt(Vector3.Zero, camera.Forward, Vector3.Up);
             var projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver2, camera.AspectRatio, 0.1f, 1.5f);
 

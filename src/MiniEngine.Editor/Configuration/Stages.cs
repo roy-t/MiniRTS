@@ -8,6 +8,7 @@
         RenderShadows,
         Skybox,
         ParticipatingMedia,
+        Particles,
         PostProcess,
     }
 }

@@ -67,6 +67,9 @@ namespace MiniEngine.Editor
 
         internal bool Update(GameTime gameTime)
         {
+            var elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            this.FrameService.Elapsed = elapsed;
+
             this.Keyboard.Update();
             this.Mouse.Update();
             if (this.Keyboard.Pressed(Keys.Escape))
@@ -86,12 +89,11 @@ namespace MiniEngine.Editor
                 this.renderUi = !this.renderUi;
             }
 
-            var elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
-            this.CameraController.Update(this.FrameService.CamereComponent.Camera, elapsed);
+            this.CameraController.Update(this.FrameService.CameraComponent.Camera, elapsed);
 
             if (this.FrameCounter.Update(gameTime))
             {
-                this.Window.Title = $"Editor :: {this.FrameCounter.MillisecondsPerFrame:F2}ms, {this.FrameCounter.FramesPerSecond} fps, {this.FrameService.GetBufferSize() * 0.000001f} MB. position: {this.FrameService.CamereComponent.Camera.Position}";
+                this.Window.Title = $"Editor :: {this.FrameCounter.MillisecondsPerFrame:F2}ms, {this.FrameCounter.FramesPerSecond} fps, {this.FrameService.GetBufferSize() * 0.000001f} MB. position: {this.FrameService.CameraComponent.Camera.Position}";
             }
 
             return true;

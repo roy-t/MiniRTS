@@ -54,12 +54,12 @@ namespace MiniEngine.Graphics.Lighting
         [ProcessAll]
         public void Process(SunlightComponent sunlight, CascadedShadowMapComponent shadowMap, CameraComponent shadowMapCamera)
         {
-            this.Effect.CameraPosition = this.FrameService.CamereComponent.Camera.Position;
+            this.Effect.CameraPosition = this.FrameService.CameraComponent.Camera.Position;
             this.Effect.Albedo = this.FrameService.GBuffer.Albedo;
             this.Effect.Normal = this.FrameService.GBuffer.Normal;
             this.Effect.Depth = this.FrameService.GBuffer.Depth;
             this.Effect.Material = this.FrameService.GBuffer.Material;
-            this.Effect.InverseViewProjection = Matrix.Invert(this.FrameService.CamereComponent.Camera.ViewProjection);
+            this.Effect.InverseViewProjection = Matrix.Invert(this.FrameService.CameraComponent.Camera.ViewProjection);
 
             this.Effect.SurfaceToLight = -shadowMapCamera.Camera.Forward;
             this.Effect.Color = sunlight.Color;

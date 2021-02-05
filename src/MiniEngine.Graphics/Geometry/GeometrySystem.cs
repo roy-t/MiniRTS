@@ -46,13 +46,13 @@ namespace MiniEngine.Graphics.Geometry
         [Process]
         public void ProcessVisibleGeometry()
         {
-            var inView = this.FrameService.CamereComponent.InView;
+            var inView = this.FrameService.CameraComponent.InView;
             this.Renderer.Draw(inView, this);
         }
 
         public void SetEffectParameters(Material material, Matrix transform)
         {
-            var camera = this.FrameService.CamereComponent.Camera;
+            var camera = this.FrameService.CameraComponent.Camera;
 
             this.Effect.CameraPosition = camera.Position;
             this.Effect.World = transform;

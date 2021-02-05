@@ -56,7 +56,7 @@ namespace MiniEngine.Graphics.Lighting
         [ProcessAll]
         public void Process(PointLightComponent pointLight, TransformComponent transform)
         {
-            var camera = this.FrameService.CamereComponent.Camera;
+            var camera = this.FrameService.CameraComponent.Camera;
 
             var radius = LightMath.LightVolumeRadius(pointLight.Strength);
             var world = Matrix.CreateScale(radius) * transform.Matrix;
@@ -66,8 +66,8 @@ namespace MiniEngine.Graphics.Lighting
                 ? this.InsideRasterizer
                 : this.OutsideRasterizer;
 
-            this.Effect.WorldViewProjection = world * this.FrameService.CamereComponent.Camera.ViewProjection;
-            this.Effect.CameraPosition = this.FrameService.CamereComponent.Camera.Position;
+            this.Effect.WorldViewProjection = world * this.FrameService.CameraComponent.Camera.ViewProjection;
+            this.Effect.CameraPosition = this.FrameService.CameraComponent.Camera.Position;
             this.Effect.Albedo = this.FrameService.GBuffer.Albedo;
             this.Effect.Normal = this.FrameService.GBuffer.Normal;
             this.Effect.Depth = this.FrameService.GBuffer.Depth;

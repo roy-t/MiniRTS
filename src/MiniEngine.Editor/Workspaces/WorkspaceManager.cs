@@ -45,7 +45,7 @@ namespace MiniEngine.Editor.Workspaces
                 workpace.Load(this.State);
             }
 
-            this.FrameService.CamereComponent.Camera.Move(this.State.CameraPosition, this.State.CameraForward);
+            this.FrameService.CameraComponent.Camera.Move(this.State.CameraPosition, this.State.CameraForward);
             this.workspace = this.Workspaces.FirstOrDefault(w => w.Key == this.State.CurrentWorkspace)
                 ?? this.Workspaces.First();
 
@@ -119,8 +119,8 @@ namespace MiniEngine.Editor.Workspaces
 
             state = state with
             {
-                CameraPosition = this.FrameService.CamereComponent.Camera.Position,
-                CameraForward = this.FrameService.CamereComponent.Camera.Forward,
+                CameraPosition = this.FrameService.CameraComponent.Camera.Position,
+                CameraForward = this.FrameService.CameraComponent.Camera.Forward,
                 CurrentWorkspace = this.workspace.Key,
                 Scene = this.SceneManager.CurrentScene
             };
