@@ -32,11 +32,13 @@ namespace MiniEngine.Graphics.Particles.Functions
 
         private Particle NewParticle(Matrix transform)
         {
+            transform.Decompose(out var scale, out _, out _);
             return new Particle()
             {
-                Transform = transform,
+                StartPosition = transform.Translation,
                 Velocity = transform.Forward * this.Velocity,
-                TimeToLive = 10.0f
+                MaxAge = 10.0f,
+                Scale = scale
             };
         }
     }

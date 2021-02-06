@@ -6,6 +6,9 @@ namespace MiniEngine.Graphics.Particles
     {
         public Matrix Transform;
         public Vector3 Velocity;
-        public float TimeToLive;
+        public Vector3 StartPosition;
+        public float Age;
+        public float MaxAge;
+        public Vector3 Scale;
     }
 }

@@ -36,11 +36,11 @@ namespace MiniEngine.Graphics.Particles
         [ProcessAll]
         public void Process(ParticleEmitterComponent emitter, TransformComponent transform)
         {
-            emitter.Update(this.FrameService.Elapsed, transform.Matrix);
+            var camera = this.FrameService.CameraComponent.Camera;
+            emitter.Update(this.FrameService.Elapsed, transform.Matrix, camera);
+
             if (emitter.Count > 0)
             {
-                var camera = this.FrameService.CameraComponent.Camera;
-
                 this.Effect.Texture = emitter.Texture;
                 this.Effect.WorldViewProjection = camera.ViewProjection;
 

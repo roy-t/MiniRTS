@@ -1,7 +1,9 @@
-﻿namespace MiniEngine.Graphics.Particles
+﻿using MiniEngine.Graphics.Camera;
+
+namespace MiniEngine.Graphics.Particles
 {
     public interface IParticleUpdateFunction
     {
-        void Update(float elapsed, ref Particle particle);
+        void Update(ref Particle particle, ICamera camera);
     }
 }

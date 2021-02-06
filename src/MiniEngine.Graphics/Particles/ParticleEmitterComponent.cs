@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MiniEngine.Graphics.Camera;
 using MiniEngine.Graphics.Geometry;
 using MiniEngine.Systems;
 
@@ -38,19 +39,20 @@ namespace MiniEngine.Graphics.Particles
 
         public VertexBuffer InstanceBuffer { get; private set; }
 
-        public void Update(float elapsed, Matrix transform)
+        public void Update(float elapsed, Matrix transform, ICamera camera)
         {
             this.RemoveOldParticles(elapsed);
             this.SpawnNewParticles(elapsed, transform);
-            this.UpdateParticles(elapsed);
+            this.UpdateParticles(camera);
         }
 
         private void RemoveOldParticles(float elapsed)
         {
             for (var i = this.Count - 1; i >= 0; i--)
             {
-                this.particles[i].TimeToLive -= elapsed;
-                if (this.particles[i].TimeToLive <= 0)
+                ref var particle = ref this.particles[i];
+                particle.Age += elapsed;
+                if (particle.Age >= particle.MaxAge)
                 {
                     this.particles[i] = this.particles[this.Count - 1];
                     this.Count--;
@@ -87,11 +89,11 @@ namespace MiniEngine.Graphics.Particles
             this.InstanceBuffer = new VertexBuffer(this.Device, InstancingVertex.Declaration, size, BufferUsage.None);
         }
 
-        private void UpdateParticles(float elapsed)
+        private void UpdateParticles(ICamera camera)
         {
             for (var i = this.Count - 1; i >= 0; i--)
             {
-                this.UpdateFunction.Update(elapsed, ref this.particles[i]);
+                this.UpdateFunction.Update(ref this.particles[i], camera);
                 this.instanceData[i] = new InstancingVertex(this.particles[i].Transform);
             }
 
