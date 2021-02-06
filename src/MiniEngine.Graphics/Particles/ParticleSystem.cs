@@ -39,14 +39,11 @@ namespace MiniEngine.Graphics.Particles
             var camera = this.FrameService.CameraComponent.Camera;
             emitter.Update(this.FrameService.Elapsed, transform.Matrix, camera);
 
-            if (emitter.Count > 0)
-            {
-                this.Effect.Texture = emitter.Texture;
-                this.Effect.WorldViewProjection = camera.ViewProjection;
+            this.Effect.Texture = emitter.Texture;
+            this.Effect.WorldViewProjection = camera.ViewProjection;
 
-                this.Effect.Apply();
-                this.Quad.RenderInstanced(this.Device, emitter.InstanceBuffer, emitter.Count);
-            }
+            this.Effect.Apply();
+            this.Quad.RenderInstanced(this.Device, emitter.Particles);
         }
     }
 }

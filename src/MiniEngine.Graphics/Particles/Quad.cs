@@ -48,6 +48,9 @@ namespace MiniEngine.Graphics.Particles
             this.Indices.SetData(indices);
         }
 
+        public void RenderInstanced(GraphicsDevice device, ParticleBuffer particles)
+            => this.RenderInstanced(device, particles.Commit(), particles.Count);
+
         public void RenderInstanced(GraphicsDevice device, VertexBuffer instances, int count)
         {
             device.SetVertexBuffers(new VertexBufferBinding(this.Vertices), new VertexBufferBinding(instances, 0, 1));
