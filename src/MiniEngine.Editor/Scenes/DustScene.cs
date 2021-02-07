@@ -4,12 +4,9 @@ using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
 using MiniEngine.ContentPipeline.Shared;
 using MiniEngine.Graphics;
-using MiniEngine.Graphics.Camera;
 using MiniEngine.Graphics.Geometry;
 using MiniEngine.Graphics.Geometry.Generators;
-using MiniEngine.Graphics.Lighting;
 using MiniEngine.Graphics.ParticipatingMedia;
-using MiniEngine.Graphics.Shadows;
 using MiniEngine.SceneManagement;
 using MiniEngine.Systems.Components;
 using MiniEngine.Systems.Entities;
@@ -48,7 +45,7 @@ namespace MiniEngine.Editor.Scenes
         public void Load(ContentStack content)
         {
             this.AddAsteroids();
-            this.AddSunlight();
+            this.AddDust();
 
             var geometry = content.Load<GeometryModel>("AsteroidField/Asteroid001");
             var entity = this.Entities.Create();
@@ -85,20 +82,10 @@ namespace MiniEngine.Editor.Scenes
             this.Components.Add(InstancingComponent.Create(entity, transforms));
         }
 
-        private void AddSunlight()
+        private void AddDust()
         {
             var entity = this.Entities.Create();
-            this.Components.Add(new SunlightComponent(entity, Color.White, 3));
-            this.Components.Add(CascadedShadowMapComponent.Create(entity, this.Device, 2048, DefaultCascadeDistances));
 
-            var position = Vector3.Up;
-            var lookAt = (Vector3.Left * 0.75f) + (Vector3.Backward * 0.1f);
-            var forward = Vector3.Normalize(lookAt - position);
-
-            var camera = new PerspectiveCamera(1.0f, position, forward);
-            this.Components.Add(new CameraComponent(entity, camera));
-
-            // Add dust
             var cube = CubeGenerator.Generate(this.Device);
             this.Components.Add(ParticipatingMediaComponent.Create(entity, this.Device, cube, this.Device.Viewport.Width, this.Device.Viewport.Height, 4.0f, new Color(0.1f, 0.1f, 0.1f)));
             this.Components.Add(new TransformComponent(entity, Matrix.CreateScale(300.0f, 50.0f, 30.0f)));

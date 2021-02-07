@@ -17,6 +17,16 @@ namespace MiniEngine.Systems.Components
             where T : AComponent
             => this.ContainerStore.GetContainer<T>().Add(component);
 
+
+        public T GetComponent<T>(Entity entity)
+            where T : AComponent
+        {
+            var store = this.ContainerStore.GetContainer<T>();
+            var component = store.Get(entity);
+
+            return component;
+        }
+
         public IReadOnlyList<AComponent> GetComponents(Entity entity)
         {
             var components = new List<AComponent>();

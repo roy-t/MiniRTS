@@ -3,14 +3,11 @@ using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
 using MiniEngine.ContentPipeline.Shared;
 using MiniEngine.Graphics;
-using MiniEngine.Graphics.Camera;
 using MiniEngine.Graphics.Geometry;
 using MiniEngine.Graphics.Geometry.Generators;
-using MiniEngine.Graphics.Lighting;
 using MiniEngine.Graphics.ParticipatingMedia;
 using MiniEngine.Graphics.Particles;
 using MiniEngine.Graphics.Particles.Functions;
-using MiniEngine.Graphics.Shadows;
 using MiniEngine.SceneManagement;
 using MiniEngine.Systems.Components;
 using MiniEngine.Systems.Entities;
@@ -49,15 +46,6 @@ namespace MiniEngine.Editor.Scenes
             this.CreateModel(sponza, Matrix.CreateScale(0.05f));
 
             var entity = this.Entities.Create();
-            this.Components.Add(new SunlightComponent(entity, Color.White, 3));
-            this.Components.Add(CascadedShadowMapComponent.Create(entity, this.Device, 2048, DefaultCascadeDistances));
-
-            var position = Vector3.Up;
-            var lookAt = (Vector3.Left * 0.75f) + (Vector3.Backward * 0.1f);
-            var forward = Vector3.Normalize(lookAt - position);
-
-            var camera = new PerspectiveCamera(1.0f, position, forward);
-            this.Components.Add(new CameraComponent(entity, camera));
 
             // Add dust
             var cube = CubeGenerator.Generate(this.Device);

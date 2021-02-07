@@ -74,8 +74,11 @@ namespace MiniEngine.Graphics.ParticipatingMedia
         }
 
         [ProcessAll]
-        public void Process(ParticipatingMediaComponent media, SunlightComponent sunlight, CascadedShadowMapComponent shadowMap, TransformComponent transform)
+        public void Process(ParticipatingMediaComponent media, TransformComponent transform)
         {
+            var shadowMap = this.FrameService.ShadowMap;
+            var sunlight = this.FrameService.Sunlight;
+
             var camera = this.FrameService.CameraComponent.Camera;
             this.RenderDensity(media, transform, camera);
             this.RenderMedia(media, shadowMap, camera);

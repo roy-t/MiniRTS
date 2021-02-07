@@ -4,6 +4,7 @@ using System.Linq;
 using ImGuiNET;
 using Microsoft.Xna.Framework;
 using MiniEngine.Configuration;
+using MiniEngine.Graphics;
 using MiniEngine.SceneManagement;
 using MiniEngine.Systems.Components;
 using MiniEngine.Systems.Entities;
@@ -14,6 +15,7 @@ namespace MiniEngine.Editor.Scenes
     public sealed class SceneManager
     {
         private readonly IReadOnlyList<IScene> Scenes;
+        private readonly FrameService FrameService;
         private readonly EntityAdministrator Entities;
         private readonly ComponentAdministrator Components;
         private readonly ContentStack Content;
@@ -21,9 +23,10 @@ namespace MiniEngine.Editor.Scenes
         private IScene? scene;
         private IScene? nextScene;
 
-        public SceneManager(EntityAdministrator entities, ComponentAdministrator components, ContentStack content, IEnumerable<IScene> scenes)
+        public SceneManager(FrameService frameService, EntityAdministrator entities, ComponentAdministrator components, ContentStack content, IEnumerable<IScene> scenes)
         {
             this.Scenes = scenes.ToList();
+            this.FrameService = frameService;
             this.Entities = entities;
             this.Components = components;
             this.Content = content;
@@ -91,12 +94,11 @@ namespace MiniEngine.Editor.Scenes
             for (var i = 0; i < entities.Count; i++)
             {
                 var entity = entities[i];
-                if (entity.Id > 1)
-                {
-                    this.Components.MarkForRemoval(entity);
-                    this.Entities.Remove(entity);
-                }
+                this.Components.MarkForRemoval(entity);
+                this.Entities.Remove(entity);
             }
+
+            this.FrameService.Reset();
         }
     }
 }

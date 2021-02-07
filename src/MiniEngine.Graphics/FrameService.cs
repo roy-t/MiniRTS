@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Linq;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
 using MiniEngine.Graphics.Camera;
 using MiniEngine.Graphics.Geometry;
 using MiniEngine.Graphics.Lighting;
 using MiniEngine.Graphics.PostProcess;
+using MiniEngine.Graphics.Shadows;
 using MiniEngine.Graphics.Skybox;
+using MiniEngine.Systems;
 using MiniEngine.Systems.Components;
 using MiniEngine.Systems.Entities;
 
@@ -15,25 +18,79 @@ namespace MiniEngine.Graphics
     [Service]
     public sealed class FrameService
     {
+        private static readonly float[] DefaultCascadeDistances =
+       {
+            0.075f,
+            0.15f,
+            0.3f,
+            1.0f
+        };
+        private readonly EntityAdministrator Entities;
+        private readonly ComponentAdministrator Components;
+        private readonly GraphicsDevice Device;
+
         public FrameService(EntityAdministrator entities, ComponentAdministrator components, GraphicsDevice device)
         {
+            this.Entities = entities;
+            this.Components = components;
+            this.Device = device;
             this.Skybox = null!;
             this.GBuffer = new GBuffer(device);
             this.LBuffer = new LBuffer(device);
             this.PBuffer = new PBuffer(device);
 
-            this.CameraComponent = new CameraComponent(entities.Create(), new PerspectiveCamera(device.Viewport.AspectRatio));
-            components.Add(this.CameraComponent);
+            this.Reset();
         }
 
         public float Elapsed { get; set; }
 
-        public CameraComponent CameraComponent { get; set; }
+        public Entity PrimaryCameraEntity { get; set; }
+
+        public CameraComponent CameraComponent => this.Components.GetComponent<CameraComponent>(this.PrimaryCameraEntity);
+
+        public Entity PrimaryLightSourceEntity { get; set; }
+
+        public SunlightComponent Sunlight => this.Components.GetComponent<SunlightComponent>(this.PrimaryLightSourceEntity);
+
+        public CascadedShadowMapComponent ShadowMap => this.Components.GetComponent<CascadedShadowMapComponent>(this.PrimaryLightSourceEntity);
+
         public GBuffer GBuffer { get; set; }
         public LBuffer LBuffer { get; set; }
         public PBuffer PBuffer { get; set; }
 
         public SkyboxGeometry Skybox { get; set; } // TODO: this field should be replaced by a service that searches for the best skybox given the objects position
+
+        public void Reset()
+        {
+            this.PrimaryCameraEntity = this.CreatePrimaryCamera();
+            this.PrimaryLightSourceEntity = this.CreatePrimaryLightSource();
+        }
+
+        private Entity CreatePrimaryCamera()
+        {
+            var entity = this.Entities.Create();
+            var cameraComponent = new CameraComponent(entity, new PerspectiveCamera(this.Device.Viewport.AspectRatio));
+            this.Components.Add(cameraComponent);
+
+            return entity;
+        }
+
+        private Entity CreatePrimaryLightSource()
+        {
+            var entity = this.Entities.Create();
+            this.Components.Add(new SunlightComponent(entity, Color.White, 3));
+            this.Components.Add(CascadedShadowMapComponent.Create(entity, this.Device, 2048, DefaultCascadeDistances));
+
+            var position = Vector3.Up;
+            var lookAt = (Vector3.Left * 0.75f) + (Vector3.Backward * 0.1f);
+            var forward = Vector3.Normalize(lookAt - position);
+
+            var camera = new PerspectiveCamera(1.0f, position, forward);
+            this.Components.Add(new CameraComponent(entity, camera));
+
+            return entity;
+        }
+
 
         public int GetBufferSize()
         {
