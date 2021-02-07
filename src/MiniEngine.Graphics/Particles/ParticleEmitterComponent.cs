@@ -6,7 +6,7 @@ using MiniEngine.Systems;
 
 namespace MiniEngine.Graphics.Particles
 {
-    public sealed class ParticleEmitterComponent : AComponent, IDisposable
+    public class ParticleEmitterComponent : AComponent, IDisposable
     {
         public ParticleEmitterComponent(Entity entity, IParticleSpawnFunction spawnFunction, IParticleUpdateFunction updateFunction, GraphicsDevice device, Texture2D texture)
             : base(entity)
