@@ -10,6 +10,9 @@
         ImageBasedLights,
         PointLights,
         SpotLights,
-        SunLights
+        SunLights,
+        Weights,
+        Averages,
+
     }
 }

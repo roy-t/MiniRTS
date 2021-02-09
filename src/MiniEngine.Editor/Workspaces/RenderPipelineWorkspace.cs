@@ -28,6 +28,8 @@ namespace MiniEngine.Editor.Workspaces
             this.RegisterTexture(nameof(frameService.GBuffer.Material), frameService.GBuffer.Material);
             this.RegisterTexture(nameof(frameService.LBuffer.Light), frameService.LBuffer.Light);
             this.RegisterTexture(nameof(frameService.PBuffer.ToneMap), frameService.PBuffer.ToneMap);
+            this.RegisterTexture(nameof(frameService.TBuffer.Albedo), frameService.TBuffer.Albedo);
+            this.RegisterTexture(nameof(frameService.TBuffer.Weights), frameService.TBuffer.Weights);
         }
 
         private void RegisterTexture(string name, Texture2D texture)

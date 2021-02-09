@@ -7,6 +7,7 @@ using MiniEngine.Graphics.PostProcess;
 using MiniEngine.Graphics.Rendering;
 using MiniEngine.Graphics.Shadows;
 using MiniEngine.Graphics.Skybox;
+using MiniEngine.Graphics.Transparency;
 using MiniEngine.Graphics.Visibility;
 using MiniEngine.Systems.Components;
 using MiniEngine.Systems.Pipeline;
@@ -100,6 +101,17 @@ namespace MiniEngine.Editor.Configuration
                     .RequiresAll(ParticipatingMedia)
                     .Produces(Particles)
                     .Build()
+                .System<TransparencyPreprocessSystem>()
+                    .InSequence()
+                    .RequiresAll(Particles)
+                    .Produces(Transparency, Weights)
+                    .Build()
+                .System<TransparencyPostprocessSystem>()
+                    .InSequence()
+                    .RequiresAll(Particles)
+                    .Requires(Transparency, Weights)
+                    .Produces(Transparency, Averages)
+                    .Build()
                 .System<ToneMapSystem>()
                     .InSequence()
                     .RequiresAll(RenderGeometry)
@@ -107,6 +119,7 @@ namespace MiniEngine.Editor.Configuration
                     .RequiresAll(ParticipatingMedia)
                     .RequiresAll(Skybox)
                     .RequiresAll(Particles)
+                    .RequiresAll(Transparency)
                     .Produces(PostProcess)
                     .Build()
                 .Build();

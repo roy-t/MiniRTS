@@ -1,6 +1,5 @@
 ﻿using System;
 using Microsoft.Xna.Framework.Graphics;
-using MiniEngine.Graphics.Geometry;
 
 namespace MiniEngine.Graphics.Particles
 {
@@ -14,7 +13,7 @@ namespace MiniEngine.Graphics.Particles
         private readonly VertexDeclaration VertexDeclaration;
 
         private Particle[] particles;
-        private InstancingVertex[] instanceData;
+        private ParticleInstancingVertex[] instanceData;
         private VertexBuffer instanceBuffer;
 
         public ParticleBuffer(GraphicsDevice device)
@@ -22,9 +21,9 @@ namespace MiniEngine.Graphics.Particles
             this.Device = device;
 
             this.particles = new Particle[InitialBufferSize];
-            this.instanceData = new InstancingVertex[this.particles.Length];
+            this.instanceData = new ParticleInstancingVertex[this.particles.Length];
 
-            this.VertexDeclaration = InstancingVertex.Declaration;
+            this.VertexDeclaration = ParticleInstancingVertex.Declaration;
             this.instanceBuffer = new VertexBuffer(this.Device, this.VertexDeclaration, this.particles.Length, BufferUsage.WriteOnly);
         }
 
@@ -53,6 +52,7 @@ namespace MiniEngine.Graphics.Particles
                 for (var i = 0; i < this.Count; i++)
                 {
                     this.instanceData[i].Transform = this.particles[i].Transform;
+                    this.instanceData[i].Color = this.particles[i].Tint.ToVector4();
                 }
 
                 this.instanceBuffer.SetData(this.instanceData, 0, this.Count);
@@ -74,7 +74,7 @@ namespace MiniEngine.Graphics.Particles
             this.particles.CopyTo(particleBuffer, 0);
             this.particles = particleBuffer;
 
-            this.instanceData = new InstancingVertex[size];
+            this.instanceData = new ParticleInstancingVertex[size];
 
             this.instanceBuffer.Dispose();
             this.instanceBuffer = new VertexBuffer(this.Device, this.VertexDeclaration, size, BufferUsage.WriteOnly);

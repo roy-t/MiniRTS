@@ -10,5 +10,6 @@ namespace MiniEngine.Graphics.Particles
         public float Age;
         public float MaxAge;
         public Vector3 Scale;
+        public Color Tint;
     }
 }

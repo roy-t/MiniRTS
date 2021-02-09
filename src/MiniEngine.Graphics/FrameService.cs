@@ -9,6 +9,7 @@ using MiniEngine.Graphics.Lighting;
 using MiniEngine.Graphics.PostProcess;
 using MiniEngine.Graphics.Shadows;
 using MiniEngine.Graphics.Skybox;
+using MiniEngine.Graphics.Transparency;
 using MiniEngine.Systems;
 using MiniEngine.Systems.Components;
 using MiniEngine.Systems.Entities;
@@ -38,6 +39,7 @@ namespace MiniEngine.Graphics
             this.GBuffer = new GBuffer(device);
             this.LBuffer = new LBuffer(device);
             this.PBuffer = new PBuffer(device);
+            this.TBuffer = new TBuffer(device);
 
             this.Reset();
         }
@@ -57,6 +59,8 @@ namespace MiniEngine.Graphics
         public GBuffer GBuffer { get; set; }
         public LBuffer LBuffer { get; set; }
         public PBuffer PBuffer { get; set; }
+
+        public TBuffer TBuffer { get; set; }
 
         public SkyboxGeometry Skybox { get; set; } // TODO: this field should be replaced by a service that searches for the best skybox given the objects position
 

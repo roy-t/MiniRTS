@@ -153,7 +153,7 @@ OutputData PS(PixelData input)
     OutputData output = (OutputData)0;
 
     float4 albedo = tex2D(albedoSampler, input.Texture);
-    clip(albedo.a - 1);
+    clip(albedo.a - 1.0f);
 
     float metalicness = tex2D(metalicnessSampler, input.Texture).r;
     float roughness = tex2D(roughnessSampler, input.Texture).r;

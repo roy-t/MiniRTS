@@ -9,6 +9,7 @@
         Skybox,
         ParticipatingMedia,
         Particles,
+        Transparency,
         PostProcess,
     }
 }
