@@ -57,14 +57,18 @@ PixelData VS_INSTANCED(in VertexData input, in ParticleInstancingData instance)
 
 OutputData PS(PixelData input)
 {
-    OutputData output = (OutputData)0;   
+    OutputData output = (OutputData)0;
+    float4 premultipliedReflect = ToLinear(tex2D(textureSampler, input.Texture)) * ToLinear(input.Tint);
+    float4 transmit = float4(0.0f, 0.0f, 0.0f, 0.0f);
 
-    float4 color = ToLinear(tex2D(textureSampler, input.Texture)) * ToLinear(input.Tint);
+    premultipliedReflect.a *= 1.0 - clamp((transmit.r + transmit.g + transmit.b) * (1.0 / 3.0), 0, 1);
+    float a = min(1.0, premultipliedReflect.a) * 8.0 + 0.01;
     float depth = input.Depth.x / input.Depth.y;
-    float w = clamp(pow(1.0f + 0.01f, 3.0) * 1e8 * pow(1.0f - depth * 0.9f, 3.0f), 1e-2, 3e3);
+    float b = -depth * 0.95 + 1.0;
+    float w = clamp(a * a * a * 1e8 * b * b * b, 1e-2, 3e2);
 
-    output.Color = float4(color.rgb * color.a, color.a) * w;
-    output.Weight = color.a;
+    output.Color = premultipliedReflect * w;
+    output.Weight = premultipliedReflect.a;
     return output;
 }
 

@@ -15,6 +15,11 @@
 
 Make a scene with many asteroids (like 10 variations instanced in different orientations). Put some sort of 'fog' in between to simulate space dust. Take the thickness from this fog from a RT where I draw over black swatches when a rocket goes over it. Add sun rays?
 
+# Transparency
+- https://casual-effects.blogspot.com/2015/03/colored-blended-order-independent.html
+- I see artefacts when multiple things with a low alpha overlap.. as if it gets even more transparent then
+- Transparency system can be used for more than just particles
+
 # Participating Media
 - Things to try
 - Maybe try a true fog formula instead of a lerp

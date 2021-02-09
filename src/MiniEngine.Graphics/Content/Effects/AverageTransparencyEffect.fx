@@ -63,11 +63,16 @@ OutputData PS(PixelData input)
     // clip if revealage >= 1.0f
     clip(0.999f - revealage);
 
-    float4 accum = tex2D(albedoSampler, input.Texture);
+    float4 accum = tex2D(albedoSampler, input.Texture);    
+
+    if (isinf(accum.r) || isinf(accum.g) || isinf(accum.b)) 
+    {
+        accum.rgb = accum.a;
+    }
+
     float3 average = accum.rgb / max(accum.a, EPSILON);
 
     output.Color = float4(average, 1.0f - revealage);
-
     return output;
 }
 
