@@ -5,6 +5,7 @@ using MiniEngine.Configuration;
 using MiniEngine.Editor.Configuration;
 using MiniEngine.Editor.Controllers;
 using MiniEngine.Editor.Scenes;
+using MiniEngine.Editor.Windows;
 using MiniEngine.Editor.Workspaces;
 using MiniEngine.Graphics;
 using MiniEngine.Graphics.PostProcess;
@@ -21,7 +22,7 @@ namespace MiniEngine.Editor
         private readonly OpaqueEffect Effect;
         private readonly PostProcessTriangle PostProcessTriangle;
         private readonly FrameService FrameService;
-        private readonly WorkspaceManager WorkspaceManager;
+        private readonly EditorWindow WorkspaceManager;
         private readonly SceneManager SceneManager;
         private readonly GameWindow Window;
         private readonly GameTimer GameTimer;
@@ -39,7 +40,7 @@ namespace MiniEngine.Editor
             OpaqueEffect effect,
             PostProcessTriangle postProcessTriangle,
             FrameService frameService,
-            WorkspaceManager workspaceManager,
+            EditorWindow workspaceManager,
             SceneManager sceneManager,
             GameWindow window,
             RenderPipelineBuilder renderPipelineBuilder,

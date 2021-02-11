@@ -13,6 +13,7 @@ namespace MiniEngine.Graphics.Transparency
         private readonly FrameService FrameService;
         private readonly PostProcessTriangle PostProcessTriangle;
         private readonly AverageTransparencyEffect Effect;
+        private readonly BlendState AverageParticleBlendState;
 
         public TransparencyPostprocessSystem(GraphicsDevice device, FrameService frameService, PostProcessTriangle postProcessTriangle, AverageTransparencyEffect effect)
         {
@@ -20,11 +21,12 @@ namespace MiniEngine.Graphics.Transparency
             this.FrameService = frameService;
             this.PostProcessTriangle = postProcessTriangle;
             this.Effect = effect;
+            this.AverageParticleBlendState = CreateAverageParticleBlendState();
         }
 
         public void OnSet()
         {
-            this.Device.BlendState = BlendState.Additive;
+            this.Device.BlendState = AverageParticleBlendState;
             this.Device.DepthStencilState = DepthStencilState.None;
             this.Device.RasterizerState = RasterizerState.CullCounterClockwise;
 
@@ -42,6 +44,19 @@ namespace MiniEngine.Graphics.Transparency
 
             this.Effect.Apply();
             this.PostProcessTriangle.Render(this.Device);
+        }
+
+
+        public static BlendState CreateAverageParticleBlendState()
+        {
+            return new BlendState()
+            {
+                AlphaSourceBlend = Blend.SourceAlpha,
+                ColorSourceBlend = Blend.SourceAlpha,
+                AlphaDestinationBlend = Blend.InverseSourceAlpha,
+                ColorDestinationBlend = Blend.InverseSourceAlpha
+            };
+
         }
     }
 }

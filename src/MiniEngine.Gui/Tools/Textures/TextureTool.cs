@@ -3,6 +3,7 @@ using ImGuiNET;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
+using MiniEngine.Gui.Windows;
 
 namespace MiniEngine.Gui.Tools.Textures
 {
@@ -11,12 +12,12 @@ namespace MiniEngine.Gui.Tools.Textures
     {
         public override string Name => "Texture";
         private readonly ImGuiRenderer GuiRenderer;
+        private readonly ImageInspectorWindow ImageInspector;
 
-        private IntPtr Active;
-
-        public TextureTool(ImGuiRenderer guiRenderer)
+        public TextureTool(ImGuiRenderer guiRenderer, ImageInspectorWindow imageInspector)
         {
             this.GuiRenderer = guiRenderer;
+            this.ImageInspector = imageInspector;
         }
 
         public override bool HeaderValue(ref Texture2D value, ToolState tool)
@@ -29,37 +30,10 @@ namespace MiniEngine.Gui.Tools.Textures
             var size = ImageUtilities.FitToBounds(value.Width, value.Height, 19, 19);
             if (ImGui.ImageButton((IntPtr)value.Tag, size, Vector2.Zero, Vector2.One, 0))
             {
-                this.Active = (IntPtr)value.Tag;
+                this.ImageInspector.SetImage(value);
             }
-
-            this.TexturePreviewWindow(value);
 
             return false;
-        }
-
-        private void TexturePreviewWindow(Texture2D value)
-        {
-            if (this.Active == (IntPtr)value.Tag)
-            {
-                var open = true;
-
-                ImGui.PushStyleVar(ImGuiStyleVar.Alpha, 1.0f);
-                if (ImGui.Begin("Texture Preview", ref open))
-                {
-
-                    var windowSize = ImageUtilities.GetWindowSize();
-                    var imageSize = ImageUtilities.FitToBounds(value.Width, value.Height, windowSize.X, windowSize.Y);
-                    ImGui.Image((IntPtr)value.Tag, imageSize);
-
-                    if (!open)
-                    {
-                        this.Active = IntPtr.Zero;
-                    }
-
-                    ImGui.End();
-                }
-                ImGui.PopStyleVar();
-            }
         }
 
         public override bool Details(ref Texture2D value, ToolState tool)

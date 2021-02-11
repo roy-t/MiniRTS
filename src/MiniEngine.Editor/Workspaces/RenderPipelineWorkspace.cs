@@ -16,6 +16,7 @@ namespace MiniEngine.Editor.Workspaces
         private readonly List<(string, Texture2D)> Buffers;
         private readonly ImGuiRenderer Renderer;
 
+
         public RenderPipelineWorkspace(ImGuiRenderer renderer, FrameService frameService, PropertyInspector propertyInspector)
         {
             this.Renderer = renderer;

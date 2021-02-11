@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using MiniEngine.Configuration;
 using Serilog;
 
@@ -14,38 +11,23 @@ namespace MiniEngine.Gui.Tools
     {
         private record ToolPair(string Key, ToolState Value);
 
-        private readonly ILogger Logger;
+        private readonly PersistentState<List<ToolPair>> State;
         private readonly Trie KnownTools;
         private readonly Dictionary<string, ToolState> Tools;
-        private readonly JsonSerializerOptions Options;
-        private static readonly string Filename = "Tools.json";
 
         public ToolLinker(ILogger logger)
         {
-            this.Logger = logger;
+            this.State = new PersistentState<List<ToolPair>>(logger, "Tools.json");
             this.KnownTools = new Trie();
             this.Tools = new Dictionary<string, ToolState>();
-            this.Options = new JsonSerializerOptions
-            {
-                IncludeFields = true,
-                NumberHandling = JsonNumberHandling.AllowNamedFloatingPointLiterals
-            };
-
             this.Deserialize();
         }
 
         public void Reset()
         {
-            try
-            {
-                File.Delete(Filename);
-                this.KnownTools.Clear();
-                this.Tools.Clear();
-            }
-            catch (Exception ex)
-            {
-                this.Logger.Error(ex, "Failed to remove {@file}", Filename);
-            }
+            this.State.Reset();
+            this.KnownTools.Clear();
+            this.Tools.Clear();
         }
 
         public void Link(Property property, ToolState tool)
@@ -77,34 +59,16 @@ namespace MiniEngine.Gui.Tools
 
         private void Serialize()
         {
-            try
-            {
-                var values = this.Tools.Select(kv => new ToolPair(kv.Key, kv.Value)).ToList();
-                var json = JsonSerializer.Serialize(values, this.Options);
-                File.WriteAllText(Filename, json);
-            }
-            catch (Exception ex)
-            {
-                this.Logger.Error(ex, "Failed to serialize {@file}", Filename);
-            }
+            var values = this.Tools.Select(kv => new ToolPair(kv.Key, kv.Value)).ToList();
+            this.State.Serialize(values);
         }
 
         private void Deserialize()
         {
-            try
+            var values = this.State.Deserialize() ?? new List<ToolPair>();
+            foreach (var tuple in values)
             {
-                var json = File.ReadAllText(Filename);
-                var values = JsonSerializer.Deserialize<List<ToolPair>>(json, this.Options)
-                    ?? new List<ToolPair>();
-
-                foreach (var tuple in values)
-                {
-                    this.Link(tuple.Key, tuple.Value);
-                }
-            }
-            catch (Exception ex)
-            {
-                this.Logger.Error(ex, "Failed to deserialize {@file}", Filename);
+                this.Link(tuple.Key, tuple.Value);
             }
         }
 
