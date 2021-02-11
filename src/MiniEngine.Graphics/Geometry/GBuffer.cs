@@ -7,10 +7,10 @@ namespace MiniEngine.Graphics.Geometry
     {
         public GBuffer(GraphicsDevice device)
         {
-            this.Albedo = RenderTargetBuilder.Build(device, SurfaceFormat.ColorSRgb, DepthFormat.Depth24);
-            this.Material = RenderTargetBuilder.Build(device, SurfaceFormat.Color);
-            this.Depth = RenderTargetBuilder.Build(device, SurfaceFormat.Single);
-            this.Normal = RenderTargetBuilder.Build(device, SurfaceFormat.HalfVector4);
+            this.Albedo = RenderTargetBuilder.Build(nameof(this.Albedo), device, SurfaceFormat.ColorSRgb, DepthFormat.Depth24);
+            this.Material = RenderTargetBuilder.Build(nameof(this.Material), device, SurfaceFormat.Color);
+            this.Depth = RenderTargetBuilder.Build(nameof(this.Depth), device, SurfaceFormat.Single);
+            this.Normal = RenderTargetBuilder.Build(nameof(this.Normal), device, SurfaceFormat.HalfVector4);
         }
 
         public RenderTarget2D Albedo { get; }

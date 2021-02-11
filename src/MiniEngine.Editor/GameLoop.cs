@@ -6,7 +6,6 @@ using MiniEngine.Editor.Configuration;
 using MiniEngine.Editor.Controllers;
 using MiniEngine.Editor.Scenes;
 using MiniEngine.Editor.Windows;
-using MiniEngine.Editor.Workspaces;
 using MiniEngine.Graphics;
 using MiniEngine.Graphics.PostProcess;
 using MiniEngine.Graphics.Utilities;
@@ -22,7 +21,7 @@ namespace MiniEngine.Editor
         private readonly OpaqueEffect Effect;
         private readonly PostProcessTriangle PostProcessTriangle;
         private readonly FrameService FrameService;
-        private readonly EditorWindow WorkspaceManager;
+        private readonly MainWindow MainWindow;
         private readonly SceneManager SceneManager;
         private readonly GameWindow Window;
         private readonly GameTimer GameTimer;
@@ -40,7 +39,7 @@ namespace MiniEngine.Editor
             OpaqueEffect effect,
             PostProcessTriangle postProcessTriangle,
             FrameService frameService,
-            EditorWindow workspaceManager,
+            MainWindow mainWindow,
             SceneManager sceneManager,
             GameWindow window,
             RenderPipelineBuilder renderPipelineBuilder,
@@ -54,7 +53,7 @@ namespace MiniEngine.Editor
             this.Effect = effect;
             this.PostProcessTriangle = postProcessTriangle;
             this.FrameService = frameService;
-            this.WorkspaceManager = workspaceManager;
+            this.MainWindow = mainWindow;
             this.SceneManager = sceneManager;
             this.Window = window;
             this.GameTimer = gameTimer;
@@ -109,7 +108,7 @@ namespace MiniEngine.Editor
 
             if (this.renderUi)
             {
-                this.WorkspaceManager.Render(gameTime);
+                this.MainWindow.Render(gameTime);
             }
         }
 
@@ -129,7 +128,7 @@ namespace MiniEngine.Editor
 
         public void Stop()
         {
-            this.WorkspaceManager.Save();
+            this.MainWindow.Save();
             this.RenderPipeline.Dispose();
         }
     }

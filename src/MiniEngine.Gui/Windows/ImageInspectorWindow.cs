@@ -65,6 +65,12 @@ namespace MiniEngine.Gui.Windows
 
         private void ShowImage(IntPtr id, Texture2D texture, ILogger logger)
         {
+            if (!string.IsNullOrWhiteSpace(texture.Name))
+            {
+                ImGui.Text(texture.Name);
+            }
+            ImGui.Text($"{texture.Width}x{texture.Height}x{texture.LevelCount} @ {texture.Format}");
+
             var windowSize = ImageUtilities.GetWindowSize();
             var imageSize = ImageUtilities.FitToBounds(texture.Width, texture.Height, windowSize.X, windowSize.Y);
             ImGui.Image(id, imageSize);

@@ -7,7 +7,7 @@ namespace MiniEngine.Graphics.Lighting
     {
         public LBuffer(GraphicsDevice device)
         {
-            this.Light = RenderTargetBuilder.Build(device, SurfaceFormat.HalfVector4);
+            this.Light = RenderTargetBuilder.Build(nameof(this.Light), device, SurfaceFormat.HalfVector4);
         }
 
         public RenderTarget2D Light { get; }

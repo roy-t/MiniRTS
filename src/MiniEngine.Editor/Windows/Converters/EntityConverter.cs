@@ -3,7 +3,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using MiniEngine.Systems;
 
-namespace MiniEngine.Editor.Workspaces.Converters
+namespace MiniEngine.Editor.Windows.Converters
 {
     public sealed class EntityConverter : JsonConverter<Entity>
     {

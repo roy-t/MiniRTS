@@ -7,7 +7,7 @@ namespace MiniEngine.Graphics.PostProcess
     {
         public PBuffer(GraphicsDevice device)
         {
-            this.ToneMap = RenderTargetBuilder.Build(device, SurfaceFormat.ColorSRgb);
+            this.ToneMap = RenderTargetBuilder.Build(nameof(this.ToneMap), device, SurfaceFormat.ColorSRgb);
         }
 
         public RenderTarget2D ToneMap { get; }

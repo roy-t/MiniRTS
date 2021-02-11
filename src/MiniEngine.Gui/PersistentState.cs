@@ -12,7 +12,10 @@ namespace MiniEngine.Gui
         private readonly string Filename;
         private readonly JsonSerializerOptions Options;
 
-        public PersistentState(ILogger logger, string filename)
+        public PersistentState(ILogger logger, params JsonConverter[] converters)
+            : this(logger, "", converters) { }
+
+        public PersistentState(ILogger logger, string filename, params JsonConverter[] converters)
         {
             this.Logger = logger;
             this.Filename = filename;
@@ -21,6 +24,11 @@ namespace MiniEngine.Gui
                 IncludeFields = true,
                 NumberHandling = JsonNumberHandling.AllowNamedFloatingPointLiterals
             };
+
+            foreach (var converter in converters)
+            {
+                this.Options.Converters.Add(converter);
+            }
         }
 
         public void Reset()
@@ -35,30 +43,46 @@ namespace MiniEngine.Gui
             }
         }
 
-        public void Serialize(T target)
+        public string Serialize(T target) => JsonSerializer.Serialize(target, this.Options);
+
+        public void Save(T target)
         {
             try
             {
-                var json = JsonSerializer.Serialize(target, this.Options);
+                var json = this.Serialize(target);
                 File.WriteAllText(this.Filename, json);
             }
             catch (Exception ex)
             {
-                this.Logger.Error(ex, "Failed to serialize {@file}", Filename);
+                this.Logger.Error(ex, "Failed to serialize {@file}", this.Filename);
             }
         }
 
-        public T? Deserialize()
+        public T? Deserialize(string json)
         {
             try
             {
-                var json = File.ReadAllText(Filename);
-                var values = JsonSerializer.Deserialize<T>(json, this.Options);
+                return JsonSerializer.Deserialize<T>(json, this.Options);
+            }
+            catch (Exception ex)
+            {
+                this.Logger.Error(ex, "Failed to deserialize {@json}", json);
+                return default;
+            }
+        }
+
+
+        public T? Load()
+        {
+            try
+            {
+                var json = File.ReadAllText(this.Filename);
+                var values = this.Deserialize(json);
                 return values;
             }
             catch (Exception ex)
             {
-                this.Logger.Error(ex, "Failed to deserialize {@file}", Filename);
+                this.Logger.Error(ex, "Failed to read {@file}", this.Filename);
             }
 
             return default;

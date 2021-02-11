@@ -17,10 +17,16 @@ namespace MiniEngine.Gui.Tools
         public ObjectTemplater()
         {
             this.Templates = new Dictionary<Type, ObjectTemplate>();
+            this.RegisterTypeType();
         }
 
         public ObjectTemplate GetTemplate(Type type)
         {
+            if (type.IsAssignableTo(typeof(Type)))
+            {
+                return this.Templates[typeof(Type)];
+            }
+
             if (!this.Templates.ContainsKey(type))
             {
                 this.RegisterObject(type);
@@ -44,6 +50,19 @@ namespace MiniEngine.Gui.Tools
                 .ToArray();
 
             var template = new ObjectTemplate(type, toString, list);
+            this.Templates.Add(type, template);
+
+        }
+
+        private void RegisterTypeType()
+        {
+            var type = typeof(Type);
+            var properties = new[]
+            {
+                new PropertyTemplate("Name", typeof(string), type.GetProperty("Name")!.GetGetMethod()!, null)
+            };
+
+            var template = new ObjectTemplate(typeof(Type), true, properties);
             this.Templates.Add(type, template);
         }
     }

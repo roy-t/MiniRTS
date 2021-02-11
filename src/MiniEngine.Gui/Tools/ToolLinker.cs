@@ -60,12 +60,12 @@ namespace MiniEngine.Gui.Tools
         private void Serialize()
         {
             var values = this.Tools.Select(kv => new ToolPair(kv.Key, kv.Value)).ToList();
-            this.State.Serialize(values);
+            this.State.Save(values);
         }
 
         private void Deserialize()
         {
-            var values = this.State.Deserialize() ?? new List<ToolPair>();
+            var values = this.State.Load() ?? new List<ToolPair>();
             foreach (var tuple in values)
             {
                 this.Link(tuple.Key, tuple.Value);

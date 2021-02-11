@@ -6,18 +6,18 @@ using MiniEngine.Gui.Windows;
 namespace MiniEngine.Editor.Windows
 {
     [Service]
-    public sealed class RenderPipelineWindow : IWindow
+    public sealed class BuffersWindow : IWindow
     {
         private readonly Tool ToolSelector;
         private readonly FrameService FrameService;
 
-        public RenderPipelineWindow(Tool toolSelector, FrameService frameService)
+        public BuffersWindow(Tool toolSelector, FrameService frameService)
         {
             this.ToolSelector = toolSelector;
             this.FrameService = frameService;
         }
 
-        public string Name => "Render Pipeline";
+        public string Name => "Buffers";
 
         public bool AllowTransparency => true;
 
