@@ -48,7 +48,7 @@ namespace MiniEngine.Gui.Tools
             var changed = Header(ref value, out var showDetails, property, tool, toolState);
             if (showDetails)
             {
-                changed |= tool.Details(ref value, toolState);
+                changed |= tool.Details(ref value, toolState, property);
                 this.ToolRow(property, toolState, tool, type);
                 ImGui.TreePop();
             }
@@ -130,7 +130,7 @@ namespace MiniEngine.Gui.Tools
 
         private void ToolRow(Property property, ToolState state, ITool tool, Type type)
         {
-            if (ToolUtils.ButtonRow($"Type: {type.Name}, Tool: {tool.Name}", "change tool"))
+            if (ToolUtils.ButtonRowWithTooltip($"Tool: {tool.Name}", $"Type: {type.Name}, Path: {property.Path}", "change tool"))
             {
                 this.Activate(property);
                 this.changingState = state;

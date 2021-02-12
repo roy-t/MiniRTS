@@ -39,7 +39,7 @@ namespace MiniEngine.Gui.Tools.Generic
             return false;
         }
 
-        public bool Details(ref object value, ToolState tool)
+        public bool Details(ref object value, ToolState tool, Property propertyPath)
         {
             var changed = false;
             var type = value.GetType();
@@ -65,7 +65,7 @@ namespace MiniEngine.Gui.Tools.Generic
                         ImGui.PushStyleVar(ImGuiStyleVar.Alpha, 1.0f);
                     }
 
-                    if (this.Tool.Change(property.Type, ref propertyValue, new Property(property.Name)))
+                    if (this.Tool.Change(property.Type, ref propertyValue, propertyPath.Dot(property.Name)))
                     {
                         property.Setter?.Invoke(value, new[] { propertyValue });
                         changed = true;

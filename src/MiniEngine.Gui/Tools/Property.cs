@@ -29,5 +29,8 @@ namespace MiniEngine.Gui.Tools
         public string Path { get; }
 
         public IntPtr Id { get; }
+
+        public Property Dot(string subProperty)
+            => new Property($"{this.Path}.{subProperty}");
     }
 }

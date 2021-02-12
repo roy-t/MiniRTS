@@ -44,6 +44,26 @@ namespace MiniEngine.Gui.Tools
             return clicked;
         }
 
+        public static bool ButtonRowWithTooltip(string name, string toolTip, string button)
+        {
+            ImGui.PushID(name.GetHashCode());
+
+            ImGui.AlignTextToFramePadding();
+            ImGui.TreeNodeEx(name, RowFlags);
+            ImGui.SameLine();
+            HelpMarker(toolTip);
+
+            ImGui.NextColumn();
+            ImGui.SetNextItemWidth(-1);
+
+            var clicked = ImGui.SmallButton(button);
+
+            ImGui.NextColumn();
+            ImGui.PopID();
+
+            return clicked;
+        }
+
         public static void TextRow(string name, string value)
         {
             ImGui.AlignTextToFramePadding();
@@ -54,6 +74,19 @@ namespace MiniEngine.Gui.Tools
             ImGui.Text(value);
 
             ImGui.NextColumn();
+        }
+
+        public static void HelpMarker(string description)
+        {
+            ImGui.TextDisabled("(?)");
+            if (ImGui.IsItemHovered())
+            {
+                ImGui.BeginTooltip();
+                ImGui.PushTextWrapPos(ImGui.GetFontSize() * 35.0f);
+                ImGui.TextUnformatted(description);
+                ImGui.PopTextWrapPos();
+                ImGui.EndTooltip();
+            }
         }
     }
 }

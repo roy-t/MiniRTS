@@ -23,7 +23,7 @@ namespace MiniEngine.Gui.Tools
 
         public virtual bool Details(ref T value, ToolState tool) => false;
 
-        public bool Details(ref object value, ToolState tool)
+        public bool Details(ref object value, ToolState tool, Property propertyPath)
         {
             var specific = (T)value;
             var changed = this.Details(ref specific, tool);

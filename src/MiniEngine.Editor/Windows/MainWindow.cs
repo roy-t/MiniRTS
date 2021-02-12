@@ -23,6 +23,8 @@ namespace MiniEngine.Editor.Windows
         private readonly Dictionary<string, bool> OpenWindows;
         private readonly PersistentState<EditorState> State;
 
+        private bool showDemoWindow;
+
         public MainWindow(ILogger logger, ImGuiRenderer gui, SceneManager sceneManager, FrameService frameService, IEnumerable<IWindow> windows)
         {
             this.Gui = gui;
@@ -46,7 +48,7 @@ namespace MiniEngine.Editor.Windows
             ImGui.DockSpaceOverViewport(ImGui.GetMainViewport(), ImGuiDockNodeFlags.PassthruCentralNode);
 
             this.RenderMainMenu();
-            this.RenderWindows();
+            this.RenderWindows();            
 
             this.Gui.AfterLayout();
         }
@@ -67,6 +69,11 @@ namespace MiniEngine.Editor.Windows
                             this.OpenWindows[window.Name] = !this.OpenWindows[window.Name];
                         }
                     }
+
+                    if(ImGui.MenuItem("DemoWindow", "", this.showDemoWindow))
+                    {
+                        this.showDemoWindow = !this.showDemoWindow;
+                    }                    
 
                     ImGui.EndMenu();
                 }
@@ -103,6 +110,11 @@ namespace MiniEngine.Editor.Windows
                         ImGui.PopStyleColor(2);
                     }
                 }
+            }
+
+            if(this.showDemoWindow)
+            {
+                ImGui.ShowDemoWindow(ref this.showDemoWindow);
             }
         }
 

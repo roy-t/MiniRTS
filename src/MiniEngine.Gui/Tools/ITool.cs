@@ -14,6 +14,6 @@ namespace MiniEngine.Gui.Tools
 
         bool HeaderValue(ref object value, ToolState tool);
 
-        bool Details(ref object value, ToolState tool);
+        bool Details(ref object value, ToolState tool, Property propertyPath);
     }
 }
