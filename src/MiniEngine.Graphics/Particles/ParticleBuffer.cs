@@ -52,7 +52,7 @@ namespace MiniEngine.Graphics.Particles
                 for (var i = 0; i < this.Count; i++)
                 {
                     this.instanceData[i].Transform = this.particles[i].Transform;
-                    this.instanceData[i].Color = this.particles[i].Tint.ToVector4();
+                    this.instanceData[i].Color = this.particles[i].Tint;
                 }
 
                 this.instanceBuffer.SetData(this.instanceData, 0, this.Count);

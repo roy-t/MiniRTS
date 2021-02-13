@@ -30,7 +30,7 @@ namespace MiniEngine.Gui.Tools.Vectors
 
         private static bool DetailsRow(string name, ref float value)
         {
-            static bool action(ref float v) => ImGui.SliderFloat(ToolUtils.NoLabel, ref v, -MathHelper.PiOver2, MathHelper.PiOver2);
+            static bool action(ref float v) => ImGui.SliderFloat(ToolUtils.NoLabel, ref v, -MathHelper.Pi, MathHelper.Pi);
             return ToolUtils.DetailsRow(name, ref value, action);
         }
     }

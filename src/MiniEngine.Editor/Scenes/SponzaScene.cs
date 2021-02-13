@@ -62,7 +62,7 @@ namespace MiniEngine.Editor.Scenes
         {
             var particle = content.Load<Texture2D>("Textures/AdditiveParticle");
             var particleEntity = this.Entities.Create();
-            this.Components.Add(new TransformComponent(particleEntity, Matrix.Identity));
+            this.Components.Add(new TransformComponent(particleEntity, Matrix.CreateTranslation(Vector3.Left * 5) * Matrix.CreateRotationX(MathHelper.PiOver2)));
             var spawn = new IntervalSpawnFunction();
             var update = new LinearUpdateFunction();
             this.Components.Add(new ParticleEmitterComponent(particleEntity, spawn, update, particle.GraphicsDevice, particle));
@@ -72,7 +72,7 @@ namespace MiniEngine.Editor.Scenes
         {
             var particle = content.Load<Texture2D>("Textures/TransparentParticle");
             var particleEntity = this.Entities.Create();
-            this.Components.Add(new TransformComponent(particleEntity, Matrix.CreateTranslation(Vector3.UnitX * 10)));
+            this.Components.Add(new TransformComponent(particleEntity, Matrix.CreateRotationX(MathHelper.PiOver2)));
             var spawn = new IntervalSpawnFunction();
             var update = new LinearUpdateFunction();
             this.Components.Add(new TransparentParticleEmitterComponent(particleEntity, spawn, update, particle.GraphicsDevice, particle));

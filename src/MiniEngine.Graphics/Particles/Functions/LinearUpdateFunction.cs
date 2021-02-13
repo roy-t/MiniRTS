@@ -5,11 +5,28 @@ namespace MiniEngine.Graphics.Particles.Functions
 {
     public sealed class LinearUpdateFunction : IParticleUpdateFunction
     {
-        public void Update(ref Particle particle, ICamera camera)
+        public float VelocityDelta { get; set; }
+
+        public float AngleDelta { get; set; }
+
+        public float AmplitudeDelta { get; set; }
+
+        public float ScaleDelta { get; set; }
+
+        public float TransparencyDelta { get; set; }
+
+        public void Update(float elapsed, ref Particle particle, ICamera camera)
         {
-            var position = particle.StartPosition + (particle.Velocity * particle.Age);
-            particle.Transform = Matrix.CreateScale(particle.Scale)
-                * ParticleMath.CreateBillboard(position, camera.View);
+            var elapsedOfMaxAge = elapsed / particle.MaxAge;
+
+            particle.Velocity += elapsedOfMaxAge * this.VelocityDelta;
+            particle.Angle += elapsedOfMaxAge * this.AngleDelta;
+            particle.Amplitude += elapsedOfMaxAge * this.AmplitudeDelta;
+            particle.Scale += elapsedOfMaxAge * this.ScaleDelta;
+            particle.Tint += Vector4.UnitW * elapsedOfMaxAge * this.TransparencyDelta;
+
+            particle.Position += particle.Velocity * elapsed * particle.Forward;
+            particle.Update(camera);
         }
     }
 }

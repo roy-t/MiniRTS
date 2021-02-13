@@ -4,6 +4,6 @@ namespace MiniEngine.Graphics.Particles
 {
     public interface IParticleUpdateFunction
     {
-        void Update(ref Particle particle, ICamera camera);
+        void Update(float elapsed, ref Particle particle, ICamera camera);
     }
 }

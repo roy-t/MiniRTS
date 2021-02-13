@@ -30,7 +30,7 @@ namespace MiniEngine.Graphics.Particles
         {
             this.RemoveOldParticles(elapsed);
             this.SpawnNewParticles(elapsed, transform);
-            this.UpdateParticles(camera);
+            this.UpdateParticles(elapsed, camera);
         }
 
         private void RemoveOldParticles(float elapsed)
@@ -49,11 +49,11 @@ namespace MiniEngine.Graphics.Particles
         private void SpawnNewParticles(float elapsed, Matrix transform)
             => this.Particles.Add(this.SpawnFunction.Spawn(elapsed, transform));
 
-        private void UpdateParticles(ICamera camera)
+        private void UpdateParticles(float elapsed, ICamera camera)
         {
             for (var i = this.Particles.Count - 1; i >= 0; i--)
             {
-                this.UpdateFunction.Update(ref this.Particles[i], camera);
+                this.UpdateFunction.Update(elapsed, ref this.Particles[i], camera);
             }
         }
 

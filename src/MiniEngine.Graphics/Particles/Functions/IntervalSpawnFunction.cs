@@ -9,16 +9,28 @@ namespace MiniEngine.Graphics.Particles.Functions
 
         public IntervalSpawnFunction()
         {
-            this.SpawnInterval = 1.0f;
             this.Velocity = 1.0f;
+            this.Angle = 0.0f;
+            this.Amplitude = 0.0f;
+            this.Scale = 1.0f;
             this.Tint = Color.White;
+            this.MaxAge = 10.0f;
+            this.SpawnInterval = 1.0f;
         }
-
-        public float SpawnInterval { get; set; }
 
         public float Velocity { get; set; }
 
+        public float Angle { get; set; }
+
+        public float Amplitude { get; set; }
+
+        public float Scale { get; set; }
+
         public Color Tint { get; set; }
+
+        public float MaxAge { get; set; }
+
+        public float SpawnInterval { get; set; }
 
         public Particle[] Spawn(float elapsed, Matrix transform)
         {
@@ -35,14 +47,19 @@ namespace MiniEngine.Graphics.Particles.Functions
 
         private Particle NewParticle(Matrix transform)
         {
-            transform.Decompose(out var scale, out _, out _);
             return new Particle()
             {
-                StartPosition = transform.Translation,
-                Velocity = transform.Forward * this.Velocity,
-                MaxAge = 10.0f,
-                Scale = scale,
-                Tint = this.Tint
+                Transform = Matrix.Identity,
+                Forward = transform.Forward,
+                Up = transform.Up,
+                Position = transform.Translation,
+                Velocity = this.Velocity,
+                Angle = this.Angle,
+                Amplitude = this.Amplitude,
+                Scale = this.Scale,
+                Tint = this.Tint.ToVector4(),
+                Age = 0.0f,
+                MaxAge = this.MaxAge
             };
         }
     }
