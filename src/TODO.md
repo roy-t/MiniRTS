@@ -8,8 +8,6 @@
 
 - Real paritioning/culling: https://www.slideshare.net/DICEStudio/culling-the-battlefield-data-oriented-design-in-practice
 
-- Transparency system can be used for more than just particles
-
 
 # Ideas
 
@@ -19,6 +17,7 @@ Make a scene with many asteroids (like 10 variations instanced in different orie
 - https://casual-effects.blogspot.com/2015/03/colored-blended-order-independent.html
 - I see artefacts when multiple things with a low alpha overlap.. as if it gets even more transparent then
 - Transparency system can be used for more than just particles
+- Transparent particles sometimes overlap additive particles, can we combine both systems?
 
 # Participating Media
 - Things to try

@@ -59,9 +59,7 @@ OutputData PS(PixelData input)
 {
     OutputData output = (OutputData)0;
     float4 premultipliedReflect = ToLinear(tex2D(textureSampler, input.Texture)) * ToLinear(input.Tint);
-    float4 transmit = float4(0.0f, 0.0f, 0.0f, 0.0f);
 
-    premultipliedReflect.a *= 1.0 - clamp((transmit.r + transmit.g + transmit.b) * (1.0 / 3.0), 0, 1);
     float a = min(1.0, premultipliedReflect.a) * 8.0 + 0.01;
     float depth = input.Depth.x / input.Depth.y;
     float b = -depth * 0.95 + 1.0;
