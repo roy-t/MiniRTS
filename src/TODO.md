@@ -8,6 +8,7 @@
 
 - Real paritioning/culling: https://www.slideshare.net/DICEStudio/culling-the-battlefield-data-oriented-design-in-practice
 
+- Make texture picker for particles
 
 # Ideas
 
