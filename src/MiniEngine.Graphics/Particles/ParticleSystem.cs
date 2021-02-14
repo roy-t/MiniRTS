@@ -34,16 +34,21 @@ namespace MiniEngine.Graphics.Particles
         }
 
         [ProcessAll]
-        public void Process(ParticleEmitterComponent emitter, TransformComponent transform)
+        public void Process(ParticleFountainComponent fountain, TransformComponent transform)
         {
             var camera = this.FrameService.CameraComponent.Camera;
-            emitter.Update(this.FrameService.Elapsed, transform.Matrix, camera);
+            fountain.Update(this.FrameService.Elapsed, transform.Matrix, camera);
 
-            this.Effect.Texture = emitter.Texture;
-            this.Effect.WorldViewProjection = camera.ViewProjection;
+            for (var i = 0; i < fountain.Emitters.Count; i++)
+            {
+                var emitter = fountain.Emitters[i];
 
-            this.Effect.Apply();
-            this.Quad.RenderInstanced(this.Device, emitter.Particles);
+                this.Effect.Texture = emitter.Texture;
+                this.Effect.WorldViewProjection = camera.ViewProjection;
+
+                this.Effect.Apply();
+                this.Quad.RenderInstanced(this.Device, emitter.Particles);
+            }
         }
     }
 }

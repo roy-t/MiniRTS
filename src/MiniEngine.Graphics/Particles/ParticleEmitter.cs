@@ -6,16 +6,14 @@ using MiniEngine.Systems;
 
 namespace MiniEngine.Graphics.Particles
 {
-    public class ParticleEmitterComponent : AComponent, IDisposable
+    public sealed class ParticleEmitter : IDisposable
     {
-        public ParticleEmitterComponent(Entity entity, IParticleSpawnFunction spawnFunction, IParticleUpdateFunction updateFunction, GraphicsDevice device, Texture2D texture)
-            : base(entity)
+        public ParticleEmitter(ParticleBuffer particles, Texture2D texture, IParticleSpawnFunction spawnFunction, IParticleUpdateFunction updateFunction)
         {
+            this.Particles = particles;
+            this.Texture = texture;
             this.SpawnFunction = spawnFunction;
             this.UpdateFunction = updateFunction;
-            this.Texture = texture;
-
-            this.Particles = new ParticleBuffer(device);
         }
 
         public ParticleBuffer Particles { get; }
@@ -33,7 +31,7 @@ namespace MiniEngine.Graphics.Particles
             this.UpdateParticles(elapsed, camera);
         }
 
-        private void RemoveOldParticles(float elapsed)
+        public void RemoveOldParticles(float elapsed)
         {
             for (var i = this.Particles.Count - 1; i >= 0; i--)
             {
@@ -46,10 +44,10 @@ namespace MiniEngine.Graphics.Particles
             }
         }
 
-        private void SpawnNewParticles(float elapsed, Matrix transform)
+        public void SpawnNewParticles(float elapsed, Matrix transform)
             => this.Particles.Add(this.SpawnFunction.Spawn(elapsed, transform));
 
-        private void UpdateParticles(float elapsed, ICamera camera)
+        public void UpdateParticles(float elapsed, ICamera camera)
         {
             for (var i = this.Particles.Count - 1; i >= 0; i--)
             {

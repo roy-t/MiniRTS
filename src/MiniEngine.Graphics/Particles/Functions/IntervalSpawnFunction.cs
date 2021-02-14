@@ -54,10 +54,11 @@ namespace MiniEngine.Graphics.Particles.Functions
                 Up = transform.Up,
                 Position = transform.Translation,
                 Velocity = this.Velocity,
-                Angle = this.Angle,
+                Screw = this.Angle,
                 Amplitude = this.Amplitude,
                 Scale = this.Scale,
-                Tint = this.Tint.ToVector4(),
+                Tint = this.Tint,
+                Alpha = 1.0f,
                 Age = 0.0f,
                 MaxAge = this.MaxAge
             };

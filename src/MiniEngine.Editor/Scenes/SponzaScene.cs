@@ -65,7 +65,11 @@ namespace MiniEngine.Editor.Scenes
             this.Components.Add(new TransformComponent(particleEntity, Matrix.CreateTranslation(Vector3.Left * 5) * Matrix.CreateRotationX(MathHelper.PiOver2)));
             var spawn = new IntervalSpawnFunction();
             var update = new LinearUpdateFunction();
-            this.Components.Add(new ParticleEmitterComponent(particleEntity, spawn, update, particle.GraphicsDevice, particle));
+
+            var component = new ParticleFountainComponent(particleEntity, particle.GraphicsDevice);
+            component.AddEmitter(particle, spawn, update);
+
+            this.Components.Add(component);
         }
 
         private void TransparentParticles(ContentStack content)
@@ -75,7 +79,11 @@ namespace MiniEngine.Editor.Scenes
             this.Components.Add(new TransformComponent(particleEntity, Matrix.CreateRotationX(MathHelper.PiOver2)));
             var spawn = new IntervalSpawnFunction();
             var update = new LinearUpdateFunction();
-            this.Components.Add(new TransparentParticleEmitterComponent(particleEntity, spawn, update, particle.GraphicsDevice, particle));
+
+            var component = new TransparentParticleFountainComponent(particleEntity, particle.GraphicsDevice);
+            component.AddEmitter(particle, spawn, update);
+
+            this.Components.Add(component);
         }
 
         private void CreateModel(GeometryModel model, Matrix transform)
