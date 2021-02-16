@@ -22,5 +22,6 @@ Make a scene with many asteroids (like 10 variations instanced in different orie
 
 # Participating Media
 - Things to try
-- Maybe try a true fog formula instead of a lerp
 - Add depth/normal input to weigh bilinear upscale in ParticipatingMediaPostProcessEffect.fx
+- Right now if a part of the media is in the shadow it is as if the media is less dense. This simulates dust particles in the air.
+However for fog it would be better if this should just make the fog darker. Try how that looks?

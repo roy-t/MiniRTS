@@ -74,7 +74,6 @@ float random(float2 uv)
     return tex2Dlod(noiseSampler, sa).r;
 }
 
-
 float2 ReadVolume(float2 uv)
 {
     float f = tex2D(volumeFrontSampler, uv).r;
@@ -150,7 +149,7 @@ OutputData PS(PixelData input)
     lightness = max(lightness, MinLight);
 
     // Don't show the fog if there's no light shining on it     
-    output.Media = lerp(0, mediaDensity, lightness);
+    output.Media = mediaDensity * lightness;
     return output;
 }
 

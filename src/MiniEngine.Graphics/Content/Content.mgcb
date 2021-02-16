@@ -10,7 +10,7 @@
 
 #-------------------------------- References --------------------------------#
 
-/reference:..\bin\Debug\net5.0-windows\MiniEngine.ContentPipeline.dll
+/reference:..\..\MiniEngine.ContentPipeline\bin\Debug\netstandard2.0\MiniEngine.ContentPipeline.dll
 
 #---------------------------------- Content ---------------------------------#
 
@@ -487,6 +487,11 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Particles/muzzle_05.png
+
+#begin Particles/particles.pack
+/importer:TexturePackImporter
+/processor:PassThroughProcessor
+/build:Particles/particles.pack
 
 #begin Particles/scorch_01.png
 /importer:TextureImporter
