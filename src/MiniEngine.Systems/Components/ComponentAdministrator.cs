@@ -44,6 +44,21 @@ namespace MiniEngine.Systems.Components
             return components;
         }
 
+        public IReadOnlyList<T> GetComponents<T>()
+            where T : AComponent
+        {
+            var components = new List<T>();
+
+            var container = this.ContainerStore.GetContainer<T>();
+            for (var i = 0; i < container.All.Count; i++)
+            {
+                var component = container.All[i];
+                components.Add(component);
+            }
+
+            return components;
+        }
+
         public void MarkForRemoval(Entity entity)
         {
             var containers = this.ContainerStore.GetAllContainers();

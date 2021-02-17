@@ -43,7 +43,7 @@ namespace MiniEngine.Graphics.Transparency
             var camera = this.FrameService.CameraComponent.Camera;
             fountain.Update(this.FrameService.Elapsed, transform.Matrix, camera);
 
-            for(var i = 0; i < fountain.Emitters.Count; i++)
+            for (var i = 0; i < fountain.Emitters.Count; i++)
             {
                 var emitter = fountain.Emitters[i];
                 this.Effect.Texture = emitter.Texture;
@@ -51,7 +51,7 @@ namespace MiniEngine.Graphics.Transparency
 
                 this.Effect.Apply();
                 this.Quad.RenderInstanced(this.Device, emitter.Particles);
-            }            
+            }
         }
 
         private static BlendState CreateWeightedParticleBlendState()

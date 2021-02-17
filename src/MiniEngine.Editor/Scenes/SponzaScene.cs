@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
-using MiniEngine.ContentPipeline.Packs;
 using MiniEngine.ContentPipeline.Shared;
 using MiniEngine.Graphics;
 using MiniEngine.Graphics.Geometry;
@@ -46,9 +45,6 @@ namespace MiniEngine.Editor.Scenes
         {
             var sponza = content.Load<GeometryModel>("sponza/sponza");
             this.CreateModel(sponza, Matrix.CreateScale(0.05f));
-
-
-            var foo = content.Load<TexturePack>("Particles/particles");
 
             var entity = this.Entities.Create();
 

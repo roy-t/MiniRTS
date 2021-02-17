@@ -25,10 +25,7 @@ namespace MiniEngine.Gui.Tools.Textures
 
         public override bool HeaderValue(ref Texture2D value, ToolState tool)
         {
-            if (value.Tag == null)
-            {
-                value.Tag = this.GuiRenderer.BindTexture(value);
-            }
+            this.GuiRenderer.BindTexture(value);
 
             var previewSize = new Vector2(Math.Clamp(tool.X, MinPreviewSize, MaxPreviewSize), Math.Clamp(tool.Y, MinPreviewSize, MaxPreviewSize));
 

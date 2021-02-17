@@ -19,17 +19,19 @@ namespace MiniEngine.Editor.Windows
         private readonly ImGuiRenderer Gui;
         private readonly SceneManager SceneManager;
         private readonly FrameService FrameService;
+        private readonly WindowService WindowService;
         private readonly IReadOnlyList<IWindow> Windows;
         private readonly Dictionary<string, bool> OpenWindows;
         private readonly PersistentState<EditorState> State;
 
         private bool showDemoWindow;
 
-        public MainWindow(ILogger logger, ImGuiRenderer gui, SceneManager sceneManager, FrameService frameService, IEnumerable<IWindow> windows)
+        public MainWindow(ILogger logger, ImGuiRenderer gui, SceneManager sceneManager, FrameService frameService, WindowService windowService, IEnumerable<IWindow> windows)
         {
             this.Gui = gui;
             this.SceneManager = sceneManager;
             this.FrameService = frameService;
+            this.WindowService = windowService;
             this.Windows = windows.ToList();
             this.OpenWindows = new Dictionary<string, bool>();
 
@@ -40,6 +42,8 @@ namespace MiniEngine.Editor.Windows
 
             this.State = new PersistentState<EditorState>(logger, "EditorWindow.json");
             this.Deserialize();
+
+            this.WindowService.OpenWindowEvent += (o, e) => this.OpenWindows[e.Name] = true;
         }
 
         public void Render(GameTime gameTime)
@@ -48,7 +52,7 @@ namespace MiniEngine.Editor.Windows
             ImGui.DockSpaceOverViewport(ImGui.GetMainViewport(), ImGuiDockNodeFlags.PassthruCentralNode);
 
             this.RenderMainMenu();
-            this.RenderWindows();            
+            this.RenderWindows();
 
             this.Gui.AfterLayout();
         }
@@ -70,10 +74,10 @@ namespace MiniEngine.Editor.Windows
                         }
                     }
 
-                    if(ImGui.MenuItem("DemoWindow", "", this.showDemoWindow))
+                    if (ImGui.MenuItem("DemoWindow", "", this.showDemoWindow))
                     {
                         this.showDemoWindow = !this.showDemoWindow;
-                    }                    
+                    }
 
                     ImGui.EndMenu();
                 }
@@ -112,7 +116,7 @@ namespace MiniEngine.Editor.Windows
                 }
             }
 
-            if(this.showDemoWindow)
+            if (this.showDemoWindow)
             {
                 ImGui.ShowDemoWindow(ref this.showDemoWindow);
             }

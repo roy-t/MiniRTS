@@ -94,7 +94,8 @@ namespace MiniEngine.Gui
             }
 
             // Bind the new texture to an ImGui-friendly id
-            this.fontTextureId = this.BindTexture(tex2d);
+            this.BindTexture(tex2d);
+            this.fontTextureId = (IntPtr)tex2d.Tag;
 
             // Let ImGui know where to find the texture
             io.Fonts.SetTexID(this.fontTextureId.Value);
@@ -105,13 +106,14 @@ namespace MiniEngine.Gui
         /// Creates a pointer to a texture, which can be passed through ImGui calls such as <see
         /// cref="ImGui.Image"/>. That pointer is then used by ImGui to let us know what texture to draw
         /// </summary>
-        public IntPtr BindTexture(Texture2D texture)
+        public void BindTexture(Texture2D texture)
         {
-            var id = new IntPtr(this.textureId++);
-
-            this.LoadedTextures.Add(id, texture);
-
-            return id;
+            if (texture.Tag == null)
+            {
+                var id = new IntPtr(this.textureId++);
+                texture.Tag = id;
+                this.LoadedTextures.Add(id, texture);
+            }
         }
 
         /// <summary>

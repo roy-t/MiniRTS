@@ -8,8 +8,6 @@ static const uint NumCascades = 4;
 Texture2DArray ShadowMap : register(t0);
 SamplerComparisonState ShadowSampler : register(s0);
 
-float4x4 ShadowViewProjection;
-
 float4x4 ShadowMatrix;
 float Splits[NumCascades];
 float4 Offsets[NumCascades];
