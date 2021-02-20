@@ -18,13 +18,6 @@ namespace MiniEngine.Editor.Scenes
     [Service]
     public sealed class SponzaScene : IScene
     {
-        private static readonly float[] DefaultCascadeDistances =
-        {
-            0.075f,
-            0.15f,
-            0.3f,
-            1.0f
-        };
         private readonly GraphicsDevice Device;
         private readonly SkyboxSceneService Skybox;
         private readonly EntityAdministrator Entities;
@@ -76,8 +69,9 @@ namespace MiniEngine.Editor.Scenes
         {
             var particle = content.Load<Texture2D>("Textures/TransparentParticle");
             var particleEntity = this.Entities.Create();
-            this.Components.Add(new TransformComponent(particleEntity, Matrix.CreateRotationX(MathHelper.PiOver2)));
-            var spawn = new IntervalSpawnFunction();
+
+            this.Components.Add(new TransformComponent(particleEntity, new Vector3(-7.0f, 0.0f, 8.0f), Vector3.One, 0.0f, MathHelper.PiOver2));
+            var spawn = new IntervalSpawnFunction() { SpawnInterval = 0.4f };
             var update = new LinearUpdateFunction();
 
             var component = new TransparentParticleFountainComponent(particleEntity, particle.GraphicsDevice);
