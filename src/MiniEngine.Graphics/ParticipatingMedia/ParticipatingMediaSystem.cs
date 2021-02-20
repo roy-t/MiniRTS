@@ -22,7 +22,6 @@ namespace MiniEngine.Graphics.ParticipatingMedia
         private readonly ParticipatingMediaPostProcessEffect PostProcessEffect;
         private readonly PostProcessTriangle PostProcessTriangle;
         private readonly FrameService FrameService;
-        private readonly SamplerState ShadowMapSampler;
         private readonly Texture2D Noise;
         private readonly Texture2D DitherPattern;
         private readonly RasterizerState FrontRasterizerState;
@@ -39,15 +38,6 @@ namespace MiniEngine.Graphics.ParticipatingMedia
 
             this.Noise = content.Load<Texture2D>("Textures/BlueNoise");
             this.DitherPattern = content.Load<Texture2D>("Textures/DitherPattern");
-            this.ShadowMapSampler = new SamplerState
-            {
-                AddressU = TextureAddressMode.Clamp,
-                AddressV = TextureAddressMode.Clamp,
-                AddressW = TextureAddressMode.Clamp,
-                Filter = TextureFilter.Anisotropic,
-                ComparisonFunction = CompareFunction.LessEqual,
-                FilterMode = TextureFilterMode.Comparison
-            };
 
             this.FrontRasterizerState = new RasterizerState
             {
@@ -103,7 +93,7 @@ namespace MiniEngine.Graphics.ParticipatingMedia
 
         private void RenderMedia(ParticipatingMediaComponent media, CascadedShadowMapComponent shadowMap, ICamera camera)
         {
-            this.Device.SamplerStates[0] = this.ShadowMapSampler;
+            this.Device.SamplerStates[0] = this.MediaEffect.Shadows.ShadowMapSampler;
 
             this.Device.SetRenderTarget(media.ParticipatingMediaBuffer);
             this.Device.Clear(ClearOptions.Target, Color.Black, 1.0f, 0);
@@ -116,11 +106,12 @@ namespace MiniEngine.Graphics.ParticipatingMedia
             this.MediaEffect.CameraPosition = camera.Position;
             this.MediaEffect.Strength = media.Strength;
 
-            this.MediaEffect.ShadowMap = shadowMap.DepthMapArray;
-            this.MediaEffect.ShadowMatrix = shadowMap.GlobalShadowMatrix;
-            this.MediaEffect.Splits = shadowMap.Splits;
-            this.MediaEffect.Offsets = shadowMap.Offsets;
-            this.MediaEffect.Scales = shadowMap.Scales;
+            this.MediaEffect.Shadows.ShadowMap = shadowMap.DepthMapArray;
+            this.MediaEffect.Shadows.ShadowMatrix = shadowMap.GlobalShadowMatrix;
+            this.MediaEffect.Shadows.Splits = shadowMap.Splits;
+            this.MediaEffect.Shadows.Offsets = shadowMap.Offsets;
+            this.MediaEffect.Shadows.Scales = shadowMap.Scales;
+
             this.MediaEffect.ViewDistance = camera.FarPlane;
             this.MediaEffect.MinLight = 0.1f;
 

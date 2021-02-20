@@ -17,24 +17,12 @@ namespace MiniEngine.Graphics.Lighting
         private readonly SunlightEffect Effect;
         private readonly PostProcessTriangle PostProcessTriangle;
 
-        private readonly SamplerState ShadowMapSampler;
-
         public SunlightSystem(GraphicsDevice device, PostProcessTriangle postProcessTriangle, SunlightEffect effect, FrameService frameService)
         {
             this.Device = device;
             this.FrameService = frameService;
             this.PostProcessTriangle = postProcessTriangle;
             this.Effect = effect;
-
-            this.ShadowMapSampler = new SamplerState
-            {
-                AddressU = TextureAddressMode.Clamp,
-                AddressV = TextureAddressMode.Clamp,
-                AddressW = TextureAddressMode.Clamp,
-                Filter = TextureFilter.Anisotropic,
-                ComparisonFunction = CompareFunction.LessEqual,
-                FilterMode = TextureFilterMode.Comparison
-            };
         }
 
         public void OnSet()
@@ -42,7 +30,7 @@ namespace MiniEngine.Graphics.Lighting
             this.Device.BlendState = BlendState.Additive;
             this.Device.DepthStencilState = DepthStencilState.None;
             this.Device.RasterizerState = RasterizerState.CullCounterClockwise;
-            this.Device.SamplerStates[0] = this.ShadowMapSampler;
+            this.Device.SamplerStates[0] = this.Effect.Shadows.ShadowMapSampler;
             this.Device.SamplerStates[1] = SamplerState.LinearClamp;
             this.Device.SamplerStates[2] = SamplerState.LinearClamp;
             this.Device.SamplerStates[3] = SamplerState.LinearClamp;
@@ -65,12 +53,11 @@ namespace MiniEngine.Graphics.Lighting
             this.Effect.Color = sunlight.Color;
             this.Effect.Strength = sunlight.Strength;
 
-            this.Effect.ShadowMap = shadowMap.DepthMapArray;
-
-            this.Effect.ShadowMatrix = shadowMap.GlobalShadowMatrix;
-            this.Effect.Splits = shadowMap.Splits;
-            this.Effect.Offsets = shadowMap.Offsets;
-            this.Effect.Scales = shadowMap.Scales;
+            this.Effect.Shadows.ShadowMap = shadowMap.DepthMapArray;
+            this.Effect.Shadows.ShadowMatrix = shadowMap.GlobalShadowMatrix;
+            this.Effect.Shadows.Splits = shadowMap.Splits;
+            this.Effect.Shadows.Offsets = shadowMap.Offsets;
+            this.Effect.Shadows.Scales = shadowMap.Scales;
 
             this.Effect.Apply();
             this.PostProcessTriangle.Render(this.Device);

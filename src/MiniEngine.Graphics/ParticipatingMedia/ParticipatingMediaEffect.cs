@@ -14,12 +14,6 @@ namespace MiniEngine.Graphics.Shadows
         private readonly EffectParameter CameraPositionParameter;
         private readonly EffectParameter StrengthParameter;
 
-        private readonly EffectParameter ShadowMapParameter;
-        private readonly EffectParameter ShadowMatrixParameter;
-        private readonly EffectParameter SplitsParameter;
-        private readonly EffectParameter OffsetsParameter;
-        private readonly EffectParameter ScalesParameter;
-
         private readonly EffectParameter ViewDistanceParameter;
         private readonly EffectParameter MinLightParameter;
 
@@ -34,13 +28,11 @@ namespace MiniEngine.Graphics.Shadows
             this.DepthParameter = this.Effect.Parameters["Depth"];
             this.CameraPositionParameter = this.Effect.Parameters["CameraPosition"];
             this.StrengthParameter = this.Effect.Parameters["Strength"];
-            this.ShadowMapParameter = this.Effect.Parameters["ShadowMap"];
-            this.ShadowMatrixParameter = this.Effect.Parameters["ShadowMatrix"];
-            this.SplitsParameter = this.Effect.Parameters["Splits"];
-            this.OffsetsParameter = this.Effect.Parameters["Offsets"];
-            this.ScalesParameter = this.Effect.Parameters["Scales"];
+
             this.ViewDistanceParameter = this.Effect.Parameters["ViewDistance"];
             this.MinLightParameter = this.Effect.Parameters["MinLight"];
+
+            this.Shadows = new CascadedShadowMapParameters(this.Effect);
         }
 
         public Texture2D Noise { set => this.NoiseParameter.SetValue(value); }
@@ -55,22 +47,14 @@ namespace MiniEngine.Graphics.Shadows
 
         public Vector3 CameraPosition { set => this.CameraPositionParameter.SetValue(value); }
 
-
         public float Strength { set => this.StrengthParameter.SetValue(value); }
-
-        public Texture2D ShadowMap { set => this.ShadowMapParameter.SetValue(value); }
-
-        public Matrix ShadowMatrix { set => this.ShadowMatrixParameter.SetValue(value); }
-
-        public float[] Splits { set => this.SplitsParameter.SetValue(value); }
-
-        public Vector4[] Offsets { set => this.OffsetsParameter.SetValue(value); }
-
-        public Vector4[] Scales { set => this.ScalesParameter.SetValue(value); }
 
         public float ViewDistance { set => this.ViewDistanceParameter.SetValue(value); }
 
         public float MinLight { set => this.MinLightParameter.SetValue(value); }
+
+
+        public CascadedShadowMapParameters Shadows { get; }
     }
 }
 

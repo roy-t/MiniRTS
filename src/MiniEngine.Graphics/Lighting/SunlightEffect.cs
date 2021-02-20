@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Graphics.Effects;
+using MiniEngine.Graphics.Shadows;
 
 namespace MiniEngine.Graphics.Lighting
 {
@@ -17,16 +18,10 @@ namespace MiniEngine.Graphics.Lighting
         private readonly EffectParameter SurfaceToLightParameter;
         private readonly EffectParameter ColorParameter;
         private readonly EffectParameter StrengthParameter;
-        private readonly EffectParameter ShadowMapParameter;
-        private readonly EffectParameter ShadowMatrixParameter;
-        private readonly EffectParameter SplitsParameter;
-        private readonly EffectParameter OffsetsParameter;
-        private readonly EffectParameter ScalesParameter;
 
         public SunlightEffect(EffectFactory factory) : base(factory.Load<SunlightEffect>())
         {
             this.Effect.CurrentTechnique = this.Effect.Techniques["SunlightTechnique"];
-            //this.Effect.CurrentTechnique = this.Effect.Techniques["DebugTechnique"];
 
             this.AlbedoParameter = this.Effect.Parameters["Albedo"];
             this.NormalParameter = this.Effect.Parameters["Normal"];
@@ -37,11 +32,8 @@ namespace MiniEngine.Graphics.Lighting
             this.SurfaceToLightParameter = this.Effect.Parameters["SurfaceToLight"];
             this.ColorParameter = this.Effect.Parameters["Color"];
             this.StrengthParameter = this.Effect.Parameters["Strength"];
-            this.ShadowMapParameter = this.Effect.Parameters["ShadowMap"];
-            this.ShadowMatrixParameter = this.Effect.Parameters["ShadowMatrix"];
-            this.SplitsParameter = this.Effect.Parameters["Splits"];
-            this.OffsetsParameter = this.Effect.Parameters["Offsets"];
-            this.ScalesParameter = this.Effect.Parameters["Scales"];
+
+            this.Shadows = new CascadedShadowMapParameters(this.Effect);
         }
 
         public Texture2D Albedo { set => this.AlbedoParameter.SetValue(value); }
@@ -62,15 +54,6 @@ namespace MiniEngine.Graphics.Lighting
 
         public float Strength { set => this.StrengthParameter.SetValue(value); }
 
-        public Texture2D ShadowMap { set => this.ShadowMapParameter.SetValue(value); }
-
-        public Matrix ShadowMatrix { set => this.ShadowMatrixParameter.SetValue(value); }
-
-        public float[] Splits { set => this.SplitsParameter.SetValue(value); }
-
-        public Vector4[] Offsets { set => this.OffsetsParameter.SetValue(value); }
-
-        public Vector4[] Scales { set => this.ScalesParameter.SetValue(value); }
-
+        public CascadedShadowMapParameters Shadows { get; }
     }
 }
