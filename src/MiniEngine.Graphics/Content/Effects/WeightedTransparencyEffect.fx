@@ -18,6 +18,7 @@ struct PixelData
     float2 Depth : TEXCOORD1;
     float LightFactor : TEXCOORD2;
     float4 Tint : TEXCOORD3;
+    float4 WorldPosition : TEXCOORD4;
 };
 
 struct OutputData
@@ -47,9 +48,11 @@ PixelData VS_INSTANCED(in VertexData input, in ParticleInstancingData instance)
 
     float4x4 offsetT = transpose(instance.Offset);
     float4 worldPosition = mul(float4(input.Position, 1), offsetT);
+    output.WorldPosition = worldPosition;
 
-    float depth = distance(worldPosition.xyz, CameraPosition);
-    float lightFactor = ComputeLightFactor(worldPosition.xyz, depth);  
+    float4 world2 = worldPosition / worldPosition.w;
+    float depth = distance(CameraPosition, world2.xyz);
+    float lightFactor = ComputeLightFactor(world2.xyz, depth);
 
     output.Position = mul(worldPosition, WorldViewProjection);
     output.Texture = input.Texture;
@@ -65,15 +68,18 @@ OutputData PS(PixelData input)
 {
     OutputData output = (OutputData)0;
     float4 premultipliedReflect = ToLinear(tex2D(textureSampler, input.Texture)) * ToLinear(input.Tint);
-    premultipliedReflect.rgb *= input.LightFactor;
 
-    float a = min(1.0, premultipliedReflect.a) * 8.0 + 0.01;
     float depth = input.Depth.x / input.Depth.y;
+    float a = min(1.0, premultipliedReflect.a) * 8.0 + 0.01;    
     float b = -depth * 0.95 + 1.0;
     float w = clamp(a * a * a * 1e8 * b * b * b, 1e-2, 3e2);
+    
+    float lightFactor = ComputeLightFactor(input.WorldPosition.xyz, 300);
+    premultipliedReflect.rgb *= lightFactor; // TODO: why doesn't it work well with `input.LightFactor;` ???
 
     output.Color = premultipliedReflect * w;
     output.Weight = premultipliedReflect.a;
+  
     return output;
 }
 

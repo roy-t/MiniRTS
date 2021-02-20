@@ -70,7 +70,7 @@ namespace MiniEngine.Editor.Scenes
             var particle = content.Load<Texture2D>("Textures/TransparentParticle");
             var particleEntity = this.Entities.Create();
 
-            this.Components.Add(new TransformComponent(particleEntity, new Vector3(-46.0f, 0.0f, 0.0f), Vector3.One, 0.0f, MathHelper.PiOver2));
+            this.Components.Add(new TransformComponent(particleEntity, new Vector3(-44.0f, 0.0f, 0.0f), Vector3.One, 0.0f, MathHelper.PiOver2));
             var spawn = new IntervalSpawnFunction() { SpawnInterval = 0.4f };
             var update = new LinearUpdateFunction();
 

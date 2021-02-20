@@ -22,6 +22,7 @@ namespace MiniEngine.Graphics.Lighting
         public SunlightEffect(EffectFactory factory) : base(factory.Load<SunlightEffect>())
         {
             this.Effect.CurrentTechnique = this.Effect.Techniques["SunlightTechnique"];
+            //this.Effect.CurrentTechnique = this.Effect.Techniques["DebugTechnique"];
 
             this.AlbedoParameter = this.Effect.Parameters["Albedo"];
             this.NormalParameter = this.Effect.Parameters["Normal"];
