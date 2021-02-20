@@ -30,7 +30,8 @@ namespace MiniEngine.Graphics.Transparency
             this.Device.DepthStencilState = DepthStencilState.DepthRead;
             this.Device.RasterizerState = RasterizerState.CullCounterClockwise;
 
-            this.Device.SamplerStates[0] = SamplerState.LinearClamp;
+            this.Device.SamplerStates[0] = this.Effect.Shadows.ShadowMapSampler;
+            this.Device.SamplerStates[1] = SamplerState.LinearClamp;
 
             // Set the albedo target only for the depth buffer
             this.Device.SetRenderTargets(this.FrameService.GBuffer.Albedo, this.FrameService.TBuffer.Albedo, this.FrameService.TBuffer.Weights);
@@ -41,7 +42,17 @@ namespace MiniEngine.Graphics.Transparency
         public void Process(TransparentParticleFountainComponent fountain, TransformComponent transform)
         {
             var camera = this.FrameService.CameraComponent.Camera;
+            var shadowMap = this.FrameService.ShadowMap;
+
             fountain.Update(this.FrameService.Elapsed, transform.Matrix, camera);
+
+            this.Effect.CameraPosition = camera.Position;
+
+            this.Effect.Shadows.ShadowMap = shadowMap.DepthMapArray;
+            this.Effect.Shadows.ShadowMatrix = shadowMap.GlobalShadowMatrix;
+            this.Effect.Shadows.Splits = shadowMap.Splits;
+            this.Effect.Shadows.Offsets = shadowMap.Offsets;
+            this.Effect.Shadows.Scales = shadowMap.Scales;
 
             for (var i = 0; i < fountain.Emitters.Count; i++)
             {
