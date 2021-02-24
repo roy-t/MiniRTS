@@ -13,8 +13,9 @@ struct VertexData
 struct PixelData
 {
     float4 Position : SV_POSITION;
-    float4 WorldPosition: TEXCOORD0;
-    float2 Texture : TEXCOORD1;
+    float4 ScreenPosition: TEXCOORD0;
+    float3 WorldPosition: TEXCOORD1;
+    float2 Texture : TEXCOORD2;
     float3 Normal : NORMAL0;
 };
 
@@ -96,7 +97,9 @@ PixelData VS(in VertexData input)
 
     output.Position = mul(float4(input.Position, 1), WorldViewProjection);
     output.Texture = input.Texture;
-    output.WorldPosition = output.Position;
+
+    output.ScreenPosition = output.Position;
+    output.WorldPosition = input.Position;
 
     float3x3 rotation = (float3x3)World;
     output.Normal = normalize(mul(input.Normal, rotation));
@@ -112,7 +115,9 @@ PixelData VS_INSTANCED(in VertexData input, in InstancingData instance)
 
     output.Position = mul(mul(float4(input.Position, 1), offsetT), WorldViewProjection);
     output.Texture = input.Texture;
-    output.WorldPosition = output.Position;
+
+    output.ScreenPosition = output.Position;
+    output.WorldPosition = input.Position;
 
     float3x3 rotation = (float3x3)World;
     output.Normal = normalize(mul(input.Normal, rotation));
@@ -161,9 +166,9 @@ OutputData PS(PixelData input)
 
     output.Albedo = ToLinear(albedo);
     output.Material = float4(metalicness, roughness, ambientOcclusion, 1.0f);
-    output.Depth = input.WorldPosition.z / input.WorldPosition.w;
+    output.Depth = input.ScreenPosition.z / input.ScreenPosition.w;
 
-    float3 V = normalize(CameraPosition - input.WorldPosition.xyz);
+    float3 V = normalize(CameraPosition - input.WorldPosition);    
     float3 normal = PerturbNormal(input.Normal, V, input.Texture);
     output.Normal = float4(PackNormal(normal), 1.0f);
 

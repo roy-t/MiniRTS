@@ -47,7 +47,7 @@ namespace MiniEngine.Graphics.Volumes
             var camera = this.FrameService.CameraComponent.Camera;
             var material = volume.Material;
 
-            this.Effect.CameraPosition = camera.Forward; // TODO: HACK HACK HACK 
+            this.Effect.CameraPosition = camera.Position; // TODO: HACK HACK HACK 
             this.Effect.World = transform.Matrix;
             this.Effect.WorldViewProjection = transform.Matrix * camera.ViewProjection;
             this.Effect.Albedo = material.Albedo;

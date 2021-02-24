@@ -13,9 +13,10 @@ struct VertexData
 struct PixelData
 {
     float4 Position : SV_POSITION;
-    float4 WorldPosition: TEXCOORD0;
-    float2 Texture : TEXCOORD1;
-    float3 Coordinates : TEXCOORD2;
+    float4 ScreenPosition: TEXCOORD0;
+    float3 WorldPosition: TEXCOORD1;
+    float2 Texture : TEXCOORD2;
+    float3 Coordinates : TEXCOORD3;
     float3 CoordinateNormal : NORMAL1;
     float3 Normal : NORMAL0;
 };
@@ -98,7 +99,9 @@ PixelData VS(in VertexData input)
 
     output.Position = mul(float4(input.Position, 1), WorldViewProjection);
     output.Texture = input.Texture;
-    output.WorldPosition = output.Position;
+    
+    output.ScreenPosition = output.Position;
+    output.WorldPosition = input.Position;
 
     output.Coordinates = input.Position;
     output.CoordinateNormal = input.Normal;
@@ -174,37 +177,33 @@ static const float4 F[] =
 // https://stackoverflow.com/questions/4248090/finding-the-length-of-a-ray-within-a-cube
 // TODO: this assumes the ray starts somewhere randomly
 // we only need to check tExit since we start on a position on the cube
-float DistanceInsideCube(float4 rayOrigin, float3 rayDirection)
+float DistanceInsideCube(float3 rayOrigin, float3 rayDirection)
 {    
-    float tEntry = FLT_MIN;
-    float tExit = FLT_MAX;
-
+    float tExit = 99;
     float3x3 rotation = (float3x3)World;
+
+    rayOrigin = mul(rayOrigin, rotation).xyz;
 
     for (int i = 0; i < 6; i++)
     {                
         float3 normal = normalize(mul(F[i].xyz, rotation));
         float3 center = mul(F[i], World).xyz;
 
-        float k = length(center);
-        float t = (k - dot(rayOrigin, normal) / dot(rayDirection, normal));
-
-        float e = dot(rayDirection, normal);
-        if (abs(e) < EPSILON)
-            continue;
-
-        if (e < 0)
+        float denom = dot(normal, rayDirection);
+        if (abs(denom) > EPSILON)
         {
-            tEntry = max(tEntry, t);
-        }
-        else
-        {
-            tExit = min(tExit, t);
+            float t = dot((center - rayOrigin), normal) / denom;
+
+            float ee = dot(normal, rayDirection); // can also do above if sure
+
+            if (t >= 0 && ee >= 0)
+            {
+                tExit = min(t, tExit);
+            }
         }
     }
 
-    return max(max(tExit, 0) - max(tEntry, 0), 0);
-    //return max(tExit, 0);
+    return tExit;
 }
 
 float DistanceToLine(float3 p, float3 lineStart, float3 lineEnd)
@@ -224,7 +223,7 @@ float2 VolumeToTexture(float3 volume)
 
     float x = (xs + 1.0f) / 2.0f;
 
-    return float2(x, y);
+    return float2(x, 1.0f - y);
 }
 
 
@@ -240,66 +239,71 @@ OutputData PS(PixelData input)
 
     output.Albedo = ToLinear(albedo);
     output.Material = float4(metalicness, roughness, ambientOcclusion, 1.0f);
-    output.Depth = input.WorldPosition.z / input.WorldPosition.w;
+    output.Depth = input.ScreenPosition.z / input.ScreenPosition.w;
 
-    float3 V = normalize(CameraPosition - input.WorldPosition.xyz);
+    float3 V = normalize(CameraPosition - input.WorldPosition);
     float3 normal = PerturbNormal(input.Normal, V, input.Texture);
     output.Normal = float4(PackNormal(normal), 1.0f);
     // END STANDARD STUFF
 
 
     // TODO: Assume a unit cube for now
-    float4 startPosition = input.WorldPosition;
-    float3 direction = CameraPosition;
+    float3 startPosition = input.Coordinates.xyz;
+    //float3 direction = CameraPosition;
 
-    //float3 direction = normalize(input.WorldPosition.xyz - CameraPosition);
+    float3 direction = normalize(input.WorldPosition - CameraPosition);
     
     float t = DistanceInsideCube(startPosition, direction);
-    output.Albedo = float4(t, t, t, max(output.Albedo.a, 1.0f));
+    //output.Albedo = float4(t, t, t, max(output.Albedo.a, 1.0f));
 
-    //float3 endPosition = startPosition + direction * t;
+    float3 endPosition = startPosition + direction * t;
 
-    //float3 accum = float3(0.0f, 0.0f, 0.0f);
-    //float weight = 0.0f;
-    //float step = 10;
-    //for (int i = 0; i < step; i++)
-    //{
-    //    float fraction = i / step;
-    //    float3 position = lerp(startPosition, endPosition, fraction);
+    float3 accum = float3(0.0f, 0.0f, 0.0f);
+    float weight = 0.0f;
+    float step = 100;
+    for (int i = 0; i < step; i++)
+    {
+        float fraction = i / step;
+        float3 position = lerp(startPosition, endPosition, fraction);
 
-    //    float2 uv = VolumeToTexture(position);
-    //    float4 color = ToLinear(tex2D(albedoSampler, uv));
+        float2 uv = VolumeToTexture(position);
+        float4 color = ToLinear(tex2D(albedoSampler, uv));
 
-    //    if (color.a > 0.0f)
-    //    {
-    //        accum += color.rgb;
-    //        weight += 1.0f;
-    //    }
-    //}
+        if (color.a > 0.0f)
+        {
+            accum += color.rgb;
+            weight += 1.0f;
+        }
+    }
 
-    //if (weight > 0.0f)
-    //{
-    //    output.Albedo = float4(accum.rgb / weight, 1.0f);
-    //}    
-    //
-    //if (input.Coordinates.x > 0 && input.Coordinates.x < 0.01f)
-    //{
-    //    output.Albedo = float4(1, 0, 0, 1);
-    //}
-    //else if (input.Coordinates.y > 0 && input.Coordinates.y < 0.01f)
-    //{
-    //    output.Albedo = float4(0, 1, 0, 1);
-    //}
-    //else if (input.Coordinates.z > 0 && input.Coordinates.z < 0.01f)
-    //{
-    //    output.Albedo = float4(0, 0, 1, 1);
-    //}
-    //else if (weight <= 0.0f)
-    //{
-    //   // clip(-1);
-    //}
-    //
+    if (weight > 0.0f)
+    {
+        output.Albedo = float4(accum.rgb / weight, 1.0f);
+    }    
+    
+    if (input.Coordinates.x > 0 && input.Coordinates.x < 0.01f)
+    {
+        output.Albedo = float4(1, 0, 0, 1);
+    }
+    else if (input.Coordinates.y > 0 && input.Coordinates.y < 0.01f)
+    {
+        output.Albedo = float4(0, 1, 0, 1);
+    }
+    else if (input.Coordinates.z > 0 && input.Coordinates.z < 0.01f)
+    {
+        output.Albedo = float4(0, 0, 1, 1);
+    }
+    else if (weight <= 0.0f)
+    {
+       //clip(-1);
+    }
 
+    if (t < 1.1f)
+    {
+        output.Albedo = float4(1.0f, 0, 0, max(output.Albedo.a, 1.0f));
+    }
+
+    
 
     return output;
 }
