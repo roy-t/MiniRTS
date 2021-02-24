@@ -99,7 +99,7 @@ PixelData VS(in VertexData input)
     output.Texture = input.Texture;
 
     output.ScreenPosition = output.Position;
-    output.WorldPosition = input.Position;
+    output.WorldPosition = mul(float4(input.Position, 1), World).xyz;
 
     float3x3 rotation = (float3x3)World;
     output.Normal = normalize(mul(input.Normal, rotation));
@@ -117,7 +117,7 @@ PixelData VS_INSTANCED(in VertexData input, in InstancingData instance)
     output.Texture = input.Texture;
 
     output.ScreenPosition = output.Position;
-    output.WorldPosition = input.Position;
+    output.WorldPosition = mul(float4(input.Position, 1), World).xyz;
 
     float3x3 rotation = (float3x3)World;
     output.Normal = normalize(mul(input.Normal, rotation));
@@ -167,8 +167,7 @@ OutputData PS(PixelData input)
     output.Albedo = ToLinear(albedo);
     output.Material = float4(metalicness, roughness, ambientOcclusion, 1.0f);
     output.Depth = input.ScreenPosition.z / input.ScreenPosition.w;
-
-    float3 V = normalize(CameraPosition - input.WorldPosition);    
+    float3 V = normalize(CameraPosition - input.WorldPosition);       
     float3 normal = PerturbNormal(input.Normal, V, input.Texture);
     output.Normal = float4(PackNormal(normal), 1.0f);
 

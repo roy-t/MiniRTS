@@ -101,7 +101,7 @@ PixelData VS(in VertexData input)
     output.Texture = input.Texture;
     
     output.ScreenPosition = output.Position;
-    output.WorldPosition = input.Position;
+    output.WorldPosition = mul(float4(input.Position, 1), World).xyz;
 
     output.Coordinates = input.Position;
     output.CoordinateNormal = input.Normal;
@@ -295,15 +295,8 @@ OutputData PS(PixelData input)
     }
     else if (weight <= 0.0f)
     {
-       //clip(-1);
+       clip(-1);
     }
-
-    if (t < 1.1f)
-    {
-        output.Albedo = float4(1.0f, 0, 0, max(output.Albedo.a, 1.0f));
-    }
-
-    
 
     return output;
 }
