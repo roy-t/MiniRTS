@@ -122,6 +122,12 @@
 /processorParam:DebugMode=Auto
 /build:Effects/ToneMapAndFXAAEffect.fx
 
+#begin Effects/VolumeEffect.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Effects/VolumeEffect.fx
+
 #begin Effects/WeightedTransparencyEffect.fx
 /importer:EffectImporter
 /processor:EffectProcessor

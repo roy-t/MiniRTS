@@ -31,6 +31,10 @@ namespace MiniEngine.Editor.Scenes
 
         public Texture2D PlasticPixel => this.CreatePixel(Color.Black, "Plastic");
 
+        public Texture2D VisiblePixel => this.AmbientOcclussionPixel(1.0f);
+
+        public Texture2D OccludedPixel => this.AmbientOcclussionPixel(0.0f);
+
         public Texture2D AlbedoPixel(Color color)
             => this.CreatePixel(color, "Albedo");
 

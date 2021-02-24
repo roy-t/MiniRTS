@@ -3,7 +3,7 @@
     public enum Stages
     {
         Initialization,
-        RenderGeometry,
+        RenderGBuffer,
         RenderLights,
         RenderShadows,
         Skybox,

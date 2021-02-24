@@ -13,6 +13,7 @@
         SunLights,
         Weights,
         Averages,
-
+        Geometry,
+        Volumes,
     }
 }

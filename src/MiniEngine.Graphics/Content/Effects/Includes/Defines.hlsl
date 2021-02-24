@@ -10,4 +10,7 @@ static const float ONE_OVER_PI = 0.31830988618379067153776752674503f;
 static const float ONE_OVER_TWO_PI = 0.15915494309189533576888376337251f;
 static const float EPSILON = 0.00000001f;
 
+static const float FLT_MAX = 3.402823466e+38;
+static const float FLT_MIN = 1.175494351e-38;
+
 #endif

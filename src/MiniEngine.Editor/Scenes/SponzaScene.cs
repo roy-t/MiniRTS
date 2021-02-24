@@ -9,6 +9,7 @@ using MiniEngine.Graphics.ParticipatingMedia;
 using MiniEngine.Graphics.Particles;
 using MiniEngine.Graphics.Particles.Functions;
 using MiniEngine.Graphics.Transparency;
+using MiniEngine.Graphics.Volumes;
 using MiniEngine.SceneManagement;
 using MiniEngine.Systems.Components;
 using MiniEngine.Systems.Entities;
@@ -22,13 +23,15 @@ namespace MiniEngine.Editor.Scenes
         private readonly SkyboxSceneService Skybox;
         private readonly EntityAdministrator Entities;
         private readonly ComponentAdministrator Components;
+        private readonly GeneratedAssets Assets;
 
-        public SponzaScene(GraphicsDevice device, SkyboxSceneService skybox, EntityAdministrator entities, ComponentAdministrator components)
+        public SponzaScene(GraphicsDevice device, SkyboxSceneService skybox, EntityAdministrator entities, ComponentAdministrator components, GeneratedAssets assets)
         {
             this.Device = device;
             this.Skybox = skybox;
             this.Entities = entities;
             this.Components = components;
+            this.Assets = assets;
         }
 
         public void RenderMainMenuItems()
@@ -48,7 +51,22 @@ namespace MiniEngine.Editor.Scenes
 
             AdditiveParticles(content);
             TransparentParticles(content);
-            // Add 
+
+            AddVolume(content);
+        }
+
+        private void AddVolume(ContentStack content)
+        {
+            var entity = this.Entities.Create();
+
+            var transform = new TransformComponent(entity, new Vector3(25, 10, 0), Vector3.One);
+            this.Components.Add(transform);
+
+            var albedo = content.Load<Texture2D>("Particles/muzzle_01");
+
+            var material = new Material(albedo, this.Assets.NormalPixel(), this.Assets.PlasticPixel, this.Assets.RoughnessPixel(0.5f), this.Assets.VisiblePixel);
+            var volume = new VolumeComponent(entity, material);
+            this.Components.Add(volume);
         }
 
         private void AdditiveParticles(ContentStack content)
