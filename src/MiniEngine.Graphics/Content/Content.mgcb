@@ -1183,6 +1183,18 @@
 /processorParam:TextureFormat=Color
 /build:Textures/Red.png
 
+#begin Textures/solid_smoke.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Textures/solid_smoke.png
+
 #begin Textures/TransparentParticle.png
 /importer:TextureImporter
 /processor:TextureProcessor

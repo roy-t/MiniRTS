@@ -249,8 +249,6 @@ OutputData PS(PixelData input)
 
     // TODO: Assume a unit cube for now
     float3 startPosition = input.Coordinates.xyz;
-    //float3 direction = CameraPosition;
-
     float3 direction = normalize(input.WorldPosition - CameraPosition);
     
     float t = DistanceInsideCube(startPosition, direction);
@@ -269,35 +267,16 @@ OutputData PS(PixelData input)
         float2 uv = VolumeToTexture(position);
         float4 color = ToLinear(tex2D(albedoSampler, uv));
 
-        if (color.a > 0.0f)
+        if (color.a > 0.2f)
         {
             accum += color.rgb;
             weight += 1.0f;
         }
     }
 
-    if (weight > 0.0f)
-    {
-        output.Albedo = float4(accum.rgb / weight, 1.0f);
-    }    
+    clip(weight - 1.0f);
+    output.Albedo = float4(accum.rgb / weight, 1.0f);
     
-    if (input.Coordinates.x > 0 && input.Coordinates.x < 0.01f)
-    {
-        output.Albedo = float4(1, 0, 0, 1);
-    }
-    else if (input.Coordinates.y > 0 && input.Coordinates.y < 0.01f)
-    {
-        output.Albedo = float4(0, 1, 0, 1);
-    }
-    else if (input.Coordinates.z > 0 && input.Coordinates.z < 0.01f)
-    {
-        output.Albedo = float4(0, 0, 1, 1);
-    }
-    else if (weight <= 0.0f)
-    {
-       clip(-1);
-    }
-
     return output;
 }
 

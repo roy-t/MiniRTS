@@ -27,7 +27,7 @@ namespace MiniEngine.Graphics.Volumes
         {
             this.Device.BlendState = BlendState.Opaque;
             this.Device.DepthStencilState = DepthStencilState.Default;
-            this.Device.RasterizerState = RasterizerState.CullCounterClockwise; // Reverse cull if inside?
+            this.Device.RasterizerState = RasterizerState.CullCounterClockwise;
             this.Device.SamplerStates[0] = SamplerState.AnisotropicWrap;
             this.Device.SamplerStates[1] = SamplerState.AnisotropicWrap;
             this.Device.SamplerStates[2] = SamplerState.AnisotropicWrap;
@@ -47,7 +47,7 @@ namespace MiniEngine.Graphics.Volumes
             var camera = this.FrameService.CameraComponent.Camera;
             var material = volume.Material;
 
-            this.Effect.CameraPosition = camera.Position; // TODO: HACK HACK HACK 
+            this.Effect.CameraPosition = camera.Position;
             this.Effect.World = transform.Matrix;
             this.Effect.WorldViewProjection = transform.Matrix * camera.ViewProjection;
             this.Effect.Albedo = material.Albedo;

@@ -62,7 +62,7 @@ namespace MiniEngine.Editor.Scenes
             var transform = new TransformComponent(entity, new Vector3(25, 10, 0), Vector3.One);
             this.Components.Add(transform);
 
-            var albedo = content.Load<Texture2D>("Particles/muzzle_01");
+            var albedo = content.Load<Texture2D>("Textures/solid_smoke");
 
             var material = new Material(albedo, this.Assets.NormalPixel(), this.Assets.PlasticPixel, this.Assets.RoughnessPixel(0.5f), this.Assets.VisiblePixel);
             var volume = new VolumeComponent(entity, material);
