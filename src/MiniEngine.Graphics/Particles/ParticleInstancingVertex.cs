@@ -9,21 +9,14 @@ namespace MiniEngine.Graphics.Particles
     {
         public static readonly VertexDeclaration Declaration = new VertexDeclaration
         (
-            new VertexElement(0, VertexElementFormat.Vector4, VertexElementUsage.TextureCoordinate, 1),
-            new VertexElement(16, VertexElementFormat.Vector4, VertexElementUsage.TextureCoordinate, 2),
-            new VertexElement(32, VertexElementFormat.Vector4, VertexElementUsage.TextureCoordinate, 3),
-            new VertexElement(48, VertexElementFormat.Vector4, VertexElementUsage.TextureCoordinate, 4),
-            new VertexElement(64, VertexElementFormat.Vector4, VertexElementUsage.TextureCoordinate, 5)
+            new VertexElement(0, VertexElementFormat.Vector3, VertexElementUsage.Position, 1),
+            new VertexElement(12, VertexElementFormat.Color, VertexElementUsage.Color, 1),
+            new VertexElement(16, VertexElementFormat.Single, VertexElementUsage.TextureCoordinate, 1)
         );
 
-        public Matrix Transform;
-        public Vector4 Color;
-
-        public ParticleInstancingVertex(Matrix transform, Color color)
-        {
-            this.Transform = transform;
-            this.Color = color.ToVector4();
-        }
+        public Vector3 Position;
+        public Color Color;
+        public float Scale;
 
         public VertexDeclaration VertexDeclaration => Declaration;
     }

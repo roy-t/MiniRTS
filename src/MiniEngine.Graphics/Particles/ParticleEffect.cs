@@ -6,18 +6,19 @@ namespace MiniEngine.Graphics.Particles
 {
     public sealed class ParticleEffect : EffectWrapper
     {
-        private readonly EffectParameter TextureParameter;
         private readonly EffectParameter WorldViewProjectionParameter;
+        private readonly EffectParameter ViewParameter;
 
         public ParticleEffect(EffectFactory factory) : base(factory.Load<ParticleEffect>())
         {
             this.Effect.CurrentTechnique = this.Effect.Techniques["ParticleTechnique"];
-            this.TextureParameter = this.Effect.Parameters["Texture"];
             this.WorldViewProjectionParameter = this.Effect.Parameters["WorldViewProjection"];
+            this.ViewParameter = this.Effect.Parameters["View"];
         }
 
-        public Texture2D Texture { set => this.TextureParameter.SetValue(value); }
 
         public Matrix WorldViewProjection { set => this.WorldViewProjectionParameter.SetValue(value); }
+
+        public Matrix View { set => this.ViewParameter.SetValue(value); }
     }
 }

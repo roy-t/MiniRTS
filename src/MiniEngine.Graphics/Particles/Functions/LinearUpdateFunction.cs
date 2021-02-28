@@ -1,9 +1,12 @@
-﻿using MiniEngine.Graphics.Camera;
+﻿using Microsoft.Xna.Framework;
+using MiniEngine.Graphics.Camera;
 
 namespace MiniEngine.Graphics.Particles.Functions
 {
     public sealed class LinearUpdateFunction : IParticleUpdateFunction
     {
+        // TODO: update fields
+
         public float VelocityDelta { get; set; }
 
         public float ScrewDelta { get; set; }
@@ -18,17 +21,8 @@ namespace MiniEngine.Graphics.Particles.Functions
 
         public void Update(float elapsed, ref Particle particle, ICamera camera)
         {
-            var elapsedOfMaxAge = elapsed / particle.MaxAge;
-
-            particle.Velocity += elapsedOfMaxAge * this.VelocityDelta;
-            particle.Screw += elapsedOfMaxAge * this.ScrewDelta;
-            particle.Angle += elapsedOfMaxAge * this.AngleDelta;
-            particle.Amplitude += elapsedOfMaxAge * this.AmplitudeDelta;
-            particle.Scale += elapsedOfMaxAge * this.ScaleDelta;
-            particle.Alpha += elapsedOfMaxAge * this.AlphaDelta;
-
-            particle.Position += particle.Velocity * elapsed * particle.Forward;
-            particle.Update(camera);
+            particle.Scale += elapsed * this.ScaleDelta;
+            particle.Position += Vector3.Up * elapsed;
         }
     }
 }

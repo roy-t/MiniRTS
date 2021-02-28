@@ -9,6 +9,7 @@ namespace MiniEngine.Graphics.Particles.Functions
 
         public IntervalSpawnFunction()
         {
+            // TODO: remove unused
             this.Velocity = 1.0f;
             this.Angle = 0.0f;
             this.Amplitude = 0.0f;
@@ -49,18 +50,10 @@ namespace MiniEngine.Graphics.Particles.Functions
         {
             return new Particle()
             {
-                Transform = Matrix.Identity,
-                Forward = transform.Forward,
-                Up = transform.Up,
                 Position = transform.Translation,
-                Velocity = this.Velocity,
-                Screw = this.Angle,
-                Amplitude = this.Amplitude,
                 Scale = this.Scale,
-                Tint = this.Tint,
-                Alpha = 1.0f,
-                Age = 0.0f,
-                MaxAge = this.MaxAge
+                Color = this.Tint,
+                Energy = this.MaxAge,
             };
         }
     }

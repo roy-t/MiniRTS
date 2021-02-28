@@ -43,8 +43,8 @@ namespace MiniEngine.Graphics.Particles
             {
                 var emitter = fountain.Emitters[i];
 
-                this.Effect.Texture = emitter.Texture;
                 this.Effect.WorldViewProjection = camera.ViewProjection;
+                this.Effect.View = camera.View;
 
                 this.Effect.Apply();
                 this.Quad.RenderInstanced(this.Device, emitter.Particles);

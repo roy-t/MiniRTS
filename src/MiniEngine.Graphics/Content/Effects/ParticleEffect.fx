@@ -5,14 +5,13 @@
 struct VertexData
 {
     float3 Position : POSITION0;
-    float2 Texture : TEXCOORD0;
 };
 
 struct PixelData
 {
     float4 Position : SV_POSITION;
-    float2 Texture : TEXCOORD0;
-    float4 Tint : TEXCOORD1;
+    float3 Coordinates : TEXCOORD0;
+    float4 Color : TEXCOORD1;
 };
 
 struct OutputData
@@ -21,28 +20,32 @@ struct OutputData
     float4 Color : COLOR1;
 };
 
-texture Texture;
-sampler textureSampler = sampler_state
-{
-    Texture = (Texture);
-    MinFilter = LINEAR;
-    MagFilter = LINEAR;
-    MipFilter = LINEAR;
-    AddressU = Clamp;
-    AddressV = Clamp;
-};
-
 float4x4 WorldViewProjection;
+float4x4 View;
 
 PixelData VS_INSTANCED(in VertexData input, in ParticleInstancingData instance)
 {
     PixelData output = (PixelData)0;
 
-    float4x4 offsetT = transpose(instance.Offset);
+    float4x4 offset =
+    {
+        View._11, View._21, View._31, 0.0f,
+        View._12, View._22, View._32, 0.0f,
+        View._13, View._23, View._33, 0.0f,
+        instance.Position.x, instance.Position.y, instance.Position.z, 1.0f
+    };
 
-    output.Position = mul(mul(float4(input.Position, 1), offsetT), WorldViewProjection);
-    output.Texture = input.Texture;
-    output.Tint = instance.Color;
+    float4x4 scale =
+    {
+        instance.Scale, 0, 0, 0,
+        0, instance.Scale, 0, 0,
+        0, 0, instance.Scale, 0,
+        0, 0, 0, 1,
+    };
+
+    output.Position = mul(mul(mul(float4(input.Position, 1), scale), offset), WorldViewProjection);
+    output.Coordinates = input.Position;
+    output.Color = instance.Color;
 
     return output;
 }
@@ -50,7 +53,9 @@ PixelData VS_INSTANCED(in VertexData input, in ParticleInstancingData instance)
 OutputData PS(PixelData input)
 {
     OutputData output = (OutputData)0;
-    output.Color = ToLinear(tex2D(textureSampler, input.Texture)) * ToLinear(input.Tint);
+
+    clip(0.5f - length(input.Coordinates));
+    output.Color = ToLinear(input.Color);
 
     return output;
 }

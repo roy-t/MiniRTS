@@ -51,8 +51,9 @@ namespace MiniEngine.Graphics.Particles
             {
                 for (var i = 0; i < this.Count; i++)
                 {
-                    this.instanceData[i].Transform = this.particles[i].Transform;
-                    this.instanceData[i].Color = this.particles[i].Tint.ToVector4() * this.particles[i].Alpha;
+                    this.instanceData[i].Position = this.particles[i].Position;
+                    this.instanceData[i].Color = this.particles[i].Color;
+                    this.instanceData[i].Scale = this.particles[i].Scale;
                 }
 
                 this.instanceBuffer.SetData(this.instanceData, 0, this.Count);
@@ -68,7 +69,8 @@ namespace MiniEngine.Graphics.Particles
                 return;
             }
 
-            var size = Math.Max(this.particles.Length + MinimumGrowth, (int)(this.particles.Length * GrowthFactor));
+
+            var size = (int)Math.Ceiling(Math.Max(space + MinimumGrowth, space * GrowthFactor));
 
             var particleBuffer = new Particle[size];
             this.particles.CopyTo(particleBuffer, 0);

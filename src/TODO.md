@@ -26,3 +26,10 @@ Make a scene with many asteroids (like 10 variations instanced in different orie
 - Add depth/normal input to weigh bilinear upscale in ParticipatingMediaPostProcessEffect.fx
 - Right now if a part of the media is in the shadow it is as if the media is less dense. This simulates dust particles in the air.
 However for fog it would be better if this should just make the fog darker. Try how that looks?
+
+
+# Particles
+- Current performance: 67_500 particles ~ 60-61 fps in Sponza
+- With reduced vertex type and billboard math in shader, 375_000 particles ~ 60-61 fps in Sponza (from roughly the hanging flowers)
+
+- Systems should 'bind' per method. Use  (threadIndex, threads) to multi-thread work inside a single method

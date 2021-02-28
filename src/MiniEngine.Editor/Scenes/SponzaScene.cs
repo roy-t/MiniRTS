@@ -55,7 +55,8 @@ namespace MiniEngine.Editor.Scenes
             var particle = content.Load<Texture2D>("Textures/AdditiveParticle");
             var particleEntity = this.Entities.Create();
             this.Components.Add(new TransformComponent(particleEntity, Matrix.CreateTranslation(Vector3.Left * 5) * Matrix.CreateRotationX(MathHelper.PiOver2)));
-            var spawn = new IntervalSpawnFunction();
+            //var spawn = new IntervalSpawnFunction();
+            var spawn = new InstantSpawnFunction();
             var update = new LinearUpdateFunction();
 
             var component = new ParticleFountainComponent(particleEntity, particle.GraphicsDevice);

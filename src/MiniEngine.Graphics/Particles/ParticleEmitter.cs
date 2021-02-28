@@ -2,7 +2,6 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Graphics.Camera;
-using MiniEngine.Systems;
 
 namespace MiniEngine.Graphics.Particles
 {
@@ -36,8 +35,8 @@ namespace MiniEngine.Graphics.Particles
             for (var i = this.Particles.Count - 1; i >= 0; i--)
             {
                 ref var particle = ref this.Particles[i];
-                particle.Age += elapsed;
-                if (particle.Age >= particle.MaxAge)
+                particle.Energy -= elapsed;
+                if (particle.Energy <= 0.0f)
                 {
                     this.Particles.RemoveAt(i);
                 }
