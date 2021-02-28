@@ -47,10 +47,6 @@ namespace MiniEngine.Graphics.Rendering
 
             var pBuffer = this.FrameService.PBuffer;
             this.ClearRenderTarget(pBuffer.ToneMap, NeutralToneMap);
-
-            var tBuffer = this.FrameService.TBuffer;
-            this.ClearRenderTarget(tBuffer.Albedo, NeutralAlbedo);
-            this.ClearRenderTarget(tBuffer.Weights, NeutralWeightsColor);
         }
 
         private void ClearRenderTarget(RenderTarget2D renderTarget, Color clearColor)

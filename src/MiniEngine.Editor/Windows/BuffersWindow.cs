@@ -30,9 +30,6 @@ namespace MiniEngine.Editor.Windows
             var lBuffer = this.FrameService.LBuffer;
             this.ToolSelector.Change(ref lBuffer, new Property("LBuffer"));
 
-            var tBuffer = this.FrameService.TBuffer;
-            this.ToolSelector.Change(ref tBuffer, new Property("TBuffer"));
-
             var pBuffer = this.FrameService.PBuffer;
             this.ToolSelector.Change(ref pBuffer, new Property("PBuffer"));
             Tool.EndTable();

@@ -7,9 +7,7 @@ using MiniEngine.Graphics.PostProcess;
 using MiniEngine.Graphics.Rendering;
 using MiniEngine.Graphics.Shadows;
 using MiniEngine.Graphics.Skybox;
-using MiniEngine.Graphics.Transparency;
 using MiniEngine.Graphics.Visibility;
-using MiniEngine.Graphics.Volumes;
 using MiniEngine.Systems.Components;
 using MiniEngine.Systems.Pipeline;
 using MiniEngine.Systems.Services;
@@ -50,10 +48,10 @@ namespace MiniEngine.Editor.Configuration
                     .RequiresAll(Initialization)
                     .Produces(RenderGBuffer, Geometry)
                     .Build()
-                .System<VolumeSystem>()
+                .System<ParticleSystem>()
                     .InSequence()
-                    .RequiresAll(Initialization)
-                    .Produces(RenderGBuffer, Volumes)
+                    .Requires(RenderGBuffer, Geometry)
+                    .Produces(RenderGBuffer, Particles)
                     .Build()
                 .System<ShadowMapSystem>()
                     .InSequence()
@@ -99,33 +97,12 @@ namespace MiniEngine.Editor.Configuration
                     .RequiresAll(Skybox)
                     .Produces(ParticipatingMedia)
                     .Build()
-                .System<ParticleSystem>()
-                    .InSequence()
-                    .RequiresAll(RenderShadows)
-                    .RequiresAll(RenderLights)
-                    .RequiresAll(Skybox)
-                    .RequiresAll(ParticipatingMedia)
-                    .Produces(Particles)
-                    .Build()
-                .System<TransparencyPreprocessSystem>()
-                    .InSequence()
-                    .RequiresAll(Particles)
-                    .Produces(Transparency, Weights)
-                    .Build()
-                .System<TransparencyPostprocessSystem>()
-                    .InSequence()
-                    .RequiresAll(Particles)
-                    .Requires(Transparency, Weights)
-                    .Produces(Transparency, Averages)
-                    .Build()
                 .System<ToneMapSystem>()
                     .InSequence()
                     .RequiresAll(RenderGBuffer)
                     .RequiresAll(RenderLights)
                     .RequiresAll(ParticipatingMedia)
                     .RequiresAll(Skybox)
-                    .RequiresAll(Particles)
-                    .RequiresAll(Transparency)
                     .Produces(PostProcess)
                     .Build()
                 .Build();

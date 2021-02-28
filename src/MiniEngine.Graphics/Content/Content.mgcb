@@ -14,12 +14,6 @@
 
 #---------------------------------- Content ---------------------------------#
 
-#begin Effects/AverageTransparencyEffect.fx
-/importer:EffectImporter
-/processor:EffectProcessor
-/processorParam:DebugMode=Auto
-/build:Effects/AverageTransparencyEffect.fx
-
 #begin Effects/BrdfLutGeneratorEffect.fx
 /importer:EffectImporter
 /processor:EffectProcessor
@@ -121,18 +115,6 @@
 /processor:EffectProcessor
 /processorParam:DebugMode=Auto
 /build:Effects/ToneMapAndFXAAEffect.fx
-
-#begin Effects/VolumeEffect.fx
-/importer:EffectImporter
-/processor:EffectProcessor
-/processorParam:DebugMode=Auto
-/build:Effects/VolumeEffect.fx
-
-#begin Effects/WeightedTransparencyEffect.fx
-/importer:EffectImporter
-/processor:EffectProcessor
-/processorParam:DebugMode=Auto
-/build:Effects/WeightedTransparencyEffect.fx
 
 #begin Particles/circle_01.png
 /importer:TextureImporter

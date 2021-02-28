@@ -8,8 +8,6 @@ using MiniEngine.Graphics.Geometry.Generators;
 using MiniEngine.Graphics.ParticipatingMedia;
 using MiniEngine.Graphics.Particles;
 using MiniEngine.Graphics.Particles.Functions;
-using MiniEngine.Graphics.Transparency;
-using MiniEngine.Graphics.Volumes;
 using MiniEngine.SceneManagement;
 using MiniEngine.Systems.Components;
 using MiniEngine.Systems.Entities;
@@ -50,23 +48,6 @@ namespace MiniEngine.Editor.Scenes
             this.Components.Add(new TransformComponent(entity, Matrix.CreateScale(200, 150.0f, 120.0f)));
 
             AdditiveParticles(content);
-            TransparentParticles(content);
-
-            AddVolume(content);
-        }
-
-        private void AddVolume(ContentStack content)
-        {
-            var entity = this.Entities.Create();
-
-            var transform = new TransformComponent(entity, new Vector3(25, 10, 0), Vector3.One);
-            this.Components.Add(transform);
-
-            var albedo = content.Load<Texture2D>("Textures/solid_smoke");
-
-            var material = new Material(albedo, this.Assets.NormalPixel(), this.Assets.PlasticPixel, this.Assets.RoughnessPixel(0.5f), this.Assets.VisiblePixel);
-            var volume = new VolumeComponent(entity, material);
-            this.Components.Add(volume);
         }
 
         private void AdditiveParticles(ContentStack content)
@@ -78,21 +59,6 @@ namespace MiniEngine.Editor.Scenes
             var update = new LinearUpdateFunction();
 
             var component = new ParticleFountainComponent(particleEntity, particle.GraphicsDevice);
-            component.AddEmitter(particle, spawn, update);
-
-            this.Components.Add(component);
-        }
-
-        private void TransparentParticles(ContentStack content)
-        {
-            var particle = content.Load<Texture2D>("Textures/TransparentParticle");
-            var particleEntity = this.Entities.Create();
-
-            this.Components.Add(new TransformComponent(particleEntity, new Vector3(-44.0f, 0.0f, 0.0f), Vector3.One, 0.0f, MathHelper.PiOver2));
-            var spawn = new IntervalSpawnFunction() { SpawnInterval = 0.4f };
-            var update = new LinearUpdateFunction();
-
-            var component = new TransparentParticleFountainComponent(particleEntity, particle.GraphicsDevice);
             component.AddEmitter(particle, spawn, update);
 
             this.Components.Add(component);

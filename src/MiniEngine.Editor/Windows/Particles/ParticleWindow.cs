@@ -5,7 +5,6 @@ using ImGuiNET;
 using MiniEngine.Configuration;
 using MiniEngine.ContentPipeline.Packs;
 using MiniEngine.Graphics.Particles;
-using MiniEngine.Graphics.Transparency;
 using MiniEngine.Gui;
 using MiniEngine.Gui.Windows;
 using MiniEngine.SceneManagement;
@@ -81,12 +80,6 @@ namespace MiniEngine.Editor.Windows.Particles
 
 
         private List<ParticleEmitter> GetAllEmitters()
-        {
-            var transparent = this.ComponentAdministrator.GetComponents<TransparentParticleFountainComponent>().SelectMany(f => f.Emitters);
-            var additive = this.ComponentAdministrator.GetComponents<ParticleFountainComponent>().SelectMany(f => f.Emitters);
-
-            return transparent.Union(additive).ToList();
-
-        }
+            => this.ComponentAdministrator.GetComponents<ParticleFountainComponent>().SelectMany(f => f.Emitters).ToList();
     }
 }

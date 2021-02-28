@@ -14,6 +14,6 @@
         Weights,
         Averages,
         Geometry,
-        Volumes,
+        Particles,
     }
 }
