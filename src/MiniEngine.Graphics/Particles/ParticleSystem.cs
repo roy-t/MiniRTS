@@ -23,14 +23,20 @@ namespace MiniEngine.Graphics.Particles
 
         public void OnSet()
         {
-            this.Device.BlendState = BlendState.Additive;
-            this.Device.DepthStencilState = DepthStencilState.DepthRead;
+            this.Device.BlendState = BlendState.Opaque;
+            this.Device.DepthStencilState = DepthStencilState.Default;
             this.Device.RasterizerState = RasterizerState.CullCounterClockwise;
+            this.Device.SamplerStates[0] = SamplerState.AnisotropicWrap;
+            this.Device.SamplerStates[1] = SamplerState.AnisotropicWrap;
+            this.Device.SamplerStates[2] = SamplerState.AnisotropicWrap;
+            this.Device.SamplerStates[3] = SamplerState.AnisotropicWrap;
+            this.Device.SamplerStates[4] = SamplerState.AnisotropicWrap;
 
-            this.Device.SamplerStates[0] = SamplerState.LinearClamp;
-
-            // Set the albedo target only for the depth buffer
-            this.Device.SetRenderTargets(this.FrameService.GBuffer.Albedo, this.FrameService.LBuffer.Light);
+            this.Device.SetRenderTargets(
+                this.FrameService.GBuffer.Albedo,
+                this.FrameService.GBuffer.Material,
+                this.FrameService.GBuffer.Depth,
+                this.FrameService.GBuffer.Normal);
         }
 
         [ProcessAll]

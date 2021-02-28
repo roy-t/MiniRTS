@@ -19,11 +19,6 @@ namespace MiniEngine.Graphics.Geometry
 
         public static InstancingComponent Create(Entity entity, Matrix[] instances)
         {
-            if (instances.Length > GeometrySystem.MaxInstances)
-            {
-                throw new ArgumentOutOfRangeException(nameof(instances), $"The array contains {instances.Length} instances, which is more than the maximum of {GeometrySystem.MaxInstances}.");
-            }
-
             var vertexData = new InstancingVertex[instances.Length];
             unsafe
             {

@@ -10,8 +10,6 @@ namespace MiniEngine.Graphics.Geometry
     [System]
     public partial class GeometrySystem : ISystem, IGeometryRendererUser
     {
-        public const int MaxInstances = 1024;
-
         private readonly GraphicsDevice Device;
         private readonly FrameService FrameService;
         private readonly GeometryRenderer Renderer;

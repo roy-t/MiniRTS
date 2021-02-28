@@ -2,7 +2,6 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
-using MiniEngine.Graphics.PostProcess;
 
 namespace MiniEngine.Graphics.Particles
 {
@@ -16,18 +15,14 @@ namespace MiniEngine.Graphics.Particles
         {
             var vertices = new[]
             {
-                new PostProcessVertex(
-                    new Vector3(-0.5f, -0.5f, 0),
-                    new Vector2(0, 1)),
-                new PostProcessVertex(
-                    new Vector3(-0.5f, 0.5f, 0),
-                    new Vector2(0, 0)),
-                new PostProcessVertex(
-                    new Vector3(0.5f, 0.5f, 0),
-                    new Vector2(1, 0)),
-                new PostProcessVertex(
-                    new Vector3(0.5f, -0.5f, 0),
-                    new Vector2(1, 1))
+                new ParticleVertex(
+                    new Vector3(-0.5f, -0.5f, 0)),
+                new ParticleVertex(
+                    new Vector3(-0.5f, 0.5f, 0)),
+                new ParticleVertex(
+                    new Vector3(0.5f, 0.5f, 0)),
+                new ParticleVertex(
+                    new Vector3(0.5f, -0.5f, 0))
             };
 
             var indices = new short[]
@@ -41,7 +36,7 @@ namespace MiniEngine.Graphics.Particles
                 0
             };
 
-            this.Vertices = new VertexBuffer(device, PostProcessVertex.Declaration, vertices.Length, BufferUsage.WriteOnly);
+            this.Vertices = new VertexBuffer(device, ParticleVertex.Declaration, vertices.Length, BufferUsage.WriteOnly);
             this.Vertices.SetData(vertices);
 
             this.Indices = new IndexBuffer(device, IndexElementSize.SixteenBits, indices.Length, BufferUsage.WriteOnly);
