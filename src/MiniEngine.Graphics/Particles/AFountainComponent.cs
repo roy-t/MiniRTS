@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using MiniEngine.Graphics.Camera;
 using MiniEngine.Systems;
 
 namespace MiniEngine.Graphics.Particles
@@ -33,7 +32,7 @@ namespace MiniEngine.Graphics.Particles
         public void RemoveEmitter(ParticleEmitter emitter)
             => this.EmitterList.Remove(emitter);
 
-        public void Update(float elapsed, Matrix transform, ICamera camera)
+        public void Update(float elapsed, Matrix transform)
         {
             for (var i = 0; i < this.EmitterList.Count; i++)
             {
@@ -46,7 +45,7 @@ namespace MiniEngine.Graphics.Particles
                     emitter.SpawnNewParticles(elapsed, transform);
                 }
 
-                emitter.UpdateParticles(elapsed, camera);
+                emitter.UpdateParticles(elapsed, transform);
             }
         }
 

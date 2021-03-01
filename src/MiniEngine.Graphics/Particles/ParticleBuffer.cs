@@ -31,12 +31,14 @@ namespace MiniEngine.Graphics.Particles
 
         public ref Particle this[int index] => ref this.particles[index];
 
-        public void Add(Particle[] particles)
+        public Span<Particle> Create(int count)
         {
-            this.EnsureSpace(this.Count + particles.Length);
+            this.EnsureSpace(this.Count + count);
 
-            particles.CopyTo(this.particles, this.Count);
-            this.Count += particles.Length;
+            var span = new Span<Particle>(this.particles, this.Count, count);
+            this.Count += count;
+
+            return span;
         }
 
         public void RemoveAt(int index)
@@ -52,8 +54,10 @@ namespace MiniEngine.Graphics.Particles
                 for (var i = 0; i < this.Count; i++)
                 {
                     this.instanceData[i].Position = this.particles[i].Position;
-                    this.instanceData[i].Color = this.particles[i].Color;
+                    this.instanceData[i].Color = this.particles[i].Color.ToVector3();
                     this.instanceData[i].Scale = this.particles[i].Scale;
+                    this.instanceData[i].Metalicness = this.particles[i].Metalicness;
+                    this.instanceData[i].Roughness = this.particles[i].Roughness;
                 }
 
                 this.instanceBuffer.SetData(this.instanceData, 0, this.Count);
@@ -68,7 +72,6 @@ namespace MiniEngine.Graphics.Particles
             {
                 return;
             }
-
 
             var size = (int)Math.Ceiling(Math.Max(space + MinimumGrowth, space * GrowthFactor));
 

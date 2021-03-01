@@ -4,6 +4,6 @@ namespace MiniEngine.Graphics.Particles
 {
     public interface IParticleSpawnFunction
     {
-        Particle[] Spawn(float elapsed, Matrix transform);
+        void Spawn(float elapsed, Matrix transform, ParticleBuffer buffer);
     }
 }

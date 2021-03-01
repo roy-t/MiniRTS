@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 
 namespace MiniEngine.Graphics.Particles.Functions
 {
@@ -16,29 +14,23 @@ namespace MiniEngine.Graphics.Particles.Functions
 
         public bool Enabled { get; set; }
 
-        public Particle[] Spawn(float elapsed, Matrix transform)
+        public void Spawn(float elapsed, Matrix transform, ParticleBuffer buffer)
         {
             if (this.Enabled)
             {
                 this.Enabled = false;
 
-                return Enumerable.Repeat(NewParticle(transform), this.Count).ToArray();
+                var created = buffer.Create(this.Count);
+                for (var i = 0; i < created.Length; i++)
+                {
+                    created[i].Position = transform.Translation;
+                    created[i].Scale = 1.0f;
+                    created[i].Color = Color.White;
+                    created[i].Metalicness = 0.5f;
+                    created[i].Roughness = 0.5f;
+                    created[i].Energy = 1.0f;
+                }
             }
-            else
-            {
-                return Array.Empty<Particle>();
-            }
-        }
-
-        private static Particle NewParticle(Matrix transform)
-        {
-            return new Particle()
-            {
-                Position = transform.Translation,
-                Scale = 1.0f,
-                Color = Color.White,
-                Energy = 100.0f
-            };
         }
     }
 }

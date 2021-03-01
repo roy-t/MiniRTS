@@ -1,28 +1,39 @@
 ﻿using Microsoft.Xna.Framework;
-using MiniEngine.Graphics.Camera;
 
 namespace MiniEngine.Graphics.Particles.Functions
 {
     public sealed class LinearUpdateFunction : IParticleUpdateFunction
     {
-        // TODO: update fields
-
-        public float VelocityDelta { get; set; }
-
-        public float ScrewDelta { get; set; }
-
-        public float AngleDelta { get; set; }
-
-        public float AmplitudeDelta { get; set; }
-
-        public float ScaleDelta { get; set; }
-
-        public float AlphaDelta { get; set; }
-
-        public void Update(float elapsed, ref Particle particle, ICamera camera)
+        public LinearUpdateFunction()
         {
-            particle.Scale += elapsed * this.ScaleDelta;
-            particle.Position += Vector3.Up * elapsed;
+            this.StartVelocity = 1.0f;
+            this.EndVelocity = 1.0f;
+            this.StartScale = 1.0f;
+            this.EndScale = 1.0f;
+            this.StartColor = Color.White;
+            this.EndColor = Color.White;
+        }
+
+        public float StartVelocity { get; set; }
+
+        public float EndVelocity { get; set; }
+
+        public float StartScale { get; set; }
+
+        public float EndScale { get; set; }
+
+        public Color StartColor { get; set; }
+
+        public Color EndColor { get; set; }
+
+        public void Update(float elapsed, Matrix transform, ref Particle particle)
+        {
+            var velocity = MathHelper.Lerp(this.EndVelocity, this.StartVelocity, particle.Energy);
+
+            particle.Position += transform.Forward * velocity * elapsed;
+            particle.Color = Color.Lerp(this.EndColor, this.StartColor, particle.Energy);
+            particle.Scale = MathHelper.Lerp(this.EndScale, this.StartScale, particle.Energy);
+
         }
     }
 }

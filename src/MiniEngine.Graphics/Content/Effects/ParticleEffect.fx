@@ -1,6 +1,7 @@
 ﻿#include "Includes/Defines.hlsl"
-#include "Includes/Instancing.hlsl"
+#include "Includes/Pack.hlsl"
 #include "Includes/Gamma.hlsl"
+#include "Includes/Instancing.hlsl"
 
 struct VertexData
 {
@@ -13,7 +14,9 @@ struct PixelData
     float4 ScreenPosition: TEXCOORD0;
     float3 Coordinates : TEXCOORD1;
     float4 Color : TEXCOORD2;
-    float3 Normal: NORMAL0;
+    float Metalicness : TEXCOORD3;
+    float Roughness : TEXCOORD4;
+    float3 Normal: NORMAL0;    
 };
 
 struct OutputData
@@ -31,31 +34,24 @@ PixelData VS_INSTANCED(in VertexData input, in ParticleInstancingData instance)
 {
     PixelData output = (PixelData)0;
 
-    float4x4 offset =
+    float4x4 world =
     {
-        View._11, View._21, View._31, 0.0f,
-        View._12, View._22, View._32, 0.0f,
-        View._13, View._23, View._33, 0.0f,
+        View._11 * instance.Scale, View._21 * instance.Scale, View._31 * instance.Scale, 0.0f,
+        View._12 * instance.Scale, View._22 * instance.Scale, View._32 * instance.Scale, 0.0f,
+        View._13 * instance.Scale, View._23 * instance.Scale, View._33 * instance.Scale, 0.0f,
         instance.Position.x, instance.Position.y, instance.Position.z, 1.0f
     };
 
-    float4x4 scale =
-    {
-        instance.Scale, 0, 0, 0,
-        0, instance.Scale, 0, 0,
-        0, 0, instance.Scale, 0,
-        0, 0, 0, 1,
-    };
-
-    output.Position = mul(mul(mul(float4(input.Position, 1), scale), offset), WorldViewProjection);
+    output.Position = mul(mul(float4(input.Position, 1), world), WorldViewProjection);
     output.Coordinates = input.Position;
     output.ScreenPosition = output.Position;
-    output.Color = instance.Color;
+    output.Color = float4(instance.Color, 1.0f);
 
-    // TODO: normals are fucked somehow?
-    float3x3 rotation = (float3x3)offset;
-    float3 normal = normalize(float3(input.Position.x, input.Position.y, 0.5f));
+    output.Metalicness = instance.Metalicness;
+    output.Roughness = instance.Roughness;
 
+    float3x3 rotation = (float3x3)world;
+    float3 normal = float3(input.Position.x, input.Position.y, 0.5f);
     output.Normal = normalize(mul(normal, rotation));
     return output;
 }
@@ -63,12 +59,13 @@ PixelData VS_INSTANCED(in VertexData input, in ParticleInstancingData instance)
 OutputData PS(PixelData input)
 {
     OutputData output = (OutputData)0;
-
+    
     clip(0.5f - length(input.Coordinates));
+
     output.Albedo = ToLinear(input.Color);
-    output.Material = float4(1.0f, 0.0f, 1.0f, 1.0f);
+    output.Material = float4(input.Metalicness, input.Roughness, 1.0f, 1.0f);
     output.Depth = input.ScreenPosition.z / input.ScreenPosition.w;
-    output.Normal = float4(input.Normal, 1.0f);
+    output.Normal = float4(PackNormal(input.Normal), 1.0f);
 
     return output;
 }
