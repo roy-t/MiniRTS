@@ -1,15 +1,13 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace MiniEngine.Graphics.Particles
 {
     public sealed class ParticleEmitter : IDisposable
     {
-        public ParticleEmitter(ParticleBuffer particles, Texture2D texture, IParticleSpawnFunction spawnFunction, IParticleUpdateFunction updateFunction)
+        public ParticleEmitter(ParticleBuffer particles, IParticleSpawnFunction spawnFunction, IParticleUpdateFunction updateFunction)
         {
             this.Particles = particles;
-            this.Texture = texture;
             this.SpawnFunction = spawnFunction;
             this.UpdateFunction = updateFunction;
 
@@ -17,8 +15,6 @@ namespace MiniEngine.Graphics.Particles
         }
 
         public ParticleBuffer Particles { get; }
-
-        public Texture2D Texture { get; set; }
 
         public IParticleSpawnFunction SpawnFunction { get; set; }
 

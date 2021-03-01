@@ -8,8 +8,6 @@ using MiniEngine.Graphics.Camera;
 using MiniEngine.Graphics.Geometry;
 using MiniEngine.Graphics.Geometry.Generators;
 using MiniEngine.Graphics.Lighting;
-using MiniEngine.Graphics.Particles;
-using MiniEngine.Graphics.Particles.Functions;
 using MiniEngine.Graphics.Shadows;
 using MiniEngine.SceneManagement;
 using MiniEngine.Systems.Components;
@@ -93,23 +91,6 @@ namespace MiniEngine.Editor.Scenes
             this.CreateLight(new Vector3(10, -10, 10), Color.White, 30.0f);
 
             this.CreateSpotLight(new Vector3(0, 0, 10), Vector3.Forward, 1500.0f);
-
-            this.AdditiveParticles(content);
-        }
-
-        private void AdditiveParticles(ContentStack content)
-        {
-            var particle = content.Load<Texture2D>("Textures/AdditiveParticle");
-            var particleEntity = this.Entities.Create();
-            this.Components.Add(new TransformComponent(particleEntity, Matrix.CreateTranslation(Vector3.Left * 5) * Matrix.CreateRotationX(MathHelper.PiOver2)));
-            var spawn = new IntervalSpawnFunction();
-            //var spawn = new InstantSpawnFunction();
-            var update = new LinearUpdateFunction();
-
-            var component = new ParticleFountainComponent(particleEntity, particle.GraphicsDevice);
-            component.AddEmitter(particle, spawn, update);
-
-            this.Components.Add(component);
         }
 
         private void CreateSphere(GeometryData geometry, Material material, Matrix transform)

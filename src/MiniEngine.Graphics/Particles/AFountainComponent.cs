@@ -23,9 +23,9 @@ namespace MiniEngine.Graphics.Particles
 
         public IReadOnlyList<ParticleEmitter> Emitters => this.EmitterList;
 
-        public void AddEmitter(Texture2D texture, IParticleSpawnFunction spawnFunction, IParticleUpdateFunction updateFunction)
+        public void AddEmitter(IParticleSpawnFunction spawnFunction, IParticleUpdateFunction updateFunction)
         {
-            var emitter = new ParticleEmitter(new ParticleBuffer(this.Device), texture, spawnFunction, updateFunction);
+            var emitter = new ParticleEmitter(new ParticleBuffer(this.Device), spawnFunction, updateFunction);
             this.EmitterList.Add(emitter);
         }
 

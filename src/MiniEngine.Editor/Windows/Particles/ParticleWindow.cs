@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using ImGuiNET;
 using MiniEngine.Configuration;
@@ -62,20 +61,10 @@ namespace MiniEngine.Editor.Windows.Particles
                 index = emitters.IndexOf(this.emitter);
             }
 
-            if (ImGui.Combo("Emitters", ref index, emitters.Select(e => e.Texture.Name).ToArray(), emitters.Count))
+            if (ImGui.Combo("Emitters", ref index, emitters.Select(e => e.ToString()).ToArray(), emitters.Count))
             {
                 this.emitter = emitters[index];
             }
-
-            var texture = this.emitter!.Texture;
-            this.ImGuiRenderer.BindTexture(texture);
-            var bounds = ImageUtilities.FitToBounds(texture.Width, texture.Height, 64, 64);
-            if (ImGui.ImageButton((IntPtr)texture.Tag, bounds))
-            {
-                this.TexturePicker.Open();
-            }
-
-            this.emitter.Texture = this.TexturePicker.Pick(texture, this.TexturePack);
         }
 
 

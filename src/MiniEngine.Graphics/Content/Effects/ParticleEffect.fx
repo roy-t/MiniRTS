@@ -45,8 +45,8 @@ PixelData VS_INSTANCED(in VertexData input, in ParticleInstancingData instance)
     output.Position = mul(mul(float4(input.Position, 1), world), WorldViewProjection);
     output.Coordinates = input.Position;
     output.ScreenPosition = output.Position;
-    output.Color = float4(instance.Color, 1.0f);
 
+    output.Color = instance.Color;
     output.Metalicness = instance.Metalicness;
     output.Roughness = instance.Roughness;
 
