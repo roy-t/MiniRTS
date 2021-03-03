@@ -12,7 +12,7 @@ struct PixelData
 {
     float4 Position : SV_POSITION;
     float4 ScreenPosition: TEXCOORD0;
-    float3 Coordinates : TEXCOORD1;
+    float2 Coordinates : TEXCOORD1;
     float4 Color : TEXCOORD2;
     float Metalicness : TEXCOORD3;
     float Roughness : TEXCOORD4;
@@ -43,7 +43,7 @@ PixelData VS_INSTANCED(in VertexData input, in ParticleInstancingData instance)
     };
 
     output.Position = mul(mul(float4(input.Position, 1), world), WorldViewProjection);
-    output.Coordinates = input.Position;
+    output.Coordinates = input.Position.xy;
     output.ScreenPosition = output.Position;
 
     output.Color = instance.Color;

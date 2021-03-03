@@ -32,4 +32,5 @@ However for fog it would be better if this should just make the fog darker. Try 
 - Current performance: 67_500 particles ~ 60-61 fps in Sponza
 - With reduced vertex type and billboard math in shader, 375_000 particles ~ 60-61 fps in Sponza (from roughly the hanging flowers)
 
+
 - Systems should 'bind' per method. Use  (threadIndex, threads) to multi-thread work inside a single method

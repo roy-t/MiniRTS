@@ -53,13 +53,14 @@ namespace MiniEngine.Editor.Scenes
         private void AdditiveParticles(ContentStack content)
         {
             var particleEntity = this.Entities.Create();
-            this.Components.Add(new TransformComponent(particleEntity, Matrix.CreateTranslation(Vector3.Left * 5) * Matrix.CreateRotationX(MathHelper.PiOver2)));
-            var spawn = new IntervalSpawnFunction();
+            this.Components.Add(new TransformComponent(particleEntity, new Vector3(-31.0f, 6.42f, 7.0f), Vector3.One, 0.0f, MathHelper.PiOver2, 0.0f));
+            //var spawn = new IntervalSpawnFunction();
             //var spawn = new InstantSpawnFunction();
-            var update = new LinearUpdateFunction();
-
+            var spawn = new CircularSpawnFunction() { SpawnInterval = 0.021f, Metalicness = 0.0f, Roughness = 1.0f, Radius = 0.58f, ParticlesPerWave = 27.0f };
+            var update = new LinearUpdateFunction() { StartScale = 0.1f, EndScale = 0.0f, StartColor = Color.DimGray, EndColor = Color.LightGray };
+            var despawn = new RandomizedDespawnFunction() { AverageLifetime = 1.0f, Variance = 0.3f };
             var component = new ParticleFountainComponent(particleEntity, this.Device);
-            component.AddEmitter(spawn, update);
+            component.AddEmitter(spawn, update, despawn);
 
             this.Components.Add(component);
         }

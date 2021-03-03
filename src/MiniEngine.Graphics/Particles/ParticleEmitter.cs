@@ -5,13 +5,12 @@ namespace MiniEngine.Graphics.Particles
 {
     public sealed class ParticleEmitter : IDisposable
     {
-        public ParticleEmitter(ParticleBuffer particles, IParticleSpawnFunction spawnFunction, IParticleUpdateFunction updateFunction)
+        public ParticleEmitter(ParticleBuffer particles, IParticleSpawnFunction spawnFunction, IParticleUpdateFunction updateFunction, IParticleDespawnFunction despawnFunction)
         {
             this.Particles = particles;
             this.SpawnFunction = spawnFunction;
             this.UpdateFunction = updateFunction;
-
-            this.TimeToLive = 10.0f;
+            this.DespawnFunction = despawnFunction;
         }
 
         public ParticleBuffer Particles { get; }
@@ -20,7 +19,7 @@ namespace MiniEngine.Graphics.Particles
 
         public IParticleUpdateFunction UpdateFunction { get; set; }
 
-        public float TimeToLive { get; set; }
+        public IParticleDespawnFunction DespawnFunction { get; set; }
 
         public void Update(float elapsed, Matrix transform)
         {
@@ -34,7 +33,7 @@ namespace MiniEngine.Graphics.Particles
             for (var i = this.Particles.Count - 1; i >= 0; i--)
             {
                 ref var particle = ref this.Particles[i];
-                particle.Energy -= elapsed / this.TimeToLive;
+                this.DespawnFunction.Update(i, elapsed, ref particle);
                 if (particle.Energy <= 0.0f)
                 {
                     this.Particles.RemoveAt(i);
