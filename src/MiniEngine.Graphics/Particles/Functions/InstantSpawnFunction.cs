@@ -24,10 +24,7 @@ namespace MiniEngine.Graphics.Particles.Functions
                 for (var i = 0; i < created.Length; i++)
                 {
                     created[i].Position = transform.Translation;
-                    created[i].Scale = 1.0f;
                     created[i].Color = Color.White;
-                    created[i].Metalicness = 0.5f;
-                    created[i].Roughness = 0.5f;
                     created[i].Energy = 1.0f;
                 }
             }

@@ -10,9 +10,6 @@ struct ParticleInstancingData
 {
     float3 Position: POSITION1;
     float4 Color : COLOR1;
-    float Scale : TEXCOORD1;
-    float Metalicness : TEXCOORD2;
-    float Roughness : TEXCOORD3;
 };
 
 #endif

@@ -8,8 +8,6 @@ namespace MiniEngine.Graphics.Particles.Functions
         {
             this.StartVelocity = 1.0f;
             this.EndVelocity = 1.0f;
-            this.StartScale = 1.0f;
-            this.EndScale = 1.0f;
             this.StartColor = Color.White;
             this.EndColor = Color.White;
         }
@@ -17,10 +15,6 @@ namespace MiniEngine.Graphics.Particles.Functions
         public float StartVelocity { get; set; }
 
         public float EndVelocity { get; set; }
-
-        public float StartScale { get; set; }
-
-        public float EndScale { get; set; }
 
         public Color StartColor { get; set; }
 
@@ -32,7 +26,6 @@ namespace MiniEngine.Graphics.Particles.Functions
 
             particle.Position += transform.Forward * velocity * elapsed;
             particle.Color = Color.Lerp(this.EndColor, this.StartColor, particle.Energy);
-            particle.Scale = MathHelper.Lerp(this.EndScale, this.StartScale, particle.Energy);
 
         }
     }

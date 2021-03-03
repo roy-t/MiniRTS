@@ -51,6 +51,8 @@ namespace MiniEngine.Graphics.Particles
 
                 this.Effect.WorldViewProjection = camera.ViewProjection;
                 this.Effect.View = camera.View;
+                this.Effect.Metalicness = emitter.Metalicness;
+                this.Effect.Roughness = emitter.Roughness;
 
                 this.Effect.Apply();
                 this.Quad.RenderInstanced(this.Device, emitter.Particles);

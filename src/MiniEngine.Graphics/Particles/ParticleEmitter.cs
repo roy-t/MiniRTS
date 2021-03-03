@@ -11,6 +11,8 @@ namespace MiniEngine.Graphics.Particles
             this.SpawnFunction = spawnFunction;
             this.UpdateFunction = updateFunction;
             this.DespawnFunction = despawnFunction;
+            this.Metalicness = 0.0f;
+            this.Roughness = 1.0f;
         }
 
         public ParticleBuffer Particles { get; }
@@ -20,6 +22,9 @@ namespace MiniEngine.Graphics.Particles
         public IParticleUpdateFunction UpdateFunction { get; set; }
 
         public IParticleDespawnFunction DespawnFunction { get; set; }
+
+        public float Metalicness { get; set; }
+        public float Roughness { get; set; }
 
         public void Update(float elapsed, Matrix transform)
         {
