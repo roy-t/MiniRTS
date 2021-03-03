@@ -18,7 +18,6 @@ namespace MiniEngine.Graphics.Particles
         public ParticleBuffer(GraphicsDevice device)
         {
             this.Device = device;
-
             this.instanceData = new Particle[InitialBufferSize];
 
             this.VertexDeclaration = Particle.Declaration;

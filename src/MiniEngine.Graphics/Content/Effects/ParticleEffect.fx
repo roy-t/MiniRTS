@@ -51,7 +51,8 @@ PixelData VS_INSTANCED(in VertexData input, in ParticleInstancingData instance)
     output.Roughness = instance.Roughness;
 
     float3x3 rotation = (float3x3)world;
-    float3 normal = float3(input.Position.x, input.Position.y, 0.5f);
+    //float3 normal = float3(input.Position.x, input.Position.y, 0.5f);
+    float3 normal = float3(0, 0, 1.0f);
     output.Normal = normalize(mul(normal, rotation));
     return output;
 }
