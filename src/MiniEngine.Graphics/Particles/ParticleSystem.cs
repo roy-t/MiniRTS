@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using System.Reflection;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
 using MiniEngine.Systems;
 using MiniEngine.Systems.Generators;
@@ -55,7 +57,40 @@ namespace MiniEngine.Graphics.Particles
                 this.Effect.Roughness = emitter.Roughness;
 
                 this.Effect.Apply();
-                this.Quad.RenderInstanced(this.Device, emitter.Particles);
+                //this.Quad.RenderInstanced(this.Device, emitter.Particles);
+
+                DrawPoints(emitter);
+            }
+        }
+
+        private void DrawPoints(ParticleEmitter emitter)
+        {
+            var vertex = new ParticleVertex(Vector3.Zero);
+
+            var vertices = new VertexBuffer(this.Device, ParticleVertex.Declaration, 1, BufferUsage.WriteOnly);
+            vertices.SetData(new[] { vertex });
+
+            var indices = new IndexBuffer(this.Device, IndexElementSize.SixteenBits, 1, BufferUsage.WriteOnly);
+            indices.SetData(new short[] { 0 });
+
+            this.Device.SetVertexBuffers(new VertexBufferBinding(vertices), new VertexBufferBinding(emitter.Particles.Commit(), 0, 1));
+            this.Device.Indices = indices;
+
+            var device = (SharpDX.Direct3D11.Device)this.Device.Handle;
+            //var context = device.ImmediateContext.QueryInterface<SharpDX.Direct3D11.DeviceContext>(); ;
+
+            var field = this.Device.GetType().GetField("_d3dContext", BindingFlags.Instance | BindingFlags.NonPublic)!;
+            var context = (SharpDX.Direct3D11.DeviceContext)field.GetValue(this.Device)!;
+
+            lock (context)
+            {
+                var method = this.Device.GetType().GetMethod("ApplyState", BindingFlags.Instance | BindingFlags.NonPublic)!;
+                method.Invoke(this.Device, new object[] { true });
+
+                var count = emitter.Particles.Count;
+                context.InputAssembler.PrimitiveTopology = SharpDX.Direct3D.PrimitiveTopology.PointList;
+                var indexCount = count;
+                context.DrawIndexedInstanced(indexCount, emitter.Particles.Count, 0, 0, 0);
             }
         }
     }
