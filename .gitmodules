@@ -1,3 +1,6 @@
 [submodule "vNext/MiniEngine/External/ImGui.NET"]
 	path = src/External/ImGui.NET
 	url = https://github.com/roy-t/ImGui.NET.git
+[submodule "src/External/MonoGame"]
+	path = src/External/MonoGame
+	url = https://github.com/roy-t/MonoGame.git
