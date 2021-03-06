@@ -1,4 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\Content.Build.props"/>
+    
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
@@ -6,6 +8,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="..\External\MonoGame\MonoGame.Framework\MonoGame.Framework.WindowsDX.csproj" />
     <ProjectReference Include="..\MiniEngine.ContentPipeline\MiniEngine.ContentPipeline.csproj" />
     <ProjectReference Include="..\MiniEngine.Systems.Generators\MiniEngine.Systems.Generators.csproj" OutputItemType="Analyzer" />
     <ProjectReference Include="..\MiniEngine.Systems\MiniEngine.Systems.csproj" />
@@ -17,10 +20,6 @@
 
   <ItemGroup>
     <PackageReference Include="LightInject" Version="6.4.0" />
-    <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.0.1641" />
-    <PackageReference Include="MonoGame.Framework.WindowsDX" Version="3.8.0.1641">
-      <PrivateAssets>All</PrivateAssets>
-    </PackageReference>
   </ItemGroup>
 
 </Project>

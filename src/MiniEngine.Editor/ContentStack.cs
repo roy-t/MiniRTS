@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework.Content;
 using MiniEngine.Configuration;
 
-namespace MiniEngine.SceneManagement
+namespace MiniEngine.Editor
 {
     [System]
     public sealed class ContentStack : IDisposable

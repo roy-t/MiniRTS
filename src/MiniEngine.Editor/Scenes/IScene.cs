@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using MiniEngine.SceneManagement;
 
 namespace MiniEngine.Editor.Scenes
 {

@@ -6,7 +6,6 @@ using MiniEngine.Configuration;
 using MiniEngine.Graphics;
 using MiniEngine.Graphics.Skybox;
 using MiniEngine.Graphics.Utilities;
-using MiniEngine.SceneManagement;
 
 namespace MiniEngine.Editor.Scenes
 {

@@ -6,7 +6,6 @@ using MiniEngine.ContentPipeline.Packs;
 using MiniEngine.Graphics.Particles;
 using MiniEngine.Gui;
 using MiniEngine.Gui.Windows;
-using MiniEngine.SceneManagement;
 using MiniEngine.Systems.Components;
 
 namespace MiniEngine.Editor.Windows.Particles

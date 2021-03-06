@@ -1,4 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\Content.Build.props"/>
+
   <PropertyGroup>
     <OutputType>WinExe</OutputType>    
     <PublishReadyToRun>false</PublishReadyToRun>
@@ -14,8 +16,6 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="LightInject" Version="6.4.0" />
-    <PackageReference Include="MonoGame.Framework.WindowsDX" Version="3.8.0.1641" />
-    <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.0.1641" />
   </ItemGroup>
   <ItemGroup>
     <MonoGameContentReference Include="Content\Content.mgcb" />
@@ -26,11 +26,11 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\External\MonoGame\MonoGame.Framework\MonoGame.Framework.WindowsDX.csproj" />
     <ProjectReference Include="..\MiniEngine.Configuration\MiniEngine.Configuration.csproj" />
     <ProjectReference Include="..\MiniEngine.ContentPipeline\MiniEngine.ContentPipeline.csproj" />
     <ProjectReference Include="..\MiniEngine.Graphics\MiniEngine.Graphics.csproj" />
     <ProjectReference Include="..\MiniEngine.Gui\MiniEngine.Gui.csproj" />
-    <ProjectReference Include="..\MiniEngine.SceneManagement\MiniEngine.SceneManagement.csproj" />
     <ProjectReference Include="..\MiniEngine.Systems\MiniEngine.Systems.csproj" />
   </ItemGroup>
   <ItemGroup>

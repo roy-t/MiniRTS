@@ -1,0 +1,11 @@
+<Project>
+  <PropertyGroup>    
+    <Nullable></Nullable>
+    <WarningsAsErrors></WarningsAsErrors>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <MonoGamePlatform></MonoGamePlatform>
+  </PropertyGroup>
+
+</Project>

@@ -8,7 +8,6 @@ using MiniEngine.Graphics.Geometry.Generators;
 using MiniEngine.Graphics.ParticipatingMedia;
 using MiniEngine.Graphics.Particles;
 using MiniEngine.Graphics.Particles.Functions;
-using MiniEngine.SceneManagement;
 using MiniEngine.Systems.Components;
 using MiniEngine.Systems.Entities;
 

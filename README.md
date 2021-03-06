@@ -57,7 +57,17 @@ MiniEngine is an ongoing project, I've got a lot of plans for new features, and 
 git clone --recurse-submodules https://github.com/roy-t/MiniRTS.git
 ```
 
-3. Open the `/src/MiniEngine.vNext.sln` file, set the `MiniEngine.Editor` project as the start-up project, and press run. You should be able to play around. Note that there are some pre-populated scenes that you can view, they are available via the `scene` menu.
+On older versions of git you might need to clone first and then update the submodules separately via:
+
+```
+git submodule update --init --recursive
+```
+
+3. Open the `/src/MiniEngine.vNext.sln` file in Visual Studio.
+
+4. Manually trigger a build of everything in `External` folder. This will make sure all tools required during build are available (MiniEngine temporarily uses a forked version of MonoGame with a newer version of the FX compiler, so we can't use the built-in content tools MonoGame's NuGet packages provide).
+
+5. Set the `MiniEngine.Editor` project as the start-up project, and press run. You should be able to play around. Note that there are some pre-populated scenes that you can view, they are available via the `scene` menu.
 
 # History
 This repository actually contains two game engines. In the end of 2017 I started on the first version, which now resides in the `./vOld/` folder. The vOld engine is a standard deferred rendering engine, using a Blinn-Phong rendering model. It contains a lot of different light and particle primitives and the editor is quite feature rich. 

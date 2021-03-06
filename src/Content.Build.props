@@ -1,0 +1,8 @@
+<Project>
+  <Import Project="$(MSBuildThisFileDirectory)External\MonoGame\Tools\MonoGame.Content.Builder.Task\MonoGame.Content.Builder.Task.props"/>
+  <Import Project="$(MSBuildThisFileDirectory)External\MonoGame\Tools\MonoGame.Content.Builder.Task\MonoGame.Content.Builder.Task.targets"/>
+
+  <PropertyGroup>
+    <MGCBPath>"$(MSBuildThisFileDirectory)External\MonoGame\Artifacts\MonoGame.Content.Builder\Debug\mgcb.dll"</MGCBPath>
+  </PropertyGroup>
+</Project>

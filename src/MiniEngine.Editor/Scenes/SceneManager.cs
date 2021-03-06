@@ -5,7 +5,6 @@ using ImGuiNET;
 using Microsoft.Xna.Framework;
 using MiniEngine.Configuration;
 using MiniEngine.Graphics;
-using MiniEngine.SceneManagement;
 using MiniEngine.Systems.Components;
 using MiniEngine.Systems.Entities;
 
