@@ -32,8 +32,5 @@ However for fog it would be better if this should just make the fog darker. Try 
 
 
 # Particles
-- Current performance: 67_500 particles ~ 60-61 fps in Sponza
-- With reduced vertex type and billboard math in shader, 375_000 particles ~ 60-61 fps in Sponza (from roughly the hanging flowers)
 - https://directtovideo.wordpress.com/2009/10/06/a-thoroughly-modern-particle-system/?
-
-- Systems should 'bind' per method. Use  (threadIndex, threads) to multi-thread work inside a single method
+- Shadows particles look OK, but makes particles twice as expensive, should we be able to enable/disable it in CascadedShadowMapSystem?

@@ -91,7 +91,6 @@ namespace MiniEngine.Graphics.Shadows
             this.Device.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.White, 1.0f, 0);
 
             this.Geometry.Draw(inView, this, viewProjection);
-
             this.Particles.Draw(viewProjection, this);
         }
 
