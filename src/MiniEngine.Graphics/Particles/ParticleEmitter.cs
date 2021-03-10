@@ -6,6 +6,10 @@ namespace MiniEngine.Graphics.Particles
 {
     public sealed class ParticleEmitter : IDisposable
     {
+        private bool swapped;
+        private readonly RenderTarget2D DataA;
+        private readonly RenderTarget2D DataB;
+
         public ParticleEmitter(GraphicsDevice device, int count)
         {
             this.Metalicness = 0.0f;
@@ -13,7 +17,8 @@ namespace MiniEngine.Graphics.Particles
 
             var dimensions = (int)Math.Ceiling(Math.Sqrt(count));
             this.Count = dimensions * dimensions;
-            this.Data = new Texture2D(device, dimensions, dimensions, false, SurfaceFormat.Vector4);
+            this.DataA = new RenderTarget2D(device, dimensions, dimensions, false, SurfaceFormat.Vector4, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+            this.DataB = new RenderTarget2D(device, dimensions, dimensions, false, SurfaceFormat.Vector4, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
 
             var instances = new Particle[this.Count];
             var i = 0;
@@ -38,9 +43,36 @@ namespace MiniEngine.Graphics.Particles
 
         public int Count { get; }
 
-        public Texture2D Data { get; }
-
         public VertexBuffer Instances { get; }
+
+        public RenderTarget2D FrontBuffer
+        {
+            get
+            {
+                if (this.swapped)
+                {
+                    return this.DataB;
+                }
+
+                return this.DataA;
+            }
+        }
+
+        public RenderTarget2D BackBuffer
+        {
+            get
+            {
+                if (this.swapped)
+                {
+                    return this.DataA;
+                }
+
+                return this.DataB;
+            }
+        }
+
+        public void Swap()
+            => this.swapped = !this.swapped;
 
 
         private void GenerateSpawnPositions()
@@ -57,10 +89,14 @@ namespace MiniEngine.Graphics.Particles
                 data[i] = new Vector4(x, y, z, 1.0f);
             }
 
-            this.Data.SetData(data);
+            this.DataA.SetData(data);
+            this.DataB.SetData(data);
         }
 
         public void Dispose()
-            => this.Data.Dispose();
+        {
+            this.DataA.Dispose();
+            this.DataB.Dispose();
+        }
     }
 }

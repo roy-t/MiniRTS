@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
+using MiniEngine.Graphics.PostProcess;
 using MiniEngine.Systems;
 using MiniEngine.Systems.Generators;
 
@@ -11,15 +12,19 @@ namespace MiniEngine.Graphics.Particles
     {
         private readonly GraphicsDevice Device;
         private readonly FrameService FrameService;
+        private readonly PostProcessTriangle PostProcessTriangle;
         private readonly ParticleRenderer ParticleRenderer;
         private readonly ParticleEffect Effect;
+        private readonly SimulationEffect SimulationEffect;
 
-        public ParticleSystem(GraphicsDevice device, FrameService frameService, ParticleRenderer particleRenderer, ParticleEffect effect)
+        public ParticleSystem(GraphicsDevice device, FrameService frameService, PostProcessTriangle postProcessTriangle, ParticleRenderer particleRenderer, ParticleEffect effect, SimulationEffect simulationEffect)
         {
             this.Device = device;
             this.FrameService = frameService;
+            this.PostProcessTriangle = postProcessTriangle;
             this.ParticleRenderer = particleRenderer;
             this.Effect = effect;
+            this.SimulationEffect = simulationEffect;
         }
 
         public void OnSet()
@@ -27,22 +32,37 @@ namespace MiniEngine.Graphics.Particles
             this.Device.BlendState = BlendState.Opaque;
             this.Device.DepthStencilState = DepthStencilState.Default;
             this.Device.RasterizerState = RasterizerState.CullCounterClockwise;
-            this.Device.SamplerStates[0] = SamplerState.AnisotropicWrap;
-            this.Device.SamplerStates[1] = SamplerState.AnisotropicWrap;
-            this.Device.SamplerStates[2] = SamplerState.AnisotropicWrap;
-            this.Device.SamplerStates[3] = SamplerState.AnisotropicWrap;
-            this.Device.SamplerStates[4] = SamplerState.AnisotropicWrap;
-
-            this.Device.SetRenderTargets(
-                this.FrameService.GBuffer.Albedo,
-                this.FrameService.GBuffer.Material,
-                this.FrameService.GBuffer.Depth,
-                this.FrameService.GBuffer.Normal);
+            this.Device.SamplerStates[0] = SamplerState.PointClamp;
         }
+
+        [ProcessAll]
+        public void SimulateParticles(ParticleFountainComponent component)
+        {
+            this.SimulationEffect.Elapsed = this.FrameService.Elapsed;
+
+            for (var i = 0; i < component.Emitters.Count; i++)
+            {
+                var emitter = component.Emitters[i];
+                this.SimulationEffect.Data = emitter.FrontBuffer;
+                this.SimulationEffect.Apply();
+
+                this.Device.SetRenderTarget(emitter.BackBuffer);
+                this.PostProcessTriangle.Render(this.Device);
+
+                emitter.Swap();
+            }
+        }
+
 
         [Process]
         public void Process()
         {
+            this.Device.SetRenderTargets(
+               this.FrameService.GBuffer.Albedo,
+               this.FrameService.GBuffer.Material,
+               this.FrameService.GBuffer.Depth,
+               this.FrameService.GBuffer.Normal);
+
             var camera = this.FrameService.CameraComponent.Camera;
             this.Effect.View = camera.View;
             this.ParticleRenderer.Draw(camera.ViewProjection, this);
@@ -53,7 +73,7 @@ namespace MiniEngine.Graphics.Particles
             this.Effect.WorldViewProjection = worldViewProjection;
             this.Effect.Metalicness = emitter.Metalicness;
             this.Effect.Roughness = emitter.Roughness;
-            this.Effect.Data = emitter.Data;
+            this.Effect.Data = emitter.FrontBuffer;
 
             this.Effect.Apply();
         }
