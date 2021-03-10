@@ -80,6 +80,12 @@
 /processorParam:DebugMode=Auto
 /build:Effects/ParticleEffect.fx
 
+#begin Effects/ParticleShadowMapEffect.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Effects/ParticleShadowMapEffect.fx
+
 #begin Effects/PointLightEffect.fx
 /importer:EffectImporter
 /processor:EffectProcessor

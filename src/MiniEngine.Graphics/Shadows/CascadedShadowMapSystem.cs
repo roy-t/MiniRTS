@@ -6,6 +6,7 @@ using MiniEngine.Configuration;
 using MiniEngine.ContentPipeline.Shared;
 using MiniEngine.Graphics.Camera;
 using MiniEngine.Graphics.Geometry;
+using MiniEngine.Graphics.Particles;
 using MiniEngine.Graphics.Visibility;
 using MiniEngine.Systems;
 using MiniEngine.Systems.Generators;
@@ -13,22 +14,26 @@ using MiniEngine.Systems.Generators;
 namespace MiniEngine.Graphics.Shadows
 {
     [System]
-    public partial class CascadedShadowMapSystem : ISystem, IGeometryRendererUser<Matrix>
+    public partial class CascadedShadowMapSystem : ISystem, IGeometryRendererUser<Matrix>, IParticleRendererUser
     {
         private readonly GraphicsDevice Device;
-        private readonly GeometryRenderer Renderer;
+        private readonly GeometryRenderer Geometry;
+        private readonly ParticleRenderer Particles;
         private readonly FrameService FrameService;
-        private readonly ShadowMapEffect Effect;
+        private readonly ShadowMapEffect GeometryEffect;
+        private readonly ParticleShadowMapEffect ParticleEffect;
 
         private readonly Frustum Frustum;
         private readonly RasterizerState RasterizerState;
 
-        public CascadedShadowMapSystem(GraphicsDevice device, GeometryRenderer renderer, FrameService frameService, ShadowMapEffect effect)
+        public CascadedShadowMapSystem(GraphicsDevice device, GeometryRenderer geometry, ParticleRenderer particles, FrameService frameService, ShadowMapEffect geometryEffect, ParticleShadowMapEffect particleEffect)
         {
             this.Device = device;
-            this.Renderer = renderer;
+            this.Geometry = geometry;
+            this.Particles = particles;
             this.FrameService = frameService;
-            this.Effect = effect;
+            this.GeometryEffect = geometryEffect;
+            this.ParticleEffect = particleEffect;
             this.Frustum = new Frustum();
 
             this.RasterizerState = new RasterizerState
@@ -85,14 +90,23 @@ namespace MiniEngine.Graphics.Shadows
             this.Device.SetRenderTarget(shadowMap, index);
             this.Device.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.White, 1.0f, 0);
 
-            this.Renderer.Draw(inView, this, viewProjection);
+            this.Geometry.Draw(inView, this, viewProjection);
+
+            this.Particles.Draw(viewProjection, this);
+        }
+
+        public void ApplyEffect(Matrix worldViewProjection, ParticleEmitter emitter)
+        {
+            this.ParticleEffect.WorldViewProjection = worldViewProjection;
+            this.ParticleEffect.Data = emitter.Data;
+            this.ParticleEffect.Apply();
         }
 
         public void SetEffectParameters(Material material, Matrix transform, Matrix viewProjection)
-            => this.Effect.WorldViewProjection = transform * viewProjection;
+            => this.GeometryEffect.WorldViewProjection = transform * viewProjection;
 
         public void ApplyEffect(GeometryTechnique technique)
-            => this.Effect.Apply(technique);
+            => this.GeometryEffect.Apply(technique);
 
 
         private static readonly Matrix TexScaleTransform = Matrix.CreateScale(0.5f, -0.5f, 1.0f) * Matrix.CreateTranslation(0.5f, 0.5f, 0.0f);

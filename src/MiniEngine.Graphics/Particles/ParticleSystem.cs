@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
 using MiniEngine.Systems;
 using MiniEngine.Systems.Generators;
@@ -6,18 +7,18 @@ using MiniEngine.Systems.Generators;
 namespace MiniEngine.Graphics.Particles
 {
     [System]
-    public partial class ParticleSystem : ISystem
+    public partial class ParticleSystem : ISystem, IParticleRendererUser
     {
         private readonly GraphicsDevice Device;
         private readonly FrameService FrameService;
-        private readonly Point Point;
+        private readonly ParticleRenderer ParticleRenderer;
         private readonly ParticleEffect Effect;
 
-        public ParticleSystem(GraphicsDevice device, FrameService frameService, Point point, ParticleEffect effect)
+        public ParticleSystem(GraphicsDevice device, FrameService frameService, ParticleRenderer particleRenderer, ParticleEffect effect)
         {
             this.Device = device;
             this.FrameService = frameService;
-            this.Point = point;
+            this.ParticleRenderer = particleRenderer;
             this.Effect = effect;
         }
 
@@ -39,23 +40,22 @@ namespace MiniEngine.Graphics.Particles
                 this.FrameService.GBuffer.Normal);
         }
 
-        [ProcessAll]
-        public void Process(ParticleFountainComponent fountain, TransformComponent transform)
+        [Process]
+        public void Process()
         {
             var camera = this.FrameService.CameraComponent.Camera;
-            for (var i = 0; i < fountain.Emitters.Count; i++)
-            {
-                var emitter = fountain.Emitters[i];
+            this.Effect.View = camera.View;
+            this.ParticleRenderer.Draw(camera.ViewProjection, this);
+        }
 
-                this.Effect.WorldViewProjection = transform.Matrix * camera.ViewProjection;
-                this.Effect.View = camera.View;
-                this.Effect.Metalicness = emitter.Metalicness;
-                this.Effect.Roughness = emitter.Roughness;
-                this.Effect.Data = emitter.Data;
+        public void ApplyEffect(Matrix worldViewProjection, ParticleEmitter emitter)
+        {
+            this.Effect.WorldViewProjection = worldViewProjection;
+            this.Effect.Metalicness = emitter.Metalicness;
+            this.Effect.Roughness = emitter.Roughness;
+            this.Effect.Data = emitter.Data;
 
-                this.Effect.Apply();
-                this.Point.RenderInstanced(this.Device, emitter.Instances, emitter.Count);
-            }
+            this.Effect.Apply();
         }
     }
 }
