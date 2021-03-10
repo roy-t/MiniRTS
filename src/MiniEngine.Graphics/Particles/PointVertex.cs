@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 namespace MiniEngine.Graphics.Particles
 {
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct ParticleVertex : IVertexType
+    public struct PointVertex : IVertexType
     {
         public static readonly VertexDeclaration Declaration = new VertexDeclaration
         (
@@ -14,7 +14,7 @@ namespace MiniEngine.Graphics.Particles
 
         public Vector3 Position;
 
-        public ParticleVertex(Vector3 position)
+        public PointVertex(Vector3 position)
         {
             this.Position = position;
         }

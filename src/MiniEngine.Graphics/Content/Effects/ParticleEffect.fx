@@ -3,6 +3,11 @@
 #include "Includes/Gamma.hlsl"
 #include "Includes/Instancing.hlsl"
 
+struct Particle
+{
+    float2 UV: POSITION1;
+};
+
 struct VertexData
 {
     float3 Position : POSITION0;
@@ -30,21 +35,34 @@ float Roughness;
 float4x4 WorldViewProjection;
 float4x4 View;
 
-PixelData VS_INSTANCED(in VertexData input, in ParticleInstancingData instance)
+Texture2D Data;
+sampler dataSampler = sampler_state
+{
+    Texture = (Data);
+    MinFilter = POINT;
+    MagFilter = POINT;
+    MipFilter = POINT;
+    AddressU = Clamp;
+    AddressV = Clamp;
+};
+
+PixelData VS_INSTANCED(in VertexData input, in Particle particle)
 {
     PixelData output = (PixelData)0;
+
+    float4 data = Data.SampleLevel(dataSampler, particle.UV, 0);
 
     float4x4 world =
     {
         View._11 , View._21 , View._31 , 0.0f,
         View._12 , View._22 , View._32 , 0.0f,
         View._13 , View._23 , View._33 , 0.0f,
-        instance.Position.x, instance.Position.y, instance.Position.z, 1.0f
+        data.x, data.y, data.z, 1.0f
     };
 
     output.Position = mul(mul(float4(input.Position, 1), world), WorldViewProjection);
     output.ScreenPosition = output.Position;
-    output.Color = instance.Color;
+    output.Color = float4(1, 0, 0, 1);
 
     float3x3 rotation = (float3x3)world;
     float3 normal = float3(0, 0, 1.0f);

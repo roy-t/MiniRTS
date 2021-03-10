@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Systems;
 
@@ -23,31 +22,14 @@ namespace MiniEngine.Graphics.Particles
 
         public IReadOnlyList<ParticleEmitter> Emitters => this.EmitterList;
 
-        public void AddEmitter(IParticleSpawnFunction spawnFunction, IParticleUpdateFunction updateFunction, IParticleDespawnFunction despawnFunction)
+        public void AddEmitter(int count)
         {
-            var emitter = new ParticleEmitter(new ParticleBuffer(this.Device), spawnFunction, updateFunction, despawnFunction);
+            var emitter = new ParticleEmitter(this.Device, count);
             this.EmitterList.Add(emitter);
         }
 
         public void RemoveEmitter(ParticleEmitter emitter)
             => this.EmitterList.Remove(emitter);
-
-        public void Update(float elapsed, Matrix transform)
-        {
-            for (var i = 0; i < this.EmitterList.Count; i++)
-            {
-                var emitter = this.EmitterList[i];
-
-                emitter.RemoveOldParticles(elapsed);
-
-                if (this.IsEnabled)
-                {
-                    emitter.SpawnNewParticles(elapsed, transform);
-                }
-
-                emitter.UpdateParticles(elapsed, transform);
-            }
-        }
 
         public void Dispose()
         {

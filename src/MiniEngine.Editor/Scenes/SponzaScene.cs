@@ -7,7 +7,6 @@ using MiniEngine.Graphics.Geometry;
 using MiniEngine.Graphics.Geometry.Generators;
 using MiniEngine.Graphics.ParticipatingMedia;
 using MiniEngine.Graphics.Particles;
-using MiniEngine.Graphics.Particles.Functions;
 using MiniEngine.Systems.Components;
 using MiniEngine.Systems.Entities;
 
@@ -53,13 +52,8 @@ namespace MiniEngine.Editor.Scenes
         {
             var particleEntity = this.Entities.Create();
             this.Components.Add(new TransformComponent(particleEntity, new Vector3(-31.0f, 6.42f, 7.0f), Vector3.One, 0.0f, MathHelper.PiOver2, 0.0f));
-            //var spawn = new IntervalSpawnFunction();
-            //var spawn = new InstantSpawnFunction();
-            var spawn = new CircularSpawnFunction() { SpawnInterval = 0.021f, Radius = 0.58f, ParticlesPerWave = 27.0f };
-            var update = new LinearUpdateFunction() { StartColor = Color.DimGray, EndColor = Color.LightGray };
-            var despawn = new RandomizedDespawnFunction() { AverageLifetime = 1.0f, Variance = 0.3f };
             var component = new ParticleFountainComponent(particleEntity, this.Device);
-            component.AddEmitter(spawn, update, despawn);
+            component.AddEmitter(1024 * 1024);
 
             this.Components.Add(component);
         }

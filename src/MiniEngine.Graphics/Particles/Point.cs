@@ -13,17 +13,14 @@ namespace MiniEngine.Graphics.Particles
 
         public Point(GraphicsDevice device)
         {
-            var vertex = new ParticleVertex(Vector3.Zero);
+            var vertex = new PointVertex(Vector3.Zero);
 
-            this.Vertices = new VertexBuffer(device, ParticleVertex.Declaration, 1, BufferUsage.WriteOnly);
+            this.Vertices = new VertexBuffer(device, PointVertex.Declaration, 1, BufferUsage.WriteOnly);
             this.Vertices.SetData(new[] { vertex });
 
             this.Indices = new IndexBuffer(device, IndexElementSize.SixteenBits, 1, BufferUsage.WriteOnly);
             this.Indices.SetData(new short[] { 0 });
         }
-
-        public void RenderInstanced(GraphicsDevice device, ParticleBuffer particles)
-            => this.RenderInstanced(device, particles.Commit(), particles.Count);
 
         public void RenderInstanced(GraphicsDevice device, VertexBuffer instances, int count)
         {

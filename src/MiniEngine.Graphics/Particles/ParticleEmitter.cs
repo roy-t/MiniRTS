@@ -1,62 +1,66 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace MiniEngine.Graphics.Particles
 {
     public sealed class ParticleEmitter : IDisposable
     {
-        public ParticleEmitter(ParticleBuffer particles, IParticleSpawnFunction spawnFunction, IParticleUpdateFunction updateFunction, IParticleDespawnFunction despawnFunction)
+        public ParticleEmitter(GraphicsDevice device, int count)
         {
-            this.Particles = particles;
-            this.SpawnFunction = spawnFunction;
-            this.UpdateFunction = updateFunction;
-            this.DespawnFunction = despawnFunction;
             this.Metalicness = 0.0f;
             this.Roughness = 1.0f;
+
+            var dimensions = (int)Math.Ceiling(Math.Sqrt(count));
+            this.Count = dimensions * dimensions;
+            this.Data = new Texture2D(device, dimensions, dimensions, false, SurfaceFormat.Vector4);
+
+            var instances = new Particle[this.Count];
+            var i = 0;
+            for (var x = 0; x < dimensions; x++)
+            {
+                for (var y = 0; y < dimensions; y++)
+                {
+                    var u = x / (float)dimensions;
+                    var v = y / (float)dimensions;
+
+                    instances[i++] = new Particle(new Vector2(u, v));
+                }
+            }
+            this.Instances = new VertexBuffer(device, PointVertex.Declaration, count, BufferUsage.WriteOnly);
+            this.Instances.SetData(instances);
+
+            this.GenerateSpawnPositions();
         }
-
-        public ParticleBuffer Particles { get; }
-
-        public IParticleSpawnFunction SpawnFunction { get; set; }
-
-        public IParticleUpdateFunction UpdateFunction { get; set; }
-
-        public IParticleDespawnFunction DespawnFunction { get; set; }
 
         public float Metalicness { get; set; }
         public float Roughness { get; set; }
 
-        public void Update(float elapsed, Matrix transform)
-        {
-            this.RemoveOldParticles(elapsed);
-            this.SpawnNewParticles(elapsed, transform);
-            this.UpdateParticles(elapsed, transform);
-        }
+        public int Count { get; }
 
-        public void RemoveOldParticles(float elapsed)
+        public Texture2D Data { get; }
+
+        public VertexBuffer Instances { get; }
+
+
+        private void GenerateSpawnPositions()
         {
-            for (var i = this.Particles.Count - 1; i >= 0; i--)
+            var random = new Random();
+            var data = new Vector4[this.Count];
+
+            for (var i = 0; i < this.Count; i++)
             {
-                ref var particle = ref this.Particles[i];
-                this.DespawnFunction.Update(i, elapsed, ref particle);
-                if (particle.Energy <= 0.0f)
-                {
-                    this.Particles.RemoveAt(i);
-                }
+                var x = (float)((random.NextDouble() * 2) - 1);
+                var y = (float)((random.NextDouble() * 2) - 1);
+                var z = (float)((random.NextDouble() * 2) - 1);
+
+                data[i] = new Vector4(x, y, z, 1.0f);
             }
+
+            this.Data.SetData(data);
         }
 
-        public void SpawnNewParticles(float elapsed, Matrix transform)
-            => this.SpawnFunction.Spawn(elapsed, transform, this.Particles);
-
-        public void UpdateParticles(float elapsed, Matrix transform)
-        {
-            for (var i = this.Particles.Count - 1; i >= 0; i--)
-            {
-                this.UpdateFunction.Update(elapsed, transform, ref this.Particles[i]);
-            }
-        }
-
-        public void Dispose() => this.Particles.Dispose();
+        public void Dispose()
+            => this.Data.Dispose();
     }
 }
