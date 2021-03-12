@@ -38,8 +38,23 @@ namespace MiniEngine.Graphics.Particles
             this.GenerateSpawnPositions();
         }
 
+        public bool Reset
+        {
+            get { return false; }
+            set { if (value) { this.GenerateSpawnPositions(); } }
+        }
+
         public float Metalicness { get; set; }
         public float Roughness { get; set; }
+
+        public float LengthScale { get; set; } = 0.5f;
+        public float FieldSpeed { get; set; } = 0.01f;
+        public float NoiseStrength { get; set; } = 0.3f;
+        public float ProgressionRate { get; set; } = 1.0f;
+        public Vector3 FieldMainDirection { get; set; } = Vector3.Forward;
+
+        public Vector3 SpherePosition { get; set; } = Vector3.Forward * 6;
+        public float SphereRadius { get; set; } = 4.5f;
 
         public int Count { get; }
 
@@ -56,6 +71,7 @@ namespace MiniEngine.Graphics.Particles
 
                 return this.DataA;
             }
+            set { }
         }
 
         public RenderTarget2D BackBuffer
@@ -69,6 +85,7 @@ namespace MiniEngine.Graphics.Particles
 
                 return this.DataB;
             }
+            set { }
         }
 
         public void Swap()

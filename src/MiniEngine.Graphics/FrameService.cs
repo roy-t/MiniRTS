@@ -44,6 +44,8 @@ namespace MiniEngine.Graphics
 
         public float Elapsed { get; set; }
 
+        public float Time { get; set; }
+
         public Entity PrimaryCameraEntity { get; set; }
 
         public CameraComponent CameraComponent => this.Components.GetComponent<CameraComponent>(this.PrimaryCameraEntity);

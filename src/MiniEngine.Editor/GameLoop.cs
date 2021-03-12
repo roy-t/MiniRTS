@@ -69,6 +69,7 @@ namespace MiniEngine.Editor
         {
             var elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
             this.FrameService.Elapsed = elapsed;
+            this.FrameService.Time = (float)gameTime.TotalGameTime.TotalSeconds;
 
             this.Keyboard.Update();
             this.Mouse.Update();

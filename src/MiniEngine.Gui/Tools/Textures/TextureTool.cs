@@ -44,6 +44,10 @@ namespace MiniEngine.Gui.Tools.Textures
             ToolUtils.TextRow("Height", $"{value.Width}");
             ToolUtils.TextRow("Format", $"{value.Format}");
 
+            if (ToolUtils.ButtonRow(ToolUtils.NoLabel, "Inspect"))
+            {
+                this.ImageInspector.SetImage(value);
+            }
             return false;
         }
 

@@ -38,21 +38,35 @@ namespace MiniEngine.Graphics.Particles
         [ProcessAll]
         public void SimulateParticles(ParticleFountainComponent component)
         {
-            this.SimulationEffect.Elapsed = this.FrameService.Elapsed;
-
-            for (var i = 0; i < component.Emitters.Count; i++)
+            if (component.IsEnabled)
             {
-                var emitter = component.Emitters[i];
-                this.SimulationEffect.Data = emitter.FrontBuffer;
-                this.SimulationEffect.Apply();
+                this.SimulationEffect.Elapsed = this.FrameService.Elapsed;
 
-                this.Device.SetRenderTarget(emitter.BackBuffer);
-                this.PostProcessTriangle.Render(this.Device);
+                for (var i = 0; i < component.Emitters.Count; i++)
+                {
+                    var emitter = component.Emitters[i];
+                    this.SimulationEffect.Data = emitter.FrontBuffer;
 
-                emitter.Swap();
+                    this.SimulationEffect.LengthScale = emitter.LengthScale;
+                    this.SimulationEffect.FieldSpeed = emitter.FieldSpeed;
+                    this.SimulationEffect.NoiseStrength = emitter.NoiseStrength;
+                    this.SimulationEffect.ProgressionRate = emitter.ProgressionRate;
+                    this.SimulationEffect.FieldMainDirection = emitter.FieldMainDirection;
+                    this.SimulationEffect.SpherePosition = emitter.SpherePosition;
+                    this.SimulationEffect.SphereRadius = emitter.SphereRadius;
+
+                    this.SimulationEffect.Elapsed = this.FrameService.Elapsed;
+                    this.SimulationEffect.Time = this.FrameService.Time;
+
+                    this.SimulationEffect.Apply();
+
+                    this.Device.SetRenderTarget(emitter.BackBuffer);
+                    this.PostProcessTriangle.Render(this.Device);
+
+                    emitter.Swap();
+                }
             }
         }
-
 
         [Process]
         public void Process()

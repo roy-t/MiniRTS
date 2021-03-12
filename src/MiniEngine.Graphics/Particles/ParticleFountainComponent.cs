@@ -15,7 +15,7 @@ namespace MiniEngine.Graphics.Particles
         {
             this.Device = device;
             this.EmitterList = new List<ParticleEmitter>();
-            this.IsEnabled = true;
+            this.IsEnabled = false;
         }
 
         public bool IsEnabled { get; set; }
