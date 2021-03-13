@@ -6,10 +6,6 @@ namespace MiniEngine.Graphics.Particles
 {
     public sealed class ParticleEmitter : IDisposable
     {
-        private bool swapped;
-        private readonly RenderTarget2D DataA;
-        private readonly RenderTarget2D DataB;
-
         public ParticleEmitter(GraphicsDevice device, int count)
         {
             this.Metalicness = 0.0f;
@@ -17,8 +13,10 @@ namespace MiniEngine.Graphics.Particles
 
             var dimensions = (int)Math.Ceiling(Math.Sqrt(count));
             this.Count = dimensions * dimensions;
-            this.DataA = new RenderTarget2D(device, dimensions, dimensions, false, SurfaceFormat.Vector4, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
-            this.DataB = new RenderTarget2D(device, dimensions, dimensions, false, SurfaceFormat.Vector4, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+
+            this.Velocity = new DoubleBufferedRenderTarget(device, dimensions, SurfaceFormat.Vector4);
+            this.Acceleration = new DoubleBufferedRenderTarget(device, dimensions, SurfaceFormat.Vector4);
+            this.Position = new DoubleBufferedRenderTarget(device, dimensions, SurfaceFormat.Vector4);
 
             var instances = new Particle[this.Count];
             var i = 0;
@@ -60,36 +58,14 @@ namespace MiniEngine.Graphics.Particles
 
         public VertexBuffer Instances { get; }
 
-        public RenderTarget2D FrontBuffer
-        {
-            get
-            {
-                if (this.swapped)
-                {
-                    return this.DataB;
-                }
-
-                return this.DataA;
-            }
-            set { }
-        }
-
-        public RenderTarget2D BackBuffer
-        {
-            get
-            {
-                if (this.swapped)
-                {
-                    return this.DataA;
-                }
-
-                return this.DataB;
-            }
-            set { }
-        }
+        public DoubleBufferedRenderTarget Velocity { get; }
+        public DoubleBufferedRenderTarget Acceleration { get; }
+        public DoubleBufferedRenderTarget Position { get; }
 
         public void Swap()
-            => this.swapped = !this.swapped;
+        {
+            this.Velocity.Swap();
+        }
 
 
         private void GenerateSpawnPositions()
@@ -106,14 +82,13 @@ namespace MiniEngine.Graphics.Particles
                 data[i] = new Vector4(x, y, z, 1.0f);
             }
 
-            this.DataA.SetData(data);
-            this.DataB.SetData(data);
+            this.Velocity.WriteTarget.SetData(data);
+            this.Velocity.Swap();
         }
 
         public void Dispose()
         {
-            this.DataA.Dispose();
-            this.DataB.Dispose();
+            this.Velocity.Dispose();
         }
     }
 }

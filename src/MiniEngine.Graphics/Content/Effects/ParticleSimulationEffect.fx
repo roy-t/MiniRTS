@@ -23,7 +23,9 @@ struct OutputData
     float4 Color : COLOR0;
 };
 
-Texture2D Data;
+Texture2D Velocity;
+Texture2D Acceleration;
+Texture2D Position;
 sampler dataSampler = sampler_state
 {
     Texture = (Data);
@@ -100,13 +102,13 @@ PixelData VS(in VertexData input)
     return output;
 }
 
-OutputData PS(PixelData input)
+OutputData PS_Velocity(PixelData input)
 {
     OutputData output = (OutputData)0;
     
     const float epsilon = 0.0001; // TODO replace with EPSILON?
 
-    float3 p = Data.SampleLevel(dataSampler, input.Texture, 0).xyz;    
+    float3 p = Velocity.SampleLevel(dataSampler, input.Texture, 0).xyz;    
     float3 potential = Potential(p);
 
     // Partial derivatives of different components of the potential
@@ -127,11 +129,11 @@ OutputData PS(PixelData input)
     return output;
 }
 
-technique SimulationTechnique
+technique ParticleVelocitySimulationTechnique
 {
     pass P0
     {
         VertexShader = compile VS_SHADERMODEL VS();
-        PixelShader = compile PS_SHADERMODEL PS();
+        PixelShader = compile PS_SHADERMODEL PS_Velocity();
     }
 }

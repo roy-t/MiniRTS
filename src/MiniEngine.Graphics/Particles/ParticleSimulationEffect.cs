@@ -4,9 +4,11 @@ using MiniEngine.Graphics.Effects;
 
 namespace MiniEngine.Graphics.Particles
 {
-    public sealed class SimulationEffect : EffectWrapper
+    public sealed class ParticleSimulationEffect : EffectWrapper
     {
-        private readonly EffectParameter DataParameter;
+        private readonly EffectParameter VelocityParameter;
+        private readonly EffectParameter AccelerationParameter;
+        private readonly EffectParameter PositionParameter;
 
         private readonly EffectParameter LengthScaleParameter;
         private readonly EffectParameter FieldSpeedParameter;
@@ -20,12 +22,11 @@ namespace MiniEngine.Graphics.Particles
         private readonly EffectParameter SphereRadiusParameter;
 
 
-        public SimulationEffect(EffectFactory factory) : base(factory.Load<SimulationEffect>())
+        public ParticleSimulationEffect(EffectFactory factory) : base(factory.Load<ParticleSimulationEffect>())
         {
-            this.Effect.CurrentTechnique = this.Effect.Techniques["SimulationTechnique"];
-            this.ElapsedParameter = this.Effect.Parameters["Elapsed"];
-            this.DataParameter = this.Effect.Parameters["Data"];
-
+            this.VelocityParameter = this.Effect.Parameters["Velocity"];
+            this.AccelerationParameter = this.Effect.Parameters["Acceleration"];
+            this.PositionParameter = this.Effect.Parameters["Position"];
 
             this.LengthScaleParameter = this.Effect.Parameters["LengthScale"];
             this.FieldSpeedParameter = this.Effect.Parameters["FieldSpeed"];
@@ -39,7 +40,9 @@ namespace MiniEngine.Graphics.Particles
             this.SphereRadiusParameter = this.Effect.Parameters["SphereRadius"];
         }
 
-        public Texture2D Data { set => this.DataParameter.SetValue(value); }
+        public Texture2D Velocity { set => this.VelocityParameter.SetValue(value); }
+        public Texture2D Acceleration { set => this.AccelerationParameter.SetValue(value); }
+        public Texture2D Position { set => this.PositionParameter.SetValue(value); }
 
         public float LengthScale { set => this.LengthScaleParameter.SetValue(value); }
         public float FieldSpeed { set => this.FieldSpeedParameter.SetValue(value); }
@@ -51,5 +54,11 @@ namespace MiniEngine.Graphics.Particles
 
         public Vector3 SpherePosition { set => this.SpherePositionParameter.SetValue(value); }
         public float SphereRadius { set => this.SphereRadiusParameter.SetValue(value); }
+
+        public void ApplyVelocity()
+        {
+            this.Effect.CurrentTechnique = this.Effect.Techniques["ParticleVelocitySimulationTechnique"];
+            this.Apply();
+        }
     }
 }

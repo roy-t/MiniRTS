@@ -15,9 +15,9 @@ namespace MiniEngine.Graphics.Particles
         private readonly PostProcessTriangle PostProcessTriangle;
         private readonly ParticleRenderer ParticleRenderer;
         private readonly ParticleEffect Effect;
-        private readonly SimulationEffect SimulationEffect;
+        private readonly ParticleSimulationEffect SimulationEffect;
 
-        public ParticleSystem(GraphicsDevice device, FrameService frameService, PostProcessTriangle postProcessTriangle, ParticleRenderer particleRenderer, ParticleEffect effect, SimulationEffect simulationEffect)
+        public ParticleSystem(GraphicsDevice device, FrameService frameService, PostProcessTriangle postProcessTriangle, ParticleRenderer particleRenderer, ParticleEffect effect, ParticleSimulationEffect simulationEffect)
         {
             this.Device = device;
             this.FrameService = frameService;
@@ -33,6 +33,8 @@ namespace MiniEngine.Graphics.Particles
             this.Device.DepthStencilState = DepthStencilState.Default;
             this.Device.RasterizerState = RasterizerState.CullCounterClockwise;
             this.Device.SamplerStates[0] = SamplerState.PointClamp;
+            this.Device.SamplerStates[1] = SamplerState.PointClamp;
+            this.Device.SamplerStates[2] = SamplerState.PointClamp;
         }
 
         [ProcessAll]
@@ -45,7 +47,7 @@ namespace MiniEngine.Graphics.Particles
                 for (var i = 0; i < component.Emitters.Count; i++)
                 {
                     var emitter = component.Emitters[i];
-                    this.SimulationEffect.Data = emitter.FrontBuffer;
+                    this.SimulationEffect.Velocity = emitter.Velocity.ReadTarget;
 
                     this.SimulationEffect.LengthScale = emitter.LengthScale;
                     this.SimulationEffect.FieldSpeed = emitter.FieldSpeed;
@@ -58,9 +60,10 @@ namespace MiniEngine.Graphics.Particles
                     this.SimulationEffect.Elapsed = this.FrameService.Elapsed;
                     this.SimulationEffect.Time = this.FrameService.Time;
 
-                    this.SimulationEffect.Apply();
 
-                    this.Device.SetRenderTarget(emitter.BackBuffer);
+                    // Render velocities
+                    this.SimulationEffect.ApplyVelocity();
+                    this.Device.SetRenderTarget(emitter.Velocity.WriteTarget);
                     this.PostProcessTriangle.Render(this.Device);
 
                     emitter.Swap();
@@ -87,7 +90,7 @@ namespace MiniEngine.Graphics.Particles
             this.Effect.WorldViewProjection = worldViewProjection;
             this.Effect.Metalicness = emitter.Metalicness;
             this.Effect.Roughness = emitter.Roughness;
-            this.Effect.Data = emitter.FrontBuffer;
+            this.Effect.Data = emitter.Velocity.ReadTarget;
 
             this.Effect.Apply();
         }

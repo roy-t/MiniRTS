@@ -86,6 +86,12 @@
 /processorParam:DebugMode=Auto
 /build:Effects/ParticleShadowMapEffect.fx
 
+#begin Effects/ParticleSimulationEffect.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Effects/ParticleSimulationEffect.fx
+
 #begin Effects/PointLightEffect.fx
 /importer:EffectImporter
 /processor:EffectProcessor
@@ -97,12 +103,6 @@
 /processor:EffectProcessor
 /processorParam:DebugMode=Auto
 /build:Effects/ShadowMapEffect.fx
-
-#begin Effects/SimulationEffect.fx
-/importer:EffectImporter
-/processor:EffectProcessor
-/processorParam:DebugMode=Auto
-/build:Effects/SimulationEffect.fx
 
 #begin Effects/SkyboxEffect.fx
 /importer:EffectImporter
