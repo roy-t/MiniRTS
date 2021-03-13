@@ -44,6 +44,7 @@ float Time; // Global Time
 float ProgressionRate;
 float3 FieldMainDirection;
 
+
 // Blocking sphere
 float3 SpherePosition;
 float SphereRadius;
@@ -92,6 +93,14 @@ float3 Potential(float3 p)
     return pot;
 }
 
+float SmoothstepPolynomial(float edge0, float edge1, float x)
+{
+    // Scale, bias and saturate x to 0..1 range
+    x = clamp((x - edge0) / (edge1 - edge0), 0.0, 1.0);
+    // Evaluate polynomial
+    return x * x * (3 - 2 * x);
+}
+
 PixelData VS(in VertexData input)
 {
     PixelData output = (PixelData)0;
@@ -125,7 +134,38 @@ OutputData PS_Velocity(PixelData input)
     float3 velocity = float3(dp3_dy - dp2_dz, dp1_dz - dp3_dx, dp2_dx - dp1_dy);
 
 
-    output.Color = float4(p + velocity, 1.0f);
+    output.Color = float4(p + velocity, 1.0f); // TODO: not p???
+    return output;
+}
+
+OutputData PS_Acceleration(PixelData input)
+{
+    OutputData output = (OutputData)0;
+
+    float3 a = Acceleration.SampleLevel(dataSampler, input.Texture, 0).xyz;
+    float3 v = Velocity.SampleLevel(dataSampler, input.Texture, 0).xyz;
+    float3 p = Position.SampleLevel(dataSampler, input.Texture, 0).xyz;
+
+    // Distance to the emitter (attractor)
+    float3 center_diff = float3(0, 0, 0) - p;
+    float center_dist = length(center_diff);
+
+    // Set the acceleration towards the attractor
+    a = normalize(center_diff) / pow(center_dist, 2);
+
+    // Decrease acceleration
+    float max_norm = 1;
+    float acceleration_norm = max(max_norm, length(a));
+
+    // Add resistance
+    a -= v;
+    a /= acceleration_norm;
+
+    // Resistance from sphere
+    a += (1 - SmoothstepPolynomial(0.5, 0.5 + 0.1, length(p))) * normalize(p);
+
+    // Write output
+    output.Color = float4(a.xyz, 1.0f);
     return output;
 }
 
@@ -135,5 +175,15 @@ technique ParticleVelocitySimulationTechnique
     {
         VertexShader = compile VS_SHADERMODEL VS();
         PixelShader = compile PS_SHADERMODEL PS_Velocity();
+    }
+}
+
+
+technique ParticleAccelerationSimulationTechnique
+{
+    pass P0
+    {
+        VertexShader = compile VS_SHADERMODEL VS();
+        PixelShader = compile PS_SHADERMODEL PS_Acceleration();
     }
 }

@@ -33,13 +33,13 @@ namespace MiniEngine.Graphics.Particles
             this.Instances = new VertexBuffer(device, PointVertex.Declaration, count, BufferUsage.WriteOnly);
             this.Instances.SetData(instances);
 
-            this.GenerateSpawnPositions();
+            this.SeedData();
         }
 
         public bool Reset
         {
             get { return false; }
-            set { if (value) { this.GenerateSpawnPositions(); } }
+            set { if (value) { this.SeedData(); } }
         }
 
         public float Metalicness { get; set; }
@@ -65,10 +65,12 @@ namespace MiniEngine.Graphics.Particles
         public void Swap()
         {
             this.Velocity.Swap();
+            this.Acceleration.Swap();
+            this.Position.Swap();
         }
 
 
-        private void GenerateSpawnPositions()
+        private void SeedData()
         {
             var random = new Random();
             var data = new Vector4[this.Count];
@@ -83,7 +85,7 @@ namespace MiniEngine.Graphics.Particles
             }
 
             this.Velocity.WriteTarget.SetData(data);
-            this.Velocity.Swap();
+            this.Swap();
         }
 
         public void Dispose()
