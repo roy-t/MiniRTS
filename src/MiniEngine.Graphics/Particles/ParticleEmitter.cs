@@ -45,6 +45,9 @@ namespace MiniEngine.Graphics.Particles
         public float Metalicness { get; set; }
         public float Roughness { get; set; }
 
+        public float Size { get; set; } = 1.0f;
+        public float LifeLengthFactor { get; set; } = 0.07f;
+
         public float LengthScale { get; set; } = 0.5f;
         public float FieldSpeed { get; set; } = 0.01f;
         public float NoiseStrength { get; set; } = 0.3f;
@@ -74,17 +77,20 @@ namespace MiniEngine.Graphics.Particles
         {
             var random = new Random();
             var data = new Vector4[this.Count];
+            var whites = new Vector4[this.Count];
 
             for (var i = 0; i < this.Count; i++)
             {
                 var x = (float)((random.NextDouble() * 2) - 1);
                 var y = (float)((random.NextDouble() * 2) - 1);
                 var z = (float)((random.NextDouble() * 2) - 1);
-
-                data[i] = new Vector4(x, y, z, 1.0f);
+                var w = (float)random.NextDouble();
+                data[i] = new Vector4(x, y, z, w);
+                whites[i] = Vector4.One;
             }
 
-            this.Velocity.WriteTarget.SetData(data);
+            //this.Velocity.WriteTarget.SetData(data);
+            this.Position.WriteTarget.SetData(data);
             this.Swap();
         }
 

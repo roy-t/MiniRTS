@@ -19,6 +19,8 @@ namespace MiniEngine.Graphics.Particles
         private readonly EffectParameter FieldMainDirectionParameter;
         private readonly EffectParameter SpherePositionParameter;
         private readonly EffectParameter SphereRadiusParameter;
+        private readonly EffectParameter EmitterSizeParameter;
+        private readonly EffectParameter InvLifeLengthFactorParameter;
 
 
         public ParticleSimulationEffect(EffectFactory factory) : base(factory.Load<ParticleSimulationEffect>())
@@ -36,6 +38,8 @@ namespace MiniEngine.Graphics.Particles
             this.FieldMainDirectionParameter = this.Effect.Parameters["FieldMainDirection"];
             this.SpherePositionParameter = this.Effect.Parameters["SpherePosition"];
             this.SphereRadiusParameter = this.Effect.Parameters["SphereRadius"];
+            this.EmitterSizeParameter = this.Effect.Parameters["EmitterSize"];
+            this.InvLifeLengthFactorParameter = this.Effect.Parameters["InvLifeLengthFactor"];
         }
 
         public Texture2D Velocity { set => this.VelocityParameter.SetValue(value); }
@@ -53,9 +57,25 @@ namespace MiniEngine.Graphics.Particles
         public Vector3 SpherePosition { set => this.SpherePositionParameter.SetValue(value); }
         public float SphereRadius { set => this.SphereRadiusParameter.SetValue(value); }
 
+        public float EmitterSize { set => this.EmitterSizeParameter.SetValue(value); }
+
+        public float InvLifeLengthFactor { set => this.InvLifeLengthFactorParameter.SetValue(value); }
+
+        public void ApplyAcceleration()
+        {
+            this.Effect.CurrentTechnique = this.Effect.Techniques["ParticleAccelerationSimulationTechnique"];
+            this.Apply();
+        }
+
         public void ApplyVelocity()
         {
             this.Effect.CurrentTechnique = this.Effect.Techniques["ParticleVelocitySimulationTechnique"];
+            this.Apply();
+        }
+
+        public void ApplyPosition()
+        {
+            this.Effect.CurrentTechnique = this.Effect.Techniques["ParticlePositionSimulationTechnique"];
             this.Apply();
         }
     }

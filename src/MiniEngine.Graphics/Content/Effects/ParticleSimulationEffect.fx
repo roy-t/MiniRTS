@@ -43,8 +43,8 @@ float Elapsed; // Time step
 float Time; // Global Time 
 float ProgressionRate;
 float3 FieldMainDirection;
-
-
+float EmitterSize;
+float InvLifeLengthFactor;
 // Blocking sphere
 float3 SpherePosition;
 float SphereRadius;
@@ -117,7 +117,7 @@ OutputData PS_Velocity(PixelData input)
     
     const float epsilon = 0.0001; // TODO replace with EPSILON?
 
-    float3 p = Velocity.SampleLevel(dataSampler, input.Texture, 0).xyz;    
+    float3 p = Position.SampleLevel(dataSampler, input.Texture, 0).xyz;    
     float3 potential = Potential(p);
 
     // Partial derivatives of different components of the potential
@@ -134,7 +134,8 @@ OutputData PS_Velocity(PixelData input)
     float3 velocity = float3(dp3_dy - dp2_dz, dp1_dz - dp3_dx, dp2_dx - dp1_dy);
 
 
-    output.Color = float4(p + velocity, 1.0f); // TODO: not p???
+    //output.Color = float4(p + velocity, 1.0f); // TODO: not p???
+    output.Color = float4(velocity, 1.0f);
     return output;
 }
 
@@ -147,7 +148,8 @@ OutputData PS_Acceleration(PixelData input)
     float3 p = Position.SampleLevel(dataSampler, input.Texture, 0).xyz;
 
     // Distance to the emitter (attractor)
-    float3 center_diff = float3(0, 0, 0) - p;
+    float3 emitter_position = float3(0, 0, 0);
+    float3 center_diff = emitter_position - p;
     float center_dist = length(center_diff);
 
     // Set the acceleration towards the attractor
@@ -169,6 +171,49 @@ OutputData PS_Acceleration(PixelData input)
     return output;
 }
 
+// Random random function
+float rand(float2 co) {
+    return frac(sin(dot(co.xy, float2(12.9898, 78.233))) * 43758.5453);
+}
+
+OutputData PS_Position(PixelData input)
+{
+    OutputData output = (OutputData)0;
+
+    //float3 a = Acceleration.SampleLevel(dataSampler, input.Texture, 0).xyz;
+    float3 v = Velocity.SampleLevel(dataSampler, input.Texture, 0).xyz;
+
+    // The lifetime is stored in the fourth element of position
+    float4 p_tmp = Position.SampleLevel(dataSampler, input.Texture, 0).xyzw;
+
+    float3 p = p_tmp.xyz;
+    float age = p_tmp.w;
+
+    // Euler integration
+    float3 delta_p = v * Elapsed;
+    float3 new_pos = p + delta_p;
+
+    float3 emitter_position = float3(0, 0, 0);
+
+    // If particle is too old, reset position and decrease age
+    if (age >= 1.0f)
+    {
+        new_pos =
+            float3(
+                emitter_position.x + (rand(new_pos.xy) - 0.5) * EmitterSize,
+                emitter_position.y + (rand(new_pos.yz) - 0.5) * EmitterSize,
+                emitter_position.z + (rand(float2(new_pos.z, age)) - 0.5) * EmitterSize);
+        age = 0.0f;
+    }                
+
+    // Add age to particle
+    age += Elapsed * InvLifeLengthFactor * 0.1f;
+       
+    // Write output
+    output.Color =  float4(new_pos, age);
+    return output;
+}
+
 technique ParticleVelocitySimulationTechnique
 {
     pass P0
@@ -178,12 +223,20 @@ technique ParticleVelocitySimulationTechnique
     }
 }
 
-
 technique ParticleAccelerationSimulationTechnique
 {
     pass P0
     {
         VertexShader = compile VS_SHADERMODEL VS();
         PixelShader = compile PS_SHADERMODEL PS_Acceleration();
+    }
+}
+
+technique ParticlePositionSimulationTechnique
+{
+    pass P0
+    {
+        VertexShader = compile VS_SHADERMODEL VS();
+        PixelShader = compile PS_SHADERMODEL PS_Position();
     }
 }
