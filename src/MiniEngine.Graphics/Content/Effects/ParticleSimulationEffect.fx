@@ -117,7 +117,9 @@ OutputData PS_Velocity(PixelData input)
     
     const float epsilon = 0.0001; // TODO replace with EPSILON?
 
-    float3 p = Position.SampleLevel(dataSampler, input.Texture, 0).xyz;    
+    float3 a = Acceleration.SampleLevel(dataSampler, input.Texture, 0).xyz;
+    float3 v = Velocity.SampleLevel(dataSampler, input.Texture, 0).xyz;
+    float3 p = Position.SampleLevel(dataSampler, input.Texture, 0).xyz;        
     float3 potential = Potential(p);
 
     // Partial derivatives of different components of the potential
@@ -132,9 +134,8 @@ OutputData PS_Velocity(PixelData input)
     // Since this the vector field has only a vector potential component
     // it is divergent free and hence contains no sources
     float3 velocity = float3(dp3_dy - dp2_dz, dp1_dz - dp3_dx, dp2_dx - dp1_dy);
+    velocity = ((velocity + v) / 2.0f) + a * Elapsed;
 
-
-    //output.Color = float4(p + velocity, 1.0f); // TODO: not p???
     output.Color = float4(velocity, 1.0f);
     return output;
 }
@@ -143,7 +144,6 @@ OutputData PS_Acceleration(PixelData input)
 {
     OutputData output = (OutputData)0;
 
-    float3 a = Acceleration.SampleLevel(dataSampler, input.Texture, 0).xyz;
     float3 v = Velocity.SampleLevel(dataSampler, input.Texture, 0).xyz;
     float3 p = Position.SampleLevel(dataSampler, input.Texture, 0).xyz;
 
@@ -153,7 +153,7 @@ OutputData PS_Acceleration(PixelData input)
     float center_dist = length(center_diff);
 
     // Set the acceleration towards the attractor
-    a = normalize(center_diff) / pow(center_dist, 2);
+    float3 a = normalize(center_diff) / pow(center_dist, 2);
 
     // Decrease acceleration
     float max_norm = 1;
@@ -180,7 +180,6 @@ OutputData PS_Position(PixelData input)
 {
     OutputData output = (OutputData)0;
 
-    //float3 a = Acceleration.SampleLevel(dataSampler, input.Texture, 0).xyz;
     float3 v = Velocity.SampleLevel(dataSampler, input.Texture, 0).xyz;
 
     // The lifetime is stored in the fourth element of position
@@ -190,18 +189,26 @@ OutputData PS_Position(PixelData input)
     float age = p_tmp.w;
 
     // Euler integration
-    float3 delta_p = v * Elapsed;
-    float3 new_pos = p + delta_p;
-    
-    if (age >= MaxLifeTime)
+    float3 new_pos = p;
+
+    if (age < 0)
     {
+        new_pos = p;
+    }
+    else if (age < MaxLifeTime)
+    {
+        float3 delta_p = v * Elapsed;
+        new_pos = p + delta_p;
+    }
+    else
+    {        
+        float a = rand(new_pos.yx) * TWO_PI;
+        float r = sqrt(rand(new_pos.yz)) * EmitterSize;
+        float x = r * cos(a);
+        float y = r * sin(a);
+        
+        new_pos = float3(x, y, 0.0f);        
         age = 0.0f;
-        float3 emitter_position = float3(0, 0, 0);
-        new_pos =
-            float3(
-                emitter_position.x + (rand(new_pos.xy) - 0.5) * EmitterSize,
-                emitter_position.y + (rand(new_pos.yz) - 0.5) * EmitterSize,
-                emitter_position.z + (rand(float2(new_pos.z, age)) - 0.5) * EmitterSize);
     }
 
     // Write output

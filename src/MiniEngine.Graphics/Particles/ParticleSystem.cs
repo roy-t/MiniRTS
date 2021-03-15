@@ -48,7 +48,7 @@ namespace MiniEngine.Graphics.Particles
                 {
                     var emitter = component.Emitters[i];
                     this.SimulationEffect.Velocity = emitter.Velocity.ReadTarget;
-                    //this.SimulationEffect.Acceleration = emitter.Acceleration.ReadTarget;
+                    this.SimulationEffect.Acceleration = emitter.Acceleration.ReadTarget;
                     this.SimulationEffect.Position = emitter.Position.ReadTarget;
 
                     this.SimulationEffect.LengthScale = emitter.LengthScale;
@@ -64,7 +64,8 @@ namespace MiniEngine.Graphics.Particles
                     this.SimulationEffect.Elapsed = this.FrameService.Elapsed;
                     this.SimulationEffect.Time = this.FrameService.Time;
 
-                    //// Render accelerations
+                    // TODO: completely remove accelerations? 
+                    // Render accelerations
                     //this.SimulationEffect.ApplyAcceleration();
                     //this.Device.SetRenderTarget(emitter.Acceleration.WriteTarget);
                     //this.PostProcessTriangle.Render(this.Device);

@@ -34,3 +34,5 @@ However for fog it would be better if this should just make the fog darker. Try 
 # Particles
 - https://directtovideo.wordpress.com/2009/10/06/a-thoroughly-modern-particle-system/?
 - Shadows particles look OK, but makes particles twice as expensive, should we be able to enable/disable it in CascadedShadowMapSystem?
+- Think about how the normals for the particles should look, maybe slightly randomized based on position in texture?
+- Clean up shaders

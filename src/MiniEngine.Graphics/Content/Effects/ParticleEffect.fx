@@ -13,7 +13,8 @@ struct PixelData
     float4 Position : SV_POSITION;
     float4 ScreenPosition: TEXCOORD0;
     float4 Color : TEXCOORD1;
-    float3 Normal: NORMAL0;    
+    float Age : TEXCOORD2;
+    float3 Normal: NORMAL0;     
 };
 
 struct OutputData
@@ -58,6 +59,7 @@ PixelData VS_INSTANCED(in VertexData input, in Particle particle)
     output.Position = mul(mul(float4(input.Position, 1), world), WorldViewProjection);
     output.ScreenPosition = output.Position;
     output.Color = float4(1, 0, 0, 1);
+    output.Age = data.w;
 
     float3x3 rotation = (float3x3)world;
     float3 normal = float3(0, 0, 1.0f);
@@ -68,6 +70,8 @@ PixelData VS_INSTANCED(in VertexData input, in Particle particle)
 OutputData PS(PixelData input)
 {
     OutputData output = (OutputData)0;
+
+    clip(input.Age);
 
     output.Albedo = ToLinear(input.Color);
     output.Material = float4(Metalicness, Roughness, 1.0f, 1.0f);

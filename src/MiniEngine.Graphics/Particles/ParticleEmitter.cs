@@ -6,6 +6,8 @@ namespace MiniEngine.Graphics.Particles
 {
     public sealed class ParticleEmitter : IDisposable
     {
+        private static readonly Random R = new();
+
         public ParticleEmitter(GraphicsDevice device, int count)
         {
             this.Metalicness = 0.0f;
@@ -75,21 +77,19 @@ namespace MiniEngine.Graphics.Particles
 
         private void SeedData()
         {
-            var random = new Random();
             var data = new Vector4[this.Count];
-            var whites = new Vector4[this.Count];
 
             for (var i = 0; i < this.Count; i++)
             {
-                var x = (float)((random.NextDouble() * 2) - 1) * this.Size * 0.5f;
-                var y = (float)((random.NextDouble() * 2) - 1) * this.Size * 0.5f;
-                var z = (float)((random.NextDouble() * 2) - 1) * this.Size * 0.5f;
-                var w = (float)random.NextDouble() * this.MaxLifeTime;
-                data[i] = new Vector4(x, y, z, w);
-                whites[i] = Vector4.One;
+                var a = R.NextDouble() * MathHelper.TwoPi;
+                var r = Math.Sqrt(R.NextDouble()) * this.Size;
+
+                var x = r * Math.Cos(a);
+                var y = r * Math.Sin(a);
+                var age = R.NextDouble() * this.MaxLifeTime;
+                data[i] = new Vector4((float)x, (float)y, 0.0f, (float)age);
             }
 
-            //this.Velocity.WriteTarget.SetData(data);
             this.Position.WriteTarget.SetData(data);
             this.Swap();
         }
