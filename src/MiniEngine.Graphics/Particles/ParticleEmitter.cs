@@ -46,16 +46,16 @@ namespace MiniEngine.Graphics.Particles
         public float Roughness { get; set; }
 
         public float Size { get; set; } = 1.0f;
-        public float LifeLengthFactor { get; set; } = 0.07f;
+        public float MaxLifeTime { get; set; } = 3.0f;
 
         public float LengthScale { get; set; } = 0.5f;
-        public float FieldSpeed { get; set; } = 0.01f;
+        public float FieldSpeed { get; set; } = 0.5f;
         public float NoiseStrength { get; set; } = 0.3f;
         public float ProgressionRate { get; set; } = 1.0f;
         public Vector3 FieldMainDirection { get; set; } = Vector3.Forward;
 
-        public Vector3 SpherePosition { get; set; } = Vector3.Forward * 6;
-        public float SphereRadius { get; set; } = 4.5f;
+        public Vector3 SpherePosition { get; set; } = Vector3.Forward;
+        public float SphereRadius { get; set; } = 0.5f;
 
         public int Count { get; }
 
@@ -81,10 +81,10 @@ namespace MiniEngine.Graphics.Particles
 
             for (var i = 0; i < this.Count; i++)
             {
-                var x = (float)((random.NextDouble() * 2) - 1);
-                var y = (float)((random.NextDouble() * 2) - 1);
-                var z = (float)((random.NextDouble() * 2) - 1);
-                var w = (float)random.NextDouble();
+                var x = (float)((random.NextDouble() * 2) - 1) * this.Size * 0.5f;
+                var y = (float)((random.NextDouble() * 2) - 1) * this.Size * 0.5f;
+                var z = (float)((random.NextDouble() * 2) - 1) * this.Size * 0.5f;
+                var w = (float)random.NextDouble() * this.MaxLifeTime;
                 data[i] = new Vector4(x, y, z, w);
                 whites[i] = Vector4.One;
             }

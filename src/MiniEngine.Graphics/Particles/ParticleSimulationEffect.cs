@@ -20,7 +20,7 @@ namespace MiniEngine.Graphics.Particles
         private readonly EffectParameter SpherePositionParameter;
         private readonly EffectParameter SphereRadiusParameter;
         private readonly EffectParameter EmitterSizeParameter;
-        private readonly EffectParameter InvLifeLengthFactorParameter;
+        private readonly EffectParameter MaxLifeTimeParameter;
 
 
         public ParticleSimulationEffect(EffectFactory factory) : base(factory.Load<ParticleSimulationEffect>())
@@ -39,7 +39,7 @@ namespace MiniEngine.Graphics.Particles
             this.SpherePositionParameter = this.Effect.Parameters["SpherePosition"];
             this.SphereRadiusParameter = this.Effect.Parameters["SphereRadius"];
             this.EmitterSizeParameter = this.Effect.Parameters["EmitterSize"];
-            this.InvLifeLengthFactorParameter = this.Effect.Parameters["InvLifeLengthFactor"];
+            this.MaxLifeTimeParameter = this.Effect.Parameters["MaxLifeTime"];
         }
 
         public Texture2D Velocity { set => this.VelocityParameter.SetValue(value); }
@@ -59,7 +59,7 @@ namespace MiniEngine.Graphics.Particles
 
         public float EmitterSize { set => this.EmitterSizeParameter.SetValue(value); }
 
-        public float InvLifeLengthFactor { set => this.InvLifeLengthFactorParameter.SetValue(value); }
+        public float MaxLifeTime { set => this.MaxLifeTimeParameter.SetValue(value); }
 
         public void ApplyAcceleration()
         {

@@ -59,7 +59,7 @@ namespace MiniEngine.Graphics.Particles
                     this.SimulationEffect.SpherePosition = emitter.SpherePosition;
                     this.SimulationEffect.SphereRadius = emitter.SphereRadius;
                     this.SimulationEffect.EmitterSize = emitter.Size;
-                    this.SimulationEffect.InvLifeLengthFactor = 1.0f / emitter.LifeLengthFactor;
+                    this.SimulationEffect.MaxLifeTime = emitter.MaxLifeTime;
 
                     this.SimulationEffect.Elapsed = this.FrameService.Elapsed;
                     this.SimulationEffect.Time = this.FrameService.Time;

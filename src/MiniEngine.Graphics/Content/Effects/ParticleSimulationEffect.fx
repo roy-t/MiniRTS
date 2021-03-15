@@ -44,7 +44,7 @@ float Time; // Global Time
 float ProgressionRate;
 float3 FieldMainDirection;
 float EmitterSize;
-float InvLifeLengthFactor;
+float MaxLifeTime;
 // Blocking sphere
 float3 SpherePosition;
 float SphereRadius;
@@ -192,25 +192,20 @@ OutputData PS_Position(PixelData input)
     // Euler integration
     float3 delta_p = v * Elapsed;
     float3 new_pos = p + delta_p;
-
-    float3 emitter_position = float3(0, 0, 0);
-
-    // If particle is too old, reset position and decrease age
-    if (age >= 1.0f)
+    
+    if (age >= MaxLifeTime)
     {
+        age = 0.0f;
+        float3 emitter_position = float3(0, 0, 0);
         new_pos =
             float3(
                 emitter_position.x + (rand(new_pos.xy) - 0.5) * EmitterSize,
                 emitter_position.y + (rand(new_pos.yz) - 0.5) * EmitterSize,
                 emitter_position.z + (rand(float2(new_pos.z, age)) - 0.5) * EmitterSize);
-        age = 0.0f;
-    }                
+    }
 
-    // Add age to particle
-    age += Elapsed * InvLifeLengthFactor * 0.1f;
-       
     // Write output
-    output.Color =  float4(new_pos, age);
+    output.Color =  float4(new_pos, age + Elapsed);
     return output;
 }
 
