@@ -61,8 +61,9 @@ PixelData VS_INSTANCED(in VertexData input, in Particle particle)
     output.Color = float4(1, 0, 0, 1);
     output.Age = data.w;
 
+
     float3x3 rotation = (float3x3)world;
-    float3 normal = float3(0, 0, 1.0f);
+    float3 normal = float3(0.0f, 0.0f, 1.0f);
     output.Normal = normalize(mul(normal, rotation));
     return output;
 }

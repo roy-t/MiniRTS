@@ -86,7 +86,7 @@ namespace MiniEngine.Graphics.Particles
 
                 var x = r * Math.Cos(a);
                 var y = r * Math.Sin(a);
-                var age = R.NextDouble() * this.MaxLifeTime;
+                var age = (R.NextDouble() * this.MaxLifeTime) - this.MaxLifeTime;
                 data[i] = new Vector4((float)x, (float)y, 0.0f, (float)age);
             }
 

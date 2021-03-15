@@ -12,6 +12,7 @@ struct PixelData
 {
     float4 Position : SV_POSITION;
     float4 WorldPosition: TEXCOORD0;
+    float Age : TEXCOORD1;
 };
 
 struct OutputData
@@ -48,13 +49,14 @@ PixelData VS_INSTANCED(in VertexData input, in Particle particle)
 
     output.Position = mul(mul(float4(input.Position, 1), world), WorldViewProjection);
     output.WorldPosition = output.Position;
+    output.Age = data.w;
     return output;
 }
 
 OutputData PS(PixelData input)
 {
     OutputData output = (OutputData)0;
-
+    clip(input.Age);
     output.Depth = input.WorldPosition.z / input.WorldPosition.w;
     return output;
 }
