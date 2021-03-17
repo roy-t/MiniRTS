@@ -24,11 +24,9 @@ struct OutputData
 };
 
 Texture2D Velocity;
-Texture2D Acceleration;
 Texture2D Position;
 sampler dataSampler = sampler_state
-{
-    Texture = (Data);
+{    
     MinFilter = POINT;
     MagFilter = POINT;
     MipFilter = POINT;
@@ -39,8 +37,8 @@ sampler dataSampler = sampler_state
 float LengthScale;
 float FieldSpeed;
 float NoiseStrength;
-float Elapsed; // Time step
-float Time; // Global Time 
+float Elapsed; 
+float Time;
 float ProgressionRate;
 float3 FieldMainDirection;
 float EmitterSize;
@@ -117,7 +115,6 @@ OutputData PS_Velocity(PixelData input)
     
     const float epsilon = 0.0001; // TODO replace with EPSILON?
 
-    float3 a = Acceleration.SampleLevel(dataSampler, input.Texture, 0).xyz;
     float3 v = Velocity.SampleLevel(dataSampler, input.Texture, 0).xyz;
     float3 p = Position.SampleLevel(dataSampler, input.Texture, 0).xyz;        
     float3 potential = Potential(p);
@@ -133,41 +130,9 @@ OutputData PS_Velocity(PixelData input)
     // vel = nabla x potential
     // Since this the vector field has only a vector potential component
     // it is divergent free and hence contains no sources
-    float3 velocity = float3(dp3_dy - dp2_dz, dp1_dz - dp3_dx, dp2_dx - dp1_dy);
-    velocity = ((velocity + v) / 2.0f) + a * Elapsed;
+    float3 velocity = float3(dp3_dy - dp2_dz, dp1_dz - dp3_dx, dp2_dx - dp1_dy);    
 
     output.Color = float4(velocity, 1.0f);
-    return output;
-}
-
-OutputData PS_Acceleration(PixelData input)
-{
-    OutputData output = (OutputData)0;
-
-    float3 v = Velocity.SampleLevel(dataSampler, input.Texture, 0).xyz;
-    float3 p = Position.SampleLevel(dataSampler, input.Texture, 0).xyz;
-
-    // Distance to the emitter (attractor)
-    float3 emitter_position = float3(0, 0, 0);
-    float3 center_diff = emitter_position - p;
-    float center_dist = length(center_diff);
-
-    // Set the acceleration towards the attractor
-    float3 a = normalize(center_diff) / pow(center_dist, 2);
-
-    // Decrease acceleration
-    float max_norm = 1;
-    float acceleration_norm = max(max_norm, length(a));
-
-    // Add resistance
-    a -= v;
-    a /= acceleration_norm;
-
-    // Resistance from sphere
-    a += (1 - SmoothstepPolynomial(0.5, 0.5 + 0.1, length(p))) * normalize(p);
-
-    // Write output
-    output.Color = float4(a.xyz, 1.0f);
     return output;
 }
 
@@ -222,15 +187,6 @@ technique ParticleVelocitySimulationTechnique
     {
         VertexShader = compile VS_SHADERMODEL VS();
         PixelShader = compile PS_SHADERMODEL PS_Velocity();
-    }
-}
-
-technique ParticleAccelerationSimulationTechnique
-{
-    pass P0
-    {
-        VertexShader = compile VS_SHADERMODEL VS();
-        PixelShader = compile PS_SHADERMODEL PS_Acceleration();
     }
 }
 

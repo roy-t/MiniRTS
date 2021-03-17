@@ -7,7 +7,6 @@ namespace MiniEngine.Graphics.Particles
     public sealed class ParticleSimulationEffect : EffectWrapper
     {
         private readonly EffectParameter VelocityParameter;
-        private readonly EffectParameter AccelerationParameter;
         private readonly EffectParameter PositionParameter;
 
         private readonly EffectParameter LengthScaleParameter;
@@ -26,7 +25,6 @@ namespace MiniEngine.Graphics.Particles
         public ParticleSimulationEffect(EffectFactory factory) : base(factory.Load<ParticleSimulationEffect>())
         {
             this.VelocityParameter = this.Effect.Parameters["Velocity"];
-            this.AccelerationParameter = this.Effect.Parameters["Acceleration"];
             this.PositionParameter = this.Effect.Parameters["Position"];
 
             this.LengthScaleParameter = this.Effect.Parameters["LengthScale"];
@@ -43,7 +41,6 @@ namespace MiniEngine.Graphics.Particles
         }
 
         public Texture2D Velocity { set => this.VelocityParameter.SetValue(value); }
-        public Texture2D Acceleration { set => this.AccelerationParameter.SetValue(value); }
         public Texture2D Position { set => this.PositionParameter.SetValue(value); }
 
         public float LengthScale { set => this.LengthScaleParameter.SetValue(value); }
@@ -60,12 +57,6 @@ namespace MiniEngine.Graphics.Particles
         public float EmitterSize { set => this.EmitterSizeParameter.SetValue(value); }
 
         public float MaxLifeTime { set => this.MaxLifeTimeParameter.SetValue(value); }
-
-        public void ApplyAcceleration()
-        {
-            this.Effect.CurrentTechnique = this.Effect.Techniques["ParticleAccelerationSimulationTechnique"];
-            this.Apply();
-        }
 
         public void ApplyVelocity()
         {

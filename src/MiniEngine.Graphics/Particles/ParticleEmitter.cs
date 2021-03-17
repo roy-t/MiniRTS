@@ -16,8 +16,7 @@ namespace MiniEngine.Graphics.Particles
             var dimensions = (int)Math.Ceiling(Math.Sqrt(count));
             this.Count = dimensions * dimensions;
 
-            this.Velocity = new DoubleBufferedRenderTarget(device, dimensions, SurfaceFormat.Vector4);
-            this.Acceleration = new DoubleBufferedRenderTarget(device, dimensions, SurfaceFormat.Vector4);
+            this.Velocity = new DoubleBufferedRenderTarget(device, dimensions, SurfaceFormat.HalfVector4);
             this.Position = new DoubleBufferedRenderTarget(device, dimensions, SurfaceFormat.Vector4);
 
             var instances = new Particle[this.Count];
@@ -64,16 +63,13 @@ namespace MiniEngine.Graphics.Particles
         public VertexBuffer Instances { get; }
 
         public DoubleBufferedRenderTarget Velocity { get; }
-        public DoubleBufferedRenderTarget Acceleration { get; }
         public DoubleBufferedRenderTarget Position { get; }
 
         public void Swap()
         {
             this.Velocity.Swap();
-            this.Acceleration.Swap();
             this.Position.Swap();
         }
-
 
         private void SeedData()
         {
@@ -83,11 +79,13 @@ namespace MiniEngine.Graphics.Particles
             {
                 var a = R.NextDouble() * MathHelper.TwoPi;
                 var r = Math.Sqrt(R.NextDouble()) * this.Size;
-
                 var x = r * Math.Cos(a);
                 var y = r * Math.Sin(a);
+
                 var age = (R.NextDouble() * this.MaxLifeTime) - this.MaxLifeTime;
+
                 data[i] = new Vector4((float)x, (float)y, 0.0f, (float)age);
+
             }
 
             this.Position.WriteTarget.SetData(data);
@@ -97,6 +95,7 @@ namespace MiniEngine.Graphics.Particles
         public void Dispose()
         {
             this.Velocity.Dispose();
+            this.Position.Dispose();
         }
     }
 }

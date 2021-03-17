@@ -31,10 +31,10 @@ float Roughness;
 float4x4 WorldViewProjection;
 float4x4 View;
 
-Texture2D Data;
+Texture2D Velocity;
+Texture2D Position;
 sampler dataSampler = sampler_state
-{
-    Texture = (Data);
+{    
     MinFilter = POINT;
     MagFilter = POINT;
     MipFilter = POINT;
@@ -46,24 +46,25 @@ PixelData VS_INSTANCED(in VertexData input, in Particle particle)
 {
     PixelData output = (PixelData)0;
 
-    float4 data = Data.SampleLevel(dataSampler, particle.UV, 0);
+    float4 position = Position.SampleLevel(dataSampler, particle.UV, 0);
+    float3 velocity = Velocity.SampleLevel(dataSampler, particle.UV, 0).xyz;
 
     float4x4 world =
     {
         View._11 , View._21 , View._31 , 0.0f,
         View._12 , View._22 , View._32 , 0.0f,
         View._13 , View._23 , View._33 , 0.0f,
-        data.x, data.y, data.z, 1.0f
+        position.x, position.y, position.z, 1.0f
     };
 
     output.Position = mul(mul(float4(input.Position, 1), world), WorldViewProjection);
     output.ScreenPosition = output.Position;
     output.Color = float4(1, 0, 0, 1);
-    output.Age = data.w;
+    output.Age = position.w;
 
 
     float3x3 rotation = (float3x3)world;
-    float3 normal = float3(0.0f, 0.0f, 1.0f);
+    float3 normal = normalize(-velocity);
     output.Normal = normalize(mul(normal, rotation));
     return output;
 }

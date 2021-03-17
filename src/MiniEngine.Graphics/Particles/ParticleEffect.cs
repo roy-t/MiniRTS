@@ -10,7 +10,8 @@ namespace MiniEngine.Graphics.Particles
         private readonly EffectParameter ViewParameter;
         private readonly EffectParameter MetalicnessParameter;
         private readonly EffectParameter RoughnessParameter;
-        private readonly EffectParameter DataParameter;
+        private readonly EffectParameter PositionParameter;
+        private readonly EffectParameter VelocityParameter;
 
         public ParticleEffect(EffectFactory factory) : base(factory.Load<ParticleEffect>())
         {
@@ -19,7 +20,8 @@ namespace MiniEngine.Graphics.Particles
             this.ViewParameter = this.Effect.Parameters["View"];
             this.MetalicnessParameter = this.Effect.Parameters["Metalicness"];
             this.RoughnessParameter = this.Effect.Parameters["Roughness"];
-            this.DataParameter = this.Effect.Parameters["Data"];
+            this.PositionParameter = this.Effect.Parameters["Position"];
+            this.VelocityParameter = this.Effect.Parameters["Velocity"];
         }
 
 
@@ -31,6 +33,8 @@ namespace MiniEngine.Graphics.Particles
 
         public float Roughness { set => this.RoughnessParameter.SetValue(value); }
 
-        public Texture2D Data { set => this.DataParameter.SetValue(value); }
+        public Texture2D Position { set => this.PositionParameter.SetValue(value); }
+
+        public Texture2D Velocity { set => this.VelocityParameter.SetValue(value); }
     }
 }
