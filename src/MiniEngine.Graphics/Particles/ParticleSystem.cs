@@ -99,6 +99,9 @@ namespace MiniEngine.Graphics.Particles
             this.Effect.Roughness = emitter.Roughness;
             this.Effect.Position = emitter.Position.ReadTarget;
             this.Effect.Velocity = emitter.Velocity.ReadTarget;
+            this.Effect.SlowColor = emitter.SlowColor;
+            this.Effect.FastColor = emitter.FastColor;
+            this.Effect.ColorVelocityModifier = emitter.ColorVelocityModifier;
 
             this.Effect.Apply();
         }

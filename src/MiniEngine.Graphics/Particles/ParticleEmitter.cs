@@ -46,6 +46,10 @@ namespace MiniEngine.Graphics.Particles
         public float Metalicness { get; set; }
         public float Roughness { get; set; }
 
+        public Color SlowColor { get; set; } = new Color(1.0f, 0.8f, 0.1f, 1.0f);
+        public Color FastColor { get; set; } = new Color(1.0f, 0.0f, 0.0f, 1.0f);
+        public float ColorVelocityModifier { get; set; } = 0.2f;
+
         public float Size { get; set; } = 1.0f;
         public float MaxLifeTime { get; set; } = 3.0f;
 
