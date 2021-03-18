@@ -34,47 +34,37 @@ namespace MiniEngine.Graphics.Particles
             this.Device.RasterizerState = RasterizerState.CullCounterClockwise;
             this.Device.SamplerStates[0] = SamplerState.PointClamp;
             this.Device.SamplerStates[1] = SamplerState.PointClamp;
-            this.Device.SamplerStates[2] = SamplerState.PointClamp;
         }
 
         [ProcessAll]
-        public void SimulateParticles(ParticleFountainComponent component)
+        public void SimulateParticles(ParticleEmitterComponent component)
         {
             if (component.IsEnabled)
             {
+                this.SimulationEffect.Velocity = component.Velocity.ReadTarget;
+                this.SimulationEffect.Position = component.Position.ReadTarget;
+
+                this.SimulationEffect.LengthScale = component.LengthScale;
+                this.SimulationEffect.FieldSpeed = component.FieldSpeed;
+                this.SimulationEffect.NoiseStrength = component.NoiseStrength;
+                this.SimulationEffect.ProgressionRate = component.ProgressionRate;
+                this.SimulationEffect.SpherePosition = component.SpherePosition;
+                this.SimulationEffect.SphereRadius = component.SphereRadius;
+                this.SimulationEffect.EmitterSize = component.Size;
+                this.SimulationEffect.MaxLifeTime = component.MaxLifeTime;
+
                 this.SimulationEffect.Elapsed = this.FrameService.Elapsed;
+                this.SimulationEffect.Time = this.FrameService.Time;
 
-                for (var i = 0; i < component.Emitters.Count; i++)
-                {
-                    var emitter = component.Emitters[i];
-                    this.SimulationEffect.Velocity = emitter.Velocity.ReadTarget;
-                    this.SimulationEffect.Position = emitter.Position.ReadTarget;
+                this.SimulationEffect.ApplyVelocity();
+                this.Device.SetRenderTarget(component.Velocity.WriteTarget);
+                this.PostProcessTriangle.Render(this.Device);
 
-                    this.SimulationEffect.LengthScale = emitter.LengthScale;
-                    this.SimulationEffect.FieldSpeed = emitter.FieldSpeed;
-                    this.SimulationEffect.NoiseStrength = emitter.NoiseStrength;
-                    this.SimulationEffect.ProgressionRate = emitter.ProgressionRate;
-                    this.SimulationEffect.FieldMainDirection = emitter.FieldMainDirection;
-                    this.SimulationEffect.SpherePosition = emitter.SpherePosition;
-                    this.SimulationEffect.SphereRadius = emitter.SphereRadius;
-                    this.SimulationEffect.EmitterSize = emitter.Size;
-                    this.SimulationEffect.MaxLifeTime = emitter.MaxLifeTime;
+                this.SimulationEffect.ApplyPosition();
+                this.Device.SetRenderTarget(component.Position.WriteTarget);
+                this.PostProcessTriangle.Render(this.Device);
 
-                    this.SimulationEffect.Elapsed = this.FrameService.Elapsed;
-                    this.SimulationEffect.Time = this.FrameService.Time;
-
-                    // Render velocities
-                    this.SimulationEffect.ApplyVelocity();
-                    this.Device.SetRenderTarget(emitter.Velocity.WriteTarget);
-                    this.PostProcessTriangle.Render(this.Device);
-
-                    // Update positions
-                    this.SimulationEffect.ApplyPosition();
-                    this.Device.SetRenderTarget(emitter.Position.WriteTarget);
-                    this.PostProcessTriangle.Render(this.Device);
-
-                    emitter.Swap();
-                }
+                component.Swap();
             }
         }
 
@@ -92,7 +82,7 @@ namespace MiniEngine.Graphics.Particles
             this.ParticleRenderer.Draw(camera.ViewProjection, this);
         }
 
-        public void ApplyEffect(Matrix worldViewProjection, ParticleEmitter emitter)
+        public void ApplyEffect(Matrix worldViewProjection, ParticleEmitterComponent emitter)
         {
             this.Effect.WorldViewProjection = worldViewProjection;
             this.Effect.Metalicness = emitter.Metalicness;

@@ -15,7 +15,6 @@ namespace MiniEngine.Graphics.Particles
         private readonly EffectParameter ElapsedParameter;
         private readonly EffectParameter TimeParameter;
         private readonly EffectParameter ProgressionRateParameter;
-        private readonly EffectParameter FieldMainDirectionParameter;
         private readonly EffectParameter SpherePositionParameter;
         private readonly EffectParameter SphereRadiusParameter;
         private readonly EffectParameter EmitterSizeParameter;
@@ -33,7 +32,6 @@ namespace MiniEngine.Graphics.Particles
             this.ElapsedParameter = this.Effect.Parameters["Elapsed"];
             this.TimeParameter = this.Effect.Parameters["Time"];
             this.ProgressionRateParameter = this.Effect.Parameters["ProgressionRate"];
-            this.FieldMainDirectionParameter = this.Effect.Parameters["FieldMainDirection"];
             this.SpherePositionParameter = this.Effect.Parameters["SpherePosition"];
             this.SphereRadiusParameter = this.Effect.Parameters["SphereRadius"];
             this.EmitterSizeParameter = this.Effect.Parameters["EmitterSize"];
@@ -49,7 +47,6 @@ namespace MiniEngine.Graphics.Particles
         public float Elapsed { set => this.ElapsedParameter.SetValue(value); }
         public float Time { set => this.TimeParameter.SetValue(value); }
         public float ProgressionRate { set => this.ProgressionRateParameter.SetValue(value); }
-        public Vector3 FieldMainDirection { set => this.FieldMainDirectionParameter.SetValue(value); }
 
         public Vector3 SpherePosition { set => this.SpherePositionParameter.SetValue(value); }
         public float SphereRadius { set => this.SphereRadiusParameter.SetValue(value); }

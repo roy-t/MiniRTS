@@ -1,17 +1,22 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MiniEngine.Systems;
 
 namespace MiniEngine.Graphics.Particles
 {
-    public sealed class ParticleEmitter : IDisposable
+    public sealed class ParticleEmitterComponent : AComponent, IDisposable
     {
         private static readonly Random R = new();
 
-        public ParticleEmitter(GraphicsDevice device, int count)
+        private bool isEnabled;
+
+        public ParticleEmitterComponent(Entity entity, GraphicsDevice device, int count)
+            : base(entity)
         {
             this.Metalicness = 0.0f;
             this.Roughness = 1.0f;
+            this.IsEnabled = true;
 
             var dimensions = (int)Math.Ceiling(Math.Sqrt(count));
             this.Count = dimensions * dimensions;
@@ -37,29 +42,77 @@ namespace MiniEngine.Graphics.Particles
             this.SeedData();
         }
 
-        public bool Reset
+        public bool IsEnabled
         {
-            get { return false; }
-            set { if (value) { this.SeedData(); } }
+            get => this.isEnabled;
+            set
+            {
+                if (value == false)
+                {
+                    this.SeedData();
+                }
+                this.isEnabled = value;
+            }
         }
 
         public float Metalicness { get; set; }
         public float Roughness { get; set; }
 
+        /// <summary>
+        /// The color a slow moving particle will have
+        /// </summary>
         public Color SlowColor { get; set; } = new Color(1.0f, 0.8f, 0.1f, 1.0f);
+
+        /// <summary>
+        /// The color a fast moving particle will have
+        /// </summary>
         public Color FastColor { get; set; } = new Color(1.0f, 0.0f, 0.0f, 1.0f);
+
+        /// <summary>
+        /// Multiple of the velocity of the particle when determining the particle color
+        /// </summary>
         public float ColorVelocityModifier { get; set; } = 0.2f;
 
-        public float Size { get; set; } = 1.0f;
-        public float MaxLifeTime { get; set; } = 3.0f;
+        /// <summary>
+        /// Diameter of circle where particles spawn
+        /// </summary>
+        public float Size { get; set; } = 0.3f;
 
+        /// <summary>
+        /// Maximum seconds before particles expire and respawn
+        /// </summary>
+        public float MaxLifeTime { get; set; } = 1.5f;
+
+        /// <summary>
+        /// Modifies the underlying size of the potential field, a smaller number leads to more detail
+        /// while a larger number provides a smoother flow.
+        /// </summary>
         public float LengthScale { get; set; } = 0.5f;
-        public float FieldSpeed { get; set; } = 0.5f;
-        public float NoiseStrength { get; set; } = 0.3f;
-        public float ProgressionRate { get; set; } = 1.0f;
-        public Vector3 FieldMainDirection { get; set; } = Vector3.Forward;
 
+        /// <summary>
+        /// Average speed at which particles travel through the field
+        /// </summary>
+        public float FieldSpeed { get; set; } = 1.0f;
+
+        /// <summary>
+        /// Strength of the underlying simplex noise
+        /// </summary>
+        public float NoiseStrength { get; set; } = 0.4f;
+
+        /// <summary>
+        /// Speed at which the underlyng potential field changes
+        /// </summary>
+        public float ProgressionRate { get; set; } = 0.5f;
+
+        /// <summary>
+        /// Position of a sphere that particles try to evade, interactions of particles
+        /// with this sphere leads to turbulence.
+        /// </summary>
         public Vector3 SpherePosition { get; set; } = Vector3.Forward;
+
+        /// <summary>
+        /// Radius of the sphere
+        /// </summary>
         public float SphereRadius { get; set; } = 0.5f;
 
         public int Count { get; }

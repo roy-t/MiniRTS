@@ -34,13 +34,16 @@ sampler dataSampler = sampler_state
     AddressV = Clamp;
 };
 
+static const float3 FieldMainDirection = float3(0, 0, -1);
+
+
 float LengthScale;
 float FieldSpeed;
 float NoiseStrength;
 float Elapsed; 
 float Time;
 float ProgressionRate;
-float3 FieldMainDirection;
+
 float EmitterSize;
 float MaxLifeTime;
 // Blocking sphere

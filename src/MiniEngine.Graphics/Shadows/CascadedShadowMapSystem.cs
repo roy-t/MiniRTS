@@ -94,7 +94,7 @@ namespace MiniEngine.Graphics.Shadows
             this.Particles.Draw(viewProjection, this);
         }
 
-        public void ApplyEffect(Matrix worldViewProjection, ParticleEmitter emitter)
+        public void ApplyEffect(Matrix worldViewProjection, ParticleEmitterComponent emitter)
         {
             this.ParticleEffect.WorldViewProjection = worldViewProjection;
             this.ParticleEffect.Data = emitter.Position.ReadTarget;

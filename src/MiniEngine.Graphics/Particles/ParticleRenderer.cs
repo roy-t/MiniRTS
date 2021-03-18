@@ -10,11 +10,11 @@ namespace MiniEngine.Graphics.Particles
     {
         private readonly GraphicsDevice Device;
         private readonly Point Point;
-        private readonly IComponentContainer<ParticleFountainComponent> Components;
+        private readonly IComponentContainer<ParticleEmitterComponent> Components;
         private readonly IComponentContainer<TransformComponent> Transforms;
 
         public ParticleRenderer(GraphicsDevice device, Point point,
-            IComponentContainer<ParticleFountainComponent> components,
+            IComponentContainer<ParticleEmitterComponent> components,
             IComponentContainer<TransformComponent> transforms)
         {
             this.Device = device;
@@ -27,21 +27,17 @@ namespace MiniEngine.Graphics.Particles
         {
             for (var i = 0; i < this.Components.All.Count; i++)
             {
-                var fountain = this.Components.All[i];
-                var transform = this.Transforms.Get(fountain.Entity);
+                var emitter = this.Components.All[i];
+                var transform = this.Transforms.Get(emitter.Entity);
 
-                for (var j = 0; j < fountain.Emitters.Count; j++)
-                {
-                    var emitter = fountain.Emitters[j];
-                    user.ApplyEffect(transform.Matrix * viewProjection, emitter);
-                    this.Point.RenderInstanced(this.Device, emitter.Instances, emitter.Count);
-                }
+                user.ApplyEffect(transform.Matrix * viewProjection, emitter);
+                this.Point.RenderInstanced(this.Device, emitter.Instances, emitter.Count);
             }
         }
     }
 
     public interface IParticleRendererUser
     {
-        void ApplyEffect(Matrix worldViewProjection, ParticleEmitter emitter);
+        void ApplyEffect(Matrix worldViewProjection, ParticleEmitterComponent emitter);
     }
 }

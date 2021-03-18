@@ -52,9 +52,7 @@ namespace MiniEngine.Editor.Scenes
         {
             var particleEntity = this.Entities.Create();
             this.Components.Add(new TransformComponent(particleEntity, new Vector3(-49.0f, 3.0f, 3.0f), Vector3.One, 0.0f, MathHelper.PiOver2, 0.0f));
-            var component = new ParticleFountainComponent(particleEntity, this.Device);
-            component.AddEmitter(1024 * 1024);
-
+            var component = new ParticleEmitterComponent(particleEntity, this.Device, 1024 * 1024);
             this.Components.Add(component);
         }
 
