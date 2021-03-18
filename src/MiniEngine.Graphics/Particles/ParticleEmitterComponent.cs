@@ -14,10 +14,6 @@ namespace MiniEngine.Graphics.Particles
         public ParticleEmitterComponent(Entity entity, GraphicsDevice device, int count)
             : base(entity)
         {
-            this.Metalicness = 0.0f;
-            this.Roughness = 1.0f;
-            this.IsEnabled = true;
-
             var dimensions = (int)Math.Ceiling(Math.Sqrt(count));
             this.Count = dimensions * dimensions;
 
@@ -40,6 +36,8 @@ namespace MiniEngine.Graphics.Particles
             this.Instances.SetData(instances);
 
             this.SeedData();
+
+            this.isEnabled = true;
         }
 
         public bool IsEnabled
@@ -55,8 +53,8 @@ namespace MiniEngine.Graphics.Particles
             }
         }
 
-        public float Metalicness { get; set; }
-        public float Roughness { get; set; }
+        public float Metalicness { get; set; } = 0.0f;
+        public float Roughness { get; set; } = 1.0f;
 
         /// <summary>
         /// The color a slow moving particle will have

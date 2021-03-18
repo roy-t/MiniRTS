@@ -123,4 +123,9 @@ float snoise(float4 v)
         + dot(m1 * m1, float2(dot(p3, x3), dot(p4, x4))));
 }
 
+// Random random function, produces a number in [0...1)
+float rand(float2 co) {
+    return frac(sin(dot(co.xy, float2(12.9898, 78.233))) * 43758.5453);
+}
+
 #endif

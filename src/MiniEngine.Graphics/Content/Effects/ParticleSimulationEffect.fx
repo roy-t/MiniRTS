@@ -36,17 +36,18 @@ sampler dataSampler = sampler_state
 
 static const float3 FieldMainDirection = float3(0, 0, -1);
 
-
-float LengthScale;
-float FieldSpeed;
-float NoiseStrength;
-float Elapsed; 
+float Elapsed;
 float Time;
+float MaxLifeTime;
+
+float LengthScale;      
+float NoiseStrength;
+
 float ProgressionRate;
+float FieldSpeed;
 
 float EmitterSize;
-float MaxLifeTime;
-// Blocking sphere
+
 float3 SpherePosition;
 float SphereRadius;
 
@@ -56,8 +57,8 @@ float3 Potential(float3 p)
     float speed;  // field speed
     float alpha;  // Alpha as described by Bridson
     float beta;   // amount of curl noise compared to the constant field
-    float3  n;      // Normal of closest surface
-    float3  pot;    // Output potential
+    float3 n;     // Normal of closest surface
+    float3 pot;   // Output potential
 
     L = LengthScale;
     speed = FieldSpeed;
@@ -116,10 +117,11 @@ OutputData PS_Velocity(PixelData input)
 {
     OutputData output = (OutputData)0;
     
-    const float epsilon = 0.0001; // TODO replace with EPSILON?
+    const float epsilon = 0.0001;
 
     float3 v = Velocity.SampleLevel(dataSampler, input.Texture, 0).xyz;
     float3 p = Position.SampleLevel(dataSampler, input.Texture, 0).xyz;        
+    
     float3 potential = Potential(p);
 
     // Partial derivatives of different components of the potential
@@ -137,11 +139,6 @@ OutputData PS_Velocity(PixelData input)
 
     output.Color = float4(velocity, 1.0f);
     return output;
-}
-
-// Random random function
-float rand(float2 co) {
-    return frac(sin(dot(co.xy, float2(12.9898, 78.233))) * 43758.5453);
 }
 
 OutputData PS_Position(PixelData input)
