@@ -25,14 +25,6 @@ struct OutputData
 
 Texture2D Velocity;
 Texture2D Position;
-sampler dataSampler = sampler_state
-{    
-    MinFilter = POINT;
-    MagFilter = POINT;
-    MipFilter = POINT;
-    AddressU = Clamp;
-    AddressV = Clamp;
-};
 
 static const float3 FieldMainDirection = float3(0, 0, -1);
 
@@ -118,9 +110,13 @@ OutputData PS_Velocity(PixelData input)
     OutputData output = (OutputData)0;
     
     const float epsilon = 0.0001;
+    
+    float2 dimensions;
+    Position.GetDimensions(dimensions.x, dimensions.y);
 
-    float3 v = Velocity.SampleLevel(dataSampler, input.Texture, 0).xyz;
-    float3 p = Position.SampleLevel(dataSampler, input.Texture, 0).xyz;        
+    int3 uvi = int3((dimensions * input.Texture), 0);
+    float3 p = Position.Load(uvi).xyz;
+    float3 v = Velocity.Load(uvi).xyz;
     
     float3 potential = Potential(p);
 
@@ -145,25 +141,28 @@ OutputData PS_Position(PixelData input)
 {
     OutputData output = (OutputData)0;
 
-    float3 v = Velocity.SampleLevel(dataSampler, input.Texture, 0).xyz;
+    float2 dimensions;
+    Position.GetDimensions(dimensions.x, dimensions.y);
 
-    // The lifetime is stored in the fourth element of position
-    float4 p_tmp = Position.SampleLevel(dataSampler, input.Texture, 0).xyzw;
-
-    float3 p = p_tmp.xyz;
-    float age = p_tmp.w;
+    int3 uvi = int3((dimensions * input.Texture), 0);
+    float4 p = Position.Load(uvi).xyzw;
+    float3 v = Velocity.Load(uvi).xyz;
+    
+    // The lifetime is stored in the fourth element of position    
+    float3 position = p.xyz;    
+    float age = p.w;
 
     // Euler integration
-    float3 new_pos = p;
+    float3 new_pos = position;
 
     if (age < 0)
     {
-        new_pos = p;
+        new_pos = position;
     }
     else if (age < MaxLifeTime)
     {
         float3 delta_p = v * Elapsed;
-        new_pos = p + delta_p;
+        new_pos = position + delta_p;
     }
     else
     {        

@@ -57,45 +57,31 @@ PixelData VS(in VertexData input)
     return output;
 }
 
-// Same pattern as Texture2D.Gather(...) 
-// See: https://wojtsterna.blogspot.com/2018/02/directx-11-hlsl-gatherred.html
-static const uint SampleCount = 4;
-static const float2 SamplePattern[SampleCount] =
-{
-    float2(0, 1),
-    float2(1, 1),
-    float2(1, 0),
-    float2(0, 0)    
-};
-
 float Bilinear(float2 uv)
-{
+{       
     float2 dimensions;
     Media.GetDimensions(dimensions.x, dimensions.y);
-    float2 steps = float2(1.0f / dimensions.x, 1.0f / dimensions.y);
 
-    float4 visibility;    
-    [unroll]
-    for (uint i = 0; i < SampleCount; i++)
-    {
-        float2 uva = uv + (steps * SamplePattern[i]);
-        visibility[i] = tex2D(mediaSampler, uva).r;
-    }
-    
-    float tl = visibility.w;
-    float tr = visibility.z;
-    float bl = visibility.x;
-    float br = visibility.y;
-    
-    // TODO: determine weights based on depth differences
-    float wHorizontalTop = 0.5f;
-    float wHorizontalBottom = 0.5f;
-    float wVertical = 0.5f;
+    float x = uv.x * dimensions.x;
+    float y = uv.y * dimensions.y;
 
-    float top = lerp(tl, tr, wHorizontalTop);
-    float bottom = lerp(bl, br, wHorizontalBottom);
+    int px = (int)x;
+    int py = (int)y;
+        
+    int3 uvi = int3(px, py, 0);
 
-    return lerp(top, bottom, wVertical);        
+    float tl = Media.Load(uvi + int3(0, 0, 0)).r;
+    float tr = Media.Load(uvi + int3(1, 0, 0)).r;
+    float bl = Media.Load(uvi + int3(0, 1, 0)).r;
+    float br = Media.Load(uvi + int3(1, 1, 0)).r;
+
+    float lx = frac(x);
+    float ly = frac(y);
+
+    float top = lerp(tl, tr, lx);
+    float bottom = lerp(bl, br, lx);
+
+    return lerp(top, bottom, ly);
 }
 
 float Dither(float2 uv)
@@ -109,17 +95,18 @@ float Dither(float2 uv)
 OutputData PS(PixelData input)
 {
     OutputData output = (OutputData)0;
-    // Compute the visibility using a bilinear upscale
-    float visibility = Bilinear(input.Texture);  
 
+    float visibility = Bilinear(input.Texture);
+   
     // Subtely dither the upscaled values because we often lack enough colours 
     // to represent a smooth gradient when inside thick participating media.
     float dither = Dither(input.Texture);
-    float visibilityDithered = visibility * dither;    
-
+    float visibilityDithered = visibility * dither;
+    
     float3 color = lerp(MediaColor, LightColor, visibility * LightInfluence);
 
     output.Color = float4(color * visibilityDithered, visibilityDithered);
+    
     return output;
 }
 

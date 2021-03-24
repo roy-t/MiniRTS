@@ -21,23 +21,17 @@ struct OutputData
 };
 
 float4x4 WorldViewProjection;
-
 Texture2D Data;
-sampler dataSampler = sampler_state
-{
-    Texture = (Data);
-    MinFilter = POINT;
-    MagFilter = POINT;
-    MipFilter = POINT;
-    AddressU = Clamp;
-    AddressV = Clamp;
-};
 
 PixelData VS_INSTANCED(in VertexData input, in Particle particle)
 {
     PixelData output = (PixelData)0;
 
-    float4 data = Data.SampleLevel(dataSampler, particle.UV, 0);
+    float2 dimensions;
+    Data.GetDimensions(dimensions.x, dimensions.y);
+
+    int3 uvi = int3((dimensions * particle.UV), 0);
+    float4 data = Data.Load(uvi);
 
     float4x4 world =
     {

@@ -37,21 +37,17 @@ float4x4 View;
 
 Texture2D Velocity;
 Texture2D Position;
-sampler dataSampler = sampler_state
-{    
-    MinFilter = POINT;
-    MagFilter = POINT;
-    MipFilter = POINT;
-    AddressU = Clamp;
-    AddressV = Clamp;
-};
 
 PixelData VS_INSTANCED(in VertexData input, in Particle particle)
 {
     PixelData output = (PixelData)0;
 
-    float4 position = Position.SampleLevel(dataSampler, particle.UV, 0);
-    float3 velocity = Velocity.SampleLevel(dataSampler, particle.UV, 0).xyz;
+    float2 dimensions;
+    Position.GetDimensions(dimensions.x, dimensions.y);
+
+    int3 uvi = int3((dimensions * particle.UV), 0);
+    float4 position = Position.Load(uvi);
+    float3 velocity = Velocity.Load(uvi).xyz;
 
     float4x4 world =
     {

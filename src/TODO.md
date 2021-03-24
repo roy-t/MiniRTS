@@ -10,30 +10,21 @@
 
 - https://github.com/prime31/Nez/blob/master/Nez.Portable/Utils/Tweens/Easing/Easing.cs ?
 
-The ParticleRenderer and GeometryRenderer are very much alike. But I don't like how the GeometryRenderer is tied to
-poses now. Could it get the data from the spatial partitioner directly instead of via a property in camera? Alternatively a
-pose could just be any visible entity and the renderers get the types they can render from it?
+
 
 # Ideas
 
 Make a scene with many asteroids (like 10 variations instanced in different orientations). Put some sort of 'fog' in between to simulate space dust. Take the thickness from this fog from a RT where I draw over black swatches when a rocket goes over it. Add sun rays?
-
-# Transparency
-- https://casual-effects.blogspot.com/2015/03/colored-blended-order-independent.html
-- I see artefacts when multiple things with a low alpha overlap.. as if it gets even more transparent then
-- Transparency system can be used for more than just particles
-- Transparent particles sometimes overlap additive particles, can we combine both systems?
-- Shadow works, but only in pixel shader, clean-up shader? Make two versions maybe?
 
 # Participating Media
 - Things to try
 - Add depth/normal input to weigh bilinear upscale in ParticipatingMediaPostProcessEffect.fx
 - Right now if a part of the media is in the shadow it is as if the media is less dense. This simulates dust particles in the air.
 However for fog it would be better if this should just make the fog darker. Try how that looks?
-
+- I never got upsamping to work in such a way that it takes more of the left or right pixel when its not in the center
 
 # Particles
-- https://directtovideo.wordpress.com/2009/10/06/a-thoroughly-modern-particle-system/?
-- Shadows particles look OK, but makes particles twice as expensive, should we be able to enable/disable it in CascadedShadowMapSystem?
-- Think about how the normals for the particles should look, maybe slightly randomized based on position in texture?
-- Clean up shaders
+- Make shadows optional, per emitter
+- The ParticleRenderer and GeometryRenderer are very much alike. But I don't like how the GeometryRenderer is tied to
+poses now. Could it get the data from the spatial partitioner directly instead of via a property in camera? Alternatively a
+pose could just be any visible entity and the renderers get the types they can render from it?

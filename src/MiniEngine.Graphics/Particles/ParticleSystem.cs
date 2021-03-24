@@ -32,8 +32,6 @@ namespace MiniEngine.Graphics.Particles
             this.Device.BlendState = BlendState.Opaque;
             this.Device.DepthStencilState = DepthStencilState.Default;
             this.Device.RasterizerState = RasterizerState.CullCounterClockwise;
-            this.Device.SamplerStates[0] = SamplerState.PointClamp;
-            this.Device.SamplerStates[1] = SamplerState.PointClamp;
         }
 
         [ProcessAll]
