@@ -3,6 +3,7 @@
     public enum Stages
     {
         Initialization,
+        Update,
         RenderGBuffer,
         RenderLights,
         RenderShadows,

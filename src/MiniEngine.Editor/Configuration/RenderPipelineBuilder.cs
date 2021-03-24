@@ -1,6 +1,7 @@
 ﻿using MiniEngine.Configuration;
 using MiniEngine.Graphics.Geometry;
 using MiniEngine.Graphics.Lighting;
+using MiniEngine.Graphics.Mutators;
 using MiniEngine.Graphics.ParticipatingMedia;
 using MiniEngine.Graphics.Particles;
 using MiniEngine.Graphics.PostProcess;
@@ -38,14 +39,20 @@ namespace MiniEngine.Editor.Configuration
                     .Parallel()
                     .Produces(Initialization, Buffers)
                     .Build()
+                .System<MutatorSystem>()
+                    .Parallel()
+                    .Requires(Initialization, Containers)
+                    .Produces(Update, Mutators)
+                    .Build()
                 .System<VisibilitySystem>()
                     .Parallel()
-                    .Produces(Initialization, Poses)
                     .Requires(Initialization, Containers)
+                    .Requires(Update, Mutators)
+                    .Produces(Update, Poses)
                     .Build()
                 .System<GeometrySystem>()
                     .InSequence()
-                    .RequiresAll(Initialization)
+                    .RequiresAll(Update)
                     .Produces(RenderGBuffer, Geometry)
                     .Build()
                 .System<ParticleSystem>()

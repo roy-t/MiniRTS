@@ -4,6 +4,7 @@
     {
         Containers,
         Buffers,
+        Mutators,
         Poses,
         Shadows,
         CascadedShadows,
