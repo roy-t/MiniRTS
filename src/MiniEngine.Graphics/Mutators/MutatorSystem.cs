@@ -1,4 +1,5 @@
 ﻿using MiniEngine.Configuration;
+using MiniEngine.Graphics.Physics;
 using MiniEngine.Systems;
 using MiniEngine.Systems.Generators;
 
@@ -20,6 +21,6 @@ namespace MiniEngine.Graphics.Mutators
 
         [ProcessAll]
         public void Update(TransformMutatorComponent mutator, TransformComponent transform)
-            => transform.Matrix = mutator.Mutator.Update(this.FrameService.Elapsed, transform.Matrix);
+            => mutator.Mutator.Update(this.FrameService.Elapsed, transform);
     }
 }

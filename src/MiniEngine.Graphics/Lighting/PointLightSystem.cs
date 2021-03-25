@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
 using MiniEngine.Graphics.Lighting.Mathematics;
 using MiniEngine.Graphics.Lighting.Volumes;
+using MiniEngine.Graphics.Physics;
 using MiniEngine.Systems;
 using MiniEngine.Systems.Generators;
 

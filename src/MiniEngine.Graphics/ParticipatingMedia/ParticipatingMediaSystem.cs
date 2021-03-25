@@ -6,6 +6,7 @@ using MiniEngine.ContentPipeline.Shared;
 using MiniEngine.Graphics.Camera;
 using MiniEngine.Graphics.Geometry;
 using MiniEngine.Graphics.Lighting;
+using MiniEngine.Graphics.Physics;
 using MiniEngine.Graphics.PostProcess;
 using MiniEngine.Graphics.Shadows;
 using MiniEngine.Systems;

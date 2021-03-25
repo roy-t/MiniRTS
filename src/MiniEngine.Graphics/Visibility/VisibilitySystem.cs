@@ -1,6 +1,7 @@
 ﻿using MiniEngine.Configuration;
 using MiniEngine.Graphics.Camera;
 using MiniEngine.Graphics.Geometry;
+using MiniEngine.Graphics.Physics;
 using MiniEngine.Systems;
 using MiniEngine.Systems.Generators;
 

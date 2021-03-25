@@ -3,10 +3,10 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
 using MiniEngine.ContentPipeline.Shared;
-using MiniEngine.Graphics;
 using MiniEngine.Graphics.Geometry;
 using MiniEngine.Graphics.Geometry.Generators;
 using MiniEngine.Graphics.ParticipatingMedia;
+using MiniEngine.Graphics.Physics;
 using MiniEngine.Systems.Components;
 using MiniEngine.Systems.Entities;
 
@@ -49,18 +49,17 @@ namespace MiniEngine.Editor.Scenes
             var geometry = content.Load<GeometryModel>("AsteroidField/Asteroid001");
             var entity = this.Entities.Create();
             this.Components.Add(new GeometryComponent(entity, geometry));
-            this.Components.Add(new TransformComponent(entity, Matrix.Identity));
+            this.Components.Add(new TransformComponent(entity));
         }
 
         private void AddAsteroids()
         {
             var geometry = SphereGenerator.Generate(this.Device, 15);
             var material = new Material(this.Assets.AlbedoPixel(Color.Red), this.Assets.NormalPixel(), this.Assets.MetalicnessPixel(0.3f), this.Assets.RoughnessPixel(0.5f), this.Assets.AmbientOcclussionPixel(1.0f));
-            var transform = Matrix.Identity;
 
             var entity = this.Entities.Create();
             this.Components.Add(new GeometryComponent(entity, new GeometryModel(geometry, material)));
-            this.Components.Add(new TransformComponent(entity, transform));
+            this.Components.Add(new TransformComponent(entity));
 
             var random = new Random(255);
             var transforms = new Matrix[1024];
@@ -87,7 +86,7 @@ namespace MiniEngine.Editor.Scenes
 
             var cube = CubeGenerator.Generate(this.Device);
             this.Components.Add(ParticipatingMediaComponent.Create(entity, this.Device, cube, this.Device.Viewport.Width, this.Device.Viewport.Height, 4.0f, new Color(0.1f, 0.1f, 0.1f)));
-            this.Components.Add(new TransformComponent(entity, Matrix.CreateScale(300.0f, 50.0f, 30.0f)));
+            this.Components.Add(new TransformComponent(entity, Vector3.Zero, new Vector3(300.0f, 50.0f, 30.0f), Quaternion.Identity));
         }
     }
 }

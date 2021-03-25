@@ -6,6 +6,7 @@
         Buffers,
         Mutators,
         Poses,
+        Transformations,
         Shadows,
         CascadedShadows,
         ImageBasedLights,

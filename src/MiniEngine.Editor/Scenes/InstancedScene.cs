@@ -2,9 +2,9 @@
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
 using MiniEngine.ContentPipeline.Shared;
-using MiniEngine.Graphics;
 using MiniEngine.Graphics.Geometry;
 using MiniEngine.Graphics.Geometry.Generators;
+using MiniEngine.Graphics.Physics;
 using MiniEngine.Systems.Components;
 using MiniEngine.Systems.Entities;
 
@@ -35,11 +35,10 @@ namespace MiniEngine.Editor.Scenes
         {
             var geometry = SphereGenerator.Generate(this.Device, 15);
             var material = new Material(this.Assets.WhitePixel, this.Assets.NormalPixel(), this.Assets.MetalicnessPixel(0.5f), this.Assets.RoughnessPixel(0.0f), this.Assets.AmbientOcclussionPixel(1.0f));
-            var transform = Matrix.Identity;
 
             var entity = this.Entities.Create();
             this.Components.Add(new GeometryComponent(entity, new GeometryModel(geometry, material)));
-            this.Components.Add(new TransformComponent(entity, transform));
+            this.Components.Add(new TransformComponent(entity));
 
             var transforms = new Matrix[1024];
             var i = 0;

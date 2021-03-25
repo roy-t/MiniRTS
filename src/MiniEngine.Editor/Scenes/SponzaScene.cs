@@ -2,13 +2,13 @@
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
 using MiniEngine.ContentPipeline.Shared;
-using MiniEngine.Graphics;
 using MiniEngine.Graphics.Geometry;
 using MiniEngine.Graphics.Geometry.Generators;
 using MiniEngine.Graphics.Mutators;
 using MiniEngine.Graphics.Mutators.Functions;
 using MiniEngine.Graphics.ParticipatingMedia;
 using MiniEngine.Graphics.Particles;
+using MiniEngine.Graphics.Physics;
 using MiniEngine.Systems.Components;
 using MiniEngine.Systems.Entities;
 
@@ -53,7 +53,7 @@ namespace MiniEngine.Editor.Scenes
         private void AdditiveParticles(Vector3 position, int dim)
         {
             var particleEntity = this.Entities.Create();
-            this.Components.Add(new TransformComponent(particleEntity, position, Vector3.One, 0.0f, MathHelper.PiOver2, 0.0f));
+            this.Components.Add(new TransformComponent(particleEntity, position, Vector3.One, Quaternion.CreateFromYawPitchRoll(0.0f, MathHelper.PiOver2, 0.0f)));
             var component = new ParticleEmitterComponent(particleEntity, this.Device, dim * dim);
             this.Components.Add(component);
 
