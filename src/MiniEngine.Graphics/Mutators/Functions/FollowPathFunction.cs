@@ -48,11 +48,11 @@ namespace MiniEngine.Graphics.Mutators.Functions
                     var offset = (traveled - distance) / leg;
                     var nextPosition = Vector3.Lerp(from, to, offset);
                     transform.MoveTo(nextPosition);
-                    transform.Turn(Quaternion.CreateFromAxisAngle(Vector3.Up, elapsed));
+                    //transform.Turn(Quaternion.CreateFromAxisAngle(Vector3.Up, elapsed));
 
                     // TODO: make object face target!
 
-                    //transform.PushRotationToFaceTarget(nextPosition);
+                    transform.FaceTarget(nextPosition);
                     //transform.Push(Matrix.CreateTranslation(Vector3.Forward * elapsed));
                     //transform.Push(Matrix.CreateRotationY(elapsed));
 

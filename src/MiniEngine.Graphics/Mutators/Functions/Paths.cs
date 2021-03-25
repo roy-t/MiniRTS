@@ -19,6 +19,8 @@ namespace MiniEngine.Graphics.Mutators.Functions
                 waypoints.Add(position);
             }
 
+            waypoints.Add(waypoints[0]);
+
             return new FollowPathFunction(waypoints, duration);
         }
     }

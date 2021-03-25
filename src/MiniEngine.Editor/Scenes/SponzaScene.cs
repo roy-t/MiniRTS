@@ -53,11 +53,11 @@ namespace MiniEngine.Editor.Scenes
         private void AdditiveParticles(Vector3 position, int dim)
         {
             var particleEntity = this.Entities.Create();
-            this.Components.Add(new TransformComponent(particleEntity, position, Vector3.One, Quaternion.CreateFromYawPitchRoll(0.0f, MathHelper.PiOver2, 0.0f)));
+            this.Components.Add(new TransformComponent(particleEntity, position, Vector3.One, Quaternion.Identity/* Quaternion.CreateFromYawPitchRoll(0.0f, MathHelper.PiOver2, 0.0f)*/));
             var component = new ParticleEmitterComponent(particleEntity, this.Device, dim * dim);
             this.Components.Add(component);
 
-            var mutator = new TransformMutatorComponent(particleEntity, Paths.Circle(position, 5.0f, 5.0f, 100));
+            var mutator = new TransformMutatorComponent(particleEntity, Paths.Circle(position, 5.0f, 5.0f, 16));
             this.Components.Add(mutator);
         }
 

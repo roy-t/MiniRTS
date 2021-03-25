@@ -16,6 +16,10 @@ namespace MiniEngine.Graphics.Physics
 
         public void OnSet() { }
 
+        [ProcessNew]
+        public void ProcessNew(TransformComponent transform)
+            => transform.ProcessQueue();
+
         [ProcessChanged]
         public void ProcessQueues(TransformComponent transform)
             => transform.ProcessQueue();

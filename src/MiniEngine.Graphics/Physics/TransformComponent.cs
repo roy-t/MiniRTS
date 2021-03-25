@@ -27,28 +27,32 @@ namespace MiniEngine.Graphics.Physics
             matrix.Decompose(out var scale, out var rotation, out var translation);
 
             this.TranslationQueue = new Queue<Vector3>();
-            this.RotationQueue = new Queue<Quaternion>();
-            this.ScaleQueue = new Queue<Vector3>();
+            this.TranslationQueue.Enqueue(translation);
+            this.position = Vector3.Zero;
 
-            this.matrix = Combine(translation, scale, Vector3.Zero, rotation);
-            this.rotation = rotation;
-            this.position = translation;
-            this.forward = Vector3.Transform(Vector3.Forward, rotation);
-            this.scale = scale;
+            this.RotationQueue = new Queue<Quaternion>();
+            this.RotationQueue.Enqueue(rotation);
+            this.rotation = Quaternion.Identity;
+
+            this.ScaleQueue = new Queue<Vector3>();
+            this.ScaleQueue.Enqueue(scale);
+            this.scale = Vector3.One;
         }
 
-        public TransformComponent(Entity entity, Vector3 position, Vector3 scale, Quaternion rotation)
+        public TransformComponent(Entity entity, Vector3 translation, Vector3 scale, Quaternion rotation)
             : base(entity)
         {
             this.TranslationQueue = new Queue<Vector3>();
-            this.RotationQueue = new Queue<Quaternion>();
-            this.ScaleQueue = new Queue<Vector3>();
+            this.TranslationQueue.Enqueue(translation);
+            this.position = Vector3.Zero;
 
-            this.matrix = Combine(position, scale, Vector3.Zero, rotation);
-            this.rotation = rotation;
-            this.position = position;
-            this.forward = Vector3.Transform(Vector3.Forward, rotation);
-            this.scale = scale;
+            this.RotationQueue = new Queue<Quaternion>();
+            this.RotationQueue.Enqueue(rotation);
+            this.rotation = Quaternion.Identity;
+
+            this.ScaleQueue = new Queue<Vector3>();
+            this.ScaleQueue.Enqueue(scale);
+            this.scale = Vector3.One;
         }
 
         public Matrix Matrix => this.matrix;
@@ -82,33 +86,9 @@ namespace MiniEngine.Graphics.Physics
 
         public void FaceTarget(Vector3 target)
         {
-            throw new Exception("BUGGED");
             var newForward = Vector3.Normalize(target - this.position);
             var rotation = GetRotation(this.forward, newForward, Vector3.Up);
             this.Turn(rotation);
-        }
-
-        public static Quaternion GetRotation(Vector3 source, Vector3 dest, Vector3 up)
-        {
-            float dot = Vector3.Dot(source, dest);
-
-            if (Math.Abs(dot - (-1.0f)) < 0.000001f)
-            {
-                // vector a and b point exactly in the opposite direction, 
-                // so it is a 180 degrees turn around the up-axis
-                return new Quaternion(up, MathHelper.ToRadians(180.0f));
-            }
-            if (Math.Abs(dot - (1.0f)) < 0.000001f)
-            {
-                // vector a and b point exactly in the same direction
-                // so we return the identity quaternion
-                return Quaternion.Identity;
-            }
-
-            float rotAngle = (float)Math.Acos(dot);
-            Vector3 rotAxis = Vector3.Cross(source, dest);
-            rotAxis = Vector3.Normalize(rotAxis);
-            return Quaternion.CreateFromAxisAngle(rotAxis, rotAngle);
         }
 
         public void ProcessQueue()
@@ -155,5 +135,28 @@ namespace MiniEngine.Graphics.Physics
         public static Matrix Combine(Vector3 position, Vector3 scale, float yaw = 0.0f, float pitch = 0.0f, float roll = 0.0f)
             => Combine(position, scale, Vector3.Zero, yaw, pitch, roll);
 
+
+        private static Quaternion GetRotation(Vector3 currentForward, Vector3 desiredForward, Vector3 up)
+        {
+            var dot = Vector3.Dot(currentForward, desiredForward);
+
+            if (Math.Abs(dot + 1.0f) < 0.000001f)
+            {
+                // vector a and b point exactly in the opposite direction, 
+                // so it is a 180 degrees turn around the up-axis
+                return new Quaternion(up, MathHelper.Pi);
+            }
+            if (Math.Abs(dot - 1.0f) < 0.000001f)
+            {
+                // vector a and b point exactly in the same direction
+                // so we return the identity quaternion
+                return Quaternion.Identity;
+            }
+
+            var rotAngle = (float)Math.Acos(dot);
+            var rotAxis = Vector3.Cross(currentForward, desiredForward);
+            rotAxis = Vector3.Normalize(rotAxis);
+            return Quaternion.CreateFromAxisAngle(rotAxis, rotAngle);
+        }
     }
 }
