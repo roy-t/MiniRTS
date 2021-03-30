@@ -76,13 +76,12 @@ namespace MiniEngine.Editor.Scenes
                     var material = new Material(red, normal, metalicnessTexture, roughnessTexture, white);
 
                     var position = new Vector3((col - (columns / 2.0f)) * spacing, (row - (rows / 2.0f)) * spacing, 0.0f);
-                    var transform = Matrix.CreateTranslation(position);
-                    this.CreateSphere(geometry, material, transform);
+                    this.CreateSphere(geometry, material, position, Vector3.One);
                 }
             }
 
             var backgroundGeometry = CubeGenerator.Generate(this.Device);
-            this.CreateSphere(backgroundGeometry, new Material(blue, bumps, black, white, white), Matrix.CreateScale(200, 200, 1) * Matrix.CreateTranslation(Vector3.Forward * 20));
+            this.CreateSphere(backgroundGeometry, new Material(blue, bumps, black, white, white), Vector3.Forward * 20, new Vector3(200, 200, 1));
 
             this.CreateLight(new Vector3(-10, 10, 10), Color.Red, 30.0f);
             this.CreateLight(new Vector3(10, 10, 10), Color.Blue, 30.0f);
@@ -92,27 +91,27 @@ namespace MiniEngine.Editor.Scenes
             this.CreateSpotLight(new Vector3(0, 0, 10), Vector3.Forward, 1500.0f);
         }
 
-        private void CreateSphere(GeometryData geometry, Material material, Matrix transform)
+        private void CreateSphere(GeometryData geometry, Material material, Vector3 position, Vector3 scale)
         {
             var mesh = new GeometryMesh(geometry, material, Matrix.Identity);
             var model = new GeometryModel();
             model.Add(mesh);
 
-            CreateModel(model, transform);
+            CreateModel(model, position, scale);
         }
 
-        private void CreateModel(GeometryModel model, Matrix transform)
+        private void CreateModel(GeometryModel model, Vector3 position, Vector3 scale)
         {
             var entity = this.Entities.Create();
             this.Components.Add(new GeometryComponent(entity, model));
-            this.Components.Add(new TransformComponent(entity, transform));
+            this.Components.Add(new TransformComponent(entity, position, scale));
         }
 
         private void CreateLight(Vector3 position, Color color, float strength)
         {
             var entity = this.Entities.Create();
             this.Components.Add(new PointLightComponent(entity, color, strength));
-            this.Components.Add(new TransformComponent(entity, Matrix.CreateTranslation(position)));
+            this.Components.Add(new TransformComponent(entity, position));
         }
 
         private void CreateSpotLight(Vector3 position, Vector3 forward, float strength)

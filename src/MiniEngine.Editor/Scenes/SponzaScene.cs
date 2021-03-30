@@ -38,14 +38,14 @@ namespace MiniEngine.Editor.Scenes
         public void Load(ContentStack content)
         {
             var sponza = content.Load<GeometryModel>("sponza/sponza");
-            this.CreateModel(sponza, Matrix.CreateScale(0.05f));
+            this.CreateModel(sponza, 0.05f);
 
             var entity = this.Entities.Create();
 
             // Add dust
             var cube = CubeGenerator.Generate(this.Device);
             this.Components.Add(ParticipatingMediaComponent.Create(entity, this.Device, cube, this.Device.Viewport.Width, this.Device.Viewport.Height, 4.0f, new Color(0.1f, 0.1f, 0.1f)));
-            this.Components.Add(new TransformComponent(entity, Matrix.CreateScale(200, 150.0f, 120.0f)));
+            this.Components.Add(new TransformComponent(entity, Vector3.Zero, new Vector3(200, 150.0f, 120.0f)));
 
             AdditiveParticles(new Vector3(-49.0f, 3.0f, 0.0f), 1024);
         }
@@ -53,7 +53,7 @@ namespace MiniEngine.Editor.Scenes
         private void AdditiveParticles(Vector3 position, int dim)
         {
             var particleEntity = this.Entities.Create();
-            this.Components.Add(new TransformComponent(particleEntity, position, Vector3.One, Quaternion.Identity/* Quaternion.CreateFromYawPitchRoll(0.0f, MathHelper.PiOver2, 0.0f)*/));
+            this.Components.Add(new TransformComponent(particleEntity, position, Vector3.One, Quaternion.CreateFromYawPitchRoll(0, MathHelper.PiOver2, 0)));
             var component = new ParticleEmitterComponent(particleEntity, this.Device, dim * dim);
             this.Components.Add(component);
 
@@ -61,11 +61,11 @@ namespace MiniEngine.Editor.Scenes
             this.Components.Add(mutator);
         }
 
-        private void CreateModel(GeometryModel model, Matrix transform)
+        private void CreateModel(GeometryModel model, float scale)
         {
             var entity = this.Entities.Create();
             this.Components.Add(new GeometryComponent(entity, model));
-            this.Components.Add(new TransformComponent(entity, transform));
+            this.Components.Add(new TransformComponent(entity, Vector3.Zero, scale));
         }
     }
 }
