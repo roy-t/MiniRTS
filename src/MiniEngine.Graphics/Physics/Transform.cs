@@ -10,6 +10,7 @@ namespace MiniEngine.Graphics.Physics
         private Vector3 origin;
         private Vector3 position;
         private Vector3 forward;
+        private Vector3 up;
         private Vector3 scale;
 
         public Transform()
@@ -39,6 +40,7 @@ namespace MiniEngine.Graphics.Physics
         public Vector3 Origin => this.origin;
         public Vector3 Position => this.position;
         public Vector3 Forward => this.forward;
+        public Vector3 Up => this.up;
         public Vector3 Scale => this.scale;
 
         public void MoveTo(Vector3 position)
@@ -71,13 +73,14 @@ namespace MiniEngine.Graphics.Physics
         public void FaceTarget(Vector3 target)
         {
             var newForward = Vector3.Normalize(target - this.position);
-            var rotation = GetRotation(this.forward, newForward, Vector3.Up);
+            var rotation = GetRotation(this.forward, newForward, this.up);
             this.ApplyRotation(rotation);
         }
 
         private void Recompute()
         {
             this.forward = Vector3.Transform(Vector3.Forward, this.rotation);
+            this.up = Vector3.Transform(Vector3.Up, this.rotation);
             this.matrix = Combine(this.position, this.scale, this.origin, this.rotation);
         }
 
