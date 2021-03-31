@@ -86,10 +86,8 @@ namespace MiniEngine.Systems.Components
         public T Get(Entity entity)
             => this.Components[entity];
 
-        // TODO: Replace once https://github.com/dotnet/runtime/issues/45037 is fixed
         public AComponent GetComponent(int index) => this.Get(index);
 
-        // TODO: Replace once https://github.com/dotnet/runtime/issues/45037 is fixed
         public AComponent GetComponent(Entity entity) => this.Get(entity);
 
         public int Count => this.AllComponents.Count;

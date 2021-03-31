@@ -23,6 +23,7 @@ namespace MiniEngine.Gui.Tools
 
         public TypedTools GetAllTools(Type type)
         {
+            if (type.Name.Contains("Transform")) { }
             if (!this.SpecializedTools.TryGetValue(type, out var typedTools))
             {
                 var tools = new List<ITool>();

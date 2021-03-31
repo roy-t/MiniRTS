@@ -11,6 +11,11 @@
 - https://github.com/prime31/Nez/blob/master/Nez.Portable/Utils/Tweens/Easing/Easing.cs ?
 
 
+# Components
+Are often also useful without an entity (for mathy stuff / reuse)
+- What if we seperate them completely and just have a Component<T> type? or auto generate them?
+
+
 # Participating Media
 - Right now if a part of the media is in the shadow it is as if the media is less dense. This simulates dust particles in the air.
 However for fog it would be better if this should just make the fog darker. Try how that looks?
