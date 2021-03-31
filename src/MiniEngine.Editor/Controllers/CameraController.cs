@@ -27,54 +27,34 @@ namespace MiniEngine.Editor.Controllers
         public float Velocity { get; set; }
         public float RadiansPerPixel { get; set; }
 
-        internal void Update(ICamera camera, float elapsed)
+        internal void Update(PerspectiveCamera camera, float elapsed)
         {
-            var translation = Matrix.Identity;
-            var position = camera.Position;
+            var step = elapsed * this.Velocity;
+
             var forward = camera.Forward;
-            var left = Vector3.Cross(Vector3.Up, forward);
+            var backward = -forward;
+            var up = camera.Up;
+            var down = -up;
+            var left = camera.Left;
+            var right = -left;
 
-            if (this.KeyboardInput.Held(Keys.W))
-            {
-                translation *= Matrix.CreateTranslation(forward * elapsed * this.Velocity);
-            }
+            var movementVector = this.KeyboardInput.AsArray(InputState.Pressed, Keys.W, Keys.S, Keys.A, Keys.D, Keys.Space, Keys.C);
+            var translation = Vector3.Zero;
+            translation += movementVector[0] * forward;
+            translation += movementVector[1] * backward;
+            translation += movementVector[2] * left;
+            translation += movementVector[3] * right;
+            translation += movementVector[4] * up;
+            translation += movementVector[5] * down;
 
-            if (this.KeyboardInput.Held(Keys.S))
-            {
-                translation *= Matrix.CreateTranslation(-forward * elapsed * this.Velocity);
-            }
+            translation *= step;
 
-            if (this.KeyboardInput.Held(Keys.A))
-            {
-                translation *= Matrix.CreateTranslation(left * elapsed * this.Velocity);
-            }
-
-            if (this.KeyboardInput.Held(Keys.D))
-            {
-                translation *= Matrix.CreateTranslation(-left * elapsed * this.Velocity);
-            }
-
-            if (this.KeyboardInput.Held(Keys.Space))
-            {
-                translation *= Matrix.CreateTranslation(Vector3.Up * elapsed * this.Velocity);
-            }
-
-            if (this.KeyboardInput.Held(Keys.C))
-            {
-                translation *= Matrix.CreateTranslation(Vector3.Down * elapsed * this.Velocity);
-            }
-
-            if (this.KeyboardInput.Held(Keys.R))
-            {
-                position = Vector3.Backward * 10;
-                forward = Vector3.Forward;
-            }
-
+            var rotation = Quaternion.Identity;
             if (this.MouseInput.Held(MouseButtons.Middle))
             {
                 var mouseMovement = new Vector2(this.MouseInput.Movement.X, this.MouseInput.Movement.Y) * this.RadiansPerPixel;
-                var rotation = Matrix.CreateFromAxisAngle(Vector3.Up, mouseMovement.X) * Matrix.CreateFromAxisAngle(left, -mouseMovement.Y);
-                forward = Vector3.Normalize(Vector3.Transform(forward, rotation));
+                rotation *= Quaternion.CreateFromAxisAngle(up, mouseMovement.X);
+                rotation *= Quaternion.CreateFromAxisAngle(right, mouseMovement.Y);
             }
 
             if (this.MouseInput.ScrolledUp)
@@ -87,9 +67,22 @@ namespace MiniEngine.Editor.Controllers
                 this.Velocity = Math.Max(this.Velocity - 1, MinVelocity);
             }
 
-            position = Vector3.Transform(position, translation);
+            // TODO: camera is not happy!
+            if (translation.LengthSquared() != 0 || rotation != Quaternion.Identity)
+            {
+                camera.Transform.MoveTo(camera.Position + translation);
+                camera.Transform.ApplyRotation(rotation);
+                camera.Transform.AlignHorizon();
+                camera.Update();
+            }
 
-            camera.Move(position, forward);
+            if (this.KeyboardInput.Held(Keys.R))
+            {
+                camera.Transform.MoveTo(Vector3.Backward * 10);
+                camera.Transform.FaceTarget(Vector3.Zero);
+                camera.Transform.AlignHorizon();
+                camera.Update();
+            }
         }
     }
 }

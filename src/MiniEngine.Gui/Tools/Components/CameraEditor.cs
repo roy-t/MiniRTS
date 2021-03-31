@@ -7,7 +7,7 @@ using MiniEngine.Gui.Tools.Vectors;
 namespace MiniEngine.Gui.Tools.Components
 {
     [Service]
-    public sealed class CameraEditor : ATool<ICamera>
+    public sealed class CameraEditor : ATool<PerspectiveCamera>
     {
         private readonly FrameService FrameService;
 
@@ -18,18 +18,20 @@ namespace MiniEngine.Gui.Tools.Components
 
         public override string Name => "Camera";
 
-        public override bool HeaderValue(ref ICamera value, ToolState tool)
+        public override bool HeaderValue(ref PerspectiveCamera value, ToolState tool)
         {
             ImGui.Text($"p: {VectorUtils.ToShortString(value.Position)} f: {VectorUtils.ToShortString(value.Forward)}");
             return false;
         }
 
-        public override bool Details(ref ICamera value, ToolState tool)
+        public override bool Details(ref PerspectiveCamera value, ToolState tool)
         {
             if (ToolUtils.ButtonRow("Camera", "Align to view"))
             {
                 var frameCamera = this.FrameService.CameraComponent.Camera;
-                value.Move(frameCamera.Position, frameCamera.Forward);
+                value.Transform.MoveTo(frameCamera.Position);
+                value.Transform.FaceTarget(frameCamera.Position + frameCamera.Forward);
+                value.Update();
                 return true;
             }
 

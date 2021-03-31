@@ -95,6 +95,19 @@ namespace MiniEngine.Editor.Controllers
         public bool Released(Keys key)
             => this.KeyStates[key] == InputState.JustReleased;
 
+        internal float AsFloat(InputState state, Keys key)
+            => this.KeyStates[key] == state ? 1.0f : 0.0f;
+
+        internal float[] AsArray(InputState state, params Keys[] keys)
+        {
+            var values = new float[keys.Length];
+            for (var i = 0; i < keys.Length; i++)
+            {
+                values[i] = this.AsFloat(state, keys[i]);
+            }
+
+            return values;
+        }
 
         public bool ClickDigit(out int value)
         {

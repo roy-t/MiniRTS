@@ -11,6 +11,7 @@ namespace MiniEngine.Graphics.Physics
         private Vector3 position;
         private Vector3 forward;
         private Vector3 up;
+        private Vector3 left;
         private Vector3 scale;
 
         public Transform()
@@ -41,6 +42,7 @@ namespace MiniEngine.Graphics.Physics
         public Vector3 Position => this.position;
         public Vector3 Forward => this.forward;
         public Vector3 Up => this.up;
+        public Vector3 Left => this.left;
         public Vector3 Scale => this.scale;
 
         public void MoveTo(Vector3 position)
@@ -64,9 +66,16 @@ namespace MiniEngine.Graphics.Physics
             this.Recompute();
         }
 
+        public void SetRotation(Quaternion rotation)
+        {
+            this.rotation = rotation;
+            this.Recompute();
+        }
+
         public void ApplyRotation(Quaternion rotation)
         {
             this.rotation = rotation * this.rotation;
+            this.rotation.Normalize();
             this.Recompute();
         }
 
@@ -77,10 +86,28 @@ namespace MiniEngine.Graphics.Physics
             this.ApplyRotation(rotation);
         }
 
+
+        public void AlignHorizon()
+        {
+            //if (this.up.Y < 0)
+            //{
+            //    var rotation = Quaternion.CreateFromAxisAngle(this.forward, MathHelper.Pi);
+            //    this.ApplyRotation(rotation);
+            //}
+
+            if (this.Left.Y != 0)
+            {
+                var newLeft = Vector3.Normalize(new Vector3(this.left.X, 0, this.left.Z));
+                var rotation = GetRotation(this.left, newLeft, this.up);
+                this.ApplyRotation(rotation);
+            }
+        }
+
         private void Recompute()
         {
             this.forward = Vector3.Transform(Vector3.Forward, this.rotation);
             this.up = Vector3.Transform(Vector3.Up, this.rotation);
+            this.left = Vector3.Transform(Vector3.Left, this.rotation);
             this.matrix = Combine(this.position, this.scale, this.origin, this.rotation);
         }
 

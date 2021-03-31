@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using MiniEngine.Graphics.Physics;
 
 namespace MiniEngine.Graphics.Camera
 {
@@ -10,7 +11,11 @@ namespace MiniEngine.Graphics.Camera
         public PerspectiveCamera(float aspectRatio, Vector3 position, Vector3 forward)
         {
             this.AspectRatio = aspectRatio;
-            this.Move(position, forward);
+            this.Transform = new Transform();
+            this.Transform.MoveTo(position);
+            this.Transform.FaceTarget(forward);
+
+            this.Update();
         }
 
         public float NearPlane { get; } = 0.1f;
@@ -21,9 +26,7 @@ namespace MiniEngine.Graphics.Camera
 
         public float AspectRatio { get; }
 
-        public Vector3 Position { get; private set; }
-
-        public Vector3 Forward { get; private set; }
+        public Transform Transform { get; }
 
         public Matrix ViewProjection { get; private set; }
 
@@ -31,14 +34,22 @@ namespace MiniEngine.Graphics.Camera
 
         public Matrix Projection { get; private set; }
 
-        public void Move(Vector3 position, Vector3 forward)
+        public Vector3 Position => this.Transform.Position;
+
+        public Vector3 Forward => this.Transform.Forward;
+
+        public Vector3 Up => this.Transform.Up;
+
+        public Vector3 Left => this.Transform.Left;
+
+        public void Update()
         {
-            this.Position = position;
-            this.Forward = forward;
+            var position = this.Transform.Position;
+            var forward = this.Transform.Forward;
+            var up = this.Transform.Up;
 
-            this.View = Matrix.CreateLookAt(position, position + forward, Vector3.Up);
+            this.View = Matrix.CreateLookAt(position, position + forward, up);
             this.Projection = Matrix.CreatePerspectiveFieldOfView(this.FieldOfView, this.AspectRatio, this.NearPlane, this.FarPlane);
-
             this.ViewProjection = this.View * this.Projection;
         }
     }
