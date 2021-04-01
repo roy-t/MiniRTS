@@ -11,6 +11,9 @@
 - https://github.com/prime31/Nez/blob/master/Nez.Portable/Utils/Tweens/Easing/Easing.cs ?
 
 
+# Transforms
+- See TODO in class!
+
 # Components
 Are often also useful without an entity (for mathy stuff / reuse)
 - What if we seperate them completely and just have a Component<T> type? or auto generate them?

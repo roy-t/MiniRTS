@@ -1,4 +1,5 @@
 ﻿using ImGuiNET;
+using Microsoft.Xna.Framework;
 using MiniEngine.Configuration;
 using MiniEngine.Graphics;
 using MiniEngine.Graphics.Camera;
@@ -30,7 +31,7 @@ namespace MiniEngine.Gui.Tools.Components
             {
                 var frameCamera = this.FrameService.CameraComponent.Camera;
                 value.Transform.MoveTo(frameCamera.Position);
-                value.Transform.FaceTarget(frameCamera.Position + frameCamera.Forward);
+                value.Transform.FaceTargetConstrained(frameCamera.Position + frameCamera.Forward, Vector3.Up);
                 value.Update();
                 return true;
             }

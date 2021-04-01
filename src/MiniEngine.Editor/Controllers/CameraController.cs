@@ -67,20 +67,18 @@ namespace MiniEngine.Editor.Controllers
                 this.Velocity = Math.Max(this.Velocity - 1, MinVelocity);
             }
 
-            // TODO: camera is not happy!
             if (translation.LengthSquared() != 0 || rotation != Quaternion.Identity)
             {
                 camera.Transform.MoveTo(camera.Position + translation);
-                camera.Transform.ApplyRotation(rotation);
-                camera.Transform.AlignHorizon();
+                var lookAt = camera.Position + Vector3.Transform(camera.Transform.Forward, rotation);
+                camera.Transform.FaceTargetConstrained(lookAt, Vector3.Up);
                 camera.Update();
             }
 
             if (this.KeyboardInput.Held(Keys.R))
             {
                 camera.Transform.MoveTo(Vector3.Backward * 10);
-                camera.Transform.FaceTarget(Vector3.Zero);
-                camera.Transform.AlignHorizon();
+                camera.Transform.FaceTargetConstrained(Vector3.Zero, Vector3.Up);
                 camera.Update();
             }
         }

@@ -75,7 +75,6 @@ namespace MiniEngine.Graphics.Physics
         public void ApplyRotation(Quaternion rotation)
         {
             this.rotation = rotation * this.rotation;
-            this.rotation.Normalize();
             this.Recompute();
         }
 
@@ -86,25 +85,17 @@ namespace MiniEngine.Graphics.Physics
             this.ApplyRotation(rotation);
         }
 
-
-        public void AlignHorizon()
+        public void FaceTargetConstrained(Vector3 target, Vector3 up)
         {
-            //if (this.up.Y < 0)
-            //{
-            //    var rotation = Quaternion.CreateFromAxisAngle(this.forward, MathHelper.Pi);
-            //    this.ApplyRotation(rotation);
-            //}
-
-            if (this.Left.Y != 0)
-            {
-                var newLeft = Vector3.Normalize(new Vector3(this.left.X, 0, this.left.Z));
-                var rotation = GetRotation(this.left, newLeft, this.up);
-                this.ApplyRotation(rotation);
-            }
+            var matrix = Matrix.CreateLookAt(this.position, target, up);
+            var quaternion = Quaternion.CreateFromRotationMatrix(Matrix.Invert(matrix));
+            this.SetRotation(quaternion);
         }
 
         private void Recompute()
         {
+            this.rotation.Normalize();
+
             this.forward = Vector3.Transform(Vector3.Forward, this.rotation);
             this.up = Vector3.Transform(Vector3.Up, this.rotation);
             this.left = Vector3.Transform(Vector3.Left, this.rotation);
