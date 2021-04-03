@@ -58,7 +58,10 @@ namespace MiniEngine.Editor.Scenes
             this.Components.Add(component);
 
             var mutator = new TransformMutatorComponent(particleEntity, Paths.Circle(position, 5.0f, 5.0f, 16));
-            this.Components.Add(mutator);
+            //this.Components.Add(mutator);
+
+            var forces = new ForcesComponent(particleEntity);
+            this.Components.Add(forces);
         }
 
         private void CreateModel(GeometryModel model, float scale)

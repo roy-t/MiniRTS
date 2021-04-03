@@ -45,6 +45,12 @@ namespace MiniEngine.Gui.Tools.Components
             var roll = 0.0f;
             changed |= ToolUtils.DetailsRow("Roll", ref roll, rot);
 
+            if (ToolUtils.ButtonRow("Rotation", "Reset"))
+            {
+                value.SetRotation(Quaternion.Identity);
+                return true;
+            }
+
             if (changed)
             {
                 value.MoveTo(translation);

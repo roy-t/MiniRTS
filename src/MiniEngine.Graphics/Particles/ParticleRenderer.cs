@@ -29,9 +29,7 @@ namespace MiniEngine.Graphics.Particles
             for (var i = 0; i < this.Components.All.Count; i++)
             {
                 var emitter = this.Components.All[i];
-                var transform = this.Transforms.Get(emitter.Entity);
-
-                user.ApplyEffect(transform.Matrix * viewProjection, emitter);
+                user.ApplyEffect(viewProjection, emitter);
                 this.Point.RenderInstanced(this.Device, emitter.Instances, emitter.Count);
             }
         }

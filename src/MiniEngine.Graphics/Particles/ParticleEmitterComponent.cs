@@ -19,6 +19,7 @@ namespace MiniEngine.Graphics.Particles
 
             this.Velocity = new DoubleBufferedRenderTarget(device, dimensions, SurfaceFormat.HalfVector4);
             this.Position = new DoubleBufferedRenderTarget(device, dimensions, SurfaceFormat.Vector4);
+            this.Forces = new DoubleBufferedRenderTarget(device, dimensions, SurfaceFormat.Vector4);
 
             var instances = new Particle[this.Count];
             var i = 0;
@@ -119,11 +120,13 @@ namespace MiniEngine.Graphics.Particles
 
         public DoubleBufferedRenderTarget Velocity { get; }
         public DoubleBufferedRenderTarget Position { get; }
+        public DoubleBufferedRenderTarget Forces { get; }
 
         public void Swap()
         {
             this.Velocity.Swap();
             this.Position.Swap();
+            this.Forces.Swap();
         }
 
         private void SeedData()
@@ -151,6 +154,7 @@ namespace MiniEngine.Graphics.Particles
         {
             this.Velocity.Dispose();
             this.Position.Dispose();
+            this.Forces.Dispose();
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
+using MiniEngine.Graphics.Physics;
 using MiniEngine.Graphics.PostProcess;
 using MiniEngine.Systems;
 using MiniEngine.Systems.Generators;
@@ -35,12 +36,13 @@ namespace MiniEngine.Graphics.Particles
         }
 
         [ProcessAll]
-        public void SimulateParticles(ParticleEmitterComponent component)
+        public void SimulateParticles(ParticleEmitterComponent component, ForcesComponent forces, TransformComponent transform)
         {
             if (component.IsEnabled)
             {
                 this.SimulationEffect.Velocity = component.Velocity.ReadTarget;
                 this.SimulationEffect.Position = component.Position.ReadTarget;
+                this.SimulationEffect.Forces = component.Forces.ReadTarget;
 
                 this.SimulationEffect.LengthScale = component.LengthScale;
                 this.SimulationEffect.FieldSpeed = component.FieldSpeed;
@@ -54,12 +56,15 @@ namespace MiniEngine.Graphics.Particles
                 this.SimulationEffect.Elapsed = this.FrameService.Elapsed;
                 this.SimulationEffect.Time = this.FrameService.Time;
 
+                this.SimulationEffect.Force = forces.Velocity;
+                this.SimulationEffect.ForceWorld = transform.Matrix;
+
                 this.SimulationEffect.ApplyVelocity();
                 this.Device.SetRenderTarget(component.Velocity.WriteTarget);
                 this.PostProcessTriangle.Render(this.Device);
 
                 this.SimulationEffect.ApplyPosition();
-                this.Device.SetRenderTarget(component.Position.WriteTarget);
+                this.Device.SetRenderTargets(component.Position.WriteTarget, component.Forces.WriteTarget);
                 this.PostProcessTriangle.Render(this.Device);
 
                 component.Swap();

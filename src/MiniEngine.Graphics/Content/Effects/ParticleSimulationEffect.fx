@@ -18,13 +18,20 @@ struct PixelData
     float2 Texture : TEXCOORD0;
 };
 
-struct OutputData
+struct VelocityOutputData
 {
     float4 Color : COLOR0;
 };
 
+struct PositionOutputData
+{
+    float4 Position : COLOR0;
+    float4 Force : COLOR1;
+};
+
 Texture2D Velocity;
 Texture2D Position;
+Texture2D Forces;
 
 static const float3 FieldMainDirection = float3(0, 0, -1);
 
@@ -42,6 +49,9 @@ float EmitterSize;
 
 float3 SpherePosition;
 float SphereRadius;
+
+float3 Force;
+float4x4 ForceWorld;
 
 float3 Potential(float3 p)
 {
@@ -79,8 +89,9 @@ float3 Potential(float3 p)
     // and the more of a tangental potential.
     // The variable d_0 determines the distance to the sphere when the
     // particles start to become affected.
+    float3 spherePosition = mul(float4(SpherePosition, 1.0f), ForceWorld).xyz;
     float d_0 = L * 0.5;
-    alpha = abs((smoothstep(SphereRadius, SphereRadius + d_0, length(p - SpherePosition))));
+    alpha = abs((smoothstep(SphereRadius, SphereRadius + d_0, length(p - spherePosition))));
     n = normalize(p);
     pot = (alpha)*pot + (1 - (alpha)) * n * dot(n, pot);
 
@@ -105,9 +116,9 @@ PixelData VS(in VertexData input)
     return output;
 }
 
-OutputData PS_Velocity(PixelData input)
+VelocityOutputData PS_Velocity(PixelData input)
 {
-    OutputData output = (OutputData)0;
+    VelocityOutputData output = (VelocityOutputData)0;
     
     const float epsilon = 0.0001;
     
@@ -132,14 +143,14 @@ OutputData PS_Velocity(PixelData input)
     // Since this the vector field has only a vector potential component
     // it is divergent free and hence contains no sources
     float3 velocity = float3(dp3_dy - dp2_dz, dp1_dz - dp3_dx, dp2_dx - dp1_dy);    
-
+    velocity = mul(velocity, (float3x3)ForceWorld);
     output.Color = float4(velocity, 1.0f);
     return output;
 }
 
-OutputData PS_Position(PixelData input)
+PositionOutputData PS_Position(PixelData input)
 {
-    OutputData output = (OutputData)0;
+    PositionOutputData output = (PositionOutputData)0;
 
     float2 dimensions;
     Position.GetDimensions(dimensions.x, dimensions.y);
@@ -147,6 +158,7 @@ OutputData PS_Position(PixelData input)
     int3 uvi = int3((dimensions * input.Texture), 0);
     float4 p = Position.Load(uvi).xyzw;
     float3 v = Velocity.Load(uvi).xyz;
+    float3 f = Forces.Load(uvi).xyz;
     
     // The lifetime is stored in the fourth element of position    
     float3 position = p.xyz;    
@@ -155,28 +167,38 @@ OutputData PS_Position(PixelData input)
     // Euler integration
     float3 new_pos = position;
 
-    if (age < 0)
+    output.Force = float4(f, 1.0f);
+    
+    if (age <= 0)
     {
-        new_pos = position;
-    }
-    else if (age < MaxLifeTime)
-    {
-        float3 delta_p = v * Elapsed;
-        new_pos = position + delta_p;
-    }
-    else
-    {        
         float a = rand(new_pos.yx) * TWO_PI;
         float r = sqrt(rand(new_pos.yz)) * EmitterSize;
         float x = r * cos(a);
         float y = r * sin(a);
-        
+
         new_pos = float3(x, y, 0.0f);        
-        age = 0.0f;
+        new_pos = mul(float4(new_pos, 1.0f), ForceWorld).xyz;
+        output.Force = float4(Force, 1.0f);
+
+        age += Elapsed;
+    }
+    
+    float max = MaxLifeTime * (0.9f + 0.1f * rand(new_pos.yz));
+    if (age > 0 && age <= max)
+    {       
+        float3 delta_p = (v + f) * Elapsed;
+        new_pos = position + delta_p;
+
+        age += Elapsed;
+    }
+    
+    if (age > max)
+    {        
+        age = -Elapsed;// (a / (MaxLifeTime * 10.0f));
     }
 
     // Write output
-    output.Color =  float4(new_pos, age + Elapsed);
+    output.Position =  float4(new_pos, age);
     return output;
 }
 
