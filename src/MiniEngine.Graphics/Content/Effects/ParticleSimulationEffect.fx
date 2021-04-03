@@ -26,12 +26,12 @@ struct VelocityOutputData
 struct PositionOutputData
 {
     float4 Position : COLOR0;
-    float4 Force : COLOR1;
+    float4 InitialVelocity : COLOR1;
 };
 
 Texture2D Velocity;
 Texture2D Position;
-Texture2D Forces;
+Texture2D InitialVelocity;
 
 static const float3 FieldMainDirection = float3(0, 0, -1);
 
@@ -50,8 +50,9 @@ float EmitterSize;
 float3 SpherePosition;
 float SphereRadius;
 
-float3 Force;
-float4x4 ForceWorld;
+float3 ParentVelocity;
+float4x4 ObjectToWorld;
+float4x4 WorldToObject;
 
 float3 Potential(float3 p)
 {
@@ -89,21 +90,12 @@ float3 Potential(float3 p)
     // and the more of a tangental potential.
     // The variable d_0 determines the distance to the sphere when the
     // particles start to become affected.
-    float3 spherePosition = mul(float4(SpherePosition, 1.0f), ForceWorld).xyz;
     float d_0 = L * 0.5;
-    alpha = abs((smoothstep(SphereRadius, SphereRadius + d_0, length(p - spherePosition))));
+    alpha = abs((smoothstep(SphereRadius, SphereRadius + d_0, length(p - SpherePosition))));
     n = normalize(p);
     pot = (alpha)*pot + (1 - (alpha)) * n * dot(n, pot);
 
     return pot;
-}
-
-float SmoothstepPolynomial(float edge0, float edge1, float x)
-{
-    // Scale, bias and saturate x to 0..1 range
-    x = clamp((x - edge0) / (edge1 - edge0), 0.0, 1.0);
-    // Evaluate polynomial
-    return x * x * (3 - 2 * x);
 }
 
 PixelData VS(in VertexData input)
@@ -119,16 +111,17 @@ PixelData VS(in VertexData input)
 VelocityOutputData PS_Velocity(PixelData input)
 {
     VelocityOutputData output = (VelocityOutputData)0;
-    
+
     const float epsilon = 0.0001;
-    
+
     float2 dimensions;
     Position.GetDimensions(dimensions.x, dimensions.y);
 
     int3 uvi = int3((dimensions * input.Texture), 0);
-    float3 p = Position.Load(uvi).xyz;
+    float3 pWorld = Position.Load(uvi).xyz;
+    float3 p = mul(float4(pWorld, 1.0f), WorldToObject).xyz;
     float3 v = Velocity.Load(uvi).xyz;
-    
+
     float3 potential = Potential(p);
 
     // Partial derivatives of different components of the potential
@@ -142,8 +135,8 @@ VelocityOutputData PS_Velocity(PixelData input)
     // vel = nabla x potential
     // Since this the vector field has only a vector potential component
     // it is divergent free and hence contains no sources
-    float3 velocity = float3(dp3_dy - dp2_dz, dp1_dz - dp3_dx, dp2_dx - dp1_dy);    
-    velocity = mul(velocity, (float3x3)ForceWorld);
+    float3 velocity = float3(dp3_dy - dp2_dz, dp1_dz - dp3_dx, dp2_dx - dp1_dy);
+    velocity = mul(velocity, (float3x3)ObjectToWorld);
     output.Color = float4(velocity, 1.0f);
     return output;
 }
@@ -154,53 +147,91 @@ PositionOutputData PS_Position(PixelData input)
 
     float2 dimensions;
     Position.GetDimensions(dimensions.x, dimensions.y);
-
+    
     int3 uvi = int3((dimensions * input.Texture), 0);
-    float4 p = Position.Load(uvi).xyzw;
-    float3 v = Velocity.Load(uvi).xyz;
-    float3 f = Forces.Load(uvi).xyz;
-    
-    // The lifetime is stored in the fourth element of position    
-    float3 position = p.xyz;    
-    float age = p.w;
+    float4 positionAge = Position.Load(uvi).xyzw;
+    float3 position = positionAge.xyz;
+    float age = positionAge.w;
+    float3 velocity = Velocity.Load(uvi).xyz;
+    float3 initialVelocity = InitialVelocity.Load(uvi).xyz;
 
-    // Euler integration
-    float3 new_pos = position;
+    age += Elapsed;
 
-    output.Force = float4(f, 1.0f);
-    
-    if (age <= 0)
+    if (age < 0)
     {
-        float a = rand(new_pos.yx) * TWO_PI;
-        float r = sqrt(rand(new_pos.yz)) * EmitterSize;
+        output.Position = float4(position, age);
+        output.InitialVelocity = float4(ParentVelocity, 1.0f);
+    }
+
+    if (age >= 0 && age < MaxLifeTime)
+    {
+        float3 delta = (initialVelocity + velocity) * Elapsed;
+        output.Position = float4(position + delta, age);
+        output.InitialVelocity = float4(initialVelocity, 1.0f);
+    }
+
+    // TODO: spawns at weird place and does not take initialVelocity into account?
+    if (age > MaxLifeTime)
+    {
+        float a = rand(position.yx) * TWO_PI;
+        float r = sqrt(rand(position.yz)) * EmitterSize;
         float x = r * cos(a);
         float y = r * sin(a);
-
-        new_pos = float3(x, y, 0.0f);        
-        new_pos = mul(float4(new_pos, 1.0f), ForceWorld).xyz;
-        output.Force = float4(Force, 1.0f);
-
-        age += Elapsed;
-    }
-    
-    float max = MaxLifeTime * (0.9f + 0.1f * rand(new_pos.yz));
-    if (age > 0 && age <= max)
-    {       
-        float3 delta_p = (v + f) * Elapsed;
-        new_pos = position + delta_p;
-
-        age += Elapsed;
-    }
-    
-    if (age > max)
-    {        
-        age = -Elapsed;// (a / (MaxLifeTime * 10.0f));
+        
+        float3 spawn = float3(x, y, 0.0f);
+        spawn = mul(float4(spawn, 1.0f), ObjectToWorld);
+        output.Position = float4(spawn, 0.0f);
+        output.InitialVelocity = float4(0.0f, 0.0f, 0.0f, 1.0f);        
     }
 
-    // Write output
-    output.Position =  float4(new_pos, age);
     return output;
 }
+
+//PositionOutputData PS_Position(PixelData input)
+//{
+//    PositionOutputData output = (PositionOutputData)0;
+//
+//    float2 dimensions;
+//    Position.GetDimensions(dimensions.x, dimensions.y);
+//
+//    int3 uvi = int3((dimensions * input.Texture), 0);
+//    float4 p = Position.Load(uvi).xyzw;
+//    float3 v = Velocity.Load(uvi).xyz;
+//    float3 iv = InitialVelocity.Load(uvi).xyz;
+//
+//    // The lifetime is stored in the fourth element of position    
+//    float3 position = p.xyz;
+//    float age = p.w;
+//    float3 new_pos = position;
+//
+//    output.InitialVelocity = float4(iv, 1.0f);
+//    if (age < 0)
+//    {
+//        new_pos = position;
+//        output.InitialVelocity = float4(ParentVelocity, 1.0f);
+//    }
+//    else if (age < MaxLifeTime)
+//    {
+//        float3 delta_p = (v + iv) * Elapsed;
+//        new_pos = position + delta_p;
+//    }
+//    else
+//    {
+//        float a = rand(new_pos.yx) * TWO_PI;
+//        float r = sqrt(rand(new_pos.yz)) * EmitterSize;
+//        float x = r * cos(a);
+//        float y = r * sin(a);
+//
+//        new_pos = float3(x, y, 0.0f);
+//        new_pos = mul(float4(new_pos, 1.0f), ObjectToWorld).xyz;
+//        age = 0.0f;
+//    }
+//
+//    // Write output
+//    output.Position = float4(new_pos, age + Elapsed);
+//    
+//    return output;
+//}
 
 technique ParticleVelocitySimulationTechnique
 {

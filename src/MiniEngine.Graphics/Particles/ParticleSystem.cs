@@ -42,7 +42,7 @@ namespace MiniEngine.Graphics.Particles
             {
                 this.SimulationEffect.Velocity = component.Velocity.ReadTarget;
                 this.SimulationEffect.Position = component.Position.ReadTarget;
-                this.SimulationEffect.Forces = component.Forces.ReadTarget;
+                this.SimulationEffect.InitialVelocity = component.InitialVelocity.ReadTarget;
 
                 this.SimulationEffect.LengthScale = component.LengthScale;
                 this.SimulationEffect.FieldSpeed = component.FieldSpeed;
@@ -56,15 +56,16 @@ namespace MiniEngine.Graphics.Particles
                 this.SimulationEffect.Elapsed = this.FrameService.Elapsed;
                 this.SimulationEffect.Time = this.FrameService.Time;
 
-                this.SimulationEffect.Force = forces.Velocity;
-                this.SimulationEffect.ForceWorld = transform.Matrix;
+                this.SimulationEffect.ParentVelocity = forces.Velocity;
+                this.SimulationEffect.ObjectToWorld = transform.Matrix;
+                this.SimulationEffect.WorldToObject = Matrix.Invert(transform.Matrix);
 
                 this.SimulationEffect.ApplyVelocity();
                 this.Device.SetRenderTarget(component.Velocity.WriteTarget);
                 this.PostProcessTriangle.Render(this.Device);
 
                 this.SimulationEffect.ApplyPosition();
-                this.Device.SetRenderTargets(component.Position.WriteTarget, component.Forces.WriteTarget);
+                this.Device.SetRenderTargets(component.Position.WriteTarget, component.InitialVelocity.WriteTarget);
                 this.PostProcessTriangle.Render(this.Device);
 
                 component.Swap();

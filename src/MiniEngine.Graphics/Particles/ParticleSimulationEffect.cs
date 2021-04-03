@@ -8,7 +8,7 @@ namespace MiniEngine.Graphics.Particles
     {
         private readonly EffectParameter VelocityParameter;
         private readonly EffectParameter PositionParameter;
-        private readonly EffectParameter ForcesParameter;
+        private readonly EffectParameter InitialVelocityParameter;
 
         private readonly EffectParameter ElapsedParameter;
         private readonly EffectParameter TimeParameter;
@@ -25,14 +25,15 @@ namespace MiniEngine.Graphics.Particles
         private readonly EffectParameter SpherePositionParameter;
         private readonly EffectParameter SphereRadiusParameter;
 
-        private readonly EffectParameter ForceParameter;
-        private readonly EffectParameter ForceWorldParameter;
+        private readonly EffectParameter ParentVelocityParameter;
+        private readonly EffectParameter ObjectToWorldParameter;
+        private readonly EffectParameter WorldToObjectParameter;
 
         public ParticleSimulationEffect(EffectFactory factory) : base(factory.Load<ParticleSimulationEffect>())
         {
             this.VelocityParameter = this.Effect.Parameters["Velocity"];
             this.PositionParameter = this.Effect.Parameters["Position"];
-            this.ForcesParameter = this.Effect.Parameters["Forces"];
+            this.InitialVelocityParameter = this.Effect.Parameters["InitialVelocity"];
 
             this.ElapsedParameter = this.Effect.Parameters["Elapsed"];
             this.TimeParameter = this.Effect.Parameters["Time"];
@@ -49,13 +50,14 @@ namespace MiniEngine.Graphics.Particles
             this.SpherePositionParameter = this.Effect.Parameters["SpherePosition"];
             this.SphereRadiusParameter = this.Effect.Parameters["SphereRadius"];
 
-            this.ForceParameter = this.Effect.Parameters["Force"];
-            this.ForceWorldParameter = this.Effect.Parameters["ForceWorld"];
+            this.ParentVelocityParameter = this.Effect.Parameters["ParentVelocity"];
+            this.ObjectToWorldParameter = this.Effect.Parameters["ObjectToWorld"];
+            this.WorldToObjectParameter = this.Effect.Parameters["WorldToObject"];
         }
 
         public Texture2D Velocity { set => this.VelocityParameter.SetValue(value); }
         public Texture2D Position { set => this.PositionParameter.SetValue(value); }
-        public Texture2D Forces { set => this.ForcesParameter.SetValue(value); }
+        public Texture2D InitialVelocity { set => this.InitialVelocityParameter.SetValue(value); }
 
         public float Elapsed { set => this.ElapsedParameter.SetValue(value); }
         public float Time { set => this.TimeParameter.SetValue(value); }
@@ -72,8 +74,9 @@ namespace MiniEngine.Graphics.Particles
         public Vector3 SpherePosition { set => this.SpherePositionParameter.SetValue(value); }
         public float SphereRadius { set => this.SphereRadiusParameter.SetValue(value); }
 
-        public Vector3 Force { set => this.ForceParameter.SetValue(value); }
-        public Matrix ForceWorld { set => this.ForceWorldParameter.SetValue(value); }
+        public Vector3 ParentVelocity { set => this.ParentVelocityParameter.SetValue(value); }
+        public Matrix ObjectToWorld { set => this.ObjectToWorldParameter.SetValue(value); }
+        public Matrix WorldToObject { set => this.WorldToObjectParameter.SetValue(value); }
 
         public void ApplyVelocity()
         {
