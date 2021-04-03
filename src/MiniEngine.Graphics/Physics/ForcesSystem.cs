@@ -27,6 +27,8 @@ namespace MiniEngine.Graphics.Physics
             forces.Position = transform.Position;
             forces.Velocity = (forces.Position - forces.LastPosition) / elapsed;
             forces.Acceleration = (forces.Velocity - forces.LastVelocity) / elapsed;
+
+            forces.ChangeState.Change();
         }
     }
 }

@@ -21,6 +21,3 @@ However for fog it would be better if this should just make the fog darker. Try 
 - The ParticleRenderer and GeometryRenderer are very much alike. But I don't like how the GeometryRenderer is tied to
 poses now. Could it get the data from the spatial partitioner directly instead of via a property in camera? Alternatively a
 pose could just be any visible entity and the renderers get the types they can render from it?
-
-- Add a physics component that computes velocity and acceleration like in vOld
-- Use the physics component to give particles an initial velocity via a new texture that is only updated when age is approx 0

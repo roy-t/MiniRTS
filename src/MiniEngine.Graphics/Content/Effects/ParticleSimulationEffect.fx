@@ -154,84 +154,39 @@ PositionOutputData PS_Position(PixelData input)
     float age = positionAge.w;
     float3 velocity = Velocity.Load(uvi).xyz;
     float3 initialVelocity = InitialVelocity.Load(uvi).xyz;
-
-    age += Elapsed;
-
-    if (age < 0)
-    {
-        output.Position = float4(position, age);
-        output.InitialVelocity = float4(ParentVelocity, 1.0f);
-    }
-
-    if (age >= 0 && age < MaxLifeTime)
-    {
-        float3 delta = (initialVelocity + velocity) * Elapsed;
-        output.Position = float4(position + delta, age);
-        output.InitialVelocity = float4(initialVelocity, 1.0f);
-    }
-
-    // TODO: spawns at weird place and does not take initialVelocity into account?
-    if (age > MaxLifeTime)
+    
+    if (age <= 0)
     {
         float a = rand(position.yx) * TWO_PI;
         float r = sqrt(rand(position.yz)) * EmitterSize;
         float x = r * cos(a);
         float y = r * sin(a);
-        
+
         float3 spawn = float3(x, y, 0.0f);
-        spawn = mul(float4(spawn, 1.0f), ObjectToWorld);
-        output.Position = float4(spawn, 0.0f);
-        output.InitialVelocity = float4(0.0f, 0.0f, 0.0f, 1.0f);        
+        spawn = mul(float4(spawn, 1.0f), ObjectToWorld);        
+
+        output.Position = float4(spawn, age + Elapsed);
+        output.InitialVelocity = float4(ParentVelocity, 1.0f);
+    }
+
+    float lifeTimeModifier = rand(input.Texture.xy) * 0.33f;
+    float maxLifeTime = MaxLifeTime - (MaxLifeTime * lifeTimeModifier);
+
+    if (age > 0 && age <= maxLifeTime)
+    {
+        float3 delta = (initialVelocity + velocity) * Elapsed;
+        output.Position = float4(position + delta, age + Elapsed);
+        output.InitialVelocity = float4(initialVelocity, 1.0f);
+    }
+    
+    if (age > maxLifeTime)
+    {
+        output.Position = float4(position, 0.0f);
+        output.InitialVelocity = float4(0.0f, 0.0f, 0.0f, 1.0f);
     }
 
     return output;
 }
-
-//PositionOutputData PS_Position(PixelData input)
-//{
-//    PositionOutputData output = (PositionOutputData)0;
-//
-//    float2 dimensions;
-//    Position.GetDimensions(dimensions.x, dimensions.y);
-//
-//    int3 uvi = int3((dimensions * input.Texture), 0);
-//    float4 p = Position.Load(uvi).xyzw;
-//    float3 v = Velocity.Load(uvi).xyz;
-//    float3 iv = InitialVelocity.Load(uvi).xyz;
-//
-//    // The lifetime is stored in the fourth element of position    
-//    float3 position = p.xyz;
-//    float age = p.w;
-//    float3 new_pos = position;
-//
-//    output.InitialVelocity = float4(iv, 1.0f);
-//    if (age < 0)
-//    {
-//        new_pos = position;
-//        output.InitialVelocity = float4(ParentVelocity, 1.0f);
-//    }
-//    else if (age < MaxLifeTime)
-//    {
-//        float3 delta_p = (v + iv) * Elapsed;
-//        new_pos = position + delta_p;
-//    }
-//    else
-//    {
-//        float a = rand(new_pos.yx) * TWO_PI;
-//        float r = sqrt(rand(new_pos.yz)) * EmitterSize;
-//        float x = r * cos(a);
-//        float y = r * sin(a);
-//
-//        new_pos = float3(x, y, 0.0f);
-//        new_pos = mul(float4(new_pos, 1.0f), ObjectToWorld).xyz;
-//        age = 0.0f;
-//    }
-//
-//    // Write output
-//    output.Position = float4(new_pos, age + Elapsed);
-//    
-//    return output;
-//}
 
 technique ParticleVelocitySimulationTechnique
 {
