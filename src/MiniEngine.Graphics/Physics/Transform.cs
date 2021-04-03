@@ -87,9 +87,13 @@ namespace MiniEngine.Graphics.Physics
 
         public void FaceTargetConstrained(Vector3 target, Vector3 up)
         {
-            var matrix = Matrix.CreateLookAt(this.position, target, up);
-            var quaternion = Quaternion.CreateFromRotationMatrix(Matrix.Invert(matrix));
-            this.SetRotation(quaternion);
+            var dot = Vector3.Dot(Vector3.Normalize(target - this.position), up);
+            if (Math.Abs(dot) < 0.99f)
+            {
+                var matrix = Matrix.CreateLookAt(this.position, target, up);
+                var quaternion = Quaternion.CreateFromRotationMatrix(Matrix.Invert(matrix));
+                this.SetRotation(quaternion);
+            }
         }
 
         private void Recompute()
