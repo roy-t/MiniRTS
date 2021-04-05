@@ -39,6 +39,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonoGame.Framework.DesktopG
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonoGame.Content.Builder", "External\MonoGame\Tools\MonoGame.Content.Builder\MonoGame.Content.Builder.csproj", "{79F48CF0-A655-4365-99A0-0DE0173ADE33}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MiniEngine.Graphics.Generators", "MiniEngine.Graphics.Generators\MiniEngine.Graphics.Generators.csproj", "{E1C50EB4-726B-49B7-9DD3-BBA2BDBE39B0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -93,6 +95,10 @@ Global
 		{79F48CF0-A655-4365-99A0-0DE0173ADE33}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{79F48CF0-A655-4365-99A0-0DE0173ADE33}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{79F48CF0-A655-4365-99A0-0DE0173ADE33}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E1C50EB4-726B-49B7-9DD3-BBA2BDBE39B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E1C50EB4-726B-49B7-9DD3-BBA2BDBE39B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E1C50EB4-726B-49B7-9DD3-BBA2BDBE39B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E1C50EB4-726B-49B7-9DD3-BBA2BDBE39B0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

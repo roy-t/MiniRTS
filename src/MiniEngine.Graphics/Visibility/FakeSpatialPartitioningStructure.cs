@@ -48,7 +48,7 @@ namespace MiniEngine.Graphics.Visibility
             }
         }
 
-        public void GetVisibleGeometry(ICamera camera, IList<Pose> outVisible)
+        public void GetVisibleGeometry(PerspectiveCamera camera, IList<Pose> outVisible)
         {
             var frustum = new BoundingFrustum(camera.ViewProjection);
             for (var i = 0; i < this.Entries.Count; i++)

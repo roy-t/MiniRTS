@@ -3,7 +3,7 @@ using MiniEngine.Graphics.Physics;
 
 namespace MiniEngine.Graphics.Camera
 {
-    public sealed class PerspectiveCamera : ICamera
+    public sealed class PerspectiveCamera
     {
         public PerspectiveCamera(float aspectRatio)
             : this(aspectRatio, Vector3.Zero, Vector3.Forward) { }

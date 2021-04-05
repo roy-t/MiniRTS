@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
-using MiniEngine.ContentPipeline.Shared;
 using MiniEngine.Graphics.Camera;
-using MiniEngine.Graphics.Geometry;
 using MiniEngine.Systems;
 
 namespace MiniEngine.Graphics.Visibility
@@ -10,14 +8,14 @@ namespace MiniEngine.Graphics.Visibility
     {
         private readonly List<Pose> Poses;
 
-        public VisibilityComponent(Entity entity, ICamera camera)
+        public VisibilityComponent(Entity entity, PerspectiveCamera camera)
             : base(entity)
         {
             this.Camera = camera;
             this.Poses = new List<Pose>();
         }
 
-        public ICamera Camera { get; set; }
+        public PerspectiveCamera Camera { get; set; }
 
         public IReadOnlyList<Pose> Visible => this.Poses;
 

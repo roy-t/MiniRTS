@@ -92,7 +92,7 @@ namespace MiniEngine.Graphics.ParticipatingMedia
             this.PostProcessTriangle.Render(this.Device);
         }
 
-        private void RenderMedia(ParticipatingMediaComponent media, CascadedShadowMapComponent shadowMap, ICamera camera)
+        private void RenderMedia(ParticipatingMediaComponent media, CascadedShadowMapComponent shadowMap, PerspectiveCamera camera)
         {
             this.Device.SamplerStates[0] = this.MediaEffect.Shadows.ShadowMapSampler;
 
@@ -120,7 +120,7 @@ namespace MiniEngine.Graphics.ParticipatingMedia
             this.PostProcessTriangle.Render(this.Device);
         }
 
-        private void RenderDensity(ParticipatingMediaComponent media, TransformComponent transform, Camera.ICamera camera)
+        private void RenderDensity(ParticipatingMediaComponent media, TransformComponent transform, PerspectiveCamera camera)
         {
             this.ShadowMapEffect.WorldViewProjection = transform.Matrix * camera.ViewProjection;
             this.RenderDistance(this.BackRasterizerState, media.VolumeBackBuffer, media.Geometry);

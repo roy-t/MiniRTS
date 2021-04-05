@@ -24,7 +24,7 @@ PixelData VS(in VertexData input)
     PixelData output = (PixelData)0;
 
     output.Position = float4(input.Position, 1);
-    output.Texture = float2(input.Texture.x, 1.0f - input.Texture.y);
+    output.Texture = float2(input.Texture.x, 1.0f - input.Texture.y);    
 
     return output;
 }

@@ -21,3 +21,9 @@ However for fog it would be better if this should just make the fog darker. Try 
 - The ParticleRenderer and GeometryRenderer are very much alike. But I don't like how the GeometryRenderer is tied to
 poses now. Could it get the data from the spatial partitioner directly instead of via a property in camera? Alternatively a
 pose could just be any visible entity and the renderers get the types they can render from it?
+
+
+# Shaders
+Hot reload via https://web.archive.org/web/20101111110214/http://blogs.msdn.com/b/shawnhar/archive/2010/05/07/effect-compilation-and-content-pipeline-automation-in-xna-game-studio-4-0.aspx?PageIndex=2#comments
+??
+Auto generate wrappers via generator?

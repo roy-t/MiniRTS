@@ -39,7 +39,7 @@ namespace MiniEngine.Graphics.Shadows
             return center;
         }
 
-        public void TransformToCameraFrustumInWorldSpace(ICamera camera)
+        public void TransformToCameraFrustumInWorldSpace(PerspectiveCamera camera)
         {
             this.ResetToViewVolume();
             var viewProjectionToWorld = Matrix.Invert(camera.ViewProjection);
