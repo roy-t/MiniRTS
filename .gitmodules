@@ -4,3 +4,6 @@
 [submodule "src/External/MonoGame"]
 	path = src/External/MonoGame
 	url = https://github.com/roy-t/MonoGame.git
+[submodule "src/External/HlslParser"]
+	path = src/External/HlslParser
+	url = https://github.com/roy-t/HlslParser.git
