@@ -1,12 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Text;
 using MiniEngine.Graphics.Generators.Source;
-using ShaderTools.CodeAnalysis.Hlsl.Syntax;
-using ShaderTools.CodeAnalysis.Text;
 
 namespace MiniEngine.Graphics.Generators.Effects
 {
@@ -20,9 +17,9 @@ namespace MiniEngine.Graphics.Generators.Effects
         public void Execute(GeneratorExecutionContext context)
         {
             // Take parser from https://github.com/tgjones/HlslTools/blob/master/src/ShaderTools.CodeAnalysis.Hlsl/Parser/HlslParser.cs?
-            if (!Debugger.IsAttached)
+            if (!System.Diagnostics.Debugger.IsAttached)
             {
-                Debugger.Launch();
+                System.Diagnostics.Debugger.Launch();
             }
 
             var effectFiles = new List<string>();
@@ -43,70 +40,55 @@ namespace MiniEngine.Graphics.Generators.Effects
                 }
             }
 
-            //var sourceCode = File.ReadAllText(testFile);
-
-            //// Build syntax tree.
-            //var syntaxTree = SyntaxFactory.ParseSyntaxTree(new SourceFile(SourceText.From(sourceCode), testFile), fileSystem: new TestFileSystem());
-
-            var fileSystem = new ContentFileSystem();
-            foreach (var effect in effectFiles)
+            foreach (var effectFile in effectFiles)
             {
-                var sourceCode = System.IO.File.ReadAllText(effect);
-                var syntaxTree = SyntaxFactory.ParseSyntaxTree(new SourceFile(SourceText.From(sourceCode), effect), null, fileSystem, context.CancellationToken);
+                var effect = new Effect(effectFile);
 
-                //if (syntaxTree.GetDiagnostics().Any())
-                //{
-                //    ReportProgress(context, DiagnosticSeverity.Error, "GENG02", "HLSL parser error", $"Could not parse file {effect}");
-                //}
-                //else
-                //{
-                //    // syntaxTree.Root.ChildNodes.Where(n => n.IsKind(SyntaxKind.VariableDeclarationStatement))
-                //    
-                //}
-
-                // TODO: if I add this report it fails to build graphics?
-                //ReportProgress(context, effect);
+                var foo = GenerateEffectFile(effect);
+                Console.WriteLine(foo);
             }
 
-            // TODO: get useful info out of shaders, generate them using the sample below (some errors still)
-            GenerateEffectFile();
+            // TODO: set/apply techniques
+            // TODO: actually generate source code
         }
 
-
-        private string GenerateEffectFile()
+        private string GenerateEffectFile(Effect effect)
         {
-            var file = new Source.File("Effect.cs");
+            var name = Path.GetFileNameWithoutExtension(effect.Name);
+            var file = new Source.File($"{name}.generated.cs");
             file.Usings.Add(new Using("Microsoft.Xna.Framework"));
             file.Usings.Add(new Using("Microsoft.Xna.Framework.Graphics"));
             file.Usings.Add(new Using("MiniEngine.Graphics.Effects"));
 
-            var @namespace = new Namespace("MiniEngine.Graphics.Particles");
+            var @namespace = new Namespace("MiniEngine.Graphics.Generated");
             file.Namespaces.Add(@namespace);
 
-            var @class = new Class("ParticleSimulationEffect", "public", "sealed");
+            var @class = new Class(name, "public", "sealed");
             @namespace.Classes.Add(@class);
 
-            @class.Fields.Add(new Field("EffectParameter", "VelocityParameter", "private", "readonly"));
-
-            var constructor = new Constructor(@class.Name);
+            var constructor = new Constructor(@class.Name, "public");
             @class.Constructors.Add(constructor);
             constructor.Parameters.Add("EffectFactory", "factory");
-            constructor.Chain = new Optional<IConstructorChainCall>(new BaseConstructorCall("factory.Load<ParticleSimulationEffect>()"));
-            constructor.Body.Expressions.Add(new Assignment("this.VelocityParameter", "=", "this.Effect.Parameters[\"Velocity\"]"));
+            constructor.Chain = new Optional<IConstructorChainCall>(new BaseConstructorCall($"factory.Load<{name}>()"));
 
-            var property = new Property("Texture2D", "Velocity", false, "public");
-            @class.Properties.Add(property);
-            var propertySetter = new Body();
-            property.SetSetter(propertySetter);
-            propertySetter.Expressions.Add(new Statement("this.VelocityParameter.SetValue(value)"));
+            foreach (var prop in effect.PublicProperties)
+            {
+                var fieldName = prop.Name + "Parameter";
+                @class.Fields.Add(new Field("EffectParameter", fieldName, "private", "readonly"));
+                constructor.Body.Expressions.Add(new Assignment($"this.{fieldName}", "=", $"this.Effect.Parameters[\"{prop.Name}\"]"));
 
+                var property = new Property(prop.GetXNAType(), prop.Name, false, "public");
+                @class.Properties.Add(property);
+                var propertySetter = new Body();
+                property.SetSetter(propertySetter);
+                propertySetter.Expressions.Add(new Statement($"this.{fieldName}.SetValue(value)"));
+            }
 
             var writer = new SourceWriter();
             file.Generate(writer);
 
             return writer.ToString();
         }
-
 
         private static void ReportProgress(GeneratorExecutionContext context, string effectFile)
             => context.ReportDiagnostic(

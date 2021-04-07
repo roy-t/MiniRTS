@@ -16,7 +16,7 @@
         public void Generate(SourceWriter writer)
         {
             writer.WriteModifiers(this.Modifiers);
-            writer.WriteLine($"{this.Type} {this.Name}");
+            writer.WriteLine($"{this.Type} {this.Name};");
         }
     }
 }

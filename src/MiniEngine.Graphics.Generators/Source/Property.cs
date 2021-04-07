@@ -84,6 +84,6 @@ namespace MiniEngine.Graphics.Generators.Source
             }
         }
 
-        public bool IsAutoProperty() => !(this.Getter.HasValue && this.Setter.HasValue);
+        public bool IsAutoProperty() => !(this.Getter.HasValue || this.Setter.HasValue);
     }
 }

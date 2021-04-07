@@ -22,6 +22,8 @@ namespace MiniEngine.Graphics.Generators.Source
                 @using.Generate(writer);
             }
 
+            writer.ConditionalEmptyLine(this.Usings.Count > 0);
+
             foreach (var @namespace in this.Namespaces)
             {
                 @namespace.Generate(writer);

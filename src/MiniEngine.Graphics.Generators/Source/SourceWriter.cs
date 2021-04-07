@@ -5,14 +5,14 @@ namespace MiniEngine.Graphics.Generators.Source
     public sealed class SourceWriter
     {
         private readonly StringBuilder Text;
-        private int targetIndentation;
         private int currentIndentation;
+        private int targetIndentation;
 
         public SourceWriter()
         {
             this.Text = new StringBuilder();
-            this.targetIndentation = 0;
             this.currentIndentation = 0;
+            this.targetIndentation = 0;
         }
 
         public void Write(string text)
@@ -25,23 +25,34 @@ namespace MiniEngine.Graphics.Generators.Source
         {
             this.Indent();
             this.Text.AppendLine(text);
-            this.targetIndentation = 0;
+            this.currentIndentation = 0;
         }
 
         public void WriteLine()
         {
             this.Text.AppendLine();
-            this.targetIndentation = 0;
+            this.currentIndentation = 0;
+        }
+
+        public void ConditionalEmptyLine(bool condition)
+        {
+            if (condition)
+            {
+                this.WriteLine();
+            }
         }
 
         public void WriteModifiers(string[] modifiers)
         {
-            var text = string.Join(" ", modifiers);
-            this.Write($"{text} ");
+            if (modifiers.Length > 0)
+            {
+                var text = string.Join(" ", modifiers);
+                this.Write($"{text} ");
+            }
         }
 
-        public void StartIndent() => this.currentIndentation++;
-        public void EndIndent() => this.currentIndentation--;
+        public void StartIndent() => this.targetIndentation++;
+        public void EndIndent() => this.targetIndentation--;
 
         public void StartScope()
         {
@@ -51,18 +62,18 @@ namespace MiniEngine.Graphics.Generators.Source
 
         public void EndScope()
         {
-            this.WriteLine("}");
             this.EndIndent();
+            this.WriteLine("}");
         }
 
         public override string ToString() => this.Text.ToString();
 
         private void Indent()
         {
-            while (this.targetIndentation < this.currentIndentation)
+            while (this.currentIndentation < this.targetIndentation)
             {
                 this.Text.Append("    ");
-                this.targetIndentation++;
+                this.currentIndentation++;
             }
         }
     }

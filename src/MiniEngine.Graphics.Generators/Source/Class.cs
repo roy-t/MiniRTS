@@ -32,7 +32,7 @@ namespace MiniEngine.Graphics.Generators.Source
                 field.Generate(writer);
             }
 
-            if (this.Fields.Count > 0) { writer.WriteLine(); }
+            writer.ConditionalEmptyLine(this.Fields.Count > 0);
 
             foreach (var constructor in this.Constructors)
             {
