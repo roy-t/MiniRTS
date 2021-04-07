@@ -29,7 +29,8 @@ namespace MiniEngine.Graphics.Particles
         private readonly EffectParameter ObjectToWorldParameter;
         private readonly EffectParameter WorldToObjectParameter;
 
-        public ParticleSimulationEffect(EffectFactory factory) : base(factory.Load<ParticleSimulationEffect>())
+        public ParticleSimulationEffect(EffectFactory factory)
+            : base(factory.Load<ParticleSimulationEffect>())
         {
             this.VelocityParameter = this.Effect.Parameters["Velocity"];
             this.PositionParameter = this.Effect.Parameters["Position"];

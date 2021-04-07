@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
+using MiniEngine.Graphics.Generators.Source;
 using ShaderTools.CodeAnalysis.Hlsl.Syntax;
 using ShaderTools.CodeAnalysis.Text;
 
@@ -50,7 +51,7 @@ namespace MiniEngine.Graphics.Generators.Effects
             var fileSystem = new ContentFileSystem();
             foreach (var effect in effectFiles)
             {
-                var sourceCode = File.ReadAllText(effect);
+                var sourceCode = System.IO.File.ReadAllText(effect);
                 var syntaxTree = SyntaxFactory.ParseSyntaxTree(new SourceFile(SourceText.From(sourceCode), effect), null, fileSystem, context.CancellationToken);
 
                 //if (syntaxTree.GetDiagnostics().Any())
@@ -66,6 +67,44 @@ namespace MiniEngine.Graphics.Generators.Effects
                 // TODO: if I add this report it fails to build graphics?
                 //ReportProgress(context, effect);
             }
+
+            // TODO: get useful info out of shaders, generate them using the sample below (some errors still)
+            GenerateEffectFile();
+        }
+
+
+        private string GenerateEffectFile()
+        {
+            var file = new Source.File("Effect.cs");
+            file.Usings.Add(new Using("Microsoft.Xna.Framework"));
+            file.Usings.Add(new Using("Microsoft.Xna.Framework.Graphics"));
+            file.Usings.Add(new Using("MiniEngine.Graphics.Effects"));
+
+            var @namespace = new Namespace("MiniEngine.Graphics.Particles");
+            file.Namespaces.Add(@namespace);
+
+            var @class = new Class("ParticleSimulationEffect", "public", "sealed");
+            @namespace.Classes.Add(@class);
+
+            @class.Fields.Add(new Field("EffectParameter", "VelocityParameter", "private", "readonly"));
+
+            var constructor = new Constructor(@class.Name);
+            @class.Constructors.Add(constructor);
+            constructor.Parameters.Add("EffectFactory", "factory");
+            constructor.Chain = new Optional<IConstructorChainCall>(new BaseConstructorCall("factory.Load<ParticleSimulationEffect>()"));
+            constructor.Body.Expressions.Add(new Assignment("this.VelocityParameter", "=", "this.Effect.Parameters[\"Velocity\"]"));
+
+            var property = new Property("Texture2D", "Velocity", false, "public");
+            @class.Properties.Add(property);
+            var propertySetter = new Body();
+            property.SetSetter(propertySetter);
+            propertySetter.Expressions.Add(new Statement("this.VelocityParameter.SetValue(value)"));
+
+
+            var writer = new SourceWriter();
+            file.Generate(writer);
+
+            return writer.ToString();
         }
 
 
