@@ -23,12 +23,17 @@ namespace MiniEngine.Graphics.Generators.Effects
                 .Where(property => char.IsUpper(property.Name.First()))
                 .ToList();
 
+            this.Techniques = BreadthFirstTypeSearch<TechniqueSyntax>(syntaxTree.Root)
+                .Select(node => node.Name.ValueText).ToList();
+
             this.Name = System.IO.Path.GetFileName(filePath);
             this.Path = filePath;
             this.SourceCode = sourceCode;
         }
 
         public IReadOnlyList<EffectProperty> PublicProperties { get; }
+
+        public IReadOnlyList<string> Techniques { get; }
 
         public string Name { get; }
 
@@ -38,7 +43,7 @@ namespace MiniEngine.Graphics.Generators.Effects
 
         public override string ToString() => this.Name;
 
-        private static IReadOnlyList<T> BreadthFirstTypeSearch<T>(params SyntaxNodeBase[] sources)
+        public static IReadOnlyList<T> BreadthFirstTypeSearch<T>(params SyntaxNodeBase[] sources)
             where T : SyntaxNodeBase
         {
             var targets = new List<T>();

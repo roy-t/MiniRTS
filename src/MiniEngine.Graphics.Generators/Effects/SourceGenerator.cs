@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Microsoft.CodeAnalysis;
@@ -16,11 +15,10 @@ namespace MiniEngine.Graphics.Generators.Effects
 
         public void Execute(GeneratorExecutionContext context)
         {
-            // Take parser from https://github.com/tgjones/HlslTools/blob/master/src/ShaderTools.CodeAnalysis.Hlsl/Parser/HlslParser.cs?
-            if (!System.Diagnostics.Debugger.IsAttached)
-            {
-                System.Diagnostics.Debugger.Launch();
-            }
+            //if (!System.Diagnostics.Debugger.IsAttached)
+            //{
+            //    System.Diagnostics.Debugger.Launch();
+            //}
 
             var effectFiles = new List<string>();
             var contentFiles = context.AdditionalFiles.Where(file => file.Path.EndsWith(".mgcb")).ToList().AsReadOnly();
@@ -40,54 +38,15 @@ namespace MiniEngine.Graphics.Generators.Effects
                 }
             }
 
+            var generator = new EffectWrapperGenerator();
             foreach (var effectFile in effectFiles)
             {
                 var effect = new Effect(effectFile);
+                var sourceFile = generator.Generate(effect);
+                var sourceText = SourceWriter.ToString(sourceFile);
 
-                var foo = GenerateEffectFile(effect);
-                Console.WriteLine(foo);
+                context.AddSource(sourceFile.FileName, sourceText);
             }
-
-            // TODO: set/apply techniques
-            // TODO: actually generate source code
-        }
-
-        private string GenerateEffectFile(Effect effect)
-        {
-            var name = Path.GetFileNameWithoutExtension(effect.Name);
-            var file = new Source.File($"{name}.generated.cs");
-            file.Usings.Add(new Using("Microsoft.Xna.Framework"));
-            file.Usings.Add(new Using("Microsoft.Xna.Framework.Graphics"));
-            file.Usings.Add(new Using("MiniEngine.Graphics.Effects"));
-
-            var @namespace = new Namespace("MiniEngine.Graphics.Generated");
-            file.Namespaces.Add(@namespace);
-
-            var @class = new Class(name, "public", "sealed");
-            @namespace.Classes.Add(@class);
-
-            var constructor = new Constructor(@class.Name, "public");
-            @class.Constructors.Add(constructor);
-            constructor.Parameters.Add("EffectFactory", "factory");
-            constructor.Chain = new Optional<IConstructorChainCall>(new BaseConstructorCall($"factory.Load<{name}>()"));
-
-            foreach (var prop in effect.PublicProperties)
-            {
-                var fieldName = prop.Name + "Parameter";
-                @class.Fields.Add(new Field("EffectParameter", fieldName, "private", "readonly"));
-                constructor.Body.Expressions.Add(new Assignment($"this.{fieldName}", "=", $"this.Effect.Parameters[\"{prop.Name}\"]"));
-
-                var property = new Property(prop.GetXNAType(), prop.Name, false, "public");
-                @class.Properties.Add(property);
-                var propertySetter = new Body();
-                property.SetSetter(propertySetter);
-                propertySetter.Expressions.Add(new Statement($"this.{fieldName}.SetValue(value)"));
-            }
-
-            var writer = new SourceWriter();
-            file.Generate(writer);
-
-            return writer.ToString();
         }
 
         private static void ReportProgress(GeneratorExecutionContext context, string effectFile)

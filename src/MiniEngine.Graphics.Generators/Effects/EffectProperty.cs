@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using ShaderTools.CodeAnalysis.Hlsl.Syntax;
 
 namespace MiniEngine.Graphics.Generators.Effects
@@ -7,8 +8,13 @@ namespace MiniEngine.Graphics.Generators.Effects
     {
         public EffectProperty(VariableDeclarationSyntax syntax)
         {
-            this.Type = syntax.Type.ToString();
-            this.Name = syntax.Variables[0].Identifier.ToString();
+            this.Type = Effect.BreadthFirstTypeSearch<SyntaxToken>(syntax.Type).First().ValueText;
+            this.Name = syntax.Variables[0].Identifier.ValueText;
+
+            if (this.Type == "" || this.Name == "")
+            {
+
+            }
         }
 
         public string Type { get; }
@@ -32,7 +38,18 @@ namespace MiniEngine.Graphics.Generators.Effects
                     return "Vector4";
                 case "texture":
                     return "Texture2D";
-
+                case "Texture2D":
+                    return "Texture2D";
+                case "Texture2DArray":
+                    return "Texture2D";
+                case "int":
+                    return "int";
+                case "int2":
+                    return "Point";
+                case "bool":
+                    return "bool";
+                case "SamplerComparisonState":
+                    return "int[]";
                 default:
                     throw new ArgumentException($"Unknown type {this.Type}", this.Type);
             }

@@ -27,3 +27,5 @@ pose could just be any visible entity and the renderers get the types they can r
 Hot reload via https://web.archive.org/web/20101111110214/http://blogs.msdn.com/b/shawnhar/archive/2010/05/07/effect-compilation-and-content-pipeline-automation-in-xna-game-studio-4-0.aspx?PageIndex=2#comments
 ??
 Auto generate wrappers via generator?
+
+// TODO: in EffectWrapperGenerator beautify and generate fields for each technique so we don't have to look it up!

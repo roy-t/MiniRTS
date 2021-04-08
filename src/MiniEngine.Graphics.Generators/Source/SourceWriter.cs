@@ -68,6 +68,13 @@ namespace MiniEngine.Graphics.Generators.Source
 
         public override string ToString() => this.Text.ToString();
 
+        public static string ToString(ISource source)
+        {
+            var writer = new SourceWriter();
+            source.Generate(writer);
+            return writer.ToString();
+        }
+
         private void Indent()
         {
             while (this.currentIndentation < this.targetIndentation)

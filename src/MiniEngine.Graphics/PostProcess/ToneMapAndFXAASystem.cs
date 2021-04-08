@@ -10,10 +10,10 @@ namespace MiniEngine.Graphics.PostProcess
     {
         private readonly GraphicsDevice Device;
         private readonly FrameService FrameService;
-        private readonly ToneMapAndFXAAEffect Effect;
+        private readonly Generated.ToneMapAndFXAAEffect Effect;
         private readonly PostProcessTriangle PostProcessTriangle;
 
-        public ToneMapSystem(GraphicsDevice device, PostProcessTriangle postProcessTriangle, ToneMapAndFXAAEffect effect, FrameService frameService)
+        public ToneMapSystem(GraphicsDevice device, PostProcessTriangle postProcessTriangle, Generated.ToneMapAndFXAAEffect effect, FrameService frameService)
         {
             this.Device = device;
             this.FrameService = frameService;
