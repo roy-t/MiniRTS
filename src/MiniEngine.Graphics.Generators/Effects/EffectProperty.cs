@@ -1,20 +1,25 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using ShaderTools.CodeAnalysis.Hlsl.Syntax;
+using ShaderTools.CodeAnalysis.Syntax;
 
 namespace MiniEngine.Graphics.Generators.Effects
 {
     public sealed class EffectProperty
     {
-        public EffectProperty(VariableDeclarationSyntax syntax)
+        public static IEnumerable<EffectProperty> Parse(VariableDeclarationSyntax syntax)
         {
-            this.Type = Effect.BreadthFirstTypeSearch<SyntaxToken>(syntax.Type).First().ValueText;
-            this.Name = syntax.Variables[0].Identifier.ValueText;
+            var type = syntax.Type.DescendantNodes().OfType<SyntaxToken>().First().ValueText;
+            return syntax.Variables
+                .Select(variable => variable.Identifier.ValueText)
+                .Select(name => new EffectProperty(type, name));
+        }
 
-            if (this.Type == "" || this.Name == "")
-            {
-
-            }
+        public EffectProperty(string type, string name)
+        {
+            this.Type = type;
+            this.Name = name;
         }
 
         public string Type { get; }

@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Microsoft.CodeAnalysis.Text;
 using ShaderTools.CodeAnalysis.Hlsl.Syntax;
+using ShaderTools.CodeAnalysis.Hlsl.Text;
 using ShaderTools.CodeAnalysis.Syntax;
 using ShaderTools.CodeAnalysis.Text;
 
@@ -12,22 +14,21 @@ namespace MiniEngine.Graphics.Generators.Effects
         public Effect(string filePath)
         {
             var fileSystem = new ContentFileSystem();
-            var sourceCode = System.IO.File.ReadAllText(filePath);
+            var sourceCode = File.ReadAllText(filePath);
             var syntaxTree = SyntaxFactory.ParseSyntaxTree(new SourceFile(SourceText.From(sourceCode), filePath), null, fileSystem);
 
-            this.PublicProperties = BreadthFirstTypeSearch<VariableDeclarationStatementSyntax>(syntaxTree.Root)
+            this.PublicProperties = DescendantNodesOfType<VariableDeclarationStatementSyntax>(syntaxTree.Root)
                 .Where(node => node.Parent.IsKind(SyntaxKind.CompilationUnit))
                 .Select(node => node.Declaration)
                 .Where(node => node.Modifiers.Count == 0)
-                .Select(node => new EffectProperty(node))
+                .SelectMany(node => EffectProperty.Parse(node))
                 .Where(property => char.IsUpper(property.Name.First()))
                 .ToList();
 
-            this.Techniques = BreadthFirstTypeSearch<TechniqueSyntax>(syntaxTree.Root)
+            this.Techniques = DescendantNodesOfType<TechniqueSyntax>(syntaxTree.Root)
                 .Select(node => node.Name.ValueText).ToList();
 
-            this.Name = System.IO.Path.GetFileName(filePath);
-            this.Path = filePath;
+            this.Name = Path.GetFileName(filePath);
             this.SourceCode = sourceCode;
         }
 
@@ -37,33 +38,11 @@ namespace MiniEngine.Graphics.Generators.Effects
 
         public string Name { get; }
 
-        public string Path { get; }
-
         public string SourceCode { get; }
 
         public override string ToString() => this.Name;
 
-        public static IReadOnlyList<T> BreadthFirstTypeSearch<T>(params SyntaxNodeBase[] sources)
-            where T : SyntaxNodeBase
-        {
-            var targets = new List<T>();
-            var queue = new Queue<SyntaxNodeBase>(sources);
-
-            while (queue.Count > 0)
-            {
-                var syntaxNode = queue.Dequeue();
-                if (syntaxNode is T target)
-                {
-                    targets.Add(target);
-                }
-
-                foreach (var child in syntaxNode.ChildNodes)
-                {
-                    queue.Enqueue(child);
-                }
-            }
-
-            return targets;
-        }
+        private static IEnumerable<T> DescendantNodesOfType<T>(SyntaxNodeBase root)
+            => root.DescendantNodes().OfType<T>();
     }
 }

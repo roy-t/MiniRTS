@@ -17,19 +17,19 @@ namespace MiniEngine.Systems.Generators.System
                 var generator = new SourceTextGenerator(context.Compilation);
                 foreach (var target in receiver.Targets.Values)
                 {
-                    ReportProgress(context, target);
-
                     var sourceText = GenerateSourceText(generator, target);
                     context.AddSource($"{target.Class.Identifier}.Generated.cs", sourceText);
 
                     ReportGeneratorDiagnostics(context, generator);
                 }
+
+                ReportProgress(context, receiver.Targets.Values.Count);
             }
         }
 
-        private static void ReportProgress(GeneratorExecutionContext context, SystemClass target)
+        private static void ReportProgress(GeneratorExecutionContext context, int count)
             => context.ReportDiagnostic(
-                Diagnostic.Create(new DiagnosticDescriptor("GENS01", "System Generator", $"{target.Class.Identifier} was extended with a system binding that processes {target.Methods.Count} method{(target.Methods.Count > 1 ? "s" : "")}",
+                Diagnostic.Create(new DiagnosticDescriptor("GENS01", "System Generator", $"Extended {count} systems",
                     "Generator", DiagnosticSeverity.Warning, true), null));
 
         private static SourceText GenerateSourceText(SourceTextGenerator generator, SystemClass target)
