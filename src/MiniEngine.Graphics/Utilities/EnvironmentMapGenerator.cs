@@ -1,5 +1,7 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
+using MiniEngine.Graphics.Generated;
 
 namespace MiniEngine.Graphics.Utilities
 {
@@ -36,11 +38,17 @@ namespace MiniEngine.Graphics.Utilities
                 var roughness = mipMapLevel / (cubeMap.LevelCount - 1.0f);
                 this.Effect.Roughness = roughness;
 
-                CubeMapUtilities.RenderFaces(this.Device, cubeMap, this.Effect, mipResolution, SurfaceFormat.HalfVector4, mipMapLevel);
+                CubeMapUtilities.RenderFaces(this.Device, cubeMap, this.Effect, mipResolution, SurfaceFormat.HalfVector4, mipMapLevel, this.Apply);
                 mipResolution /= 2;
             }
 
             return cubeMap;
+        }
+
+        private void Apply(Matrix worldViewProjection)
+        {
+            this.Effect.WorldViewProjection = worldViewProjection;
+            this.Effect.Apply();
         }
     }
 }

@@ -7,8 +7,8 @@ using MiniEngine.Editor.Controllers;
 using MiniEngine.Editor.Scenes;
 using MiniEngine.Editor.Windows;
 using MiniEngine.Graphics;
+using MiniEngine.Graphics.Generated;
 using MiniEngine.Graphics.PostProcess;
-using MiniEngine.Graphics.Utilities;
 using MiniEngine.Systems.Pipeline;
 
 namespace MiniEngine.Editor

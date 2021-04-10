@@ -5,8 +5,8 @@ using System.IO;
 using ImGuiNET;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
+using MiniEngine.Graphics.Generated;
 using MiniEngine.Graphics.PostProcess;
-using MiniEngine.Graphics.Utilities;
 using Serilog;
 
 namespace MiniEngine.Gui.Windows

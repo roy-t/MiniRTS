@@ -18,19 +18,19 @@ struct OutputData
     float4 Irradiance : COLOR0;
 };
 
-texture EquirectangularTexture;
-sampler equirectangularTextureSampler = sampler_state
+Texture2D EquirectangularTexture;
+
+float SampleDelta = 0.025f;
+float4x4 WorldViewProjection;
+
+const sampler equirectangularTextureSampler = sampler_state
 {
-    Texture = (EquirectangularTexture);
     MinFilter = LINEAR;
     MagFilter = LINEAR;
     MipFilter = LINEAR;
     AddressU = Clamp;
     AddressV = Clamp;
 };
-
-float SampleDelta = 0.025f;
-float4x4 WorldViewProjection;
 
 PixelData VS(in VertexData input)
 {
@@ -66,7 +66,7 @@ OutputData PS(PixelData input)
             float3 sampleVec = tangentSample.x * right + tangentSample.y * up + tangentSample.z * normal;
 
             float2 uv = WorldToSpherical(sampleVec);
-            float4 albedo = tex2D(equirectangularTextureSampler, uv);
+            float4 albedo = EquirectangularTexture.Sample(equirectangularTextureSampler, uv);
             float4 albedoLinear = ToLinear(albedo);
             irradiance += albedoLinear.rgb;
             nrSamples++;

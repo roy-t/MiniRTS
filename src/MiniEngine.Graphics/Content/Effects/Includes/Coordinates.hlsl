@@ -1,3 +1,5 @@
+#include "Defines.hlsl"
+
 #ifndef __COORDINATES
 #define __COORDINATES
 

@@ -9,18 +9,18 @@ namespace MiniEngine.Graphics.Utilities
 {
     public static class CubeMapUtilities
     {
-        public static IReadOnlyList<CubeMapFace> CubeMapFaces => (CubeMapFace[])Enum.GetValues(typeof(CubeMapFace));
+        private static IReadOnlyList<CubeMapFace> CubeMapFaces => (CubeMapFace[])Enum.GetValues(typeof(CubeMapFace));
 
-        public static TextureCube RenderFaces(GraphicsDevice device, I3DEffect effect, int resolution, SurfaceFormat format)
+        public static TextureCube RenderFaces(GraphicsDevice device, IEffect effect, int resolution, SurfaceFormat format, Action<Matrix> applyEffect)
         {
             var cubeMap = new TextureCube(device, resolution, false, format);
 
-            RenderFaces(device, cubeMap, effect, resolution, format, 0);
+            RenderFaces(device, cubeMap, effect, resolution, format, 0, applyEffect);
 
             return cubeMap;
         }
 
-        public static void RenderFaces(GraphicsDevice device, TextureCube cubeMap, I3DEffect effect, int resolution, SurfaceFormat format, int mipMapLevel)
+        public static void RenderFaces(GraphicsDevice device, TextureCube cubeMap, IEffect effect, int resolution, SurfaceFormat format, int mipMapLevel, Action<Matrix> applyEffect)
         {
             using var faceRenderTarget = new RenderTarget2D(device, resolution, resolution, false, format, DepthFormat.None, 0, RenderTargetUsage.DiscardContents);
             using var cube = new CubeMapCube(device);
@@ -36,8 +36,7 @@ namespace MiniEngine.Graphics.Utilities
                 device.SetRenderTarget(faceRenderTarget);
                 device.Clear(Color.CornflowerBlue);
 
-                effect.WorldViewProjection = view * projection;
-                effect.Apply();
+                applyEffect(view * projection);
 
                 device.SetVertexBuffer(cube.VertexBuffer, 0);
                 device.Indices = cube.IndexBuffer;

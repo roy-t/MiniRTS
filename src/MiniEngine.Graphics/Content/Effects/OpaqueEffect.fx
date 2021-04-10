@@ -17,10 +17,9 @@ struct OutputData
     float4 Color : COLOR0;
 };
 
-texture Texture;
-sampler textureSampler = sampler_state
-{
-    Texture = (Texture);
+Texture2D Texture;
+const sampler textureSampler = sampler_state
+{    
     MinFilter = LINEAR;
     MagFilter = LINEAR;
     MipFilter = LINEAR;
@@ -42,7 +41,7 @@ OutputData PS(PixelData input)
 {
     OutputData output = (OutputData)0;
 
-    output.Color = tex2D(textureSampler, input.Texture).rgba;
+    output.Color = Texture.Sample(textureSampler, input.Texture).rgba;
     return output;
 }
 
