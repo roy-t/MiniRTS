@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
 using MiniEngine.ContentPipeline.Shared;
 using MiniEngine.Graphics.Camera;
+using MiniEngine.Graphics.Generated;
 using MiniEngine.Graphics.Geometry;
 using MiniEngine.Graphics.Particles;
 using MiniEngine.Graphics.Visibility;
@@ -21,12 +22,12 @@ namespace MiniEngine.Graphics.Shadows
         private readonly ParticleRenderer Particles;
         private readonly FrameService FrameService;
         private readonly ShadowMapEffect GeometryEffect;
-        private readonly ParticleShadowMapEffect ParticleEffect;
+        private readonly Particles.ParticleShadowMapEffect ParticleEffect;
 
         private readonly Frustum Frustum;
         private readonly RasterizerState RasterizerState;
 
-        public CascadedShadowMapSystem(GraphicsDevice device, GeometryRenderer geometry, ParticleRenderer particles, FrameService frameService, ShadowMapEffect geometryEffect, ParticleShadowMapEffect particleEffect)
+        public CascadedShadowMapSystem(GraphicsDevice device, GeometryRenderer geometry, ParticleRenderer particles, FrameService frameService, ShadowMapEffect geometryEffect, Particles.ParticleShadowMapEffect particleEffect)
         {
             this.Device = device;
             this.Geometry = geometry;
@@ -104,9 +105,11 @@ namespace MiniEngine.Graphics.Shadows
         public void SetEffectParameters(Material material, Matrix transform, Matrix viewProjection)
             => this.GeometryEffect.WorldViewProjection = transform * viewProjection;
 
-        public void ApplyEffect(GeometryTechnique technique)
-            => this.GeometryEffect.Apply(technique);
+        public void ApplyEffect()
+            => this.GeometryEffect.ApplyShadowMapTechnique();
 
+        public void ApplyInstancedEffect()
+            => this.GeometryEffect.ApplyInstancedShadowMapTechnique();
 
         private static readonly Matrix TexScaleTransform = Matrix.CreateScale(0.5f, -0.5f, 1.0f) * Matrix.CreateTranslation(0.5f, 0.5f, 0.0f);
 

@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
 using MiniEngine.ContentPipeline.Shared;
 using MiniEngine.Graphics.Camera;
-using MiniEngine.Graphics.Geometry;
+using MiniEngine.Graphics.Generated;
 using MiniEngine.Graphics.Lighting;
 using MiniEngine.Graphics.Physics;
 using MiniEngine.Graphics.PostProcess;
@@ -19,8 +19,8 @@ namespace MiniEngine.Graphics.ParticipatingMedia
     {
         private readonly GraphicsDevice Device;
         private readonly ShadowMapEffect ShadowMapEffect;
-        private readonly ParticipatingMediaEffect MediaEffect;
-        private readonly ParticipatingMediaPostProcessEffect PostProcessEffect;
+        private readonly Shadows.ParticipatingMediaEffect MediaEffect;
+        private readonly Shadows.ParticipatingMediaPostProcessEffect PostProcessEffect;
         private readonly PostProcessTriangle PostProcessTriangle;
         private readonly FrameService FrameService;
         private readonly Texture2D Noise;
@@ -28,7 +28,7 @@ namespace MiniEngine.Graphics.ParticipatingMedia
         private readonly RasterizerState FrontRasterizerState;
         private readonly RasterizerState BackRasterizerState;
 
-        public ParticipatingMediaSystem(GraphicsDevice device, ContentManager content, ShadowMapEffect shadowMapEffect, ParticipatingMediaEffect mediaEffect, ParticipatingMediaPostProcessEffect postProcessEffect, PostProcessTriangle postProcessTriangle, FrameService frameService)
+        public ParticipatingMediaSystem(GraphicsDevice device, ContentManager content, ShadowMapEffect shadowMapEffect, Shadows.ParticipatingMediaEffect mediaEffect, Shadows.ParticipatingMediaPostProcessEffect postProcessEffect, PostProcessTriangle postProcessTriangle, FrameService frameService)
         {
             this.Device = device;
             this.MediaEffect = mediaEffect;
@@ -135,7 +135,7 @@ namespace MiniEngine.Graphics.ParticipatingMedia
             this.Device.SetVertexBuffer(geometry.VertexBuffer);
             this.Device.Indices = geometry.IndexBuffer;
             this.Device.RasterizerState = rasterizerState;
-            this.ShadowMapEffect.Apply(GeometryTechnique.Default);
+            this.ShadowMapEffect.ApplyShadowMapTechnique();
 
             this.Device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, geometry.Primitives);
         }

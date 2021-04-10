@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
 using MiniEngine.ContentPipeline.Shared;
 using MiniEngine.Graphics.Camera;
+using MiniEngine.Graphics.Generated;
 using MiniEngine.Graphics.Geometry;
 using MiniEngine.Systems;
 using MiniEngine.Systems.Generators;
@@ -50,7 +51,10 @@ namespace MiniEngine.Graphics.Shadows
         public void SetEffectParameters(Material material, Matrix transform, Matrix viewProjection)
             => this.Effect.WorldViewProjection = transform * viewProjection;
 
-        public void ApplyEffect(GeometryTechnique technique)
-            => this.Effect.Apply(technique);
+        public void ApplyEffect()
+            => this.Effect.ApplyShadowMapTechnique();
+
+        public void ApplyInstancedEffect()
+            => this.Effect.ApplyInstancedShadowMapTechnique();
     }
 }

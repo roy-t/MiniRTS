@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
 using MiniEngine.ContentPipeline.Shared;
+using MiniEngine.Graphics.Generated;
 using MiniEngine.Systems;
 using MiniEngine.Systems.Generators;
 
@@ -28,11 +29,6 @@ namespace MiniEngine.Graphics.Geometry
             this.Device.BlendState = BlendState.Opaque;
             this.Device.DepthStencilState = DepthStencilState.Default;
             this.Device.RasterizerState = RasterizerState.CullCounterClockwise;
-            this.Device.SamplerStates[0] = SamplerState.AnisotropicWrap;
-            this.Device.SamplerStates[1] = SamplerState.AnisotropicWrap;
-            this.Device.SamplerStates[2] = SamplerState.AnisotropicWrap;
-            this.Device.SamplerStates[3] = SamplerState.AnisotropicWrap;
-            this.Device.SamplerStates[4] = SamplerState.AnisotropicWrap;
 
             this.Device.SetRenderTargets(
                 this.FrameService.GBuffer.Albedo,
@@ -62,7 +58,10 @@ namespace MiniEngine.Graphics.Geometry
             this.Effect.AmbientOcclusion = material.AmbientOcclusion;
         }
 
-        public void ApplyEffect(GeometryTechnique technique)
-            => this.Effect.Apply(technique);
+        public void ApplyEffect()
+            => this.Effect.ApplyGeometryTechnique();
+
+        public void ApplyInstancedEffect()
+            => this.Effect.ApplyInstancedGeometryTechnique();
     }
 }

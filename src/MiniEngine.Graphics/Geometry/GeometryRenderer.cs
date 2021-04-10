@@ -71,7 +71,7 @@ namespace MiniEngine.Graphics.Geometry
             this.Device.SetVertexBuffers(new VertexBufferBinding(geometry.VertexBuffer), new VertexBufferBinding(this.InstanceBuffer, 0, 1));
             this.Device.Indices = geometry.IndexBuffer;
 
-            user.ApplyEffect(GeometryTechnique.Instanced);
+            user.ApplyInstancedEffect();
             this.Device.DrawInstancedPrimitives(PrimitiveType.TriangleList, 0, 0, geometry.Primitives, instances.Instances);
         }
 
@@ -80,14 +80,15 @@ namespace MiniEngine.Graphics.Geometry
             this.Device.SetVertexBuffer(geometry.VertexBuffer);
             this.Device.Indices = geometry.IndexBuffer;
 
-            user.ApplyEffect(GeometryTechnique.Default);
+            user.ApplyEffect();
             this.Device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, geometry.Primitives);
         }
     }
 
     public interface IGeometryRendererUserBase
     {
-        void ApplyEffect(GeometryTechnique technique);
+        void ApplyEffect();
+        void ApplyInstancedEffect();
     }
 
     public interface IGeometryRendererUser : IGeometryRendererUserBase

@@ -27,69 +27,25 @@ struct OutputData
     float4 Normal: COLOR3;
 };
 
-texture Albedo;
-sampler albedoSampler = sampler_state
-{
-    Texture = (Albedo);
-    MinFilter = ANISOTROPIC;
-    MagFilter = ANISOTROPIC;
-    MipFilter = LINEAR;
-    MaxAnisotropy = 16;
-    AddressU = Wrap;
-    AddressV = Wrap;
-};
-
-texture Normal;
-sampler normalSampler = sampler_state
-{
-    Texture = (Normal);
-    MinFilter = ANISOTROPIC;
-    MagFilter = ANISOTROPIC;
-    MipFilter = LINEAR;
-    MaxAnisotropy = 16;
-    AddressU = Wrap;
-    AddressV = Wrap;
-};
-
-texture Metalicness;
-sampler metalicnessSampler = sampler_state
-{
-    Texture = (Metalicness);
-    MinFilter = ANISOTROPIC;
-    MagFilter = ANISOTROPIC;
-    MipFilter = LINEAR;
-    MaxAnisotropy = 16;
-    AddressU = Wrap;
-    AddressV = Wrap;
-};
-
-texture Roughness;
-sampler roughnessSampler = sampler_state
-{
-    Texture = (Roughness);
-    MinFilter = ANISOTROPIC;
-    MagFilter = ANISOTROPIC;
-    MipFilter = LINEAR;
-    MaxAnisotropy = 16;
-    AddressU = Wrap;
-    AddressV = Wrap;
-};
-
-texture AmbientOcclusion;
-sampler ambientOcclusionSampler = sampler_state
-{
-    Texture = (AmbientOcclusion);
-    MinFilter = ANISOTROPIC;
-    MagFilter = ANISOTROPIC;
-    MipFilter = LINEAR;
-    MaxAnisotropy = 16;
-    AddressU = Wrap;
-    AddressV = Wrap;
-};
+Texture2D Albedo;
+Texture2D Normal;
+Texture2D Metalicness;
+Texture2D Roughness;
+Texture2D AmbientOcclusion;
 
 float3 CameraPosition;
 float4x4 World;
 float4x4 WorldViewProjection;
+
+const sampler anisotropicSampler = sampler_state
+{
+    MinFilter = ANISOTROPIC;
+    MagFilter = ANISOTROPIC;
+    MipFilter = LINEAR;
+    MaxAnisotropy = 16;
+    AddressU = Wrap;
+    AddressV = Wrap;
+};
 
 PixelData VS(in VertexData input)
 {
@@ -148,7 +104,7 @@ float3x3 CotangentFrame(float3 N, float3 p, float2 uv)
 
 float3 PerturbNormal(float3 normal, float3 view, float2 uv)
 {
-    float3 map = UnpackNormal(tex2D(normalSampler, uv).xyz);
+    float3 map = UnpackNormal(Normal.Sample(anisotropicSampler, uv).xyz);
     float3x3 tbn = CotangentFrame(normal, -view, uv);
     return mul(map, tbn);
 }
@@ -157,12 +113,12 @@ OutputData PS(PixelData input)
 {
     OutputData output = (OutputData)0;
 
-    float4 albedo = tex2D(albedoSampler, input.Texture);
+    float4 albedo = Albedo.Sample(anisotropicSampler, input.Texture);
     clip(albedo.a - 1.0f);
 
-    float metalicness = tex2D(metalicnessSampler, input.Texture).r;
-    float roughness = tex2D(roughnessSampler, input.Texture).r;
-    float ambientOcclusion = tex2D(ambientOcclusionSampler, input.Texture).r;
+    float metalicness = Metalicness.Sample(anisotropicSampler, input.Texture).r;
+    float roughness =  Roughness.Sample(anisotropicSampler, input.Texture).r;
+    float ambientOcclusion = AmbientOcclusion.Sample(anisotropicSampler, input.Texture).r;
 
     output.Albedo = ToLinear(albedo);
     output.Material = float4(metalicness, roughness, ambientOcclusion, 1.0f);
