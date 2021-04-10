@@ -27,10 +27,13 @@ namespace MiniEngine.Graphics.ParticipatingMedia
         private readonly Texture2D DitherPattern;
         private readonly RasterizerState FrontRasterizerState;
         private readonly RasterizerState BackRasterizerState;
+        private readonly Texture2D Albedo;
 
         public ParticipatingMediaSystem(GraphicsDevice device, ContentManager content, ShadowMapEffect shadowMapEffect, Shadows.ParticipatingMediaEffect mediaEffect, Shadows.ParticipatingMediaPostProcessEffect postProcessEffect, PostProcessTriangle postProcessTriangle, FrameService frameService)
         {
             this.Device = device;
+            this.Albedo = new Texture2D(device, 1, 1);
+            this.Albedo.SetData(new Color[] { Color.White });
             this.MediaEffect = mediaEffect;
             this.ShadowMapEffect = shadowMapEffect;
             this.PostProcessEffect = postProcessEffect;
@@ -123,6 +126,7 @@ namespace MiniEngine.Graphics.ParticipatingMedia
         private void RenderDensity(ParticipatingMediaComponent media, TransformComponent transform, PerspectiveCamera camera)
         {
             this.ShadowMapEffect.WorldViewProjection = transform.Matrix * camera.ViewProjection;
+            this.ShadowMapEffect.Albedo = this.Albedo;
             this.RenderDistance(this.BackRasterizerState, media.VolumeBackBuffer, media.Geometry);
             this.RenderDistance(this.FrontRasterizerState, media.VolumeFrontBuffer, media.Geometry);
         }

@@ -29,6 +29,7 @@ namespace MiniEngine.Graphics.Geometry
             this.Device.BlendState = BlendState.Opaque;
             this.Device.DepthStencilState = DepthStencilState.Default;
             this.Device.RasterizerState = RasterizerState.CullCounterClockwise;
+            this.Device.SamplerStates[0] = SamplerState.LinearWrap;
 
             this.Device.SetRenderTargets(
                 this.FrameService.GBuffer.Albedo,

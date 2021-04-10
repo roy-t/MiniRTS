@@ -29,3 +29,6 @@ Hot reload via https://web.archive.org/web/20101111110214/http://blogs.msdn.com/
 Auto generate wrappers via generator?
 
 // TODO: in EffectWrapperGenerator beautify and generate fields for each technique so we don't have to look it up!
+
+TODO: SEE STASH!
+CHECK ALL SAMPLER STATES AS THEY SEEM TO BE OVERRIDEN by C# CODE?

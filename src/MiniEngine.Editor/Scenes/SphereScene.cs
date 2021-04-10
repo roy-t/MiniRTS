@@ -21,13 +21,15 @@ namespace MiniEngine.Editor.Scenes
         private readonly SkyboxSceneService Skybox;
         private readonly EntityAdministrator Entities;
         private readonly ComponentAdministrator Components;
+        private readonly GeneratedAssets GeneratedAssets;
 
-        public SphereScene(GraphicsDevice device, SkyboxSceneService skybox, EntityAdministrator entities, ComponentAdministrator components)
+        public SphereScene(GraphicsDevice device, SkyboxSceneService skybox, EntityAdministrator entities, ComponentAdministrator components, GeneratedAssets generatedAssets)
         {
             this.Device = device;
             this.Skybox = skybox;
             this.Entities = entities;
             this.Components = components;
+            this.GeneratedAssets = generatedAssets;
         }
 
         public void RenderMainMenuItems()
@@ -51,6 +53,7 @@ namespace MiniEngine.Editor.Scenes
             normal.SetData(new Color[] { new Color(0.5f, 0.5f, 1.0f) });
             content.Link(normal);
 
+            var caprica = content.Load<Texture2D>("capricorn");
             var blue = content.Load<Texture2D>("Textures/Blue");
             var bumps = content.Load<Texture2D>("Textures/Bricks_Normal");
 
@@ -81,7 +84,7 @@ namespace MiniEngine.Editor.Scenes
             }
 
             var backgroundGeometry = CubeGenerator.Generate(this.Device);
-            this.CreateSphere(backgroundGeometry, new Material(blue, bumps, black, white, white), Vector3.Forward * 20, new Vector3(200, 200, 1));
+            this.CreateSphere(backgroundGeometry, new Material(caprica, GeneratedAssets.NormalPixel(), black, white, white), Vector3.Forward * 20, new Vector3(200, 200, 1));
 
             this.CreateLight(new Vector3(-10, 10, 10), Color.Red, 30.0f);
             this.CreateLight(new Vector3(10, 10, 10), Color.Blue, 30.0f);

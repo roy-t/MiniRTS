@@ -88,12 +88,12 @@ namespace MiniEngine.Graphics.Generators.Effects
             var field = new Field("EffectPass", $"{SourceUtilities.CapitalizeFirstLetter(technique)}Pass", "private", "readonly");
             @class.Fields.Add(field);
 
-            constructor.Body.Expressions.Add(new Assignment(field.Name, "=", $"this.Effect.Techniques[\"{technique}\"].Passes[0]"));
+            constructor.Body.Expressions.Add(new Assignment($"this.{field.Name}", "=", $"this.Effect.Techniques[\"{technique}\"].Passes[0]"));
 
             var method = new Method("void", methodName, "public");
             @class.Methods.Add(method);
 
-            method.Body.Expressions.Add(new Statement($"{field.Name}.Apply()"));
+            method.Body.Expressions.Add(new Statement($"this.{field.Name}.Apply()"));
         }
     }
 }

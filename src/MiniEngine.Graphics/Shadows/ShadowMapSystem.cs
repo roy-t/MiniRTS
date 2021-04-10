@@ -49,7 +49,10 @@ namespace MiniEngine.Graphics.Shadows
         }
 
         public void SetEffectParameters(Material material, Matrix transform, Matrix viewProjection)
-            => this.Effect.WorldViewProjection = transform * viewProjection;
+        {
+            this.Effect.WorldViewProjection = transform * viewProjection;
+            this.Effect.Albedo = material.Albedo;
+        }
 
         public void ApplyEffect()
             => this.Effect.ApplyShadowMapTechnique();
