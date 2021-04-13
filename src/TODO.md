@@ -24,6 +24,4 @@ pose could just be any visible entity and the renderers get the types they can r
 
 
 # Shaders
-- Hot reload via https://web.archive.org/web/20101111110214/http://blogs.msdn.com/b/shawnhar/archive/2010/05/07/effect-compilation-and-content-pipeline-automation-in-xna-game-studio-4-0.aspx?PageIndex=2#comments
-- Fix ImageBasedLightEffect / SkyboxEffect
-- Fix includes, like GBufferReader and Shadows -> check all users
+- Make hot reloading better, detect build errors and catch them early, and log them. Think about throtteling changes from the events?

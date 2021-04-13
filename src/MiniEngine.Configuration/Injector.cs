@@ -26,7 +26,7 @@ namespace MiniEngine.Configuration
     {
         private static readonly string[] IgnoredAssemblies = new[]
         {
-            "Microsoft", "MonoGame", "MiniEngine.ContentPipeline", "Serilog", "SharpDX", "LightInject", "ImGui.NET"
+            "Microsoft", "MonoGame", "MiniEngine.ContentPipeline", "Serilog", "SharpDX", "LightInject", "ImGui.NET", "mgfxc"
         };
 
         private readonly ServiceContainer Container;

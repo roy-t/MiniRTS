@@ -13,10 +13,13 @@ namespace MiniEngine.Graphics.Generators.Effects
             var @namespace = CreateNamespace(file);
             var @class = CreateClass(name, @namespace);
             var constructor = CreateConstructor(name, @class);
-            AddAndInitializeProperties(effect, @class, constructor);
-            AddAndInitializeSamplers(effect, @class, constructor);
-            AddTechniques(effect, @class, constructor);
+            var reloadMethod = new Method("void", "Reload", "protected", "override");
+            @class.Methods.Add(reloadMethod);
 
+            AddAndInitializeProperties(effect, @class, reloadMethod);
+            AddAndInitializeSamplers(effect, @class, constructor);
+            AddTechniques(effect, @class, reloadMethod);
+            constructor.Body.Expressions.Add(new Statement("this.Reload()"));
             return file;
         }
 
@@ -25,6 +28,7 @@ namespace MiniEngine.Graphics.Generators.Effects
             var file = new Source.File(name);
             file.Usings.Add(new Using("Microsoft.Xna.Framework"));
             file.Usings.Add(new Using("Microsoft.Xna.Framework.Graphics"));
+            file.Usings.Add(new Using("Serilog"));
             file.Usings.Add(new Using("MiniEngine.Graphics.Effects"));
             return file;
         }
@@ -48,20 +52,23 @@ namespace MiniEngine.Graphics.Generators.Effects
         {
             var constructor = new Constructor(@class.Name, "public");
             @class.Constructors.Add(constructor);
+            constructor.Parameters.Add("ILogger", "logger");
             constructor.Parameters.Add("EffectFactory", "factory");
-            constructor.Chain = new Optional<IConstructorChainCall>(new BaseConstructorCall($"factory.Load<{name}>()"));
+            constructor.Chain = new Optional<IConstructorChainCall>(new BaseConstructorCall("logger", $"factory.Load<{name}>()"));
             return constructor;
         }
 
-        private static void AddAndInitializeProperties(Effect effect, Class @class, Constructor constructor)
+        private static void AddAndInitializeProperties(Effect effect, Class @class, Method reloadMethod)
         {
+
             foreach (var prop in effect.PublicProperties)
             {
-                var fieldName = prop.Name + "Parameter";
-                @class.Fields.Add(new Field("EffectParameter", fieldName, "private", "readonly"));
-                constructor.Body.Expressions.Add(new Assignment($"this.{fieldName}", "=", $"this.Effect.Parameters[\"{prop.Name}\"]"));
+                var fieldName = SourceUtilities.LowerCaseFirstLetter(prop.Name) + "Parameter";
+                @class.Fields.Add(new Field("EffectParameter", fieldName, "private"));
+                var assignment = new Assignment($"this.{fieldName}", "=", $"this.Effect.Parameters[\"{prop.Name}\"]");
+                reloadMethod.Body.Expressions.Add(assignment);
 
-                var property = new Property(prop.GetXNAType(), prop.Name, false, "public");
+                var property = new Property(prop.GetXNAType(), SourceUtilities.CapitalizeFirstLetter(prop.Name), false, "public");
                 @class.Properties.Add(property);
                 var propertySetter = new Body();
                 property.SetSetter(propertySetter);
@@ -86,27 +93,27 @@ namespace MiniEngine.Graphics.Generators.Effects
             }
         }
 
-        private static void AddTechniques(Effect effect, Class @class, Constructor constructor)
+        private static void AddTechniques(Effect effect, Class @class, Method reloadMethod)
         {
             if (effect.Techniques.Count == 1)
             {
-                AddTechnique(@class, constructor, effect.Techniques[0], "Apply");
+                AddTechnique(@class, reloadMethod, effect.Techniques[0], "Apply");
             }
             else
             {
                 foreach (var technique in effect.Techniques)
                 {
-                    AddTechnique(@class, constructor, technique, $"Apply{SourceUtilities.CapitalizeFirstLetter(technique)}");
+                    AddTechnique(@class, reloadMethod, technique, $"Apply{SourceUtilities.CapitalizeFirstLetter(technique)}");
                 }
             }
         }
 
-        private static void AddTechnique(Class @class, Constructor constructor, string technique, string methodName)
+        private static void AddTechnique(Class @class, Method reloadMethod, string technique, string methodName)
         {
-            var field = new Field("EffectPass", $"{SourceUtilities.CapitalizeFirstLetter(technique)}Pass", "private", "readonly");
+            var field = new Field("EffectPass", $"{SourceUtilities.CapitalizeFirstLetter(technique)}Pass", "private");
             @class.Fields.Add(field);
 
-            constructor.Body.Expressions.Add(new Assignment($"this.{field.Name}", "=", $"this.Effect.Techniques[\"{technique}\"].Passes[0]"));
+            reloadMethod.Body.Expressions.Add(new Assignment($"this.{field.Name}", "=", $"this.Effect.Techniques[\"{technique}\"].Passes[0]"));
 
             var method = new Method("void", methodName, "public");
             @class.Methods.Add(method);

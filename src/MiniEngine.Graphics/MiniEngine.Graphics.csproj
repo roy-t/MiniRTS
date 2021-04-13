@@ -12,8 +12,8 @@
     <ProjectReference Include="..\MiniEngine.ContentPipeline\MiniEngine.ContentPipeline.csproj" />
     <ProjectReference Include="..\MiniEngine.Systems.Generators\MiniEngine.Systems.Generators.csproj" OutputItemType="Analyzer" />
     <ProjectReference Include="..\MiniEngine.Graphics.Generators\MiniEngine.Graphics.Generators.csproj" OutputItemType="Analyzer" />
-    <ProjectReference Include="..\External\HlslParser\src\ShaderTools.CodeAnalysis.Hlsl\ShaderTools.CodeAnalysis.Hlsl.csproj" OutputItemType="Analyzer"  />
-    <ProjectReference Include="..\External\HlslParser\src\ShaderTools.CodeAnalysis\ShaderTools.CodeAnalysis.csproj" OutputItemType="Analyzer"  />
+    <ProjectReference Include="..\External\HlslParser\src\ShaderTools.CodeAnalysis.Hlsl\ShaderTools.CodeAnalysis.Hlsl.csproj" OutputItemType="Analyzer" />
+    <ProjectReference Include="..\External\HlslParser\src\ShaderTools.CodeAnalysis\ShaderTools.CodeAnalysis.csproj" OutputItemType="Analyzer" />
     <ProjectReference Include="..\MiniEngine.Systems\MiniEngine.Systems.csproj" />
   </ItemGroup>
 

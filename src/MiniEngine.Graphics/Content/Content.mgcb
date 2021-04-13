@@ -16,8 +16,7 @@
 
 #begin Effects/BrdfLutGeneratorEffect.fx
 /importer:EffectImporter
-/processor:EffectProcessor
-/processorParam:DebugMode=Auto
+/processor:HotEffectProcessor
 /build:Effects/BrdfLutGeneratorEffect.fx
 
 #begin Effects/CubeMapGeneratorEffect.fx
@@ -34,8 +33,7 @@
 
 #begin Effects/GeometryEffect.fx
 /importer:EffectImporter
-/processor:EffectProcessor
-/processorParam:DebugMode=Auto
+/processor:HotEffectProcessor
 /build:Effects/GeometryEffect.fx
 
 #begin Effects/ImageBasedLightEffect.fx

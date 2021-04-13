@@ -106,6 +106,8 @@ namespace MiniEngine.Graphics.ParticipatingMedia
             this.MediaEffect.VolumeSampler = SamplerState.LinearClamp;
 
             this.MediaEffect.Depth = this.FrameService.GBuffer.Depth;
+            this.MediaEffect.GBufferSampler = SamplerState.LinearClamp;
+
             this.MediaEffect.InverseViewProjection = Matrix.Invert(camera.ViewProjection);
             this.MediaEffect.CameraPosition = camera.Position;
             this.MediaEffect.Strength = media.Strength;

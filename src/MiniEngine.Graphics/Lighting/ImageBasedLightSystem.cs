@@ -34,14 +34,6 @@ namespace MiniEngine.Graphics.Lighting
             this.Device.DepthStencilState = DepthStencilState.None;
             this.Device.RasterizerState = RasterizerState.CullCounterClockwise;
 
-            this.Device.SamplerStates[0] = SamplerState.LinearClamp;
-            this.Device.SamplerStates[1] = SamplerState.LinearClamp;
-            this.Device.SamplerStates[2] = SamplerState.LinearClamp;
-            this.Device.SamplerStates[3] = SamplerState.LinearClamp;
-            this.Device.SamplerStates[4] = SamplerState.LinearClamp;
-            this.Device.SamplerStates[5] = SamplerState.LinearClamp;
-            this.Device.SamplerStates[6] = SamplerState.LinearClamp;
-
             this.Device.SetRenderTarget(this.FrameService.LBuffer.Light);
         }
 
@@ -55,9 +47,12 @@ namespace MiniEngine.Graphics.Lighting
             this.Effect.Normal = this.FrameService.GBuffer.Normal;
             this.Effect.Depth = this.FrameService.GBuffer.Depth;
             this.Effect.Material = this.FrameService.GBuffer.Material;
+            this.Effect.GBufferSampler = SamplerState.LinearClamp;
+
             this.Effect.Irradiance = this.FrameService.Skybox.Irradiance;
             this.Effect.Environment = this.FrameService.Skybox.Environment;
             this.Effect.BrdfLut = this.BrdfLutTexture;
+            this.Effect.TextureSampler = SamplerState.LinearClamp;
 
             this.Effect.MaxReflectionLod = this.FrameService.Skybox.Environment.LevelCount;
 

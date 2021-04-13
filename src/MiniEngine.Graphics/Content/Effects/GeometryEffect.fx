@@ -100,7 +100,7 @@ float3 PerturbNormal(float3 normal, float3 view, float2 uv)
     float3x3 tbn = CotangentFrame(normal, -view, uv);
     return mul(map, tbn);
 }
-
+// 
 OutputData PS(PixelData input)
 {
     OutputData output = (OutputData)0;

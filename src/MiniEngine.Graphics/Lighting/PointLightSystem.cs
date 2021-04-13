@@ -45,12 +45,6 @@ namespace MiniEngine.Graphics.Lighting
         {
             this.Device.BlendState = BlendState.Additive;
             this.Device.DepthStencilState = DepthStencilState.None;
-            // Rasterizer state is set on a per light basis
-
-            this.Device.SamplerStates[0] = SamplerState.LinearClamp;
-            this.Device.SamplerStates[1] = SamplerState.LinearClamp;
-            this.Device.SamplerStates[2] = SamplerState.LinearClamp;
-            this.Device.SamplerStates[3] = SamplerState.LinearClamp;
 
             this.Device.SetRenderTarget(this.FrameService.LBuffer.Light);
         }
@@ -70,10 +64,14 @@ namespace MiniEngine.Graphics.Lighting
 
             this.Effect.WorldViewProjection = world * this.FrameService.CameraComponent.Camera.ViewProjection;
             this.Effect.CameraPosition = this.FrameService.CameraComponent.Camera.Position;
+
             this.Effect.Albedo = this.FrameService.GBuffer.Albedo;
             this.Effect.Normal = this.FrameService.GBuffer.Normal;
             this.Effect.Depth = this.FrameService.GBuffer.Depth;
             this.Effect.Material = this.FrameService.GBuffer.Material;
+            this.Effect.GBufferSampler = SamplerState.LinearClamp;
+
+
             this.Effect.InverseViewProjection = Matrix.Invert(camera.ViewProjection);
 
             this.Effect.Position = transform.Matrix.Translation;

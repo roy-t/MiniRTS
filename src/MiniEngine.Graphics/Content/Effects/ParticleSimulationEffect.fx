@@ -163,7 +163,7 @@ PositionOutputData PS_Position(PixelData input)
         float y = r * sin(a);
 
         float3 spawn = float3(x, y, 0.0f);
-        spawn = mul(float4(spawn, 1.0f), ObjectToWorld);        
+        spawn = mul(float4(spawn, 1.0f), ObjectToWorld).xyz;        
 
         output.Position = float4(spawn, age + Elapsed);
         output.InitialVelocity = float4(ParentVelocity, 1.0f);

@@ -4,64 +4,28 @@
 #include "Pack.hlsl"
 #include "Material.hlsl"
 
-texture Albedo;
-sampler albedoSampler = sampler_state
-{
-    Texture = (Albedo);
-    MinFilter = LINEAR;
-    MagFilter = LINEAR;
-    MipFilter = LINEAR;
-    AddressU = Clamp;
-    AddressV = Clamp;
-};
+Texture2D Albedo;
+Texture2D Normal;
+Texture2D Depth;
+Texture2D Material;
 
-texture Normal;
-sampler normalSampler = sampler_state
-{
-    Texture = (Normal);
-    MinFilter = LINEAR;
-    MagFilter = LINEAR;
-    MipFilter = LINEAR;
-    AddressU = Clamp;
-    AddressV = Clamp;
-};
+SamplerState GBufferSampler : register(s9); // Linear Clamp
 
-texture Depth;
-sampler depthSampler = sampler_state
-{
-    Texture = (Depth);
-    MinFilter = LINEAR;
-    MagFilter = LINEAR;
-    MipFilter = LINEAR;
-    AddressU = Clamp;
-    AddressV = Clamp;
-};
-
-texture Material;
-sampler materialSampler = sampler_state
-{
-    Texture = (Material);
-    MinFilter = LINEAR;
-    MagFilter = LINEAR;
-    MipFilter = LINEAR;
-    AddressU = Clamp;
-    AddressV = Clamp;
-};
 
 float3 ReadAlbedo(float2 texCoord)
 {
-    return tex2D(albedoSampler, texCoord).rgb;
+    return Albedo.Sample(GBufferSampler, texCoord).rgb;
 }
 
 float3 ReadNormal(float2 texCoord)
 {
-    float3 normal = tex2D(normalSampler, texCoord).xyz;
+    float3 normal = Normal.Sample(GBufferSampler, texCoord).xyz;
     return UnpackNormal(normal);
 }
 
 float ReadDepth(float2 texCoord)
 {
-    return tex2D(depthSampler, texCoord).r;
+    return Depth.Sample(GBufferSampler, texCoord).r;
 }
 
 float3 ReadWorldPosition(float2 texCoord, float depthVal, float4x4 inverseViewProjection)
@@ -88,9 +52,8 @@ float3 ReadWorldPosition(float2 texCoord, float4x4 inverseViewProjection)
 
 Mat ReadMaterial(float2 texCoord)
 {
-    Mat material = (Mat)0;
-
-    float3 mat = tex2D(materialSampler, texCoord).xyz;
+    Mat material = (Mat)0;    
+    float3 mat = Material.Sample(GBufferSampler, texCoord).xyz;
 
     material.Metalicness = mat.x;
     material.Roughness = mat.y;

@@ -39,11 +39,6 @@ namespace MiniEngine.Graphics.Lighting
             this.Device.BlendState = BlendState.Additive;
             this.Device.DepthStencilState = DepthStencilState.None;
             this.Device.RasterizerState = this.SpotLightRasterizer;
-            this.Device.SamplerStates[0] = ShadowMapSampler.State;
-            this.Device.SamplerStates[1] = SamplerState.LinearClamp;
-            this.Device.SamplerStates[2] = SamplerState.LinearClamp;
-            this.Device.SamplerStates[3] = SamplerState.LinearClamp;
-            this.Device.SamplerStates[4] = SamplerState.LinearClamp;
 
             this.Device.SetRenderTarget(this.FrameService.LBuffer.Light);
         }
@@ -55,10 +50,13 @@ namespace MiniEngine.Graphics.Lighting
 
             this.Effect.WorldViewProjection = world * this.FrameService.CameraComponent.Camera.ViewProjection;
             this.Effect.CameraPosition = this.FrameService.CameraComponent.Camera.Position;
+
             this.Effect.Albedo = this.FrameService.GBuffer.Albedo;
             this.Effect.Normal = this.FrameService.GBuffer.Normal;
             this.Effect.Depth = this.FrameService.GBuffer.Depth;
             this.Effect.Material = this.FrameService.GBuffer.Material;
+            this.Effect.GBufferSampler = SamplerState.LinearClamp;
+
             this.Effect.InverseViewProjection = Matrix.Invert(this.FrameService.CameraComponent.Camera.ViewProjection);
 
             this.Effect.Position = shadowMapCamera.Camera.Position;
@@ -66,6 +64,8 @@ namespace MiniEngine.Graphics.Lighting
             this.Effect.Strength = spotLight.Strength;
 
             this.Effect.ShadowMap = shadowMap.DepthMap;
+            this.Effect.ShadowSampler = ShadowMapSampler.State;
+
             this.Effect.ShadowViewProjection = shadowMapCamera.Camera.ViewProjection;
 
             this.Effect.Apply();
