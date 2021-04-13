@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
+using MiniEngine.Graphics.Generated;
 using MiniEngine.Systems;
 using MiniEngine.Systems.Generators;
 
@@ -26,7 +27,6 @@ namespace MiniEngine.Graphics.Skybox
             this.Device.BlendState = BlendState.Opaque;
             this.Device.DepthStencilState = DepthStencilState.DepthRead;
             this.Device.RasterizerState = RasterizerState.CullCounterClockwise;
-            this.Device.SamplerStates[0] = SamplerState.LinearClamp;
 
             // As an optimization we render the skybox last. Using the albedo depth buffer we can
             // cull most samples which saves the cost of shading every pixel of the skybox
@@ -42,6 +42,8 @@ namespace MiniEngine.Graphics.Skybox
             var projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver2, camera.AspectRatio, 0.1f, 1.5f);
 
             this.Effect.Skybox = skybox.Texture;
+            this.Effect.SkyboxSampler = SamplerState.LinearClamp;
+
             this.Effect.WorldViewProjection = view * projection;
 
             this.Effect.Apply();

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
+using MiniEngine.Graphics.Generated;
 using MiniEngine.Graphics.PostProcess;
 using MiniEngine.Graphics.Utilities;
 using MiniEngine.Systems;

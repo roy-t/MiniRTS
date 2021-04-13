@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Graphics.PackedVector;
-using MiniEngine.Graphics.Effects;
 
 namespace MiniEngine.Graphics.Utilities
 {
@@ -11,16 +10,16 @@ namespace MiniEngine.Graphics.Utilities
     {
         private static IReadOnlyList<CubeMapFace> CubeMapFaces => (CubeMapFace[])Enum.GetValues(typeof(CubeMapFace));
 
-        public static TextureCube RenderFaces(GraphicsDevice device, IEffect effect, int resolution, SurfaceFormat format, Action<Matrix> applyEffect)
+        public static TextureCube RenderFaces(GraphicsDevice device, int resolution, SurfaceFormat format, Action<Matrix> applyEffect)
         {
             var cubeMap = new TextureCube(device, resolution, false, format);
 
-            RenderFaces(device, cubeMap, effect, resolution, format, 0, applyEffect);
+            RenderFaces(device, cubeMap, resolution, format, 0, applyEffect);
 
             return cubeMap;
         }
 
-        public static void RenderFaces(GraphicsDevice device, TextureCube cubeMap, IEffect effect, int resolution, SurfaceFormat format, int mipMapLevel, Action<Matrix> applyEffect)
+        public static void RenderFaces(GraphicsDevice device, TextureCube cubeMap, int resolution, SurfaceFormat format, int mipMapLevel, Action<Matrix> applyEffect)
         {
             using var faceRenderTarget = new RenderTarget2D(device, resolution, resolution, false, format, DepthFormat.None, 0, RenderTargetUsage.DiscardContents);
             using var cube = new CubeMapCube(device);

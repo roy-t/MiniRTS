@@ -20,40 +20,11 @@ struct OutputData
     float4 Light : COLOR0;
 };
 
-texture Irradiance;
-samplerCUBE irradianceSampler = sampler_state
-{
-    Texture = (Irradiance);
-    MinFilter = LINEAR;
-    MagFilter = LINEAR;
-    MipFilter = LINEAR;
-    AddressU = Clamp;
-    AddressV = Clamp;
-    AddressW = Clamp;
-};
+TextureCube Irradiance;
+TextureCube Environment;
+Texture2D BrdfLut;
 
-texture Environment;
-samplerCUBE environmentSampler = sampler_state
-{
-    Texture = (Environment);
-    MinFilter = LINEAR;
-    MagFilter = LINEAR;
-    MipFilter = LINEAR;
-    AddressU = Clamp;
-    AddressV = Clamp;
-    AddressW = Clamp;
-};
-
-texture BrdfLut;
-sampler brdfLutSampler = sampler_state
-{
-    Texture = (BrdfLut);
-    MinFilter = LINEAR;
-    MagFilter = LINEAR;
-    MipFilter = LINEAR;
-    AddressU = Clamp;
-    AddressV = Clamp;
-};
+SamplerState TextureSampler : register(s0); // Linear clamp
 
 float3 CameraPosition;
 float4x4 InverseViewProjection;
@@ -115,15 +86,14 @@ OutputData PS(PixelData input)
     kD *= 1.0f - material.Metalicness;
 
     // Sample the incoming light from the irradiance cube map
-    float3 irradiance = texCUBE(irradianceSampler, N).rgb; // in linear color space
+    float3 irradiance = Irradiance.Sample(TextureSampler, N).rgb; // in linear color space
     float3 diffuse = irradiance * albedo;
 
     // Sample the reflections that metalic materials will mirror, taking into account the BRDF
     // (bidirectional reflectance distribution function) which is based on the angle of the viewer
-    // in the relation to the normal and the roughness of the material.
-    float4 uv = float4(R, material.Roughness * MaxReflectionLod);
-    float3 prefilteredColor = texCUBElod(environmentSampler, uv).rgb;
-    float2 brdf = tex2D(brdfLutSampler, float2(NdotV, material.Roughness)).rg;
+    // in the relation to the normal and the roughness of the material.    
+    float3 prefilteredColor = Environment.SampleLevel(TextureSampler, R, material.Roughness * MaxReflectionLod).rgb;
+    float2 brdf =  BrdfLut.Sample(TextureSampler, float2(NdotV, material.Roughness)).rg;
     float3 specular = prefilteredColor * (F * brdf.x + brdf.y);
 
     // Combine the light (diffuse) and reflections (specular) and modify them by the general occlusion

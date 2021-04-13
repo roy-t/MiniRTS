@@ -38,7 +38,7 @@ namespace MiniEngine.Graphics.Utilities
                 var roughness = mipMapLevel / (cubeMap.LevelCount - 1.0f);
                 this.Effect.Roughness = roughness;
 
-                CubeMapUtilities.RenderFaces(this.Device, cubeMap, this.Effect, mipResolution, SurfaceFormat.HalfVector4, mipMapLevel, this.Apply);
+                CubeMapUtilities.RenderFaces(this.Device, cubeMap, mipResolution, SurfaceFormat.HalfVector4, mipMapLevel, this.Apply);
                 mipResolution /= 2;
             }
 

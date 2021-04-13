@@ -82,6 +82,8 @@ namespace MiniEngine.Graphics.Generators.Effects
                     return "Texture2D";
                 case "Texture2DArray":
                     return "Texture2D";
+                case "TextureCube":
+                    return "TextureCube";
                 case "int":
                     return "int";
                 case "int2":

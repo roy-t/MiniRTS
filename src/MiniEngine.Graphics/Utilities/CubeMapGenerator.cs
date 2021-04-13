@@ -27,7 +27,7 @@ namespace MiniEngine.Graphics.Utilities
             this.Effect.EquirectangularTexture = equirectangularTexture;
 
             var resolution = equirectangularTexture.Height / 2;
-            return CubeMapUtilities.RenderFaces(this.Device, this.Effect, resolution, SurfaceFormat.HalfVector4, this.Apply);
+            return CubeMapUtilities.RenderFaces(this.Device, resolution, SurfaceFormat.HalfVector4, this.Apply);
         }
 
         private void Apply(Matrix worldViewProjection)

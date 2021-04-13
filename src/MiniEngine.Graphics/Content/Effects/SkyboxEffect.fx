@@ -18,17 +18,8 @@ struct OutputData
     float4 Color : COLOR1;
 };
 
-texture Skybox;
-samplerCUBE skyboxSampler = sampler_state
-{
-    Texture = (Skybox);
-    MinFilter = LINEAR;
-    MagFilter = LINEAR;
-    MipFilter = LINEAR;
-    AddressU = Clamp;
-    AddressV = Clamp;
-    AddressW = Clamp;
-};
+TextureCube Skybox;
+SamplerState SkyboxSampler : register(s0);
 
 float4x4 WorldViewProjection;
 
@@ -47,7 +38,7 @@ PixelData VS(in VertexData input)
 OutputData PS(PixelData input)
 {
     OutputData output = (OutputData)0;
-    output.Color = texCUBE(skyboxSampler, input.Position3D);
+    output.Color =  Skybox.Sample(SkyboxSampler, input.Position3D);
 
     return output;
 }

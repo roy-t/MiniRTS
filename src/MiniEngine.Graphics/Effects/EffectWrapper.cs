@@ -4,7 +4,7 @@ using MiniEngine.Configuration;
 namespace MiniEngine.Graphics.Effects
 {
     [Content]
-    public abstract class EffectWrapper : IEffect
+    public abstract class EffectWrapper
     {
         protected readonly Effect Effect;
 
@@ -12,7 +12,5 @@ namespace MiniEngine.Graphics.Effects
         {
             this.Effect = effect;
         }
-
-        public void Apply() => this.Effect.CurrentTechnique.Passes[0].Apply();
     }
 }

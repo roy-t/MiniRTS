@@ -34,7 +34,7 @@ namespace MiniEngine.Graphics.Generators.Effects
             var generator = new EffectWrapperGenerator();
             foreach (var effectFile in effectFiles)
             {
-                //if (effectFile.Contains("Participating"))
+                //if (effectFile.Contains("Skybox"))
                 //{
                 //    System.Diagnostics.Debugger.Launch();
                 //}

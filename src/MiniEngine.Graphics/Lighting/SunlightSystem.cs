@@ -60,7 +60,7 @@ namespace MiniEngine.Graphics.Lighting
             this.Effect.Offsets = shadowMap.Offsets;
             this.Effect.Scales = shadowMap.Scales;
 
-            this.Effect.Apply();
+            this.Effect.ApplySunlightTechnique();
             this.PostProcessTriangle.Render(this.Device);
         }
     }
