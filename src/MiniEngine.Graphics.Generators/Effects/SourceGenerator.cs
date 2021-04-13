@@ -34,6 +34,11 @@ namespace MiniEngine.Graphics.Generators.Effects
             var generator = new EffectWrapperGenerator();
             foreach (var effectFile in effectFiles)
             {
+                //if (effectFile.Contains("Participating"))
+                //{
+                //    System.Diagnostics.Debugger.Launch();
+                //}
+
                 var effect = new Effect(effectFile);
                 var sourceFile = generator.Generate(effect);
                 var sourceText = SourceWriter.ToString(sourceFile);

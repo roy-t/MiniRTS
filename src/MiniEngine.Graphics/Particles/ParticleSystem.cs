@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
+using MiniEngine.Graphics.Generated;
 using MiniEngine.Graphics.Physics;
 using MiniEngine.Graphics.PostProcess;
 using MiniEngine.Systems;
@@ -60,11 +61,11 @@ namespace MiniEngine.Graphics.Particles
                 this.SimulationEffect.ObjectToWorld = transform.Matrix;
                 this.SimulationEffect.WorldToObject = Matrix.Invert(transform.Matrix);
 
-                this.SimulationEffect.ApplyVelocity();
+                this.SimulationEffect.ApplyParticleVelocitySimulationTechnique();
                 this.Device.SetRenderTarget(component.Velocity.WriteTarget);
                 this.PostProcessTriangle.Render(this.Device);
 
-                this.SimulationEffect.ApplyPosition();
+                this.SimulationEffect.ApplyParticlePositionSimulationTechnique();
                 this.Device.SetRenderTargets(component.Position.WriteTarget, component.InitialVelocity.WriteTarget);
                 this.PostProcessTriangle.Render(this.Device);
 
@@ -93,8 +94,8 @@ namespace MiniEngine.Graphics.Particles
             this.Effect.Roughness = emitter.Roughness;
             this.Effect.Position = emitter.Position.ReadTarget;
             this.Effect.Velocity = emitter.Velocity.ReadTarget;
-            this.Effect.SlowColor = emitter.SlowColor;
-            this.Effect.FastColor = emitter.FastColor;
+            this.Effect.SlowColor = emitter.SlowColor.ToVector3();
+            this.Effect.FastColor = emitter.FastColor.ToVector3();
             this.Effect.ColorVelocityModifier = emitter.ColorVelocityModifier;
 
             this.Effect.Apply();

@@ -23,14 +23,7 @@ Texture2D EquirectangularTexture;
 float SampleDelta = 0.025f;
 float4x4 WorldViewProjection;
 
-const sampler equirectangularTextureSampler = sampler_state
-{
-    MinFilter = LINEAR;
-    MagFilter = LINEAR;
-    MipFilter = LINEAR;
-    AddressU = Clamp;
-    AddressV = Clamp;
-};
+SamplerState EquirectangularTextureSampler : register(s0);
 
 PixelData VS(in VertexData input)
 {
@@ -66,7 +59,7 @@ OutputData PS(PixelData input)
             float3 sampleVec = tangentSample.x * right + tangentSample.y * up + tangentSample.z * normal;
 
             float2 uv = WorldToSpherical(sampleVec);
-            float4 albedo = EquirectangularTexture.Sample(equirectangularTextureSampler, uv);
+            float4 albedo = EquirectangularTexture.Sample(EquirectangularTextureSampler, uv);
             float4 albedoLinear = ToLinear(albedo);
             irradiance += albedoLinear.rgb;
             nrSamples++;

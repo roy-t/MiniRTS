@@ -20,17 +20,9 @@ struct OutputData
 };
 
 float4x4 WorldViewProjection;
-Texture2D Albedo;
 
-const sampler anisotropicSampler = sampler_state
-{
-    MinFilter = ANISOTROPIC;
-    MagFilter = ANISOTROPIC;
-    MipFilter = LINEAR;
-    MaxAnisotropy = 16;
-    AddressU = Wrap;
-    AddressV = Wrap;
-};
+Texture2D Albedo;
+SamplerState MaskSampler : register(s0); //AnisotropicLinear
 
 PixelData VS(in VertexData input)
 {
@@ -61,8 +53,8 @@ OutputData PS(PixelData input)
 {
     OutputData output = (OutputData)0;
     
-    float4 albedo = Albedo.Sample(anisotropicSampler, input.Texture);
-    clip(albedo.a - 1.0f);
+    float mask = Albedo.Sample(MaskSampler, input.Texture).w;
+    clip(mask - 1.0f);
 
     output.Depth = input.WorldPosition.z / input.WorldPosition.w;    
     return output;

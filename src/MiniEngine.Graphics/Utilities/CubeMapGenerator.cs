@@ -23,6 +23,7 @@ namespace MiniEngine.Graphics.Utilities
             this.Device.DepthStencilState = DepthStencilState.None;
             this.Device.RasterizerState = RasterizerState.CullCounterClockwise;
 
+            this.Effect.EquirectangularTextureSampler = SamplerState.LinearClamp;
             this.Effect.EquirectangularTexture = equirectangularTexture;
 
             var resolution = equirectangularTexture.Height / 2;

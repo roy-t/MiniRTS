@@ -11,6 +11,9 @@ namespace MiniEngine.Graphics.Generators.Source
 
         public List<Parameter> Parameters { get; }
 
+        public void Add(Field field)
+            => this.Add(field.Type, SourceUtilities.LowerCaseFirstLetter(field.Name));
+
         public void Add(string type, string name)
             => this.Parameters.Add(new Parameter(type, name));
 

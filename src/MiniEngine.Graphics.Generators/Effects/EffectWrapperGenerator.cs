@@ -14,6 +14,7 @@ namespace MiniEngine.Graphics.Generators.Effects
             var @class = CreateClass(name, @namespace);
             var constructor = CreateConstructor(name, @class);
             AddAndInitializeProperties(effect, @class, constructor);
+            AddAndInitializeSamplers(effect, @class, constructor);
             AddTechniques(effect, @class, constructor);
 
             return file;
@@ -65,6 +66,23 @@ namespace MiniEngine.Graphics.Generators.Effects
                 var propertySetter = new Body();
                 property.SetSetter(propertySetter);
                 propertySetter.Expressions.Add(new Statement($"this.{fieldName}.SetValue(value)"));
+            }
+        }
+
+        private static void AddAndInitializeSamplers(Effect effect, Class @class, Constructor constructor)
+        {
+            var graphicsDeviceField = new Field("GraphicsDevice", "Device", "private", "readonly");
+            @class.Fields.Add(graphicsDeviceField);
+            constructor.Parameters.Add(graphicsDeviceField);
+            constructor.Body.Expressions.Add(new Assignment($"this.{graphicsDeviceField.Name}", "=", "device"));
+
+            foreach (var sampler in effect.Samplers)
+            {
+                var property = new Property(sampler.GetXNAType(), sampler.Name, false, "public");
+                @class.Properties.Add(property);
+                var propertySetter = new Body();
+                property.SetSetter(propertySetter);
+                propertySetter.Expressions.Add(new Assignment($"this.{graphicsDeviceField.Name}.SamplerStates[{sampler.RegisterIndex}]", "=", "value"));
             }
         }
 

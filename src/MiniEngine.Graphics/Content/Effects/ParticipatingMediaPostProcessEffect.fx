@@ -26,26 +26,9 @@ float LightInfluence;
 float2 ScreenDimensions;
 
 Texture2D Media;
-sampler mediaSampler = sampler_state
-{
-    Texture = (Media);
-    MinFilter = LINEAR;
-    MagFilter = LINEAR;
-    MipFilter = LINEAR;
-    AddressU = Clamp;
-    AddressV = Clamp;
-};
 
 Texture2D DitherPattern;
-sampler ditherPatternSampler = sampler_state
-{
-    Texture = (DitherPattern);
-    MinFilter = POINT;
-    MagFilter = POINT;
-    MipFilter = POINT;
-    AddressU = Wrap;
-    AddressV = Wrap;
-};
+SamplerState DitherPatternSampler : register(s0); // PointWrap
 
 PixelData VS(in VertexData input)
 {
@@ -87,7 +70,7 @@ float Bilinear(float2 uv)
 float Dither(float2 uv)
 {    
     float2 ditherCoordinate = uv * ScreenDimensions / DitherDimensions;
-    float ditherValue = tex2D(ditherPatternSampler, ditherCoordinate).r;
+    float ditherValue =  DitherPattern.Sample(DitherPatternSampler, ditherCoordinate).r;
 
     return (ditherValue * 0.125f) + 0.9375; 
 }

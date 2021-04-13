@@ -1,19 +1,21 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using MiniEngine.Graphics.Lighting;
+using MiniEngine.Graphics.Generated;
 using MiniEngine.Systems;
 
 namespace MiniEngine.Graphics.Shadows
 {
     public sealed class CascadedShadowMapComponent : AComponent, IDisposable
     {
+        private const int CascadeCount = 4;
+
         public CascadedShadowMapComponent(Entity entity, RenderTarget2D depthMapArray, float[] cascades)
             : base(entity)
         {
-            if (cascades.Length != SunlightEffect.CascadeCount)
+            if (cascades.Length != CascadeCount)
             {
-                throw new ArgumentException($"{cascades}.Length ({cascades.Length})!= {nameof(SunlightEffect)}.Length{nameof(SunlightEffect.CascadeCount)}");
+                throw new ArgumentException($"{cascades}.Length ({cascades.Length})!= {nameof(SunlightEffect)}.Length{nameof(CascadeCount)}");
             }
 
             this.DepthMapArray = depthMapArray;

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
+using MiniEngine.Graphics.Generated;
 using MiniEngine.Graphics.Lighting.Mathematics;
 using MiniEngine.Graphics.Lighting.Volumes;
 using MiniEngine.Graphics.Physics;
@@ -76,7 +77,7 @@ namespace MiniEngine.Graphics.Lighting
             this.Effect.InverseViewProjection = Matrix.Invert(camera.ViewProjection);
 
             this.Effect.Position = transform.Matrix.Translation;
-            this.Effect.Color = pointLight.Color;
+            this.Effect.Color = pointLight.Color.ToVector4();
             this.Effect.Strength = pointLight.Strength;
 
             this.Effect.Apply();

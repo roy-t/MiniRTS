@@ -51,7 +51,9 @@ namespace MiniEngine.Graphics.Shadows
         public void SetEffectParameters(Material material, Matrix transform, Matrix viewProjection)
         {
             this.Effect.WorldViewProjection = transform * viewProjection;
+
             this.Effect.Albedo = material.Albedo;
+            this.Effect.MaskSampler = SamplerState.AnisotropicWrap;
         }
 
         public void ApplyEffect()

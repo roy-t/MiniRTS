@@ -19,8 +19,8 @@ namespace MiniEngine.Graphics.ParticipatingMedia
     {
         private readonly GraphicsDevice Device;
         private readonly ShadowMapEffect ShadowMapEffect;
-        private readonly Shadows.ParticipatingMediaEffect MediaEffect;
-        private readonly Shadows.ParticipatingMediaPostProcessEffect PostProcessEffect;
+        private readonly ParticipatingMediaEffect MediaEffect;
+        private readonly ParticipatingMediaPostProcessEffect PostProcessEffect;
         private readonly PostProcessTriangle PostProcessTriangle;
         private readonly FrameService FrameService;
         private readonly Texture2D Noise;
@@ -29,7 +29,7 @@ namespace MiniEngine.Graphics.ParticipatingMedia
         private readonly RasterizerState BackRasterizerState;
         private readonly Texture2D Albedo;
 
-        public ParticipatingMediaSystem(GraphicsDevice device, ContentManager content, ShadowMapEffect shadowMapEffect, Shadows.ParticipatingMediaEffect mediaEffect, Shadows.ParticipatingMediaPostProcessEffect postProcessEffect, PostProcessTriangle postProcessTriangle, FrameService frameService)
+        public ParticipatingMediaSystem(GraphicsDevice device, ContentManager content, ShadowMapEffect shadowMapEffect, ParticipatingMediaEffect mediaEffect, ParticipatingMediaPostProcessEffect postProcessEffect, PostProcessTriangle postProcessTriangle, FrameService frameService)
         {
             this.Device = device;
             this.Albedo = new Texture2D(device, 1, 1);
@@ -60,11 +60,6 @@ namespace MiniEngine.Graphics.ParticipatingMedia
         {
             this.Device.BlendState = BlendState.Opaque;
             this.Device.DepthStencilState = DepthStencilState.None;
-            this.Device.SamplerStates[0] = SamplerState.LinearClamp;
-            this.Device.SamplerStates[1] = SamplerState.LinearClamp;
-            this.Device.SamplerStates[2] = SamplerState.LinearClamp;
-            this.Device.SamplerStates[3] = SamplerState.LinearClamp;
-            this.Device.SamplerStates[4] = SamplerState.PointWrap;
         }
 
         [ProcessAll]
@@ -85,10 +80,13 @@ namespace MiniEngine.Graphics.ParticipatingMedia
             this.Device.BlendState = BlendState.AlphaBlend;
 
             this.PostProcessEffect.Media = media.ParticipatingMediaBuffer;
-            this.PostProcessEffect.Color = media.Color;
-            this.PostProcessEffect.LightColor = sunlight.Color;
+            this.PostProcessEffect.MediaColor = media.Color.ToVector3();
+            this.PostProcessEffect.LightColor = sunlight.Color.ToVector3();
             this.PostProcessEffect.LightInfluence = media.LightInfluence;
+
             this.PostProcessEffect.DitherPattern = this.DitherPattern;
+            this.PostProcessEffect.DitherPatternSampler = SamplerState.PointWrap;
+
             this.PostProcessEffect.ScreenDimensions = new Vector2(this.FrameService.LBuffer.Light.Width, this.FrameService.LBuffer.Light.Height);
             this.PostProcessEffect.Apply();
 
@@ -97,24 +95,28 @@ namespace MiniEngine.Graphics.ParticipatingMedia
 
         private void RenderMedia(ParticipatingMediaComponent media, CascadedShadowMapComponent shadowMap, PerspectiveCamera camera)
         {
-            this.Device.SamplerStates[0] = this.MediaEffect.Shadows.ShadowMapSampler;
-
             this.Device.SetRenderTarget(media.ParticipatingMediaBuffer);
             this.Device.Clear(ClearOptions.Target, Color.Black, 1.0f, 0);
 
             this.MediaEffect.Noise = this.Noise;
+            this.MediaEffect.NoiseSampler = SamplerState.PointWrap;
+
             this.MediaEffect.VolumeBack = media.VolumeBackBuffer;
             this.MediaEffect.VolumeFront = media.VolumeFrontBuffer;
+            this.MediaEffect.VolumeSampler = SamplerState.LinearClamp;
+
             this.MediaEffect.Depth = this.FrameService.GBuffer.Depth;
             this.MediaEffect.InverseViewProjection = Matrix.Invert(camera.ViewProjection);
             this.MediaEffect.CameraPosition = camera.Position;
             this.MediaEffect.Strength = media.Strength;
 
-            this.MediaEffect.Shadows.ShadowMap = shadowMap.DepthMapArray;
-            this.MediaEffect.Shadows.ShadowMatrix = shadowMap.GlobalShadowMatrix;
-            this.MediaEffect.Shadows.Splits = shadowMap.Splits;
-            this.MediaEffect.Shadows.Offsets = shadowMap.Offsets;
-            this.MediaEffect.Shadows.Scales = shadowMap.Scales;
+            this.MediaEffect.ShadowMap = shadowMap.DepthMapArray;
+            this.MediaEffect.ShadowSampler = ShadowMapSampler.State;
+
+            this.MediaEffect.ShadowMatrix = shadowMap.GlobalShadowMatrix;
+            this.MediaEffect.Splits = shadowMap.Splits;
+            this.MediaEffect.Offsets = shadowMap.Offsets;
+            this.MediaEffect.Scales = shadowMap.Scales;
 
             this.MediaEffect.ViewDistance = camera.FarPlane;
             this.MediaEffect.MinLight = 0.1f;
@@ -127,6 +129,8 @@ namespace MiniEngine.Graphics.ParticipatingMedia
         {
             this.ShadowMapEffect.WorldViewProjection = transform.Matrix * camera.ViewProjection;
             this.ShadowMapEffect.Albedo = this.Albedo;
+            this.ShadowMapEffect.MaskSampler = SamplerState.AnisotropicWrap;
+
             this.RenderDistance(this.BackRasterizerState, media.VolumeBackBuffer, media.Geometry);
             this.RenderDistance(this.FrontRasterizerState, media.VolumeFrontBuffer, media.Geometry);
         }

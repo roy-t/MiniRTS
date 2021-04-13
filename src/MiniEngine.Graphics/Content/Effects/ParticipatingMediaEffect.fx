@@ -2,38 +2,12 @@
 #include "Includes/GBufferReader.hlsl"
 #include "Includes/Shadows.hlsl"
 
-texture VolumeFront;
-sampler volumeFrontSampler = sampler_state
-{
-    Texture = (VolumeFront);
-    MinFilter = LINEAR;
-    MagFilter = LINEAR;
-    MipFilter = LINEAR;
-    AddressU = Clamp;
-    AddressV = Clamp;
-};
+Texture2D VolumeFront;
+Texture2D VolumeBack;
+SamplerState VolumeSampler : register(s5); // Linear Clamp
 
-texture VolumeBack;
-sampler volumeBackSampler = sampler_state
-{
-    Texture = (VolumeBack);
-    MinFilter = LINEAR;
-    MagFilter = LINEAR;
-    MipFilter = LINEAR;
-    AddressU = Clamp;
-    AddressV = Clamp;
-};
-
-texture Noise;
-sampler noiseSampler = sampler_state
-{
-    Texture = (Noise);
-    MinFilter = POINT;
-    MagFilter = POINT;
-    MipFilter = POINT;
-    AddressU = Wrap;
-    AddressV = Wrap;
-};
+Texture2D Noise;
+SamplerState NoiseSampler : register(s6); // Point Wrap
 
 float4x4 InverseViewProjection;
 float3 CameraPosition;
@@ -69,15 +43,14 @@ PixelData VS(in VertexData input)
 }
 
 float random(float2 uv)
-{    
-    float4 sa = float4(uv * 17, 0, 0);
-    return tex2Dlod(noiseSampler, sa).r;
+{            
+    return Noise.SampleLevel(NoiseSampler, uv * 17, 0).r;    
 }
 
 float2 ReadVolume(float2 uv)
 {
-    float f = tex2D(volumeFrontSampler, uv).r;
-    float b = tex2D(volumeBackSampler, uv).r;
+    float f = VolumeFront.Sample(VolumeSampler, uv).r;
+    float b = VolumeBack.Sample(VolumeSampler, uv).r;    
 
     // If we don't have a distance to the front, but have a distance to the back
     // we're inside the medium

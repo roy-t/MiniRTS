@@ -20,17 +20,8 @@ struct OutputData
     float4 Color : COLOR0;
 };
 
-texture Color;
-sampler colorSampler = sampler_state
-{
-    Texture = (Color);
-    MinFilter = ANISOTROPIC;
-    MagFilter = ANISOTROPIC;
-    MipFilter = LINEAR;
-    MaxAnisotropy = 16;
-    AddressU = Clamp;
-    AddressV = Clamp;
-};
+Texture2D Color;
+SamplerState ColorSampler : register(s0);
 
 float4x4 WorldViewProjection;
 bool ConvertColorsToLinear = false;
@@ -49,7 +40,7 @@ PixelData VS(in VertexData input)
 OutputData PS(PixelData input)
 {
     OutputData output = (OutputData)0;
-    float4 color = tex2D(colorSampler, input.Texture) * input.Color;
+    float4 color =  Color.Sample(ColorSampler, input.Texture) * input.Color;
     float4 colorLinear = ToLinear(color);
     output.Color = lerp(color, colorLinear, ConvertColorsToLinear);
 

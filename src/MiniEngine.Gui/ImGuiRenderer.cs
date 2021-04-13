@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MiniEngine.Configuration;
-using MiniEngine.Graphics.Immediate;
+using MiniEngine.Graphics.Generated;
 
 namespace MiniEngine.Gui
 {
@@ -199,6 +199,7 @@ namespace MiniEngine.Gui
             this.Effect.WorldViewProjection = Matrix.CreateOrthographicOffCenter(0, io.DisplaySize.X, io.DisplaySize.Y, 0, -1f, 1f);
             this.Effect.Color = texture;
             this.Effect.ConvertColorsToLinear = texture.Format != SurfaceFormat.ColorSRgb;
+            this.Effect.ColorSampler = SamplerState.LinearClamp;
         }
 
         /// <summary>

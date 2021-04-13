@@ -18,14 +18,7 @@ struct OutputData
 };
 
 Texture2D Texture;
-const sampler textureSampler = sampler_state
-{    
-    MinFilter = LINEAR;
-    MagFilter = LINEAR;
-    MipFilter = LINEAR;
-    AddressU = Clamp;
-    AddressV = Clamp;
-};
+SamplerState TextureSampler : register(s0);
 
 PixelData VS(in VertexData input)
 {
@@ -41,7 +34,7 @@ OutputData PS(PixelData input)
 {
     OutputData output = (OutputData)0;
 
-    output.Color = Texture.Sample(textureSampler, input.Texture).rgba;
+    output.Color = Texture.Sample(TextureSampler, input.Texture).rgba;
     return output;
 }
 

@@ -29,7 +29,7 @@ namespace MiniEngine.Graphics.Utilities
             this.Device.RasterizerState = RasterizerState.CullCounterClockwise;
             this.Device.SamplerStates[0] = SamplerState.LinearClamp;
             this.Effect.EquirectangularTexture = equirectangularTexture;
-
+            this.Effect.EquirectangularTextureSampler = SamplerState.LinearClamp;
             var cubeMap = new TextureCube(this.Device, resolution, true, SurfaceFormat.HalfVector4);
 
             var mipResolution = resolution;

@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
 using MiniEngine.Graphics.Camera;
+using MiniEngine.Graphics.Generated;
 using MiniEngine.Graphics.PostProcess;
 using MiniEngine.Graphics.Shadows;
 using MiniEngine.Systems;
@@ -30,7 +31,7 @@ namespace MiniEngine.Graphics.Lighting
             this.Device.BlendState = BlendState.Additive;
             this.Device.DepthStencilState = DepthStencilState.None;
             this.Device.RasterizerState = RasterizerState.CullCounterClockwise;
-            this.Device.SamplerStates[0] = this.Effect.Shadows.ShadowMapSampler;
+            this.Device.SamplerStates[0] = ShadowMapSampler.State;
             this.Device.SamplerStates[1] = SamplerState.LinearClamp;
             this.Device.SamplerStates[2] = SamplerState.LinearClamp;
             this.Device.SamplerStates[3] = SamplerState.LinearClamp;
@@ -50,14 +51,14 @@ namespace MiniEngine.Graphics.Lighting
             this.Effect.InverseViewProjection = Matrix.Invert(this.FrameService.CameraComponent.Camera.ViewProjection);
 
             this.Effect.SurfaceToLight = -shadowMapCamera.Camera.Forward;
-            this.Effect.Color = sunlight.Color;
+            this.Effect.Color = sunlight.Color.ToVector4();
             this.Effect.Strength = sunlight.Strength;
 
-            this.Effect.Shadows.ShadowMap = shadowMap.DepthMapArray;
-            this.Effect.Shadows.ShadowMatrix = shadowMap.GlobalShadowMatrix;
-            this.Effect.Shadows.Splits = shadowMap.Splits;
-            this.Effect.Shadows.Offsets = shadowMap.Offsets;
-            this.Effect.Shadows.Scales = shadowMap.Scales;
+            this.Effect.ShadowMap = shadowMap.DepthMapArray;
+            this.Effect.ShadowMatrix = shadowMap.GlobalShadowMatrix;
+            this.Effect.Splits = shadowMap.Splits;
+            this.Effect.Offsets = shadowMap.Offsets;
+            this.Effect.Scales = shadowMap.Scales;
 
             this.Effect.Apply();
             this.PostProcessTriangle.Render(this.Device);

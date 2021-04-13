@@ -29,13 +29,14 @@ namespace MiniEngine.Graphics.Geometry
             this.Device.BlendState = BlendState.Opaque;
             this.Device.DepthStencilState = DepthStencilState.Default;
             this.Device.RasterizerState = RasterizerState.CullCounterClockwise;
-            this.Device.SamplerStates[0] = SamplerState.LinearWrap;
 
             this.Device.SetRenderTargets(
                 this.FrameService.GBuffer.Albedo,
                 this.FrameService.GBuffer.Material,
                 this.FrameService.GBuffer.Depth,
                 this.FrameService.GBuffer.Normal);
+
+            this.Effect.AnisotropicSampler = SamplerState.AnisotropicWrap;
         }
 
         [Process]

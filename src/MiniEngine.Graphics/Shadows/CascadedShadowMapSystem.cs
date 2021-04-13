@@ -22,12 +22,12 @@ namespace MiniEngine.Graphics.Shadows
         private readonly ParticleRenderer Particles;
         private readonly FrameService FrameService;
         private readonly ShadowMapEffect GeometryEffect;
-        private readonly Particles.ParticleShadowMapEffect ParticleEffect;
+        private readonly ParticleShadowMapEffect ParticleEffect;
 
         private readonly Frustum Frustum;
         private readonly RasterizerState RasterizerState;
 
-        public CascadedShadowMapSystem(GraphicsDevice device, GeometryRenderer geometry, ParticleRenderer particles, FrameService frameService, ShadowMapEffect geometryEffect, Particles.ParticleShadowMapEffect particleEffect)
+        public CascadedShadowMapSystem(GraphicsDevice device, GeometryRenderer geometry, ParticleRenderer particles, FrameService frameService, ShadowMapEffect geometryEffect, ParticleShadowMapEffect particleEffect)
         {
             this.Device = device;
             this.Geometry = geometry;
@@ -106,6 +106,7 @@ namespace MiniEngine.Graphics.Shadows
         {
             this.GeometryEffect.WorldViewProjection = transform * viewProjection;
             this.GeometryEffect.Albedo = material.Albedo;
+            this.GeometryEffect.MaskSampler = SamplerState.AnisotropicWrap;
         }
 
         public void ApplyEffect()

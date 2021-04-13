@@ -20,17 +20,10 @@ struct OutputData
 };
 
 Texture2D EquirectangularTexture;
+SamplerState EquirectangularTextureSampler : register(s0);
+
 float Roughness;
 float4x4 WorldViewProjection;
-
-const sampler equirectangularTextureSampler = sampler_state
-{
-    MinFilter = LINEAR;
-    MagFilter = LINEAR;
-    MipFilter = LINEAR;
-    AddressU = Clamp;
-    AddressV = Clamp;
-};
 
 PixelData VS(in VertexData input)
 {
@@ -64,7 +57,7 @@ OutputData PS(PixelData input)
         if (NdotL > 0.0f)
         {
             float2 uv = WorldToSpherical(L);
-            float4 color = EquirectangularTexture.Sample(equirectangularTextureSampler, uv) * NdotL;
+            float4 color = EquirectangularTexture.Sample(EquirectangularTextureSampler, uv) * NdotL;
             prefilteredColor += ToLinear(color).rgb;
             totalWeight += NdotL;
         }

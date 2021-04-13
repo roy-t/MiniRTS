@@ -28,8 +28,8 @@ struct OutputData
 float Metalicness;
 float Roughness;
 
-float4 SlowColor;
-float4 FastColor;
+float3 SlowColor;
+float3 FastColor;
 float ColorVelocityModifier;
 
 float4x4 WorldViewProjection;
@@ -61,8 +61,8 @@ PixelData VS_INSTANCED(in VertexData input, in Particle particle)
     output.ScreenPosition = output.Position;
 
     float l = clamp(length(velocity), 0.0f, 1.0f);
-    float4 color = lerp(SlowColor, FastColor,  l * ColorVelocityModifier);
-    output.Color = color;
+    float3 color = lerp(SlowColor, FastColor,  l * ColorVelocityModifier);
+    output.Color = float4(color, 1.0f);
     output.Age = position.w;
 
 

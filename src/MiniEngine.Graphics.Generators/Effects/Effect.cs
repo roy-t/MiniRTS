@@ -17,13 +17,16 @@ namespace MiniEngine.Graphics.Generators.Effects
             var sourceCode = File.ReadAllText(filePath);
             var syntaxTree = SyntaxFactory.ParseSyntaxTree(new SourceFile(SourceText.From(sourceCode), filePath), null, fileSystem);
 
-            this.PublicProperties = DescendantNodesOfType<VariableDeclarationStatementSyntax>(syntaxTree.Root)
+            var properties = DescendantNodesOfType<VariableDeclarationStatementSyntax>(syntaxTree.Root)
                 .Where(node => node.Parent.IsKind(SyntaxKind.CompilationUnit))
                 .Select(node => node.Declaration)
                 .Where(node => node.Modifiers.Count == 0)
                 .SelectMany(node => EffectProperty.Parse(node))
                 .Where(property => char.IsUpper(property.Name.First()))
                 .ToList();
+
+            this.PublicProperties = properties.Where(p => p.IsSamplerState() == false).ToList();
+            this.Samplers = properties.Where(p => p.IsSamplerState() == true).ToList();
 
             this.Techniques = DescendantNodesOfType<TechniqueSyntax>(syntaxTree.Root)
                 .Select(node => node.Name.ValueText).ToList();
@@ -33,6 +36,9 @@ namespace MiniEngine.Graphics.Generators.Effects
         }
 
         public IReadOnlyList<EffectProperty> PublicProperties { get; }
+
+        public IReadOnlyList<EffectProperty> Samplers { get; }
+
 
         public IReadOnlyList<string> Techniques { get; }
 

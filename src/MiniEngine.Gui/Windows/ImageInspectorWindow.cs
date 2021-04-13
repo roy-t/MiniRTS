@@ -116,11 +116,13 @@ namespace MiniEngine.Gui.Windows
         {
             using var renderTarget = new RenderTarget2D(this.Device, texture.Width, texture.Height, false, SurfaceFormat.HalfVector4, DepthFormat.None);
             this.Device.SetRenderTarget(renderTarget);
-            this.Device.SamplerStates[0] = SamplerState.LinearClamp;
             this.Device.BlendState = BlendState.Opaque;
             this.Device.DepthStencilState = DepthStencilState.None;
             this.Device.RasterizerState = RasterizerState.CullCounterClockwise;
+
             this.Effect.Texture = texture;
+            this.Effect.TextureSampler = SamplerState.LinearClamp;
+
             this.Effect.Apply();
 
             this.Triangle.Render(this.Device);

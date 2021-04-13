@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
 using MiniEngine.Graphics.Camera;
+using MiniEngine.Graphics.Generated;
 using MiniEngine.Graphics.Lighting.Volumes;
 using MiniEngine.Graphics.Shadows;
 using MiniEngine.Systems;
@@ -18,7 +19,6 @@ namespace MiniEngine.Graphics.Lighting
         private readonly FrustumLightVolume Volume;
 
         private readonly RasterizerState SpotLightRasterizer;
-        private readonly SamplerState ShadowMapSampler;
 
         public SpotLightSystem(GraphicsDevice device, FrustumLightVolume volume, SpotLightEffect effect, FrameService frameService)
         {
@@ -32,16 +32,6 @@ namespace MiniEngine.Graphics.Lighting
                 CullMode = CullMode.CullCounterClockwiseFace,
                 DepthClipEnable = false
             };
-
-            this.ShadowMapSampler = new SamplerState
-            {
-                AddressU = TextureAddressMode.Clamp,
-                AddressV = TextureAddressMode.Clamp,
-                AddressW = TextureAddressMode.Clamp,
-                Filter = TextureFilter.Anisotropic,
-                ComparisonFunction = CompareFunction.LessEqual,
-                FilterMode = TextureFilterMode.Comparison
-            };
         }
 
         public void OnSet()
@@ -49,7 +39,7 @@ namespace MiniEngine.Graphics.Lighting
             this.Device.BlendState = BlendState.Additive;
             this.Device.DepthStencilState = DepthStencilState.None;
             this.Device.RasterizerState = this.SpotLightRasterizer;
-            this.Device.SamplerStates[0] = this.ShadowMapSampler;
+            this.Device.SamplerStates[0] = ShadowMapSampler.State;
             this.Device.SamplerStates[1] = SamplerState.LinearClamp;
             this.Device.SamplerStates[2] = SamplerState.LinearClamp;
             this.Device.SamplerStates[3] = SamplerState.LinearClamp;
@@ -72,7 +62,7 @@ namespace MiniEngine.Graphics.Lighting
             this.Effect.InverseViewProjection = Matrix.Invert(this.FrameService.CameraComponent.Camera.ViewProjection);
 
             this.Effect.Position = shadowMapCamera.Camera.Position;
-            this.Effect.Color = spotLight.Color;
+            this.Effect.Color = spotLight.Color.ToVector4();
             this.Effect.Strength = spotLight.Strength;
 
             this.Effect.ShadowMap = shadowMap.DepthMap;

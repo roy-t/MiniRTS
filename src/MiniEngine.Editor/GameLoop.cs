@@ -117,12 +117,13 @@ namespace MiniEngine.Editor
         {
             this.Device.SetRenderTarget(null);
 
-            this.Device.SamplerStates[0] = SamplerState.LinearClamp;
             this.Device.BlendState = BlendState.Opaque;
             this.Device.DepthStencilState = DepthStencilState.None;
             this.Device.RasterizerState = RasterizerState.CullCounterClockwise;
 
             this.Effect.Texture = renderTarget;
+            this.Effect.TextureSampler = SamplerState.LinearClamp;
+
             this.Effect.Apply();
             this.PostProcessTriangle.Render(this.Device);
         }
