@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Microsoft.CodeAnalysis;
@@ -15,43 +16,44 @@ namespace MiniEngine.Graphics.Generators.Effects
         {
             var effectFiles = new List<string>();
             var contentFiles = context.AdditionalFiles.Where(file => file.Path.EndsWith(".mgcb")).ToList().AsReadOnly();
-            foreach (var file in contentFiles)
+            try
             {
-                var directory = Path.GetDirectoryName(file.Path);
-                var content = file.GetText(context.CancellationToken);
-
-                var parser = new MGCBParser();
-                parser.Parse(content.Lines);
-
-                var effects = parser.Blocks.Where(b => b.Importer.Argument.Equals("EffectImporter"));
-                foreach (var effect in effects)
+                foreach (var file in contentFiles)
                 {
-                    var path = Path.GetFullPath(Path.Combine(directory, effect.Build.Argument));
-                    effectFiles.Add(path);
+                    var directory = Path.GetDirectoryName(file.Path);
+                    var content = file.GetText(context.CancellationToken);
+
+                    var parser = new MGCBParser();
+                    parser.Parse(content.Lines);
+
+                    var effects = parser.Blocks.Where(b => b.Importer.Argument.Equals("EffectImporter"));
+                    foreach (var effect in effects)
+                    {
+                        var path = Path.GetFullPath(Path.Combine(directory, effect.Build.Argument));
+                        effectFiles.Add(path);
+                    }
                 }
-            }
 
-            var generator = new EffectWrapperGenerator();
-            foreach (var effectFile in effectFiles)
+                var generator = new EffectWrapperGenerator();
+                foreach (var effectFile in effectFiles)
+                {
+                    var effect = new Effect(effectFile);
+                    var sourceFile = generator.Generate(effect);
+                    var sourceText = SourceWriter.ToString(sourceFile);
+
+                    context.AddSource(sourceFile.FileName, sourceText);
+                }
+
+                Report(context, "GENG01", $"Generated {effectFiles.Count} effect wrappers", DiagnosticSeverity.Warning);
+            }
+            catch (Exception ex)
             {
-                //if (effectFile.Contains("Skybox"))
-                //{
-                //    System.Diagnostics.Debugger.Launch();
-                //}
-
-                var effect = new Effect(effectFile);
-                var sourceFile = generator.Generate(effect);
-                var sourceText = SourceWriter.ToString(sourceFile);
-
-                context.AddSource(sourceFile.FileName, sourceText);
+                Report(context, "GENG0X", $"Error: {ex.Message}", DiagnosticSeverity.Error);
             }
-
-            ReportProgress(context, effectFiles.Count);
         }
 
-        private static void ReportProgress(GeneratorExecutionContext context, int count)
+        private static void Report(GeneratorExecutionContext context, string code, string message, DiagnosticSeverity severity)
             => context.ReportDiagnostic(
-                Diagnostic.Create(new DiagnosticDescriptor("GENG01", "Effect Generator", $"Generated {count} effect wrappers",
-                    "Generator", DiagnosticSeverity.Warning, true), null));
+                Diagnostic.Create(new DiagnosticDescriptor(code, "Effect Generator", message, "Generator", severity, true), null));
     }
 }

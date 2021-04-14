@@ -1,38 +1,51 @@
 ﻿using System;
 using System.IO;
+using System.Text.RegularExpressions;
 using Microsoft.Xna.Framework.Content.Pipeline;
 using Microsoft.Xna.Framework.Content.Pipeline.Graphics;
 using Microsoft.Xna.Framework.Content.Pipeline.Processors;
 using Microsoft.Xna.Framework.Graphics;
+using Serilog;
 
 namespace MiniEngine.Graphics.Effects
 {
-    class MyLogger : ContentBuildLogger
+    internal sealed class MyLogger : ContentBuildLogger
     {
-        public override void LogImportantMessage(string message, params object[] messageArgs) { }
-        public override void LogMessage(string message, params object[] messageArgs) { }
-        public override void LogWarning(string helpLink, ContentIdentity contentIdentity, string message, params object[] messageArgs) { }
+        private readonly ILogger Logger;
+
+        public MyLogger(ILogger logger)
+        {
+            this.Logger = logger;
+        }
+
+        public override void LogImportantMessage(string message, params object[] messageArgs)
+            => this.Logger.Error(string.Format(message, messageArgs));
+
+        public override void LogMessage(string message, params object[] messageArgs)
+            => this.Logger.Information(string.Format(message, messageArgs));
+
+        public override void LogWarning(string helpLink, ContentIdentity contentIdentity, string message, params object[] messageArgs)
+            => this.Logger.Warning(string.Format(message, messageArgs));
     }
 
-    class ImporterContext : ContentImporterContext
+    internal sealed class ProcessorContext : ContentProcessorContext
     {
-        private readonly ContentBuildLogger ContentLogger = new MyLogger();
+        private readonly ContentBuildLogger ContentLogger;
+        private readonly OpaqueDataDictionary Dictionary;
 
-        public override string IntermediateDirectory => string.Empty;
-        public override ContentBuildLogger Logger => this.ContentLogger;
-        public override string OutputDirectory => string.Empty;
-        public override void AddDependency(string filename) { }
-    }
+        private readonly string Path;
 
-    class ProcessorContext : ContentProcessorContext
-    {
-        private readonly ContentBuildLogger ContentLogger = new MyLogger();
-        private readonly OpaqueDataDictionary Dictionary = new OpaqueDataDictionary();
+        public ProcessorContext(ILogger logger, string path)
+        {
+            this.ContentLogger = new MyLogger(logger);
+            this.Dictionary = new OpaqueDataDictionary();
+            this.Path = path;
+        }
 
         public override string BuildConfiguration => string.Empty;
         public override string IntermediateDirectory => string.Empty;
         public override ContentBuildLogger Logger => this.ContentLogger;
-        public override ContentIdentity SourceIdentity => new ContentIdentity("SourceFile.fx");
+        public override ContentIdentity SourceIdentity => new ContentIdentity(this.Path);
         public override string OutputDirectory => string.Empty;
         public override string OutputFilename => string.Empty;
         public override OpaqueDataDictionary Parameters => this.Dictionary;
@@ -48,7 +61,16 @@ namespace MiniEngine.Graphics.Effects
 
     public sealed class EffectBuilder
     {
-        public Effect Build(GraphicsDevice device, string path)
+        private readonly ILogger Logger;
+        private readonly Regex EffectCompilerPattern;
+
+        public EffectBuilder(ILogger logger)
+        {
+            this.Logger = logger;
+            this.EffectCompilerPattern = new Regex("\\((.*?)\\):(.*)", RegexOptions.Multiline);
+        }
+
+        public Effect? Build(GraphicsDevice device, string path)
         {
             var content = new EffectContent
             {
@@ -57,9 +79,32 @@ namespace MiniEngine.Graphics.Effects
             };
 
             var processor = new EffectProcessor();
-            var compiled = processor.Process(content, new ProcessorContext());
 
-            return new Effect(device, compiled.GetEffectCode());
+            try
+            {
+                var compiled = processor.Process(content, new ProcessorContext(this.Logger, path));
+                return new Effect(device, compiled.GetEffectCode());
+            }
+            catch (InvalidContentException cex)
+            {
+                var match = this.EffectCompilerPattern.Match(cex.Message);
+                if (match.Success)
+                {
+                    var line = match.Captures[0].Value;
+                    var message = $"At {line}";
+                    this.Logger.Error($"Failed to reload {path}\n\n{message}");
+                }
+                else
+                {
+                    this.Logger.Error(cex, "Failed to reload {@file}", path);
+                }
+            }
+            catch (Exception ex)
+            {
+                this.Logger.Error(ex, "Failed to reload {@file}", path);
+            }
+
+            return null;
         }
     }
 }

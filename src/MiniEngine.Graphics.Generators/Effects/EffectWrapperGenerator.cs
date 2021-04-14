@@ -13,14 +13,22 @@ namespace MiniEngine.Graphics.Generators.Effects
             var @namespace = CreateNamespace(file);
             var @class = CreateClass(name, @namespace);
             var constructor = CreateConstructor(name, @class);
-            var reloadMethod = new Method("void", "Reload", "protected", "override");
-            @class.Methods.Add(reloadMethod);
+            var reloadMethod = CreateReloadMethod(@class);
 
             AddAndInitializeProperties(effect, @class, reloadMethod);
             AddAndInitializeSamplers(effect, @class, constructor);
             AddTechniques(effect, @class, reloadMethod);
+
             constructor.Body.Expressions.Add(new Statement("this.Reload()"));
+
             return file;
+        }
+
+        private static Method CreateReloadMethod(Class @class)
+        {
+            var reloadMethod = new Method("void", "Reload", "protected", "override");
+            @class.Methods.Add(reloadMethod);
+            return reloadMethod;
         }
 
         private static Source.File CreateFile(string name)
@@ -110,7 +118,7 @@ namespace MiniEngine.Graphics.Generators.Effects
 
         private static void AddTechnique(Class @class, Method reloadMethod, string technique, string methodName)
         {
-            var field = new Field("EffectPass", $"{SourceUtilities.CapitalizeFirstLetter(technique)}Pass", "private");
+            var field = new Field("EffectPass", $"{SourceUtilities.LowerCaseFirstLetter(technique)}Pass", "private");
             @class.Fields.Add(field);
 
             reloadMethod.Body.Expressions.Add(new Assignment($"this.{field.Name}", "=", $"this.Effect.Techniques[\"{technique}\"].Passes[0]"));
