@@ -3,7 +3,6 @@ using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
 using MiniEngine.Graphics.Camera;
 using MiniEngine.Graphics.Generated;
-using MiniEngine.Graphics.Physics;
 using MiniEngine.Graphics.Visibility;
 using MiniEngine.Systems;
 using MiniEngine.Systems.Components;
@@ -14,7 +13,6 @@ namespace MiniEngine.Graphics.Particles
     public sealed class ParticleRenderService : IRenderService
     {
         private readonly IComponentContainer<ParticleEmitterComponent> Particles;
-        private readonly IComponentContainer<TransformComponent> Transforms;
 
         private readonly ParticleEffect GBufferEffect;
         private readonly ParticleShadowMapEffect ShadowMapEffect;
@@ -22,10 +20,9 @@ namespace MiniEngine.Graphics.Particles
         private readonly GraphicsDevice Device;
         private readonly Point Point;
 
-        public ParticleRenderService(IComponentContainer<ParticleEmitterComponent> particles, IComponentContainer<TransformComponent> transforms, ParticleEffect gBufferEffect, ParticleShadowMapEffect shadowMapEffect, GraphicsDevice device, Point point)
+        public ParticleRenderService(IComponentContainer<ParticleEmitterComponent> particles, ParticleEffect gBufferEffect, ParticleShadowMapEffect shadowMapEffect, GraphicsDevice device, Point point)
         {
             this.Particles = particles;
-            this.Transforms = transforms;
             this.GBufferEffect = gBufferEffect;
             this.ShadowMapEffect = shadowMapEffect;
             this.Device = device;
@@ -35,25 +32,23 @@ namespace MiniEngine.Graphics.Particles
         public void DrawToShadowMap(Matrix viewProjection, Entity entity)
         {
             var emitter = this.Particles.Get(entity);
-            var transform = this.Transforms.Get(entity);
 
-            this.ApplyShadowMapEffect(viewProjection, transform.Transform, emitter);
+            this.ApplyShadowMapEffect(viewProjection, emitter);
             this.Point.RenderInstanced(this.Device, emitter.Instances, emitter.Count);
         }
 
         public void DrawToGBuffer(PerspectiveCamera camera, Entity entity)
         {
             var emitter = this.Particles.Get(entity);
-            var transform = this.Transforms.Get(entity);
 
-            this.ApplyGBufferEffect(camera, transform.Transform, emitter);
+            this.ApplyGBufferEffect(camera, emitter);
             this.Point.RenderInstanced(this.Device, emitter.Instances, emitter.Count);
         }
 
-        private void ApplyGBufferEffect(PerspectiveCamera camera, Transform transform, ParticleEmitterComponent emitter)
+        private void ApplyGBufferEffect(PerspectiveCamera camera, ParticleEmitterComponent emitter)
         {
             this.GBufferEffect.View = camera.View;
-            this.GBufferEffect.WorldViewProjection = transform.Matrix * camera.ViewProjection;
+            this.GBufferEffect.WorldViewProjection = camera.ViewProjection;
             this.GBufferEffect.Metalicness = emitter.Metalicness;
             this.GBufferEffect.Roughness = emitter.Roughness;
             this.GBufferEffect.Position = emitter.Position.ReadTarget;
@@ -65,9 +60,9 @@ namespace MiniEngine.Graphics.Particles
             this.GBufferEffect.Apply();
         }
 
-        private void ApplyShadowMapEffect(Matrix viewProjection, Transform transform, ParticleEmitterComponent emitter)
+        private void ApplyShadowMapEffect(Matrix viewProjection, ParticleEmitterComponent emitter)
         {
-            this.ShadowMapEffect.WorldViewProjection = transform.Matrix * viewProjection;
+            this.ShadowMapEffect.WorldViewProjection = viewProjection;
             this.ShadowMapEffect.Data = emitter.Position.ReadTarget;
 
             this.ShadowMapEffect.Apply();

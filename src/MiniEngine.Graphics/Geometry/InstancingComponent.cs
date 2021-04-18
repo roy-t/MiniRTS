@@ -16,7 +16,6 @@ namespace MiniEngine.Graphics.Geometry
 
         public int Instances => this.VertexData.Length;
 
-
         public static InstancingComponent Create(Entity entity, Matrix[] instances)
         {
             var vertexData = new InstancingVertex[instances.Length];

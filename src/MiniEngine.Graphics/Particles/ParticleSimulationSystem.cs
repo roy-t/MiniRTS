@@ -15,15 +15,13 @@ namespace MiniEngine.Graphics.Particles
         private readonly GraphicsDevice Device;
         private readonly FrameService FrameService;
         private readonly PostProcessTriangle PostProcessTriangle;
-        private readonly ParticleRenderService ParticleService;
         private readonly ParticleSimulationEffect SimulationEffect;
 
-        public ParticleSimulationSystem(GraphicsDevice device, FrameService frameService, PostProcessTriangle postProcessTriangle, ParticleRenderService particleService, ParticleSimulationEffect simulationEffect)
+        public ParticleSimulationSystem(GraphicsDevice device, FrameService frameService, PostProcessTriangle postProcessTriangle, ParticleSimulationEffect simulationEffect)
         {
             this.Device = device;
             this.FrameService = frameService;
             this.PostProcessTriangle = postProcessTriangle;
-            this.ParticleService = particleService;
             this.SimulationEffect = simulationEffect;
         }
 
