@@ -21,13 +21,13 @@
 
 #begin Effects/CubeMapGeneratorEffect.fx
 /importer:EffectImporter
-/processor:EffectProcessor
+/processor:HotEffectProcessor
 /processorParam:DebugMode=Auto
 /build:Effects/CubeMapGeneratorEffect.fx
 
 #begin Effects/EnvironmentMapGeneratorEffect.fx
 /importer:EffectImporter
-/processor:EffectProcessor
+/processor:HotEffectProcessor
 /processorParam:DebugMode=Auto
 /build:Effects/EnvironmentMapGeneratorEffect.fx
 
@@ -38,91 +38,91 @@
 
 #begin Effects/ImageBasedLightEffect.fx
 /importer:EffectImporter
-/processor:EffectProcessor
+/processor:HotEffectProcessor
 /processorParam:DebugMode=Auto
 /build:Effects/ImageBasedLightEffect.fx
 
 #begin Effects/ImmediateEffect.fx
 /importer:EffectImporter
-/processor:EffectProcessor
+/processor:HotEffectProcessor
 /processorParam:DebugMode=Auto
 /build:Effects/ImmediateEffect.fx
 
 #begin Effects/IrradianceMapGeneratorEffect.fx
 /importer:EffectImporter
-/processor:EffectProcessor
+/processor:HotEffectProcessor
 /processorParam:DebugMode=Auto
 /build:Effects/IrradianceMapGeneratorEffect.fx
 
 #begin Effects/OpaqueEffect.fx
 /importer:EffectImporter
-/processor:EffectProcessor
+/processor:HotEffectProcessor
 /processorParam:DebugMode=Auto
 /build:Effects/OpaqueEffect.fx
 
 #begin Effects/ParticipatingMediaEffect.fx
 /importer:EffectImporter
-/processor:EffectProcessor
+/processor:HotEffectProcessor
 /processorParam:DebugMode=Auto
 /build:Effects/ParticipatingMediaEffect.fx
 
 #begin Effects/ParticipatingMediaPostProcessEffect.fx
 /importer:EffectImporter
-/processor:EffectProcessor
+/processor:HotEffectProcessor
 /processorParam:DebugMode=Auto
 /build:Effects/ParticipatingMediaPostProcessEffect.fx
 
 #begin Effects/ParticleEffect.fx
 /importer:EffectImporter
-/processor:EffectProcessor
+/processor:HotEffectProcessor
 /processorParam:DebugMode=Auto
 /build:Effects/ParticleEffect.fx
 
 #begin Effects/ParticleShadowMapEffect.fx
 /importer:EffectImporter
-/processor:EffectProcessor
+/processor:HotEffectProcessor
 /processorParam:DebugMode=Auto
 /build:Effects/ParticleShadowMapEffect.fx
 
 #begin Effects/ParticleSimulationEffect.fx
 /importer:EffectImporter
-/processor:EffectProcessor
+/processor:HotEffectProcessor
 /processorParam:DebugMode=Auto
 /build:Effects/ParticleSimulationEffect.fx
 
 #begin Effects/PointLightEffect.fx
 /importer:EffectImporter
-/processor:EffectProcessor
+/processor:HotEffectProcessor
 /processorParam:DebugMode=Auto
 /build:Effects/PointLightEffect.fx
 
 #begin Effects/ShadowMapEffect.fx
 /importer:EffectImporter
-/processor:EffectProcessor
+/processor:HotEffectProcessor
 /processorParam:DebugMode=Auto
 /build:Effects/ShadowMapEffect.fx
 
 #begin Effects/SkyboxEffect.fx
 /importer:EffectImporter
-/processor:EffectProcessor
+/processor:HotEffectProcessor
 /processorParam:DebugMode=Auto
 /build:Effects/SkyboxEffect.fx
 
 #begin Effects/SpotLightEffect.fx
 /importer:EffectImporter
-/processor:EffectProcessor
+/processor:HotEffectProcessor
 /processorParam:DebugMode=Auto
 /build:Effects/SpotLightEffect.fx
 
 #begin Effects/SunlightEffect.fx
 /importer:EffectImporter
-/processor:EffectProcessor
+/processor:HotEffectProcessor
 /processorParam:DebugMode=Auto
 /build:Effects/SunlightEffect.fx
 
 #begin Effects/ToneMapAndFXAAEffect.fx
 /importer:EffectImporter
-/processor:EffectProcessor
+/processor:HotEffectProcessor
 /processorParam:DebugMode=Auto
 /build:Effects/ToneMapAndFXAAEffect.fx
 

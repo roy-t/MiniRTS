@@ -17,11 +17,8 @@ Are often also useful without an entity (for mathy stuff / reuse)
 However for fog it would be better if this should just make the fog darker. Try how that looks?
 
 # Particles
+- Greatly improve performance by using compute shaders? Also tricks to improve for   https://github.com/m-schuetz/compute_rasterizer
 - Make shadows optional, per emitter
 - The ParticleRenderer and GeometryRenderer are very much alike. But I don't like how the GeometryRenderer is tied to
 poses now. Could it get the data from the spatial partitioner directly instead of via a property in camera? Alternatively a
 pose could just be any visible entity and the renderers get the types they can render from it?
-
-
-# Shaders
-- Make hot reloading better, detect build errors and catch them early, and log them. Think about throtteling changes from the events?
