@@ -4,9 +4,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
 using MiniEngine.Graphics.Camera;
-using MiniEngine.Graphics.Generated;
-using MiniEngine.Graphics.Geometry;
-using MiniEngine.Graphics.Particles;
 using MiniEngine.Graphics.Visibility;
 using MiniEngine.Systems;
 using MiniEngine.Systems.Generators;
@@ -14,26 +11,18 @@ using MiniEngine.Systems.Generators;
 namespace MiniEngine.Graphics.Shadows
 {
     [System]
-    public partial class CascadedShadowMapSystem : ISystem, IParticleRendererUser
+    public partial class CascadedShadowMapSystem : ISystem
     {
         private readonly GraphicsDevice Device;
-        private readonly GeometryRenderService GeometryService;
-        private readonly ParticleRenderer Particles;
         private readonly FrameService FrameService;
-        private readonly ShadowMapEffect GeometryEffect;
-        private readonly ParticleShadowMapEffect ParticleEffect;
 
         private readonly Frustum Frustum;
         private readonly RasterizerState RasterizerState;
 
-        public CascadedShadowMapSystem(GraphicsDevice device, GeometryRenderService geometryService, ParticleRenderer particles, FrameService frameService, ShadowMapEffect geometryEffect, ParticleShadowMapEffect particleEffect)
+        public CascadedShadowMapSystem(GraphicsDevice device, FrameService frameService)
         {
             this.Device = device;
-            this.GeometryService = geometryService;
-            this.Particles = particles;
             this.FrameService = frameService;
-            this.GeometryEffect = geometryEffect;
-            this.ParticleEffect = particleEffect;
             this.Frustum = new Frustum();
 
             this.RasterizerState = new RasterizerState
@@ -93,17 +82,8 @@ namespace MiniEngine.Graphics.Shadows
             for (var i = 0; i < inView.Count; i++)
             {
                 var pose = inView[i];
-                this.GeometryService.DrawToShadowMap(viewProjection, pose.Entity);
+                pose.RenderService.DrawToShadowMap(viewProjection, pose.Entity);
             }
-
-            this.Particles.Draw(viewProjection, this);
-        }
-
-        public void ApplyEffect(Matrix worldViewProjection, ParticleEmitterComponent emitter)
-        {
-            this.ParticleEffect.WorldViewProjection = worldViewProjection;
-            this.ParticleEffect.Data = emitter.Position.ReadTarget;
-            this.ParticleEffect.Apply();
         }
 
         private static readonly Matrix TexScaleTransform = Matrix.CreateScale(0.5f, -0.5f, 1.0f) * Matrix.CreateTranslation(0.5f, 0.5f, 0.0f);

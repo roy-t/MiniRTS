@@ -6,16 +6,14 @@ using MiniEngine.Systems.Generators;
 namespace MiniEngine.Graphics.Geometry
 {
     [System]
-    public partial class GeometrySystem : ISystem
+    public partial class RenderSystem : ISystem
     {
         private readonly GraphicsDevice Device;
-        private readonly GeometryRenderService RenderService;
         private readonly FrameService FrameService;
 
-        public GeometrySystem(GraphicsDevice device, GeometryRenderService renderService, FrameService frameService)
+        public RenderSystem(GraphicsDevice device, FrameService frameService)
         {
             this.Device = device;
-            this.RenderService = renderService;
             this.FrameService = frameService;
         }
 
@@ -41,7 +39,7 @@ namespace MiniEngine.Graphics.Geometry
             for (var i = 0; i < inView.Count; i++)
             {
                 var pose = inView[i];
-                this.RenderService.DrawToGBuffer(camera.Camera, pose.Entity);
+                pose.RenderService.DrawToGBuffer(camera.Camera, pose.Entity);
             }
         }
     }

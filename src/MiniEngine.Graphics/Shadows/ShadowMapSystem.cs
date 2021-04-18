@@ -2,7 +2,6 @@
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
 using MiniEngine.Graphics.Camera;
-using MiniEngine.Graphics.Geometry;
 using MiniEngine.Systems;
 using MiniEngine.Systems.Generators;
 
@@ -12,15 +11,11 @@ namespace MiniEngine.Graphics.Shadows
     public partial class ShadowMapSystem : ISystem
     {
         private readonly GraphicsDevice Device;
-        private readonly GeometryRenderService GeometryService;
-
         private readonly RasterizerState RasterizerState;
 
-        public ShadowMapSystem(GraphicsDevice device, GeometryRenderService geometryService)
+        public ShadowMapSystem(GraphicsDevice device)
         {
             this.Device = device;
-            this.GeometryService = geometryService;
-
             this.RasterizerState = new RasterizerState
             {
                 CullMode = CullMode.None,
@@ -45,7 +40,7 @@ namespace MiniEngine.Graphics.Shadows
             for (var i = 0; i < inView.Count; i++)
             {
                 var pose = inView[i];
-                this.GeometryService.DrawToShadowMap(camera.Camera.ViewProjection, pose.Entity);
+                pose.RenderService.DrawToShadowMap(camera.Camera.ViewProjection, pose.Entity);
             }
         }
     }

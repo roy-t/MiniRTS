@@ -10,22 +10,20 @@ using MiniEngine.Systems.Generators;
 namespace MiniEngine.Graphics.Particles
 {
     [System]
-    public partial class ParticleSystem : ISystem, IParticleRendererUser
+    public partial class ParticleSimulationSystem : ISystem
     {
         private readonly GraphicsDevice Device;
         private readonly FrameService FrameService;
         private readonly PostProcessTriangle PostProcessTriangle;
-        private readonly ParticleRenderer ParticleRenderer;
-        private readonly ParticleEffect Effect;
+        private readonly ParticleRenderService ParticleService;
         private readonly ParticleSimulationEffect SimulationEffect;
 
-        public ParticleSystem(GraphicsDevice device, FrameService frameService, PostProcessTriangle postProcessTriangle, ParticleRenderer particleRenderer, ParticleEffect effect, ParticleSimulationEffect simulationEffect)
+        public ParticleSimulationSystem(GraphicsDevice device, FrameService frameService, PostProcessTriangle postProcessTriangle, ParticleRenderService particleService, ParticleSimulationEffect simulationEffect)
         {
             this.Device = device;
             this.FrameService = frameService;
             this.PostProcessTriangle = postProcessTriangle;
-            this.ParticleRenderer = particleRenderer;
-            this.Effect = effect;
+            this.ParticleService = particleService;
             this.SimulationEffect = simulationEffect;
         }
 
@@ -71,34 +69,6 @@ namespace MiniEngine.Graphics.Particles
 
                 component.Swap();
             }
-        }
-
-        [Process]
-        public void Process()
-        {
-            this.Device.SetRenderTargets(
-               this.FrameService.GBuffer.Albedo,
-               this.FrameService.GBuffer.Material,
-               this.FrameService.GBuffer.Depth,
-               this.FrameService.GBuffer.Normal);
-
-            var camera = this.FrameService.CameraComponent.Camera;
-            this.Effect.View = camera.View;
-            this.ParticleRenderer.Draw(camera.ViewProjection, this);
-        }
-
-        public void ApplyEffect(Matrix worldViewProjection, ParticleEmitterComponent emitter)
-        {
-            this.Effect.WorldViewProjection = worldViewProjection;
-            this.Effect.Metalicness = emitter.Metalicness;
-            this.Effect.Roughness = emitter.Roughness;
-            this.Effect.Position = emitter.Position.ReadTarget;
-            this.Effect.Velocity = emitter.Velocity.ReadTarget;
-            this.Effect.SlowColor = emitter.SlowColor.ToVector3();
-            this.Effect.FastColor = emitter.FastColor.ToVector3();
-            this.Effect.ColorVelocityModifier = emitter.ColorVelocityModifier;
-
-            this.Effect.Apply();
         }
     }
 }
