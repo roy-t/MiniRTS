@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
-using MiniEngine.ContentPipeline.Shared;
 using MiniEngine.Graphics.Camera;
 using MiniEngine.Graphics.Generated;
 using MiniEngine.Graphics.Geometry;
@@ -15,10 +14,10 @@ using MiniEngine.Systems.Generators;
 namespace MiniEngine.Graphics.Shadows
 {
     [System]
-    public partial class CascadedShadowMapSystem : ISystem, IGeometryRendererUser<Matrix>, IParticleRendererUser
+    public partial class CascadedShadowMapSystem : ISystem, IParticleRendererUser
     {
         private readonly GraphicsDevice Device;
-        private readonly GeometryRenderer Geometry;
+        private readonly GeometryRenderService GeometryService;
         private readonly ParticleRenderer Particles;
         private readonly FrameService FrameService;
         private readonly ShadowMapEffect GeometryEffect;
@@ -27,10 +26,10 @@ namespace MiniEngine.Graphics.Shadows
         private readonly Frustum Frustum;
         private readonly RasterizerState RasterizerState;
 
-        public CascadedShadowMapSystem(GraphicsDevice device, GeometryRenderer geometry, ParticleRenderer particles, FrameService frameService, ShadowMapEffect geometryEffect, ParticleShadowMapEffect particleEffect)
+        public CascadedShadowMapSystem(GraphicsDevice device, GeometryRenderService geometryService, ParticleRenderer particles, FrameService frameService, ShadowMapEffect geometryEffect, ParticleShadowMapEffect particleEffect)
         {
             this.Device = device;
-            this.Geometry = geometry;
+            this.GeometryService = geometryService;
             this.Particles = particles;
             this.FrameService = frameService;
             this.GeometryEffect = geometryEffect;
@@ -91,7 +90,12 @@ namespace MiniEngine.Graphics.Shadows
             this.Device.SetRenderTarget(shadowMap, index);
             this.Device.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.White, 1.0f, 0);
 
-            this.Geometry.Draw(inView, this, viewProjection);
+            for (var i = 0; i < inView.Count; i++)
+            {
+                var pose = inView[i];
+                this.GeometryService.DrawToShadowMap(viewProjection, pose.Entity);
+            }
+
             this.Particles.Draw(viewProjection, this);
         }
 
@@ -101,19 +105,6 @@ namespace MiniEngine.Graphics.Shadows
             this.ParticleEffect.Data = emitter.Position.ReadTarget;
             this.ParticleEffect.Apply();
         }
-
-        public void SetEffectParameters(Material material, Matrix transform, Matrix viewProjection)
-        {
-            this.GeometryEffect.WorldViewProjection = transform * viewProjection;
-            this.GeometryEffect.Albedo = material.Albedo;
-            this.GeometryEffect.MaskSampler = SamplerState.AnisotropicWrap;
-        }
-
-        public void ApplyEffect()
-            => this.GeometryEffect.ApplyShadowMapTechnique();
-
-        public void ApplyInstancedEffect()
-            => this.GeometryEffect.ApplyInstancedShadowMapTechnique();
 
         private static readonly Matrix TexScaleTransform = Matrix.CreateScale(0.5f, -0.5f, 1.0f) * Matrix.CreateTranslation(0.5f, 0.5f, 0.0f);
 

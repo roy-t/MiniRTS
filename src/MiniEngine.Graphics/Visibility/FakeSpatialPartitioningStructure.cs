@@ -1,36 +1,34 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using MiniEngine.ContentPipeline.Shared;
 using MiniEngine.Graphics.Camera;
+using MiniEngine.Graphics.Physics;
 using MiniEngine.Systems;
 
 namespace MiniEngine.Graphics.Visibility
 {
     public sealed class FakeSpatialPartitioningStructure
     {
-        private record Entry(Entity Entity, GeometryModel Model, Matrix Transform);
-
-        private readonly List<Entry> Entries;
+        private readonly List<Pose> Entries;
 
         public FakeSpatialPartitioningStructure()
         {
-            this.Entries = new List<Entry>();
+            this.Entries = new List<Pose>();
         }
 
-        public void Add(Entity entity, GeometryModel model, Matrix transform)
+        public void Add(Entity entity, BoundingSphere bounds, Transform transform, IRenderService renderService)
         {
-            var entry = new Entry(entity, model, transform);
+            var entry = new Pose(entity, bounds, transform, renderService);
             this.Entries.Add(entry);
         }
 
-        public void Update(Entity entity, Matrix transform)
+        public void Update(Entity entity, Transform transform)
         {
             for (var i = this.Entries.Count - 1; i >= 0; i--)
             {
                 var pose = this.Entries[i];
                 if (pose.Entity == entity)
                 {
-                    this.Entries[i] = new Entry(entity, pose.Model, transform);
+                    this.Entries[i].Transform = transform;
                     return;
                 }
             }
@@ -48,14 +46,13 @@ namespace MiniEngine.Graphics.Visibility
             }
         }
 
-        public void GetVisibleGeometry(PerspectiveCamera camera, IList<Pose> outVisible)
+        public void GetVisibleEntities(PerspectiveCamera camera, IList<Pose> outVisible)
         {
             var frustum = new BoundingFrustum(camera.ViewProjection);
             for (var i = 0; i < this.Entries.Count; i++)
             {
                 var entry = this.Entries[i];
-
-                outVisible.Add(new Pose(entry.Entity, entry.Model, entry.Transform));
+                outVisible.Add(entry);
                 // TODO: how to fix for sunlight?
                 // TODO: how to fix for instancing?
 

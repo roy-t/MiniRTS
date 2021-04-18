@@ -11,10 +11,12 @@ namespace MiniEngine.Graphics.Visibility
     public partial class VisibilitySystem : ISystem
     {
         private FakeSpatialPartitioningStructure Partition;
+        private readonly GeometryRenderService GeometryService;
 
-        public VisibilitySystem()
+        public VisibilitySystem(GeometryRenderService geometryService)
         {
             this.Partition = new FakeSpatialPartitioningStructure();
+            this.GeometryService = geometryService;
         }
 
         public void OnSet()
@@ -25,16 +27,16 @@ namespace MiniEngine.Graphics.Visibility
         public void ComputeVisibleObjectsForCamera(CameraComponent camera)
         {
             camera.InView.Clear();
-            this.Partition.GetVisibleGeometry(camera.Camera, camera.InView);
+            this.Partition.GetVisibleEntities(camera.Camera, camera.InView);
         }
 
         [ProcessNew]
         public void ProcessNew(TransformComponent transform, GeometryComponent geometry)
-            => this.Partition.Add(transform.Entity, geometry.Geometry, transform.Matrix);
+            => this.Partition.Add(transform.Entity, geometry.Geometry.Bounds, transform.Transform, this.GeometryService);
 
         [ProcessChanged]
         public void ProcessChanged(TransformComponent transform, GeometryComponent _)
-            => this.Partition.Update(transform.Entity, transform.Matrix);
+            => this.Partition.Update(transform.Entity, transform.Transform);
 
         [ProcessRemoved]
         public void ProcessRemoved(TransformComponent transform, GeometryComponent _)
