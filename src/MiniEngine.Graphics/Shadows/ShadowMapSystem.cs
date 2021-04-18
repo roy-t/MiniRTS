@@ -2,7 +2,6 @@
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
 using MiniEngine.Graphics.Camera;
-using MiniEngine.Graphics.Generated;
 using MiniEngine.Graphics.Geometry;
 using MiniEngine.Systems;
 using MiniEngine.Systems.Generators;
@@ -14,15 +13,13 @@ namespace MiniEngine.Graphics.Shadows
     {
         private readonly GraphicsDevice Device;
         private readonly GeometryRenderService GeometryService;
-        private readonly ShadowMapEffect Effect;
 
         private readonly RasterizerState RasterizerState;
 
-        public ShadowMapSystem(GraphicsDevice device, GeometryRenderService geometryService, ShadowMapEffect effect)
+        public ShadowMapSystem(GraphicsDevice device, GeometryRenderService geometryService)
         {
             this.Device = device;
             this.GeometryService = geometryService;
-            this.Effect = effect;
 
             this.RasterizerState = new RasterizerState
             {

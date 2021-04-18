@@ -57,10 +57,10 @@ namespace MiniEngine.Graphics.Geometry
                 for (var i = 0; i < geometry.Geometry.Meshes.Count; i++)
                 {
                     var mesh = geometry.Geometry.Meshes[i];
-                    this.SetBuffers(mesh);
+                    this.SetInstancedBuffers(mesh);
                     this.SetShadowMapEffectParameters(viewProjection, transform.Transform, mesh.Material);
 
-                    this.GBufferEffect.ApplyGeometryTechnique();
+                    this.ShadowMapEffect.ApplyInstancedShadowMapTechnique();
                     this.Device.DrawInstancedPrimitives(PrimitiveType.TriangleList, 0, 0, mesh.Geometry.Primitives, instances.Instances);
                 }
             }
@@ -72,7 +72,7 @@ namespace MiniEngine.Graphics.Geometry
                     this.SetBuffers(mesh);
                     this.SetShadowMapEffectParameters(viewProjection, transform.Transform, mesh.Material);
 
-                    this.GBufferEffect.ApplyGeometryTechnique();
+                    this.ShadowMapEffect.ApplyShadowMapTechnique();
                     this.Device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, mesh.Geometry.Primitives);
                 }
             }
@@ -91,10 +91,10 @@ namespace MiniEngine.Graphics.Geometry
                 for (var i = 0; i < geometry.Geometry.Meshes.Count; i++)
                 {
                     var mesh = geometry.Geometry.Meshes[i];
-                    this.SetBuffers(mesh);
+                    this.SetInstancedBuffers(mesh);
                     this.SetGBufferEffectParameters(camera, transform.Transform, mesh.Material);
 
-                    this.GBufferEffect.ApplyGeometryTechnique();
+                    this.GBufferEffect.ApplyInstancedGeometryTechnique();
                     this.Device.DrawInstancedPrimitives(PrimitiveType.TriangleList, 0, 0, mesh.Geometry.Primitives, instances.Instances);
                 }
             }
@@ -110,6 +110,13 @@ namespace MiniEngine.Graphics.Geometry
                     this.Device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, mesh.Geometry.Primitives);
                 }
             }
+        }
+
+        private void SetInstancedBuffers(GeometryMesh mesh)
+        {
+            var geometryData = mesh.Geometry;
+            this.Device.SetVertexBuffers(new VertexBufferBinding(geometryData.VertexBuffer), new VertexBufferBinding(this.InstanceBuffer, 0, 1));
+            this.Device.Indices = geometryData.IndexBuffer;
         }
 
         private void SetBuffers(GeometryMesh mesh)
