@@ -13,7 +13,7 @@ namespace MiniEngine.Graphics.Camera
             this.AspectRatio = aspectRatio;
             this.Transform = new Transform();
             this.Transform.MoveTo(position);
-            this.Transform.FaceTargetConstrained(forward, Vector3.Up);
+            this.Transform.FaceTargetConstrained(position + forward, Vector3.Up);
 
             this.Update();
         }

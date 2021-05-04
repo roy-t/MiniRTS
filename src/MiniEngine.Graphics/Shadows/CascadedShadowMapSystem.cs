@@ -45,6 +45,11 @@ namespace MiniEngine.Graphics.Shadows
             var view = this.FrameService.CameraComponent.Camera;
             var shadowCamera = camera.Camera;
 
+            // Always keep the shadow camera positioned so that it can see everything the regular camera can see
+            shadowCamera.Transform.MoveTo(view.Position + (shadowCamera.Forward * -(shadowCamera.FarPlane * 0.5f)));
+            shadowCamera.Update();
+            camera.ChangeState.Change();
+
             var surfaceToLight = -shadowCamera.Forward;
 
             this.Frustum.TransformToCameraFrustumInWorldSpace(view);

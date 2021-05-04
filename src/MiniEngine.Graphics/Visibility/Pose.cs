@@ -10,13 +10,13 @@ namespace MiniEngine.Graphics.Visibility
         {
             this.Entity = entity;
             this.Bounds = bounds;
-            this.RenderService = renderService;
             this.Transform = transform;
+            this.RenderService = renderService;
         }
 
         public Entity Entity { get; }
-        public BoundingSphere Bounds { get; }
-        public IRenderService RenderService { get; }
+        public BoundingSphere Bounds { get; set; }
         public Transform Transform { get; set; }
+        public IRenderService RenderService { get; }
     }
 }

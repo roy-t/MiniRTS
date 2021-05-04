@@ -9,19 +9,28 @@ namespace MiniEngine.Graphics.Visibility
     public sealed class FakeSpatialPartitioningStructure
     {
         private readonly List<Pose> Entries;
+        private readonly List<Pose> AlwaysVisible;
 
         public FakeSpatialPartitioningStructure()
         {
             this.Entries = new List<Pose>();
+            this.AlwaysVisible = new List<Pose>();
         }
 
-        public void Add(Entity entity, BoundingSphere bounds, Transform transform, IRenderService renderService)
+        public void Add(Entity entity, BoundingSphere bounds, Transform transform, IRenderService renderService, bool alwaysVisible = false)
         {
             var entry = new Pose(entity, bounds, transform, renderService);
-            this.Entries.Add(entry);
+            if (alwaysVisible)
+            {
+                this.AlwaysVisible.Add(entry);
+            }
+            else
+            {
+                this.Entries.Add(entry);
+            }
         }
 
-        public void Update(Entity entity, Transform transform)
+        public void Update(Entity entity, BoundingSphere bounds, Transform transform)
         {
             for (var i = this.Entries.Count - 1; i >= 0; i--)
             {
@@ -29,6 +38,18 @@ namespace MiniEngine.Graphics.Visibility
                 if (pose.Entity == entity)
                 {
                     this.Entries[i].Transform = transform;
+                    this.Entries[i].Bounds = bounds;
+                    return;
+                }
+            }
+
+            for (var i = this.AlwaysVisible.Count - 1; i >= 0; i--)
+            {
+                var pose = this.AlwaysVisible[i];
+                if (pose.Entity == entity)
+                {
+                    this.AlwaysVisible[i].Transform = transform;
+                    this.AlwaysVisible[i].Bounds = bounds;
                     return;
                 }
             }
@@ -44,6 +65,15 @@ namespace MiniEngine.Graphics.Visibility
                     return;
                 }
             }
+
+            for (var i = this.AlwaysVisible.Count - 1; i >= 0; i--)
+            {
+                if (this.AlwaysVisible[i].Entity == entity)
+                {
+                    this.AlwaysVisible.RemoveAt(i);
+                    return;
+                }
+            }
         }
 
         public void GetVisibleEntities(PerspectiveCamera camera, IList<Pose> outVisible)
@@ -52,15 +82,20 @@ namespace MiniEngine.Graphics.Visibility
             for (var i = 0; i < this.Entries.Count; i++)
             {
                 var entry = this.Entries[i];
-                outVisible.Add(entry);
-                // TODO: how to fix for sunlight?
-                // TODO: how to fix for instancing?
 
-                //var bounds = entry.Model.Bounds.Transform(entry.Transform);
-                //if (frustum.Contains(bounds) != ContainmentType.Disjoint)
-                //{
-                //    outVisible.Add(new Pose(entry.Model, entry.Transform));
-                //}
+                // TODO: how to fix for sunlight?
+
+                var bounds = entry.Bounds.Transform(entry.Transform.Matrix);
+                if (frustum.Contains(bounds) != ContainmentType.Disjoint)
+                {
+                    outVisible.Add(entry);
+                }
+            }
+
+            for (var i = 0; i < this.AlwaysVisible.Count; i++)
+            {
+                var entry = this.AlwaysVisible[i];
+                outVisible.Add(entry);
             }
         }
     }

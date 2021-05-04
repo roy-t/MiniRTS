@@ -129,6 +129,9 @@ namespace MiniEngine.Graphics.Particles
             this.InitialVelocity.Swap();
         }
 
+        public BoundingSphere ComputeBounds()
+            => new BoundingSphere(Vector3.Zero, Math.Max(this.Size, this.FieldSpeed * 2 * this.MaxLifeTime));
+
         private void SeedData()
         {
             var data = new Vector4[this.Count];
