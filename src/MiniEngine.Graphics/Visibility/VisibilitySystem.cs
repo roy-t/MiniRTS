@@ -4,7 +4,6 @@ using MiniEngine.Graphics.Geometry;
 using MiniEngine.Graphics.Particles;
 using MiniEngine.Graphics.Physics;
 using MiniEngine.Systems;
-using MiniEngine.Systems.Components;
 using MiniEngine.Systems.Generators;
 
 namespace MiniEngine.Graphics.Visibility
@@ -15,14 +14,12 @@ namespace MiniEngine.Graphics.Visibility
         private readonly FakeSpatialPartitioningStructure Partition;
         private readonly GeometryRenderService GeometryService;
         private readonly ParticleRenderService ParticleService;
-        private readonly IComponentContainer<InstancingComponent> Instances;
 
-        public VisibilitySystem(GeometryRenderService geometryService, ParticleRenderService particleService, IComponentContainer<InstancingComponent> instances)
+        public VisibilitySystem(GeometryRenderService geometryService, ParticleRenderService particleService)
         {
             this.Partition = new FakeSpatialPartitioningStructure();
             this.GeometryService = geometryService;
             this.ParticleService = particleService;
-            this.Instances = instances;
         }
 
         public void OnSet()
@@ -36,37 +33,24 @@ namespace MiniEngine.Graphics.Visibility
             this.Partition.GetVisibleEntities(camera.Camera, camera.InView);
         }
 
-        // Particles
         [ProcessNew]
-        public void ProcessNew(TransformComponent transform, ParticleEmitterComponent emitter)
-            => this.Partition.Add(transform.Entity, emitter.ComputeBounds(), transform.Transform, this.ParticleService);
+        public void ProcessNew(BoundingSphereComponent bounds, TransformComponent transform, GeometryComponent geometry)
+            => this.Partition.Add(transform.Entity, bounds.Radius, transform.Transform, this.GeometryService);
+
+        [ProcessNew]
+        public void ProcessNew(BoundingSphereComponent bounds, TransformComponent transform, ParticleEmitterComponent _)
+            => this.Partition.Add(transform.Entity, bounds.Radius, transform.Transform, this.ParticleService);
 
         [ProcessChanged]
-        public void ProcessChanged(TransformComponent transform, ParticleEmitterComponent emitter)
-            => this.Partition.Update(transform.Entity, emitter.ComputeBounds(), transform.Transform);
+        public void ProcessChanged(TransformComponent transform, BoundingSphereComponent bounds)
+            => this.Partition.Update(transform.Entity, bounds.Radius, transform.Transform);
 
         [ProcessChanged]
-        public void ProcessChanged(ParticleEmitterComponent emitter, TransformComponent transform)
-            => this.Partition.Update(transform.Entity, emitter.ComputeBounds(), transform.Transform);
+        public void ProcessChanged(BoundingSphereComponent bounds, TransformComponent transform)
+            => this.Partition.Update(transform.Entity, bounds.Radius, transform.Transform);
 
         [ProcessRemoved]
-        public void ProcessRemoved(TransformComponent transform, ParticleEmitterComponent _)
-            => this.Partition.Remove(transform.Entity);
-
-        // Models
-        [ProcessNew]
-        public void ProcessNew(TransformComponent transform, GeometryComponent geometry)
-        {
-            var isInstanced = this.Instances.Contains(geometry.Entity);
-            this.Partition.Add(transform.Entity, geometry.Geometry.Bounds, transform.Transform, this.GeometryService, isInstanced);
-        }
-
-        [ProcessChanged]
-        public void ProcessChanged(TransformComponent transform, GeometryComponent geometry)
-            => this.Partition.Update(transform.Entity, geometry.Geometry.Bounds, transform.Transform);
-
-        [ProcessRemoved]
-        public void ProcessRemoved(TransformComponent transform, GeometryComponent _)
-            => this.Partition.Remove(transform.Entity);
+        public void ProcessRemoved(BoundingSphereComponent bounds)
+            => this.Partition.Remove(bounds.Entity);
     }
 }

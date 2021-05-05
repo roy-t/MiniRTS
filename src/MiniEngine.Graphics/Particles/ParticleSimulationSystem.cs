@@ -1,9 +1,11 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
 using MiniEngine.Graphics.Generated;
 using MiniEngine.Graphics.Physics;
 using MiniEngine.Graphics.PostProcess;
+using MiniEngine.Graphics.Visibility;
 using MiniEngine.Systems;
 using MiniEngine.Systems.Generators;
 
@@ -30,6 +32,20 @@ namespace MiniEngine.Graphics.Particles
             this.Device.BlendState = BlendState.Opaque;
             this.Device.DepthStencilState = DepthStencilState.Default;
             this.Device.RasterizerState = RasterizerState.CullCounterClockwise;
+        }
+
+        [ProcessNew]
+        public void SetBounds(ParticleEmitterComponent component, BoundingSphereComponent bounds)
+        {
+            bounds.Radius = ComputeBounds(component);
+            bounds.ChangeState.Change();
+        }
+
+        [ProcessChanged]
+        public void UpdateBounds(ParticleEmitterComponent component, BoundingSphereComponent bounds)
+        {
+            bounds.Radius = ComputeBounds(component);
+            bounds.ChangeState.Change();
         }
 
         [ProcessAll]
@@ -68,5 +84,7 @@ namespace MiniEngine.Graphics.Particles
                 component.Swap();
             }
         }
+
+        private static float ComputeBounds(ParticleEmitterComponent component) => Math.Max(component.Size, component.FieldSpeed * 2 * component.MaxLifeTime);
     }
 }

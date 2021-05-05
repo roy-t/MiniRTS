@@ -3,14 +3,9 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
 using MiniEngine.ContentPipeline.Shared;
-using MiniEngine.Graphics.Camera;
 using MiniEngine.Graphics.Geometry;
 using MiniEngine.Graphics.Geometry.Generators;
 using MiniEngine.Graphics.Lighting;
-using MiniEngine.Graphics.Physics;
-using MiniEngine.Graphics.Shadows;
-using MiniEngine.Systems.Components;
-using MiniEngine.Systems.Entities;
 
 namespace MiniEngine.Editor.Scenes
 {
@@ -19,17 +14,17 @@ namespace MiniEngine.Editor.Scenes
     {
         private readonly GraphicsDevice Device;
         private readonly SkyboxSceneService Skybox;
-        private readonly EntityAdministrator Entities;
-        private readonly ComponentAdministrator Components;
         private readonly GeneratedAssets GeneratedAssets;
+        private readonly GeometryFactory Geometry;
+        private readonly LightFactory Lights;
 
-        public SphereScene(GraphicsDevice device, SkyboxSceneService skybox, EntityAdministrator entities, ComponentAdministrator components, GeneratedAssets generatedAssets)
+        public SphereScene(GraphicsDevice device, SkyboxSceneService skybox, GeneratedAssets generatedAssets, GeometryFactory geometry, LightFactory lights)
         {
             this.Device = device;
             this.Skybox = skybox;
-            this.Entities = entities;
-            this.Components = components;
             this.GeneratedAssets = generatedAssets;
+            this.Geometry = geometry;
+            this.Lights = lights;
         }
 
         public void RenderMainMenuItems()
@@ -53,7 +48,6 @@ namespace MiniEngine.Editor.Scenes
             normal.SetData(new Color[] { new Color(0.5f, 0.5f, 1.0f) });
             content.Link(normal);
 
-            var caprica = content.Load<Texture2D>("capricorn");
             var blue = content.Load<Texture2D>("Textures/Blue");
             var bumps = content.Load<Texture2D>("Textures/Bricks_Normal");
 
@@ -84,7 +78,7 @@ namespace MiniEngine.Editor.Scenes
             }
 
             var backgroundGeometry = CubeGenerator.Generate(this.Device);
-            this.CreateSphere(backgroundGeometry, new Material(caprica, GeneratedAssets.NormalPixel(), black, white, white), Vector3.Forward * 20, new Vector3(200, 200, 1));
+            this.CreateSphere(backgroundGeometry, new Material(bumps, GeneratedAssets.NormalPixel(), black, white, white), Vector3.Forward * 20, new Vector3(200, 200, 1));
 
             this.CreateLight(new Vector3(-10, 10, 10), Color.Red, 30.0f);
             this.CreateLight(new Vector3(10, 10, 10), Color.Blue, 30.0f);
@@ -100,29 +94,27 @@ namespace MiniEngine.Editor.Scenes
             var model = new GeometryModel();
             model.Add(mesh);
 
-            CreateModel(model, position, scale);
-        }
-
-        private void CreateModel(GeometryModel model, Vector3 position, Vector3 scale)
-        {
-            var entity = this.Entities.Create();
-            this.Components.Add(new GeometryComponent(entity, model));
-            this.Components.Add(new TransformComponent(entity, position, scale));
+            (var sphereGeometry, var sphereTransform, var sphereBounds) = this.Geometry.Create(model);
+            sphereTransform.MoveTo(position);
+            sphereTransform.SetScale(scale);
         }
 
         private void CreateLight(Vector3 position, Color color, float strength)
         {
-            var entity = this.Entities.Create();
-            this.Components.Add(new PointLightComponent(entity, color, strength));
-            this.Components.Add(new TransformComponent(entity, position));
+            (var pointLight, var transform) = this.Lights.CreatePointLight();
+            pointLight.Color = color;
+            pointLight.Strength = strength;
+            transform.MoveTo(position);
         }
 
         private void CreateSpotLight(Vector3 position, Vector3 forward, float strength)
         {
-            var entity = this.Entities.Create();
-            this.Components.Add(ShadowMapComponent.Create(entity, this.Device, 1024));
-            this.Components.Add(new CameraComponent(entity, new PerspectiveCamera(this.Device.Viewport.AspectRatio, position, forward)));
-            this.Components.Add(new SpotLightComponent(entity, Color.Yellow, strength));
+            (var spotLight, var shadowMap, var viewPoint) = this.Lights.CreateSpotLight(1024);
+            spotLight.Strength = strength;
+            spotLight.Color = Color.Yellow;
+            viewPoint.Camera.Transform.MoveTo(position);
+            viewPoint.Camera.Transform.FaceTargetConstrained(position + forward, Vector3.Up);
+            viewPoint.Camera.Update();
         }
     }
 }

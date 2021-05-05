@@ -3,14 +3,8 @@ using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
 using MiniEngine.ContentPipeline.Shared;
 using MiniEngine.Graphics.Geometry;
-using MiniEngine.Graphics.Geometry.Generators;
-using MiniEngine.Graphics.Mutators;
-using MiniEngine.Graphics.Mutators.Functions;
 using MiniEngine.Graphics.ParticipatingMedia;
 using MiniEngine.Graphics.Particles;
-using MiniEngine.Graphics.Physics;
-using MiniEngine.Systems.Components;
-using MiniEngine.Systems.Entities;
 
 namespace MiniEngine.Editor.Scenes
 {
@@ -19,17 +13,17 @@ namespace MiniEngine.Editor.Scenes
     {
         private readonly GraphicsDevice Device;
         private readonly SkyboxSceneService Skybox;
-        private readonly EntityAdministrator Entities;
-        private readonly ComponentAdministrator Components;
-        private readonly GeneratedAssets Assets;
+        private readonly GeometryFactory Geometry;
+        private readonly ParticipatingMediaFactory ParticipatingMedia;
+        private readonly ParticleFactory Particles;
 
-        public SponzaScene(GraphicsDevice device, SkyboxSceneService skybox, EntityAdministrator entities, ComponentAdministrator components, GeneratedAssets assets)
+        public SponzaScene(GraphicsDevice device, SkyboxSceneService skybox, GeometryFactory geometry, ParticipatingMediaFactory participatingMedia, ParticleFactory particles)
         {
             this.Device = device;
             this.Skybox = skybox;
-            this.Entities = entities;
-            this.Components = components;
-            this.Assets = assets;
+            this.Geometry = geometry;
+            this.ParticipatingMedia = participatingMedia;
+            this.Particles = particles;
         }
 
         public void RenderMainMenuItems()
@@ -38,37 +32,19 @@ namespace MiniEngine.Editor.Scenes
         public void Load(ContentStack content)
         {
             var sponza = content.Load<GeometryModel>("sponza/sponza");
-            this.CreateModel(sponza, 0.05f);
+            (var geometry, var geometryTransform, var geometryBounds) = this.Geometry.Create(sponza);
 
-            var entity = this.Entities.Create();
+            geometryTransform.SetScale(0.05f);
 
-            // Add dust
-            var cube = CubeGenerator.Generate(this.Device);
-            this.Components.Add(ParticipatingMediaComponent.Create(entity, this.Device, cube, this.Device.Viewport.Width, this.Device.Viewport.Height, 4.0f, new Color(0.1f, 0.1f, 0.1f)));
-            this.Components.Add(new TransformComponent(entity, Vector3.Zero, new Vector3(200, 150.0f, 120.0f)));
+            (var particpatingMedia, var participatingMediaTransform) = this.ParticipatingMedia.Create(this.Device.Viewport.Width, this.Device.Viewport.Height);
 
-            AdditiveParticles(new Vector3(-49.0f, 3.0f, 0.0f), 1024);
-        }
+            particpatingMedia.Strength = 4.0f;
+            particpatingMedia.Color = new Color(0.1f, 0.1f, 0.1f);
+            participatingMediaTransform.SetScale(new Vector3(200, 150.0f, 120.0f));
 
-        private void AdditiveParticles(Vector3 position, int dim)
-        {
-            var particleEntity = this.Entities.Create();
-            this.Components.Add(new TransformComponent(particleEntity, position, Vector3.One, Quaternion.CreateFromYawPitchRoll(0, MathHelper.PiOver2, 0)));
-            var component = new ParticleEmitterComponent(particleEntity, this.Device, dim * dim);
-            this.Components.Add(component);
-
-            var mutator = new TransformMutatorComponent(particleEntity, Paths.Circle(position, 5.0f, 5.0f, 16));
-            //this.Components.Add(mutator);
-
-            var forces = new ForcesComponent(particleEntity);
-            this.Components.Add(forces);
-        }
-
-        private void CreateModel(GeometryModel model, float scale)
-        {
-            var entity = this.Entities.Create();
-            this.Components.Add(new GeometryComponent(entity, model));
-            this.Components.Add(new TransformComponent(entity, Vector3.Zero, scale));
+            (var particleEmitter, var particleTransform, var particleBounds, var forces) = this.Particles.Create(1024 * 1024);
+            particleTransform.MoveTo(new Vector3(-49.0f, 3.0f, 0.0f));
+            particleTransform.SetRotation(Quaternion.CreateFromYawPitchRoll(0, MathHelper.PiOver2, 0));
         }
     }
 }

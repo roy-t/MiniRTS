@@ -17,6 +17,35 @@ namespace MiniEngine.Systems.Components
             where T : AComponent
             => this.ContainerStore.GetContainer<T>().Add(component);
 
+        public void Add<T, U>(T componentA, U componentB)
+            where T : AComponent
+            where U : AComponent
+        {
+            this.ContainerStore.GetContainer<T>().Add(componentA);
+            this.ContainerStore.GetContainer<U>().Add(componentB);
+        }
+
+        public void Add<T, U, V>(T componentA, U componentB, V componentC)
+            where T : AComponent
+            where U : AComponent
+            where V : AComponent
+        {
+            this.ContainerStore.GetContainer<T>().Add(componentA);
+            this.ContainerStore.GetContainer<U>().Add(componentB);
+            this.ContainerStore.GetContainer<V>().Add(componentC);
+        }
+
+        public void Add<T, U, V, W>(T componentA, U componentB, V componentC, W componentD)
+            where T : AComponent
+            where U : AComponent
+            where V : AComponent
+            where W : AComponent
+        {
+            this.ContainerStore.GetContainer<T>().Add(componentA);
+            this.ContainerStore.GetContainer<U>().Add(componentB);
+            this.ContainerStore.GetContainer<V>().Add(componentC);
+            this.ContainerStore.GetContainer<W>().Add(componentD);
+        }
 
         public T GetComponent<T>(Entity entity)
             where T : AComponent

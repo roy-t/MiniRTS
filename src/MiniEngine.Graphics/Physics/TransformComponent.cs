@@ -39,6 +39,9 @@ namespace MiniEngine.Graphics.Physics
         public void SetScale(float scale) => this.Transform.SetScale(scale);
         public void SetScale(Vector3 scale) => this.Transform.SetScale(scale);
         public void SetOrigin(Vector3 origin) => this.Transform.SetOrigin(origin);
+        public void SetRotation(Quaternion rotation) => this.Transform.SetRotation(rotation);
+        public void ApplyRotation(Quaternion rotation) => this.Transform.ApplyRotation(rotation);
         public void FaceTarget(Vector3 target) => this.Transform.FaceTarget(target);
+        public void FaceTargetConstrained(Vector3 target, Vector3 up) => this.Transform.FaceTargetConstrained(target, up);
     }
 }

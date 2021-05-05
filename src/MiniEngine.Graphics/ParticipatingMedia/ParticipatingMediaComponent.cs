@@ -8,7 +8,6 @@ namespace MiniEngine.Graphics.ParticipatingMedia
 {
     public sealed class ParticipatingMediaComponent : AComponent, IDisposable
     {
-
         public ParticipatingMediaComponent(Entity entity, Color color, float strength, GeometryData geometry, RenderTarget2D volumeFrontBuffer, RenderTarget2D volumeBackBuffer, RenderTarget2D participatingMediaBuffer)
             : base(entity)
         {

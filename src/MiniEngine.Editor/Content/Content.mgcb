@@ -24,18 +24,6 @@
 /processorParam:FallbackAmbientOcclusion=materials/ao.tga
 /build:AsteroidField/Asteroid001.obj
 
-#begin capricorn.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:capricorn.png
-
 #begin Skyboxes/Circus/Circus_Backstage_3k.hdr
 /importer:TextureImporter
 /processor:TextureProcessor

@@ -6,36 +6,25 @@ using MiniEngine.ContentPipeline.Shared;
 using MiniEngine.Graphics.Geometry;
 using MiniEngine.Graphics.Geometry.Generators;
 using MiniEngine.Graphics.ParticipatingMedia;
-using MiniEngine.Graphics.Physics;
-using MiniEngine.Systems.Components;
-using MiniEngine.Systems.Entities;
 
 namespace MiniEngine.Editor.Scenes
 {
     [Service]
     public sealed class DustScene : IScene
     {
-        private static readonly float[] DefaultCascadeDistances =
-{
-            0.075f,
-            0.15f,
-            0.3f,
-            1.0f
-        };
-
         private readonly GraphicsDevice Device;
         private readonly GeneratedAssets Assets;
         private readonly SkyboxSceneService Skybox;
-        private readonly EntityAdministrator Entities;
-        private readonly ComponentAdministrator Components;
+        private readonly GeometryFactory Geometry;
+        private readonly ParticipatingMediaFactory ParticipatingMedia;
 
-        public DustScene(GraphicsDevice device, GeneratedAssets assets, SkyboxSceneService skybox, EntityAdministrator entities, ComponentAdministrator components)
+        public DustScene(GraphicsDevice device, GeneratedAssets assets, SkyboxSceneService skybox, GeometryFactory geometry, ParticipatingMediaFactory participatingMedia)
         {
             this.Device = device;
             this.Assets = assets;
             this.Skybox = skybox;
-            this.Entities = entities;
-            this.Components = components;
+            this.Geometry = geometry;
+            this.ParticipatingMedia = participatingMedia;
         }
 
         public void RenderMainMenuItems()
@@ -43,23 +32,30 @@ namespace MiniEngine.Editor.Scenes
 
         public void Load(ContentStack content)
         {
-            this.AddAsteroids();
+            this.AddAsteroidField();
             this.AddDust();
-
-            var geometry = content.Load<GeometryModel>("AsteroidField/Asteroid001");
-            var entity = this.Entities.Create();
-            this.Components.Add(new GeometryComponent(entity, geometry));
-            this.Components.Add(new TransformComponent(entity));
+            this.AddLargeAsteroid(content);
         }
 
-        private void AddAsteroids()
+        private void AddLargeAsteroid(ContentStack content)
         {
-            var geometry = SphereGenerator.Generate(this.Device, 15);
-            var material = new Material(this.Assets.AlbedoPixel(Color.Red), this.Assets.NormalPixel(), this.Assets.MetalicnessPixel(0.3f), this.Assets.RoughnessPixel(0.5f), this.Assets.AmbientOcclussionPixel(1.0f));
+            var asteroid = content.Load<GeometryModel>("AsteroidField/Asteroid001");
+            (var geometry, var transform, var bounds) = this.Geometry.Create(asteroid);
+        }
 
-            var entity = this.Entities.Create();
-            this.Components.Add(new GeometryComponent(entity, new GeometryModel(geometry, material)));
-            this.Components.Add(new TransformComponent(entity));
+        private void AddDust()
+        {
+            (var participatingMedia, var participatingMediaTransform) = this.ParticipatingMedia.Create(this.Device.Viewport.Width, this.Device.Viewport.Height);
+            participatingMedia.Strength = 4.0f;
+            participatingMedia.Color = new Color(0.1f, 0.1f, 0.1f);
+            participatingMediaTransform.SetScale(new Vector3(300.0f, 50.0f, 30.0f));
+        }
+
+        private void AddAsteroidField()
+        {
+            var asteroid = SphereGenerator.Generate(this.Device, 15);
+            var material = new Material(this.Assets.AlbedoPixel(Color.Red), this.Assets.NormalPixel(), this.Assets.MetalicnessPixel(0.3f), this.Assets.RoughnessPixel(0.5f), this.Assets.AmbientOcclussionPixel(1.0f));
+            var model = new GeometryModel(asteroid, material);
 
             var random = new Random(255);
             var transforms = new Matrix[1024];
@@ -74,19 +70,9 @@ namespace MiniEngine.Editor.Scenes
                     transforms[i++] = Matrix.CreateTranslation(p);
                 }
             }
-
             transforms[0] = Matrix.CreateScale(new Vector3(2.0f, 0.1f, 2.0f)) * Matrix.CreateTranslation(Vector3.Up * 30);
 
-            this.Components.Add(InstancingComponent.Create(entity, transforms));
-        }
-
-        private void AddDust()
-        {
-            var entity = this.Entities.Create();
-
-            var cube = CubeGenerator.Generate(this.Device);
-            this.Components.Add(ParticipatingMediaComponent.Create(entity, this.Device, cube, this.Device.Viewport.Width, this.Device.Viewport.Height, 4.0f, new Color(0.1f, 0.1f, 0.1f)));
-            this.Components.Add(new TransformComponent(entity, Vector3.Zero, new Vector3(300.0f, 50.0f, 30.0f), Quaternion.Identity));
+            (var geometry, var transform, var bounds, var instancing) = this.Geometry.Create(model, transforms);
         }
     }
 }
