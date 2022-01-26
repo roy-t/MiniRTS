@@ -30,9 +30,8 @@ namespace MiniEngine.Gui.Tools.Components
             if (ToolUtils.ButtonRow("Camera", "Align to view"))
             {
                 var frameCamera = this.FrameService.CameraComponent.Camera;
-                value.Transform.MoveTo(frameCamera.Position);
-                value.Transform.FaceTargetConstrained(frameCamera.Position + frameCamera.Forward, Vector3.Up);
-                value.Update();
+                value.MoveTo(frameCamera.Position);
+                value.FaceTargetConstrained(frameCamera.Position + frameCamera.Forward, Vector3.Up);
                 return true;
             }
 

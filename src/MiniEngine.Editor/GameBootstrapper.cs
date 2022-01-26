@@ -1,7 +1,8 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
+using MiniEngine.Editor.Configuration;
+using System;
 
 namespace MiniEngine.Editor
 {
@@ -19,6 +20,13 @@ namespace MiniEngine.Editor
         {
             this.RegisterDelegate = registerDelegate;
             this.RegisterAsDelegate = registerAsDelegate;
+
+            var loaded = RenderDoc.Load(out var renderDoc);
+            if (loaded && renderDoc != null)
+            {
+                registerAsDelegate(renderDoc, typeof(RenderDoc));
+            }
+
             this.GameLoopFactory = gameLoopFactory;
             this.Graphics = new GraphicsDeviceManager(this)
             {

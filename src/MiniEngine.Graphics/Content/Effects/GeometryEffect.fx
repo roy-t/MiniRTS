@@ -118,6 +118,9 @@ OutputData PS(PixelData input)
     float3 V = normalize(CameraPosition - input.WorldPosition);       
     float3 normal = PerturbNormal(input.Normal, V, input.Texture);
     output.Normal = float4(PackNormal(normal), 1.0f);
+    
+    //output.Normal = float4(V, 1);
+    //output.Normal = output.Normal + float4(normal, 1.0f) * 0.000001f;
 
     return output;
 }

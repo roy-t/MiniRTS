@@ -1,11 +1,11 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
 using MiniEngine.ContentPipeline.Shared;
 using MiniEngine.Graphics.Geometry;
 using MiniEngine.Graphics.Geometry.Generators;
 using MiniEngine.Graphics.Lighting;
+using System;
 
 namespace MiniEngine.Editor.Scenes
 {
@@ -112,9 +112,8 @@ namespace MiniEngine.Editor.Scenes
             (var spotLight, var shadowMap, var viewPoint) = this.Lights.CreateSpotLight(1024);
             spotLight.Strength = strength;
             spotLight.Color = Color.Yellow;
-            viewPoint.Camera.Transform.MoveTo(position);
-            viewPoint.Camera.Transform.FaceTargetConstrained(position + forward, Vector3.Up);
-            viewPoint.Camera.Update();
+            viewPoint.Camera.MoveTo(position);
+            viewPoint.Camera.FaceTargetConstrained(position + forward, Vector3.Up);
         }
     }
 }

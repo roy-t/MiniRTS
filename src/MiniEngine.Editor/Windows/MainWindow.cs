@@ -154,9 +154,8 @@ namespace MiniEngine.Editor.Windows
 
                 this.SceneManager.SetScene(state.Scene);
                 var camera = this.FrameService.CameraComponent.Camera;
-                camera.Transform.MoveTo(state.Position);
-                camera.Transform.FaceTargetConstrained(state.Position + state.Forward, Vector3.Up);
-                camera.Update();
+                camera.MoveTo(state.Position);
+                camera.FaceTargetConstrained(state.Position + state.Forward, Vector3.Up);
 
                 if (state.KeyValues != null)
                 {

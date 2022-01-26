@@ -18,18 +18,12 @@ namespace MiniEngine.Graphics
     [Service]
     public sealed class FrameService
     {
-        private static readonly float[] DefaultCascadeDistances =
-       {
-            0.075f,
-            0.15f,
-            0.3f,
-            1.0f
-        };
         private readonly EntityAdministrator Entities;
         private readonly ComponentAdministrator Components;
         private readonly GraphicsDevice Device;
+        private readonly LightFactory Lights;
 
-        public FrameService(EntityAdministrator entities, ComponentAdministrator components, GraphicsDevice device)
+        public FrameService(EntityAdministrator entities, ComponentAdministrator components, GraphicsDevice device, LightFactory lights)
         {
             this.Entities = entities;
             this.Components = components;
@@ -38,6 +32,7 @@ namespace MiniEngine.Graphics
             this.GBuffer = new GBuffer(device);
             this.LBuffer = new LBuffer(device);
             this.PBuffer = new PBuffer(device);
+            this.Lights = lights;
 
             this.Reset();
         }
@@ -79,20 +74,16 @@ namespace MiniEngine.Graphics
 
         private Entity CreatePrimaryLightSource()
         {
-            var entity = this.Entities.Create();
-            this.Components.Add(new SunlightComponent(entity, Color.White, 3));
-            this.Components.Add(CascadedShadowMapComponent.Create(entity, this.Device, 2048, DefaultCascadeDistances));
-
             var position = Vector3.Up;
             var lookAt = (Vector3.Left * 0.75f) + (Vector3.Backward * 0.1f);
-            var forward = Vector3.Normalize(lookAt - position);
 
-            var camera = new PerspectiveCamera(1.0f, position, forward);
-            this.Components.Add(new CameraComponent(entity, camera));
+            (var sunlight, var shadowMap, var viewPoint) = this.Lights.CreateSunLight(2048);
+            sunlight.Strength = 3.0f;
+            viewPoint.Camera.MoveTo(position);
+            viewPoint.Camera.FaceTargetConstrained(lookAt, Vector3.Up);
 
-            return entity;
+            return sunlight.Entity;
         }
-
 
         public int GetBufferSize()
         {

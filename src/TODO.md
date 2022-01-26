@@ -8,11 +8,7 @@
 
 - https://github.com/prime31/Nez/blob/master/Nez.Portable/Utils/Tweens/Easing/Easing.cs ?
 
-- Its easy to forget to call update on the PerspectiveCamera class when you only change the transforms!
-
-# Components
-Are often also useful without an entity (for mathy stuff / reuse)
-- What if we seperate them completely and just have a Component<T> type? or auto generate them?
+- The state of a component only changes when the GUI does something with it. Easy to forget to update.. how to fix?
 
 # Participating Media
 - Right now if a part of the media is in the shadow it is as if the media is less dense. This simulates dust particles in the air.

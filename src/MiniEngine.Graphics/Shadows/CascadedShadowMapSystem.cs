@@ -46,9 +46,7 @@ namespace MiniEngine.Graphics.Shadows
             var shadowCamera = camera.Camera;
 
             // Always keep the shadow camera positioned so that it can see everything the regular camera can see
-            shadowCamera.Transform.MoveTo(view.Position + (shadowCamera.Forward * -(shadowCamera.FarPlane * 0.5f)));
-            shadowCamera.Update();
-            camera.ChangeState.Change();
+            shadowCamera.MoveTo(view.Position + (shadowCamera.Forward * -(shadowCamera.FarPlane * 0.5f)));
 
             var surfaceToLight = -shadowCamera.Forward;
 

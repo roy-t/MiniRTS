@@ -5,6 +5,8 @@ namespace MiniEngine.Graphics.Camera
 {
     public sealed class PerspectiveCamera
     {
+        private readonly Transform Transform;
+
         public PerspectiveCamera(float aspectRatio)
             : this(aspectRatio, Vector3.Zero, Vector3.Forward) { }
 
@@ -25,8 +27,6 @@ namespace MiniEngine.Graphics.Camera
         public float FieldOfView { get; } = MathHelper.PiOver2;
 
         public float AspectRatio { get; }
-
-        public Transform Transform { get; }
 
         public Matrix ViewProjection { get; private set; }
 
@@ -51,6 +51,35 @@ namespace MiniEngine.Graphics.Camera
             this.View = Matrix.CreateLookAt(position, position + forward, up);
             this.Projection = Matrix.CreatePerspectiveFieldOfView(this.FieldOfView, this.AspectRatio, this.NearPlane, this.FarPlane);
             this.ViewProjection = this.View * this.Projection;
+        }
+
+        public void MoveTo(Vector3 position)
+        {
+            this.Transform.MoveTo(position);
+            this.Update();
+        }
+
+        public void SetRotation(Quaternion rotation)
+        {
+            this.Transform.SetRotation(rotation);
+            this.Update();
+        }
+
+        public void ApplyRotation(Quaternion rotation)
+        {
+            this.Transform.ApplyRotation(rotation);
+            this.Update();
+        }
+        public void FaceTarget(Vector3 target)
+        {
+            this.Transform.FaceTarget(target);
+            this.Update();
+        }
+
+        public void FaceTargetConstrained(Vector3 target, Vector3 up)
+        {
+            this.Transform.FaceTargetConstrained(target, up);
+            this.Update();
         }
     }
 }

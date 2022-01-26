@@ -69,17 +69,15 @@ namespace MiniEngine.Editor.Controllers
 
             if (translation.LengthSquared() != 0 || rotation != Quaternion.Identity)
             {
-                camera.Transform.MoveTo(camera.Position + translation);
-                var lookAt = camera.Position + Vector3.Transform(camera.Transform.Forward, rotation);
-                camera.Transform.FaceTargetConstrained(lookAt, Vector3.Up);
-                camera.Update();
+                camera.MoveTo(camera.Position + translation);
+                var lookAt = camera.Position + Vector3.Transform(camera.Forward, rotation);
+                camera.FaceTargetConstrained(lookAt, Vector3.Up);
             }
 
             if (this.KeyboardInput.Held(Keys.R))
             {
-                camera.Transform.MoveTo(Vector3.Backward * 10);
-                camera.Transform.FaceTargetConstrained(Vector3.Zero, Vector3.Up);
-                camera.Update();
+                camera.MoveTo(Vector3.Backward * 10);
+                camera.FaceTargetConstrained(Vector3.Zero, Vector3.Up);
             }
         }
     }

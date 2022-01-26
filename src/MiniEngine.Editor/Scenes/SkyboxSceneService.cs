@@ -1,11 +1,13 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using ImGuiNET;
+﻿using ImGuiNET;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
 using MiniEngine.Graphics;
 using MiniEngine.Graphics.Skybox;
 using MiniEngine.Graphics.Utilities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace MiniEngine.Editor.Scenes
 {
@@ -81,6 +83,14 @@ namespace MiniEngine.Editor.Scenes
 
                 this.Textures.Add(new SkyboxTextures(name, albedo, irradiance, environment));
             }
+
+            var black = new TextureCube(device, 1, false, SurfaceFormat.Color);
+            foreach (var face in Enum.GetValues<CubeMapFace>())
+            {
+                black.SetData<Color>(face, new Color[] { Color.Black });
+            }
+
+            this.Textures.Add(new SkyboxTextures("Black", black, black, black));
 
             frameService.Skybox = SkyboxGenerator.Generate(device, this.Textures[0].Albedo,
                 this.Textures[0].Irradiance,
