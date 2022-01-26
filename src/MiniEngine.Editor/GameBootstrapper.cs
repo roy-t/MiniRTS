@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
 using MiniEngine.Editor.Configuration;
+using System;
 
 namespace MiniEngine.Editor
 {
@@ -52,8 +53,8 @@ namespace MiniEngine.Editor
             var gameTimer = new GameTimer(this);
             this.RegisterDelegate(gameTimer);
 
-            //this.gameLoop = (IGameLoop)this.Resolve(typeof(GameLoop));
-            this.gameLoop = (IGameLoop)this.Resolve(typeof(SingleFrameLoop));
+            var gameLoopType = StartupArguments.GameLoopType;
+            this.gameLoop = (IGameLoop)this.Resolve(Type.GetType(gameLoopType, true, true)!);
         }
 
         protected override void UnloadContent()
