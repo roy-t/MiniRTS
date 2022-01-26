@@ -2,7 +2,6 @@
 using Microsoft.Xna.Framework.Graphics;
 using MiniEngine.Configuration;
 using MiniEngine.Editor.Configuration;
-using System;
 
 namespace MiniEngine.Editor
 {
@@ -12,11 +11,11 @@ namespace MiniEngine.Editor
 
         private readonly Register RegisterDelegate;
         private readonly RegisterAs RegisterAsDelegate;
-        private readonly Func<GameLoop> GameLoopFactory;
+        private readonly Resolve Resolve;
 
-        private GameLoop gameLoop = null!;
+        private IGameLoop gameLoop = null!;
 
-        public GameBootstrapper(Register registerDelegate, RegisterAs registerAsDelegate, Func<GameLoop> gameLoopFactory)
+        public GameBootstrapper(Register registerDelegate, RegisterAs registerAsDelegate, Resolve resolve)
         {
             this.RegisterDelegate = registerDelegate;
             this.RegisterAsDelegate = registerAsDelegate;
@@ -27,7 +26,7 @@ namespace MiniEngine.Editor
                 registerAsDelegate(renderDoc, typeof(RenderDoc));
             }
 
-            this.GameLoopFactory = gameLoopFactory;
+            this.Resolve = resolve;
             this.Graphics = new GraphicsDeviceManager(this)
             {
                 PreferredBackBufferWidth = 1920,
@@ -53,7 +52,8 @@ namespace MiniEngine.Editor
             var gameTimer = new GameTimer(this);
             this.RegisterDelegate(gameTimer);
 
-            this.gameLoop = this.GameLoopFactory();
+            //this.gameLoop = (IGameLoop)this.Resolve(typeof(GameLoop));
+            this.gameLoop = (IGameLoop)this.Resolve(typeof(SingleFrameLoop));
         }
 
         protected override void UnloadContent()

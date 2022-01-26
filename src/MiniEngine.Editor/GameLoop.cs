@@ -14,7 +14,7 @@ using MiniEngine.Systems.Pipeline;
 namespace MiniEngine.Editor
 {
     [Service]
-    internal sealed class GameLoop
+    internal sealed class GameLoop : IGameLoop
     {
         private readonly GraphicsDeviceManager Graphics;
         private readonly GraphicsDevice Device;
@@ -65,7 +65,7 @@ namespace MiniEngine.Editor
             this.FrameCounter = new FrameCounter();
         }
 
-        internal bool Update(GameTime gameTime)
+        public bool Update(GameTime gameTime)
         {
             var elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
             this.FrameService.Elapsed = elapsed;
@@ -100,7 +100,7 @@ namespace MiniEngine.Editor
             return true;
         }
 
-        internal void Draw(GameTime gameTime)
+        public void Draw(GameTime gameTime)
         {
             this.RenderPipeline.Frame();
             this.RenderToViewport(this.FrameService.PBuffer.ToneMap);
